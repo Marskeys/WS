@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blindly.love</title>
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/darkmode.css" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body class="light">
+  <!-- ✅ 헤더 -->
+  <div class="header-top">
+    <button class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- ✅ 오른쪽 컨트롤 영역 -->
+    <div class="top-controls">
+      <div class="auth-buttons">
+        <a href="/login" class="auth-btn login">로그인</a>
+        <a href="/signup" class="auth-btn signup">회원가입</a>
+      </div>
+
+      <div class="light-switch"
+           role="switch"
+           aria-checked="false"
+           aria-label="다크 모드 전환"
+           tabindex="0"
+           id="mode-toggle-accessible">
+        <span class="switch-label"><span class="switch-handle"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ 본문 -->
+  <div class="main-layout">
+    <div class="page-body">
+      <div class="left-column expanded" id="left-column">
+        <aside class="left-panel">
+          <div class="cherry-container">
+            <canvas id="cherry-canvas"></canvas>
+          </div>
+
+       <!-- ✅ 로고 + 검색창 전용 중앙 영역 추가 -->
+<div class="search-container">
+  <a href="http://localhost:3000">
+    <img src="/assets/images/logo.svg" alt="blindly.love 로고" class="site-logo" />
+  </a>
+
+  <div class="character-stand">
+    <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+  </div>
+
+  <form method="get" action="/search" class="search-form" id="search-form">
+    <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
+    <button type="submit" class="icon-submit-btn" aria-label="검색">
+      <i class="fas fa-search"></i>
+    </button>
+  </form>
+</div>
+
+
+      <!-- 왼쪽 모바일 메뉴 -->
+      <div id="mobile-menu" class="mobile-menu">
+        <!-- 여기에 메뉴 항목들 넣으면 돼 -->
+        <div class="mobile-auth-buttons">
+          <a href="/login" class="mobile-login">아이디로 로그인</a>
+          <a href="/signup" class="mobile-signup">회원가입</a>
+
+          <div class="social-login-buttons">
+            <a href="#" class="social-btn naver-login">
+              <img src="/assets/images/naver-logo.svg" alt="네이버" class="social-icon naver-img" />
+              네이버로 로그인
+            </a>
+            <a href="#" class="social-btn google-login">
+              <i class="fab fa-google social-icon"></i>
+              Google로 로그인
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel-container hidden" id="right-panel">
+        <main class="right-panel">
+          <section id="post-container" class="post-list">
+            <div class="post-item">
+              <h3>여기에 검색 결과를 표시</h3>
+              <p></p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ 푸터 -->
+  <footer class="global-footer">© 2025 Blindly Love.</footer>
+
+  <!-- ✅ 자바스크립트 -->
+  <script src="/assets/js/darkmode.js" defer></script>
+  <script src="/assets/js/main.js" defer></script>
+  <script src="/assets/js/session-ui.js" defer></script>
+
+  <!-- 검색 결과 패널 (모바일 전용) -->
+  <div class="mobile-search-results" id="mobile-search-results">
+    <div class="results-inner">
+      <h2>검색 결과</h2>
+      <!-- 여기에 JS로 결과 넣을 수 있음 -->
+    </div>
+  </div>
+</body>
+</html>

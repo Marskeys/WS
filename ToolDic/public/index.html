@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tooldic Interactive</title>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 220px;
+      background: #c14e33;
+      color: white;
+      padding: 1.5rem 1rem;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    .sidebar h3 {
+      margin-bottom: 1rem;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      padding: 0.7rem 0.5rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .sidebar li:hover {
+      background-color: #a7422b;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+
+    header {
+      background-color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-left: 220px;
+    }
+
+    .logo img {
+      height: 70px;
+    }
+
+    .signup-btn {
+      position: absolute;
+      right: 2rem;
+      top: 1.6rem;
+      background-color: #c14e33;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .signup-btn:hover {
+      background-color: #a7422b;
+    }
+
+    .content {
+      margin-left: 240px;
+      padding: 2rem;
+    }
+
+    section {
+      margin-bottom: 4rem;
+      scroll-margin-top: 120px;
+    }
+
+    section h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: #333;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+
+    .tool-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .tool-list li {
+      padding: 0.4rem 0.7rem;
+      margin: 0.25rem 0;
+      background: none;
+      border: none;
+      border-left: 3px solid #c14e33;
+      font-size: 0.88rem;
+      color: #444;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .tool-list li:hover {
+      background-color: #f9f1ef;
+      color: #000;
+    }
+
+    footer {
+      background: #222;
+      color: #bbb;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      margin-left: 240px;
+    }
+
+    footer a {
+      color: #bbb;
+      text-decoration: none;
+      margin: 0 0.3rem;
+    }
+
+    footer a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+      }
+
+      .content, footer {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      header {
+        margin-left: 0;
+        padding: 1rem;
+        flex-direction: column;
+      }
+
+      .signup-btn {
+        position: static;
+        margin-top: 1rem;
+        align-self: flex-end;
+      }
+
+      .logo {
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h3>Categories</h3>
+    <ul>
+      <li><a href="#image">🖼️ Image Tools</a></li>
+      <li><a href="#pdf">📄 PDF Tools</a></li>
+      <li><a href="#audio">🎧 Audio Tools</a></li>
+      <li><a href="#video">🎬 Video Tools</a></li>
+      <li><a href="#calc">🔢 Calculators</a></li>
+    </ul>
+  </div>
+
+  <header>
+    <div class="logo">
+      <img src="./assets/images/logo.svg" alt="Tooldic Logo">
+    </div>
+    <button class="signup-btn">Get Premium</button>
+  </header>
+
+  <div class="content">
+    <section id="image">
+      <h2>🖼️ Image Tools</h2>
+      <ul class="tool-list">
+        <li>Background Remover</li>
+        <li>Crop Image</li>
+        <li>JPG to PNG</li>
+        <li>PNG to JPG</li>
+      </ul>
+    </section>
+
+    <section id="pdf">
+      <h2>📄 PDF Tools</h2>
+      <ul class="tool-list">
+        <li>PDF Compressor</li>
+        <li>PDF to Word</li>
+        <li>Merge PDFs</li>
+        <li>Split PDFs</li>
+      </ul>
+    </section>
+
+    <section id="audio">
+      <h2>🎧 Audio Tools</h2>
+      <ul class="tool-list">
+        <li>MP3 Converter</li>
+        <li>Audio Trimmer</li>
+        <li>Volume Booster</li>
+        <li>Audio to Text</li>
+      </ul>
+    </section>
+
+    <section id="video">
+      <h2>🎬 Video Tools</h2>
+      <ul class="tool-list">
+        <li>Video Cutter</li>
+        <li>Video to MP4</li>
+        <li>Video to GIF</li>
+        <li>Speed Changer</li>
+      </ul>
+    </section>
+
+    <section id="calc">
+      <h2>🔢 Calculator Tools</h2>
+      <ul class="tool-list">
+        <li>Unit Converter</li>
+        <li>Age Calculator</li>
+        <li>Percentage Calculator</li>
+        <li>BMI Calculator</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    <div style="margin-bottom: 0.8rem;">
+      <a href="/privacy-policy.html">Privacy Policy</a> |
+      <a href="/terms-of-service.html">Terms of Service</a> |
+      <a href="/contact.html">Contact</a>
+    </div>
+    <div>© 2025 Tooldic. All rights reserved. | Built with ❤️ for everyday users.</div>
+  </footer>
+
+</body>
+</html>

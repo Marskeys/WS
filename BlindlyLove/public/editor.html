@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>BlindLove 에디터</title>
+  <link rel="stylesheet" href="assets/css/editor.css">
+</head>
+<body>
+  <div class="editor-container">
+        <div class="logo-wrap">
+            <img src="assets/images/logo.svg" alt="BlindLove 로고">
+          </div>
+    <div class="toolbar">
+      <select onchange="format('fontName', this.value)">
+        <option value="Arial">Arial</option>
+        <option value="Nanum Gothic">나눔고딕</option>
+        <option value="Georgia">Georgia</option>
+      </select>
+      <select onchange="format('fontSize', this.value)">
+        <option value="1">크기 1</option>
+        <option value="2">크기 2</option>
+        <option value="3" selected>기본</option>
+        <option value="4">크기 4</option>
+        <option value="5">크기 5</option>
+      </select>
+      <button onclick="format('bold')"><b>B</b></button>
+      <button onclick="format('italic')"><i>I</i></button>
+      <button onclick="format('underline')"><u>U</u></button>
+      <button onclick="format('strikeThrough')"><s>S</s></button>
+      <button onclick="format('justifyLeft')">좌</button>
+      <button onclick="format('justifyCenter')">중</button>
+      <button onclick="format('justifyRight')">우</button>
+      <button onclick="format('insertOrderedList')">1.</button>
+      <button onclick="format('insertUnorderedList')">•</button>
+      <button onclick="format('outdent')">←</button>
+      <button onclick="format('indent')">→</button>
+      <button onclick="format('createLink')">🔗</button>
+      <button onclick="format('unlink')">🔓</button>
+      <input type="color" onchange="format('foreColor', this.value)">
+      <input type="color" onchange="format('hiliteColor', this.value)">
+      <button onclick="insertImage()">🖼️ 이미지</button>
+      <button onclick="format('removeFormat')">형식 제거</button>
+      <button class="save-btn" onclick="saveContent()">💾 저장</button>
+    </div>
+
+    <div id="editor" contenteditable="true" class="editor" spellcheck="false"></div>
+  </div>
+
+  <script src="assets/js/editor.js"></script>
+</body>
+</html>

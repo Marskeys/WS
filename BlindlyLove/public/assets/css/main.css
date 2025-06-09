@@ -1,0 +1,87 @@
+.cherry-container {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    margin-bottom: -100px; /* 검색창에 가까이, 이게 밑에까지 꽃잎 안 내려오는 이유 */
+    overflow: hidden;
+  }
+  
+  #cherry-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1002; /* 검색창보다 위, 메뉴보다 아래 */
+    pointer-events: none;
+  }
+
+  .search-container {
+    position: relative;
+    z-index: 1003;
+  }
+
+  
+  .character-anim-wrapper {
+    position: absolute;
+    bottom: 100%;           /* ✅ 바로 아래쪽 요소 위에 딱 붙도록 */
+    left: 1rem;
+    height: 140px;          /* ✅ 원하는 캐릭터 높이 */
+    z-index: 1004;          /* ✅ 검색창보다 위로 */
+    pointer-events: none;
+  }
+  
+  .character-stand {
+    left: 2px;
+    display: flex;
+    align-items: flex-end; /* ✅ 아랫단 기준 정렬 */
+    justify-content: flex-start;
+    padding-left: 4px;
+    pointer-events: none;
+    margin-bottom: -14px; /* ✅ 검색창과 딱 붙게 */
+    width: 300px; /* 보여줄 가로 길이 */
+    height: 50px; /* 딱 캐릭터만 보이게 */
+    overflow: hidden; /* 틀 밖은 잘라냄 */
+    position: relative;
+  }
+  
+ 
+
+  #character-svg {
+    height: 100%;  /* ✅ 캐릭터 크기 비율로 따라감 */
+    width: auto;
+    display: block;
+    transform: translate(-80px, -11px); 
+    
+  }
+
+  .character-stand {
+    overflow: visible !important;
+  }
+
+  #character-anim-svg {
+    width: 100%;
+    height: auto;
+  }
+  
+  .character-anim {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  
+    /* ✅ 왼쪽 패널: 위는 흰색 → 아래는 파스텔 */
+    .left-panel {
+      background: linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%);
+      min-height: 100vh; /* ✅ gradient가 충분히 펼쳐지도록 */
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+    }
+    
+
+    /* ✅ 모바일 검색창 안 빠져나가게 */
+    @media (max-width: 768px) {
+      .character-stand {
+        padding-left: 50px; /* ✅ 여기 값을 조정해줘! 원래 12px이었지? */
+      }
+    }

@@ -1,0 +1,195 @@
+
+
+/* 🌙 다크모드 배경 & 텍스트 */
+body.dark {
+  background: linear-gradient(
+    to bottom,
+    #0b0b1a 50%,         /* 깊은 밤 검정 */
+    #141433 80%,        /* 아주 짙은 남보라 */
+    #1e3a5f 85%,        /* 어두운 파랑 */
+    #5a74a0 95%,        /* 새벽빛 남색 */
+    #dce6f2 99%,        /* 희미한 눈빛 */
+    #ffffff 100%  
+  );
+  color: #f0f0f0;
+}
+
+/* 제목/부제목 */
+body.dark .site-title {
+  color: #f5f5f5;
+}
+body.dark .site-subtitle {
+  color: #bbb;
+}
+
+/* 메인 레이아웃 세로 정렬 강제 */
+body.dark .main-layout {
+  align-items: flex-start !important;
+}
+
+/* 왼쪽 패널 */
+body.dark .left-panel {
+  background: linear-gradient(to bottom, #1e1e2f 0%, #2a2a4d 70%, #3d3d6b 100%);
+  box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.5);
+  margin-top: 0 !important;
+  padding-top: 2rem !important;
+  height: auto !important;
+}
+
+/* 오른쪽 패널 */
+body.dark .right-panel {
+  background-color: #252535;
+  box-shadow: inset 10px 0 8px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* 검색창 form */
+body.dark .search-form {
+  background-color: #454545;
+  border: 1px solid #555;
+  box-shadow: none;
+}
+
+/* 검색창 input */
+body.dark .search-box {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #fff;
+}
+body.dark .search-box::placeholder {
+  color: #bbb;
+  opacity: 1;
+}
+
+/* 검색 아이콘 */
+body.dark .search-form i {
+  color: #ccc;
+}
+
+/* 푸터 */
+body.dark .site-footer {
+  color: #ccc;
+  background: #121212;
+  border-top: 1px solid #444;
+}
+
+/* 이미지 모드 전환 */
+body.dark .dark-img {
+  display: block;
+}
+body.dark .light-img {
+  display: none;
+}
+
+/* 다크모드 스위치 */
+body.dark .switch-label {
+  background-color: #666;
+}
+body.dark .switch-handle {
+  background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
+}
+
+/* 기본 스위치 스타일 */
+.light-switch {
+  z-index: 999;
+  width: 60px;
+  height: 34px;
+}
+.switch-label {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-color: #b9fbc0;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.switch-handle {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(to bottom, #ffffff, #cccccc);
+  border-radius: 50%;
+  transition: left 0.3s ease, background 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.light-switch[aria-checked="true"] .switch-label {
+  background-color: #666;
+}
+.light-switch[aria-checked="true"] .switch-handle {
+  left: 29px;
+  background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
+}
+
+/* 캐릭터 SVG glow */
+body.dark object#character-svg {
+  filter: brightness(1.0) contrast(1.0) drop-shadow(0 0 1px #a26eff);
+  transition: filter 0.1s ease;
+}
+#character-svg {
+  filter: saturate(0.95);
+}
+
+/* 헤더 */
+body.dark .header-top {
+  background-color: #141433 !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* 로그인 버튼 (기본) */
+body.dark .auth-btn.login {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  font-weight: 600;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+  transition: all 0.1s ease;
+}
+
+/* 로그인 버튼 (hover - 노란빛 glow) */
+body.dark .auth-btn.login:hover {
+  background-color: rgba(255, 255, 200, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+}
+
+/* 회원가입 텍스트 (기본) */
+body.dark .auth-btn.signup {
+  color: white;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+  transition: all 0.3s ease;
+}
+
+/* 회원가입 텍스트 (hover - 노란빛 glow) */
+body.dark .auth-btn.signup:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+}
+
+/* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
+body.dark .hamburger span {
+  background-color: #fff;
+}
+
+
+/* 다크모드에서 전체 배경 뚫기 */
+body.dark .left-column,
+body.dark .right-panel-container,
+body.dark .left-panel,
+body.dark .right-panel {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* 필요하면 header도 투명 처리 */
+body.dark .header-top {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
