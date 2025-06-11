@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>BlindLove 에디터</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
 
@@ -509,41 +510,39 @@
       <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
       <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
      
-     <!-- 글자 색상 도구 -->
-<div class="color-tool" id="foreTool">
-  <button id="foreColorBtn" data-tooltip="글자 색상">
-    <i class="fas fa-pencil-alt" id="foreIcon"></i>
-  </button>
-  <div class="color-palette" id="forePalette">
-    <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
-    <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
-    <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
-    <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
-    <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
-    <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
-    <label class="custom-color">
-      🎨<input type="color" onchange="setColor('foreColor', this.value)" />
-    </label>
-  </div>
-</div>
-
-<!-- 배경 색상 도구 -->
-<div class="color-tool" id="bgTool">
-  <button id="bgColorBtn" data-tooltip="배경 색상">
-    <i class="fas fa-fill-drip" id="bgIcon"></i>
-  </button>
-  <div class="color-palette" id="bgPalette">
-    <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
-    <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
-    <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
-    <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
-    <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
-    <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
-    <label class="custom-color">
-      🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
-    </label>
-  </div>
-</div>
+      <div class="color-tool" id="foreTool">
+        <button id="foreColorBtn" data-tooltip="글자 색상" onmousedown="saveSelection()">
+          <i class="fas fa-pencil-alt" id="foreIcon"></i>
+        </button>
+        <div class="color-palette" id="forePalette">
+          <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
+          <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
+          <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
+          <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
+          <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
+          <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
+          <label class="custom-color">
+            🎨<input type="color" onchange="setColor('foreColor', this.value)" />
+          </label>
+        </div>
+      </div>
+      
+      <div class="color-tool" id="bgTool">
+        <button id="bgColorBtn" data-tooltip="배경 색상" onmousedown="saveSelection()">
+          <i class="fas fa-fill-drip" id="bgIcon"></i>
+        </button>
+        <div class="color-palette" id="bgPalette">
+          <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
+          <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
+          <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
+          <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
+          <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
+          <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
+          <label class="custom-color">
+            🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
+          </label>
+        </div>
+      </div>
 
       
       
@@ -568,212 +567,240 @@
   <script>
     let categories = ['일상', '기록', '리뷰'];
     let selectedCategories = ['일상'];
-    let savedRange = null;
-  
+    let savedRange = null; // 전역 변수로 savedRange 유지
+
     function renderCategories() {
-      const list = document.getElementById('categoryList');
-      list.innerHTML = '';
-      categories.forEach((cat, index) => {
-        const item = document.createElement('div');
-        item.className = 'category-item';
-        if (selectedCategories.includes(cat)) item.classList.add('selected');
-        item.innerText = cat;
-        item.onclick = () => {
-          const i = selectedCategories.indexOf(cat);
-          if (i === -1) selectedCategories.push(cat);
-          else selectedCategories.splice(i, 1);
-          renderCategories();
-        };
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-btn';
-        removeBtn.innerText = '×';
-        removeBtn.onclick = (e) => {
-          e.stopPropagation();
-          if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
-            categories.splice(index, 1);
-            selectedCategories = selectedCategories.filter(c => c !== cat);
-            renderCategories();
-          }
-        };
-        item.appendChild(removeBtn);
-        list.appendChild(item);
-      });
+        const list = document.getElementById('categoryList');
+        list.innerHTML = '';
+        categories.forEach((cat, index) => {
+            const item = document.createElement('div');
+            item.className = 'category-item';
+            if (selectedCategories.includes(cat)) item.classList.add('selected');
+            item.innerText = cat;
+            item.onclick = () => {
+                const i = selectedCategories.indexOf(cat);
+                if (i === -1) selectedCategories.push(cat);
+                else selectedCategories.splice(i, 1);
+                renderCategories();
+            };
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerText = '×';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
+                    categories.splice(index, 1);
+                    selectedCategories = selectedCategories.filter(c => c !== cat);
+                    renderCategories();
+                }
+            };
+            item.appendChild(removeBtn);
+            list.appendChild(item);
+        });
     }
-  
+
     function addCategory() {
-      const newCat = prompt("추가할 카테고리 이름을 입력하세요:");
-      if (newCat && !categories.includes(newCat)) {
-        categories.push(newCat);
-        selectedCategories.push(newCat);
-        renderCategories();
-      }
-    }
-  
-    function postContent() {
-      const title = document.getElementById('postTitle').value.trim();
-      const content = document.getElementById('editor').innerHTML;
-      if (!title) return alert("제목을 입력해주세요.");
-      if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
-      alert(`포스팅됨!\n제목: ${title}\n카테고리: ${selectedCategories.join(', ')}`);
-    }
-  
-    function format(command, value = null) {
-      try {
-        document.execCommand("styleWithCSS", false, true);
-      } catch (e) {
-        console.warn("styleWithCSS 명령이 지원되지 않음:", e);
-      }
-      document.execCommand(command, false, value);
-    }
-  
-    function applyStyle(tag) {
-      const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
-      if (blockTags.includes(tag)) {
-        document.getElementById("editor").focus();
-        document.execCommand('formatBlock', false, tag.toUpperCase());
-      } else {
-        const sel = window.getSelection();
-        if (!sel.rangeCount) return;
-        const range = sel.getRangeAt(0);
-        const content = range.extractContents();
-        const wrapper = document.createElement(tag);
-        wrapper.appendChild(content);
-        range.insertNode(wrapper);
-        range.setStartAfter(wrapper);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
-      setTimeout(detectStyle, 100);
-    }
-  
-    function insertImage() {
-      const url = prompt("이미지 URL을 입력하세요:");
-      if (url) format('insertImage', url);
-    }
-  
-    function saveContent() {
-      const content = document.getElementById('editor').innerHTML;
-      alert("임시 저장 완료!");
-    }
-  
-    function toggleDropdown() {
-      document.getElementById('styleDropdown').classList.toggle('show');
-    }
-  
-    function updateCurrentStyle(tagName) {
-      const labelMap = {
-        h1: "제목",
-        h2: "부제목",
-        h3: "머리말 1",
-        h4: "빨간 머리말",
-        p: "본문",
-        small: "설명",
-        footer: "머리말 및 꼬리말",
-        span: "레이블",
-        strong: "진한 레이블"
-      };
-      const label = labelMap[tagName.toLowerCase()] || tagName;
-      document.getElementById("currentStyle").innerText = `${label} ▼`;
-    }
-  
-    function detectStyle() {
-      const sel = window.getSelection();
-      if (!sel.rangeCount) return;
-      let node = sel.getRangeAt(0).startContainer;
-      while (node && node !== document) {
-        if (node.nodeType === 1 && /^H[1-4]$|^P$|^SMALL$|^FOOTER$|^SPAN$|^STRONG$/i.test(node.tagName)) {
-          updateCurrentStyle(node.tagName);
-          return;
+        const newCat = prompt("추가할 카테고리 이름을 입력하세요:");
+        if (newCat && !categories.includes(newCat)) {
+            categories.push(newCat);
+            selectedCategories.push(newCat);
+            renderCategories();
         }
-        node = node.parentNode;
-      }
-      updateCurrentStyle('p');
     }
-  
-    function saveSelection() {
-      const sel = window.getSelection();
-      if (sel.rangeCount > 0) {
-        savedRange = sel.getRangeAt(0);
-      }
-    }
-  
-    function restoreSelection() {
-      const sel = window.getSelection();
-      if (savedRange) {
-        sel.removeAllRanges();
-        sel.addRange(savedRange);
-      }
-    }
-  
-    function triggerColor(id) {
-      document.getElementById(id).click();
-    }
-  
-    function updateColor(type) {
-      restoreSelection();
-      if (type === 'fore') {
-        const color = document.getElementById('textColor').value;
-        format('foreColor', color);
-        document.getElementById('foreIcon').style.color = color;
-      } else if (type === 'bg') {
-        const color = document.getElementById('bgColor').value;
-        format('hiliteColor', color);
-        document.getElementById('bgColorBtn').style.backgroundColor = color;
-      }
-    }
-  
-    window.onclick = function(e) {
-      if (!e.target.matches('.dropdown-toggle')) {
-        const dropdowns = document.getElementsByClassName('dropdown-menu');
-        for (let d of dropdowns) d.classList.remove('show');
-      }
-    };
-  
-    window.onload = () => {
-      renderCategories();
-      document.getElementById('editor').addEventListener('keyup', detectStyle);
-      document.getElementById('editor').addEventListener('mouseup', detectStyle);
-      document.getElementById('editor').addEventListener('mouseup', saveSelection);
-      document.getElementById('editor').addEventListener('keyup', saveSelection);
-    };
-    function setColor(command, color) {
-  const sel = window.getSelection();
-  if (!sel.rangeCount) return;
 
-  const range = sel.getRangeAt(0);
-  const span = document.createElement('span');
-
-  if (color === '__clear__') {
-    if (command === 'foreColor') {
-      span.style.color = 'inherit';
-      document.getElementById('foreIcon').style.color = 'black';
-    } else if (command === 'hiliteColor') {
-      span.style.backgroundColor = 'inherit';
-      document.getElementById('bgColorBtn').style.backgroundColor = 'white';
+    function postContent() {
+        const title = document.getElementById('postTitle').value.trim();
+        const content = document.getElementById('editor').innerHTML;
+        if (!title) return alert("제목을 입력해주세요.");
+        if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
+        alert(`포스팅됨!\n제목: ${title}\n카테고리: ${selectedCategories.join(', ')}`);
     }
+
+    // --- 수정된 format 함수 ---
+    // 모든 execCommand는 기본적으로 styleWithCSS=false로 작동하며,
+    // 태그 기반으로 요소를 생성합니다 (<b>, <i>, <u> 등).
+    function format(command, value = null) {
+        document.execCommand("styleWithCSS", false, false); // 항상 CSS 사용 안함
+        document.execCommand(command, false, value);
+        // execCommand 후에는 detectStyle을 호출하여 현재 스타일을 업데이트합니다.
+        setTimeout(detectStyle, 100);
+    }
+    // -------------------------
+
+    // --- 수정된 applyStyle 함수 ---
+    // 이 함수는 블록 레벨 요소 (h1, p 등) 생성에 집중합니다.
+    // span/strong 같은 인라인 요소는 format 함수나 setColor 함수에서 처리되도록 합니다.
+    function applyStyle(tag) {
+  const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
+  const editor = document.getElementById("editor");
+
+  // 선택 영역 저장 후 복원
+  restoreSelection();
+  editor.focus();
+
+  if (blockTags.includes(tag)) {
+    document.execCommand("styleWithCSS", false, false);
+    document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
+
+    // 다시 선택 영역을 저장해서 커서 이동 방지
+    saveSelection();
   } else {
-    if (command === 'foreColor') {
-      span.style.color = color;
-      document.getElementById('foreIcon').style.color = color;
-    } else if (command === 'hiliteColor') {
-      span.style.backgroundColor = color;
-      document.getElementById('bgColorBtn').style.backgroundColor = color;
+    const sel = window.getSelection();
+    if (!sel.rangeCount || sel.isCollapsed) return;
+
+    const range = sel.getRangeAt(0);
+    const tempElement = document.createElement(tag);
+    if (tag === 'span') tempElement.classList.add('label');
+    if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
+
+    try {
+      const contents = range.extractContents();
+      tempElement.appendChild(contents);
+      range.insertNode(tempElement);
+
+      // 선택 영역 다시 지정
+      sel.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNode(tempElement);
+      sel.addRange(newRange);
+
+      saveSelection();
+    } catch (e) {
+      console.error("applyStyle(span/strong) 오류:", e);
     }
   }
 
-  span.appendChild(range.extractContents());
-  range.insertNode(span);
-  sel.removeAllRanges();
-  sel.addRange(range);
+  setTimeout(detectStyle, 100);
 }
 
+    // -------------------------
 
+    function insertImage() {
+        const url = prompt("이미지 URL을 입력하세요:");
+        if (url) format('insertImage', url);
+    }
 
+    function saveContent() {
+        const content = document.getElementById('editor').innerHTML;
+        alert("임시 저장 완료!");
+    }
 
-  </script>
-  
-  
+    function toggleDropdown() {
+        document.getElementById('styleDropdown').classList.toggle('show');
+    }
+
+    function updateCurrentStyle(tagName) {
+        const labelMap = {
+            h1: "제목",
+            h2: "부제목",
+            h3: "머리말 1",
+            h4: "빨간 머리말",
+            p: "본문",
+            small: "설명",
+            footer: "머리말 및 꼬리말",
+            span: "레이블",
+            strong: "진한 레이블"
+        };
+        const label = labelMap[tagName.toLowerCase()] || tagName;
+        document.getElementById("currentStyle").innerText = `${label} ▼`;
+    }
+
+    function detectStyle() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        let node = sel.getRangeAt(0).startContainer;
+        while (node && node !== document) {
+            if (node.nodeType === 1 && /^H[1-4]$|^P$|^SMALL$|^FOOTER$|^SPAN$|^STRONG$|^B$|^I$|^U$|^S$/i.test(node.tagName)) {
+                updateCurrentStyle(node.tagName);
+                return;
+            }
+            node = node.parentNode;
+        }
+        updateCurrentStyle('p');
+    }
+
+    function saveSelection() {
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+            savedRange = sel.getRangeAt(0).cloneRange(); // Range 객체 복사본 저장
+        }
+    }
+
+    function restoreSelection() {
+        const sel = window.getSelection();
+        if (savedRange) {
+            sel.removeAllRanges();
+            sel.addRange(savedRange);
+        }
+    }
+
+    // --- 수정된 setColor 함수 ---
+    // execCommand('foreColor')와 'hiliteColor'는 styleWithCSS를 명시적으로 true로 설정하여
+    // 인라인 스타일을 적용하고, 완료 후 다시 false로 되돌립니다.
+    function setColor(command, color) {
+        const sel = window.getSelection();
+        // 선택 영역이 없으면 restoreSelection 시도 (버튼 클릭 등으로 인해 선택이 풀린 경우)
+        if (!sel.rangeCount || sel.isCollapsed) {
+            restoreSelection();
+            if (!sel.rangeCount || sel.isCollapsed) { // 그래도 선택 영역이 없으면 함수 종료
+                console.warn("선택된 텍스트가 없어 색상을 적용할 수 없습니다.");
+                return;
+            }
+        }
+
+        // styleWithCSS를 true로 설정하여 CSS 스타일을 적용하도록 합니다.
+        // 이 설정은 다음 execCommand에만 영향을 미칩니다.
+        document.execCommand("styleWithCSS", false, true);
+
+        if (color === '__clear__') {
+            // 색상 지우기: inherit (폰트색) 또는 transparent (배경색)으로 설정하여 제거
+            if (command === 'foreColor') {
+                document.execCommand('foreColor', false, 'inherit'); // 기본 색상으로 되돌리기
+            } else if (command === 'hiliteColor') {
+                document.execCommand('hiliteColor', false, 'transparent'); // 배경색 투명으로
+            }
+        } else {
+            document.execCommand(command, false, color);
+        }
+
+        // 작업 완료 후 styleWithCSS를 다시 false로 설정하여
+        // 이후의 다른 execCommand가 태그 기반으로 작동하도록 합니다.
+        document.execCommand("styleWithCSS", false, false);
+
+        // UI 피드백 업데이트
+        document.getElementById('foreIcon').style.color = (command === 'foreColor' && color !== '__clear__') ? color : 'black';
+        document.getElementById('bgColorBtn').style.backgroundColor = (command === 'hiliteColor' && color !== '__clear__') ? color : 'white';
+
+        // 에디터에 다시 포커스를 맞춥니다.
+        document.getElementById('editor').focus();
+        // 스타일 적용 후에는 detectStyle을 호출하여 현재 스타일을 업데이트합니다.
+        setTimeout(detectStyle, 100);
+    }
+    // -------------------------
+
+    window.onclick = function(e) {
+        if (!e.target.matches('.dropdown-toggle')) {
+            const dropdowns = document.getElementsByClassName('dropdown-menu');
+            for (let d of dropdowns) d.classList.remove('show');
+        }
+    };
+
+    window.onload = () => {
+        renderCategories();
+        // 에디터 이벤트 리스너
+        const editor = document.getElementById('editor');
+        editor.addEventListener('keyup', detectStyle);
+        editor.addEventListener('mouseup', detectStyle);
+        editor.addEventListener('mouseup', saveSelection);
+        editor.addEventListener('keyup', saveSelection);
+
+        // 툴바 버튼들에 mousedown 이벤트 추가 (클릭 시 선택 영역 유실 방지)
+        const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
+        toolbarButtons.forEach(button => {
+            button.addEventListener('mousedown', saveSelection);
+        });
+    };
+</script>
 </body>
 </html>
 
