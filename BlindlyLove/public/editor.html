@@ -706,18 +706,28 @@
     }
 
     function detectStyle() {
-        const sel = window.getSelection();
-        if (!sel.rangeCount) return;
-        let node = sel.getRangeAt(0).startContainer;
-        while (node && node !== document) {
-            if (node.nodeType === 1 && /^H[1-4]$|^P$|^SMALL$|^FOOTER$|^SPAN$|^STRONG$|^B$|^I$|^U$|^S$/i.test(node.tagName)) {
-                updateCurrentStyle(node.tagName);
-                return;
-            }
-            node = node.parentNode;
-        }
-        updateCurrentStyle('p');
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  let node = sel.getRangeAt(0).startContainer;
+
+  // 텍스트 노드면 부모로 이동
+  if (node.nodeType === 3) node = node.parentNode;
+
+  // 가장 가까운 블록 요소 탐색
+  while (node && node !== document) {
+    const tag = node.tagName?.toLowerCase();
+    if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+      updateCurrentStyle(tag);
+      return;
     }
+    node = node.parentNode;
+  }
+
+  // 못 찾으면 기본 본문
+  updateCurrentStyle('p');
+}
+
+
 
     function saveSelection() {
         const sel = window.getSelection();
@@ -738,44 +748,65 @@
     // execCommand('foreColor')와 'hiliteColor'는 styleWithCSS를 명시적으로 true로 설정하여
     // 인라인 스타일을 적용하고, 완료 후 다시 false로 되돌립니다.
     function setColor(command, color) {
-        const sel = window.getSelection();
-        // 선택 영역이 없으면 restoreSelection 시도 (버튼 클릭 등으로 인해 선택이 풀린 경우)
-        if (!sel.rangeCount || sel.isCollapsed) {
-            restoreSelection();
-            if (!sel.rangeCount || sel.isCollapsed) { // 그래도 선택 영역이 없으면 함수 종료
-                console.warn("선택된 텍스트가 없어 색상을 적용할 수 없습니다.");
-                return;
-            }
-        }
+  restoreSelection();
+  const sel = window.getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return;
 
-        // styleWithCSS를 true로 설정하여 CSS 스타일을 적용하도록 합니다.
-        // 이 설정은 다음 execCommand에만 영향을 미칩니다.
-        document.execCommand("styleWithCSS", false, true);
+  const range = sel.getRangeAt(0);
+  const parentBlock = getCurrentBlockElement(range);
 
-        if (color === '__clear__') {
-            // 색상 지우기: inherit (폰트색) 또는 transparent (배경색)으로 설정하여 제거
-            if (command === 'foreColor') {
-                document.execCommand('foreColor', false, 'inherit'); // 기본 색상으로 되돌리기
-            } else if (command === 'hiliteColor') {
-                document.execCommand('hiliteColor', false, 'transparent'); // 배경색 투명으로
-            }
-        } else {
-            document.execCommand(command, false, color);
-        }
+  if (!parentBlock) return;
 
-        // 작업 완료 후 styleWithCSS를 다시 false로 설정하여
-        // 이후의 다른 execCommand가 태그 기반으로 작동하도록 합니다.
-        document.execCommand("styleWithCSS", false, false);
+  const styleProp = (command === 'foreColor') ? 'color' : 'backgroundColor';
 
-        // UI 피드백 업데이트
-        document.getElementById('foreIcon').style.color = (command === 'foreColor' && color !== '__clear__') ? color : 'black';
-        document.getElementById('bgColorBtn').style.backgroundColor = (command === 'hiliteColor' && color !== '__clear__') ? color : 'white';
+  if (color === '__clear__') {
+    parentBlock.style[styleProp] = '';
+  } else {
+    parentBlock.style[styleProp] = color;
+  }
 
-        // 에디터에 다시 포커스를 맞춥니다.
-        document.getElementById('editor').focus();
-        // 스타일 적용 후에는 detectStyle을 호출하여 현재 스타일을 업데이트합니다.
-        setTimeout(detectStyle, 100);
+  saveSelection();
+  detectStyle();
+}
+
+function getCurrentBlockElement(range) {
+  let node = range.startContainer;
+
+  if (node.nodeType === 3) node = node.parentNode;
+
+  while (node && node !== document) {
+    const tag = node.tagName?.toLowerCase();
+    if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+      return node;
     }
+    node = node.parentNode;
+  }
+
+  return null;
+}
+
+
+
+function getCurrentBlockTag() {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return null;
+
+  let node = sel.getRangeAt(0).startContainer;
+  while (node && node !== document) {
+    if (node.nodeType === 1) {
+      const tag = node.tagName.toLowerCase();
+      if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+        return tag;
+      }
+    }
+    node = node.parentNode;
+  }
+
+  return 'p';
+}
+
+
+
     // -------------------------
 
     window.onclick = function(e) {
