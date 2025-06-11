@@ -403,6 +403,67 @@
 }
 
 
+.color-tool {
+  position: relative;
+  display: inline-block;
+}
+
+.color-palette {
+  position: absolute;
+  top: calc(90% + 2px);  /* 버튼 바로 아래에 딱 붙이기 */
+  left: 0;
+  display: none;
+  background: white;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+.color-tool:hover .color-palette,
+.color-palette:hover {
+  display: flex;
+}
+
+.color-tool button {
+  cursor: pointer;
+}
+
+
+
+.color-tool:hover .color-palette,
+.color-palette:hover {
+  display: flex;
+}
+
+#foreColorBtn i {
+  color: black;
+}
+
+#bgColorBtn {
+  background-color: white;
+}
+
+.color-tool .none-icon {
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.color-tool .none-icon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 2px;
+  background: red;
+  transform: rotate(45deg);
+  transform-origin: top left;
+}
+
+
 
     
   </style>
@@ -448,32 +509,42 @@
       <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
       <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
      
-      <div class="color-palette" data-tooltip="글자 색상">
-        <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
-        <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
-        <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
-        <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
-        <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
-        <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
-        <label class="custom-color">
-          🎨
-          <input type="color" onchange="setColor('foreColor', this.value)" />
-        </label>
-      </div>
-      
-      
-      <div class="color-palette" data-tooltip="배경 색상">
-        <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
-        <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
-        <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
-        <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
-        <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
-        <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
-        <label class="custom-color">
-          🎨
-          <input type="color" onchange="setColor('hiliteColor', this.value)" />
-        </label>
-      </div>
+     <!-- 글자 색상 도구 -->
+<div class="color-tool" id="foreTool">
+  <button id="foreColorBtn" data-tooltip="글자 색상">
+    <i class="fas fa-pencil-alt" id="foreIcon"></i>
+  </button>
+  <div class="color-palette" id="forePalette">
+    <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
+    <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
+    <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
+    <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
+    <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
+    <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
+    <label class="custom-color">
+      🎨<input type="color" onchange="setColor('foreColor', this.value)" />
+    </label>
+  </div>
+</div>
+
+<!-- 배경 색상 도구 -->
+<div class="color-tool" id="bgTool">
+  <button id="bgColorBtn" data-tooltip="배경 색상">
+    <i class="fas fa-fill-drip" id="bgIcon"></i>
+  </button>
+  <div class="color-palette" id="bgPalette">
+    <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
+    <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
+    <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
+    <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
+    <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
+    <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
+    <label class="custom-color">
+      🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
+    </label>
+  </div>
+</div>
+
       
       
 
@@ -667,22 +738,37 @@
       document.getElementById('editor').addEventListener('keyup', saveSelection);
     };
     function setColor(command, color) {
-  document.getElementById('editor').focus();
-  try {
-    document.execCommand("styleWithCSS", false, true);
-  } catch (e) {}
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
 
   if (color === '__clear__') {
     if (command === 'foreColor') {
-      document.execCommand('foreColor', false, 'black');
+      span.style.color = 'inherit';
+      document.getElementById('foreIcon').style.color = 'black';
     } else if (command === 'hiliteColor') {
-      // 더 확실하게 투명 처리
-      document.execCommand('hiliteColor', false, 'transparent');
+      span.style.backgroundColor = 'inherit';
+      document.getElementById('bgColorBtn').style.backgroundColor = 'white';
     }
   } else {
-    document.execCommand(command, false, color);
+    if (command === 'foreColor') {
+      span.style.color = color;
+      document.getElementById('foreIcon').style.color = color;
+    } else if (command === 'hiliteColor') {
+      span.style.backgroundColor = color;
+      document.getElementById('bgColorBtn').style.backgroundColor = color;
+    }
   }
+
+  span.appendChild(range.extractContents());
+  range.insertNode(span);
+  sel.removeAllRanges();
+  sel.addRange(range);
 }
+
+
 
 
   </script>
