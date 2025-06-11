@@ -74,7 +74,6 @@
       position: relative;
     }
 
-    /* ✅ Tooltip */
     .toolbar button[data-tooltip]::after,
     .toolbar input[type="color"][data-tooltip]::after {
       content: attr(data-tooltip);
@@ -104,12 +103,19 @@
     }
 
     .dropdown-toggle {
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      background: #fff;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 120px; /* 폭 지정 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+
 
     .dropdown-menu {
       display: none;
@@ -122,6 +128,7 @@
       overflow: hidden;
       z-index: 1000;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      min-width: 160px; /* 메뉴도 넉넉하게 */
     }
 
     .dropdown-menu.show {
@@ -157,7 +164,6 @@
       background: #fffefc;
     }
 
-    /* ✅ 적용된 스타일 즉시 보이게 */
     .editor h1 {
       font-size: 32px;
       font-weight: bold;
@@ -216,7 +222,6 @@
       font-size: 14px;
     }
 
-    /* ✅ 카테고리 및 포스팅 스타일 복구 */
     .category-box {
       margin-top: 30px;
     }
@@ -300,6 +305,8 @@
     .post-btn:hover {
       background: #4fb476;
     }
+
+    
   </style>
 </head>
 <body>
@@ -349,7 +356,9 @@
       <button class="save-btn" onclick="saveContent()" data-tooltip="임시 저장">💾 저장</button>
     </div>
 
-    <div id="editor" contenteditable="true" class="editor" spellcheck="false"></div>
+    <div id="editor" contenteditable="true" class="editor" spellcheck="false">
+      <p><br></p>
+    </div>
 
     <div class="category-box">
       <label>카테고리:</label>
@@ -362,7 +371,7 @@
   <script>
     let categories = ['일상', '기록', '리뷰'];
     let selectedCategories = ['일상'];
-
+  
     function renderCategories() {
       const list = document.getElementById('categoryList');
       list.innerHTML = '';
@@ -392,7 +401,7 @@
         list.appendChild(item);
       });
     }
-
+  
     function addCategory() {
       const newCat = prompt("추가할 카테고리 이름을 입력하세요:");
       if (newCat && !categories.includes(newCat)) {
@@ -401,7 +410,7 @@
         renderCategories();
       }
     }
-
+  
     function postContent() {
       const title = document.getElementById('postTitle').value.trim();
       const content = document.getElementById('editor').innerHTML;
@@ -409,30 +418,49 @@
       if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
       alert(`포스팅됨!\n제목: ${title}\n카테고리: ${selectedCategories.join(', ')}`);
     }
-
+  
     function format(command, value = null) {
       document.execCommand(command, false, value);
     }
-
     function applyStyle(tag) {
-      document.execCommand('formatBlock', false, tag);
-      updateCurrentStyle(tag);
-    }
+  const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
+  if (blockTags.includes(tag)) {
+    document.getElementById("editor").focus(); // 에디터에 포커스
+    document.execCommand('formatBlock', false, tag.toUpperCase());
+  } else {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    const content = range.extractContents();
+    const wrapper = document.createElement(tag);
+    wrapper.appendChild(content);
+    range.insertNode(wrapper);
+    range.setStartAfter(wrapper);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 
+  setTimeout(detectStyle, 100);
+}
+
+
+
+  
     function insertImage() {
       const url = prompt("이미지 URL을 입력하세요:");
       if (url) format('insertImage', url);
     }
-
+  
     function saveContent() {
       const content = document.getElementById('editor').innerHTML;
       alert("임시 저장 완료!");
     }
-
+  
     function toggleDropdown() {
       document.getElementById('styleDropdown').classList.toggle('show');
     }
-
+  
     function updateCurrentStyle(tagName) {
       const labelMap = {
         h1: "제목",
@@ -448,7 +476,7 @@
       const label = labelMap[tagName.toLowerCase()] || tagName;
       document.getElementById("currentStyle").innerText = `${label} ▼`;
     }
-
+  
     function detectStyle() {
       const sel = window.getSelection();
       if (!sel.rangeCount) return;
@@ -462,22 +490,21 @@
       }
       updateCurrentStyle('p');
     }
-
+  
     window.onclick = function(e) {
       if (!e.target.matches('.dropdown-toggle')) {
         const dropdowns = document.getElementsByClassName('dropdown-menu');
         for (let d of dropdowns) d.classList.remove('show');
       }
     };
-
+  
     window.onload = () => {
       renderCategories();
-      applyStyle('p');
       document.getElementById('editor').addEventListener('keyup', detectStyle);
       document.getElementById('editor').addEventListener('mouseup', detectStyle);
     };
   </script>
+  
 </body>
 </html>
-
 
