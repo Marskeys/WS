@@ -306,6 +306,20 @@
       background: #4fb476;
     }
 
+    .color-palette {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.color-palette button {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 
     .toolbar button {
   position: relative;
@@ -328,6 +342,66 @@
 #bgColorBtn {
   background-color: #fff; /* 기본값 흰색 */
 }
+
+
+.color-palette {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.color-palette button {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* "색 없음" 아이콘 (흰 배경 + 대각선 붉은 선) */
+.color-palette .none-icon {
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.color-palette .none-icon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 2px;
+  background: red;
+  transform: rotate(45deg);
+  transform-origin: top left;
+}
+
+
+.color-palette .custom-color {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-left: 6px;
+  cursor: pointer;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0 6px;
+  background: white;
+}
+
+.color-palette .custom-color input[type="color"] {
+  border: none;
+  background: transparent;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
 
 
     
@@ -373,16 +447,36 @@
       <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
       <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
       <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
-      <button id="foreColorBtn" onclick="triggerColor('textColor')" data-tooltip="글자 색상">
-        <i class="fas fa-pencil-alt" id="foreIcon"></i>
-        
-        <input type="color" id="textColor" class="color-input" onchange="updateColor('fore')" />
-      </button>
+     
+      <div class="color-palette" data-tooltip="글자 색상">
+        <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
+        <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
+        <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
+        <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
+        <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
+        <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
+        <label class="custom-color">
+          🎨
+          <input type="color" onchange="setColor('foreColor', this.value)" />
+        </label>
+      </div>
       
-      <button id="bgColorBtn" onclick="triggerColor('bgColor')" data-tooltip="배경 색상">
-        <i class="fas fa-fill-drip" id="bgIcon"></i>
-        <input type="color" id="bgColor" class="color-input" onchange="updateColor('bg')" />
-      </button>
+      
+      <div class="color-palette" data-tooltip="배경 색상">
+        <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
+        <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
+        <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
+        <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
+        <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
+        <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
+        <label class="custom-color">
+          🎨
+          <input type="color" onchange="setColor('hiliteColor', this.value)" />
+        </label>
+      </div>
+      
+      
+
       <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
       <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
       <button class="save-btn" onclick="saveContent()" data-tooltip="임시 저장">💾 저장</button>
@@ -403,6 +497,7 @@
   <script>
     let categories = ['일상', '기록', '리뷰'];
     let selectedCategories = ['일상'];
+    let savedRange = null;
   
     function renderCategories() {
       const list = document.getElementById('categoryList');
@@ -452,38 +547,34 @@
     }
   
     function format(command, value = null) {
-  try {
-    document.execCommand("styleWithCSS", false, true);
-  } catch (e) {
-    console.warn("styleWithCSS 명령이 지원되지 않음:", e);
-  }
-  document.execCommand(command, false, value);
-}
-
+      try {
+        document.execCommand("styleWithCSS", false, true);
+      } catch (e) {
+        console.warn("styleWithCSS 명령이 지원되지 않음:", e);
+      }
+      document.execCommand(command, false, value);
+    }
+  
     function applyStyle(tag) {
-  const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
-  if (blockTags.includes(tag)) {
-    document.getElementById("editor").focus(); // 에디터에 포커스
-    document.execCommand('formatBlock', false, tag.toUpperCase());
-  } else {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return;
-    const range = sel.getRangeAt(0);
-    const content = range.extractContents();
-    const wrapper = document.createElement(tag);
-    wrapper.appendChild(content);
-    range.insertNode(wrapper);
-    range.setStartAfter(wrapper);
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-
-  setTimeout(detectStyle, 100);
-}
-
-
-
+      const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
+      if (blockTags.includes(tag)) {
+        document.getElementById("editor").focus();
+        document.execCommand('formatBlock', false, tag.toUpperCase());
+      } else {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        const content = range.extractContents();
+        const wrapper = document.createElement(tag);
+        wrapper.appendChild(content);
+        range.insertNode(wrapper);
+        range.setStartAfter(wrapper);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      setTimeout(detectStyle, 100);
+    }
   
     function insertImage() {
       const url = prompt("이미지 URL을 입력하세요:");
@@ -529,6 +620,38 @@
       updateCurrentStyle('p');
     }
   
+    function saveSelection() {
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        savedRange = sel.getRangeAt(0);
+      }
+    }
+  
+    function restoreSelection() {
+      const sel = window.getSelection();
+      if (savedRange) {
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
+    }
+  
+    function triggerColor(id) {
+      document.getElementById(id).click();
+    }
+  
+    function updateColor(type) {
+      restoreSelection();
+      if (type === 'fore') {
+        const color = document.getElementById('textColor').value;
+        format('foreColor', color);
+        document.getElementById('foreIcon').style.color = color;
+      } else if (type === 'bg') {
+        const color = document.getElementById('bgColor').value;
+        format('hiliteColor', color);
+        document.getElementById('bgColorBtn').style.backgroundColor = color;
+      }
+    }
+  
     window.onclick = function(e) {
       if (!e.target.matches('.dropdown-toggle')) {
         const dropdowns = document.getElementsByClassName('dropdown-menu');
@@ -540,26 +663,30 @@
       renderCategories();
       document.getElementById('editor').addEventListener('keyup', detectStyle);
       document.getElementById('editor').addEventListener('mouseup', detectStyle);
+      document.getElementById('editor').addEventListener('mouseup', saveSelection);
+      document.getElementById('editor').addEventListener('keyup', saveSelection);
     };
+    function setColor(command, color) {
+  document.getElementById('editor').focus();
+  try {
+    document.execCommand("styleWithCSS", false, true);
+  } catch (e) {}
 
-    function triggerColor(id) {
-  document.getElementById(id).click();
-}
-
-function updateColor(type) {
-  if (type === 'fore') {
-    const color = document.getElementById('textColor').value;
-    format('foreColor', color);
-    document.getElementById('foreIcon').style.color = color; // 연필 아이콘 색 변경
-  } else if (type === 'bg') {
-    const color = document.getElementById('bgColor').value;
-    format('hiliteColor', color);
-    document.getElementById('bgColorBtn').style.backgroundColor = color; // 버튼 배경 변경
+  if (color === '__clear__') {
+    if (command === 'foreColor') {
+      document.execCommand('foreColor', false, 'black');
+    } else if (command === 'hiliteColor') {
+      // 더 확실하게 투명 처리
+      document.execCommand('hiliteColor', false, 'transparent');
+    }
+  } else {
+    document.execCommand(command, false, color);
   }
 }
 
 
   </script>
+  
   
 </body>
 </html>
