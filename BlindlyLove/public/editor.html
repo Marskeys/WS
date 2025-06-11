@@ -108,7 +108,7 @@
   background: #fff;
   border-radius: 8px;
   cursor: pointer;
-  min-width: 120px; /* 폭 지정 */
+  min-width: 50px; /* 폭 지정 */
   white-space: nowrap; /* 줄바꿈 방지 */
   overflow: hidden;
   text-overflow: ellipsis;
@@ -306,6 +306,30 @@
       background: #4fb476;
     }
 
+
+    .toolbar button {
+  position: relative;
+}
+
+.toolbar button .color-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+#foreColorBtn i {
+  color: #000; /* 기본값 검정 */
+}
+
+#bgColorBtn {
+  background-color: #fff; /* 기본값 흰색 */
+}
+
+
     
   </style>
 </head>
@@ -349,8 +373,16 @@
       <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
       <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
       <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
-      <input type="color" onchange="format('foreColor', this.value)" data-tooltip="글자 색상">
-      <input type="color" onchange="format('hiliteColor', this.value)" data-tooltip="배경 색상">
+      <button id="foreColorBtn" onclick="triggerColor('textColor')" data-tooltip="글자 색상">
+        <i class="fas fa-pencil-alt" id="foreIcon"></i>
+        
+        <input type="color" id="textColor" class="color-input" onchange="updateColor('fore')" />
+      </button>
+      
+      <button id="bgColorBtn" onclick="triggerColor('bgColor')" data-tooltip="배경 색상">
+        <i class="fas fa-fill-drip" id="bgIcon"></i>
+        <input type="color" id="bgColor" class="color-input" onchange="updateColor('bg')" />
+      </button>
       <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
       <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
       <button class="save-btn" onclick="saveContent()" data-tooltip="임시 저장">💾 저장</button>
@@ -420,8 +452,14 @@
     }
   
     function format(command, value = null) {
-      document.execCommand(command, false, value);
-    }
+  try {
+    document.execCommand("styleWithCSS", false, true);
+  } catch (e) {
+    console.warn("styleWithCSS 명령이 지원되지 않음:", e);
+  }
+  document.execCommand(command, false, value);
+}
+
     function applyStyle(tag) {
   const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
   if (blockTags.includes(tag)) {
@@ -503,6 +541,24 @@
       document.getElementById('editor').addEventListener('keyup', detectStyle);
       document.getElementById('editor').addEventListener('mouseup', detectStyle);
     };
+
+    function triggerColor(id) {
+  document.getElementById(id).click();
+}
+
+function updateColor(type) {
+  if (type === 'fore') {
+    const color = document.getElementById('textColor').value;
+    format('foreColor', color);
+    document.getElementById('foreIcon').style.color = color; // 연필 아이콘 색 변경
+  } else if (type === 'bg') {
+    const color = document.getElementById('bgColor').value;
+    format('hiliteColor', color);
+    document.getElementById('bgColorBtn').style.backgroundColor = color; // 버튼 배경 변경
+  }
+}
+
+
   </script>
   
 </body>
