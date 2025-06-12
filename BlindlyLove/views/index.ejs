@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="/assets/css/index.css" />
+
+<html lang="ko">
+    <%- include('partials/head') %>
+  <body class="light">
+    <%- include('partials/header') %>
+
+    <!--  메인 패널 -->  
+    <div class="main-layout">
+      <div class="page-body">
+        <div class="left-column expanded" id="left-column">
+          <aside class="left-panel">
+            <div class="cherry-container">
+              <canvas id="cherry-canvas"></canvas>
+            </div>
+
+            <div class="search-container">
+              <a href="/">
+                <img src="/assets/images/logo.svg" alt="blindly.love 로고" class="site-logo" />
+              </a>
+
+              <div class="character-stand">
+                <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+              </div>
+
+              <form method="get" action="/search" class="search-form" id="search-form">
+                <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
+                <button type="submit" class="icon-submit-btn" aria-label="검색">
+                  <i class="fas fa-search"></i>
+                </button>
+              </form>
+            </div>
+
+            <!-- 모바일 메뉴 --> 
+            <div id="mobile-menu" class="mobile-menu">
+              <div class="mobile-auth-buttons">
+                <a href="/login" class="mobile-login">아이디로 로그인</a>
+                <a href="/signup" class="mobile-signup">회원가입</a>
+
+                <div class="social-login-buttons">
+                  <a href="#" class="social-btn naver-login">
+                    <img src="/assets/images/naver-logo.svg" alt="네이버" class="social-icon naver-img" />
+                    네이버로 로그인
+                  </a>
+                  <a href="#" class="social-btn google-login">
+                    <i class="fab fa-google social-icon"></i>
+                    Google로 로그인
+                  </a>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <!--  검색 결과 (데스크탑) -->
+        <div class="right-panel-container hidden" id="right-panel">
+          <main class="right-panel">
+            <section id="post-container" class="post-list">
+              <div class="post-item">
+                <h3>여기에 검색 결과를 표시</h3>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
+
+<script>
+      function positionCharacterToSearchBox() {
+        const searchForm = document.getElementById('search-form');
+        const character = document.querySelector('.character-stand');
+    
+        if (!searchForm || !character) return;
+    
+        const searchRect = searchForm.getBoundingClientRect();
+    
+        character.style.position = 'absolute';
+        character.style.left = `${searchRect.left + window.scrollX + 15}px`;  // 캐릭터 수평 위치
+        character.style.top = `${searchRect.top + window.scrollY - 175}px`; // 캐릭터 수직 위치  
+      }
+    
+      window.addEventListener('load', positionCharacterToSearchBox);
+      window.addEventListener('resize', positionCharacterToSearchBox);
+      window.addEventListener('scroll', positionCharacterToSearchBox); // ✅ 스크롤 위치까지 반영!
+
+
+
+</script>
+
+  </body>
+</html>

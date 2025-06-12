@@ -1,0 +1,65 @@
+.cherry-container {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    margin-bottom: -100px; /* 검색창에 가까이, 이게 밑에까지 꽃잎 안 내려오는 이유 */
+    overflow: hidden;
+  }
+  
+  #cherry-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 900; /* 검색창보다 위, 메뉴보다 아래 */
+    pointer-events: none;
+  }
+  
+  .search-container {
+    position: relative;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ✅ 전체 가운데 정렬 */
+    gap: 0.5rem;
+  }
+  
+  .character-stand {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1001;
+  }
+  
+
+  #character-svg {
+    width: 250px;    /* 적절한 픽셀 단위 */
+    height: auto;
+    display: block;
+    transform: none; /* ✅ translateY 제거 (정렬이 흐름 안에 들어오면 필요 없음) */
+  }
+  
+
+  
+  .character-anim {
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  
+    /* ✅ 왼쪽 패널: 위는 흰색 → 아래는 파스텔 */
+.left-panel {
+  background: linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%);
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* ✅ 추가! 전체를 가운데로 정렬 */
+}
+    
+
+    /* ✅ 모바일 검색창 안 빠져나가게 */
+    @media (max-width: 768px) {
+      .character-stand {
+        padding-left: 50px; /* ✅ 여기 값을 조정해줘! 원래 12px이었지? */
+      }
+    }
