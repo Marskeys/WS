@@ -15,6 +15,23 @@
       font-family: 'Nanum Gothic', sans-serif;
     }
 
+    .save-btn {
+  margin-top: 20px;
+  background: #62a4eb; /* 연하늘 파랑 */
+  color: #ffffff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.save-btn:hover {
+  background: #b8d6fb;
+}
+
     .editor-container {
       background: white;
       border-radius: 16px;
@@ -549,7 +566,6 @@
 
       <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
       <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
-      <button class="save-btn" onclick="saveContent()" data-tooltip="임시 저장">💾 저장</button>
     </div>
 
     <div id="editor" contenteditable="true" class="editor" spellcheck="false">
@@ -561,6 +577,7 @@
       <div class="category-list" id="categoryList"></div>
       <button class="add-category-btn" onclick="addCategory()">➕ 카테고리 추가</button>
       <button class="post-btn" onclick="postContent()">📬 포스팅</button>
+      <button class="save-btn" onclick="saveContent()">💾 저장</button>
     </div>
   </div>
 
