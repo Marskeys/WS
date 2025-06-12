@@ -82,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const group = svgDoc.getElementById("char-2");
     if (!group) return;
   
-    // 중심 기준으로 flip 적용
     group.setAttribute("style", "transform-box: fill-box; transform-origin: center;");
   
     let x = 0;
@@ -91,28 +90,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const speed = 12;
     const maxX = 500;
     const minX = 0;
+    let paused = false;
   
     function frame() {
-      const flip = direction === -1 ? -1 : 1;
+      if (paused) return;
   
-      // ✅ 사인 함수로 y 좌표 부드럽게 흔들기 + 랜덤한 튐 (울퉁불퉁 효과)
-      const waveY = Math.sin(x * 0.05) * 3;       // 부드러운 곡선
-      const bump = Math.random() * 1.2 - 0.6;     // 작은 우둘투둘한 충격 표현
+      const flip = direction === -1 ? -1 : 1;
+      const waveY = Math.sin(x * 0.05) * 3;
+      const bump = Math.random() * 1.2 - 0.6;
       const y = waveY + bump;
   
       group.setAttribute("transform", `translate(${x}, ${y}) scale(${flip},1)`);
-  
       x += step * direction;
   
-      if (x >= maxX || x <= minX) {
-        direction *= -1;
+      if ((direction === 1 && x >= maxX) || (direction === -1 && x <= minX)) {
+        paused = true;
+        setTimeout(() => {
+          direction *= -1;
+          paused = false;
+          frame(); // 재시작
+        }, 500); // 💡 멈췄다 가는 시간 (0.3초)
+      } else {
+        setTimeout(frame, speed);
       }
-  
-      setTimeout(frame, speed);
     }
   
     frame();
   }
+  
   
   
 
