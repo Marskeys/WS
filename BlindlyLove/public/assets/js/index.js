@@ -1,4 +1,4 @@
-window.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   // 🌸 벚꽃 애니메이션
   const canvas = document.getElementById("cherry-canvas");
   const ctx = canvas.getContext("2d");
@@ -75,98 +75,56 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // 🦽 SVG 캐릭터 애니메이션
-  const totalChars = 11;
-  const interval = 500;
-  const reappearDelay = 500;
-  const initialHold = 2000;
-
-  function setOpacityOfGroup(svgDoc, index, value) {
-    const group = svgDoc.getElementById(`char-${index}`);
-    if (!group) return;
-    Array.from(group.children).forEach(child => {
-      child.style.transition = "opacity 0.8s ease-in-out";
-      child.style.opacity = value;
-    });
-  }
+  // 🧪 휠체어 캐릭터 플립 테스트 (제자리에서 좌우 뒤집힘만 반복)
+  const characterObject = document.getElementById("character-svg");
 
   function animateChar2(svgDoc) {
     const group = svgDoc.getElementById("char-2");
     if (!group) return;
-
-    group.setAttribute("transform", "translate(0, 0)");
-
+  
+    // 중심 기준으로 flip 적용
+    group.setAttribute("style", "transform-box: fill-box; transform-origin: center;");
+  
     let x = 0;
-    const maxX = 500;
+    let direction = 1;
     const step = 2.5;
     const speed = 12;
-
+    const maxX = 500;
+    const minX = 0;
+  
     function frame() {
-      const waveY = Math.sin(x * 0.1) * 3;
-      const bump = Math.random() * 0.6 - 0.3;
+      const flip = direction === -1 ? -1 : 1;
+  
+      // ✅ 사인 함수로 y 좌표 부드럽게 흔들기 + 랜덤한 튐 (울퉁불퉁 효과)
+      const waveY = Math.sin(x * 0.05) * 3;       // 부드러운 곡선
+      const bump = Math.random() * 1.2 - 0.6;     // 작은 우둘투둘한 충격 표현
       const y = waveY + bump;
-
-      group.setAttribute("transform", `translate(${x}, ${y})`);
-      x += step;
-      if (x <= maxX) {
-        setTimeout(frame, speed);
+  
+      group.setAttribute("transform", `translate(${x}, ${y}) scale(${flip},1)`);
+  
+      x += step * direction;
+  
+      if (x >= maxX || x <= minX) {
+        direction *= -1;
       }
+  
+      setTimeout(frame, speed);
     }
-
+  
     frame();
   }
-
-  function startSequence() {
-    try {
-      const svgDoc = document.getElementById("character-svg")?.contentDocument;
-      if (!svgDoc) return;
-
-      for (let i = 0; i < totalChars; i++) {
-        setOpacityOfGroup(svgDoc, i, 1);
-      }
-
-      animateChar2(svgDoc);
-
-
-
-      setTimeout(() => {
-        const shuffled = Array.from({ length: totalChars }, (_, i) => i).sort(() => Math.random() - 0.5);
-        shuffled.forEach((idx, i) => {
-          setTimeout(() => {
-            setOpacityOfGroup(svgDoc, idx, 0);
-          }, i * interval);
-        });
-
-        setTimeout(() => {
-          for (let i = 0; i < totalChars; i++) {
-            setOpacityOfGroup(svgDoc, i, 1);
-          }
-
-          const wheelchair = svgDoc.getElementById("char-2");
-          if (wheelchair) {
-            wheelchair.setAttribute("transform", "translate(0, 0)");
-          }
-
-          setTimeout(startSequence, initialHold);
-        }, totalChars * interval + reappearDelay);
-      }, initialHold);
-    } catch (err) {
-      console.error("🔥 startSequence 에러:", err);
-    }
-  }
-
-  const characterObject = document.getElementById("character-svg");
+  
+  
 
   if (characterObject) {
     characterObject.addEventListener("load", () => {
       const tryStart = setInterval(() => {
         const svgDoc = characterObject.contentDocument;
-        const char0 = svgDoc?.getElementById("char-0");
+        const char2 = svgDoc?.getElementById("char-2");
 
-        if (char0) {
-
+        if (char2) {
           clearInterval(tryStart);
-          startSequence();
+          animateChar2(svgDoc); // ✅ 이걸로 바꿔야 휠체어가 이동함!
         }
       }, 200);
     });
@@ -181,22 +139,36 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#right-panel").classList.add("visible");
   });
 
-  // 🍔 햄버거 버튼 토글 (엑스자 변형 포함)
+  // 🍔 햄버거 버튼 토글
   const toggleBtn = document.querySelector(".hamburger");
   const mobileMenu = document.getElementById("mobile-menu");
 
   if (toggleBtn) {
     toggleBtn.addEventListener("click", () => {
-      toggleBtn.classList.toggle("open");           // ✅ 엑스자 토글
-      mobileMenu?.classList.toggle("open");         // ✅ 모바일 메뉴 열기
+      toggleBtn.classList.toggle("open");
+      mobileMenu?.classList.toggle("open");
     });
   }
-});
 
+  // 📍 캐릭터 위치 조정
+  function positionCharacterToSearchBox() {
+    const searchForm = document.getElementById('search-form');
+    const character = document.querySelector('.character-stand');
 
-// 모바일 검색시 검색창 이동 
+    if (!searchForm || !character) return;
 
-document.addEventListener("DOMContentLoaded", () => {
+    const searchRect = searchForm.getBoundingClientRect();
+
+    character.style.position = 'absolute';
+    character.style.left = `${searchRect.left + window.scrollX + 30}px`;
+    character.style.top = `${searchRect.top + window.scrollY - 175}px`;
+  }
+
+  positionCharacterToSearchBox();
+  window.addEventListener('resize', positionCharacterToSearchBox);
+  window.addEventListener('scroll', positionCharacterToSearchBox);
+
+  // 📱 모바일 검색 UI
   const form = document.getElementById("search-form");
   const searchInput = document.querySelector(".search-box");
   const mobileResults = document.getElementById("mobile-search-results");
@@ -206,13 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
-      e.preventDefault(); // ✅ 모바일에선 기본 제출 막기
-      rightPanel.classList.remove("visible"); // ✅ 데스크탑 패널 안 보이게
-
-      // ✅ 모바일 전용 검색 결과 보이게
+      e.preventDefault();
+      rightPanel.classList.remove("visible");
       mobileResults.classList.add("visible");
 
-      // ✅ 검색창을 위에 고정
       const searchContainer = document.querySelector(".search-container");
       searchContainer.style.position = "fixed";
       searchContainer.style.top = "0";
@@ -223,44 +192,10 @@ document.addEventListener("DOMContentLoaded", () => {
       searchContainer.style.padding = "1rem";
       searchContainer.style.borderBottom = "1px solid #ddd";
 
-      // ✅ 결과 채워넣는 예시
       const resultsInner = mobileResults.querySelector(".results-inner");
       resultsInner.innerHTML = `<h2>"${searchInput.value}" 검색 결과</h2><p>모바일 전용 검색 결과입니다.</p>`;
     } else {
-      // ✅ 데스크탑일 경우 기존대로 오른쪽 패널 보이게
       rightPanel.classList.add("visible");
     }
   });
 });
-
-
-
-      // ✅ 슬라이드
-      mobileResults.classList.add("visible");
-
-
-      
-
-
-      function positionCharacterToSearchBox() {
-        const searchForm = document.getElementById('search-form');
-        const character = document.querySelector('.character-stand');
-    
-        if (!searchForm || !character) return;
-    
-        const searchRect = searchForm.getBoundingClientRect();
-    
-        character.style.position = 'absolute';
-        character.style.left = `${searchRect.left + window.scrollX + 15}px`;  // 캐릭터 수평 위치
-        character.style.top = `${searchRect.top + window.scrollY - 175}px`; // 캐릭터 수직 위치  
-      }
-    
-      window.addEventListener('load', positionCharacterToSearchBox);
-      window.addEventListener('resize', positionCharacterToSearchBox);
-      window.addEventListener('scroll', positionCharacterToSearchBox); // ✅ 스크롤 위치까지 반영!
-
-
-
-
-
-      

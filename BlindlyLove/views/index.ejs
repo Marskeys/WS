@@ -69,27 +69,5 @@
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
 
-<script>
-      function positionCharacterToSearchBox() {
-        const searchForm = document.getElementById('search-form');
-        const character = document.querySelector('.character-stand');
-    
-        if (!searchForm || !character) return;
-    
-        const searchRect = searchForm.getBoundingClientRect();
-    
-        character.style.position = 'absolute';
-        character.style.left = `${searchRect.left + window.scrollX + 15}px`;  // 캐릭터 수평 위치
-        character.style.top = `${searchRect.top + window.scrollY - 175}px`; // 캐릭터 수직 위치  
-      }
-    
-      window.addEventListener('load', positionCharacterToSearchBox);
-      window.addEventListener('resize', positionCharacterToSearchBox);
-      window.addEventListener('scroll', positionCharacterToSearchBox); // ✅ 스크롤 위치까지 반영!
-
-
-
-</script>
-
   </body>
 </html>

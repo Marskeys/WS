@@ -60,6 +60,6 @@
     /* ✅ 모바일 검색창 안 빠져나가게 */
     @media (max-width: 768px) {
       .character-stand {
-        padding-left: 50px; /* ✅ 여기 값을 조정해줘! 원래 12px이었지? */
+        padding-left: 15px; 
       }
     }
