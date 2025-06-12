@@ -168,6 +168,8 @@ html, body {
 
 /* ✅ 검색창 전체 컨테이너 */
 .search-container {
+  position: relative; /* index.css에서 가져옴 */
+  z-index: 1000; /* index.css에서 가져옴 */
   width: 100vw;          /* 💥 뷰포트 기준으로 확장 */
   margin-top: 3rem; 
   max-width: none;
@@ -175,17 +177,19 @@ html, body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* index.css에서 가져옴 */
+  gap: 0.5rem; /* index.css에서 가져옴 */
 }
 
 
 /* ✅ 캐릭터 위치 */
 .character-stand {
-
+  position: absolute; /* index.css에서 가져옴 */
+  pointer-events: none; /* index.css에서 가져옴 */
+  z-index: 1001; /* index.css에서 가져옴 */
   text-align: center;
   margin-top: -12px;
   margin-bottom: -8px;
-  pointer-events: none;
 }
 
 /* ✅ 검색폼 */
@@ -287,6 +291,10 @@ html, body {
     position: fixed;
     top: 1rem;
     left: 1rem;
+  }
+  /* ✅ 모바일 검색창 안 빠져나가게 - character-stand */
+  .character-stand { /* index.css에서 가져옴 */
+    padding-left: 15px; 
   }
 }
 
