@@ -24,7 +24,7 @@ body {
   h2 {
     text-align: center;
     color: #333;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.3rem;
   }
 
   form {
@@ -73,4 +73,41 @@ body {
     color: red;
     font-size: 0.9rem;
     text-align: center;
+  }
+
+  body.dark .signup-container {
+    background: rgb(0, 0, 0);
+    border-radius: 20px;
+    /* 기존 그림자를 유지하면서 황금빛 글로우 효과 추가 */
+    box-shadow: 
+      0 8px 30px rgba(0, 0, 0, 0.1), /* 기존 그림자 */
+      0 0 15px 5px rgba(255, 215, 0, 0.6), /* 황금빛 글로우 (확산 효과) */
+      0 0 30px 10px rgba(255, 215, 0, 0.3); /* 더 넓고 흐린 황금빛 글로우 */
+    width: 90%;
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 2rem;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  body.dark input[type="text"],
+  body.dark input[type="text"],
+  body.dark input[type="email"],
+  body.dark input[type="password"] {
+    background: #333; /* 어두운 회색 계열 */
+    color: #ffffff !important;      /* 글자색을 밝게 */
+    border: 1px solid #555; /* 테두리도 어둡게 */
+  }
+
+  body.dark h2 {
+    color: white;
+  }
+  body.dark  .extra a {
+    color: #ff0101;
+    text-decoration: none;
+  }
+
+  body.dark  .extra a:hover {
+    color: #fffcfc;
+    text-decoration: none;
   }
