@@ -1,24 +1,30 @@
 <div class="header-top">
-    <button class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  
-    <div class="top-controls">
+  <button class="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <div class="top-controls">
+    <% 
+      // currentPath 변수는 server.js에서 res.locals.currentPath로 넘어옵니다.
+      // 이 변수가 '/signup' 페이지도 아니고, '/login' 페이지도 아닐 때만
+      // 로그인/회원가입 버튼을 보여줍니다.
+      if (currentPath !== '/signup' && currentPath !== '/login') { 
+    %>
       <div class="auth-buttons">
         <a href="/login" class="auth-btn login">로그인</a>
         <a href="/signup" class="auth-btn signup">회원가입</a>
       </div>
-  
-      <div class="light-switch"
-           role="switch"
-           aria-checked="false"
-           aria-label="다크 모드 전환"
-           tabindex="0"
-           id="mode-toggle-accessible">
-        <span class="switch-label"><span class="switch-handle"></span></span>
-      </div>
+    <% } %> 
+
+    <div class="light-switch"
+         role="switch"
+         aria-checked="false"
+         aria-label="다크 모드 전환"
+         tabindex="0"
+         id="mode-toggle-accessible">
+      <span class="switch-label"><span class="switch-handle"></span></span>
     </div>
   </div>
-  
+</div>
