@@ -1,10 +1,11 @@
-const mysql = require('mysql2/promise');
+require('dotenv').config();
 
+const mysql = require('mysql2/promise');
 const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',         // DB 사용자명
-  password: '',  // DB 비밀번호
-  database: 'blindly-blog', // 자기 DB 이름
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 module.exports = db;

@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const db = require('./config/db');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // EJS 설정
 app.set('view engine', 'ejs');
