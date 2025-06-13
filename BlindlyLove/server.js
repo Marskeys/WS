@@ -92,5 +92,5 @@ app.get('/signup-success', (req, res) => {
 
 // 서버 실행
 app.listen(PORT, () => {
-  console.log(`서버 실행 중: http://localhost:${PORT}`);
+  console.log(`서버 실행 중: 포트 ${PORT}에서 애플리케이션이 실행 중입니다.`);
 });
