@@ -1,9 +1,9 @@
 {
   "name": "blindly-blog",
   "version": "1.0.0",
-  "main": "server.js",  ← 수정!
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js",  ← 추가!
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +14,7 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1"
   }
 }
