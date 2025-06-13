@@ -5,41 +5,45 @@
     <span></span>
   </button>
 
-  <% if (currentPath !== '/') { %>
-    <a href="https://localhost:3000" class="logo-link">
-      <img src="/assets/images/logo.svg" alt="BlindLove 로고" class="floating-home-logo">
-    </a>
-  <% } %>
-
   <div class="top-controls">
-    <% 
-      // currentPath 변수는 server.js에서 res.locals.currentPath로 넘어옵니다.
-      // 이 변수가 '/signup' 페이지도 아니고, '/login' 페이지도 아닐 때만
-      // 로그인/회원가입 버튼을 보여줍니다.
-      if (currentPath !== '/signup' && currentPath !== '/login') { 
-    %>
-      <div class="auth-buttons">
-        <a href="/login" class="auth-btn login">로그인</a>
-        <a href="/signup" class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+    <div class="left-controls">
+      <% if (currentPath !== '/') { %>
+        <a href="http://localhost:3000" class="logo-link">
+          <img src="/assets/images/logo.svg" alt="BlindLove 로고" class="floating-home-logo">
+        </a>
+      <% } %>
+    </div>
+
+    <div class="right-controls">
+      <% 
+        // currentPath 변수는 server.js에서 res.locals.currentPath로 넘어옵니다.
+        // 이 변수가 '/signup' 페이지도 아니고, '/login' 페이지도 아닐 때만
+        // 로그인/회원가입 버튼을 보여줍니다.
+        if (currentPath !== '/signup' && currentPath !== '/login') { 
+      %>
+        <div class="auth-buttons">
+          <a href="/login" class="auth-btn login">로그인</a>
+          <a href="/signup" class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+        </div>
+      <% } %>
+
+      <script> 
+        function delayNavigation(e, url) {
+          e.preventDefault(); // 기본 이동 막기
+          setTimeout(() => {
+            window.location.href = url;
+          }, 100); // 0.1초 딜레이
+        }
+      </script>
+
+      <div class="light-switch"
+           role="switch"
+           aria-checked="false"
+           aria-label="다크 모드 전환"
+           tabindex="0"
+           id="mode-toggle-accessible">
+        <span class="switch-label"><span class="switch-handle"></span></span>
       </div>
-    <% } %> 
-
-    <script> 
-      function delayNavigation(e, url) {
-        e.preventDefault(); // 기본 이동 막기
-        setTimeout(() => {
-          window.location.href = url;
-        }, 100); // 0.1초 딜레이
-      }
-    </script>
-
-    <div class="light-switch"
-         role="switch"
-         aria-checked="false"
-         aria-label="다크 모드 전환"
-         tabindex="0"
-         id="mode-toggle-accessible">
-      <span class="switch-label"><span class="switch-handle"></span></span>
     </div>
   </div>
 </div>

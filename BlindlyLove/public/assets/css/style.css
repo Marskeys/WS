@@ -41,22 +41,35 @@ html, body {
 
 .top-controls {
   display: flex;
-  gap: 12px;
+  justify-content: space-between; /* 왼쪽-오른쪽 나눔 */
+  align-items: center;
+  width: 100%;
+}
+
+.left-controls {
+  display: flex;
   align-items: center;
 }
 
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .floating-home-logo {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 9999;
-  display: block;
-  width: 120px; /* 작게 */
+  position: relative; 
+  width: 120px;
   height: auto;
+  margin-right: 1rem; /* 살짝 여백 */
+  margin-bottom: -0.7rem;
+  cursor: pointer;
   transition: opacity 0.2s ease;
 }
+
 .floating-home-logo:hover {
-  opacity: 0.8;
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 .auth-buttons {
