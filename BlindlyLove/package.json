@@ -1,8 +1,9 @@
 {
   "name": "blindly-blog",
   "version": "1.0.0",
-  "main": "darkmode.js",
+  "main": "server.js",  ← 수정!
   "scripts": {
+    "start": "node server.js",  ← 추가!
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
