@@ -6,17 +6,15 @@
   <%- include('partials/head') %> 
 
 </head>
-<body>
+<body class="no-fixed-footer">
   <%- include('partials/header') %>
 
   <div class="signup-container">
     <div class="logo-wrap">
-    <a href="http://localhost:3000/">
-      <img src="/assets/images/logo.svg" alt="BlindLove 로고" />
-    </a>
+      <img src="/assets/images/signup.svg" alt="BlindLove 로고" />
     </div>
 
-    <h2>회원가입</h2>
+    <h2></h2>
 
     <% if (error) { %>
       <div class="error-msg"><%= error %></div>

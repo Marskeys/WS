@@ -12,7 +12,7 @@ html, body {
 
 /* ✅ 헤더 */
 .header-top {
-  position: sticky;
+  position: sticky !important;
   top: 0;
   z-index: 1000;
   display: flex;
@@ -45,6 +45,20 @@ html, body {
   align-items: center;
 }
 
+.floating-home-logo {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9999;
+  display: block;
+  width: 120px; /* 작게 */
+  height: auto;
+  transition: opacity 0.2s ease;
+}
+.floating-home-logo:hover {
+  opacity: 0.8;
+}
+
 .auth-buttons {
   font-weight: 100; /* 또는 800 */
   letter-spacing: -0.5px;
@@ -54,13 +68,14 @@ html, body {
 
 .auth-btn.login {
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 5px 10px;
   background-color: white;
   color: #641df1;
   border: 1px solid #621dec;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 600;
+  margin-top: 1.5px;
   margin-bottom: 1px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -196,7 +211,8 @@ html, body {
 .search-form {
   width: 100%;
   max-width: 600px;     /* 💡 선택사항: 원하는 최대 길이 */
-  height: 50px;
+  height: 46px;
+  margin-top: 18px;
   padding: 0 1.5rem;
   box-sizing: border-box;
   border: 1px solid #a48fdd;
@@ -253,6 +269,11 @@ html, body {
   font-size: 0.85rem;
   color: #666;
   z-index: 1000;
+}
+
+/* 회원가입 페이지에서는 푸터 고정 안함 */
+body.no-fixed-footer footer {
+  position: static; /* 또는 relative */
 }
 
 /* ✅ 모바일에서 헤더 버튼 숨김 */

@@ -5,6 +5,12 @@
     <span></span>
   </button>
 
+  <% if (currentPath !== '/') { %>
+    <a href="https://localhost:3000" class="logo-link">
+      <img src="/assets/images/logo.svg" alt="BlindLove 로고" class="floating-home-logo">
+    </a>
+  <% } %>
+
   <div class="top-controls">
     <% 
       // currentPath 변수는 server.js에서 res.locals.currentPath로 넘어옵니다.
@@ -14,9 +20,18 @@
     %>
       <div class="auth-buttons">
         <a href="/login" class="auth-btn login">로그인</a>
-        <a href="/signup" class="auth-btn signup">회원가입</a>
+        <a href="/signup" class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
       </div>
     <% } %> 
+
+    <script> 
+      function delayNavigation(e, url) {
+        e.preventDefault(); // 기본 이동 막기
+        setTimeout(() => {
+          window.location.href = url;
+        }, 100); // 0.1초 딜레이
+      }
+    </script>
 
     <div class="light-switch"
          role="switch"
