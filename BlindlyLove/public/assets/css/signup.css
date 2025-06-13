@@ -112,3 +112,74 @@ body {
     color: #fffcfc;
     text-decoration: none;
   }
+
+
+  .input-with-button {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin-bottom: -1rem; /* ✅ 기본 여백 줄이기 */
+  }
+  
+  .input-with-button input[type="text"] {
+    flex: 1;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  .check-btn {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    background-color: transparent;
+    border: 1px solid #bbb;
+    color: #555;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .check-btn:hover {
+    background-color: #f3f3f3;
+    border-color: #888;
+    color: #222;
+  }
+  
+  .check-msg {
+    height: 0;
+    overflow: hidden;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    opacity: 0;
+    padding-left: 2px;
+    margin-top: 0;       /* ✅ 여백 제거 */
+    margin-bottom: 0;    /* ✅ 여백 제거 */
+  }
+  .check-msg.show {
+    height: auto;
+    margin-top: 0.2rem;   /* ✅ 보여줄 때만 살짝 여백 */
+    margin-bottom: 0.7rem;
+    opacity: 1;
+  }
+  
+  .check-msg.valid {
+    color: #2e8b57; /* 초록색 */
+  }
+  
+  .check-msg.invalid {
+    color: #d94343; /* 붉은색 */
+  }
+  
+  .input-with-button input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}

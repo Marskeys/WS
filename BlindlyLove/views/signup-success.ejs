@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입 완료</title>
+  <meta http-equiv="refresh" content="3; url=/" />
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #fff7f0, #ffe4e1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .message-box {
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .message-box h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .countdown {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="message-box">
+    <h2>회원가입이 완료되었습니다!</h2>
+    <p>이제 로그인하실 수 있어요.</p>
+    <div class="countdown">홈페이지로 이동 중... <span id="seconds">3</span>초</div>
+  </div>
+
+  <script>
+    let seconds = 3;
+    const countdown = document.getElementById('seconds');
+
+    const interval = setInterval(() => {
+      seconds--;
+      countdown.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
