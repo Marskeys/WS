@@ -193,3 +193,19 @@ body.dark .header-top {
   box-shadow: none !important;
 }
 
+body.dark .login-box {
+  background: linear-gradient(135deg, #202020, #2a2a2a);
+  color: #eeeeee;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+body.dark .pop-up-form {
+  color: #fff;
+  border-radius: 12px;
+}
+body.dark .pop-up-form input {
+  background: #222;
+  color: #eee;
+  border: 1px solid #555;
+}

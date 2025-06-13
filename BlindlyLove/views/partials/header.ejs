@@ -16,23 +16,20 @@
 
     <div class="right-controls">
       <% 
-        // currentPath 변수는 server.js에서 res.locals.currentPath로 넘어옵니다.
-        // 이 변수가 '/signup' 페이지도 아니고, '/login' 페이지도 아닐 때만
-        // 로그인/회원가입 버튼을 보여줍니다.
         if (currentPath !== '/signup' && currentPath !== '/login') { 
       %>
         <div class="auth-buttons">
-          <a href="/login" class="auth-btn login">로그인</a>
+          <a class="auth-btn login" id="login">로그인</a>
           <a href="/signup" class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
         </div>
       <% } %>
 
       <script> 
         function delayNavigation(e, url) {
-          e.preventDefault(); // 기본 이동 막기
+          e.preventDefault();
           setTimeout(() => {
             window.location.href = url;
-          }, 100); // 0.1초 딜레이
+          }, 100);
         }
       </script>
 
@@ -46,4 +43,20 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- 로그인 박스 (기본은 숨김) -->
+<div id="loginBox" class="login-box" onclick="event.stopPropagation()">
+  <form action="/login" method="POST" class="pop-up-form">
+    <input type="email" name="email" placeholder="이메일" required>
+    <input type="password" name="password" placeholder="비밀번호" required>
+    <button type="submit">로그인</button>
+
+    <div class="login-footer-links">
+      <small>
+        아직 회원이 아니세요? <a href="/signup">회원가입</a> <br>
+        비밀번호가 기억나지 않으신다면? <a href="/reset-password">비밀번호 찾기</a>
+      </small>
+    </div>
+  </form>
 </div>
