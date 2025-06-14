@@ -17,17 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   
     // ✅ 내부 클릭 전부 허용: 진짜 작동하게 하려면 composedPath 사용해야 함!
-    document.addEventListener("click", (e) => {
-        setTimeout(() => {
-          const path = e.composedPath();
-          const insideLoginBox = path.includes(loginBox);
-          const clickedLoginBtn = path.includes(loginBtn);
+    //document.addEventListener("click", (e) => {
+      //  setTimeout(() => {
+        //  const path = e.composedPath();
+          //const insideLoginBox = path.includes(loginBox);
+          //const clickedLoginBtn = path.includes(loginBtn);
       
-          if (!insideLoginBox && !clickedLoginBtn) {
-            loginBox.style.display = "none";
-          }
-        }, 200); // 0.1초 딜레이
+          //if (!insideLoginBox && !clickedLoginBtn) {
+            //loginBox.style.display = "none";
+          //}
+        //}, 200); // 0.1초 딜레이
       });
   
-  });
+  
   
