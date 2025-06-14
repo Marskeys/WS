@@ -342,12 +342,13 @@ body.no-fixed-footer footer {
 /* 모바일 전용 */
 @media (max-width: 768px) {
   .hamburger {
-    display: flex; /* 모바일에서만 보이기 */
-    /* 메뉴가 열렸을 때 햄버거 버튼이 메뉴의 오른쪽 상단에 위치하도록 */
-    position: fixed; /* 메뉴와 함께 움직이도록 고정 */
-    z-index: 2001; /* 메뉴보다 위에 */
-    /* top과 right는 .mobile-menu.open 클래스에서 설정 */
+    display: flex;
+    position: fixed;
+    top: 1.2rem;     /* ✅ 초기에도 기본 위치를 지정 */
+    right: 1.2rem;   /* ✅ 반드시 추가해줘야 보여! */
+    z-index: 2001;
   }
+}
 
   /* 햄버거 버튼이 메뉴 열릴 때 메뉴의 오른쪽 상단에 붙도록 */
   .hamburger.is-in-menu { /* JavaScript에서 추가할 클래스 */
