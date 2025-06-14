@@ -149,14 +149,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const tryStart = setInterval(() => {
         const svgDoc = characterObject.contentDocument;
         const char2 = svgDoc?.getElementById("char-2");
-
+  
         if (char2) {
           clearInterval(tryStart);
-          animateChar2(svgDoc);
+          requestAnimationFrame(() => {
+            positionCharacterToSearchBox(); // ✅ 위치 재조정 먼저!
+            animateChar2(svgDoc);          // ✅ 그다음 애니메이션 시작!
+          });
         }
       }, 200);
     });
   }
+  
 
   // 🔍 검색 시 동작 - 기존과 동일 (CSS 클래스명은 스타일시트에 맞게 수정)
   document.querySelector("#search-form")?.addEventListener("submit", function(e) {
