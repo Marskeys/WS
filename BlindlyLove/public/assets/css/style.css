@@ -605,3 +605,16 @@ body.no-fixed-footer footer {
 .login-footer-links a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+  .header-top {
+    position: relative; /* 기준점 유지 */
+  }
+
+  .logo-link {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+  }}
+  
