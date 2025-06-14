@@ -342,11 +342,19 @@ body.no-fixed-footer footer {
 /* 모바일 전용 */
 @media (max-width: 768px) {
   .hamburger {
-    display: flex;
+    display: flex !important;
     position: fixed;
-    top: 1.2rem;     /* ✅ 초기에도 기본 위치를 지정 */
-    right: 1.2rem;   /* ✅ 반드시 추가해줘야 보여! */
-    z-index: 2001;
+    top: 1.2rem;
+    right: 1.2rem;
+    z-index: 9999 !important;
+    background-color: red;  /* 🌈 보이게 강제 */
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .hamburger span {
+    background-color: white !important;
+    height: 4px;
   }
 }
 
