@@ -302,13 +302,9 @@ body.no-fixed-footer footer {
   }
 }
 
-/* 🌐 햄버거 버튼 */
+/* ✅ 햄버거 버튼 기본 */
 .hamburger {
-  /* position: absolute;  초기 위치는 header-top 내에서 */
-  top: 1rem; /* header-top 내에서의 상대적 위치 */
-  left: 1rem; /* header-top 내에서의 상대적 위치 */
-  z-index: 1500;
-  display: none; /* 데스크톱에서 숨김 */
+  display: none; /* 데스크탑에서 숨김 */
   flex-direction: column;
   justify-content: space-between;
   width: 30px;
@@ -316,59 +312,68 @@ body.no-fixed-footer footer {
   background: none;
   border: none;
   cursor: pointer;
+  padding: 0;
   transition: all 0.3s ease;
-  padding: 0; /* 패딩 제거 */
+  z-index: 3000;
 }
 
+/* ✅ 줄 스타일 (세 줄) */
 .hamburger span {
-  display: block; /* 줄들이 블록 요소가 되도록 */
+  display: block;
+  width: 100%;
   height: 3px;
-  background: #333;
+  background: #333; /* 기본 줄 색상 */
   border-radius: 3px;
   transition: all 0.3s ease;
 }
 
-/* 햄버거를 회전해서 X로 만드는 효과 */
+/* ✅ 햄버거 -> X자 애니메이션 */
 .hamburger.open span:nth-child(1) {
-  transform: translateY(9.5px) rotate(45deg); /* Y축 이동 후 회전 */
+  transform: translateY(9.5px) rotate(45deg);
 }
 .hamburger.open span:nth-child(2) {
   opacity: 0;
 }
 .hamburger.open span:nth-child(3) {
-  transform: translateY(-9.5px) rotate(-45deg); /* Y축 이동 후 회전 */
+  transform: translateY(-9.5px) rotate(-45deg);
 }
 
-/* 모바일 전용 */
+/* ✅ 모바일 화면에서 보이게 */
 @media (max-width: 768px) {
   .hamburger {
     display: flex !important;
     position: fixed;
     top: 1.2rem;
-    right: 1.2rem;
-    z-index: 9999 !important;
-    background-color: red;  /* 🌈 보이게 강제 */
-    padding: 10px;
-    border-radius: 8px;
+    left: 1.2rem;
+    z-index: 3000;
   }
 
   .hamburger span {
-    background-color: white !important;
-    height: 4px;
+    background: #333;
+  }
+
+  /* ✅ 다크모드 대응 */
+  body.dark .hamburger span {
+    background: white;
+  }
+
+  /* ✅ 메뉴가 열렸을 때 오른쪽 상단으로 이동 */
+  .hamburger.is-in-menu {
+    top: 1.2rem;
+    right: 1.2rem;
+    left: auto; /* 기존 left 무효화 */
+    z-index: 3001;
+  }
+
+  .hamburger.is-in-menu span {
+    background: white; /* 어두운 배경 위에서 보이게 */
+  }
+
+  body.dark .hamburger.is-in-menu span {
+    background: #eee; /* 다크모드 대응 */
   }
 }
 
-  /* 햄버거 버튼이 메뉴 열릴 때 메뉴의 오른쪽 상단에 붙도록 */
-  .hamburger.is-in-menu { /* JavaScript에서 추가할 클래스 */
-      top: 1.2rem;
-      right: 1.2rem;
-      left: auto; /* 기존 left 속성 무효화 */
-      color: white; /* X자 색상 변경 (선택 사항) */
-  }
-  .hamburger.is-in-menu span {
-      background: white; /* X자 색상 변경 (선택 사항) */
-  }
-}
 
 /* ✅ 모바일 검색창 안 빠져나가게 - character-stand */
 @media (max-width: 768px) {
