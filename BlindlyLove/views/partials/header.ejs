@@ -1,5 +1,5 @@
 <div class="header-top">
-  <button class="hamburger">
+  <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
     <span></span>
     <span></span>
     <span></span>
@@ -20,7 +20,7 @@
       %>
         <div class="auth-buttons">
           <a class="auth-btn login" id="login">로그인</a>
-          <a href="/signup" class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+          <a class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
         </div>
       <% } %>
 
@@ -45,7 +45,23 @@
   </div>
 </div>
 
-<!-- 로그인 박스 (기본은 숨김) -->
+<nav class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-header">
+        </div>
+    <div class="mobile-auth-buttons">
+        <a href="/login" class="mobile-login">로그인</a>
+        <a href="/signup" class="mobile-signup">회원가입</a>
+    </div>
+    <div class="social-login-buttons">
+        <a href="/auth/naver" class="social-btn naver-login">
+            <img src="/assets/images/naver_icon.png" alt="네이버" class="naver-img">네이버 로그인
+        </a>
+        <a href="/auth/google" class="social-btn google-login">
+            <i class="fab fa-google"></i>구글 로그인
+        </a>
+    </div>
+</nav>
+
 <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
   <form action="/login" method="POST" class="pop-up-form">
     <input type="text" name="id" placeholder="아이디" required>

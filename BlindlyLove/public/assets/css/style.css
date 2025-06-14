@@ -6,13 +6,14 @@ html, body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box; /* 추가: 패딩, 보더가 높이에 포함되도록 */
+  box-sizing: border-box;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
 }
 
 
 /* ✅ 헤더 */
 .header-top {
-  position: sticky !important;
+  position: sticky; /* !important 제거 */
   top: 0;
   z-index: 1000;
   display: flex;
@@ -22,10 +23,8 @@ html, body {
   background-color: #fff;
   box-sizing: border-box;
   flex-shrink: 0;
-
-  /* 원래 border-bottom 제거 */
   border-bottom: none;
-  position: relative; /* 아래 ::after를 위해 필요 */
+  position: relative;
 }
  
 
@@ -35,13 +34,13 @@ html, body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 0px; /* 선의 두께 (원래 디자인 유지) */
-  background: linear-gradient(to right, #fdee00, #ff1a1a); /* 노랑→빨강 */
+  height: 0px;
+  background: linear-gradient(to right, #fdee00, #ff1a1a);
 }
 
 .top-controls {
   display: flex;
-  justify-content: space-between; /* 왼쪽-오른쪽 나눔 */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -61,7 +60,7 @@ html, body {
   position: relative; 
   width: 120px;
   height: auto;
-  margin-right: 1rem; /* 살짝 여백 */
+  margin-right: 1rem;
   margin-bottom: -0.7rem;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -73,7 +72,7 @@ html, body {
 }
 
 .auth-buttons {
-  font-weight: 100; /* 또는 800 */
+  font-weight: 100;
   letter-spacing: -0.5px;
   display: flex;
   gap: 2px;
@@ -120,7 +119,7 @@ html, body {
   cursor: pointer;
 }
 
-/* ✅ 레이아웃 */
+/* ✅ 레이아웃 - 기존 유지 */
 .main-layout,
 .page-body {
   display: flex;
@@ -130,9 +129,9 @@ html, body {
 .left-column {
   display: flex;
   flex-direction: column;
-  justify-content: center;  /* 중앙 정렬 핵심 */
+  justify-content: center;
   align-items: center;
-  height: 100vh;            /* 전체 화면 높이 기준으로 중앙 정렬 되게 */
+  height: 100vh;
 }
 .left-column.expanded {
   width: 100vw;
@@ -187,44 +186,50 @@ html, body {
 }
 
 .site-logo {
-  width: 360px !important;  /* 무조건 고정 크기 */
+  width: 360px !important;
   height: auto !important;
   max-width: none !important;
   flex-shrink: 0;
   display: block;
 }
 
+@media (max-width: 768px) {
+  .site-logo {
+    width: 50vw !important;
+    max-width: 360px !important;
+  }
+}
 
-/* ✅ 검색창 전체 컨테이너 */
+/* ✅ 검색창 전체 컨테이너 - 기존 유지 */
 .search-container {
-  position: relative; /* index.css에서 가져옴 */
-  z-index: 1000; /* index.css에서 가져옴 */
-  width: 100vw;          /* 💥 뷰포트 기준으로 확장 */
-  margin-top: 3rem; 
+  position: relative;
+  z-index: 1000;
+  width: 100vw;
+  margin-top: 3rem;
   max-width: none;
   padding: 0 1.5rem;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center; /* index.css에서 가져옴 */
-  gap: 0.5rem; /* index.css에서 가져옴 */
+  align-items: center;
+  gap: 0.5rem;
 }
 
 
-/* ✅ 캐릭터 위치 */
+/* ✅ 캐릭터 위치 - 기존 유지 */
 .character-stand {
-  position: absolute; /* index.css에서 가져옴 */
-  pointer-events: none; /* index.css에서 가져옴 */
-  z-index: 1001; /* index.css에서 가져옴 */
+  position: absolute;
+  pointer-events: none;
+  z-index: 1001;
   text-align: center;
   margin-top: -12px;
   margin-bottom: -8px;
 }
 
-/* ✅ 검색폼 */
+/* ✅ 검색폼 - 기존 유지 */
 .search-form {
   width: 100%;
-  max-width: 600px;     /* 💡 선택사항: 원하는 최대 길이 */
+  max-width: 600px;
   height: 46px;
   margin-top: 18px;
   padding: 0 1.5rem;
@@ -241,7 +246,7 @@ html, body {
   box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
 }
 
-/* ✅ 검색 input */
+/* ✅ 검색 input - 기존 유지 */
 .search-box {
   flex: 1;
   border: none;
@@ -252,7 +257,7 @@ html, body {
   z-index: 3000;
 }
 
-/* ✅ 검색 버튼 */
+/* ✅ 검색 버튼 - 기존 유지 */
 .icon-submit-btn {
   background: none;
   border: none;
@@ -269,7 +274,7 @@ html, body {
 }
 
 
-/* ✅ 하단 고정 푸터 */
+/* ✅ 하단 고정 푸터 - 기존 유지 */
 .global-footer {
   position: fixed;
   bottom: 0;
@@ -285,76 +290,133 @@ html, body {
   z-index: 1000;
 }
 
-/* 회원가입 페이지에서는 푸터 고정 안함 */
+/* 회원가입 페이지에서는 푸터 고정 안함 - 기존 유지 */
 body.no-fixed-footer footer {
-  position: static; /* 또는 relative */
+  position: static;
 }
 
-/* ✅ 모바일에서 헤더 버튼 숨김 */
+/* ✅ 모바일에서 헤더 버튼 숨김 - 기존 유지 */
 @media (max-width: 768px) {
   .auth-buttons {
     display: none !important;
   }
 }
 
-/* 🌐 기본 햄버거 버튼 숨기기 */
+/* 🌐 햄버거 버튼 */
 .hamburger {
-  display: none;
+  /* position: absolute;  초기 위치는 header-top 내에서 */
+  top: 1rem; /* header-top 내에서의 상대적 위치 */
+  left: 1rem; /* header-top 내에서의 상대적 위치 */
+  z-index: 1500;
+  display: none; /* 데스크톱에서 숨김 */
   flex-direction: column;
   justify-content: space-between;
   width: 30px;
   height: 22px;
   background: none;
   border: none;
-  padding: 0;
   cursor: pointer;
-  z-index: 1001;
+  transition: all 0.3s ease;
+  padding: 0; /* 패딩 제거 */
 }
 
 .hamburger span {
-  display: block;
+  display: block; /* 줄들이 블록 요소가 되도록 */
   height: 3px;
-  width: 100%;
-  background-color: #333;
-  border-radius: 2px;
+  background: #333;
+  border-radius: 3px;
   transition: all 0.3s ease;
 }
 
+/* 햄버거를 회전해서 X로 만드는 효과 */
+.hamburger.open span:nth-child(1) {
+  transform: translateY(9.5px) rotate(45deg); /* Y축 이동 후 회전 */
+}
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-9.5px) rotate(-45deg); /* Y축 이동 후 회전 */
+}
+
+/* 모바일 전용 */
 @media (max-width: 768px) {
   .hamburger {
-    display: flex;
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
+    display: flex; /* 모바일에서만 보이기 */
+    /* 메뉴가 열렸을 때 햄버거 버튼이 메뉴의 오른쪽 상단에 위치하도록 */
+    position: fixed; /* 메뉴와 함께 움직이도록 고정 */
+    z-index: 2001; /* 메뉴보다 위에 */
+    /* top과 right는 .mobile-menu.open 클래스에서 설정 */
   }
-  /* ✅ 모바일 검색창 안 빠져나가게 - character-stand */
-  .character-stand { /* index.css에서 가져옴 */
-    padding-left: 15px; 
+
+  /* 햄버거 버튼이 메뉴 열릴 때 메뉴의 오른쪽 상단에 붙도록 */
+  .hamburger.is-in-menu { /* JavaScript에서 추가할 클래스 */
+      top: 1.2rem;
+      right: 1.2rem;
+      left: auto; /* 기존 left 속성 무효화 */
+      color: white; /* X자 색상 변경 (선택 사항) */
+  }
+  .hamburger.is-in-menu span {
+      background: white; /* X자 색상 변경 (선택 사항) */
   }
 }
 
+/* ✅ 모바일 검색창 안 빠져나가게 - character-stand */
+@media (max-width: 768px) {
+  .character-stand {
+    padding-left: 15px;
+  }
+}
+
+/* ✅ 모바일 메뉴 */
+/* ✅ 모바일 메뉴 */
 .mobile-menu {
   position: fixed;
-  top: 0; /* '2'는 문법 오류, 0으로 수정 */
-  left: 0;
+  top: 0;
+  left: 0; /* 초기 left 값을 0으로 유지합니다. */
   width: 80vw;
-  height: 100vh; /* 기존 유지 */
-  background-color: #fff;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out;
+  max-width: 350px;
+  height: 100vh;
+  background-color: #333;
+  color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
   z-index: 2000;
   padding: 2rem;
-  transform: translateX(-100%);
+  
+  /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
+  transform: translateX(-100%); 
+  opacity: 0; 
+  /* pointer-events: none; 를 추가하여 메뉴가 닫혔을 때 클릭 이벤트를 막을 수 있습니다. */
+  pointer-events: none;
+
+  /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 */
+  /* transform과 opacity가 동시에 부드럽게 변하도록 합니다. */
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  
+  display: flex;
+  flex-direction: column;
 }
 
 .mobile-menu.open {
-  transform: translateX(0);
-  visibility: visible;
+  /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
+  transform: translateX(0); 
   opacity: 1;
+  pointer-events: auto; /* 메뉴가 열렸을 때 클릭 이벤트를 허용합니다. */
+
+  /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 (위의 .mobile-menu에서 이미 정의) */
+  /* 여기에 다시 transition을 정의할 필요가 없습니다. */
 }
 
+.mobile-menu-header {
+    position: relative; /* 햄버거 버튼의 위치 기준 */
+    width: 100%;
+    height: 40px; /* 적절한 높이 설정 */
+    margin-bottom: 2rem;
+}
+
+
 .mobile-auth-buttons {
-  margin-top: 2rem;
+  margin-top: 2rem; /* 헤더 공간을 고려하여 여백 조정 */
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -373,7 +435,7 @@ body.no-fixed-footer footer {
 
 .mobile-login {
   background-color: transparent;
-  color: #444;
+  color: white; /* 흰색으로 변경 */
   border: 1px solid #aaa;
 }
 .mobile-login:hover {
@@ -383,7 +445,7 @@ body.no-fixed-footer footer {
 
 .mobile-signup {
   background-color: transparent;
-  color: #444;
+  color: white; /* 흰색으로 변경 */
   border: 1px solid #aaa;
 }
 .mobile-signup:hover {
@@ -437,17 +499,8 @@ body.no-fixed-footer footer {
   vertical-align: middle;
 }
 
-.hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 8.5px);
-}
-.hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -8.5px);
-}
 
-/* ✅ 모바일 검색 결과 패널 (슬라이드 완성본) */
+/* ✅ 모바일 검색 결과 패널 (슬라이드 완성본) - 기존 유지 */
 .mobile-search-results {
   position: fixed;
   bottom: 0;
@@ -478,7 +531,7 @@ body.no-fixed-footer footer {
   margin: 0 auto;
 }
 
-/* ✅ 모바일 검색 시 헤더 고정 검색창 길이 */
+/* ✅ 모바일 검색 시 헤더 고정 검색창 길이 - 기존 유지 */
 @media (max-width: 768px) {
   .search-form {
     max-width: 95% !important;
@@ -487,12 +540,12 @@ body.no-fixed-footer footer {
   }
 }
 
-/* 팝오버 로그인창 */
+/* 팝오버 로그인창 - 기존 유지 */
 .login-box {
   display: none;
   position: absolute;
-  top: 50px; /* 로그인 버튼 아래에 위치 */
-  right: 0;  /* 필요에 따라 left/right 조정 가능 */
+  top: 50px;
+  right: 0;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -502,7 +555,6 @@ body.no-fixed-footer footer {
   z-index: 2000;
   width: 260px;
   box-sizing: border-box;
-
 }
 
 .login-box input {

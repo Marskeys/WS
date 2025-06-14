@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="/assets/css/index.css" />
-
 <html lang="ko">
     <%- include('partials/head') %>
   <body class="light">
-    <%- include('partials/header') %>
+    <%- include('partials/header') %> 
 
-    <!--  메인 패널 -->  
     <div class="main-layout">
       <div class="page-body">
         <div class="left-column expanded" id="left-column">
@@ -31,29 +29,9 @@
                 </button>
               </form>
             </div>
-
-            <!-- 모바일 메뉴 --> 
-            <div id="mobile-menu" class="mobile-menu">
-              <div class="mobile-auth-buttons">
-                <a href="/login" class="mobile-login">아이디로 로그인</a>
-                <a href="/signup" class="mobile-signup">회원가입</a>
-
-                <div class="social-login-buttons">
-                  <a href="#" class="social-btn naver-login">
-                    <img src="/assets/images/naver-logo.svg" alt="네이버" class="social-icon naver-img" />
-                    네이버로 로그인
-                  </a>
-                  <a href="#" class="social-btn google-login">
-                    <i class="fab fa-google social-icon"></i>
-                    Google로 로그인
-                  </a>
-                </div>
-              </div>
-            </div>
           </aside>
         </div>
 
-        <!--  검색 결과 (데스크탑) -->
         <div class="right-panel-container hidden" id="right-panel">
           <main class="right-panel">
             <section id="post-container" class="post-list">
