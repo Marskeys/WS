@@ -618,3 +618,38 @@ body.no-fixed-footer footer {
     z-index: 2000;
   }}
   
+
+  /* 프리로더 전체 화면 덮기 */
+#preloader {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: #ffffff;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease;
+}
+
+/* 스피너 애니메이션 */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #555;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 본문 부드러운 등장 효과 */
+#main-content.fade-in {
+  transition: opacity 0.8s ease;
+  opacity: 1;
+}
+
+
