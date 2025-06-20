@@ -1,34 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
   const hamburger = document.getElementById("hamburger-btn");
   const mobileMenu = document.getElementById("mobile-menu");
-  // mobileMenuHeader를 다시 찾습니다. (header.ejs 안에 있습니다.)
-  const mobileMenuHeader = mobileMenu.querySelector(".mobile-menu-header"); 
+  const mobileMenuHeader = mobileMenu.querySelector(".mobile-menu-header");
 
-  // 햄버거 클릭 시 메뉴 열기/닫기
   hamburger?.addEventListener("click", () => {
-    // 햄버거 버튼의 DOM 위치를 변경하는 로직을 다시 활성화합니다.
-    if (!mobileMenu.classList.contains("open")) { // 메뉴가 닫혀있다면 (열려고 할 때)
-      mobileMenuHeader.appendChild(hamburger); // 햄버거 버튼을 mobile-menu-header 안으로 옮김
-      hamburger.classList.add("is-in-menu"); // CSS에서 이 클래스를 활용하여 위치 조정
-    } else { // 메뉴가 열려있다면 (닫으려고 할 때)
-      // 메뉴를 닫을 때는 원래 위치 (header-top)로 돌려놓음
-      document.querySelector('.header-top').prepend(hamburger); // header-top의 맨 앞으로 다시 옮김
-      hamburger.classList.remove("is-in-menu"); // is-in-menu 클래스 제거
+    if (!mobileMenu.classList.contains("open")) {
+      mobileMenuHeader.appendChild(hamburger);
+      hamburger.classList.add("is-in-menu");
+    } else {
+      document.querySelector('.header-top').prepend(hamburger);
+      hamburger.classList.remove("is-in-menu");
     }
 
-    mobileMenu.classList.toggle("open"); // 모바일 메뉴 열기/닫기
-    hamburger.classList.toggle("open"); // 햄버거 버튼 X자 변환
-    document.body.classList.toggle("menu-open"); // body 스크롤 방지 등 (필요시 CSS 추가)
+    mobileMenu.classList.toggle("open");
+    hamburger.classList.toggle("open");
+    document.body.classList.toggle("menu-open");
   });
 
-
-  // 🌸 벚꽃 애니메이션 - 기존과 동일
   const canvas = document.getElementById("cherry-canvas");
-  const ctx = canvas?.getContext("2d"); // canvas가 없을 수도 있으므로 null 체크
+  const ctx = canvas?.getContext("2d");
   const petals = [];
   const petalCount = 55;
 
-  if (canvas && ctx) { // canvas와 context가 존재할 때만 실행
+  if (canvas && ctx) {
     function resizeCanvas() {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -77,8 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     drawPetals();
   }
 
-
-  // 👤 로그인 세션 확인 - 기존과 동일
   fetch("/session")
     .then(res => res.json())
     .then(data => {
@@ -101,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // 🧪 휠체어 캐릭터 플립 테스트 - 기존과 동일
   const characterObject = document.getElementById("character-svg");
 
   function animateChar2(svgDoc) {
@@ -149,29 +140,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const tryStart = setInterval(() => {
         const svgDoc = characterObject.contentDocument;
         const char2 = svgDoc?.getElementById("char-2");
-  
+
         if (char2) {
           clearInterval(tryStart);
           requestAnimationFrame(() => {
-            positionCharacterToSearchBox(); // ✅ 위치 재조정 먼저!
-            animateChar2(svgDoc);          // ✅ 그다음 애니메이션 시작!
+            setTimeout(() => {
+              positionCharacterToSearchBox(); // ✅ 여기서만 실행
+              animateChar2(svgDoc);
+            }, 0);
           });
         }
       }, 200);
     });
   }
-  
 
-  // 🔍 검색 시 동작 - 기존과 동일 (CSS 클래스명은 스타일시트에 맞게 수정)
-  document.querySelector("#search-form")?.addEventListener("submit", function(e) {
-    e.preventDefault();
-    document.querySelector("#left-column")?.classList.remove("expanded");
-    document.querySelector("#left-column")?.classList.add("collapsed");
-    document.querySelector("#right-panel")?.classList.remove("hidden");
-    document.querySelector("#right-panel")?.classList.add("visible");
-  });
-
-  // 📍 캐릭터 위치 조정 - 기존과 동일
   function positionCharacterToSearchBox() {
     const searchForm = document.getElementById('search-form');
     const character = document.querySelector('.character-stand');
@@ -185,23 +167,21 @@ document.addEventListener("DOMContentLoaded", () => {
     character.style.top = `${searchRect.top + window.scrollY - 175}px`;
   }
 
-  positionCharacterToSearchBox();
   window.addEventListener('resize', positionCharacterToSearchBox);
   window.addEventListener('scroll', positionCharacterToSearchBox);
 
-  // 📱 모바일 검색 UI - 기존과 동일
   const form = document.getElementById("search-form");
   const searchInput = document.querySelector(".search-box");
   const mobileResults = document.getElementById("mobile-search-results");
   const rightPanel = document.getElementById("right-panel");
 
-  form?.addEventListener("submit", (e) => { // form이 없을 수도 있으므로 null 체크
+  form?.addEventListener("submit", (e) => {
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
       e.preventDefault();
-      rightPanel?.classList.remove("visible"); // rightPanel이 없을 수도 있으므로 null 체크
-      mobileResults?.classList.add("visible"); // mobileResults가 없을 수도 있으므로 null 체크
+      rightPanel?.classList.remove("visible");
+      mobileResults?.classList.add("visible");
 
       const searchContainer = document.querySelector(".search-container");
       if (searchContainer) {
@@ -215,8 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
         searchContainer.style.borderBottom = "1px solid #ddd";
       }
 
-      const resultsInner = mobileResults?.querySelector(".results-inner"); // mobileResults가 없을 수도 있으므로 null 체크
-      if (resultsInner && searchInput) { // searchInput도 없을 수도 있으므로 null 체크
+      const resultsInner = mobileResults?.querySelector(".results-inner");
+      if (resultsInner && searchInput) {
         resultsInner.innerHTML = `<h2>"${searchInput.value}" 검색 결과</h2><p>모바일 전용 검색 결과입니다.</p>`;
       }
     } else {
