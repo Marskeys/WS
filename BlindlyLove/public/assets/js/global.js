@@ -41,5 +41,10 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     preloader.style.display = "none";
     mainContent.classList.add("fade-in");
+
+    // 👉 캐릭터 등장도 이 시점에!
+    document.querySelectorAll(".character-stand").forEach((el) => {
+      el.classList.add("visible");
+    });
   }, 500);
 });
