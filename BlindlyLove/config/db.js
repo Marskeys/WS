@@ -1,15 +1,19 @@
 // config/db.js
-const { Client } = require('pg');
+const mysql = require('mysql2/promise');
 
-const client = new Client({
-  connectionString: 'postgresql://blindly_love_db_user:4psdH0qQWv59T4emHpFwbTd2URKP38Ok@dpg-d16llk0dl3ps739hl9pg-a.oregon-postgres.render.com/blindly_love_db',
-  ssl: {
-    rejectUnauthorized: false
-  }
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'blindly_love',
+  password: 'wowthats_amazing비밀번호',
+  database: 'blindly_love',
+  port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-client.connect()
-  .then(() => console.log('✅ PostgreSQL 연결 성공!'))
-  .catch(err => console.error('❌ PostgreSQL 연결 실패:', err));
+pool.getConnection()
+  .then(() => console.log('✅ MySQL 연결 성공!'))
+  .catch(err => console.error('❌ MySQL 연결 실패:', err));
 
-module.exports = client;
+module.exports = pool;
