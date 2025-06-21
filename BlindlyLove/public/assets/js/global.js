@@ -1,4 +1,34 @@
-console.log("✅ global.js loaded");
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.querySelector("#loginBox form");
+
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(loginForm);
+    const id = formData.get("id");
+    const password = formData.get("password");
+
+    try {
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, password })
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        location.reload(); // ✅ 로그인 성공 → 페이지 새로고침해서 로그인 UI 보이게!
+      } else {
+        alert(result.error || "로그인 실패");
+      }
+    } catch (err) {
+      alert("서버 오류");
+      console.error(err);
+    }
+  });
+});
+
 
 // ✅ 로그인 버튼 토글 기능
 document.addEventListener("DOMContentLoaded", () => {
