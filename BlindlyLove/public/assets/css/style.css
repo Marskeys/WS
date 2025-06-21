@@ -704,4 +704,33 @@ body.no-fixed-footer footer {
   opacity: 1;
 }
 
+@media (max-width: 768px) {
+  .auth-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;   /* 오른쪽 정렬 */
+    align-items: center;         /* 세로 가운데 정렬 */
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .logout,
+  .light-switch {
+    order: 0;                    /* 같은 줄에 위치 */
+  }
+
+  .welcome-text {
+    order: 1;                    /* 다음 줄로 내리기 */
+    flex-basis: 100%;            /* 한 줄 전체 차지 */
+    text-align: right;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    white-space: nowrap;
+    color: #666;
+  }
+
+  .header-top {
+    padding-left: 3rem;          /* ✅ 햄버거 버튼 영역 확보! */
+  }
+}
 
