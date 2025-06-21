@@ -150,6 +150,72 @@ app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
+// 글 저장 라우터
+app.post('/savePost', async (req, res) => {
+  const { title, content, categories } = req.body;
+
+  if (!title || !content || !categories) {
+    return res.status(400).json({ success: false, error: '입력값 누락' });
+  }
+
+  try {
+    await db.query(
+      'INSERT INTO posts (title, content, categories, author) VALUES (?, ?, ?, ?)',
+      [title, content, categories.join(','), req.session.user?.nickname || '익명']
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('글 저장 오류:', err);
+    res.status(500).json({ success: false, error: '서버 오류' });
+  }
+});
+
+// 게시글 보기 라우터
+app.get('/post/:id', async (req, res) => {
+  const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
+  if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+  res.render('post-view', { post: rows[0] });
+});
+
+// 모든 카테고리 가져오기
+app.get('/api/categories', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM categories ORDER BY id ASC');
+    res.json(rows);
+  } catch (err) {
+    console.error('카테고리 조회 오류:', err);
+    res.status(500).json({ error: '카테고리 불러오기 실패' });
+  }
+});
+
+// 카테고리 추가
+app.post('/api/categories', async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: '카테고리 이름이 필요합니다.' });
+
+  try {
+    await db.query('INSERT INTO categories (name) VALUES (?)', [name]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('카테고리 추가 오류:', err);
+    res.status(500).json({ error: '카테고리 추가 실패' });
+  }
+});
+
+// 카테고리 삭제
+app.delete('/api/categories/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await db.query('DELETE FROM categories WHERE id = ?', [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('카테고리 삭제 오류:', err);
+    res.status(500).json({ error: '카테고리 삭제 실패' });
+  }
+});
+
 // ✅ DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))

@@ -627,12 +627,38 @@
     }
 
     function postContent() {
-        const title = document.getElementById('postTitle').value.trim();
-        const content = document.getElementById('editor').innerHTML;
-        if (!title) return alert("제목을 입력해주세요.");
-        if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
-        alert(`포스팅됨!\n제목: ${title}\n카테고리: ${selectedCategories.join(', ')}`);
+  const title = document.getElementById('postTitle').value.trim();
+  const content = document.getElementById('editor').innerHTML;
+
+  if (!title) return alert("제목을 입력해주세요.");
+  if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
+
+  fetch('/savePost', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title,
+      content,
+      categories: selectedCategories
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("🎉 글 작성이 완료되었습니다!");
+      // window.location.href = `/post/${data.postId}`; // ← 이건 옵션
+    } else {
+      alert("❌ 저장 실패: " + data.error);
     }
+  })
+  .catch(err => {
+    console.error("요청 실패:", err);
+    alert("❌ 서버 연결 오류!");
+  });
+}
+
 
     // --- 수정된 format 함수 ---
     // 모든 execCommand는 기본적으로 styleWithCSS=false로 작동하며,

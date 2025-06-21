@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title><%= post.title %></title>
+  <link rel="stylesheet" href="/assets/css/editor.css"> <!-- 에디터랑 같은 스타일 -->
+</head>
+<body>
+  <div class="editor-container">
+    <h1><%= post.title %></h1>
+    <div class="editor">
+      <%- post.content %> <!-- ⭐ 스타일 그대로 적용됨 -->
+    </div>
+    <div style="margin-top:1rem; font-size:14px; color:#888;">
+      카테고리: <%= post.categories %><br>
+      작성자: <%= post.author %><br>
+      작성일: <%= new Date(post.created_at).toLocaleString() %>
+    </div>
+  </div>
+</body>
+</html>
