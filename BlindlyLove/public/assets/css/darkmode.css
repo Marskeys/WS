@@ -194,6 +194,7 @@ body.dark .auth-btn.write-post {
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
   transition: all 0.3s ease;
+  background-color: black;
 }
 
 /* 글쓰기 (hover - 노란빛 glow) */
