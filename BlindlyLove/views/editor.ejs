@@ -597,6 +597,48 @@
       </div>
     
       <script>
+        let categories = ['일상', '기록', '리뷰'];
+        let selectedCategories = ['일상'];
+        let savedRange = null; // 전역 변수로 savedRange 유지
+    
+        function renderCategories() {
+            const list = document.getElementById('categoryList');
+            list.innerHTML = '';
+            categories.forEach((cat, index) => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                if (selectedCategories.includes(cat)) item.classList.add('selected');
+                item.innerText = cat;
+                item.onclick = () => {
+                    const i = selectedCategories.indexOf(cat);
+                    if (i === -1) selectedCategories.push(cat);
+                    else selectedCategories.splice(i, 1);
+                    renderCategories();
+                };
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerText = '×';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
+                        categories.splice(index, 1);
+                        selectedCategories = selectedCategories.filter(c => c !== cat);
+                        renderCategories();
+                    }
+                };
+                item.appendChild(removeBtn);
+                list.appendChild(item);
+            });
+        }
+    
+        function addCategory() {
+            const newCat = prompt("추가할 카테고리 이름을 입력하세요:");
+            if (newCat && !categories.includes(newCat)) {
+                categories.push(newCat);
+                selectedCategories.push(newCat);
+                renderCategories();
+            }
+        }
     
         function postContent() {
             const title = document.getElementById('postTitle').value.trim();
