@@ -4,14 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileMenuHeader = mobileMenu.querySelector(".mobile-menu-header");
 
   hamburger?.addEventListener("click", () => {
-    if (!mobileMenu.classList.contains("open")) {
-      mobileMenuHeader.appendChild(hamburger);
-      hamburger.classList.add("is-in-menu");
-    } else {
-      document.querySelector('.header-top').prepend(hamburger);
-      hamburger.classList.remove("is-in-menu");
-    }
-
     mobileMenu.classList.toggle("open");
     hamburger.classList.toggle("open");
     document.body.classList.toggle("menu-open");
