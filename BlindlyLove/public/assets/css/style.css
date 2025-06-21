@@ -91,7 +91,9 @@ html, body {
   .auth-btn.write-post,
   .auth-btn.logout {
     margin-left: 0 !important;
-    margin-right: 0 !important;
+  }
+  .auth-btn.logout {
+    margin-right: 2px
   }
 }
 
@@ -177,15 +179,7 @@ html, body {
   box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
 }
 
-@media (max-width: 768px) {
-  .auth-btn {
-    margin-right: 0rem; 
-    margin-left: 0rem;
-  }
-  .auth-btn:last-child {
-    margin-right: 0.3rem; /* 마지막 버튼은 여백 제거 */
-  }
-}
+
 
 .light-switch {
   width: 60px;
