@@ -12,7 +12,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ 세션 설정
+// ✅ 세션 설정 (항상 먼저!)
 app.use(session({
   secret: '너만의_비밀문자열',
   resave: false,
@@ -24,6 +24,20 @@ app.use((req, res, next) => {
   res.locals.currentPath = req.path;
   res.locals.user = req.session.user || null;
   next();
+});
+
+// ✅ 로그인 상태 확인용 API (이제 올바른 위치!)
+app.get('/session', (req, res) => {
+  const user = req.session.user;
+  if (user) {
+    res.json({
+      loggedIn: true,
+      username: user.nickname,
+      is_admin: user.is_admin === 1
+    });
+  } else {
+    res.json({ loggedIn: false });
+  }
 });
 
 // ✅ 메인 페이지
@@ -59,11 +73,10 @@ app.post('/login', async (req, res) => {
       return res.render('login', { error: '비밀번호가 일치하지 않습니다.' });
     }
 
-    // ✅ is_admin 포함해서 세션에 저장
     req.session.user = {
       id: user.user_id,
       nickname: user.nickname,
-      is_admin: user.is_admin // ✅ 여기에 추가!
+      is_admin: user.is_admin
     };
 
     res.redirect('/');
@@ -144,20 +157,6 @@ app.get('/signup-success', (req, res) => {
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
-
-  // ✅ 로그인 상태 확인용 API
-app.get('/session', (req, res) => {
-  const user = req.session.user;
-  if (user) {
-    res.json({
-      loggedIn: true,
-      username: user.nickname,
-      is_admin: user.is_admin === 1
-    });
-  } else {
-    res.json({ loggedIn: false });
-  }
-});
 
 // ✅ 서버 실행
 app.listen(PORT, () => {
