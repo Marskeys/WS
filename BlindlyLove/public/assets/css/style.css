@@ -13,17 +13,15 @@ html, body {
 
 /* ✅ 헤더 */
 .header-top {
-  position: sticky; /* !important 제거 */
-  top: 0;
-  z-index: 1000;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   padding: 0.6rem 1rem;
   background-color: #fff;
   box-sizing: border-box;
   flex-shrink: 0;
-  border-bottom: none;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   position: relative;
 }
  
@@ -40,7 +38,7 @@ html, body {
 
 .top-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* ✅ 유지 */
   align-items: center;
   width: 100%;
 }
@@ -72,10 +70,12 @@ html, body {
 }
 
 .auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 100;
   letter-spacing: -0.5px;
-  display: flex;
-  gap: 2px;
+  white-space: nowrap;
 }
 
 .auth-btn.login {
