@@ -190,7 +190,7 @@ html, body {
 
 @media (max-width: 768px) {
   .light-switch {
-    width: 100px;
+    width: 60px;
     height: 30px;
     border-radius: 999px;
     flex-shrink: 0;
@@ -747,6 +747,7 @@ body.no-fixed-footer footer {
     align-items: center;
     justify-content: center;
     margin-top: 0; /* 혹시 밀려있으면 조정 */
+    margin-left: 0;
   }
 
   .welcome-text {
