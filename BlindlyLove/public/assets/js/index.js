@@ -71,28 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     drawPetals();
   }
 
-  fetch("/session")
-    .then(res => res.json())
-    .then(data => {
-      const authDiv = document.querySelector(".auth-buttons");
-      if (!authDiv) return;
-
-      if (data.loggedIn) {
-        authDiv.innerHTML = `
-          <span class="welcome-msg">안녕하세요, ${data.username}님!</span>
-          <button id="logout-btn" class="auth-btn">로그아웃</button>
-        `;
-        document.getElementById("logout-btn").addEventListener("click", () => {
-          fetch("/logout", { method: "POST" }).then(() => location.reload());
-        });
-      } else {
-        authDiv.innerHTML = `
-          <a href="/login" class="auth-btn login">로그인</a>
-          <a href="/signup" class="auth-btn signup">회원가입</a>
-        `;
-      }
-    });
-
   const characterObject = document.getElementById("character-svg");
 
   function animateChar2(svgDoc) {
@@ -145,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
           clearInterval(tryStart);
           requestAnimationFrame(() => {
             setTimeout(() => {
-              positionCharacterToSearchBox(); // ✅ 여기서만 실행
+              positionCharacterToSearchBox();
               animateChar2(svgDoc);
             }, 0);
           });
