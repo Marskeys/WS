@@ -159,6 +159,23 @@ body.dark .auth-btn.login:hover {
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
+/* 로그아웃 버튼 (기본) */
+body.dark .auth-btn.login {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  font-weight: 600;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+  transition: all 0.1s ease;
+}
+
+body.dark .auth-btn.login:hover {
+  background-color: rgba(255, 255, 200, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+}
+
 /* 회원가입 텍스트 (기본) */
 body.dark .auth-btn.signup {
   color: white;
