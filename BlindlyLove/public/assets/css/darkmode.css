@@ -180,7 +180,7 @@ body.dark .auth-btn.logout:hover {
 body.dark .auth-btn.signup {
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
 }
 
 /* 회원가입 텍스트 (hover - 노란빛 glow) */
@@ -193,7 +193,7 @@ body.dark .auth-btn.signup:hover {
 body.dark .auth-btn.write-post {
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
   background-color: black;
 }
 
