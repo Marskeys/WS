@@ -73,7 +73,7 @@ html, body {
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8x;
   font-weight: 100;
   letter-spacing: -0.5px;
   white-space: nowrap;
@@ -126,6 +126,8 @@ html, body {
   font-weight: 600;
   margin-top: 1.5px;
   margin-bottom: 1px;
+  margin-left: 1px;
+  margin-right: 1px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
