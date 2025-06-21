@@ -641,12 +641,36 @@
         }
     
         function postContent() {
-            const title = document.getElementById('postTitle').value.trim();
-            const content = document.getElementById('editor').innerHTML;
-            if (!title) return alert("제목을 입력해주세요.");
-            if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
-            alert(`포스팅됨!\n제목: ${title}\n카테고리: ${selectedCategories.join(', ')}`);
-        }
+  const title = document.getElementById('postTitle').value.trim();
+  const content = document.getElementById('editor').innerHTML.trim(); // 공백 제거
+  const categories = selectedCategories;
+
+  if (!title) return alert("제목을 입력해주세요.");
+  if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
+  if (!categories || categories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
+
+  // ✅ 서버로 실제 전송
+  fetch('/savePost', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ title, content, categories })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("성공적으로 저장되었습니다!");
+        window.location.href = '/'; // 성공 후 리다이렉션
+      } else {
+        alert("저장 실패: " + data.error);
+      }
+    })
+    .catch(err => {
+      console.error("저장 중 오류:", err);
+      alert("저장 중 오류가 발생했습니다.");
+    });
+}
     
         // --- 수정된 format 함수 ---
         // 모든 execCommand는 기본적으로 styleWithCSS=false로 작동하며,
