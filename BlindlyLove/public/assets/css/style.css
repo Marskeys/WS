@@ -97,6 +97,32 @@ html, body {
   }
 }
 
+@media (max-width: 768px) {
+  .right-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem; /* ✅ 전체 간격 좁히기 */
+  }
+
+  .auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem; /* ✅ 글쓰기-로그아웃도 조절 */
+    margin-right: 0.2rem; /* ✅ 라이트스위치와의 거리 줄이기 */
+  }
+
+  .light-switch {
+    margin-left: 0; /* ✅ 혹시나 간격 생기지 않도록 */
+    flex-shrink: 0; /* ✅ 작아지지 않게 */
+  }
+
+  .auth-btn.logout {
+    margin-right: 0; /* ✅ 남아있던 마진 제거 */
+  }
+}
+
+
+
 
 .auth-btn.login {
   cursor: pointer;
