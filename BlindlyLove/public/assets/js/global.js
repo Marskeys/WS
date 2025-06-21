@@ -1,11 +1,11 @@
 // ✅ 로그인 버튼 토글 기능
-// ✅ 로그인 버튼 토글 기능
 document.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.getElementById("login");
   const loginBox = document.getElementById("loginBox");
 
   if (loginBtn && loginBox) {
     loginBtn.addEventListener("click", (e) => {
+      e.preventDefault();  
       e.stopPropagation();
 
       if (loginBox.style.display === "block") {
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
 // ✅ 프리로더: 모든 이미지/SVG까지 로드된 후 본문 나타나게
 window.addEventListener("load", () => {
