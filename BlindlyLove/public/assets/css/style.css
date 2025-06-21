@@ -77,11 +77,24 @@ html, body {
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 8x;
+  gap: 8px;
   font-weight: 100;
   letter-spacing: -0.5px;
   white-space: nowrap;
 }
+
+@media (max-width: 768px) {
+  .auth-buttons {
+    gap: 4px; /* ✅ 모바일에서는 살짝 붙게 */
+  }
+
+  .auth-btn.write-post,
+  .auth-btn.logout {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
 
 .auth-btn.login {
   cursor: pointer;
