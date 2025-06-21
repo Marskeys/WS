@@ -166,7 +166,7 @@ html, body {
 
 @media (max-width: 768px) {
   .auth-btn {
-    margin-right: 0.1rem; /* 또는 0.2rem */
+    margin-right: -0.1rem; /* 또는 0.2rem */
   }
 
   .auth-btn:last-child {
