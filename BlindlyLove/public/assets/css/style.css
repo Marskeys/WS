@@ -197,6 +197,22 @@ html, body {
   }
 }
 
+@media (max-width: 768px) {
+  .right-controls {
+    gap: 4px !important; /* 기존 8px → 4px로 줄이기 */
+  }
+
+  .auth-btn.logout {
+    margin-right: 0 !important;
+  }
+
+  .light-switch {
+    margin-left: 0 !important;
+    transform: scale(0.85);
+  }
+}
+
+
 /* ✅ 레이아웃 - 기존 유지 */
 .main-layout,
 .page-body {
