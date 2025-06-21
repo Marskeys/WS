@@ -90,11 +90,6 @@ body.dark .switch-handle {
 }
 
 /* 기본 스위치 스타일 */
-.auth-buttons {
-  display: flex;
-  align-items: center;  /* 🏆 가장 추천! */
-  gap: 0.5rem;
-}
 
 .light-switch {
   z-index: 999;
