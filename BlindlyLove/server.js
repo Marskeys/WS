@@ -145,6 +145,20 @@ db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
+  // ✅ 로그인 상태 확인용 API
+app.get('/session', (req, res) => {
+  const user = req.session.user;
+  if (user) {
+    res.json({
+      loggedIn: true,
+      username: user.nickname,
+      is_admin: user.is_admin === 1
+    });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
 // ✅ 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
