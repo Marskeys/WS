@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
-const session = require('express-session'); // ✅ 세션 추가
-const db = require('./config/db'); // ✅ mysql2 연결
+const session = require('express-session');
+const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,23 +19,24 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+// ✅ 사용자 정보 템플릿에 전달
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
-  res.locals.user = req.session.user || null; // 로그인 상태 전달
+  res.locals.user = req.session.user || null;
   next();
 });
 
-// 메인 페이지
+// ✅ 메인 페이지
 app.get('/', (req, res) => {
   res.render('index', { pageCss: 'main' });
 });
 
-// 회원가입 페이지
+// ✅ 회원가입 페이지
 app.get('/signup', (req, res) => {
   res.render('signup', { error: null });
 });
 
-// ✅ 로그인 페이지 (기존 GET 그대로 유지)
+// ✅ 로그인 페이지
 app.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
@@ -58,7 +59,13 @@ app.post('/login', async (req, res) => {
       return res.render('login', { error: '비밀번호가 일치하지 않습니다.' });
     }
 
-    req.session.user = { id: user.user_id, nickname: user.nickname };
+    // ✅ is_admin 포함해서 세션에 저장
+    req.session.user = {
+      id: user.user_id,
+      nickname: user.nickname,
+      is_admin: user.is_admin // ✅ 여기에 추가!
+    };
+
     res.redirect('/');
   } catch (err) {
     console.error('로그인 오류:', err);
@@ -73,7 +80,15 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// 아이디 중복 확인
+// ✅ 글쓰기 (운영자만)
+app.get('/write', (req, res) => {
+  if (!req.session.user || req.session.user.is_admin !== 1) {
+    return res.status(403).send('접근 권한이 없습니다.');
+  }
+  res.render('editor', { user: req.session.user });
+});
+
+// ✅ 아이디 중복 확인
 app.get('/api/check-id', async (req, res) => {
   const { id } = req.query;
   try {
@@ -85,7 +100,7 @@ app.get('/api/check-id', async (req, res) => {
   }
 });
 
-// 닉네임 중복 확인
+// ✅ 닉네임 중복 확인
 app.get('/api/check-nickname', async (req, res) => {
   const { nickname } = req.query;
   try {
@@ -97,7 +112,7 @@ app.get('/api/check-nickname', async (req, res) => {
   }
 });
 
-// 회원가입 처리
+// ✅ 회원가입 처리
 app.post('/signup', async (req, res) => {
   const { user_id, username, email, password } = req.body;
 
@@ -120,17 +135,17 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// 회원가입 성공 페이지
+// ✅ 회원가입 성공 페이지
 app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
-// DB 연결 테스트 로그
+// ✅ DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
-// 서버 실행
+// ✅ 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
 });

@@ -189,6 +189,19 @@ body.dark .auth-btn.signup:hover {
   text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
 }
 
+/* 글쓰기 (기본) */
+body.dark .auth-btn.write-post {
+  color: white;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+  transition: all 0.3s ease;
+}
+
+/* 글쓰기 (hover - 노란빛 glow) */
+body.dark .auth-btn.write-post:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+}
+
 /* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
 body.dark .hamburger span {
   background-color: #fff;

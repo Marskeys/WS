@@ -22,6 +22,9 @@
         <div class="auth-buttons">
           <% if (user) { %>
             <span class="welcome-text"><%= user.nickname %>님 안녕하세요!</span>
+            <% if (user && user.is_admin === 1) { %>
+              <a href="/write" class="auth-btn write-post">글쓰기</a>
+            <% } %>
             <a href="/logout" class="auth-btn logout">로그아웃</a>
           <% } else { %>
             <a class="auth-btn login" id="login">로그인</a>

@@ -114,6 +114,20 @@ html, body {
   color: #007bff;
 }
 
+.auth-btn.write-post {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.auth-btn.write-post:hover {
+  color: #007bff;
+}
+
 .auth-btn.logout {
   cursor: pointer;
   text-decoration: none;
