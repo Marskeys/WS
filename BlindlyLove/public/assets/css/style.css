@@ -164,6 +164,13 @@ html, body {
   box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
 }
 
+@media (max-width: 768px) {
+  .auth-buttons {
+    gap: 0.3rem; /* ✅ 기본값보다 더 좁게 */
+  }
+}
+
+
 .light-switch {
   width: 60px;
   height: 34px;
