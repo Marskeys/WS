@@ -5,6 +5,7 @@
     <span></span>
   </button>
 
+
   <div class="top-controls">
     <div class="left-controls">
       <% if (currentPath !== '/') { %>
@@ -15,9 +16,6 @@
     </div>
 
     <div class="right-controls">
-      <% 
-        if (currentPath !== '/signup' && currentPath !== '/login') { 
-      %>
       <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
         <div class="auth-buttons">
           <% if (user) { %>
