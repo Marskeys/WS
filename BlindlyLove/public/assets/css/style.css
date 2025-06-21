@@ -12,6 +12,10 @@ html, body {
 
 
 /* ✅ 헤더 */
+.welcome-text strong {
+  font-weight: bold !important;
+}
+
 .header-top {
   display: flex;
   align-items: center;
