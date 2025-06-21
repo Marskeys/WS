@@ -1,3 +1,5 @@
+console.log("✅ global.js loaded");
+
 // ✅ 로그인 버튼 토글 기능
 document.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.getElementById("login");
