@@ -30,6 +30,15 @@
           <% } %>
         </div>
       <% } %>
+
+      <div class="light-switch"
+           role="switch"
+           aria-checked="false"
+           aria-label="다크 모드 전환"
+           tabindex="0"
+           id="mode-toggle-accessible">
+        <span class="switch-label"><span class="switch-handle"></span></span>
+      </div>
     </div>
     
 
@@ -44,14 +53,6 @@
 
 </div>
 
-      <div class="light-switch"
-           role="switch"
-           aria-checked="false"
-           aria-label="다크 모드 전환"
-           tabindex="0"
-           id="mode-toggle-accessible">
-        <span class="switch-label"><span class="switch-handle"></span></span>
-      </div>
   
       <style>@media (max-width: 768px) {
         .auth-buttons {
