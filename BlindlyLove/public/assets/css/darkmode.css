@@ -160,7 +160,7 @@ body.dark .auth-btn.login:hover {
 }
 
 /* 로그아웃 버튼 (기본) */
-body.dark .auth-btn.login {
+body.dark .auth-btn.logout {
   background-color: transparent;
   color: white;
   border: 1px solid white;
@@ -169,7 +169,7 @@ body.dark .auth-btn.login {
   transition: all 0.1s ease;
 }
 
-body.dark .auth-btn.login:hover {
+body.dark .auth-btn.logout:hover {
   background-color: rgba(255, 255, 200, 0.05);
   color: white;
   border-color: rgba(255, 255, 180, 0.8);
