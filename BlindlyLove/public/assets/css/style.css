@@ -165,11 +165,14 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  .auth-buttons {
-    gap: 0.3rem; /* ✅ 기본값보다 더 좁게 */
+  .auth-btn {
+    margin-right: 0.3rem; /* 또는 0.2rem */
+  }
+
+  .auth-btn:last-child {
+    margin-right: 0; /* 마지막 버튼은 여백 제거 */
   }
 }
-
 
 .light-switch {
   width: 60px;
