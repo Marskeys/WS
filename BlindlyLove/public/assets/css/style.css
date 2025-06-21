@@ -746,7 +746,7 @@ body.no-fixed-footer footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 0; /* 혹시 밀려있으면 조정 */
+    margin-top: 100; /* 혹시 밀려있으면 조정 */
     margin-left: 0;
   }
 
