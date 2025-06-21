@@ -1,7 +1,8 @@
-const db = require('./config/db'); // ✅ mysql2 연결
 const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const session = require('express-session'); // ✅ 세션 추가
+const db = require('./config/db'); // ✅ mysql2 연결
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,8 +12,16 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ 세션 설정
+app.use(session({
+  secret: '너만의_비밀문자열',
+  resave: false,
+  saveUninitialized: true,
+}));
+
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
+  res.locals.user = req.session.user || null; // 로그인 상태 전달
   next();
 });
 
@@ -26,9 +35,42 @@ app.get('/signup', (req, res) => {
   res.render('signup', { error: null });
 });
 
-// 로그인 페이지
+// ✅ 로그인 페이지 (기존 GET 그대로 유지)
 app.get('/login', (req, res) => {
   res.render('login', { error: null });
+});
+
+// ✅ 로그인 처리
+app.post('/login', async (req, res) => {
+  const { id, password } = req.body;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
+
+    if (rows.length === 0) {
+      return res.render('login', { error: '존재하지 않는 아이디입니다.' });
+    }
+
+    const user = rows[0];
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.render('login', { error: '비밀번호가 일치하지 않습니다.' });
+    }
+
+    req.session.user = { id: user.user_id, nickname: user.nickname };
+    res.redirect('/');
+  } catch (err) {
+    console.error('로그인 오류:', err);
+    res.render('login', { error: '로그인 중 오류가 발생했습니다.' });
+  }
+});
+
+// ✅ 로그아웃
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/');
+  });
 });
 
 // 아이디 중복 확인
