@@ -346,7 +346,12 @@ body.no-fixed-footer footer {
   position: static;
 }
 
-
+/* ✅ 모바일에서 헤더 버튼 숨김 - 기존 유지 */
+@media (max-width: 768px) {
+  .auth-buttons {
+   /* display: none !important;*/
+  }
+}
 
 /* ✅ 햄버거 버튼 기본 */
 .hamburger {
@@ -652,14 +657,7 @@ body.no-fixed-footer footer {
   text-decoration: underline;
 }
 
-/* 📱 모바일 반응형 */
-@media (max-width: 480px) {
-  .login-box {
-    width: 90vw;         /* 뷰포트 너비의 90%로 줄이기 */
-    left: 5vw !important; /* 중앙 정렬 대신, 화면에 안 짤리게 위치 고정 */
-    right: auto;
-  }
-}
+
 @media (max-width: 768px) {
   .header-top {
     position: relative; /* 기준점 유지 */
@@ -706,27 +704,4 @@ body.no-fixed-footer footer {
   opacity: 1;
 }
 
-
-@media (max-width: 768px) {
-  .auth-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    gap: 0.5rem;
-  }
-
-  .welcome-text {
-    flex-basis: 100%;
-    text-align: right;
-    font-size: 0.75rem;
-    margin-top: 0.3rem;
-    white-space: nowrap;
-  }
-
-  .header-top {
-    padding-right: 3.5rem; /* 햄버거 영역 확보 */
-  }
-}
 
