@@ -187,6 +187,20 @@ html, body {
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .light-switch {
+    width: 60px;
+    height: 30px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+  }
+}
+
 /* ✅ 레이아웃 - 기존 유지 */
 .main-layout,
 .page-body {
