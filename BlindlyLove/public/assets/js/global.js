@@ -3,19 +3,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.getElementById("login");
   const loginBox = document.getElementById("loginBox");
 
-  loginBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
+  if (loginBtn && loginBox) {
+    loginBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
 
-    if (loginBox.style.display === "block") {
-      loginBox.style.display = "none";
-    } else {
-      loginBox.style.display = "block";
+      if (loginBox.style.display === "block") {
+        loginBox.style.display = "none";
+      } else {
+        loginBox.style.display = "block";
 
-      const rect = loginBtn.getBoundingClientRect();
-      loginBox.style.top = rect.bottom + window.scrollY + "px";
-      loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
-    }
-  });
+        const rect = loginBtn.getBoundingClientRect();
+        loginBox.style.top = rect.bottom + window.scrollY + "px";
+        loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
+      }
+    });
+  }
+});
 
   // 닫기 기능은 주석 처리된 상태 유지
   // document.addEventListener("click", (e) => {
