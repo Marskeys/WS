@@ -713,3 +713,30 @@ body.no-fixed-footer footer {
 }
 
 
+@media (max-width: 768px) {
+  .auth-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+  }
+
+  .welcome-text {
+    order: 1;                 /* 맨 아래로 보내기 */
+    width: 100%;              /* 전체 너비 */
+    text-align: right;        /* 오른쪽 정렬 */
+    font-size: 0.8rem;        /* 조금 작게 */
+    margin-top: 0.3rem;       /* 위 여백 */
+    white-space: nowrap;      /* 줄바꿈 없이 한 줄 */
+    overflow: hidden;
+    text-overflow: ellipsis;  /* 너무 길면 ... 처리 */
+  }
+
+  .write-post,
+  .logout,
+  .light-switch {
+    order: 0; /* 인사말 위에 있도록 */
+  }
+}
