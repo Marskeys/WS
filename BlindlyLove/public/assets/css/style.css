@@ -131,7 +131,7 @@ html, body {
   align-items: center;
   gap: 5px;
   text-decoration: none; /* 밑줄 제거 */
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.1s ease, border-color 0.1s ease;
 }
 
 .auth-btn.write-post:hover {
