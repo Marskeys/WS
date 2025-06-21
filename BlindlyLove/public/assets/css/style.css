@@ -346,12 +346,7 @@ body.no-fixed-footer footer {
   position: static;
 }
 
-/* ✅ 모바일에서 헤더 버튼 숨김 - 기존 유지 */
-@media (max-width: 768px) {
-  .auth-buttons {
-   /* display: none !important;*/
-  }
-}
+
 
 /* ✅ 햄버거 버튼 기본 */
 .hamburger {
@@ -665,7 +660,6 @@ body.no-fixed-footer footer {
     right: auto;
   }
 }
-
 @media (max-width: 768px) {
   .header-top {
     position: relative; /* 기준점 유지 */
@@ -713,29 +707,26 @@ body.no-fixed-footer footer {
 }
 
 
-/* 기본 구조는 유지하되, 모바일에서만 수정 */
 @media (max-width: 768px) {
   .auth-buttons {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
     align-items: center;
+    width: 100%;
     gap: 0.5rem;
   }
 
   .welcome-text {
-    flex-basis: 100%;         /* 한 줄 차지 */
-    order: 2;                 /* 맨 아래로 */
+    flex-basis: 100%;
     text-align: right;
     font-size: 0.75rem;
     margin-top: 0.3rem;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
-  .write-post,
-  .logout,
-  .light-switch {
-    order: 0;
+  .header-top {
+    padding-right: 3.5rem; /* 햄버거 영역 확보 */
   }
 }
+
