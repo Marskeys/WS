@@ -346,12 +346,7 @@ body.no-fixed-footer footer {
   position: static;
 }
 
-/* ✅ 모바일에서 헤더 버튼 숨김 - 기존 유지 */
-@media (max-width: 768px) {
-  .auth-buttons {
-   /* display: none !important;*/
-  }
-}
+
 
 /* ✅ 햄버거 버튼 기본 */
 .hamburger {

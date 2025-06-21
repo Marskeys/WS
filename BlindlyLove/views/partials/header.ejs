@@ -20,6 +20,7 @@
         <div class="auth-buttons">
           <% if (user) { %>
             <% if (Number(user.is_admin) === 1) { %>
+              <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
               <a href="/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
             <% } %>
             <a href="/logout" class="auth-btn logout">로그아웃</a>
@@ -51,7 +52,7 @@
            id="mode-toggle-accessible">
         <span class="switch-label"><span class="switch-handle"></span></span>
       </div>
-      <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+  
       <style>@media (max-width: 768px) {
         .auth-buttons {
           display: flex;
