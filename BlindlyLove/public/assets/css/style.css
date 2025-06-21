@@ -657,6 +657,15 @@ body.no-fixed-footer footer {
   text-decoration: underline;
 }
 
+/* 📱 모바일 반응형 */
+@media (max-width: 480px) {
+  .login-box {
+    width: 90vw;         /* 뷰포트 너비의 90%로 줄이기 */
+    left: 5vw !important; /* 중앙 정렬 대신, 화면에 안 짤리게 위치 고정 */
+    right: auto;
+  }
+}
+
 @media (max-width: 768px) {
   .header-top {
     position: relative; /* 기준점 유지 */
