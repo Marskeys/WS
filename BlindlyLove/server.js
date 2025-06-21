@@ -11,8 +11,9 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // ✅ JSON 파싱 추가
 
-// ✅ 세션 설정 (항상 먼저!)
+// ✅ 세션 설정
 app.use(session({
   secret: '너만의_비밀문자열',
   resave: false,
@@ -51,12 +52,7 @@ app.get('/signup', (req, res) => {
   res.render('signup', { error: null });
 });
 
-// ✅ 로그인 페이지
-app.get('/login', (req, res) => {
-  res.render('login', { error: null });
-});
-
-// ✅ 로그인 처리
+// ✅ 로그인 처리 (팝업 기반 → JSON 응답)
 app.post('/login', async (req, res) => {
   const { id, password } = req.body;
 
@@ -64,14 +60,14 @@ app.post('/login', async (req, res) => {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
 
     if (rows.length === 0) {
-      return res.render('login', { error: '존재하지 않는 아이디입니다.' });
+      return res.status(401).json({ success: false, error: '존재하지 않는 아이디입니다.' });
     }
 
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      return res.render('login', { error: '비밀번호가 일치하지 않습니다.' });
+      return res.status(401).json({ success: false, error: '비밀번호가 일치하지 않습니다.' });
     }
 
     req.session.user = {
@@ -80,10 +76,10 @@ app.post('/login', async (req, res) => {
       is_admin: user.is_admin
     };
 
-    res.redirect('/');
+    res.json({ success: true });
   } catch (err) {
     console.error('로그인 오류:', err);
-    res.render('login', { error: '로그인 중 오류가 발생했습니다.' });
+    res.status(500).json({ success: false, error: '서버 오류입니다.' });
   }
 });
 
