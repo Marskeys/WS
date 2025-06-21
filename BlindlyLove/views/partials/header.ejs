@@ -31,7 +31,6 @@
       <% } %>
     </div>
     
-    <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
 
       <script> 
         function delayNavigation(e, url) {
@@ -52,6 +51,25 @@
            id="mode-toggle-accessible">
         <span class="switch-label"><span class="switch-handle"></span></span>
       </div>
+      <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+      <style>@media (max-width: 768px) {
+        .auth-buttons {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          position: relative; /* ✅ 기준점이 되어줄 부모 */
+        }
+      
+        .welcome-text {
+          position: absolute;      /* ✅ 레이아웃에서 빼냄 */
+          bottom: -1.2rem;         /* 버튼 줄 아래에 살짝 띄워 배치 */
+          right: 0;
+          font-size: 0.75rem;
+          white-space: nowrap;
+          color: #666;
+          pointer-events: none;    /* 클릭 간섭도 제거 */
+        }
+      }</style>
     </div>
   </div>
 </div>
