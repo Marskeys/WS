@@ -18,10 +18,18 @@
       <% 
         if (currentPath !== '/signup' && currentPath !== '/login') { 
       %>
+      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
         <div class="auth-buttons">
-          <a class="auth-btn login" id="login">로그인</a>
-          <a class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+          <% if (user) { %>
+            <span class="welcome-text"><%= user.nickname %>님 안녕하세요!</span>
+            <a href="/logout" class="auth-btn logout">로그아웃</a>
+          <% } else { %>
+            <a class="auth-btn login" id="login">로그인</a>
+            <a class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+          <% } %>
         </div>
+      <% } %>
+      
       <% } %>
 
       <script> 
@@ -32,6 +40,8 @@
           }, 100);
         }
       </script>
+
+</div>
 
       <div class="light-switch"
            role="switch"
@@ -48,10 +58,15 @@
 <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header">
         </div>
-    <div class="mobile-auth-buttons">
-        <a href="/login" class="mobile-login">로그인</a>
-        <a href="/signup" class="mobile-signup">회원가입</a>
-    </div>
+        <div class="mobile-auth-buttons">
+          <% if (user) { %>
+            <span class="mobile-welcome"><%= user.nickname %>님</span>
+            <a href="/logout" class="mobile-logout">로그아웃</a>
+          <% } else { %>
+            <a href="/login" class="mobile-login">로그인</a>
+            <a href="/signup" class="mobile-signup">회원가입</a>
+          <% } %>
+        </div>
     <div class="social-login-buttons">
         <a href="/auth/naver" class="social-btn naver-login">
             <img src="/assets/images/naver-logo.png" alt="네이버" class="naver-img">네이버 로그인
