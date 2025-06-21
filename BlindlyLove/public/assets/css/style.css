@@ -166,9 +166,9 @@ html, body {
 
 @media (max-width: 768px) {
   .auth-btn {
-    margin-right: 0rem; /* 또는 0.2rem */
+    margin-right: 0rem; 
+    margin-left: 0rem;
   }
-
   .auth-btn:last-child {
     margin-right: 0.3rem; /* 마지막 버튼은 여백 제거 */
   }
