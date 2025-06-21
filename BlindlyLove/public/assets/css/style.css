@@ -725,7 +725,7 @@ body.no-fixed-footer footer {
   .welcome-text {
     order: 1;                    /* 다음 줄로 내리기 */
     flex-basis: 100%;            /* 한 줄 전체 차지 */
-    text-align: right;
+    text-align: center;
     font-size: 0.75rem;
     margin-top: 0.2rem;
     white-space: nowrap;
