@@ -73,6 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const characterObject = document.getElementById("character-svg");
 
+  function positionCharacterToSearchBox() {
+    // TODO: 실제 정렬 로직
+  }
+  
   function animateChar2(svgDoc) {
     const group = svgDoc.getElementById("char-2");
     if (!group) return;
