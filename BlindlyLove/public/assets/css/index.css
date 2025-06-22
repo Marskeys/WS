@@ -34,7 +34,7 @@
 
   
 .search-wrapper {
-  position: relative; /* 기준점! */
+  position: relative; /* ✅ 기준 설정 */
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
@@ -42,20 +42,19 @@
 
 .character-stand {
   position: absolute;
-  top: -80px; /* 검색창 위로 띄움 (필요시 조정) */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 150px;
-  height: auto;
-  z-index: 999;
+  top: -80px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;  /* ✅ 가운데 정렬 (부모 내부 기준) */
   pointer-events: none;
+  z-index: 999;
   animation: floatY 3s ease-in-out infinite;
 }
 
 #character-svg {
-  width: 240px;
+  width: 120px;
   height: auto;
-  display: block;
 }
   
 
