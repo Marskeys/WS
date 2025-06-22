@@ -239,16 +239,56 @@
 }
 
 
-/* 기본은 모바일 게시판 숨김 */
-.mobile-board-list {
-  display: none;
-}
-
 @media (max-width: 768px) {
-  .board-table {
-    display: none; /* 데스크탑용 테이블 숨기기 */
+  /* ✅ 전체 레이아웃을 세로로 변경 */
+  .full-layout {
+    flex-direction: column;
+    align-items: center;
   }
 
+  /* ✅ 좌우 패널 숨김 */
+  .side-panel {
+    display: none;
+  }
+
+  /* ✅ 메인 영역 전체 너비 */
+  .main-layout {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  /* ✅ 메인 패널도 너비 고정 */
+  .main-panel {
+    width: 100%;
+  }
+
+  /* ✅ 검색창, 탭보드 너비 고정 */
+  .search-container,
+  .tab-board {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* ✅ 탭 버튼 가로 스크롤 */
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* ✅ 데스크탑용 테이블 숨김 */
+  .board-table {
+    display: none;
+  }
+
+  /* ✅ 모바일 게시판 표시 */
   .mobile-board-list {
     display: block;
     width: 100%;
@@ -271,5 +311,8 @@
     font-size: 0.85rem;
     color: #666;
   }
+
+  }
 }
+
 
