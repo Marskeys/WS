@@ -32,13 +32,7 @@
   margin-bottom: -1.5rem; /* 검색창 쪽으로 당김 */
 }
 
-  
-.search-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 700px;
-  margin: 0 auto;
-}
+
 
 .search-form {
   position: relative; /* ✅ 캐릭터 위치 기준점 */
@@ -58,18 +52,28 @@
   border-color: #9d6bff;
   box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
 }
+
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 .character-stand {
   position: absolute;
-  bottom: 100%;              /* ✅ 검색창 윗면에 딱 붙음 */
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);  /* 살짝 띄우기 */
-  width: auto;
+  top: 0;
+  left: 0;
+  width: 100%;                 /* ✅ 검색창 너비에 맞춤 */
+  display: flex;
+  justify-content: center;     /* ✅ 중앙 정렬 */
+  transform: translateY(-100%);/* ✅ 검색창 "위"에 위치 */
   pointer-events: none;
   z-index: 1000;
 }
 
 #character-svg {
-  width: 100px;      /* 필요시 조정 */
+  width: 100px;
   height: auto;
 }
 
