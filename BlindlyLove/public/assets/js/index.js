@@ -182,6 +182,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+        // ✅ 모바일용 필터 추가
+        const mobileItems = document.querySelectorAll('.mobile-post-item');
+        mobileItems.forEach(item => {
+          const cats = item.getAttribute('data-category').split(',').map(c => c.trim());
+          if (category === 'all' || cats.includes(category)) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
     document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`.tab[onclick="filterBoard('${category}')"]`)?.classList.add('active');
   }
