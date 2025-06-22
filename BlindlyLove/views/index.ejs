@@ -75,16 +75,22 @@
             </aside>
       </div>
 
-      <!-- 모바일용 게시판 -->
+     <!-- 모바일용 게시판 리스트 -->
 <div class="mobile-board-list">
-  <% posts.forEach((post) => { %>
-    <div class="mobile-post-item">
-      <div class="post-title"><%= post.title %></div>
-      <div class="post-info">
-        <%= post.author %> | <%= post.date %> | 조회수 <%= post.views %> | <%= post.category %>
-      </div>
-    </div>
-  <% }) %>
+  <div class="mobile-post-item">
+    <div class="post-title">기초생활수급자 전세대출 가능할까요?</div>
+    <div class="post-info">익명 | 2025.06.22 | 조회수 123 | 복지</div>
+  </div>
+
+  <div class="mobile-post-item">
+    <div class="post-title">청각장애인 보청기 지원 최근 기준이 바뀌었대요</div>
+    <div class="post-info">한동선 | 2025.06.21 | 조회수 89 | 장애</div>
+  </div>
+
+  <div class="mobile-post-item">
+    <div class="post-title">싱글맘도 국가에서 양육비 지원 받을 수 있나요?</div>
+    <div class="post-info">익명 | 2025.06.20 | 조회수 240 | 가족</div>
+  </div>
 </div>
 
       <!-- 우측 패널 -->
