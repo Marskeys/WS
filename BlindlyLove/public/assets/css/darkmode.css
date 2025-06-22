@@ -262,3 +262,9 @@ body.dark .board-table td a:hover {
   color: #ff6666;            /* 마우스 올리면 살짝 포인트 색상 */
   text-decoration: underline;/* 원하면 다시 밑줄 살짝 */
 }
+
+
+.board-table th {
+  background-color: transparent;
+  color: #333;
+}
