@@ -31,8 +31,7 @@ body.dark .main-layout {
 body.dark .main-panel {
   background: linear-gradient(to bottom, #1e1e2f 0%, #2a2a4d 70%, #3d3d6b 100%);
   box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.5);
-  margin-top: 0 !important;
-  padding-top: 2rem !important;
+
   height: auto !important;
 }
 
