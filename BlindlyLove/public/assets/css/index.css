@@ -115,7 +115,6 @@
   min-height: 100vh;
   padding: 0rem;
   display: flex;
-  flex-direction: column;
   align-items: center;  
 }
   /* ------------------------------
@@ -155,11 +154,6 @@
   flex-wrap: nowrap;
 }
 
-.main-panel {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 
 .search-container,
 .tab-board {
@@ -257,6 +251,8 @@
   }
 
   .main-panel {
+    display: flex;
+    flex-direction: column;
     width: 100%;
   }
 
