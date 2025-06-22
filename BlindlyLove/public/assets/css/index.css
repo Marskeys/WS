@@ -66,8 +66,7 @@
   left: 0;
   width: 100%;                 /* ✅ 검색창 너비에 맞춤 */
   display: flex;
-  transform: translateY(-50%);/* ✅ 검색창 "위"에 위치 */
-  transform: translateX(-70%);/* ✅ 검색창 "위"에 위치 */
+  transform: translate(-70%, -50%);
   pointer-events: none;
   z-index: 1000;
   justify-content: flex-start;    /* ✅ 왼쪽 정렬 */
