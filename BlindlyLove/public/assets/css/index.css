@@ -187,10 +187,11 @@
   margin-top: 1rem;
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
-  background: #f4f4f4;
+  background: #ffffff;
   cursor: pointer;
   border-radius: 5px;
   font-size: 0.95rem;
+  z-index: 1001;
 }
 
 .tab.active {
