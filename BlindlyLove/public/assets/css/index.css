@@ -40,22 +40,35 @@
   margin: 0 auto;
 }
 
+.search-form {
+  position: relative; /* ✅ 캐릭터 위치 기준점 */
+  width: 100%;
+  max-width: 100%;
+  height: 46px;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  border: 1px solid #a48fdd;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
 .character-stand {
   position: absolute;
-  top: -65px;              /* 검색창 바로 위 */
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center; /* ✅ 검색창 기준 중앙 정렬 */
+  bottom: 100%;              /* ✅ 검색창 윗면에 딱 붙음 */
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);  /* 살짝 띄우기 */
+  width: auto;
   pointer-events: none;
-  z-index: 999;
+  z-index: 1000;
 }
 
 #character-svg {
-  width: 240px;
+  width: 100px;      /* 필요시 조정 */
   height: auto;
-  display: block;
 }
+
   
 
   

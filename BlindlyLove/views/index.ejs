@@ -30,20 +30,25 @@
                   <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
                 </a>
               
-                <!-- 검색창 & 캐릭터를 같이 감싸는 박스 -->
-                <div class="search-wrapper">
-                  <!-- 캐릭터 -->
-                  <div class="character-stand">
-                    <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
-                  </div>
-                  <!-- 검색창 -->
-                  <form method="get" action="/search" class="search-form" id="search-form">
-                    <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
-                    <button type="submit" class="icon-submit-btn" aria-label="검색">
-                      <i class="fas fa-search"></i>
-                    </button>
-                  </form>
-                </div>
+              <!-- ✅ 검색창 & 캐릭터 같이 감싸는 박스 -->
+<div class="search-wrapper">
+  
+  <!-- ✅ 검색창 (기준점으로 만들 거야!) -->
+  <form method="get" action="/search" class="search-form" id="search-form">
+    
+    <!-- ✅ 캐릭터: 검색창 내부에 배치 -->
+    <div class="character-stand">
+      <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+    </div>
+
+    <!-- 검색 input -->
+    <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
+    <button type="submit" class="icon-submit-btn" aria-label="검색">
+      <i class="fas fa-search"></i>
+    </button>
+  </form>
+
+</div>
               
                 <!-- 게시판 탭 -->
                 <div class="tab-board">
