@@ -244,10 +244,9 @@
   display: none;
 }
 
-/* 모바일 전용 스타일 */
 @media (max-width: 768px) {
   .board-table {
-    display: none; /* 기존 테이블 숨김 */
+    display: none; /* 데스크탑용 테이블 숨기기 */
   }
 
   .mobile-board-list {
