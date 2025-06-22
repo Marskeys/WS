@@ -16,14 +16,32 @@
     pointer-events: none;
   }
   
-  .search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    position: relative;
-    z-index: 1000;
-  }
+/* ✅ 검색창 기준으로 상대 위치를 정해줄 부모 */
+.search-container {
+  position: relative;         /* 🔥 이게 꼭 필요함!! 기준이 됨 */
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 80px;         /* 캐릭터 공간 확보용 (원하는 만큼 조절 가능) */
+}
+
+/* ✅ 캐릭터를 검색창 기준 위로 고정 */
+.character-stand {
+  position: absolute;
+  top: -60px;                /* 검색창 기준 위쪽으로 올리기 */
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 1001;
+}
+
+#character-svg {
+  width: 240px;
+  height: auto;
+  display: block;
+}
   
   .search-wrapper {
     position: relative;
@@ -31,21 +49,6 @@
     max-width: 700px;
   }
 
-.character-stand {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 1001;
-  margin-bottom: 10px;
-}
-
-#character-svg {
-  width: 250px;
-  height: auto;
-  display: block;
-}
   
 
   
