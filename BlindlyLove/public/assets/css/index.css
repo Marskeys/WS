@@ -151,3 +151,43 @@
     }
 
     
+
+
+    .full-layout {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 2rem 1rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    
+    /* 좌우 패널 */
+    .side-panel {
+      flex: 0 0 160px;
+      background-color: #f7d3df;
+      border-radius: 12px;
+      height: auto;
+      min-height: 100vh;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+      opacity: 0.95;
+    }
+    
+    /* 기존 layout 영향 없게 */
+    .main-layout {
+      flex: 1;
+      max-width: 1000px;
+    }
+    
+    /* 반응형: 작은 화면에선 사이드 패널 숨기기 */
+    @media (max-width: 768px) {
+      .side-panel {
+        display: none;
+      }
+    
+      .main-layout {
+        max-width: 100%;
+        padding: 0 1rem;
+      }
+    }
+    
