@@ -35,34 +35,37 @@
                   <i class="fas fa-search"></i>
                 </button>
               </form>
+
+              <div class="tab-board">
+                <div class="tabs">
+                  <button class="tab active" onclick="filterBoard('all')">전체글</button>
+                  <button class="tab" onclick="filterBoard('notice')">공지사항</button>
+                  <button class="tab" onclick="filterBoard('free')">자유게시판</button>
+                  <button class="tab" onclick="filterBoard('review')">후기</button>
+                  <button class="tab" onclick="filterBoard('info')">정보공유</button>
+                </div>
+              
+                <table class="board-table">
+                  <thead>
+                    <tr>
+                      <th>제목</th>
+                      <th>작성자</th>
+                      <th>카테고리</th>
+                      <th>조회수</th>
+                      <th>날짜</th>
+                    </tr>
+                  </thead>
+                  <tbody id="board-content">
+                    <!-- 게시글들이 여기에 자바스크립트로 삽입될 예정 -->
+                  </tbody>
+                </table>
+              </div>
+              
             </div>
           </aside>
         </div>
 
-        <div class="tab-board">
-          <div class="tabs">
-            <button class="tab active" onclick="filterBoard('all')">전체글</button>
-            <button class="tab" onclick="filterBoard('notice')">공지사항</button>
-            <button class="tab" onclick="filterBoard('free')">자유게시판</button>
-            <button class="tab" onclick="filterBoard('review')">후기</button>
-            <button class="tab" onclick="filterBoard('info')">정보공유</button>
-          </div>
         
-          <table class="board-table">
-            <thead>
-              <tr>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>카테고리</th>
-                <th>조회수</th>
-                <th>날짜</th>
-              </tr>
-            </thead>
-            <tbody id="board-content">
-              <!-- 게시글들이 여기에 자바스크립트로 삽입될 예정 -->
-            </tbody>
-          </table>
-        </div>
 
         <div class="right-panel-container hidden" id="right-panel">
           <main class="right-panel">
