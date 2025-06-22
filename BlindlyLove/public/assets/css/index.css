@@ -67,3 +67,47 @@
 
 
     
+    .tab-board {
+      margin-top: 2rem;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tab {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      background: #f4f4f4;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 0.95rem;
+    }
+    
+    .tab.active {
+      background: #ffe4e1;
+      border-color: #ff9999;
+      font-weight: bold;
+    }
+    
+    .board-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    
+    .board-table th, .board-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    
+    .board-table th {
+      background-color: #fafafa;
+      color: #333;
+    }
+
+    

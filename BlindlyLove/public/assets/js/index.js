@@ -182,3 +182,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+const posts = [
+  { title: "안녕하세요", writer: "동선", category: "notice", views: 33, date: "2025.06.20" },
+  { title: "오늘 너무 힘들었어요", writer: "태선", category: "free", views: 128, date: "2025.06.21" },
+  { title: "실제 후기를 공유합니다", writer: "다솜", category: "review", views: 88, date: "2025.06.19" },
+  { title: "복지 신청 방법 정리", writer: "세인", category: "info", views: 210, date: "2025.06.22" },
+];
+
+function filterBoard(category) {
+  // 탭 활성화 처리
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelector(`.tab[onclick="filterBoard('${category}')"]`).classList.add('active');
+
+  // 게시글 필터링
+  const tbody = document.getElementById('board-content');
+  tbody.innerHTML = "";
+
+  const filtered = category === 'all' ? posts : posts.filter(p => p.category === category);
+  filtered.forEach(p => {
+    const row = `<tr>
+      <td>${p.title}</td>
+      <td>${p.writer}</td>
+      <td>${p.category}</td>
+      <td>${p.views}</td>
+      <td>${p.date}</td>
+    </tr>`;
+    tbody.insertAdjacentHTML('beforeend', row);
+  });
+}
+
+// 초기 로딩 시 전체글 표시
+document.addEventListener("DOMContentLoaded", () => {
+  filterBoard('all');
+});
+
