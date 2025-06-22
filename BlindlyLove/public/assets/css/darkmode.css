@@ -250,3 +250,15 @@ body.dark .header-top {
     0 0 40px rgba(255, 200, 0, 0.6) !important;
   border-bottom: none !important;
 }
+
+
+body.dark .board-table td a {
+  color: #ffffff;               /* 자연스러운 검회색 계열 */
+  text-decoration: none;     /* 밑줄 제거 */
+  font-weight: 500;          /* 적당한 굵기 */
+}
+
+body.dark .board-table td a:hover {
+  color: #ff6666;            /* 마우스 올리면 살짝 포인트 색상 */
+  text-decoration: underline;/* 원하면 다시 밑줄 살짝 */
+}
