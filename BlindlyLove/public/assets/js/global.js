@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ 프리로더: 모든 이미지/SVG까지 로드된 후 본문 나타나게
 window.addEventListener("load", () => {
   const preloader = document.getElementById("preloader");
-  const mainContent = document.getElementById("main-content");
 
 
   preloader.style.opacity = "0";

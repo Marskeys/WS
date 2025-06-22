@@ -693,11 +693,6 @@ body.no-fixed-footer footer {
   to { transform: rotate(360deg); }
 }
 
-/* 본문 부드러운 등장 효과 */
-#main-content.fade-in {
-  transition: opacity 0.8s ease;
-  opacity: 1;
-}
 
 @media (max-width: 768px) {
   .auth-buttons {
