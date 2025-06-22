@@ -259,13 +259,13 @@ body.dark .side-panel{
 }
 
 body.light .auth-btn.write-post {
-  animation: glowFade 0.4s forwards;
+  animation: glowFade 0.8s forwards;
   animation-delay: 0s;
 }
 
 body.light .auth-btn.logout {
-  animation: glowFade 0.4s forwards;
-  animation-delay: 0.4s; /* ✅ 글쓰기 끝난 뒤 시작 */
+  animation: glowFade 0.8s forwards;
+  animation-delay: 0.8s; /* ✅ 글쓰기 끝난 뒤 시작 */
 }
 
 @keyframes glowFadeDark {
