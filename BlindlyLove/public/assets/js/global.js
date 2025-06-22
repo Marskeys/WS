@@ -62,7 +62,6 @@ window.addEventListener("load", () => {
   preloader.style.opacity = "0";
   setTimeout(() => {
     preloader.style.display = "none";
-    mainContent.classList.add("fade-in");
   })
 
 });
