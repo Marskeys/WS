@@ -216,6 +216,30 @@ app.delete('/api/categories/:id', async (req, res) => {
   }
 });
 
+app.get('/', async (req, res) => {
+  const [posts] = await db.query(`
+    SELECT id, title, content, categories, author, created_at
+    FROM posts
+    ORDER BY created_at DESC
+  `);
+
+  // ✅ 카테고리 추출 (콤마 구분된 걸 분해해서 순서대로 중복 제거)
+  const categorySet = new Set();
+  posts.forEach(post => {
+    const categories = post.categories.split(',').map(cat => cat.trim());
+    categories.forEach(cat => {
+      if (cat && !categorySet.has(cat)) {
+        categorySet.add(cat);
+      }
+    });
+  });
+
+  const categories = Array.from(categorySet);
+
+  res.render('index', { posts, categories });
+});
+
+
 // ✅ DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))

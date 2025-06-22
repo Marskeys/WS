@@ -132,21 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function positionCharacterToSearchBox() {
-    const searchForm = document.getElementById('search-form');
-    const character = document.querySelector('.character-stand');
-  
-    if (!searchForm || !character) return;
-  
-    // layout이 완전히 계산된 다음 실행되도록 delay
-    requestAnimationFrame(() => {
-      const searchRect = searchForm.getBoundingClientRect();
-  
-      character.style.position = 'absolute';
-      character.style.left = `${searchRect.left + window.scrollX + 30}px`;
-      character.style.top = `${searchRect.top + window.scrollY - 175}px`;
-    });
-  }
 
   window.addEventListener('resize', positionCharacterToSearchBox);
   window.addEventListener('scroll', positionCharacterToSearchBox);
@@ -186,39 +171,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-const posts = [
-  { title: "안녕하세요", writer: "동선", category: "notice", views: 33, date: "2025.06.20" },
-  { title: "오늘 너무 힘들었어요", writer: "동선", category: "free", views: 128, date: "2025.06.21" },
-  { title: "실제 후기를 공유합니다", writer: "다솜", category: "review", views: 88, date: "2025.06.19" },
-  { title: "복지 신청 방법 정리", writer: "세인", category: "info", views: 210, date: "2025.06.22" },
-];
+  function filterBoard(category) {
+    const rows = document.querySelectorAll('#board-content tr');
+    rows.forEach(row => {
+      const cats = row.getAttribute('data-category').split(',').map(c => c.trim());
+      if (category === 'all' || cats.includes(category)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
 
-function filterBoard(category) {
-  // 탭 활성화 처리
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.querySelector(`.tab[onclick="filterBoard('${category}')"]`).classList.add('active');
-
-  // 게시글 필터링
-  const tbody = document.getElementById('board-content');
-  tbody.innerHTML = "";
-
-  const filtered = category === 'all' ? posts : posts.filter(p => p.category === category);
-  filtered.forEach(p => {
-    const row = `<tr>
-      <td>${p.title}</td>
-      <td>${p.writer}</td>
-      <td>${p.category}</td>
-      <td>${p.views}</td>
-      <td>${p.date}</td>
-    </tr>`;
-    tbody.insertAdjacentHTML('beforeend', row);
-  });
-}
-
-// 초기 로딩 시 전체글 표시
-document.addEventListener("DOMContentLoaded", () => {
-  filterBoard('all');
-});
+    document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.tab[onclick="filterBoard('${category}')"]`)?.classList.add('active');
+  }
 
