@@ -259,32 +259,53 @@ body.dark .side-panel{
 }
 
 body.light .auth-btn.write-post {
-  animation: glowFade 0.8s forwards;
+  animation: glowFade 0.s forwards;
   animation-delay: 0s;
 }
 
 body.light .auth-btn.logout {
-  animation: glowFade 0.8s forwards;
-  animation-delay: 0.8s; /* ✅ 글쓰기 끝난 뒤 시작 */
+  animation: glowFade 0.4s forwards;
+  animation-delay: 0.4s; /* ✅ 글쓰기 끝난 뒤 시작 */
 }
 
-@keyframes glowFadeDark {
+@keyframes leftToRightFade {
   0% {
-    background: linear-gradient(to right, #fff, #fff);
-    color: #333;
+    background-position: left;
   }
   100% {
-    background: linear-gradient(to right, #222, #111);
-    color: #fff;
+    background-position: right;
   }
 }
 
-body.dark .auth-btn.write-post {
-  animation: glowFadeDark 0.4s forwards;
-  animation-delay: 0s;
+/* ✅ 버튼 공통 스타일 */
+.auth-btn {
+  background: linear-gradient(to right, #f7d3df, #ffe4e1);
+  background-size: 200% 100%;
+  background-position: left;
+  color: #333;
+  transition: color 0.4s ease;
+  border: 1px solid transparent;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
 }
 
+/* ✅ 다크모드: 글쓰기 버튼 애니메이션 */
+body.dark .auth-btn.write-post {
+  background: linear-gradient(to right, #333, #111);
+  background-size: 200% 100%;
+  animation: leftToRightFade 0.5s forwards;
+  animation-delay: 0s;
+  color: #fff;
+  border-color: #aaa;
+}
+
+/* ✅ 다크모드: 로그아웃 버튼 애니메이션 */
 body.dark .auth-btn.logout {
-  animation: glowFadeDark 0.4s forwards;
-  animation-delay: 0.4s;
+  background: linear-gradient(to right, #333, #111);
+  background-size: 200% 100%;
+  animation: leftToRightFade 0.5s forwards;
+  animation-delay: 0.5s; /* ✨ 글쓰기 끝난 후 시작 */
+  color: #fff;
+  border-color: #aaa;
 }
