@@ -41,7 +41,6 @@
   max-width: 100%;
   height: 46px;
   padding: 0 1.5rem;
-  margin-right: 2rem;
   box-sizing: border-box;
   border: 1px solid #a48fdd;
   border-radius: 999px;
@@ -273,6 +272,7 @@
   .tab-board {
     width: 100%;
     max-width: 100%;
+    margin-right: 0.5rem;
   }
 
   /* ✅ 탭 스크롤 */
