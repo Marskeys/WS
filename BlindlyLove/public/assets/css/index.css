@@ -18,27 +18,31 @@
   
 /* ✅ 검색창 기준으로 상대 위치를 정해줄 부모 */
 .search-container {
-  position: relative; /* ✅ 기준 설정 */
-  z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  position: relative;
+}
+
+.search-top-box {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: -1.5rem; /* 검색창 쪽으로 당김 */
 }
 
 .character-stand {
-  position: absolute; /* ✅ 부모인 search-container 기준으로 */
-  top: -60px;         /* 검색창 위로 올리기 (조절 가능) */
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 1001;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100px; /* 캐릭터 높이 공간 확보 */
 }
 
 #character-svg {
   width: 240px;
   height: auto;
-  display: block;
 }
   
   .search-wrapper {
