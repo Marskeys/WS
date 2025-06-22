@@ -64,8 +64,6 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     preloader.style.display = "none";
     mainContent.classList.add("fade-in");
+  })
 
-    // 캐릭터 위치 지정
-    positionCharacterToSearchBox();
-  }, 500);
 });
