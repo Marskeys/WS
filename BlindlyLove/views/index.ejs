@@ -17,88 +17,85 @@
       <!-- 좌측 패널 -->
       <aside class="side-panel main-panel-only"></aside>
 
-      <!-- 기존 전체 구조 보존 -->
+      <!-- 가운데 콘텐츠 -->
       <div class="main-layout">
-            <aside class="main-panel">
-              <div class="cherry-container">
-                <canvas id="cherry-canvas"></canvas>
-              </div>
+        <div class="main-panel">
+          <div class="cherry-container">
+            <canvas id="cherry-canvas"></canvas>
+          </div>
 
-              <div class="search-container">
-                <!-- 로고 -->
-                <a href="/">
-                  <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
-                </a>
-              
-              <!-- ✅ 검색창 & 캐릭터 같이 감싸는 박스 -->
-              <div class="search-wrapper">
-                <div class="search-position-anchor">
-                  <div class="character-stand">
-                    <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
-                  </div>
-                  <form method="get" action="/search" class="search-form">
-                    <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
-                    <button type="submit" class="icon-submit-btn">
-                      <i class="fas fa-search"></i>
-                    </button>
-                  </form>
+          <div class="search-container">
+            <!-- 로고 -->
+            <a href="/">
+              <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
+            </a>
+          
+            <!-- ✅ 검색창 & 캐릭터 같이 감싸는 박스 -->
+            <div class="search-wrapper">
+              <div class="search-position-anchor">
+                <div class="character-stand">
+                  <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+                </div>
+                <form method="get" action="/search" class="search-form">
+                  <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
+                  <button type="submit" class="icon-submit-btn">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🟡 동적으로 생성된 카테고리 탭 -->
+          <div class="tabs">
+            <button class="tab active" onclick="filterBoard('all')">전체글</button>
+            <% categories.forEach(category => { %>
+              <button class="tab" onclick="filterBoard('<%= category %>')"><%= category %></button>
+            <% }) %>
+          </div>
+
+          <!-- 🟡 게시글 테이블 (데스크탑) -->
+          <table class="board-table">
+            <thead>
+              <tr>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>카테고리</th>
+                <th>날짜</th>
+              </tr>
+            </thead>
+            <tbody id="board-content">
+              <% posts.forEach(post => { %>
+                <tr data-category="<%= post.categories %>">
+                  <td><a href="/post/<%= post.id %>"><%= post.title %></a></td>
+                  <td><%= post.author %></td>
+                  <td><%= post.categories %></td>
+                  <td><%= post.created_at.toISOString().slice(0, 10) %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+
+          <!-- ✅ 모바일 전용 게시판 리스트 -->
+          <div class="mobile-board-list">
+            <% posts.forEach(post => { %>
+              <div class="mobile-post-item" data-category="<%= post.categories %>">
+                <a href="/post/<%= post.id %>" class="post-title"><%= post.title %></a>
+                <div class="post-info">
+                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
                 </div>
               </div>
-              
-              <!-- 🟡 동적으로 생성된 카테고리 탭 -->
-<div class="tabs">
-  <button class="tab active" onclick="filterBoard('all')">전체글</button>
-  <% categories.forEach(category => { %>
-    <button class="tab" onclick="filterBoard('<%= category %>')"><%= category %></button>
-  <% }) %>
-</div>
-
-<!-- 🟡 게시글 테이블 (데스크탑) -->
-<table class="board-table">
-  <thead>
-    <tr>
-      <th>제목</th>
-      <th>작성자</th>
-      <th>카테고리</th>
-      <th>날짜</th>
-    </tr>
-  </thead>
-  <tbody id="board-content">
-    <% posts.forEach(post => { %>
-      <tr data-category="<%= post.categories %>">
-        <td><a href="/post/<%= post.id %>"><%= post.title %></a></td>
-        <td><%= post.author %></td>
-        <td><%= post.categories %></td>
-        <td><%= post.created_at.toISOString().slice(0, 10) %></td>
-      </tr>
-    <% }) %>
-  </tbody>
-</table>
-                </div>
-               <!-- ✅ 모바일 전용 게시판 리스트 (DB 연동 버전) -->
-<div class="mobile-board-list">
-  <% posts.forEach(post => { %>
-    <div class="mobile-post-item" data-category="<%= post.categories %>">
-      <a href="/post/<%= post.id %>" class="post-title"><%= post.title %></a>
-      <div class="post-info">
-        <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
+            <% }) %>
+          </div>
+        </div>
       </div>
-    </div>
-  <% }) %>
-</div>
-
-              </div>
-
-            </aside>
-      </div>
-
-   
 
       <!-- 우측 패널 -->
-      <aside class="side-panel right-panel-only"> <div style="height: 100vh;"></div></aside>
+      <aside class="side-panel right-panel-only">
+        <div style="height: 100vh;"></div>
+      </aside>
 
     </div>
-    
     <!-- ✅ 전체 레이아웃 끝 -->
 
     <%- include('partials/footer') %>
