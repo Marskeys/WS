@@ -185,13 +185,21 @@
 
 .tab {
   margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  background: #ffffff;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #d0cce6;
+  background: #fefeff;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 0.95rem;
-  z-index: 1001;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.tab:hover {
+  background-color: #f7f3ff;
+  border-color: #c4b2ff;
 }
 
 .tab.active {
