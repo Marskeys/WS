@@ -285,17 +285,6 @@ html, body {
 }
 
 
-/* ✅ 캐릭터 위치 - 기존 유지 */
-.character-stand {
-  position: absolute;
-  bottom: 100%;     /* form 위에 붙임 */
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 1001;
-  margin-bottom: 10px;  /* 여백 조절 */
-}
-
 /* ✅ 검색폼 - 기존 유지 */
 .search-form {
   width: 100%;
@@ -440,14 +429,6 @@ body.no-fixed-footer footer {
 }
 
 
-/* ✅ 모바일 검색창 안 빠져나가게 - character-stand */
-@media (max-width: 768px) {
-  .character-stand {
-    padding-left: 15px;
-  }
-}
-
-/* ✅ 모바일 메뉴 */
 /* ✅ 모바일 메뉴 */
 .mobile-menu {
   position: fixed;
