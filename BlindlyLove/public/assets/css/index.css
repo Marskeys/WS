@@ -198,6 +198,18 @@
   font-size: 0.95rem;
 }
 
+.board-table td a {
+  color: #333;               /* 자연스러운 검회색 계열 */
+  text-decoration: none;     /* 밑줄 제거 */
+  font-weight: 500;          /* 적당한 굵기 */
+}
+
+.board-table td a:hover {
+  color: #ff6666;            /* 마우스 올리면 살짝 포인트 색상 */
+  text-decoration: underline;/* 원하면 다시 밑줄 살짝 */
+}
+
+
 .board-table th,
 .board-table td {
   padding: 0.75rem;
