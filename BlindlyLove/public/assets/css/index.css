@@ -18,19 +18,17 @@
   
 /* ✅ 검색창 기준으로 상대 위치를 정해줄 부모 */
 .search-container {
-  position: relative;         /* 🔥 이게 꼭 필요함!! 기준이 됨 */
+  position: relative; /* ✅ 기준 설정 */
   z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  padding-top: 80px;         /* 캐릭터 공간 확보용 (원하는 만큼 조절 가능) */
 }
 
-/* ✅ 캐릭터를 검색창 기준 위로 고정 */
 .character-stand {
-  position: fixed;               /* ✅ 뷰포트 기준으로 고정! */
-  top: calc(50% - 240px);        /* ✅ 적절한 위치로 조절 (예: 검색창 위) */
+  position: absolute; /* ✅ 부모인 search-container 기준으로 */
+  top: -60px;         /* 검색창 위로 올리기 (조절 가능) */
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
