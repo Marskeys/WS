@@ -238,6 +238,9 @@
   margin: 0 auto; /* 진짜로 가운데로 정렬되게 */
 }
 
+.mobile-board-list{
+  display: none;
+}
 
 @media (max-width: 768px) {
   /* ✅ 전체 레이아웃을 세로로 변경 */
