@@ -244,6 +244,7 @@ body.dark .side-panel{
 }
 
 body.dark .header-top {
+  z-index: 1000;
   box-shadow:
     0 3px 10px rgba(255, 215, 0, 0.3),
     0 0 25px rgba(255, 215, 0, 0.4),
