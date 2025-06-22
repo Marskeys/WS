@@ -42,18 +42,19 @@
 
 .character-stand {
   position: absolute;
-  top: -65px;
+  top: -65px;              /* 검색창 바로 위 */
+  left: 0;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: center; /* ✅ 검색창 기준 중앙 정렬 */
   pointer-events: none;
   z-index: 999;
-  animation: floatY 3s ease-in-out infinite;
 }
 
 #character-svg {
-  width: 220px;
+  width: 240px;
   height: auto;
+  display: block;
 }
   
 
