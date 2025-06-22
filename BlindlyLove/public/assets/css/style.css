@@ -288,11 +288,12 @@ html, body {
 /* ✅ 캐릭터 위치 - 기존 유지 */
 .character-stand {
   position: absolute;
-  top: -30px; /* 검색창 위로 조금 올리기 */
+  bottom: 100%;     /* form 위에 붙임 */
   left: 50%;
-  transform: translateX(-100%);
+  transform: translateX(-50%);
   pointer-events: none;
   z-index: 1001;
+  margin-bottom: 10px;  /* 여백 조절 */
 }
 
 /* ✅ 검색폼 - 기존 유지 */
