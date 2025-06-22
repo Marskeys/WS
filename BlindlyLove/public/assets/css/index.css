@@ -93,7 +93,7 @@
 
 @media (max-width: 768px) {
   #character-svg {
-    width: 95%;           /* ✅ 부모 기준으로 자연스럽게 줄어들게 */
+    width: 80%;           /* ✅ 부모 기준으로 자연스럽게 줄어들게 */
     min-width: 150px;      /* ✅ 너무 작아지지 않게 최소 보장 */
     max-width: 240px;     /* ✅ 너무 커지지도 않게 */
     height: auto;
