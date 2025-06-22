@@ -93,9 +93,10 @@
 
 @media (max-width: 768px) {
   #character-svg {
-    width: 100px;
+    width: 35%;           /* ✅ 부모 기준으로 자연스럽게 줄어들게 */
+    min-width: 80px;      /* ✅ 너무 작아지지 않게 최소 보장 */
+    max-width: 120px;     /* ✅ 너무 커지지도 않게 */
     height: auto;
-    max-width: 50%; 
   }
 }
 
