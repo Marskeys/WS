@@ -252,25 +252,7 @@ html, body {
 }
 
 
-/* ✅ 검색폼 - 기존 유지 */
-.search-form {
-  width: 100%;
-  max-width: 600px;
-  height: 46px;
-  margin-top: 18px;
-  padding: 0 1.5rem;
-  box-sizing: border-box;
-  border: 1px solid #a48fdd;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  background-color: white;
-}
 
-.search-form:hover {
-  border-color: #9d6bff;
-  box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
-}
 
 /* ✅ 검색 input - 기존 유지 */
 .search-box {

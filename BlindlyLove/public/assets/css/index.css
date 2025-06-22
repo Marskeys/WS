@@ -54,6 +54,10 @@
   background-color: white;
 }
 
+.search-form:hover {
+  border-color: #9d6bff;
+  box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
+}
 .character-stand {
   position: absolute;
   bottom: 100%;              /* ✅ 검색창 윗면에 딱 붙음 */
