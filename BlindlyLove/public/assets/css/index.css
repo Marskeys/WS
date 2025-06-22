@@ -196,11 +196,15 @@
   font-weight: bold;
 }
 
+.board-wrapper {
+  padding: 0 2rem; /* ✅ 좌우 여백! */
+  box-sizing: border-box;
+}
+
 .board-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  padding: 0 2rem;
 }
 
 .board-table td a {
