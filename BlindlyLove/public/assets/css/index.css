@@ -114,7 +114,7 @@
   background: linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%);
   min-height: 100vh;
   flex-direction: column;
-  padding: 0rem;
+  padding: 0 2rem; 
   display: flex;
   width: 100%;
   align-items: center;  
@@ -170,7 +170,7 @@
    ✅ 데스크탑용 게시판 (테이블)
 ------------------------------ */
 .tab-board {
-  padding: 10rem 2rem 0; 
+  padding: 4rem 2rem 0; 
   font-family: 'Noto Sans KR', sans-serif;
 }
 
