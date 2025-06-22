@@ -193,3 +193,10 @@
       }
     }
     
+
+    .search-container,
+.tab-board {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto; /* 진짜로 가운데로 정렬되게 */
+}
