@@ -59,10 +59,6 @@ window.addEventListener("load", () => {
   const preloader = document.getElementById("preloader");
   const mainContent = document.getElementById("main-content");
 
-  // 캐릭터 먼저 보이게
-  document.querySelectorAll(".character-stand").forEach((el) => {
-    el.classList.add("visible");
-  });
 
   preloader.style.opacity = "0";
   setTimeout(() => {
