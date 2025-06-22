@@ -47,6 +47,7 @@
   display: flex;
   align-items: center;
   background-color: white;
+  justify-content: space-between;
 }
 
 .search-form:hover {
@@ -57,7 +58,6 @@
 .search-wrapper {
   width: 100%;
   max-width: 700px;
-  padding: 0 1rem;  
   margin: 0 auto;
 }
 
