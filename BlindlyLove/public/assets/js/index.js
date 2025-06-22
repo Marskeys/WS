@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const posts = [
   { title: "안녕하세요", writer: "동선", category: "notice", views: 33, date: "2025.06.20" },
-  { title: "오늘 너무 힘들었어요", writer: "태선", category: "free", views: 128, date: "2025.06.21" },
+  { title: "오늘 너무 힘들었어요", writer: "동선", category: "free", views: 128, date: "2025.06.21" },
   { title: "실제 후기를 공유합니다", writer: "다솜", category: "review", views: 88, date: "2025.06.19" },
   { title: "복지 신청 방법 정리", writer: "세인", category: "info", views: 210, date: "2025.06.22" },
 ];
