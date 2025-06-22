@@ -242,3 +242,49 @@ body.dark .welcome-text {
 body.dark .side-panel{
   background: linear-gradient(to bottom, #000000 0%, #3c2c55 70%, #5a3f6b 100%) !important;
 }
+
+
+
+
+
+@keyframes glowFade {
+  0% {
+    background: linear-gradient(to right, #000, #000);
+    color: #fff;
+  }
+  100% {
+    background: linear-gradient(to right, #eee, #fff);
+    color: #333;
+  }
+}
+
+body.light .auth-btn.write-post {
+  animation: glowFade 0.4s forwards;
+  animation-delay: 0s;
+}
+
+body.light .auth-btn.logout {
+  animation: glowFade 0.4s forwards;
+  animation-delay: 0.4s; /* ✅ 글쓰기 끝난 뒤 시작 */
+}
+
+@keyframes glowFadeDark {
+  0% {
+    background: linear-gradient(to right, #fff, #fff);
+    color: #333;
+  }
+  100% {
+    background: linear-gradient(to right, #222, #111);
+    color: #fff;
+  }
+}
+
+body.dark .auth-btn.write-post {
+  animation: glowFadeDark 0.4s forwards;
+  animation-delay: 0s;
+}
+
+body.dark .auth-btn.logout {
+  animation: glowFadeDark 0.4s forwards;
+  animation-delay: 0.4s;
+}
