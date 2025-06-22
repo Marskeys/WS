@@ -336,3 +336,13 @@
     color: #777;
   }
 }
+
+.ad-box {
+  margin: 2rem 0;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 160px; /* 사이드패널 너비 고려 */
+}
