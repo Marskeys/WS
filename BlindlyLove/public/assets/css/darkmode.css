@@ -243,25 +243,9 @@ body.dark .side-panel{
   background: linear-gradient(to bottom, #000000 0%, #3c2c55 70%, #5a3f6b 100%) !important;
 }
 
-
-
-
-/* ✅ 다크모드: 글쓰기 버튼 애니메이션 */
-body.dark .auth-btn.write-post {
-  background: linear-gradient(to right, #333, #111);
-  background-size: 200% 100%;
-  animation: leftToRightFade 0.5s forwards;
-  animation-delay: 0s;
-  color: #fff;
-  border-color: #aaa;
-}
-
-/* ✅ 다크모드: 로그아웃 버튼 애니메이션 */
-body.dark .auth-btn.logout {
-  background: linear-gradient(to right, #333, #111);
-  background-size: 200% 100%;
-  animation: leftToRightFade 0.5s forwards;
-  animation-delay: 0.5s; /* ✨ 글쓰기 끝난 후 시작 */
-  color: #fff;
-  border-color: #aaa;
+body.dark .header-top {
+  background-color: #141433 !important;
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.12),
+              0 0 15px rgba(255, 215, 0, 0.2); /* ✨ 황금빛 glow */
+  border-bottom: none !important;
 }
