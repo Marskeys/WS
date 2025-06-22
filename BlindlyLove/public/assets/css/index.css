@@ -273,3 +273,13 @@
   }
 }
 
+.full-layout {
+  display: flex;
+  flex-direction: column; /* ✅ 세로로 정렬되게 */
+  align-items: center;     /* 가운데 정렬 */
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
