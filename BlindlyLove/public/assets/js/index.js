@@ -135,14 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function positionCharacterToSearchBox() {
     const searchForm = document.getElementById('search-form');
     const character = document.querySelector('.character-stand');
-
+  
     if (!searchForm || !character) return;
-
-    const searchRect = searchForm.getBoundingClientRect();
-
-    character.style.position = 'absolute';
-    character.style.left = `${searchRect.left + window.scrollX + 30}px`;
-    character.style.top = `${searchRect.top + window.scrollY - 175}px`;
+  
+    // layout이 완전히 계산된 다음 실행되도록 delay
+    requestAnimationFrame(() => {
+      const searchRect = searchForm.getBoundingClientRect();
+  
+      character.style.position = 'absolute';
+      character.style.left = `${searchRect.left + window.scrollX + 30}px`;
+      character.style.top = `${searchRect.top + window.scrollY - 175}px`;
+    });
   }
 
   window.addEventListener('resize', positionCharacterToSearchBox);
