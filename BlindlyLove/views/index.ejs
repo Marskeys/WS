@@ -27,21 +27,28 @@
               </div>
 
               <div class="search-container">
+                <!-- 로고 -->
                 <a href="/">
                   <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
                 </a>
-
-                <div class="character-stand">
-                  <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+              
+                <!-- 검색창 & 캐릭터를 같이 감싸는 박스 -->
+                <div class="search-wrapper">
+                  <!-- 캐릭터 -->
+                  <div class="character-stand">
+                    <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+                  </div>
+              
+                  <!-- 검색창 -->
+                  <form method="get" action="/search" class="search-form" id="search-form">
+                    <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
+                    <button type="submit" class="icon-submit-btn" aria-label="검색">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </form>
                 </div>
-
-                <form method="get" action="/search" class="search-form" id="search-form">
-                  <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
-                  <button type="submit" class="icon-submit-btn" aria-label="검색">
-                    <i class="fas fa-search"></i>
-                  </button>
-                </form>
-
+              
+                <!-- 게시판 탭 -->
                 <div class="tab-board">
                   <div class="tabs">
                     <button class="tab active" onclick="filterBoard('all')">전체글</button>
@@ -50,7 +57,7 @@
                     <button class="tab" onclick="filterBoard('review')">후기</button>
                     <button class="tab" onclick="filterBoard('info')">정보공유</button>
                   </div>
-
+              
                   <table class="board-table">
                     <thead>
                       <tr>
@@ -67,6 +74,7 @@
                   </table>
                 </div>
               </div>
+              
             </aside>
           </div>
         </div>
