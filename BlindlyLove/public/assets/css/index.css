@@ -81,7 +81,7 @@
   position: absolute;
   bottom: 100%;           /* ✅ 검색창 위에 */
   left: 20px;             /* ✅ 검색창 안에서 상대 위치 */
-  transform: translateY(-10px);
+  transform: translateY(-30px);
   pointer-events: none;
   z-index: 1000;
 }
