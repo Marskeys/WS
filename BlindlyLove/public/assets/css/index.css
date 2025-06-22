@@ -173,10 +173,12 @@
       opacity: 0.95;
     }
     
-    /* 기존 layout 영향 없게 */
     .main-layout {
       flex: 1;
       max-width: 1000px;
+      margin: 0 auto; /* ⭐ 가운데 정렬 핵심! */
+      display: flex;
+      flex-direction: column;
     }
     
     /* 반응형: 작은 화면에선 사이드 패널 숨기기 */
