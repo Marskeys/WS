@@ -141,6 +141,12 @@
   opacity: 0.95;
 }
 
+.side-panel.right-panel-only {
+  flex-shrink: 0;
+  width: 300px;
+}
+
+
 .main-layout {
   flex: 1;
   display: flex;
