@@ -133,10 +133,11 @@
 
 .side-panel {
   flex: 1; /* 💡 비율 기반으로 너비 설정 */
-  max-width: 300px;
+  max-width: 250px;
   min-width: 180px; /* 💡 너무 좁아지지 않게 */
-  /*background-color: #ea3c76;*/
-  background-color:transparent;
+  background-color: #ea3c76;
+  
+ /* background-color:transparent;*/
   border-radius: 0;
   min-height: 100vh;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
