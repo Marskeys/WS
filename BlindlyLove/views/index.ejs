@@ -54,41 +54,6 @@
             <% }) %>
           </div>
 
-          <!-- 🟡 게시글 테이블 (데스크탑) -->
-          <table class="board-table">
-            <thead>
-              <tr>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>카테고리</th>
-                <th>날짜</th>
-              </tr>
-            </thead>
-            <tbody id="board-content">
-              <% posts.forEach(post => { %>
-                <tr data-category="<%= post.categories %>">
-                  <td><a href="/post/<%= post.id %>"><%= post.title %></a></td>
-                  <td><%= post.author %></td>
-                  <td><%= post.categories %></td>
-                  <td><%= post.created_at.toISOString().slice(0, 10) %></td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
-
-          <!-- ✅ 모바일 전용 게시판 리스트 -->
-          <div class="mobile-board-list">
-            <% posts.forEach(post => { %>
-              <div class="mobile-post-item" data-category="<%= post.categories %>">
-                <a href="/post/<%= post.id %>" class="post-title"><%= post.title %></a>
-                <div class="post-info">
-                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
-                </div>
-              </div>
-            <% }) %>
-          </div>
-        </div>
-      </div>
 
       <!-- 우측 패널 -->
       <aside class="side-panel right-panel-only">
