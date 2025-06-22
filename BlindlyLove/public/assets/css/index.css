@@ -64,13 +64,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;                 /* ✅ 검색창 너비에 맞춤 */
+  width: 100%;
   display: flex;
-  transform: translate(-70%, -50%);
+  justify-content: flex-start;
+  padding-left: 30px; /* ← 여기서 위치만 제어 */
+  transform: translateY(-100%); /* ✅ 위로만 올려 */
   pointer-events: none;
   z-index: 1000;
-  justify-content: flex-start;    /* ✅ 왼쪽 정렬 */
-  padding-left: 30px;    
 }
 
 #character-svg {
