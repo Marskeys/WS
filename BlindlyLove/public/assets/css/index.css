@@ -116,164 +116,138 @@
   padding: 0rem;
   display: flex;
   flex-direction: column;
-  align-items: center;  /* ✅ 추가! 전체를 가운데로 정렬 */
+  align-items: center;  
 }
-    
+  /* ------------------------------
+   ✅ 공통 레이아웃 스타일
+------------------------------ */
+.full-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0;
+  padding: 0;
+  max-width: 1500px;
+  margin: 0 auto;
+}
 
-    
-    .tab-board {
-      padding-top: 4rem;
-      font-family: 'Noto Sans KR', sans-serif;
-    }
-    
-    .tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    .tab {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ccc;
-      background: #f4f4f4;
-      cursor: pointer;
-      border-radius: 5px;
-      font-size: 0.95rem;
-    }
-    
-    .tab.active {
-      background: #ffe4e1;
-      border-color: #ff9999;
-      font-weight: bold;
-    }
-    
-    .board-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-    }
-    
-    .board-table th, .board-table td {
-      padding: 0.75rem;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    
-    .board-table th {
-      background-color: #fafafa;
-      color: #333;
-    }
+.side-panel {
+  flex: 0 0 400px;
+  background-color: #f7d3df;
+  border-radius: 0;
+  min-height: 100vh;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+  opacity: 0.95;
+}
 
-    
-    .full-layout {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0rem;
-      padding: 0rem 0rem;
-      max-width: 1500px;
-      margin: 0;
-    }
-    
+.main-layout {
+  flex: 1;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
 
-    
-    @media (max-width: 768px) {
-      .side-panel {
-        display: none;
-      }
-    
-    }
+.main-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 
-    @media (max-width: 768px) {
-      .tab {
-        font-size: 0.7rem;
-        white-space: nowrap;   /* 줄바꿈 금지 */
-        padding: 0.4rem 0.6rem;
-      }
-    
-      .tabs {
-        flex-wrap: nowrap;         /* 탭 줄바꿈 안되게 */
-        overflow-x: auto;          /* 가로로 넘기게 */
-        -webkit-overflow-scrolling: touch;
-      }
-    }
-    
-    
-    /* 좌우 패널 */
-    .side-panel {
-      flex: 0 0 400px;
-      background-color: #f7d3df;
-      border-radius: 0px;
-      height: auto;
-      min-height: 100vh;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
-      opacity: 0.95;
-    }
-    
-    .main-layout {
-      flex: 1;
-      max-width: 700px;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    /* 반응형: 작은 화면에선 사이드 패널 숨기기 */
-    @media (max-width: 768px) {
-      .side-panel {
-        display: none;
-      }
-    
-      .main-layout {
-        max-width: 100%;
-        padding: 0 1rem;
-      }
-    }
-    
-
-    .search-container,
+.search-container,
 .tab-board {
   width: 100%;
   max-width: 700px;
-  margin: 0 auto; /* 진짜로 가운데로 정렬되게 */
+  margin: 0 auto;
 }
 
-.mobile-board-list{
-  display: none;
+
+/* ------------------------------
+   ✅ 데스크탑용 게시판 (테이블)
+------------------------------ */
+.tab-board {
+  padding-top: 4rem;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.95rem;
+}
+
+.tab.active {
+  background: #ffe4e1;
+  border-color: #ff9999;
+  font-weight: bold;
+}
+
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.board-table th,
+.board-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.board-table th {
+  background-color: #fafafa;
+  color: #333;
+}
+
+
+/* ------------------------------
+   ✅ 모바일용 게시판 (리스트)
+------------------------------ */
+.mobile-board-list {
+  display: none; /* 기본은 숨김 */
+}
+
+
+/* ------------------------------
+   ✅ 반응형 (모바일 ≤ 768px)
+------------------------------ */
 @media (max-width: 768px) {
-  /* ✅ 전체 레이아웃을 세로로 변경 */
   .full-layout {
     flex-direction: column;
     align-items: center;
   }
 
-  /* ✅ 좌우 패널 숨김 */
   .side-panel {
     display: none;
   }
 
-  /* ✅ 메인 영역 전체 너비 */
   .main-layout {
     width: 100%;
     max-width: 100%;
     padding: 0 1rem;
   }
 
-  /* ✅ 메인 패널도 너비 고정 */
   .main-panel {
     width: 100%;
   }
 
-  /* ✅ 검색창, 탭보드 너비 고정 */
   .search-container,
   .tab-board {
     width: 100%;
     max-width: 100%;
   }
 
-  /* ✅ 탭 버튼 가로 스크롤 */
+  /* ✅ 탭 스크롤 */
   .tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -286,7 +260,7 @@
     padding: 0.4rem 0.6rem;
   }
 
-  /* ✅ 데스크탑용 테이블 숨김 */
+  /* ✅ 데스크탑 테이블 숨김, 모바일 게시판 표시 */
   .board-table {
     display: none;
   }
@@ -296,12 +270,12 @@
     width: 100%;
     padding: 0 1rem;
   }
-  
+
   .mobile-post-item {
     padding: 1rem 0;
     border-bottom: 1px solid #ddd;
   }
-  
+
   .mobile-post-item .post-title {
     font-size: 1rem;
     font-weight: bold;
@@ -310,18 +284,14 @@
     display: block;
     margin-bottom: 0.4rem;
   }
-  
+
   .mobile-post-item .post-title:hover {
     color: #a26bff;
     text-decoration: underline;
   }
-  
+
   .mobile-post-item .post-info {
     font-size: 0.85rem;
     color: #777;
   }
-
-  }
-
-
-
+}
