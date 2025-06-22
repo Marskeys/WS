@@ -91,7 +91,17 @@
   height: auto;
 }
 
+@media (max-width: 768px) {
+  #character-svg {
+    width: 70px;
+  }
+}
 
+@media (max-width: 480px) {
+  #character-svg {
+    width: 50px;
+  }
+}
 
 
 
