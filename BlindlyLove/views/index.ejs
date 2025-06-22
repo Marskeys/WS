@@ -1,89 +1,83 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="/assets/css/index.css" />
 <html lang="ko">
-    <%- include('partials/head') %>
-  <body class="light">
-    <%- include('partials/header') %> 
+  <%- include('partials/head') %>
+  <link rel="stylesheet" href="/assets/css/index.css" />
 
+  <body class="light">
+    <%- include('partials/header') %>
 
     <!-- 프리로더 -->
-<div id="preloader">
-  <div class="spinner"></div>
-</div>
-
-
-    <div class="main-layout">
-      <div class="page-body">
-        <div class="left-column expanded" id="left-column">
-          <aside class="left-panel">
-            <div class="cherry-container">
-              <canvas id="cherry-canvas"></canvas>
-            </div>
-
-            <div class="search-container">
-              <a href="/">
-                <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
-              </a>
-
-              <div class="character-stand">
-                <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
-              </div>
-
-              <form method="get" action="/search" class="search-form" id="search-form">
-                <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
-                <button type="submit" class="icon-submit-btn" aria-label="검색">
-                  <i class="fas fa-search"></i>
-                </button>
-              </form>
-
-              <div class="tab-board">
-                <div class="tabs">
-                  <button class="tab active" onclick="filterBoard('all')">전체글</button>
-                  <button class="tab" onclick="filterBoard('notice')">공지사항</button>
-                  <button class="tab" onclick="filterBoard('free')">자유게시판</button>
-                  <button class="tab" onclick="filterBoard('review')">후기</button>
-                  <button class="tab" onclick="filterBoard('info')">정보공유</button>
-                </div>
-              
-                <table class="board-table">
-                  <thead>
-                    <tr>
-                      <th>제목</th>
-                      <th>작성자</th>
-                      <th>카테고리</th>
-                      <th>조회수</th>
-                      <th>날짜</th>
-                    </tr>
-                  </thead>
-                  <tbody id="board-content">
-                    <!-- 게시글들이 여기에 자바스크립트로 삽입될 예정 -->
-                  </tbody>
-                </table>
-              </div>
-              
-            </div>
-          </aside>
-        </div>
-
-        
-
-        <div class="right-panel-container hidden" id="right-panel">
-          <main class="right-panel">
-            <section id="post-container" class="post-list">
-              <div class="post-item">
-                <h3>아직 준비 ㄴㄴ</h3>
-              </div>
-            </section>
-          </main>
-        </div>
-      </div>
+    <div id="preloader">
+      <div class="spinner"></div>
     </div>
 
+    <!-- ✅ 전체 레이아웃 시작 -->
+    <div class="main-layout">
+      <div class="full-layout">
+        
+        <!-- ✅ 좌측 사이드 패널 -->
+        <aside class="side-panel left-panel">
+          <!-- 나중에 광고나 정보 배치 -->
+        </aside>
 
+        <!-- ✅ 메인 콘텐츠 -->
+        <main class="main-content">
+          <div class="cherry-container">
+            <canvas id="cherry-canvas"></canvas>
+          </div>
 
-    
+          <div class="search-container">
+            <a href="/">
+              <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
+            </a>
+
+            <div class="character-stand">
+              <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+            </div>
+
+            <form method="get" action="/search" class="search-form" id="search-form">
+              <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." aria-label="검색어 입력" />
+              <button type="submit" class="icon-submit-btn" aria-label="검색">
+                <i class="fas fa-search"></i>
+              </button>
+            </form>
+
+            <div class="tab-board">
+              <div class="tabs">
+                <button class="tab active" onclick="filterBoard('all')">전체글</button>
+                <button class="tab" onclick="filterBoard('notice')">공지사항</button>
+                <button class="tab" onclick="filterBoard('free')">자유게시판</button>
+                <button class="tab" onclick="filterBoard('review')">후기</button>
+                <button class="tab" onclick="filterBoard('info')">정보공유</button>
+              </div>
+
+              <table class="board-table">
+                <thead>
+                  <tr>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>카테고리</th>
+                    <th>조회수</th>
+                    <th>날짜</th>
+                  </tr>
+                </thead>
+                <tbody id="board-content">
+                  <!-- JS로 게시글 삽입 예정 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+
+        <!-- ✅ 우측 사이드 패널 -->
+        <aside class="side-panel right-panel">
+          <!-- 배너 자리 -->
+        </aside>
+      </div>
+    </div>
+    <!-- ✅ 전체 레이아웃 끝 -->
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
-
   </body>
 </html>
