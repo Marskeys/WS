@@ -42,10 +42,6 @@ app.get('/session', (req, res) => {
   }
 });
 
-// ✅ 메인 페이지
-app.get('/', (req, res) => {
-  res.render('index', { pageCss: 'main' });
-});
 
 // ✅ 회원가입 페이지
 app.get('/signup', (req, res) => {
