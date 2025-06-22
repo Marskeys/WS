@@ -4,6 +4,15 @@
   <title>회원가입 | BlindLove</title>
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <%- include('partials/head') %> 
+  <style>
+    .notice-text {
+      text-align: center;
+      color: #c00;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body class="no-fixed-footer">
   <%- include('partials/header') %>
@@ -13,29 +22,29 @@
       <img src="/assets/images/signup.svg" alt="BlindLove 로고" />
     </div>
 
-    <h2></h2>
+    <h2 class="notice-text">아직 서비스 시작 전입니다</h2>
 
     <% if (error) { %>
       <div class="error-msg"><%= error %></div>
     <% } %>
 
-    <form action="/signup" method="POST">
+    <form action="/signup" method="POST" onsubmit="return false;">
         <div class="input-with-button">
-          <input type="text" name="username" placeholder="닉네임" required />
-          <button type="button" class="check-btn" onclick="checkNickname()">중복확인</button>
+          <input type="text" name="username" placeholder="닉네임" required disabled />
+          <button type="button" class="check-btn" disabled>중복확인</button>
         </div>
-        <div id="nickname-msg" class="check-msg"></div> <!-- ✅ 추가 -->
+        <div id="nickname-msg" class="check-msg"></div>
       
         <div class="input-with-button">
-          <input type="text" name="user_id" placeholder="아이디" required />
-          <button type="button" class="check-btn" onclick="checkId()">중복확인</button>
+          <input type="text" name="user_id" placeholder="아이디" required disabled />
+          <button type="button" class="check-btn" disabled>중복확인</button>
         </div>
-        <div id="id-msg" class="check-msg"></div> <!-- ✅ 추가 -->
+        <div id="id-msg" class="check-msg"></div>
       
-        <input type="email" name="email" placeholder="이메일 (선택사항)" />
-        <input type="password" name="password" placeholder="비밀번호" required />
-        <button type="submit" class="signup-btn">가입하기</button>
-      </form>
+        <input type="email" name="email" placeholder="이메일 (선택사항)" disabled />
+        <input type="password" name="password" placeholder="비밀번호" required disabled />
+        <button type="submit" class="signup-btn" disabled>가입하기</button>
+    </form>
 
     <div class="extra">
       이미 계정이 있으신가요? <a href="/login">로그인</a>
@@ -46,61 +55,13 @@
   <%- include('partials/scripts') %>
 
   <script>
-  function checkId() {
-  const id = document.querySelector('input[name="user_id"]').value.trim(); // ✅ 여기서 name 바꿨지!
-  const msgEl = document.getElementById('id-msg');
-  if (!id) {
-    msgEl.textContent = '아이디를 입력하세요.';
-    msgEl.className = 'check-msg invalid';
-    return;
-  }
+    function checkId() {
+      return; // 서비스 비활성화 중
+    }
 
-  fetch(`/api/check-id?id=${encodeURIComponent(id)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.exists) {
-        msgEl.textContent = '❌ 이미 사용 중인 아이디입니다.';
-        msgEl.className = 'check-msg invalid show';
-      } else {
-        msgEl.textContent = '✅ 사용 가능한 아이디입니다!';
-        msgEl.className = 'check-msg valid show';
-      }
-    })
-    .catch(err => {
-      console.error('아이디 중복 확인 오류:', err);
-      msgEl.textContent = '서버 오류가 발생했습니다.';
-      msgEl.className = 'check-msg invalid';
-    });
-}
-  
     function checkNickname() {
-      const nickname = document.querySelector('input[name="username"]').value.trim();
-      const msgEl = document.getElementById('nickname-msg');
-      if (!nickname) {
-        msgEl.textContent = '닉네임을 입력하세요.';
-        msgEl.className = 'check-msg invalid';
-        return;
-      }
-  
-      fetch(`/api/check-nickname?nickname=${encodeURIComponent(nickname)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.exists) {
-            msgEl.textContent = '❌ 이미 사용 중인 닉네임입니다.';
-            msgEl.className = 'check-msg invalid show';
-          } else {
-            msgEl.textContent = '✅ 사용 가능한 닉네임입니다!';
-            msgEl.className = 'check-msg valid show';
-          }
-        })
-        .catch(err => {
-          console.error('닉네임 중복 확인 오류:', err);
-          msgEl.textContent = '서버 오류가 발생했습니다.';
-          msgEl.className = 'check-msg invalid';
-        });
+      return; // 서비스 비활성화 중
     }
   </script>
-  
-  
 </body>
 </html>
