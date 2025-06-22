@@ -75,6 +75,18 @@
             </aside>
       </div>
 
+      <!-- 모바일용 게시판 -->
+<div class="mobile-board-list">
+  <% posts.forEach((post) => { %>
+    <div class="mobile-post-item">
+      <div class="post-title"><%= post.title %></div>
+      <div class="post-info">
+        <%= post.author %> | <%= post.date %> | 조회수 <%= post.views %> | <%= post.category %>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
       <!-- 우측 패널 -->
       <aside class="side-panel right-panel-only"> <div style="height: 100vh;"></div></aside>
 

@@ -237,3 +237,40 @@
   max-width: 700px;
   margin: 0 auto; /* 진짜로 가운데로 정렬되게 */
 }
+
+
+/* 기본은 모바일 게시판 숨김 */
+.mobile-board-list {
+  display: none;
+}
+
+/* 모바일 전용 스타일 */
+@media (max-width: 768px) {
+  .board-table {
+    display: none; /* 기존 테이블 숨김 */
+  }
+
+  .mobile-board-list {
+    display: block;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .mobile-post-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .mobile-post-item .post-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    color: #222;
+  }
+
+  .mobile-post-item .post-info {
+    font-size: 0.85rem;
+    color: #666;
+  }
+}
+
