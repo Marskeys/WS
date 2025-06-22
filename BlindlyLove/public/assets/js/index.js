@@ -151,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("search-form");
   const searchInput = document.querySelector(".search-box");
   const mobileResults = document.getElementById("mobile-search-results");
-  const rightPanel = document.getElementById("right-panel");
 
   form?.addEventListener("submit", (e) => {
     const isMobile = window.innerWidth <= 768;

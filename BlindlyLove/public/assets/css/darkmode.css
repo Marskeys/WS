@@ -36,11 +36,6 @@ body.dark .left-panel {
   height: auto !important;
 }
 
-/* 오른쪽 패널 */
-body.dark .right-panel {
-  background-color: #252535;
-  box-shadow: inset 10px 0 8px -10px rgba(0, 0, 0, 0.3);
-}
 
 /* 검색창 form */
 body.dark .search-form {
@@ -212,9 +207,7 @@ body.dark .hamburger span {
 
 /* 다크모드에서 전체 배경 뚫기 */
 body.dark .left-column,
-body.dark .right-panel-container,
-body.dark .left-panel,
-body.dark .right-panel {
+body.dark .left-panel {
   background: transparent !important;
   box-shadow: none !important;
 }
