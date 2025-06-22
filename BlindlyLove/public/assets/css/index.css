@@ -118,7 +118,7 @@
   display: flex;
   width: 100%;
   align-items: center;  
-  max-width: 1000px; 
+  max-width: calc(100vw - 300px);
 }
   /* ------------------------------
    ✅ 공통 레이아웃 스타일
