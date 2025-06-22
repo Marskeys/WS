@@ -55,7 +55,7 @@
 .main-panel {
   background: linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%);
   min-height: 100vh;
-  padding: 2rem;
+  padding: 0rem;
   display: flex;
   flex-direction: column;
   align-items: center;  /* ✅ 추가! 전체를 가운데로 정렬 */
