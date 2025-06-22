@@ -184,6 +184,19 @@
     
     }
 
+    @media (max-width: 768px) {
+      .tab {
+        font-size: 0.8rem;
+        white-space: nowrap;   /* 줄바꿈 금지 */
+        padding: 0.4rem 0.6rem;
+      }
+    
+      .tabs {
+        flex-wrap: nowrap;         /* 탭 줄바꿈 안되게 */
+        overflow-x: auto;          /* 가로로 넘기게 */
+        -webkit-overflow-scrolling: touch;
+      }
+    }
     
     
     /* 좌우 패널 */
