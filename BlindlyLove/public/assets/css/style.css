@@ -220,55 +220,30 @@ html, body {
   height: calc(100vh - 60px);
 }
 
-.left-column {
+.main-column {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
-.left-column.expanded {
+.main-column.expanded {
   width: 100vw;
 }
-.left-column.collapsed {
+.main-column.collapsed {
   width: 320px;
 }
-.left-column.mobile-top {
+.main-column.mobile-top {
   width: 100%;
   height: auto;
   order: -1;
 }
 
-.left-panel {
+.main-panel {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
   box-sizing: border-box;
-}
-
-.right-panel-container {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(20px);
-  transition: all 0.5s ease;
-  flex: 1;
-  background: white;
-}
-.right-panel-container.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(0);
-}
-.right-panel-container.hidden {
-  display: none;
-}
-
-.right-panel {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
-  box-sizing: border-box;
-  padding-bottom: 60px;
 }
 
 
