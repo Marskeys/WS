@@ -34,7 +34,7 @@
 
   
 .search-wrapper {
-  position: relative; /* ✅ 기준 설정 */
+  position: relative;
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
@@ -42,19 +42,17 @@
 
 .character-stand {
   position: absolute;
-  top: -80px;
-  left: 30%;
-  transform: translateX(-80%); 
+  top: -65px;
   width: 100%;
   display: flex;
-  justify-content: center;  /* ✅ 가운데 정렬 (부모 내부 기준) */
+  justify-content: center;
   pointer-events: none;
   z-index: 999;
   animation: floatY 3s ease-in-out infinite;
 }
 
 #character-svg {
-  width: 200px;
+  width: 220px;
   height: auto;
 }
   
