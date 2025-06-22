@@ -109,7 +109,7 @@
     
     .full-layout {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: flex-start;
       gap: 2rem;
       padding: 2rem 1rem;
