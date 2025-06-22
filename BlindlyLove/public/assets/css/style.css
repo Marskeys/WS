@@ -290,7 +290,7 @@ html, body {
   position: absolute;
   top: -30px; /* 검색창 위로 조금 올리기 */
   left: 50%;
-  transform: translateX(-30%);
+  transform: translateX(-100%);
   pointer-events: none;
   z-index: 1001;
 }
