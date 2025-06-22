@@ -238,3 +238,7 @@ body.dark .pop-up-form input {
 body.dark .welcome-text {
   color: #ffffff;
 }
+
+body.dark .side-panel{
+  background: linear-gradient(to bottom, #2b1e3f 0%, #3c2c55 70%, #5a3f6b 100%) !important;
+}
