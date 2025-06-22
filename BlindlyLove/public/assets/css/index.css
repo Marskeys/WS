@@ -44,7 +44,7 @@
   position: absolute;
   top: -80px;
   left: 50%;
-  transform: translateX(-60%); 
+  transform: translateX(-70%); 
   width: 100%;
   display: flex;
   justify-content: center;  /* ✅ 가운데 정렬 (부모 내부 기준) */
@@ -54,7 +54,7 @@
 }
 
 #character-svg {
-  width: 120px;
+  width: 200px;
   height: auto;
 }
   
