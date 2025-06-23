@@ -61,6 +61,7 @@
 
           <%
           function choosePostposition(word) {
+            if (!word || word.length === 0) return '';
             const lastChar = word[word.length - 1];
             const lastCode = lastChar.charCodeAt(0);
             const hasBatchim = (lastCode - 44032) % 28 !== 0;
@@ -68,9 +69,11 @@
           }
         %>
         
-        <p class="search-result-msg">
-          ‘<%= searchKeyword %><%= choosePostposition(searchKeyword) %>’ 검색 결과입니다.
-        </p>
+        <% if (isSearch && searchKeyword) { %>
+          <p class="search-result-msg">
+            ‘<%= searchKeyword %><%= choosePostposition(searchKeyword) %>’ 검색 결과입니다.
+          </p>
+        <% } %>
 
           <!-- 🟡 동적으로 생성된 카테고리 탭 -->
           <div class="tabs">
