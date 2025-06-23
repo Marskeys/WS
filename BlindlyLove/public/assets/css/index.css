@@ -185,6 +185,7 @@
   margin-right: 1rem;
 }
 
+
 .tab {
   margin-top: 2rem;
   padding: 0.3rem 0.9rem;
@@ -256,6 +257,14 @@
    ✅ 반응형 (모바일 ≤ 768px)
 ------------------------------ */
 @media (max-width: 768px) {
+
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    margin-right: 4rem;
+  }
+
   .full-layout {
     flex-direction: column;
     align-items: center;
