@@ -273,7 +273,12 @@ app.get('/', async (req, res) => {
 
   const categories = Array.from(categorySet);
 
-  res.render('index', { posts, categories });
+  res.render('index', {
+    posts,
+    categories,
+    isSearch: false,
+    searchKeyword: ''
+  });
 });
 
 // 🔥 ajax용 검색 API
