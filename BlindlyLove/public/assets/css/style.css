@@ -616,17 +616,24 @@ body.no-fixed-footer footer {
   
 
   /* 프리로더 전체 화면 덮기 */
-#preloader {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: #ffffff;
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.5s ease;
-}
+  #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff; /* 필요하면 배경색 지정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease; /* 부드럽게 사라짐 */
+  }
+  
+  #preloader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
 
 /* 스피너 애니메이션 */
 .spinner {
