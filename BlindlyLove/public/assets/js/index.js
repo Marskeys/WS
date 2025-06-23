@@ -17,15 +17,16 @@ function filterBoard(category) {
   // 데스크탑 테이블 필터링
   allDesktopRows.forEach((row) => {
     const rowCategory = row.getAttribute("data-category");
+    const rowCategories = rowCategory.split(',').map(c => c.trim());
     row.style.display =
-      category === "all" || rowCategory === category ? "" : "none";
+      category === "all" || rowCategories.includes(category) ? "" : "none";
   });
 
-  // 모바일 리스트 필터링
   allMobilePosts.forEach((post) => {
     const postCategory = post.getAttribute("data-category");
+    const postCategories = postCategory.split(',').map(c => c.trim());
     post.style.display =
-      category === "all" || postCategory === category ? "" : "none";
+      category === "all" || postCategories.includes(category) ? "" : "none";
   });
 }
 
