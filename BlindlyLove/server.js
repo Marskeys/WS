@@ -11,7 +11,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // ✅ JSON 파싱 추가
+app.use(express.json());
 
 // ✅ 세션 설정
 app.use(session({
@@ -27,9 +27,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// ✅ 로그인 상태 확인용 API
+// ✅ 로그인 상태 확인 API
 app.get('/session', (req, res) => {
-  console.log('✅ /session 요청 도착함');
   const user = req.session.user;
   if (user) {
     res.json({
@@ -42,29 +41,21 @@ app.get('/session', (req, res) => {
   }
 });
 
-
 // ✅ 회원가입 페이지
 app.get('/signup', (req, res) => {
   res.render('signup', { error: null });
 });
 
-// ✅ 로그인 처리 (팝업 기반 → JSON 응답)
+// ✅ 로그인
 app.post('/login', async (req, res) => {
   const { id, password } = req.body;
-
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
-
-    if (rows.length === 0) {
-      return res.status(401).json({ success: false, error: '존재하지 않는 아이디입니다.' });
-    }
+    if (rows.length === 0) return res.status(401).json({ success: false, error: '존재하지 않는 아이디입니다.' });
 
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
-
-    if (!match) {
-      return res.status(401).json({ success: false, error: '비밀번호가 일치하지 않습니다.' });
-    }
+    if (!match) return res.status(401).json({ success: false, error: '비밀번호가 일치하지 않습니다.' });
 
     req.session.user = {
       id: user.user_id,
@@ -86,7 +77,7 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// ✅ 글쓰기 (운영자만)
+// ✅ 글쓰기
 app.get('/write', (req, res) => {
   if (!req.session.user || req.session.user.is_admin !== 1) {
     return res.status(403).send('접근 권한이 없습니다.');
@@ -94,7 +85,7 @@ app.get('/write', (req, res) => {
   res.render('editor', { user: req.session.user });
 });
 
-// ✅ 아이디 중복 확인
+// ✅ ID 중복 확인
 app.get('/api/check-id', async (req, res) => {
   const { id } = req.query;
   try {
@@ -121,19 +112,16 @@ app.get('/api/check-nickname', async (req, res) => {
 // ✅ 회원가입 처리
 app.post('/signup', async (req, res) => {
   const { user_id, username, email, password } = req.body;
-
   if (!user_id || !username || !password) {
     return res.render('signup', { error: '필수 정보를 모두 입력해주세요.' });
   }
 
   try {
     const hashedPw = await bcrypt.hash(password, 10);
-
     await db.query(
       'INSERT INTO users (user_id, nickname, email, password) VALUES (?, ?, ?, ?)',
       [user_id, username, email || null, hashedPw]
     );
-
     res.redirect('/signup-success');
   } catch (err) {
     console.error('회원가입 오류:', err);
@@ -146,10 +134,9 @@ app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
-// 글 저장 라우터
+// ✅ 글 저장
 app.post('/savePost', async (req, res) => {
   const { title, content, categories } = req.body;
-
   if (!title || !content || !categories) {
     return res.status(400).json({ success: false, error: '입력값 누락' });
   }
@@ -159,7 +146,6 @@ app.post('/savePost', async (req, res) => {
       'INSERT INTO posts (title, content, categories, author) VALUES (?, ?, ?, ?)',
       [title, content, categories.join(','), req.session.user?.nickname || '익명']
     );
-
     res.json({ success: true });
   } catch (err) {
     console.error('글 저장 오류:', err);
@@ -167,12 +153,10 @@ app.post('/savePost', async (req, res) => {
   }
 });
 
-// ✅ 검색 결과 렌더링용 라우터
+// ✅ 검색 결과 페이지
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
-  if (!keyword) {
-    return res.redirect('/');
-  }
+  if (!keyword) return res.redirect('/');
 
   try {
     const [posts] = await db.query(`
@@ -182,15 +166,9 @@ app.get('/search', async (req, res) => {
       ORDER BY created_at DESC
     `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
-    // 기존 카테고리 처리 로직
     const categorySet = new Set();
     posts.forEach(post => {
-      const categories = post.categories.split(',').map(cat => cat.trim());
-      categories.forEach(cat => {
-        if (cat && !categorySet.has(cat)) {
-          categorySet.add(cat);
-        }
-      });
+      post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
     });
 
     const categories = Array.from(categorySet);
@@ -199,7 +177,8 @@ app.get('/search', async (req, res) => {
       posts,
       categories,
       isSearch: true,
-      searchKeyword: keyword
+      searchKeyword: keyword,
+      currentPath: req.path  // ✅ 여기가 핵심
     });
   } catch (err) {
     console.error('검색 오류:', err);
@@ -207,15 +186,38 @@ app.get('/search', async (req, res) => {
   }
 });
 
+// ✅ 메인 페이지
+app.get('/', async (req, res) => {
+  const [posts] = await db.query(`
+    SELECT id, title, content, categories, author, created_at
+    FROM posts
+    ORDER BY created_at DESC
+  `);
 
-// 게시글 보기 라우터
+  const categorySet = new Set();
+  posts.forEach(post => {
+    post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
+  });
+
+  const categories = Array.from(categorySet);
+
+  res.render('index', {
+    posts,
+    categories,
+    isSearch: false,
+    searchKeyword: '',
+    currentPath: req.path  // ✅ 여기도 핵심
+  });
+});
+
+// ✅ 게시글 보기
 app.get('/post/:id', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
   if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
   res.render('post-view', { post: rows[0] });
 });
 
-// 모든 카테고리 가져오기
+// ✅ 카테고리 전체 가져오기
 app.get('/api/categories', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM categories ORDER BY id ASC');
@@ -226,7 +228,7 @@ app.get('/api/categories', async (req, res) => {
   }
 });
 
-// 카테고리 추가
+// ✅ 카테고리 추가
 app.post('/api/categories', async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: '카테고리 이름이 필요합니다.' });
@@ -240,10 +242,9 @@ app.post('/api/categories', async (req, res) => {
   }
 });
 
-// 카테고리 삭제
+// ✅ 카테고리 삭제
 app.delete('/api/categories/:id', async (req, res) => {
   const { id } = req.params;
-
   try {
     await db.query('DELETE FROM categories WHERE id = ?', [id]);
     res.json({ success: true });
@@ -253,35 +254,7 @@ app.delete('/api/categories/:id', async (req, res) => {
   }
 });
 
-app.get('/', async (req, res) => {
-  const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, created_at
-    FROM posts
-    ORDER BY created_at DESC
-  `);
-
-  // ✅ 카테고리 추출 (콤마 구분된 걸 분해해서 순서대로 중복 제거)
-  const categorySet = new Set();
-  posts.forEach(post => {
-    const categories = post.categories.split(',').map(cat => cat.trim());
-    categories.forEach(cat => {
-      if (cat && !categorySet.has(cat)) {
-        categorySet.add(cat);
-      }
-    });
-  });
-
-  const categories = Array.from(categorySet);
-
-  res.render('index', {
-    posts,
-    categories,
-    isSearch: false,
-    searchKeyword: ''
-  });
-});
-
-// 🔥 ajax용 검색 API
+// ✅ AJAX 검색 API
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.json({ posts: [] });
@@ -296,14 +269,13 @@ app.get('/api/search', async (req, res) => {
   res.json({ posts });
 });
 
+// ✅ ads.txt
+app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
 // ✅ DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
-
-  // app.js 또는 index.js
-app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
 // ✅ 서버 실행
 app.listen(PORT, () => {
