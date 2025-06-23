@@ -307,7 +307,7 @@ body.dark .mobile-post-item .post-title {
 }
 
 
-body.dark #preloader {
+html.dark #preloader {
   background: #000000 !important; /* 필요하면 배경색 지정 */
   display: flex;
   transition: opacity 0.6s ease; /* 부드럽게 사라짐 */
