@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ✅ 1. 로그인 submit 처리
   const loginForm = document.querySelector("#loginBox form");
 
   loginForm?.addEventListener("submit", async (e) => {
@@ -18,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await res.json();
 
       if (result.success) {
-        location.reload(); // ✅ 로그인 성공 → 페이지 새로고침해서 로그인 UI 보이게!
+        location.reload();
       } else {
         alert(result.error || "로그인 실패");
       }
@@ -27,11 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
     }
   });
-});
 
-
-// ✅ 로그인 버튼 토글 기능
-document.addEventListener("DOMContentLoaded", () => {
+  // ✅ 2. 로그인 버튼 토글
   const loginBtn = document.getElementById("login");
   const loginBox = document.getElementById("loginBox");
 
@@ -53,15 +51,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// ✅ 3. 프리로더 서서히 사라지기
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('preloader');
 
-// ✅ 프리로더: 모든 이미지/SVG까지 로드된 후 본문 나타나게
-window.addEventListener("load", () => {
-  const preloader = document.getElementById("preloader");
+  if (preloader) {
+    preloader.classList.add('fade-out');
 
-
-  preloader.style.opacity = "0";
-  setTimeout(() => {
-    preloader.style.display = "none";
-  })
-
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 600); // 이 시간은 CSS에서 transition: opacity 0.6s와 동일해야 함
+  }
 });
