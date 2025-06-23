@@ -321,8 +321,8 @@
   .mobile-post-item::after {
     content: '';
     position: absolute;
-    left: 1rem;        /* 양쪽 여백 */
-    right: 1rem;
+    left: 1rem;        
+    right: 3rem;
     bottom: 0;
     height: 1px;
     background-color: #ddd;
