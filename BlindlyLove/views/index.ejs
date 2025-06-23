@@ -59,6 +59,10 @@
             </div>
           </div>
 
+          <% if (isSearch && searchKeyword) { %>
+            <p class="search-result-msg">‘<%= searchKeyword %>’로 검색한 결과입니다.</p>
+          <% } %>
+          
           <!-- 🟡 동적으로 생성된 카테고리 탭 -->
           <div class="tabs">
             <button class="tab active" onclick="filterBoard('all')">전체글</button>
