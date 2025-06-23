@@ -296,6 +296,12 @@ body.dark .tab.active {
   font-weight: bold;
 }
 
-body.dark .mobile-post-item {
-color:white !important;
+
+body.dark .mobile-post-item .post-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.4rem;
 }
