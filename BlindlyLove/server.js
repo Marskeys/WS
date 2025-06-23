@@ -235,6 +235,21 @@ app.get('/', async (req, res) => {
   res.render('index', { posts, categories });
 });
 
+// 🔥 ajax용 검색 API
+app.get('/api/search', async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) return res.json({ posts: [] });
+
+  const [posts] = await db.query(`
+    SELECT id, title, content, categories, author, created_at
+    FROM posts
+    WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
+    ORDER BY created_at DESC
+  `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+
+  res.json({ posts });
+});
+
 
 // ✅ DB 연결 확인
 db.query('SELECT NOW()')

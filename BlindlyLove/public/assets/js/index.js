@@ -1,14 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
   const hamburger = document.getElementById("hamburger-btn");
   const mobileMenu = document.getElementById("mobile-menu");
-  const mobileMenuHeader = mobileMenu.querySelector(".mobile-menu-header");
+  const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
+  const canvas = document.getElementById("cherry-canvas");
+  const ctx = canvas?.getContext("2d");
+  const characterObject = document.getElementById("character-svg");
+  const form = document.getElementById("search-form");
+  const input = document.querySelector(".search-box");
+  const boardBody = document.getElementById("board-content");
+  const tabContainer = document.querySelector(".tabs");
+  const mobileResults = document.getElementById("mobile-search-results");
+  const rightPanel = document.querySelector(".right-panel-only");
 
+  // 🍔 햄버거 메뉴
   hamburger?.addEventListener("click", () => {
     if (!mobileMenu.classList.contains("open")) {
-      mobileMenuHeader.appendChild(hamburger);
+      mobileMenuHeader?.appendChild(hamburger);
       hamburger.classList.add("is-in-menu");
     } else {
-      document.querySelector('.header-top').prepend(hamburger);
+      document.querySelector(".header-top")?.prepend(hamburger);
       hamburger.classList.remove("is-in-menu");
     }
 
@@ -17,11 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.toggle("menu-open");
   });
 
-  const canvas = document.getElementById("cherry-canvas");
-  const ctx = canvas?.getContext("2d");
-  const petals = [];
-  const petalCount = 55;
-
+  // 🌸 벚꽃 애니메이션
   if (canvas && ctx) {
     function resizeCanvas() {
       canvas.width = canvas.offsetWidth;
@@ -30,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
+    const petals = [];
+    const petalCount = 55;
     for (let i = 0; i < petalCount; i++) {
       petals.push({
         x: Math.random() * canvas.width,
@@ -71,34 +79,21 @@ document.addEventListener("DOMContentLoaded", () => {
     drawPetals();
   }
 
-  const characterObject = document.getElementById("character-svg");
+  // 👩‍🦽 캐릭터 애니메이션
+  function positionCharacterToSearchBox() { /* TODO */ }
 
-  function positionCharacterToSearchBox() {
-    // TODO: 실제 정렬 로직
-  }
-  
   function animateChar2(svgDoc) {
     const group = svgDoc.getElementById("char-2");
     if (!group) return;
-
     group.setAttribute("style", "transform-box: fill-box; transform-origin: center;");
-
-    let x = 0;
-    let direction = 1;
-    const step = 2.5;
-    const speed = 12;
-    const maxX = 500;
-    const minX = 0;
-    let paused = false;
+    let x = 0, direction = 1, step = 2.5, speed = 12, maxX = 500, minX = 0, paused = false;
 
     function frame() {
       if (paused) return;
-
       const flip = direction === -1 ? -1 : 1;
       const waveY = Math.sin(x * 0.05) * 3;
       const bump = Math.random() * 1.2 - 0.6;
       const y = waveY + bump;
-
       group.setAttribute("transform", `translate(${x}, ${y}) scale(${flip},1)`);
       x += step * direction;
 
@@ -122,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const tryStart = setInterval(() => {
         const svgDoc = characterObject.contentDocument;
         const char2 = svgDoc?.getElementById("char-2");
-
         if (char2) {
           clearInterval(tryStart);
           requestAnimationFrame(() => {
@@ -136,68 +130,51 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  window.addEventListener("resize", positionCharacterToSearchBox);
+  window.addEventListener("scroll", positionCharacterToSearchBox);
 
-  window.addEventListener('resize', positionCharacterToSearchBox);
-  window.addEventListener('scroll', positionCharacterToSearchBox);
+  // 🔍 검색 AJAX
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const keyword = input.value.trim();
+    if (!keyword) return;
 
-  const form = document.getElementById("search-form");
-  const searchInput = document.querySelector(".search-box");
-  const mobileResults = document.getElementById("mobile-search-results");
-
-  form?.addEventListener("submit", (e) => {
     const isMobile = window.innerWidth <= 768;
 
     if (isMobile) {
-      e.preventDefault();
       rightPanel?.classList.remove("visible");
       mobileResults?.classList.add("visible");
-
-      const searchContainer = document.querySelector(".search-container");
-      if (searchContainer) {
-        searchContainer.style.position = "fixed";
-        searchContainer.style.top = "0";
-        searchContainer.style.left = "0";
-        searchContainer.style.right = "0";
-        searchContainer.style.zIndex = "1003";
-        searchContainer.style.background = "white";
-        searchContainer.style.padding = "1rem";
-        searchContainer.style.borderBottom = "1px solid #ddd";
-      }
-
-      const resultsInner = mobileResults?.querySelector(".results-inner");
-      if (resultsInner && searchInput) {
-        resultsInner.innerHTML = `<h2>"${searchInput.value}" 검색 결과</h2><p>모바일 전용 검색 결과입니다.</p>`;
-      }
-    } else {
-      rightPanel?.classList.add("visible");
+      document.querySelector(".search-container").style.position = "fixed";
     }
+
+    const res = await fetch(`/api/search?q=${encodeURIComponent(keyword)}`);
+    const data = await res.json();
+
+    boardBody.innerHTML = '';
+    if (data.posts.length === 0) {
+      boardBody.innerHTML = '<tr><td colspan="4">검색 결과가 없습니다.</td></tr>';
+    } else {
+      data.posts.forEach(post => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><a href="/post/${post.id}">${post.title}</a></td>
+          <td>${post.author}</td>
+          <td>${post.categories}</td>
+          <td>${post.created_at.slice(0, 10)}</td>
+        `;
+        boardBody.appendChild(row);
+      });
+    }
+
+    // 검색결과 탭 추가
+    document.getElementById("search-tab")?.remove();
+    const searchTab = document.createElement("button");
+    searchTab.className = "tab active";
+    searchTab.id = "search-tab";
+    searchTab.textContent = "검색결과";
+    tabContainer.appendChild(searchTab);
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    searchTab.classList.add("active");
   });
 });
-
-
-  function filterBoard(category) {
-    const rows = document.querySelectorAll('#board-content tr');
-    rows.forEach(row => {
-      const cats = row.getAttribute('data-category').split(',').map(c => c.trim());
-      if (category === 'all' || cats.includes(category)) {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-
-        // ✅ 모바일용 필터 추가
-        const mobileItems = document.querySelectorAll('.mobile-post-item');
-        mobileItems.forEach(item => {
-          const cats = item.getAttribute('data-category').split(',').map(c => c.trim());
-          if (category === 'all' || cats.includes(category)) {
-            item.style.display = '';
-          } else {
-            item.style.display = 'none';
-          }
-        });
-
-    document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`.tab[onclick="filterBoard('${category}')"]`)?.classList.add('active');
-  }
-
