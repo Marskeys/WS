@@ -347,17 +347,21 @@
 }
 
 .search-result-msg {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #f3f3f3;  /* 연한 회색 배경 */
-  color: #333;                /* 진한 회색 텍스트 */
-  font-size: 1rem;
-  font-weight: 500;
+  margin: 2rem auto 1.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  color: #888;
   text-align: center;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  font-weight: 400;
+  font-style: italic;
+  border-left: 3px solid #ffd5ec;
+  background: #fff6fa;
+  max-width: 520px;
+  border-radius: 0 6px 6px 0;
+}
+
+body.dark .search-result-msg {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #ff85b3;
+  color: #ccc;
 }
