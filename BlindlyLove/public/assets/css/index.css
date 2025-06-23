@@ -314,8 +314,18 @@
   }
 
   .mobile-post-item {
+    position: relative;
     padding: 1rem 0;
-    border-bottom: 1px solid #ddd;
+  }
+  
+  .mobile-post-item::after {
+    content: '';
+    position: absolute;
+    left: 1rem;        /* 양쪽 여백 */
+    right: 1rem;
+    bottom: 0;
+    height: 1px;
+    background-color: #ddd;
   }
 
   .mobile-post-item .post-title {
