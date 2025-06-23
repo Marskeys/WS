@@ -305,3 +305,10 @@ body.dark .mobile-post-item .post-title {
   display: block;
   margin-bottom: 0.4rem;
 }
+
+
+body.dark #preloader {
+  background: #000000; /* 필요하면 배경색 지정 */
+  display: flex;
+  transition: opacity 0.6s ease; /* 부드럽게 사라짐 */
+}
