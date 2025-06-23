@@ -1,3 +1,34 @@
+function filterBoard(category) {
+  const allTabs = document.querySelectorAll(".tab");
+  const allDesktopRows = document.querySelectorAll(".board-table tbody tr");
+  const allMobilePosts = document.querySelectorAll(".mobile-post-item");
+
+  // 탭 active 클래스 처리
+  allTabs.forEach((tab) => {
+    tab.classList.remove("active");
+    if (
+      tab.textContent === category || // "정치", "종교" 등
+      (category === "all" && tab.textContent === "전체글")
+    ) {
+      tab.classList.add("active");
+    }
+  });
+
+  // 데스크탑 테이블 필터링
+  allDesktopRows.forEach((row) => {
+    const rowCategory = row.getAttribute("data-category");
+    row.style.display =
+      category === "all" || rowCategory === category ? "" : "none";
+  });
+
+  // 모바일 리스트 필터링
+  allMobilePosts.forEach((post) => {
+    const postCategory = post.getAttribute("data-category");
+    post.style.display =
+      category === "all" || postCategory === category ? "" : "none";
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const hamburger = document.getElementById("hamburger-btn");
   const mobileMenu = document.getElementById("mobile-menu");
@@ -178,35 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
     searchTab.classList.add("active");
   });
 
-  function filterBoard(category) {
-    const allTabs = document.querySelectorAll(".tab");
-    const allDesktopRows = document.querySelectorAll(".board-table tbody tr");
-    const allMobilePosts = document.querySelectorAll(".mobile-post-item");
-  
-    // 탭 active 클래스 처리
-    allTabs.forEach((tab) => {
-      tab.classList.remove("active");
-      if (
-        tab.textContent === category || // "정치", "종교" 등
-        (category === "all" && tab.textContent === "전체글")
-      ) {
-        tab.classList.add("active");
-      }
-    });
-  
-    // 데스크탑 테이블 필터링
-    allDesktopRows.forEach((row) => {
-      const rowCategory = row.getAttribute("data-category");
-      row.style.display =
-        category === "all" || rowCategory === category ? "" : "none";
-    });
-  
-    // 모바일 리스트 필터링
-    allMobilePosts.forEach((post) => {
-      const postCategory = post.getAttribute("data-category");
-      post.style.display =
-        category === "all" || postCategory === category ? "" : "none";
-    });
-  }
-  
+ 
+
 });
+
+window.filterBoard = filterBoard;
