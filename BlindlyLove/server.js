@@ -167,6 +167,47 @@ app.post('/savePost', async (req, res) => {
   }
 });
 
+// ✅ 검색 결과 렌더링용 라우터
+app.get('/search', async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) {
+    return res.redirect('/');
+  }
+
+  try {
+    const [posts] = await db.query(`
+      SELECT id, title, content, categories, author, created_at
+      FROM posts
+      WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
+      ORDER BY created_at DESC
+    `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+
+    // 기존 카테고리 처리 로직
+    const categorySet = new Set();
+    posts.forEach(post => {
+      const categories = post.categories.split(',').map(cat => cat.trim());
+      categories.forEach(cat => {
+        if (cat && !categorySet.has(cat)) {
+          categorySet.add(cat);
+        }
+      });
+    });
+
+    const categories = Array.from(categorySet);
+
+    res.render('index', {
+      posts,
+      categories,
+      isSearch: true,
+      searchKeyword: keyword
+    });
+  } catch (err) {
+    console.error('검색 오류:', err);
+    res.status(500).send('검색 중 오류 발생');
+  }
+});
+
+
 // 게시글 보기 라우터
 app.get('/post/:id', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
