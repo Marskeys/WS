@@ -268,3 +268,22 @@ body.dark .board-table th {
   background-color: rgba(255, 255, 255, 0.5);
   color: #ffffff;
 }
+
+body.dark .tab {
+  margin-top: 2rem;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid #d0cce6;
+  background: #000000;
+  cursor: pointer;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+body.dark .tab:hover {
+  background-color: #f7f3ff;
+  border-color: #c4b2ff;
+}
