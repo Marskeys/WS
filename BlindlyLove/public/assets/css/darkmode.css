@@ -284,6 +284,7 @@ body.dark .tab {
 }
 
 body.dark .tab:hover {
-  background-color: #f7f3ff;
+  color: white;
+  background-color: rgba(247, 243, 255, 0.3);
   border-color: #c4b2ff;
 }
