@@ -1,28 +1,66 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title><%= post.title %></title>
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="stylesheet" href="/assets/css/editor.css">
+  <title><%= post.title %> | BlindLove</title>
+  <link rel="stylesheet" href="/assets/css/signup.css" />
+  <%- include('partials/head') %>
+  <style>
+    .post-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .post-meta {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      margin-bottom: 2rem;
+    }
+
+    .post-content {
+      line-height: 1.7;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      color: #333;
+    }
+
+    body.dark .post-content {
+      color: #ddd;
+    }
+
+    .logo-wrap img {
+      max-width: 150px;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
-<body>
+<body class="no-fixed-footer">
   <%- include('partials/header') %>
 
-  <div class="post-view-container">
-    <article class="post-view-card">
-      <h1 class="post-view-title"><%= post.title %></h1>
-      <div class="post-view-meta">
-        <span class="category">📁 <%= post.categories %></span>
-        <span class="author">✍️ <%= post.author %></span>
-        <span class="date">🕒 <%= new Date(post.created_at).toLocaleString() %></span>
-      </div>
-      <div class="post-view-content">
-        <%- post.content %>
-      </div>
-    </article>
+  <div class="signup-container"> <!-- 기존 디자인 활용 -->
+    <div class="logo-wrap">
+      <img src="/assets/images/signup.svg" alt="BlindLove 로고" />
+    </div>
+
+    <div class="post-title"><%= post.title %></div>
+    <div class="post-meta">
+      <span>카테고리: <%= post.categories %></span><br>
+      <span>작성자: <%= post.author %></span><br>
+      <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
+    </div>
+
+    <div class="post-content">
+      <%- post.content %>
+    </div>
+
+    <div class="extra" style="margin-top: 2rem;">
+      <a href="/" class="back-home-link">← 홈으로 돌아가기</a>
+    </div>
   </div>
 
   <%- include('partials/footer') %>
+  <%- include('partials/scripts') %>
 </body>
 </html>
