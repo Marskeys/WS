@@ -12,20 +12,20 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
      crossorigin="anonymous"></script>
 
-     <script>
-      (function() {
-        const STORAGE_KEY = 'theme-mode';
-        const savedTheme = localStorage.getItem(STORAGE_KEY);
-        const isDark = !savedTheme || savedTheme === 'dark';
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-          document.body?.classList?.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-          document.body?.classList?.remove('dark');
-        }
-      })();
-    </script>
+
+ <script>
+  (function() {
+    const STORAGE_KEY = 'theme-mode';
+    const savedTheme = localStorage.getItem(STORAGE_KEY);
+    const isDark = !savedTheme || savedTheme === 'dark';
+
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
 
   
 
