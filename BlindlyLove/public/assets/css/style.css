@@ -689,32 +689,4 @@ body.no-fixed-footer footer {
     transform-origin: right center; /* ✅ 오른쪽 기준으로 축소 */
   }
 
-  .auth-buttons .auth-btn {
-    font-size: 3.2vw;          /* ✅ 모바일 화면 너비에 따라 조정됨 */
-    padding: 0.4rem 1.5vw;
-  }
-
-  .auth-buttons .auth-btn.login {
-    font-size: 0.75rem;               /* ✅ 글자 너무 작아지지 않게 */
-    padding: 0.4rem 0.9rem;           /* ✅ 가로세로 패딩 비율 유지 */
-    border-radius: 8px;               /* ✅ 버튼 형태 유지 */
-    min-width: 80px;                  /* ✅ 눌러야 하니까 너무 좁아지지 않게 */
-    line-height: 1.2;                 /* ✅ 비율 유지 */
-    box-sizing: border-box;
-    white-space: nowrap;             /* ✅ 줄바꿈 방지 */
-    flex-shrink: 0;                  /* ✅ 너비 줄어들지 않게 */
-    
-  .light-switch {
-    transform: scale(0.85);     /* ✅ 토글도 작게 */
-    margin-left: 1vw;
-  }
-
-  .welcome-text {
-    font-size: 2.5vw;
-    margin-left: 1vw;
-    position: relative;
-    top: auto;
-    right: auto;
-    white-space: nowrap;
-  }
 }
