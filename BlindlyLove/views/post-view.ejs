@@ -33,10 +33,15 @@
       color: #ddd;
     }
 
-    .logo-wrap img {
+    .logo-wrap {
+  display: flex;
+  justify-content: center;  /* ✅ 가로 가운데 정렬 */
+  align-items: center;      /* ✅ 세로 가운데 정렬 (필요시) */
+}
+
+.logo-wrap img {
   max-width: 150px;
-  height: auto;         /* ✅ 세로는 비율에 맞게 자동 */
-  aspect-ratio: auto;   /* ✅ 또는 생략 가능 */
+  height: auto;
   display: block;
   margin-bottom: 1rem;
 }
