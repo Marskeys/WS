@@ -129,12 +129,8 @@ html.dark body object#character-svg {
   filter: saturate(0.95);
 }
 
-/* 헤더 */
-html.dark body .header-top {
-  background-color: #141433 !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
-}
+
+
 
 /* 로그인 버튼 (기본) */
 html.dark body .auth-btn.login {
@@ -211,10 +207,17 @@ html.dark body .main-panel {
   box-shadow: none !important;
 }
 
-/* 필요하면 header도 투명 처리 */
+/* ✅ 최종: header-top은 이 정의 하나로 충분 */
 html.dark body .header-top {
-  box-shadow: none !important;
+  z-index: 9000;
+  background-color: #141433 !important;
+  box-shadow:
+    0 3px 10px rgba(255, 215, 0, 0.3),
+    0 0 25px rgba(255, 215, 0, 0.4),
+    0 0 40px rgba(255, 200, 0, 0.6) !important;
+  border-bottom: none !important;
 }
+
 
 html.dark body .login-box {
   background: linear-gradient(135deg, #202020, #2a2a2a);
@@ -242,14 +245,7 @@ html.dark body .side-panel{
   background: transparent!important;
 }
 
-html.dark body .header-top {
-  z-index: 1000;
-  box-shadow:
-    0 3px 10px rgba(255, 215, 0, 0.3),
-    0 0 25px rgba(255, 215, 0, 0.4),
-    0 0 40px rgba(255, 200, 0, 0.6) !important;
-  border-bottom: none !important;
-}
+
 
 
 html.dark body .board-table td a {
