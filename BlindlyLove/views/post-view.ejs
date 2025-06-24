@@ -34,9 +34,12 @@
     }
 
     .logo-wrap img {
-      max-width: 150px;
-      margin-bottom: 1rem;
-    }
+  max-width: 150px;
+  height: auto;         /* ✅ 세로는 비율에 맞게 자동 */
+  aspect-ratio: auto;   /* ✅ 또는 생략 가능 */
+  display: block;
+  margin-bottom: 1rem;
+}
   </style>
 </head>
 <body class="no-fixed-footer">
