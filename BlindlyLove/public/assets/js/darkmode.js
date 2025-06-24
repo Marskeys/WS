@@ -6,7 +6,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('mode-toggle-accessible');
     const body = document.body;
 
- 
+    // 1. Local Storage에서 저장된 테마 불러오기
+    function loadTheme() {
+        const savedTheme = localStorage.getItem(STORAGE_KEY);
+
+        // ✅ 저장된 값이 없거나 'dark'이면 → 다크 모드 적용
+        if (!savedTheme || savedTheme === 'dark') {
+            body.classList.add('dark');
+            body.classList.remove('light');
+            if (themeToggle) {
+                themeToggle.setAttribute('aria-checked', 'true');
+            }
+        } else {
+            // ✅ 저장된 테마가 'light'인 경우
+            body.classList.remove('dark');
+            body.classList.add('light');
+            if (themeToggle) {
+                themeToggle.setAttribute('aria-checked', 'false');
+            }
+        }
+
         // ✅ 버튼 텍스트도 초기화
         const textToggleButton = document.getElementById('toggle-dark');
         if (textToggleButton) {
