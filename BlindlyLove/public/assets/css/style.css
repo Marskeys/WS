@@ -604,7 +604,7 @@ body.no-fixed-footer footer {
 
 @media (max-width: 768px) {
   .header-top {
-    position: relative; /* 기준점 유지 */
+    position: sticky;
   }
 
   .logo-link {
