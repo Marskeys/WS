@@ -8,7 +8,10 @@
 
   <div class="top-controls">
     <div class="left-controls">
-      <% if (['/signup', '/editor', '/login', '/post'].includes(currentPath)) { %>
+      <% if (
+        ['/signup', '/editor', '/login'].includes(currentPath) ||
+        currentPath.startsWith('/post')
+      ) { %>
         <!-- 로고 출력 -->
         <a href="/" class="logo-link">
           <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
