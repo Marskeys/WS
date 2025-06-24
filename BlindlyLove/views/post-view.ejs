@@ -3,19 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title><%= post.title %></title>
-  <link rel="stylesheet" href="/assets/css/editor.css"> <!-- 에디터랑 같은 스타일 -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/editor.css">
 </head>
-<body>
-  <div class="editor-container">
-    <h1><%= post.title %></h1>
-    <div class="editor">
-      <%- post.content %> <!-- ⭐ 스타일 그대로 적용됨 -->
-    </div>
-    <div style="margin-top:1rem; font-size:14px; color:#888;">
-      카테고리: <%= post.categories %><br>
-      작성자: <%= post.author %><br>
-      작성일: <%= new Date(post.created_at).toLocaleString() %>
-    </div>
+<body class="<%= isDark ? 'dark' : 'light' %>">
+  <%- include('partials/header') %>
+
+  <div class="post-view-container">
+    <article class="post-view-card">
+      <h1 class="post-view-title"><%= post.title %></h1>
+      <div class="post-view-meta">
+        <span class="category">📁 <%= post.categories %></span>
+        <span class="author">✍️ <%= post.author %></span>
+        <span class="date">🕒 <%= new Date(post.created_at).toLocaleString() %></span>
+      </div>
+      <div class="post-view-content">
+        <%- post.content %>
+      </div>
+    </article>
   </div>
+
+  <%- include('partials/footer') %>
 </body>
 </html>
