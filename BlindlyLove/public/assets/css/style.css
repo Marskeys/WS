@@ -685,7 +685,7 @@ body.no-fixed-footer footer {
 
 @media (max-width: 768px) {
   .right-controls {
-    transform: scale(0.45); /* ✅ 전체 줄 비율 축소 */
+    transform: scale(0.65); /* ✅ 전체 줄 비율 축소 */
     transform-origin: right center; /* ✅ 오른쪽 기준으로 축소 */
   }
 
