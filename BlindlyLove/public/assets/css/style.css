@@ -683,3 +683,40 @@ body.no-fixed-footer footer {
   }
 }
 
+@media (max-width: 768px) {
+  .auth-buttons {
+    display: flex;
+    flex-wrap: wrap; /* ✅ 줄바꿈 허용 */
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem; /* ✅ 버튼 간격 */
+    font-size: 0.8rem;
+  }
+
+  .auth-buttons .auth-btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;         /* ✅ 모바일에선 작게 */
+  }
+
+  .light-switch {
+    transform: scale(0.85);     /* ✅ 토글 스위치 크기 줄이기 */
+    margin-left: 0.5rem;
+  }
+
+  .welcome-text {
+    position: relative;
+    top: auto;
+    right: auto;
+    font-size: 0.7rem;
+    margin: 0.2rem 0;
+    white-space: nowrap;
+  }
+
+  .right-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.4rem;
+  }
+}
