@@ -381,7 +381,7 @@
   border-radius: 0 6px 6px 0;
 }
 
-body.dark .search-result-msg {
+html.dark body .search-result-msg {
   background: rgba(255, 255, 255, 0.05);
   border-left: 3px solid #faf5b6;
   color: #ccc;

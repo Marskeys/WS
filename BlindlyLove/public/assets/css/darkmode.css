@@ -1,7 +1,7 @@
 
 
 /* 🌙 다크모드 배경 & 텍스트 */
-body.dark {
+html.dark body {
   background: linear-gradient(
     to bottom,
     #0b0b1a 50%,         /* 깊은 밤 검정 */
@@ -15,20 +15,20 @@ body.dark {
 }
 
 /* 제목/부제목 */
-body.dark .site-title {
+html.dark body .site-title {
   color: #f5f5f5;
 }
-body.dark .site-subtitle {
+html.dark body .site-subtitle {
   color: #bbb;
 }
 
 /* 메인 레이아웃 세로 정렬 강제 */
-body.dark .main-layout {
+html.dark body .main-layout {
   align-items: flex-start !important;
 }
 
 /* 왼쪽 패널 */
-body.dark .main-panel {
+html.dark body .main-panel {
   background: linear-gradient(to bottom, #1e1e2f 0%, #2a2a4d 70%, #3d3d6b 100%);
   box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.5);
 
@@ -37,49 +37,49 @@ body.dark .main-panel {
 
 
 /* 검색창 form */
-body.dark .search-form {
+html.dark body .search-form {
   background-color: #454545;
   border: 1px solid #555;
   box-shadow: none;
 }
 
 /* 검색창 input */
-body.dark .search-box {
+html.dark body .search-box {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   color: #fff;
 }
-body.dark .search-box::placeholder {
+html.dark body .search-box::placeholder {
   color: #bbb;
   opacity: 1;
 }
 
 /* 검색 아이콘 */
-body.dark .search-form i {
+html.dark body .search-form i {
   color: #ccc;
 }
 
 /* 푸터 */
-body.dark .site-footer {
+html.dark body .site-footer {
   color: #ccc;
   background: #121212;
   border-top: 1px solid #444;
 }
 
 /* 이미지 모드 전환 */
-body.dark .dark-img {
+html.dark body .dark-img {
   display: block;
 }
-body.dark .light-img {
+html.dark body .light-img {
   display: none;
 }
 
 /* 다크모드 스위치 */
-body.dark .switch-label {
+html.dark body .switch-label {
   background-color: #666;
 }
-body.dark .switch-handle {
+html.dark body .switch-handle {
   background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
 }
 
@@ -121,7 +121,7 @@ body.dark .switch-handle {
 }
 
 /* 캐릭터 SVG glow */
-body.dark object#character-svg {
+html.dark body object#character-svg {
   filter: brightness(1.0) contrast(1.0) drop-shadow(0 0 1px #a26eff);
   transition: filter 0.1s ease;
 }
@@ -130,14 +130,14 @@ body.dark object#character-svg {
 }
 
 /* 헤더 */
-body.dark .header-top {
+html.dark body .header-top {
   background-color: #141433 !important;
   border-bottom: none !important;
   box-shadow: none !important;
 }
 
 /* 로그인 버튼 (기본) */
-body.dark .auth-btn.login {
+html.dark body .auth-btn.login {
   background-color: transparent;
   color: white;
   border: 1px solid white;
@@ -147,7 +147,7 @@ body.dark .auth-btn.login {
 }
 
 /* 로그인 버튼 (hover - 노란빛 glow) */
-body.dark .auth-btn.login:hover {
+html.dark body .auth-btn.login:hover {
   background-color: rgba(255, 255, 200, 0.05);
   color: white;
   border-color: rgba(255, 255, 180, 0.8);
@@ -155,7 +155,7 @@ body.dark .auth-btn.login:hover {
 }
 
 /* 로그아웃 버튼 (기본) */
-body.dark .auth-btn.logout {
+html.dark body .auth-btn.logout {
   background-color: transparent;
   color: white;
   border: 1px solid white;
@@ -164,7 +164,7 @@ body.dark .auth-btn.logout {
   transition: all 0.1s ease;
 }
 
-body.dark .auth-btn.logout:hover {
+html.dark body .auth-btn.logout:hover {
   background-color: rgba(255, 255, 200, 0.05);
   color: white;
   border-color: rgba(255, 255, 180, 0.8);
@@ -172,20 +172,20 @@ body.dark .auth-btn.logout:hover {
 }
 
 /* 회원가입 텍스트 (기본) */
-body.dark .auth-btn.signup {
+html.dark body .auth-btn.signup {
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
   transition: all 0.1s ease;
 }
 
 /* 회원가입 텍스트 (hover - 노란빛 glow) */
-body.dark .auth-btn.signup:hover {
+html.dark body .auth-btn.signup:hover {
   color: lightblue;
   text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
 }
 
 /* 글쓰기 (기본) */
-body.dark .auth-btn.write-post {
+html.dark body .auth-btn.write-post {
   color: white;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
   transition: all 0.1s ease;
@@ -193,56 +193,56 @@ body.dark .auth-btn.write-post {
 }
 
 /* 글쓰기 (hover - 노란빛 glow) */
-body.dark .auth-btn.write-post:hover {
+html.dark body .auth-btn.write-post:hover {
   color: lightblue;
   text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
 }
 
 /* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
-body.dark .hamburger span {
+html.dark body .hamburger span {
   background-color: #fff;
 }
 
 
 /* 다크모드에서 전체 배경 뚫기 */
-body.dark .main-column,
-body.dark .main-panel {
+html.dark body .main-column,
+html.dark body .main-panel {
   background: transparent !important;
   box-shadow: none !important;
 }
 
 /* 필요하면 header도 투명 처리 */
-body.dark .header-top {
+html.dark body .header-top {
   box-shadow: none !important;
 }
 
-body.dark .login-box {
+html.dark body .login-box {
   background: linear-gradient(135deg, #202020, #2a2a2a);
   color: #eeeeee;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-body.dark .pop-up-form {
+html.dark body .pop-up-form {
   color: #fff;
   border-radius: 12px;
 }
-body.dark .pop-up-form input {
+html.dark body .pop-up-form input {
   background: #222;
   color: #eee;
   border: 1px solid #555;
 }
 
 
-body.dark .welcome-text {
+html.dark body .welcome-text {
   color: #ffffff;
 }
 
-body.dark .side-panel{
+html.dark body .side-panel{
   background: transparent!important;
 }
 
-body.dark .header-top {
+html.dark body .header-top {
   z-index: 1000;
   box-shadow:
     0 3px 10px rgba(255, 215, 0, 0.3),
@@ -252,24 +252,24 @@ body.dark .header-top {
 }
 
 
-body.dark .board-table td a {
+html.dark body .board-table td a {
   color: #ffffff;               /* 자연스러운 검회색 계열 */
   text-decoration: none;     /* 밑줄 제거 */
   font-weight: 500;          /* 적당한 굵기 */
 }
 
-body.dark .board-table td a:hover {
+html.dark body .board-table td a:hover {
   color: #ff6666;            /* 마우스 올리면 살짝 포인트 색상 */
   text-decoration: underline;/* 원하면 다시 밑줄 살짝 */
 }
 
 
-body.dark .board-table th {
+html.dark body .board-table th {
   background-color: rgba(255, 255, 255, 0.5);
   color: #ffffff;
 }
 
-body.dark .tab {
+html.dark body .tab {
   margin-top: 2rem;
   padding: 0.3rem 0.9rem;
   border: 1px solid #d0cce6;
@@ -283,13 +283,13 @@ body.dark .tab {
   transition: all 0.2s ease-in-out;
 }
 
-body.dark .tab:hover {
+html.dark body .tab:hover {
   color: white;
   background-color: rgba(247, 243, 255, 0.3);
   border-color: #c4b2ff;
 }
 
-body.dark .tab.active {
+html.dark body .tab.active {
   background: #f6f6f6;
   color: black;
   border-color: #ff9999;
@@ -297,7 +297,7 @@ body.dark .tab.active {
 }
 
 
-body.dark .mobile-post-item .post-title {
+html.dark body .mobile-post-item .post-title {
   font-size: 1rem;
   font-weight: bold;
   color: #ffffff;
