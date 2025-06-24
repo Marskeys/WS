@@ -26,20 +26,8 @@
         }
       })();
     </script>
-    
-     <script>
-      (function() {
-        const isDark = localStorage.getItem('theme') === 'dark' ||
-                       (window.matchMedia('(prefers-color-scheme: dark)').matches &&
-                        !localStorage.getItem('theme'));
-    
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      })();
-    </script>
+
+  
 
   </head>
   
