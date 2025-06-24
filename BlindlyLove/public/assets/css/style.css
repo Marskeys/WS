@@ -684,39 +684,27 @@ body.no-fixed-footer footer {
 }
 
 @media (max-width: 768px) {
-  .auth-buttons {
-    display: flex;
-    flex-wrap: wrap; /* ✅ 줄바꿈 허용 */
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.4rem; /* ✅ 버튼 간격 */
-    font-size: 0.8rem;
+  .right-controls {
+    transform: scale(0.85); /* ✅ 전체 줄 비율 축소 */
+    transform-origin: right center; /* ✅ 오른쪽 기준으로 축소 */
   }
 
   .auth-buttons .auth-btn {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.75rem;         /* ✅ 모바일에선 작게 */
+    font-size: 3.2vw;          /* ✅ 모바일 화면 너비에 따라 조정됨 */
+    padding: 0.4rem 1.5vw;
   }
 
   .light-switch {
-    transform: scale(0.85);     /* ✅ 토글 스위치 크기 줄이기 */
-    margin-left: 0.5rem;
+    transform: scale(0.85);     /* ✅ 토글도 작게 */
+    margin-left: 1vw;
   }
 
   .welcome-text {
+    font-size: 2.5vw;
+    margin-left: 1vw;
     position: relative;
     top: auto;
     right: auto;
-    font-size: 0.7rem;
-    margin: 0.2rem 0;
     white-space: nowrap;
-  }
-
-  .right-controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.4rem;
   }
 }
