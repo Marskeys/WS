@@ -4,7 +4,7 @@ const STORAGE_KEY = 'theme-mode';
 // ✅ HTML 문서가 완전히 로드된 후 실행
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('mode-toggle-accessible');
-    const body = document.body;
+    const root = document.documentElement;
 
     // 1. Local Storage에서 저장된 테마 불러오기
     function loadTheme() {
@@ -12,15 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ✅ 저장된 값이 없거나 'dark'이면 → 다크 모드 적용
         if (!savedTheme || savedTheme === 'dark') {
-            body.classList.add('dark');
-            body.classList.remove('light');
+            root.classList.add('dark');
+            root.classList.remove('light');
             if (themeToggle) {
                 themeToggle.setAttribute('aria-checked', 'true');
             }
         } else {
             // ✅ 저장된 테마가 'light'인 경우
-            body.classList.remove('dark');
-            body.classList.add('light');
+            root.classList.remove('dark');
+            root.classList.add('light');
             if (themeToggle) {
                 themeToggle.setAttribute('aria-checked', 'false');
             }
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ✅ 버튼 텍스트도 초기화
         const textToggleButton = document.getElementById('toggle-dark');
         if (textToggleButton) {
-            textToggleButton.textContent = body.classList.contains('dark')
+            textToggleButton.textContent = root.classList.contains('dark')
                 ? '☀️ 라이트모드'
                 : '🌙 다크모드';
         }
@@ -37,18 +37,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. 테마 전환 및 Local Storage 저장 함수
     function toggleThemeAndSave() {
-        const isCurrentlyDark = body.classList.contains('dark');
+        const isCurrentlyDark = root.classList.contains('dark');
 
         if (isCurrentlyDark) {
-            body.classList.remove('dark');
-            body.classList.add('light');
+            root.classList.remove('dark');
+            root.classList.add('light');
             localStorage.setItem(STORAGE_KEY, 'light');
             if (themeToggle) {
                 themeToggle.setAttribute('aria-checked', 'false');
             }
         } else {
-            body.classList.add('dark');
-            body.classList.remove('light');
+            root.classList.add('dark');
+            root.classList.remove('light');
             localStorage.setItem(STORAGE_KEY, 'dark');
             if (themeToggle) {
                 themeToggle.setAttribute('aria-checked', 'true');
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // ✅ 버튼 텍스트도 업데이트
         const textToggleButton = document.getElementById('toggle-dark');
         if (textToggleButton) {
-            textToggleButton.textContent = body.classList.contains('dark')
+            textToggleButton.textContent = root.classList.contains('dark')
                 ? '☀️ 라이트모드'
                 : '🌙 다크모드';
         }
