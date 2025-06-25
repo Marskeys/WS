@@ -387,3 +387,28 @@ html.dark body .search-result-msg {
   color: #ccc;
 }
 
+
+.action-icons {
+  display: inline-flex;
+  gap: 0.5rem; /* 아이콘 사이 간격 */
+  margin-left: 0.8rem; /* 제목과 아이콘 사이 여백 */
+  vertical-align: middle;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.icon-btn:hover {
+  color: #333;
+}
+
+.icon-btn i {
+  pointer-events: none; /* 아이콘에만 클릭 막기 방지 */
+}
