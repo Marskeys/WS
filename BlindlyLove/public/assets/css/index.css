@@ -424,36 +424,56 @@ html.dark body .search-result-msg {
   margin-bottom: 2px; /* 연필 아이콘을 조금 위로 올려 */
 }
 
-/* 모바일 화면에서 제목과 버튼을 가로로 배치 */
-/* 모바일 화면에서 제목과 수정/삭제 버튼을 가로로 배치 */
-@media (max-width: 768px) {
-  .mobile-post-item {
-    display: flex;
-    flex-direction: row; /* 제목과 버튼을 가로로 배치 */
-    align-items: center; /* 세로 가운데 정렬 */
-    gap: 1rem; /* 제목과 버튼 간격 */
-  }
+/* 기본적인 모바일 게시글 레이아웃 */
+.mobile-board-list {
+  display: flex;
+  flex-direction: column;  /* 세로로 배치 */
+  gap: 1rem;
+}
 
-  /* 수정/삭제 버튼 스타일 */
-  .mobile-post-item .icon-btn {
-    background: none;
-    border: none;
-    padding: 0.3rem 0.6rem;
-    font-size: 1.1rem;
-    color: #666;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.mobile-post-item {
+  display: flex;
+  flex-direction: column; /* 한 게시글 안에서 세로 배치 */
+}
 
-  .mobile-post-item .icon-btn:hover {
-    color: #333;
-  }
+.post-title-and-actions {
+  display: flex;
+  justify-content: space-between; /* 제목과 버튼을 한 줄에 배치 */
+  align-items: center;
+  gap: 0.5rem; /* 제목과 수정/삭제 버튼 사이 간격 */
+}
 
-  /* 메타정보를 세로로 정렬 (줄바꿈 처리) */
-  .mobile-post-item .post-info {
-    display: block; /* block으로 변경하여 줄바꿈 처리 */
-    margin-top: 0.5rem; /* 위쪽 여백을 추가 */
-  }
+.post-title {
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  flex-grow: 1;
+}
+
+.action-icons {
+  display: flex;
+  gap: 0.5rem; /* 버튼 사이 간격 */
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  color: #333;
+}
+
+.post-info {
+  display: block; /* 메타정보는 줄바꿈 처리 */
+  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
+  font-size: 0.9rem;
+  color: #777;
 }
