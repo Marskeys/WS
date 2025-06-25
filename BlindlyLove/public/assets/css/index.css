@@ -499,9 +499,11 @@ form button:hover {
   flex-shrink: 0; /* 제목이 불필요하게 줄어들지 않게 */
 }
 
-/* 버튼들을 가로로 정렬하고, 버튼 간격 좁히기 */
+
+/* 액션 버튼들을 왼쪽으로 정렬 */
 .action-icons {
   display: flex;
-  gap: 0.5rem; /* 수정/삭제 버튼 간의 간격을 좁힘 */
-  align-items: center; /* 버튼 세로 정렬 */
+  justify-content: flex-start; /* 액션 버튼들을 왼쪽으로 정렬 */
+  gap: 0.5rem;  /* 버튼 간의 간격을 좁히거나 늘림 */
+  align-items: center; /* 버튼들 세로 정렬 */
 }
