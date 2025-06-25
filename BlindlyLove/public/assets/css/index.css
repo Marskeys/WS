@@ -12,7 +12,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 900; /* 검색창보다 위, 메뉴보다 아래 */
+    z-index: -1; /* 검색창보다 위, 메뉴보다 아래 */
     pointer-events: none;
   }
   
