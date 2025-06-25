@@ -484,6 +484,7 @@ form button:hover {
 .post-title {
  /* ✅ 중요: 제목이 유연하게 줄어들고, 넘칠 때 처리 */
  flex-grow: 1; /* 가능한 공간을 차지 */
+ font-weight: 600;
  flex-shrink: 1; /* 공간이 부족하면 줄어들 수 있도록 허용 */
  min-width: 0; /* flex 아이템의 기본 min-width를 재정의하여 넘침 방지 */
  overflow: hidden; /* 넘치는 텍스트 숨김 */
