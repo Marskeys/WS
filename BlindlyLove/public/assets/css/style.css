@@ -62,7 +62,6 @@ html, body {
 
 .floating-home-logo {
   position: relative;
-  width: 100px;
   height: auto;
   margin-right: 6rem;
   margin-bottom: 0;
@@ -79,6 +78,13 @@ html, body {
 @media (min-width: 760px) {
   .floating-home-logo {
     width: 12vw;
+  }
+}
+
+/* ✅ 데스크탑에서 크기 줄이기 */
+@media (mmax-width: 760px) {
+  .floating-home-logo {
+    width: 22vw;
   }
 }
 
