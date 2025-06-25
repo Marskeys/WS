@@ -523,8 +523,8 @@
     
       /* ✏️ 에디터 영역 */
       html.dark body .editor {
-        background-color: #ffffff;
-        color: #ddd;
+        background-color: #1e1e1e;
+        color: #ddd !important;
         border: 1px solid #444;
       }
     
