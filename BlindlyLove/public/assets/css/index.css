@@ -447,13 +447,6 @@ form button:hover {
   gap: 0.5rem; /* 제목과 수정/삭제 버튼 사이 간격 */
 }
 
-.post-title {
-  font-weight: bold;
-  text-decoration: none;
-  color: #333;
-  font-size: 4vw;
-  flex-grow: 1;
-}
 
 .action-icons {
   display: flex;
@@ -495,6 +488,7 @@ form button:hover {
 /* 제목 스타일 */
 .post-title {
   font-weight: bold;
+  font-size: 4vw;
   text-decoration: none;
   color: #333;
   margin-right: 0.5rem; /* 제목과 버튼 간의 간격 조정 */
