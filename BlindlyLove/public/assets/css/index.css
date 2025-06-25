@@ -428,12 +428,6 @@ form button:hover {
   color: #d9534f;
 }
 
-/* 모바일 게시글 레이아웃 */
-.mobile-board-list {
-  display: flex;
-  flex-direction: column;  /* 세로로 배치 */
-  gap: 1rem;
-}
 
 .mobile-post-item {
   display: flex;
