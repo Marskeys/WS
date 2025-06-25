@@ -483,4 +483,39 @@ form button:hover {
 }
 
 
+/* 제목과 액션 버튼을 한 줄로 배치 */
+.post-title-and-actions {
+  display: flex;
+  justify-content: space-between;  /* 제목과 버튼을 양 끝에 배치 */
+  align-items: center;  /* 수직 중앙 정렬 */
+  gap: 0.5rem;  /* 제목과 버튼 간격 좁히기 */
+}
 
+/* 제목 스타일 */
+.post-title {
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  margin-right: 0.5rem; /* 제목과 버튼 간의 간격 조정 */
+  flex-shrink: 0;
+}
+
+/* 수정 및 삭제 버튼 */
+.action-icons {
+  display: flex;
+  gap: 0.5rem;  /* 버튼 간격 */
+  align-items: center;
+}
+
+/* 메타정보 스타일 */
+.post-info {
+  display: block; /* 줄바꿈 처리 */
+  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* .post-title-and-actions과 .post-info 사이에 공간 추가 */
+.post-title-and-actions + .post-info {
+  margin-top: 0.5rem; /* 제목과 메타정보 사이 여백 */
+}
