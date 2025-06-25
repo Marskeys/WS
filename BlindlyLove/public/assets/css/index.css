@@ -497,7 +497,6 @@ form button:hover {
   text-decoration: none;
   color: #333;
   margin-right: 0.5rem; /* 제목과 버튼 간의 간격 조정 */
-  flex-shrink: 0;
 }
 
 /* 수정 및 삭제 버튼 */
@@ -518,4 +517,5 @@ form button:hover {
 /* .post-title-and-actions과 .post-info 사이에 공간 추가 */
 .post-title-and-actions + .post-info {
   margin-top: 0.5rem; /* 제목과 메타정보 사이 여백 */
+  gap: 0.5rem;
 }
