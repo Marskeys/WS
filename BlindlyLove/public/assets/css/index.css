@@ -499,23 +499,3 @@ form button:hover {
   flex-shrink: 0; /* 제목이 불필요하게 줄어들지 않게 */
 }
 
-/* 액션 버튼들을 왼쪽으로 정렬 */
-.action-icons {
-  display: flex;
-  justify-content: flex-start; /* 액션 버튼들을 왼쪽으로 정렬 */
-  gap: 0.5rem;  /* 버튼 간의 간격을 좁히거나 늘림 */
-  align-items: center; /* 버튼들 세로 정렬 */
-}
-
-/* 모바일에서 제목과 버튼을 세로로 배치 */
-@media (max-width: 768px) {
-  .post-title-and-actions {
-    flex-direction: column; /* 제목과 버튼을 세로로 배치 */
-    align-items: flex-start; /* 왼쪽 정렬 */
-    gap: 0.5rem; /* 버튼 간격을 좁힘 */
-  }
-
-  .post-title {
-    margin-right: 0; /* 모바일에서는 제목과 버튼 사이 여백을 없앰 */
-  }
-}
