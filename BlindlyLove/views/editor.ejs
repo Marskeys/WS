@@ -13,8 +13,18 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  
+    .header-top {
+      margin-top: 0 !important;
+    }
+  </style>
 </head>
-<body class="no-fixed-footer">
+<body>
   <%- include('partials/header') %>
   <% const isEdit = typeof post !== 'undefined'; %>
   <!-- ✅ 사용자 정보 표시 예시 (원하면 생략 가능) -->
