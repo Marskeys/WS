@@ -115,9 +115,13 @@
         </div>
       </div>
    
-      <%
-      const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
-    %>
+  
+    <%
+  const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
+  const postUrl = (isEdit && post) ? `/edit/${post.id}` : '/savePost';
+  const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
+%>
+
     <script>
       let selectedCategories = <%- JSON.stringify(categoryList) %>;
       let categories = [];
@@ -203,7 +207,7 @@
           if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
           if (!categoriesToSend || categoriesToSend.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
       
-          fetch(<%= isEdit && post ? `'\/edit\/${post.id}'` : "'/savePost'" %>, {
+          fetch("<%= postUrl %>", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
