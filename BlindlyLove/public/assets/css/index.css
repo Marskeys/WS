@@ -481,7 +481,7 @@ form button:hover {
   font-size: 0.9rem;
   color: #777;
 }
-
+@media (max-width: 768px){
 /* 제목과 액션 버튼을 한 줄로 배치 */
 .post-title-and-actions {
   display: flex;
@@ -506,4 +506,5 @@ form button:hover {
   justify-content: flex-start; /* 액션 버튼들을 왼쪽으로 정렬 */
   gap: 0.5rem;  /* 버튼 간의 간격을 좁히거나 늘림 */
   align-items: center; /* 버튼들 세로 정렬 */
+}
 }
