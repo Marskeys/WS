@@ -415,3 +415,7 @@ html.dark body .search-result-msg {
   font-size: 1rem;     /* 아이콘 크기 통일 */
   display: inline-block;
 }
+
+.icon-btn i.fa-trash {
+  margin-top: 1px; /* 원하는 만큼 조절해봐! */
+}
