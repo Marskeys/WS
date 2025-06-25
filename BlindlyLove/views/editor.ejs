@@ -114,383 +114,132 @@
           <button class="save-btn" onclick="saveContent()">💾 저장</button>
         </div>
       </div>
-    
-      <% const selectedCategories = (typeof post !== 'undefined' && post.categories) ? post.categories.split(',') : ['일상']; %>
-
+   
     
       <script>
-   let categories = ['일상', '기록', '리뷰'];
-
-  let savedRange = null;
-
+        let selectedCategories = <%- JSON.stringify((typeof post !== 'undefined' && post.categories) ? post.categories.split(',') : ['일상']) %>;
+        let categories = [];
+        let savedRange = null;
+      
         function renderCategories() {
-            const list = document.getElementById('categoryList');
-            list.innerHTML = '';
-            categories.forEach((cat, index) => {
-                const item = document.createElement('div');
-                item.className = 'category-item';
-                if (selectedCategories.includes(cat)) item.classList.add('selected');
-                item.innerText = cat;
-                item.onclick = () => {
-                    const i = selectedCategories.indexOf(cat);
-                    if (i === -1) selectedCategories.push(cat);
-                    else selectedCategories.splice(i, 1);
-                    renderCategories();
-                };
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove-btn';
-                removeBtn.innerText = '×';
-                removeBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
-                        categories.splice(index, 1);
-                        selectedCategories = selectedCategories.filter(c => c !== cat);
-                        renderCategories();
-                    }
-                };
-                item.appendChild(removeBtn);
-                list.appendChild(item);
-            });
-        }
-    
-        function addCategory() {
-            const newCat = prompt("추가할 카테고리 이름을 입력하세요:");
-            if (newCat && !categories.includes(newCat)) {
-                categories.push(newCat);
-                selectedCategories.push(newCat);
-                renderCategories();
-            }
-        }
-    
-        function postContent() {
-  const title = document.getElementById('postTitle').value.trim();
-  const content = document.getElementById('editor').innerHTML.trim(); // 공백 제거
-  const categories = selectedCategories;
-
-  if (!title) return alert("제목을 입력해주세요.");
-  if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
-  if (!categories || categories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
-
-  // ✅ 서버로 실제 전송
-  fetch('/savePost', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ title, content, categories })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert("성공적으로 저장되었습니다!");
-        window.location.href = '/'; // 성공 후 리다이렉션
-      } else {
-        alert("저장 실패: " + data.error);
-      }
-    })
-    .catch(err => {
-      console.error("저장 중 오류:", err);
-      alert("저장 중 오류가 발생했습니다.");
-    });
-}
-    
-        // --- 수정된 format 함수 ---
-        // 모든 execCommand는 기본적으로 styleWithCSS=false로 작동하며,
-        // 태그 기반으로 요소를 생성합니다 (<b>, <i>, <u> 등).
-        function format(command, value = null) {
-            document.execCommand("styleWithCSS", false, false); // 항상 CSS 사용 안함
-            document.execCommand(command, false, value);
-            // execCommand 후에는 detectStyle을 호출하여 현재 스타일을 업데이트합니다.
-            setTimeout(detectStyle, 100);
-        }
-        // -------------------------
-    
-        // --- 수정된 applyStyle 함수 ---
-        // 이 함수는 블록 레벨 요소 (h1, p 등) 생성에 집중합니다.
-        // span/strong 같은 인라인 요소는 format 함수나 setColor 함수에서 처리되도록 합니다.
-        function applyStyle(tag) {
-      const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
-      const editor = document.getElementById("editor");
-    
-      // 선택 영역 저장 후 복원
-      restoreSelection();
-      editor.focus();
-    
-      if (blockTags.includes(tag)) {
-        document.execCommand("styleWithCSS", false, false);
-        document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
-    
-        // 다시 선택 영역을 저장해서 커서 이동 방지
-        saveSelection();
-      } else {
-        const sel = window.getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) return;
-    
-        const range = sel.getRangeAt(0);
-        const tempElement = document.createElement(tag);
-        if (tag === 'span') tempElement.classList.add('label');
-        if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
-    
-        try {
-          const contents = range.extractContents();
-          tempElement.appendChild(contents);
-          range.insertNode(tempElement);
-    
-          // 선택 영역 다시 지정
-          sel.removeAllRanges();
-          const newRange = document.createRange();
-          newRange.selectNode(tempElement);
-          sel.addRange(newRange);
-    
-          saveSelection();
-        } catch (e) {
-          console.error("applyStyle(span/strong) 오류:", e);
-        }
-      }
-    
-      setTimeout(detectStyle, 100);
-    }
-    
-        // -------------------------
-    
-        function insertImage() {
-            const url = prompt("이미지 URL을 입력하세요:");
-            if (url) format('insertImage', url);
-        }
-    
-        function saveContent() {
-            const content = document.getElementById('editor').innerHTML;
-            alert("임시 저장 완료!");
-        }
-    
-        function toggleDropdown() {
-            document.getElementById('styleDropdown').classList.toggle('show');
-        }
-    
-        function updateCurrentStyle(tagName) {
-            const labelMap = {
-                h1: "제목",
-                h2: "부제목",
-                h3: "머리말 1",
-                h4: "빨간 머리말",
-                p: "본문",
-                small: "설명",
-                footer: "머리말 및 꼬리말",
-                span: "레이블",
-                strong: "진한 레이블"
-            };
-            const label = labelMap[tagName.toLowerCase()] || tagName;
-            document.getElementById("currentStyle").innerText = `${label} ▼`;
-        }
-    
-        function detectStyle() {
-      const sel = window.getSelection();
-      if (!sel.rangeCount) return;
-      let node = sel.getRangeAt(0).startContainer;
-    
-      // 텍스트 노드면 부모로 이동
-      if (node.nodeType === 3) node = node.parentNode;
-    
-      // 가장 가까운 블록 요소 탐색
-      while (node && node !== document) {
-        const tag = node.tagName?.toLowerCase();
-        if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
-          updateCurrentStyle(tag);
-          return;
-        }
-        node = node.parentNode;
-      }
-    
-      // 못 찾으면 기본 본문
-      updateCurrentStyle('p');
-    }
-    
-    
-    
-        function saveSelection() {
-            const sel = window.getSelection();
-            if (sel.rangeCount > 0) {
-                savedRange = sel.getRangeAt(0).cloneRange(); // Range 객체 복사본 저장
-            }
-        }
-    
-        function restoreSelection() {
-            const sel = window.getSelection();
-            if (savedRange) {
-                sel.removeAllRanges();
-                sel.addRange(savedRange);
-            }
-        }
-    
-        // --- 수정된 setColor 함수 ---
-        // execCommand('foreColor')와 'hiliteColor'는 styleWithCSS를 명시적으로 true로 설정하여
-        // 인라인 스타일을 적용하고, 완료 후 다시 false로 되돌립니다.
-        function setColor(command, color) {
-      restoreSelection();
-      const sel = window.getSelection();
-      if (!sel.rangeCount || sel.isCollapsed) return;
-    
-      const range = sel.getRangeAt(0);
-    
-      // "색 없음" 처리
-      if (color === "__clear__") {
-        // 선택 영역 내 span에 적용된 스타일 제거
-        const contents = range.cloneContents();
-        const spans = contents.querySelectorAll("span");
-    
-        spans.forEach(span => {
-          if (command === 'foreColor') span.style.color = '';
-          else if (command === 'hiliteColor') span.style.backgroundColor = '';
-        });
-    
-        range.deleteContents();
-        range.insertNode(contents);
-        return;
-      }
-    
-      // 텍스트 선택 부분을 span으로 감싸고 스타일 적용
-      const span = document.createElement("span");
-      if (command === "foreColor") span.style.color = color;
-      else if (command === "hiliteColor") span.style.backgroundColor = color;
-    
-      const contents = range.extractContents();
-      span.appendChild(contents);
-      range.insertNode(span);
-    
-      // 선택 영역 다시 설정 (커서가 밖으로 튀는 문제 방지)
-      sel.removeAllRanges();
-      const newRange = document.createRange();
-      newRange.selectNode(span);
-      sel.addRange(newRange);
-    
-      saveSelection();
-      detectStyle();
-    }
-    
-    
-    
-    function getCurrentBlockTag() {
-      const sel = window.getSelection();
-      if (!sel.rangeCount) return null;
-    
-      let node = sel.getRangeAt(0).startContainer;
-      while (node && node !== document) {
-        if (node.nodeType === 1) {
-          const tag = node.tagName.toLowerCase();
-          if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
-            return tag;
-          }
-        }
-        node = node.parentNode;
-      }
-    
-      return 'p';
-    }
-    
-    
-    
-        // -------------------------
-    
-        window.onclick = function(e) {
-            if (!e.target.matches('.dropdown-toggle')) {
-                const dropdowns = document.getElementsByClassName('dropdown-menu');
-                for (let d of dropdowns) d.classList.remove('show');
-            }
-        };
-    
-        window.onload = () => {
-            renderCategories();
-            // 에디터 이벤트 리스너
-            const editor = document.getElementById('editor');
-            editor.addEventListener('keyup', detectStyle);
-            editor.addEventListener('mouseup', detectStyle);
-            editor.addEventListener('mouseup', saveSelection);
-            editor.addEventListener('keyup', saveSelection);
-    
-            // 툴바 버튼들에 mousedown 이벤트 추가 (클릭 시 선택 영역 유실 방지)
-            const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
-            toolbarButtons.forEach(button => {
-                button.addEventListener('mousedown', saveSelection);
-            });
-        };
-    </script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const categorySelect = document.getElementById('post-category');
-        const input = document.getElementById('new-category-input');
-        const addBtn = document.getElementById('add-category-btn');
-    
-        // ✅ 카테고리 목록 불러오기
-        async function loadCategories() {
-          const res = await fetch('/api/categories');
-          const data = await res.json();
-    
-          // 기존 옵션 제거
-          categorySelect.innerHTML = '';
-          document.querySelectorAll('.category-item').forEach(el => el.remove());
-    
-          data.forEach(category => {
-            // <select>에 추가
-            const option = document.createElement('option');
-            option.value = category.id;
-            option.textContent = category.name;
-            categorySelect.appendChild(option);
-    
-            // 삭제 버튼 있는 리스트로도 추가
+          const list = document.getElementById('categoryList');
+          list.innerHTML = '';
+          categories.forEach((cat, index) => {
             const item = document.createElement('div');
             item.className = 'category-item';
-            item.innerHTML = `
-              <span>${category.name}</span>
-              <button class="delete-category" data-id="${category.id}">삭제</button>
-            `;
-            categorySelect.parentElement.appendChild(item);
-          });
-    
-          attachDeleteEvents();
-        }
-    
-        // ✅ 삭제 이벤트 연결
-        function attachDeleteEvents() {
-          document.querySelectorAll('.delete-category').forEach(btn => {
-            btn.addEventListener('click', async () => {
-              const id = btn.dataset.id;
-              if (confirm('정말 삭제할까요?')) {
-                await fetch(`/api/categories/${id}`, {
+            if (selectedCategories.includes(cat)) item.classList.add('selected');
+            item.innerText = cat;
+      
+            item.onclick = () => {
+              const i = selectedCategories.indexOf(cat);
+              if (i === -1) selectedCategories.push(cat);
+              else selectedCategories.splice(i, 1);
+              renderCategories();
+            };
+      
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerText = '×';
+            removeBtn.onclick = (e) => {
+              e.stopPropagation();
+              if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
+                fetch(`/api/categories/${encodeURIComponent(cat)}`, {
                   method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(data => {
+                  if (data.success) {
+                    categories.splice(index, 1);
+                    selectedCategories = selectedCategories.filter(c => c !== cat);
+                    renderCategories();
+                  } else {
+                    alert("삭제 실패: " + data.error);
+                  }
+                })
+                .catch(err => {
+                  console.error("삭제 오류:", err);
+                  alert("삭제 중 오류가 발생했습니다.");
                 });
-                loadCategories();
               }
-            });
+            };
+      
+            item.appendChild(removeBtn);
+            list.appendChild(item);
           });
         }
-    
-        // ✅ 카테고리 추가
-        addBtn.addEventListener('click', async () => {
-          const name = input.value.trim();
-          if (!name) return alert('카테고리 이름을 입력해주세요.');
-    
-          const res = await fetch('/api/categories', {
+      
+        function addCategory() {
+          const newCat = prompt("새 카테고리 이름을 입력하세요:")?.trim();
+          if (!newCat || categories.includes(newCat)) return;
+      
+          fetch('/api/categories', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name: newCat })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              categories.push(newCat);
+              renderCategories();
+            } else {
+              alert("추가 실패: " + data.error);
+            }
+          })
+          .catch(err => {
+            console.error("추가 오류:", err);
+            alert("추가 중 오류가 발생했습니다.");
           });
-    
-          const data = await res.json();
-          if (data.success) {
-            input.value = '';
-            loadCategories();
-          } else {
-            alert('추가 실패: ' + (data.error || '중복된 이름일 수 있어요.'));
-          }
-        });
-    
-        // ✅ 초기 로딩
-        loadCategories();
-      });
-    </script>
-    
+        }
+      
+        function postContent() {
+          const title = document.getElementById('postTitle').value.trim();
+          const content = document.getElementById('editor').innerHTML.trim();
+          const categoriesToSend = selectedCategories;
+      
+          if (!title) return alert("제목을 입력해주세요.");
+          if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
+          if (!categoriesToSend || categoriesToSend.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
+      
+          fetch('<%= isEdit ? `/edit/${post.id}` : "/savePost" %>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title,
+              content,
+              categories: categoriesToSend,
+              user_id: "<%= user?.id %>"
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              alert("성공적으로 저장되었습니다!");
+              window.location.href = `<%= isEdit ? "/post/" + post.id : "/" %>`;
+            } else {
+              alert("저장 실패: " + data.error);
+            }
+          })
+          .catch(err => {
+            console.error("저장 중 오류:", err);
+            alert("저장 중 오류가 발생했습니다.");
+          });
+        }
+      
+        window.onload = () => {
+          fetch('/api/categories')
+            .then(res => res.json())
+            .then(data => {
+              categories = data.categories || [];
+              renderCategories();
+            })
+            .catch(err => {
+              console.error("카테고리 불러오기 오류:", err);
+              categories = ['일상', '기록', '리뷰']; // fallback
+              renderCategories();
+            });
+        };
+      </script>
+      
     </body>
     </html>
-    
-
-    
