@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <%- include('partials/head') %>
+ 
   <link rel="stylesheet" href="/assets/css/editor.css" />
   <meta charset="UTF-8" />
   <title>BlindLove 에디터</title>
@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <%- include('partials/header') %>
   <% const isEdit = typeof post !== 'undefined'; %>
   <!-- ✅ 사용자 정보 표시 예시 (원하면 생략 가능) -->
   <% if (user) { %>
