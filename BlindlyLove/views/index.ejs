@@ -150,9 +150,10 @@
                     </form>
                   </div>
                 <% } %>
-                <div class="post-info">
-                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
-                </div>
+               
+              </div>
+              <div class="post-info">
+                <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
               </div>
             <% }) %>
           </div>
