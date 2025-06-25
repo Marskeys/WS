@@ -410,3 +410,77 @@ html.dark body .search-result-msg {
   margin-right: 0.2rem;  /* 아이콘과 텍스트 사이 간격 */
 }
 
+/* form 태그 안의 button이 숨겨지지 않도록 스타일 설정 */
+form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+}
+
+/* 삭제 버튼을 눌렀을 때 색상 변경 */
+form button:hover {
+  color: #d9534f;
+}
+
+/* 모바일 게시글 레이아웃 */
+.mobile-board-list {
+  display: flex;
+  flex-direction: column;  /* 세로로 배치 */
+  gap: 1rem;
+}
+
+.mobile-post-item {
+  display: flex;
+  flex-direction: column; /* 한 게시글 안에서 세로 배치 */
+}
+
+.post-title-and-actions {
+  display: flex;
+  justify-content: space-between; /* 제목과 버튼을 한 줄에 배치 */
+  align-items: center;
+  gap: 0.5rem; /* 제목과 수정/삭제 버튼 사이 간격 */
+}
+
+.post-title {
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  flex-grow: 1;
+}
+
+.action-icons {
+  display: flex;
+  gap: 0.5rem; /* 버튼 사이 간격 */
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  color: #333;
+}
+
+.post-info {
+  display: block; /* 메타정보는 줄바꿈 처리 */
+  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
+  font-size: 0.9rem;
+  color: #777;
+}
+
+
+
