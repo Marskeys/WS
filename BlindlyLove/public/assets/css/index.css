@@ -477,3 +477,25 @@ html.dark body .search-result-msg {
   font-size: 0.9rem;
   color: #777;
 }
+
+/* 삭제 버튼 스타일 */
+.icon-btn.delete-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  color: #666;
+  cursor: pointer;
+  display: inline-flex;  /* 버튼을 인라인으로 설정해서 다른 요소와 나란히 정렬 */
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn.delete-btn:hover {
+  color: #d9534f; /* 삭제 버튼 색을 빨간색으로 */
+}
+
+/* 버튼과 아이콘 간격을 맞추기 */
+.icon-btn i {
+  margin-right: 0.2rem;  /* 아이콘과 텍스트 사이 간격 */
+}
