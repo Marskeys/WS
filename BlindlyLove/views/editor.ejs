@@ -119,9 +119,10 @@
 
     
       <script>
-  let categories = ['일상', '기록', '리뷰'];
-  let selectedCategories = <%- JSON.stringify(selectedCategories) %>;
+   let categories = ['일상', '기록', '리뷰'];
+
   let savedRange = null;
+
         function renderCategories() {
             const list = document.getElementById('categoryList');
             list.innerHTML = '';
