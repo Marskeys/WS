@@ -241,7 +241,7 @@ app.post('/edit/:id', async (req, res) => {
       [title, content, categories.join(','), postId]
     );
 
-    res.redirect(`/post/${postId}`);
+    res.json({ success: true, redirect: `/post/${postId}` });
   } catch (err) {
     console.error('수정 처리 오류:', err);
     res.status(500).send('서버 오류');
