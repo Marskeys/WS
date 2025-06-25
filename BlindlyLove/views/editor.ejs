@@ -203,7 +203,7 @@
           if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
           if (!categoriesToSend || categoriesToSend.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
       
-          fetch('<%= isEdit ? `/edit/${post.id}` : "/savePost" %>', {
+          fetch(<%= isEdit && post ? `'\/edit\/${post.id}'` : "'/savePost'" %>, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
