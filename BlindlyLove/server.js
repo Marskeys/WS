@@ -309,7 +309,7 @@ app.get('/', async (req, res) => {
 app.get('/post/:id', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
   if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
-  res.render('post-view', { post: rows[0] });
+  res.render('post-view', { post: rows[0], user: req.session.user });
 });
 
 // ✅ 카테고리 전체 가져오기
