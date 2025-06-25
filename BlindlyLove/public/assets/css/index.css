@@ -490,9 +490,13 @@ form button:hover {
   gap: 0.2rem; /* 제목과 액션 버튼 간의 간격을 좁히기 위해 0.5rem로 설정 */
 }
 
+/* 제목의 오른쪽 마진/패딩을 줄여서 간격 좁히기 */
 .post-title {
   font-weight: bold;
   text-decoration: none;
   color: #333;
-  flex-grow: 1;  /* 제목이 공간을 채우도록 */
+  flex-grow: 1;
+  margin-right: 0.5rem; /* 제목 오른쪽 여백을 줄여서 버튼과 간격 좁힘 */
+  /* 또는, 패딩으로 조정 */
+  padding-right: 0.2rem; /* 제목 오른쪽 패딩을 줄여서 간격 좁힘 */
 }
