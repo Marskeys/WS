@@ -103,7 +103,7 @@
         </div>
     
         <div id="editor" contenteditable="true" class="editor" spellcheck="false">
-          <%- post?.content || '<p><br></p>' %>
+          <%- post && post.content ? post.content : '<p><br></p>' %>
         </div>        
     
         <div class="category-box">
@@ -115,13 +115,13 @@
         </div>
       </div>
     
-      <script>
-        let categories = ['일상', '기록', '리뷰'];
-        let selectedCategories = <%- JSON.stringify(post?.categories?.split(',') || ['일상']) %>;
+      <% const selectedCategories = (typeof post !== 'undefined' && post.categories) ? post.categories.split(',') : ['일상']; %>
 
-        
-        let savedRange = null; // 전역 변수로 savedRange 유지
     
+      <script>
+  let categories = ['일상', '기록', '리뷰'];
+  let selectedCategories = <%- JSON.stringify(selectedCategories) %>;
+  let savedRange = null;
         function renderCategories() {
             const list = document.getElementById('categoryList');
             list.innerHTML = '';
