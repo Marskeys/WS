@@ -388,46 +388,50 @@ html.dark body .search-result-msg {
 }
 
 
-.action-icons {
-  display: inline-flex;
-  gap: 0.5rem; /* 아이콘 사이 간격 */
-  margin-left: 0.8rem; /* 제목과 아이콘 사이 여백 */
-  vertical-align: middle;
-}
-/* 기본적인 버튼 스타일 */
-.icon-btn {
+/* 삭제 버튼 스타일 */
+.icon-btn.delete-btn {
   background: none;
   border: none;
-  padding: 0.2rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  color: #666;
   cursor: pointer;
-  font-size: 0.95rem;
-  color: #888;
-  transition: color 0.2s ease;
+  display: inline-flex;  /* 버튼을 인라인으로 설정해서 다른 요소와 나란히 정렬 */
+  align-items: center;
+  justify-content: center;
 }
 
-.icon-btn:hover {
-  color: #333;
+.icon-btn.delete-btn:hover {
+  color: #d9534f; /* 삭제 버튼 색을 빨간색으로 */
 }
 
+/* 버튼과 아이콘 간격을 맞추기 */
 .icon-btn i {
-  vertical-align: middle;
-  line-height: 1; /* 줄간격 통일 */
-  font-size: 1rem; /* 아이콘 크기 통일 */
-  display: inline-block;
+  margin-right: 0.2rem;  /* 아이콘과 텍스트 사이 간격 */
 }
 
-.icon-btn i.fa-trash {
-  margin-top: 1px; /* 원하는 만큼 조절해봐! */
+/* form 태그 안의 button이 숨겨지지 않도록 스타일 설정 */
+form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
 }
 
-.icon-btn i.fa-pen {
-  margin-bottom: 2px; /* 연필 아이콘을 조금 위로 올려 */
+/* 삭제 버튼을 눌렀을 때 색상 변경 */
+form button:hover {
+  color: #d9534f;
 }
 
 /* 모바일 게시글 레이아웃 */
 .mobile-board-list {
   display: flex;
-  flex-direction: column; /* 세로로 배치 */
+  flex-direction: column;  /* 세로로 배치 */
   gap: 1rem;
 }
 
@@ -455,30 +459,25 @@ html.dark body .search-result-msg {
   gap: 0.5rem; /* 버튼 사이 간격 */
 }
 
-/* 삭제 버튼 스타일 */
-.icon-btn.delete-btn {
+.icon-btn {
   background: none;
   border: none;
   padding: 0.3rem 0.6rem;
   font-size: 1.1rem;
   color: #666;
   cursor: pointer;
-  display: inline-flex;  /* 버튼을 인라인으로 설정해서 다른 요소와 나란히 정렬 */
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.icon-btn.delete-btn:hover {
-  color: #d9534f; /* 삭제 버튼 색을 빨간색으로 */
+.icon-btn:hover {
+  color: #333;
 }
 
-/* 버튼과 아이콘 간격을 맞추기 */
-.icon-btn i {
-  margin-right: 0.2rem;  /* 아이콘과 텍스트 사이 간격 */
+.post-info {
+  display: block; /* 메타정보는 줄바꿈 처리 */
+  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
+  font-size: 0.9rem;
+  color: #777;
 }
-
-/* 버튼이 안 보이지 않는 문제 해결 */
-button {
-  display: inline-flex; /* button 태그가 inline으로 정렬되도록 */
-}
-
