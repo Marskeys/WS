@@ -216,11 +216,15 @@
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              alert("성공적으로 저장되었습니다!");
-              window.location.href = `<%= isEdit ? "/post/" + post.id : "/" %>`;
-            } else {
-              alert("저장 실패: " + data.error);
-            }
+    alert("성공적으로 저장되었습니다!");
+    <% if (isEdit && post) { %>
+      window.location.href = "/post/<%= post.id %>";
+    <% } else { %>
+      window.location.href = "/";
+    <% } %>
+  } else {
+    alert("저장 실패: " + data.error);
+  }
           })
           .catch(err => {
             console.error("저장 중 오류:", err);
