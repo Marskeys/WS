@@ -101,9 +101,11 @@
                     
                     <% if (user && user.id === post.user_id) { %>
                       <!-- ✏️ 수정/삭제 버튼 -->
-                      <a href="/edit/<%= post.id %>" class="post-edit-btn">수정</a>
+                      <a href="/edit/<%= post.id %>" class="post-edit-btn"><!-- 연필 아이콘 (수정) -->
+                        <i class="fas fa-pen"></i></a>
                       <form action="/delete/<%= post.id %>" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('정말 삭제할까요?')">삭제</button>
+                        <button type="submit" onclick="return confirm('정말 삭제할까요?')"><!-- 휴지통 아이콘 (삭제) -->
+                          <i class="fas fa-trash"></i></button>
                       </form>
                     <% } %>
                   </td>
