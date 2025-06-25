@@ -26,7 +26,7 @@
 }
 
     .editor-container {
-      background: white;
+  
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       padding: 20px;
@@ -484,7 +484,7 @@
       }
     
       body.dark .editor-container {
-        background-color: #1a1a1a !important;
+        background-color: #1a1a1a;
       }
     
       /* ✍️ 제목 입력창 */
