@@ -77,12 +77,16 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// ✅ 글쓰기
+// ✅ 글쓰기 페이지
 app.get('/write', (req, res) => {
   if (!req.session.user || req.session.user.is_admin !== 1) {
     return res.status(403).send('접근 권한이 없습니다.');
   }
-  res.render('editor', { user: req.session.user });
+  res.render('editor', {
+    user: req.session.user,
+    post: null,      // ← 요거 추가!
+    isEdit: false    // ← 이것도 같이 보내면 좋아
+  });
 });
 
 // ✅ ID 중복 확인
