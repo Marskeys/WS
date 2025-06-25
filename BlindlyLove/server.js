@@ -142,19 +142,20 @@ app.post('/savePost', async (req, res) => {
   }
 
   try {
-    await db.query(
-      'INSERT INTO posts (title, content, categories, author, author_id) VALUES (?, ?, ?, ?, ?)',
-      [
-        title,
-        content,
-        categories.join(','),
-        req.session.user?.nickname || '익명',
-        req.session.user?.id || null
-      ]
-    );
+// 글 저장할 때
+await db.query(
+  'INSERT INTO posts (title, content, categories, author, user_id) VALUES (?, ?, ?, ?, ?)',
+  [
+    title,
+    content,
+    categories.join(','),
+    req.session.user.nickname,
+    req.session.user.id  // ← 문자열 user_id
+  ]
+);
 
     const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, author_id, created_at
+      SELECT id, title, content, categories, author, user_id, created_at
       FROM posts
       ORDER BY created_at DESC
     `);
@@ -172,7 +173,7 @@ app.post('/delete/:id', async (req, res) => {
 
   try {
     // 1️⃣ 해당 글 불러오기
-    const [rows] = await db.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+    const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) {
       return res.status(404).send('게시글을 찾을 수 없습니다.');
     }
@@ -180,7 +181,7 @@ app.post('/delete/:id', async (req, res) => {
     const post = rows[0];
 
     // 2️⃣ 권한 확인
-    if (post.author_id !== userId) {
+    if (post.user_id !== userId) {
       return res.status(403).send('작성자만 삭제할 수 있습니다.');
     }
 
@@ -204,7 +205,7 @@ app.get('/edit/:id', async (req, res) => {
     const post = rows[0];
 
     // 권한 체크
-    if (post.author_id !== userId) {
+    if (post.user_id !== userId) {
       return res.status(403).send('작성자만 수정할 수 있습니다.');
     }
 
@@ -226,12 +227,12 @@ app.post('/edit/:id', async (req, res) => {
   const { title, content, categories } = req.body;
 
   try {
-    const [rows] = await db.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+    const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
     const post = rows[0];
 
-    if (post.author_id !== userId) {
+    if (post.user_id !== userId) {
       return res.status(403).send('작성자만 수정할 수 있습니다.');
     }
 
@@ -255,7 +256,7 @@ app.get('/search', async (req, res) => {
 
   try {
     const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, author_id, created_at
+      SELECT id, title, content, categories, author, user_id, created_at
       FROM posts
       WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
       ORDER BY created_at DESC
@@ -284,7 +285,7 @@ app.get('/search', async (req, res) => {
 // ✅ 메인 페이지
 app.get('/', async (req, res) => {
   const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, author_id, created_at
+    SELECT id, title, content, categories, author, user_id, created_at
     FROM posts
     ORDER BY created_at DESC
   `);
@@ -355,7 +356,7 @@ app.get('/api/search', async (req, res) => {
   if (!keyword) return res.json({ posts: [] });
 
   const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, author_id, created_at
+    SELECT id, title, content, categories, author, user_id, created_at
     FROM posts
     WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
     ORDER BY created_at DESC

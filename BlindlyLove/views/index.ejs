@@ -99,7 +99,7 @@
                   <td>
                     <a href="/post/<%= post.id %>"><%= post.title %></a>
                     
-                    <% if (user && user.id === post.author_id) { %>
+                    <% if (user && user.id === post.user_id) { %>
                       <!-- ✏️ 수정/삭제 버튼 -->
                       <a href="/edit/<%= post.id %>" class="post-edit-btn">수정</a>
                       <form action="/delete/<%= post.id %>" method="POST" style="display:inline;">
