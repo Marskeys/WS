@@ -527,6 +527,16 @@
         color: #ddd !important;
         border: 1px solid #444;
       }
+
+      html.dark body .editor p,
+html.dark body .editor h1,
+html.dark body .editor h2,
+html.dark body .editor h3,
+html.dark body .editor h4,
+html.dark body .editor small,
+html.dark body .editor footer {
+  color: #ddd !important;
+}
     
       /* 🏷 카테고리 */
       html.dark body .category-item {
