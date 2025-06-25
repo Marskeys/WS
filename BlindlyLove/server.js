@@ -143,15 +143,110 @@ app.post('/savePost', async (req, res) => {
 
   try {
     await db.query(
-      'INSERT INTO posts (title, content, categories, author) VALUES (?, ?, ?, ?)',
-      [title, content, categories.join(','), req.session.user?.nickname || '익명']
+      'INSERT INTO posts (title, content, categories, author, author_id) VALUES (?, ?, ?, ?, ?)',
+      [
+        title,
+        content,
+        categories.join(','),
+        req.session.user?.nickname || '익명',
+        req.session.user?.id || null
+      ]
     );
+
+    const [posts] = await db.query(`
+      SELECT id, title, content, categories, author, author_id, created_at
+      FROM posts
+      ORDER BY created_at DESC
+    `);
+
     res.json({ success: true });
   } catch (err) {
     console.error('글 저장 오류:', err);
     res.status(500).json({ success: false, error: '서버 오류' });
   }
 });
+
+app.post('/delete/:id', async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.session.user?.id;
+
+  try {
+    // 1️⃣ 해당 글 불러오기
+    const [rows] = await db.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+    if (rows.length === 0) {
+      return res.status(404).send('게시글을 찾을 수 없습니다.');
+    }
+
+    const post = rows[0];
+
+    // 2️⃣ 권한 확인
+    if (post.author_id !== userId) {
+      return res.status(403).send('작성자만 삭제할 수 있습니다.');
+    }
+
+    // 3️⃣ 삭제 수행
+    await db.query('DELETE FROM posts WHERE id = ?', [postId]);
+    res.redirect('/');
+  } catch (err) {
+    console.error('삭제 오류:', err);
+    res.status(500).send('서버 오류로 삭제할 수 없습니다.');
+  }
+});
+
+app.get('/edit/:id', async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.session.user?.id;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+
+    const post = rows[0];
+
+    // 권한 체크
+    if (post.author_id !== userId) {
+      return res.status(403).send('작성자만 수정할 수 있습니다.');
+    }
+
+    // editor.ejs에 수정 모드로 렌더링
+    res.render('editor', {
+      user: req.session.user,
+      post,  // 이걸로 title, content, categories 전달
+      isEdit: true
+    });
+  } catch (err) {
+    console.error('수정 페이지 오류:', err);
+    res.status(500).send('서버 오류');
+  }
+});
+
+app.post('/edit/:id', async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.session.user?.id;
+  const { title, content, categories } = req.body;
+
+  try {
+    const [rows] = await db.query('SELECT author_id FROM posts WHERE id = ?', [postId]);
+    if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+
+    const post = rows[0];
+
+    if (post.author_id !== userId) {
+      return res.status(403).send('작성자만 수정할 수 있습니다.');
+    }
+
+    await db.query(
+      'UPDATE posts SET title = ?, content = ?, categories = ? WHERE id = ?',
+      [title, content, categories.join(','), postId]
+    );
+
+    res.redirect(`/post/${postId}`);
+  } catch (err) {
+    console.error('수정 처리 오류:', err);
+    res.status(500).send('서버 오류');
+  }
+});
+
 
 // ✅ 검색 결과 페이지
 app.get('/search', async (req, res) => {
@@ -160,7 +255,7 @@ app.get('/search', async (req, res) => {
 
   try {
     const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, created_at
+      SELECT id, title, content, categories, author, author_id, created_at
       FROM posts
       WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
       ORDER BY created_at DESC
@@ -189,7 +284,7 @@ app.get('/search', async (req, res) => {
 // ✅ 메인 페이지
 app.get('/', async (req, res) => {
   const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, created_at
+    SELECT id, title, content, categories, author, author_id, created_at
     FROM posts
     ORDER BY created_at DESC
   `);
@@ -260,7 +355,7 @@ app.get('/api/search', async (req, res) => {
   if (!keyword) return res.json({ posts: [] });
 
   const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, created_at
+    SELECT id, title, content, categories, author, author_id, created_at
     FROM posts
     WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
     ORDER BY created_at DESC

@@ -78,6 +78,15 @@
       <%- post.content %>
     </div>
 
+    <% if (user && post.author_id === user.id) { %>
+      <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
+        <a href="/edit/<%= post.id %>" class="edit-btn" style="margin-right: 10px;">✏️ 수정하기</a>
+        <form action="/delete/<%= post.id %>" method="POST" style="display: inline;">
+          <button type="submit" onclick="return confirm('정말 삭제하시겠어요?');">🗑 삭제하기</button>
+        </form>
+      </div>
+    <% } %>
+
     <div class="extra" style="margin-top: 2rem;">
       <a href="/" class="back-home-link">← 홈으로 돌아가기</a>
     </div>

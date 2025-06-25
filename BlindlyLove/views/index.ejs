@@ -96,7 +96,17 @@
             <tbody id="board-content">
               <% posts.forEach(post => { %>
                 <tr data-category="<%= post.categories %>">
-                  <td><a href="/post/<%= post.id %>"><%= post.title %></a></td>
+                  <td>
+                    <a href="/post/<%= post.id %>"><%= post.title %></a>
+                    
+                    <% if (user && user.id === post.author_id) { %>
+                      <!-- ✏️ 수정/삭제 버튼 -->
+                      <a href="/edit/<%= post.id %>" class="post-edit-btn">수정</a>
+                      <form action="/delete/<%= post.id %>" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('정말 삭제할까요?')">삭제</button>
+                      </form>
+                    <% } %>
+                  </td>
                   <td><%= post.author %></td>
                   <td><%= post.categories %></td>
                   <td><%= post.created_at.toISOString().slice(0, 10) %></td>
