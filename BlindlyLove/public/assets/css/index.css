@@ -423,3 +423,36 @@ html.dark body .search-result-msg {
 .icon-btn i.fa-pen {
   margin-bottom: 2px; /* 연필 아이콘을 조금 위로 올려 */
 }
+
+@media (max-width: 768px) {
+  /* 모바일 글 항목 */
+  .mobile-post-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  /* 수정/삭제 버튼 가로 정렬 */
+  .mobile-post-item .action-icons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  /* 아이콘 버튼 크기 및 정렬 */
+  .mobile-post-item .icon-btn {
+    background: none;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    font-size: 1.1rem;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-post-item .icon-btn:hover {
+    color: #333;
+  }
+}
