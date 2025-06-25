@@ -25,7 +25,7 @@ html, body {
   flex-shrink: 0;
   position: sticky;
   top: 0;
-  z-index: 5000;
+  z-index: 9000;
   position: relative;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); 
 }
@@ -65,7 +65,7 @@ html, body {
   width: 30vw;
   height: auto;
   margin-right: 6rem;
-  margin-bottom: -0.7rem;
+  margin-bottom: -0.5rem;
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
