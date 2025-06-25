@@ -321,7 +321,7 @@ app.get('/post/:id', async (req, res) => {
 app.get('/api/categories', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM categories ORDER BY id ASC');
-    res.json(rows);
+    res.json({ categories: rows.map(r => r.name) }); // ✅ name만 추출해서 감싸서 보냄
   } catch (err) {
     console.error('카테고리 조회 오류:', err);
     res.status(500).json({ error: '카테고리 불러오기 실패' });
