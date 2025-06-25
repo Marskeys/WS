@@ -410,5 +410,8 @@ html.dark body .search-result-msg {
 }
 
 .icon-btn i {
-  pointer-events: none; /* 아이콘에만 클릭 막기 방지 */
+  vertical-align: middle;
+  line-height: 1;      /* 줄간격 통일 */
+  font-size: 1rem;     /* 아이콘 크기 통일 */
+  display: inline-block;
 }
