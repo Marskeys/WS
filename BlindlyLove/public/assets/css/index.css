@@ -487,7 +487,7 @@ form button:hover {
   display: flex;
   justify-content: space-between; /* 제목과 버튼을 양쪽 끝에 배치 */
   align-items: center;
-  gap: 0.5rem; /* 제목과 액션 버튼 간의 간격을 좁히기 위해 0.5rem로 설정 */
+  gap: 0.2rem; /* 제목과 액션 버튼 간의 간격을 좁히기 위해 0.5rem로 설정 */
 }
 
 .post-title {
