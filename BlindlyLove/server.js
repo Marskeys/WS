@@ -339,16 +339,17 @@ app.post('/api/categories', async (req, res) => {
 });
 
 // ✅ 카테고리 삭제
-app.delete('/api/categories/:id', async (req, res) => {
-  const { id } = req.params;
+app.delete('/api/categories/:name', async (req, res) => {
+  const { name } = req.params;
   try {
-    await db.query('DELETE FROM categories WHERE id = ?', [id]);
+    await db.query('DELETE FROM categories WHERE name = ?', [decodeURIComponent(name)]);
     res.json({ success: true });
   } catch (err) {
     console.error('카테고리 삭제 오류:', err);
     res.status(500).json({ error: '카테고리 삭제 실패' });
   }
 });
+
 
 // ✅ AJAX 검색 API
 app.get('/api/search', async (req, res) => {
