@@ -21,7 +21,7 @@
 
 <script>
   window.initialData = {
-    selectedCategories: JSON.parse('<%- JSON.stringify(categoryList) %>'),
+    selectedCategories: JSON.parse('<%= JSON.stringify(categoryList) %>'),
     userId: "<%= userId %>",
     postUrl: "<%= postUrl %>",
     redirectUrl: "<%= redirectUrl %>"
