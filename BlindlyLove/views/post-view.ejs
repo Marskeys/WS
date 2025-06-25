@@ -4,17 +4,15 @@
   <title><%= post.title %> | BlindLove</title>
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <%- include('partials/head') %>
-  <style>
-
   .post-actions a.edit-btn,
   .post-actions form button {
     display: inline-block;
-    padding: 8px 16px;
+    padding: 6px 12px;              /* ✅ 작아진 패딩 */
     margin: 0 4px;
     border: none;
     border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: bold;
+    font-size: 0.85rem;             /* ✅ 작아진 글자 크기 */
+    font-weight: 600;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
   }
