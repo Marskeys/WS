@@ -485,6 +485,9 @@
     
       html.dark body .editor-container {
         background-color: #1a1a1a;
+        box-shadow: 0 0 20px rgba(100, 150, 255, 0.4); /* 부드러운 파란 글로우 */
+        border-radius: 12px; /* 원한다면 모서리 둥글게 */
+        transition: box-shadow 0.3s ease;
       }
     
       /* ✍️ 제목 입력창 */
