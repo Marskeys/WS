@@ -1,255 +1,189 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <link rel="stylesheet" href="/assets/css/editor.css" />
   <meta charset="UTF-8" />
   <title>BlindLove 에디터</title>
+  <link rel="stylesheet" href="/assets/css/editor.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
 
   <% if (user) { %>
-    <!-- ✅ 로그인한 사용자라면 -->
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <%
+  const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
+  const postUrl = (typeof post !== 'undefined') ? ('/edit/' + post.id) : '/savePost';
+  const redirectUrl = (typeof post !== 'undefined') ? ('/post/' + post.id) : '/';
+  const userId = user ? user.id : '';
+%>
+
+
+<script>
+  window.initialData = {
+    selectedCategories: JSON.parse('<%- JSON.stringify(categoryList) %>'),
+    userId: "<%= userId %>",
+    postUrl: "<%= postUrl %>",
+    redirectUrl: "<%= redirectUrl %>"
+  };
+</script>
+
 </head>
+
 <body>
-  <% const isEdit = typeof post !== 'undefined'; %>
-  <!-- ✅ 사용자 정보 표시 예시 (원하면 생략 가능) -->
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold;">
       <%= user.nickname %>님, 에디터에 오신 걸 환영합니다!
     </div>
   <% } %>
 
-    <div class="editor-container">
-        <div class="logo-wrap">
-          <img src="assets/images/1.png" alt="BlindLove 로고" />
-        </div>
-    
-        <div class="title-wrap">
-          <input type="text" id="postTitle" placeholder="제목을 입력하세요" value="<%= post?.title || '' %>" />
-        </div>
-    
-        <div class="toolbar">
-          <div class="dropdown">
-            <div class="dropdown-toggle" id="currentStyle" onclick="toggleDropdown()">본문 ▼</div>
-            <div class="dropdown-menu" id="styleDropdown">
-              <div class="h1" onclick="applyStyle('h1')">제목</div>
-              <div class="h2" onclick="applyStyle('h2')">부제목</div>
-              <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
-              <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
-              <div class="p" onclick="applyStyle('p')">본문</div>
-              <div class="desc" onclick="applyStyle('small')">설명</div>
-              <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
-              <div class="label" onclick="applyStyle('span')">레이블</div>
-              <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
-            </div>
-          </div>
-    
-          <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
-          <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
-          <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
-          <button onclick="format('strikeThrough')" data-tooltip="취소선"><s>S</s></button>
-          <button onclick="format('justifyLeft')" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
-          <button onclick="format('justifyCenter')" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
-          <button onclick="format('justifyRight')" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
-          <button onclick="format('insertOrderedList')" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
-          <button onclick="format('insertUnorderedList')" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
-          <button onclick="format('outdent')" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
-          <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
-          <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
-          <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
-         
-          <div class="color-tool" id="foreTool">
-            <button id="foreColorBtn" data-tooltip="글자 색상" onmousedown="saveSelection()">
-              <i class="fas fa-pencil-alt" id="foreIcon"></i>
-            </button>
-            <div class="color-palette" id="forePalette">
-              <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
-              <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
-              <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
-              <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
-              <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
-              <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
-              <label class="custom-color">
-                🎨<input type="color" onchange="setColor('foreColor', this.value)" />
-              </label>
-            </div>
-          </div>
-          
-          <div class="color-tool" id="bgTool">
-            <button id="bgColorBtn" data-tooltip="배경 색상" onmousedown="saveSelection()">
-              <i class="fas fa-fill-drip" id="bgIcon"></i>
-            </button>
-            <div class="color-palette" id="bgPalette">
-              <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
-              <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
-              <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
-              <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
-              <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
-              <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
-              <label class="custom-color">
-                🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
-              </label>
-            </div>
-          </div>
-    
-          
-          
-    
-          <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-          <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
-        </div>
-    
-        <div id="editor" contenteditable="true" class="editor" spellcheck="false">
-          <%- post && post.content ? post.content : '<p><br></p>' %>
-        </div>        
-    
-        <div class="category-box">
-          <label>카테고리:</label>
-          <div class="category-list" id="categoryList"></div>
-          <button class="add-category-btn" onclick="addCategory()">➕ 카테고리 추가</button>
-          <button class="post-btn" onclick="postContent()">📬 포스팅</button>
-          <button class="save-btn" onclick="saveContent()">💾 저장</button>
-        </div>
-      </div>
-   
-  
-    <%
-  const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
-  const postUrl = (isEdit && post) ? `/edit/${post.id}` : '/savePost';
-  const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
-%>
+  <div class="editor-container">
+    <div class="logo-wrap">
+      <img src="assets/images/1.png" alt="BlindLove 로고" />
+    </div>
 
-    <script>
-      let selectedCategories = <%- JSON.stringify(categoryList) %>;
-      let categories = [];
-      let savedRange = null;
-      
-        function renderCategories() {
-          const list = document.getElementById('categoryList');
-          list.innerHTML = '';
-          categories.forEach((cat, index) => {
-            const item = document.createElement('div');
-            item.className = 'category-item';
-            if (selectedCategories.includes(cat)) item.classList.add('selected');
-            item.innerText = cat;
-      
-            item.onclick = () => {
-              const i = selectedCategories.indexOf(cat);
-              if (i === -1) selectedCategories.push(cat);
-              else selectedCategories.splice(i, 1);
-              renderCategories();
-            };
-      
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-btn';
-            removeBtn.innerText = '×';
-            removeBtn.onclick = (e) => {
-              e.stopPropagation();
-              if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
-                fetch(`/api/categories/${encodeURIComponent(cat)}`, {
-                  method: 'DELETE'
-                })
-                .then(res => res.json())
-                .then(data => {
-                  if (data.success) {
-                    categories.splice(index, 1);
-                    selectedCategories = selectedCategories.filter(c => c !== cat);
-                    renderCategories();
-                  } else {
-                    alert("삭제 실패: " + data.error);
-                  }
-                })
-                .catch(err => {
-                  console.error("삭제 오류:", err);
-                  alert("삭제 중 오류가 발생했습니다.");
-                });
-              }
-            };
-      
-            item.appendChild(removeBtn);
-            list.appendChild(item);
-          });
-        }
-      
-        function addCategory() {
-          const newCat = prompt("새 카테고리 이름을 입력하세요:")?.trim();
-          if (!newCat || categories.includes(newCat)) return;
-      
-          fetch('/api/categories', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: newCat })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              categories.push(newCat);
-              renderCategories();
-            } else {
-              alert("추가 실패: " + data.error);
-            }
-          })
-          .catch(err => {
-            console.error("추가 오류:", err);
-            alert("추가 중 오류가 발생했습니다.");
-          });
-        }
-      
-        function postContent() {
-          const title = document.getElementById('postTitle').value.trim();
-          const content = document.getElementById('editor').innerHTML.trim();
-          const categoriesToSend = selectedCategories;
-      
-          if (!title) return alert("제목을 입력해주세요.");
-          if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
-          if (!categoriesToSend || categoriesToSend.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
-      
-          fetch("<%= postUrl %>", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title,
-              content,
-              categories: categoriesToSend,
-              user_id: "<%= user?.id %>"
+    <div class="title-wrap">
+      <input type="text" id="postTitle" placeholder="제목을 입력하세요" value="<%= post && post.title ? post.title : '' %>" />
+    </div>
+
+    <%- include('partials/toolbar') %> <!-- 툴바는 따로 관리한다면 이 부분 유지 -->
+
+    <div id="editor" contenteditable="true" class="editor" spellcheck="false">
+      <%- post && post.content ? post.content : '<p><br></p>' %>
+    </div>
+
+    <div class="category-box">
+      <label>카테고리:</label>
+      <div class="category-list" id="categoryList"></div>
+      <button class="add-category-btn" onclick="addCategory()">➕ 카테고리 추가</button>
+      <button class="post-btn" onclick="postContent()">📬 포스팅</button>
+      <button class="save-btn" onclick="saveContent()">💾 저장</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedCategories = window.initialData.selectedCategories;
+    let categories = [];
+    let savedRange = null;
+
+    function renderCategories() {
+      const list = document.getElementById('categoryList');
+      list.innerHTML = '';
+      categories.forEach((cat, index) => {
+        const item = document.createElement('div');
+        item.className = 'category-item';
+        if (selectedCategories.includes(cat)) item.classList.add('selected');
+        item.innerText = cat;
+
+        item.onclick = () => {
+          const i = selectedCategories.indexOf(cat);
+          if (i === -1) selectedCategories.push(cat);
+          else selectedCategories.splice(i, 1);
+          renderCategories();
+        };
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerText = '×';
+        removeBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
+            fetch(`/api/categories/${encodeURIComponent(cat)}`, {
+              method: 'DELETE'
             })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-    alert("성공적으로 저장되었습니다!");
-    <% if (isEdit && post) { %>
-      window.location.href = "/post/<%= post.id %>";
-    <% } else { %>
-      window.location.href = "/";
-    <% } %>
-  } else {
-    alert("저장 실패: " + data.error);
-  }
-          })
-          .catch(err => {
-            console.error("저장 중 오류:", err);
-            alert("저장 중 오류가 발생했습니다.");
-          });
-        }
-      
-        window.onload = () => {
-          fetch('/api/categories')
             .then(res => res.json())
             .then(data => {
-              categories = data.categories || [];
-              renderCategories();
+              if (data.success) {
+                categories.splice(index, 1);
+                selectedCategories = selectedCategories.filter(c => c !== cat);
+                renderCategories();
+              } else {
+                alert("삭제 실패: " + data.error);
+              }
             })
             .catch(err => {
-              console.error("카테고리 불러오기 오류:", err);
-              categories = ['일상', '기록', '리뷰']; // fallback
-              renderCategories();
+              console.error("삭제 오류:", err);
+              alert("삭제 중 오류가 발생했습니다.");
             });
+          }
         };
-      </script>
-      
-    </body>
-    </html>
+
+        item.appendChild(removeBtn);
+        list.appendChild(item);
+      });
+    }
+
+    function addCategory() {
+      const newCat = prompt("새 카테고리 이름을 입력하세요:")?.trim();
+      if (!newCat || categories.includes(newCat)) return;
+
+      fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newCat })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          categories.push(newCat);
+          renderCategories();
+        } else {
+          alert("추가 실패: " + data.error);
+        }
+      })
+      .catch(err => {
+        console.error("추가 오류:", err);
+        alert("추가 중 오류가 발생했습니다.");
+      });
+    }
+
+    function postContent() {
+      const title = document.getElementById('postTitle').value.trim();
+      const content = document.getElementById('editor').innerHTML.trim();
+      const categoriesToSend = selectedCategories;
+
+      if (!title) return alert("제목을 입력해주세요.");
+      if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
+      if (!categoriesToSend || categoriesToSend.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
+
+      fetch(window.initialData.postUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          content,
+          categories: categoriesToSend,
+          user_id: window.initialData.userId
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("성공적으로 저장되었습니다!");
+          window.location.href = window.initialData.redirectUrl;
+        } else {
+          alert("저장 실패: " + data.error);
+        }
+      })
+      .catch(err => {
+        console.error("저장 중 오류:", err);
+        alert("저장 중 오류가 발생했습니다.");
+      });
+    }
+
+    window.onload = () => {
+      fetch('/api/categories')
+        .then(res => res.json())
+        .then(data => {
+          categories = data.categories || [];
+          renderCategories();
+        })
+        .catch(err => {
+          console.error("카테고리 불러오기 오류:", err);
+          categories = ['일상', '기록', '리뷰']; // fallback
+          renderCategories();
+        });
+    };
+  </script>
+</body>
+</html>
