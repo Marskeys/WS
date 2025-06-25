@@ -115,11 +115,13 @@
         </div>
       </div>
    
-    
-      <script>
-        let selectedCategories = <%- JSON.stringify((typeof post !== 'undefined' && post.categories) ? post.categories.split(',') : ['일상']) %>;
-        let categories = [];
-        let savedRange = null;
+      <%
+      const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
+    %>
+    <script>
+      let selectedCategories = <%- JSON.stringify(categoryList) %>;
+      let categories = [];
+      let savedRange = null;
       
         function renderCategories() {
           const list = document.getElementById('categoryList');
