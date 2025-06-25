@@ -486,7 +486,7 @@ form button:hover {
 .post-title-and-actions {
   display: flex;
   justify-content: flex-start; /* 제목과 버튼을 왼쪽으로 정렬 */
-  align-items: center;
+  align-items: left;
   gap: 1rem; /* 제목과 버튼 간의 간격을 조정 */
 }
 
@@ -494,7 +494,7 @@ form button:hover {
   font-weight: bold;
   text-decoration: none;
   color: #333;
-  margin-right: 0.5rem; /* 제목과 버튼 간의 여백을 추가 */
+  margin-right: 0rem; /* 제목과 버튼 간의 여백을 추가 */
   flex-shrink: 0; /* 제목이 불필요하게 축소되지 않도록 설정 */
 }
 
