@@ -434,7 +434,7 @@ html.dark body .search-result-msg {
     gap: 1rem; /* 제목과 버튼 간격 */
   }
 
-  /* 아이콘 버튼 크기 및 여백 조정 */
+  /* 수정/삭제 버튼 스타일 */
   .mobile-post-item .icon-btn {
     background: none;
     border: none;
@@ -451,9 +451,9 @@ html.dark body .search-result-msg {
     color: #333;
   }
 
-  /* 메타정보를 줄 바꿈 처리 */
+  /* 메타정보를 세로로 정렬 (줄바꿈 처리) */
   .mobile-post-item .post-info {
-    display: block;  /* 메타정보는 줄 바꿈 */
+    display: block; /* block으로 변경하여 줄바꿈 처리 */
     margin-top: 0.5rem; /* 위쪽 여백을 추가 */
   }
 }
