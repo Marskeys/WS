@@ -61,11 +61,11 @@ html, body {
 }
 
 .floating-home-logo {
-  position: relative; 
+  position: relative;
   width: 30vw;
   height: auto;
   margin-right: 6rem;
-  margin-bottom: -0rem;
+  margin-bottom: 0;
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
@@ -74,6 +74,14 @@ html, body {
   opacity: 0.9;
   transform: translateY(-2px);
 }
+
+/* ✅ 데스크탑에서 크기 줄이기 */
+@media (min-width: 1024px) {
+  .floating-home-logo {
+    width: 12vw;
+  }
+}
+
 
 .auth-buttons {
   display: flex;
