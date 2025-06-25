@@ -75,15 +75,15 @@ html, body {
 }
 
 /* ✅ 데스크탑에서 크기 줄이기 */
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .floating-home-logo {
     width: 12vw;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .floating-home-logo {
-    width: 22vw;
+    width: 25vw;
   }
 }
 
@@ -97,7 +97,7 @@ html, body {
   white-space: nowrap;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .auth-buttons {
     gap: 4px; /* ✅ 모바일에서는 살짝 붙게 */
   }
@@ -197,7 +197,7 @@ html, body {
 
 
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .light-switch {
     width: 60px;
     height: 30px;
@@ -211,7 +211,7 @@ html, body {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .right-controls {
     gap: 4px !important; /* 기존 8px → 4px로 줄이기 */
   }
@@ -243,7 +243,7 @@ html, body {
   display: block;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .site-logo {
     width: 50vw !important;
     max-width: 360px !important;
@@ -355,7 +355,7 @@ body.no-fixed-footer footer {
 }
 
 /* ✅ 모바일 화면에서 보이게 */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .hamburger {
     display: flex !important;
     position: fixed;
@@ -554,7 +554,7 @@ body.no-fixed-footer footer {
 }
 
 /* ✅ 모바일 검색 시 헤더 고정 검색창 길이 - 기존 유지 */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .search-form {
     max-width: 95% !important;
     width: 100%;
@@ -615,7 +615,7 @@ body.no-fixed-footer footer {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .header-top {
     position: sticky;
   }
@@ -663,7 +663,7 @@ body.no-fixed-footer footer {
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .auth-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -696,7 +696,7 @@ body.no-fixed-footer footer {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .right-controls {
     transform: scale(0.65); /* ✅ 전체 줄 비율 축소 */
     transform-origin: right center; /* ✅ 오른쪽 기준으로 축소 */
