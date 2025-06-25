@@ -394,7 +394,7 @@ html.dark body .search-result-msg {
   margin-left: 0.8rem; /* 제목과 아이콘 사이 여백 */
   vertical-align: middle;
 }
-
+/* 기본적인 버튼 스타일 */
 .icon-btn {
   background: none;
   border: none;
@@ -411,8 +411,8 @@ html.dark body .search-result-msg {
 
 .icon-btn i {
   vertical-align: middle;
-  line-height: 1;      /* 줄간격 통일 */
-  font-size: 1rem;     /* 아이콘 크기 통일 */
+  line-height: 1; /* 줄간격 통일 */
+  font-size: 1rem; /* 아이콘 크기 통일 */
   display: inline-block;
 }
 
@@ -424,10 +424,10 @@ html.dark body .search-result-msg {
   margin-bottom: 2px; /* 연필 아이콘을 조금 위로 올려 */
 }
 
-/* 기본적인 모바일 게시글 레이아웃 */
+/* 모바일 게시글 레이아웃 */
 .mobile-board-list {
   display: flex;
-  flex-direction: column;  /* 세로로 배치 */
+  flex-direction: column; /* 세로로 배치 */
   gap: 1rem;
 }
 
@@ -455,29 +455,6 @@ html.dark body .search-result-msg {
   gap: 0.5rem; /* 버튼 사이 간격 */
 }
 
-.icon-btn {
-  background: none;
-  border: none;
-  padding: 0.3rem 0.6rem;
-  font-size: 1.1rem;
-  color: #666;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-btn:hover {
-  color: #333;
-}
-
-.post-info {
-  display: block; /* 메타정보는 줄바꿈 처리 */
-  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
-  font-size: 0.9rem;
-  color: #777;
-}
-
 /* 삭제 버튼 스타일 */
 .icon-btn.delete-btn {
   background: none;
@@ -499,3 +476,9 @@ html.dark body .search-result-msg {
 .icon-btn i {
   margin-right: 0.2rem;  /* 아이콘과 텍스트 사이 간격 */
 }
+
+/* 버튼이 안 보이지 않는 문제 해결 */
+button {
+  display: inline-flex; /* button 태그가 inline으로 정렬되도록 */
+}
+
