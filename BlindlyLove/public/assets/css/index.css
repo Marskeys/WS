@@ -439,6 +439,7 @@ form button:hover {
   justify-content: space-between; /* 제목과 버튼을 한 줄에 배치 */
   align-items: center;
   gap: 0.5rem; /* 제목과 수정/삭제 버튼 사이 간격 */
+  width: 90%;
 }
 
 
