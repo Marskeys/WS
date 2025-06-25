@@ -425,18 +425,13 @@ html.dark body .search-result-msg {
 }
 
 /* 모바일 화면에서 제목과 버튼을 가로로 배치 */
+/* 모바일 화면에서 제목과 수정/삭제 버튼을 가로로 배치 */
 @media (max-width: 768px) {
   .mobile-post-item {
     display: flex;
     flex-direction: row; /* 제목과 버튼을 가로로 배치 */
     align-items: center; /* 세로 가운데 정렬 */
     gap: 1rem; /* 제목과 버튼 간격 */
-  }
-
-  .mobile-post-item .action-icons {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
   }
 
   /* 아이콘 버튼 크기 및 여백 조정 */
@@ -454,5 +449,11 @@ html.dark body .search-result-msg {
 
   .mobile-post-item .icon-btn:hover {
     color: #333;
+  }
+
+  /* 메타정보를 줄 바꿈 처리 */
+  .mobile-post-item .post-info {
+    display: block;  /* 메타정보는 줄 바꿈 */
+    margin-top: 0.5rem; /* 위쪽 여백을 추가 */
   }
 }
