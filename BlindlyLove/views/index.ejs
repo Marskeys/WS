@@ -97,8 +97,8 @@
               <% posts.forEach(post => { %>
                 <tr data-category="<%= post.categories %>">
                   <td>
+                    <div class="table-title-and-actions" style="display: flex; justify-content: space-between; align-items: center;">
                     <a href="/post/<%= post.id %>"><%= post.title %></a>
-                    
                     <% if (user && user.id === post.user_id) { %>
                       <div class="action-icons">
                         <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
@@ -110,6 +110,7 @@
                           </button>
                         </form>
                       </div>
+                    </div>
                     <% } %>
                   </td>
                   <td><%= post.author %></td>
