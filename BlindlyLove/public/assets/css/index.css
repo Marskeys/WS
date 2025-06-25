@@ -482,21 +482,25 @@ form button:hover {
   color: #777;
 }
 
-/* 제목과 액션 버튼 사이 간격 좁히기 */
+/* 제목과 액션 버튼 사이 여백 설정 */
 .post-title-and-actions {
   display: flex;
-  justify-content: flex-start; /* 제목과 버튼을 왼쪽으로 배치 */
+  justify-content: flex-start; /* 제목과 버튼을 왼쪽으로 정렬 */
   align-items: center;
-  gap: 0.2rem; /* 제목과 액션 버튼 간의 간격을 좁히기 위해 0.5rem로 설정 */
+  gap: 1rem; /* 제목과 버튼 간의 간격을 조정 */
 }
 
-/* 제목의 오른쪽 마진/패딩을 줄여서 간격 좁히기 */
 .post-title {
   font-weight: bold;
   text-decoration: none;
   color: #333;
-  flex-grow: 1;
-  margin-right: 0rem; /* 제목 오른쪽 여백을 줄여서 버튼과 간격 좁힘 */
-  /* 또는, 패딩으로 조정 */
-  padding-right: 0rem; /* 제목 오른쪽 패딩을 줄여서 간격 좁힘 */
+  margin-right: 0.5rem; /* 제목과 버튼 간의 여백을 추가 */
+  flex-shrink: 0; /* 제목이 불필요하게 축소되지 않도록 설정 */
+}
+
+/* 버튼들을 가로로 정렬하고, 버튼 간격 좁히기 */
+.action-icons {
+  display: flex;
+  gap: 0.5rem; /* 수정/삭제 버튼 간의 간격을 좁힘 */
+  align-items: center; /* 버튼 세로 정렬 */
 }
