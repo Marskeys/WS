@@ -5,6 +5,42 @@
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <%- include('partials/head') %>
   <style>
+
+  .post-actions a.edit-btn,
+  .post-actions form button {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 4px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .post-actions a.edit-btn {
+    background-color: #f0f8ff;
+    color: #0077cc;
+    text-decoration: none;
+  }
+
+  .post-actions a.edit-btn:hover {
+    background-color: #d8edff;
+    color: #005fa3;
+  }
+
+  .post-actions form button {
+    background-color: #fff0f0;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+  }
+
+  .post-actions form button:hover {
+    background-color: #ffe5e5;
+    color: #a30000;
+  }
+
     .post-title {
       font-size: 1.5rem;
       font-weight: bold;
