@@ -128,7 +128,7 @@
           <label>카테고리:</label>
           <div class="category-list" id="categoryList"></div>
           <button class="add-category-btn" onclick="addCategory()">➕ 카테고리 추가</button>
-          <button class="post-btn" onclick="postContent()">� 포스팅</button>
+          <button class="post-btn" onclick="postContent()">📬 포스팅</button>
           <button class="save-btn" onclick="saveContent()">💾 저장</button>
         </div>
       </div>
@@ -452,7 +452,7 @@
           }
           modal.innerHTML = `
               <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                  <p>${message}</p>
+                  <p style="color: black;">${message}</p> <!-- ✅ 글자색을 검은색으로 변경 -->
                   ${isConfirm ? `
                       <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
                       <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
@@ -498,7 +498,7 @@
           }
           modal.innerHTML = `
               <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                  <p>${message}</p>
+                  <p style="color: black;">${message}</p> <!-- ✅ 입력창 메시지 글자색도 검은색으로 변경 -->
                   <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
                   <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
                   <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
@@ -560,4 +560,3 @@
       <%- include('partials/scripts') %>
     </body>
     </html>
-�
