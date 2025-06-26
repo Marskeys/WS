@@ -13,9 +13,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/editor.css" />
-
-
-
   
   <style>
     body {
@@ -123,7 +120,7 @@
         </div>  
 
         <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
-          <input type="checkbox" name="is_private" value="1" <%= post?.is_private ? 'checked' : '' %> />
+          <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.is_private ? 'checked' : '' %> />
           비공개 글로 설정
         </label>
 
@@ -144,11 +141,12 @@
 %>
 
     <script>
+      // 모든 JavaScript 코드를 하나의 스크립트 블록으로 통합합니다.
       let selectedCategories = <%- JSON.stringify(categoryList) %>;
       let categories = [];
       let savedRange = null;
       
-        function renderCategories() {
+      function renderCategories() {
           const list = document.getElementById('categoryList');
           list.innerHTML = '';
           categories.forEach((cat, index) => {
@@ -169,7 +167,9 @@
             removeBtn.innerText = '×';
             removeBtn.onclick = (e) => {
               e.stopPropagation();
-              if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
+              // 사용자에게 확인 메시지를 표시하기 위해 사용자 정의 모달 또는 div를 사용합니다.
+              // alert 대신 메시지 상자를 표시합니다.
+              showCustomMessage(`'${cat}' 카테고리를 삭제하시겠습니까?`, true, () => {
                 fetch(`/api/categories/${encodeURIComponent(cat)}`, {
                   method: 'DELETE'
                 })
@@ -179,15 +179,16 @@
                     categories.splice(index, 1);
                     selectedCategories = selectedCategories.filter(c => c !== cat);
                     renderCategories();
+                    showCustomMessage("카테고리가 성공적으로 삭제되었습니다.");
                   } else {
-                    alert("삭제 실패: " + data.error);
+                    showCustomMessage("삭제 실패: " + data.error);
                   }
                 })
                 .catch(err => {
                   console.error("삭제 오류:", err);
-                  alert("삭제 중 오류가 발생했습니다.");
+                  showCustomMessage("삭제 중 오류가 발생했습니다.");
                 });
-              }
+              });
             };
       
             item.appendChild(removeBtn);
@@ -196,26 +197,30 @@
         }
       
         function addCategory() {
-          const newCat = prompt("새 카테고리 이름을 입력하세요:")?.trim();
-          if (!newCat || categories.includes(newCat)) return;
-      
-          fetch('/api/categories', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: newCat })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              categories.push(newCat);
-              renderCategories();
-            } else {
-              alert("추가 실패: " + data.error);
-            }
-          })
-          .catch(err => {
-            console.error("추가 오류:", err);
-            alert("추가 중 오류가 발생했습니다.");
+          // prompt 대신 사용자 정의 입력 모달 또는 div를 사용합니다.
+          showCustomInput("새 카테고리 이름을 입력하세요:", (newCat) => {
+            newCat = newCat?.trim();
+            if (!newCat || categories.includes(newCat)) return;
+        
+            fetch('/api/categories', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: newCat })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                categories.push(newCat);
+                renderCategories();
+                showCustomMessage("카테고리가 성공적으로 추가되었습니다.");
+              } else {
+                showCustomMessage("추가 실패: " + data.error);
+              }
+            })
+            .catch(err => {
+              console.error("추가 오류:", err);
+              showCustomMessage("추가 중 오류가 발생했습니다.");
+            });
           });
         }
       
@@ -223,10 +228,11 @@
           const title = document.getElementById('postTitle').value.trim();
           const content = document.getElementById('editor').innerHTML.trim();
           const categoriesToSend = selectedCategories;
+          const isPrivate = document.getElementById('isPrivateCheckbox').checked ? 1 : 0;
       
-          if (!title) return alert("제목을 입력해주세요.");
-          if (!content || content === '<div><br></div>' || content === '<p><br></p>') return alert("내용을 입력해주세요.");
-          if (!categoriesToSend || categoriesToSend.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
+          if (!title) return showCustomMessage("제목을 입력해주세요.");
+          if (!content || content === '<div><br></div>' || content === '<p><br></p>') return showCustomMessage("내용을 입력해주세요.");
+          if (!categoriesToSend || categoriesToSend.length === 0) return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
       
           fetch("<%= postUrl %>", {
             method: 'POST',
@@ -235,29 +241,291 @@
               title,
               content,
               categories: categoriesToSend,
-              user_id: "<%= user?.id %>"
+              is_private: isPrivate, // 비공개 여부 추가
+              // user_id는 서버에서 세션으로 가져오는 것이 더 안전하므로 클라이언트에서 보내지 않습니다.
             })
           })
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-    alert("성공적으로 저장되었습니다!");
-    <% if (isEdit && post) { %>
-      window.location.href = "/post/<%= post.id %>";
-    <% } else { %>
-      window.location.href = "/";
-    <% } %>
-  } else {
-    alert("저장 실패: " + data.error);
-  }
+              showCustomMessage("성공적으로 저장되었습니다!");
+              <% if (isEdit && post) { %>
+                window.location.href = "/post/<%= post.id %>";
+              <% } else { %>
+                window.location.href = "/";
+              <% } %>
+            } else {
+              showCustomMessage("저장 실패: " + data.error);
+            }
           })
           .catch(err => {
             console.error("저장 중 오류:", err);
-            alert("저장 중 오류가 발생했습니다.");
+            showCustomMessage("저장 중 오류가 발생했습니다.");
           });
         }
       
-        window.onload = () => {
+      // --- 수정된 format 함수 ---
+      function format(command, value = null) {
+          document.execCommand("styleWithCSS", false, false); // 항상 CSS 사용 안함
+          document.execCommand(command, false, value);
+          setTimeout(detectStyle, 100);
+      }
+      // -------------------------
+
+      // --- 수정된 applyStyle 함수 ---
+      function applyStyle(tag) {
+        const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
+        const editor = document.getElementById("editor");
+
+        restoreSelection();
+        editor.focus();
+
+        if (blockTags.includes(tag)) {
+          document.execCommand("styleWithCSS", false, false);
+          document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
+          saveSelection();
+        } else {
+          const sel = window.getSelection();
+          if (!sel.rangeCount || sel.isCollapsed) return;
+
+          const range = sel.getRangeAt(0);
+          const tempElement = document.createElement(tag);
+          if (tag === 'span') tempElement.classList.add('label');
+          if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
+
+          try {
+            const contents = range.extractContents();
+            tempElement.appendChild(contents);
+            range.insertNode(tempElement);
+
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNode(tempElement);
+            sel.addRange(newRange);
+
+            saveSelection();
+          } catch (e) {
+            console.error("applyStyle(span/strong) 오류:", e);
+          }
+        }
+        setTimeout(detectStyle, 100);
+      }
+
+      // -------------------------
+
+      function insertImage() {
+          // alert 대신 사용자 정의 메시지 박스를 사용합니다.
+          showCustomInput("이미지 URL을 입력하세요:", (url) => {
+            if (url) format('insertImage', url);
+          });
+      }
+
+      function saveContent() {
+          // 임시 저장 기능 (클라이언트 사이드에서만)
+          showCustomMessage("임시 저장 완료!");
+      }
+
+      function toggleDropdown() {
+          document.getElementById('styleDropdown').classList.toggle('show');
+      }
+
+      function updateCurrentStyle(tagName) {
+          const labelMap = {
+              h1: "제목",
+              h2: "부제목",
+              h3: "머리말 1",
+              h4: "빨간 머리말",
+              p: "본문",
+              small: "설명",
+              footer: "머리말 및 꼬리말",
+              span: "레이블",
+              strong: "진한 레이블"
+          };
+          const label = labelMap[tagName.toLowerCase()] || tagName;
+          document.getElementById("currentStyle").innerText = `${label} ▼`;
+      }
+
+      function detectStyle() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        let node = sel.getRangeAt(0).startContainer;
+
+        if (node.nodeType === 3) node = node.parentNode;
+
+        while (node && node !== document) {
+          const tag = node.tagName?.toLowerCase();
+          if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+            updateCurrentStyle(tag);
+            return;
+          }
+          node = node.parentNode;
+        }
+        updateCurrentStyle('p');
+      }
+
+      function saveSelection() {
+          const sel = window.getSelection();
+          if (sel.rangeCount > 0) {
+              savedRange = sel.getRangeAt(0).cloneRange();
+          }
+      }
+
+      function restoreSelection() {
+          const sel = window.getSelection();
+          if (savedRange) {
+              sel.removeAllRanges();
+              sel.addRange(savedRange);
+          }
+      }
+
+      // --- 수정된 setColor 함수 ---
+      function setColor(command, color) {
+        restoreSelection();
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed) return;
+
+        const range = sel.getRangeAt(0);
+
+        if (color === "__clear__") {
+          const contents = range.cloneContents();
+          const spans = contents.querySelectorAll("span");
+
+          spans.forEach(span => {
+            if (command === 'foreColor') span.style.color = '';
+            else if (command === 'hiliteColor') span.style.backgroundColor = '';
+          });
+
+          range.deleteContents();
+          range.insertNode(contents);
+          return;
+        }
+
+        const span = document.createElement("span");
+        if (command === "foreColor") span.style.color = color;
+        else if (command === "hiliteColor") span.style.backgroundColor = color;
+
+        const contents = range.extractContents();
+        span.appendChild(contents);
+        range.insertNode(span);
+
+        sel.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNode(span);
+        sel.addRange(newRange);
+
+        saveSelection();
+        detectStyle();
+      }
+
+      function getCurrentBlockTag() {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return null;
+
+        let node = sel.getRangeAt(0).startContainer;
+        while (node && node !== document) {
+          if (node.nodeType === 1) {
+            const tag = node.tagName.toLowerCase();
+            if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+              return tag;
+            }
+          }
+          node = node.parentNode;
+        }
+        return 'p';
+      }
+
+      // -------------------------
+      // ✅ 커스텀 메시지 박스 및 입력 박스 구현 (alert, prompt 대체)
+      function createMessageBox(message, isConfirm = false, onConfirm = null) {
+          let modal = document.getElementById('customMessageModal');
+          if (!modal) {
+              modal = document.createElement('div');
+              modal.id = 'customMessageModal';
+              modal.style = `
+                  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                  background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                  align-items: center; z-index: 1000;
+              `;
+              document.body.appendChild(modal);
+          }
+          modal.innerHTML = `
+              <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+                  <p>${message}</p>
+                  ${isConfirm ? `
+                      <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                      <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+                  ` : `
+                      <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                  `}
+              </div>
+          `;
+          modal.style.display = 'flex';
+
+          if (isConfirm) {
+              document.getElementById('confirmBtn').onclick = () => {
+                  modal.style.display = 'none';
+                  if (onConfirm) onConfirm();
+              };
+              document.getElementById('cancelBtn').onclick = () => {
+                  modal.style.display = 'none';
+              };
+          } else {
+              document.getElementById('okBtn').onclick = () => {
+                  modal.style.display = 'none';
+              };
+          }
+      }
+
+      function showCustomMessage(message, isConfirm = false, onConfirm = null) {
+          createMessageBox(message, isConfirm, onConfirm);
+      }
+
+      function showCustomInput(message, onInput) {
+          let modal = document.getElementById('customInputModal');
+          if (!modal) {
+              modal = document.createElement('div');
+              modal.id = 'customInputModal';
+              modal.style = `
+                  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                  background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                  align-items: center; z-index: 1000;
+              `;
+              document.body.appendChild(modal);
+          }
+          modal.innerHTML = `
+              <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+                  <p>${message}</p>
+                  <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
+                  <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                  <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+              </div>
+          `;
+          modal.style.display = 'flex';
+
+          document.getElementById('inputOkBtn').onclick = () => {
+              const inputValue = document.getElementById('customInput').value;
+              modal.style.display = 'none';
+              if (onInput) onInput(inputValue);
+          };
+          document.getElementById('inputCancelBtn').onclick = () => {
+              modal.style.display = 'none';
+              if (onInput) onInput(null); // 취소 시 null 전달
+          };
+          document.getElementById('customInput').focus(); // 입력 필드에 포커스
+      }
+      // -------------------------
+
+      window.onclick = function(e) {
+          if (!e.target.matches('.dropdown-toggle')) {
+              const dropdowns = document.getElementsByClassName('dropdown-menu');
+              for (let d of dropdowns) d.classList.remove('show');
+          }
+      };
+
+      // `window.onload`는 한 번만 할당되어야 합니다.
+      // 모든 함수 정의를 이전에 배치하여 오류 없이 호출될 수 있도록 합니다.
+      window.onload = () => {
+          // 카테고리 불러오기 및 렌더링
           fetch('/api/categories')
             .then(res => res.json())
             .then(data => {
@@ -266,290 +534,24 @@
             })
             .catch(err => {
               console.error("카테고리 불러오기 오류:", err);
-              categories = ['일상', '기록', '리뷰']; // fallback
+              categories = ['일상', '기록', '리뷰']; // 대체 카테고리
               renderCategories();
             });
-        };
-      </script>
 
-<script>
-  function applyStyle(tag) {
-    const editor = document.getElementById('editor');
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return;
+          // 에디터 이벤트 리스너 추가
+          const editor = document.getElementById('editor');
+          editor.addEventListener('keyup', detectStyle);
+          editor.addEventListener('mouseup', detectStyle);
+          editor.addEventListener('mouseup', saveSelection);
+          editor.addEventListener('keyup', saveSelection);
 
-    const range = selection.getRangeAt(0);
-    const selectedText = range.extractContents();
-
-    const el = document.createElement(tag);
-    el.appendChild(selectedText);
-    range.insertNode(el);
-
-    selection.removeAllRanges();
-    const newRange = document.createRange();
-    newRange.selectNodeContents(el);
-    selection.addRange(newRange);
-
-    document.getElementById('currentStyle').innerText = el.tagName.toLowerCase() + ' ▼';
-  }
-</script>
-
-<script>
-  
-
-if (!title) return alert("제목을 입력해주세요.");
-if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
-
-const isPrivate = document.querySelector('input[name="is_private"]').checked ? 1 : 0;
-
-fetch('/savePost', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    title,
-    content,
-    categories: selectedCategories,
-    is_private: isPrivate
-  })
-})
-.then(res => res.json())
-.then(data => {
-  if (data.success) {
-    alert("🎉 글 작성이 완료되었습니다!");
-    // window.location.href = `/post/${data.postId}`; // ← 이건 옵션
-  } else {
-    alert("❌ 저장 실패: " + data.error);
-  }
-})
-.catch(err => {
-  console.error("요청 실패:", err);
-  alert("❌ 서버 연결 오류!");
-});
-}
-
-
-  // --- 수정된 format 함수 ---
-  // 모든 execCommand는 기본적으로 styleWithCSS=false로 작동하며,
-  // 태그 기반으로 요소를 생성합니다 (<b>, <i>, <u> 등).
-  function format(command, value = null) {
-      document.execCommand("styleWithCSS", false, false); // 항상 CSS 사용 안함
-      document.execCommand(command, false, value);
-      // execCommand 후에는 detectStyle을 호출하여 현재 스타일을 업데이트합니다.
-      setTimeout(detectStyle, 100);
-  }
-  // -------------------------
-
-  // --- 수정된 applyStyle 함수 ---
-  // 이 함수는 블록 레벨 요소 (h1, p 등) 생성에 집중합니다.
-  // span/strong 같은 인라인 요소는 format 함수나 setColor 함수에서 처리되도록 합니다.
-  function applyStyle(tag) {
-const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
-const editor = document.getElementById("editor");
-
-// 선택 영역 저장 후 복원
-restoreSelection();
-editor.focus();
-
-if (blockTags.includes(tag)) {
-  document.execCommand("styleWithCSS", false, false);
-  document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
-
-  // 다시 선택 영역을 저장해서 커서 이동 방지
-  saveSelection();
-} else {
-  const sel = window.getSelection();
-  if (!sel.rangeCount || sel.isCollapsed) return;
-
-  const range = sel.getRangeAt(0);
-  const tempElement = document.createElement(tag);
-  if (tag === 'span') tempElement.classList.add('label');
-  if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
-
-  try {
-    const contents = range.extractContents();
-    tempElement.appendChild(contents);
-    range.insertNode(tempElement);
-
-    // 선택 영역 다시 지정
-    sel.removeAllRanges();
-    const newRange = document.createRange();
-    newRange.selectNode(tempElement);
-    sel.addRange(newRange);
-
-    saveSelection();
-  } catch (e) {
-    console.error("applyStyle(span/strong) 오류:", e);
-  }
-}
-
-setTimeout(detectStyle, 100);
-}
-
-  // -------------------------
-
-  function insertImage() {
-      const url = prompt("이미지 URL을 입력하세요:");
-      if (url) format('insertImage', url);
-  }
-
-  function saveContent() {
-      const content = document.getElementById('editor').innerHTML;
-      alert("임시 저장 완료!");
-  }
-
-  function toggleDropdown() {
-      document.getElementById('styleDropdown').classList.toggle('show');
-  }
-
-  function updateCurrentStyle(tagName) {
-      const labelMap = {
-          h1: "제목",
-          h2: "부제목",
-          h3: "머리말 1",
-          h4: "빨간 머리말",
-          p: "본문",
-          small: "설명",
-          footer: "머리말 및 꼬리말",
-          span: "레이블",
-          strong: "진한 레이블"
+          // 툴바 버튼 이벤트 리스너 추가 (선택 영역 저장)
+          const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
+          toolbarButtons.forEach(button => {
+              button.addEventListener('mousedown', saveSelection);
+          });
       };
-      const label = labelMap[tagName.toLowerCase()] || tagName;
-      document.getElementById("currentStyle").innerText = `${label} ▼`;
-  }
-
-  function detectStyle() {
-const sel = window.getSelection();
-if (!sel.rangeCount) return;
-let node = sel.getRangeAt(0).startContainer;
-
-// 텍스트 노드면 부모로 이동
-if (node.nodeType === 3) node = node.parentNode;
-
-// 가장 가까운 블록 요소 탐색
-while (node && node !== document) {
-  const tag = node.tagName?.toLowerCase();
-  if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
-    updateCurrentStyle(tag);
-    return;
-  }
-  node = node.parentNode;
-}
-
-// 못 찾으면 기본 본문
-updateCurrentStyle('p');
-}
-
-
-
-  function saveSelection() {
-      const sel = window.getSelection();
-      if (sel.rangeCount > 0) {
-          savedRange = sel.getRangeAt(0).cloneRange(); // Range 객체 복사본 저장
-      }
-  }
-
-  function restoreSelection() {
-      const sel = window.getSelection();
-      if (savedRange) {
-          sel.removeAllRanges();
-          sel.addRange(savedRange);
-      }
-  }
-
-  // --- 수정된 setColor 함수 ---
-  // execCommand('foreColor')와 'hiliteColor'는 styleWithCSS를 명시적으로 true로 설정하여
-  // 인라인 스타일을 적용하고, 완료 후 다시 false로 되돌립니다.
-  function setColor(command, color) {
-restoreSelection();
-const sel = window.getSelection();
-if (!sel.rangeCount || sel.isCollapsed) return;
-
-const range = sel.getRangeAt(0);
-
-// "색 없음" 처리
-if (color === "__clear__") {
-  // 선택 영역 내 span에 적용된 스타일 제거
-  const contents = range.cloneContents();
-  const spans = contents.querySelectorAll("span");
-
-  spans.forEach(span => {
-    if (command === 'foreColor') span.style.color = '';
-    else if (command === 'hiliteColor') span.style.backgroundColor = '';
-  });
-
-  range.deleteContents();
-  range.insertNode(contents);
-  return;
-}
-
-// 텍스트 선택 부분을 span으로 감싸고 스타일 적용
-const span = document.createElement("span");
-if (command === "foreColor") span.style.color = color;
-else if (command === "hiliteColor") span.style.backgroundColor = color;
-
-const contents = range.extractContents();
-span.appendChild(contents);
-range.insertNode(span);
-
-// 선택 영역 다시 설정 (커서가 밖으로 튀는 문제 방지)
-sel.removeAllRanges();
-const newRange = document.createRange();
-newRange.selectNode(span);
-sel.addRange(newRange);
-
-saveSelection();
-detectStyle();
-}
-
-
-
-function getCurrentBlockTag() {
-const sel = window.getSelection();
-if (!sel.rangeCount) return null;
-
-let node = sel.getRangeAt(0).startContainer;
-while (node && node !== document) {
-  if (node.nodeType === 1) {
-    const tag = node.tagName.toLowerCase();
-    if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
-      return tag;
-    }
-  }
-  node = node.parentNode;
-}
-
-return 'p';
-}
-
-
-
-  // -------------------------
-
-  window.onclick = function(e) {
-      if (!e.target.matches('.dropdown-toggle')) {
-          const dropdowns = document.getElementsByClassName('dropdown-menu');
-          for (let d of dropdowns) d.classList.remove('show');
-      }
-  };
-
-  window.onload = () => {
-      renderCategories();
-      // 에디터 이벤트 리스너
-      const editor = document.getElementById('editor');
-      editor.addEventListener('keyup', detectStyle);
-      editor.addEventListener('mouseup', detectStyle);
-      editor.addEventListener('mouseup', saveSelection);
-      editor.addEventListener('keyup', saveSelection);
-
-      // 툴바 버튼들에 mousedown 이벤트 추가 (클릭 시 선택 영역 유실 방지)
-      const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
-      toolbarButtons.forEach(button => {
-          button.addEventListener('mousedown', saveSelection);
-      });
-  };
-</script>
+    </script>
       
       <%- include('partials/scripts') %>
     </body>
