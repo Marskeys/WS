@@ -185,9 +185,6 @@
     </div>
     <!-- 🟡 전체 레이아웃 끝 -->
 
-    <%- include('partials/footer') %>
-    <%- include('partials/scripts') %>
-
     <script>
       function createMessageBox(message, isConfirm = false, onConfirm = null) {
         let modal = document.getElementById('customMessageModal');
@@ -263,5 +260,8 @@
         });
       });
     </script>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
   </body>
 </html>
