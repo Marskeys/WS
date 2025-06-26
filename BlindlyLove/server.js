@@ -272,7 +272,7 @@ app.get('/search', async (req, res) => {
 
   try {
     const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, user_id, created_at
+      SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
       WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
       ORDER BY created_at DESC
@@ -301,7 +301,7 @@ app.get('/search', async (req, res) => {
 // ✅ 메인 페이지
 app.get('/', async (req, res) => {
   const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, user_id, created_at
+    SELECT id, title, content, categories, author, user_id, created_at, is_private
     FROM posts
     ORDER BY created_at DESC
   `);
@@ -322,12 +322,6 @@ app.get('/', async (req, res) => {
   });
 });
 
-// ✅ 게시글 보기
-app.get('/post/:id', async (req, res) => {
-  const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
-  if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
-  res.render('post-view', { post: rows[0], user: req.session.user });
-});
 
 // ✅ 카테고리 전체 가져오기
 app.get('/api/categories', async (req, res) => {
@@ -373,7 +367,7 @@ app.get('/api/search', async (req, res) => {
   if (!keyword) return res.json({ posts: [] });
 
   const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, user_id, created_at
+    SELECT id, title, content, categories, author, user_id, created_at, is_private
     FROM posts
     WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
     ORDER BY created_at DESC
