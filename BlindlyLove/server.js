@@ -291,7 +291,7 @@ app.get('/post/:id', async (req, res) => {
   }
 });
 
-// ✅ 검색 결과 페이지 (비공개 글 필터링 적용)
+// ✅ 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용)
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.redirect('/');
@@ -300,32 +300,36 @@ app.get('/search', async (req, res) => {
   const isAdmin = req.session.user?.is_admin === 1;
 
   try {
-    let query = `
+    // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
+    const [posts] = await db.query(`
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
-      WHERE (title LIKE ? OR content LIKE ? OR categories LIKE ?)
-    `;
-    let queryParams = [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
+      WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
+      ORDER BY created_at DESC
+    `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
-    // 비공개 글 필터링 조건 추가
-    if (!isAdmin) { // 관리자가 아니면
-      query += ` AND (is_private = 0 OR user_id = ?)`; // 공개 글이거나, 내 글만 보여줌
-      queryParams.push(userId);
-    }
-
-    query += ` ORDER BY created_at DESC`;
-
-    const [posts] = await db.query(query, queryParams);
+    // 비공개 글의 내용을 필터링합니다
+    const filteredPosts = posts.map(post => {
+      // 글이 비공개이고, 작성자도 아니고, 관리자도 아닌 경우
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.' // 내용은 숨기고 메시지 표시
+          // title과 is_private는 그대로 유지됩니다.
+        };
+      }
+      return post;
+    });
 
     const categorySet = new Set();
-    posts.forEach(post => {
+    filteredPosts.forEach(post => {
       post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
     });
 
     const categories = Array.from(categorySet);
 
     res.render('index', {
-      posts,
+      posts: filteredPosts, // 필터링된 글 목록 전달
       categories,
       isSearch: true,
       searchKeyword: keyword,
@@ -337,39 +341,42 @@ app.get('/search', async (req, res) => {
   }
 });
 
-// ✅ 메인 페이지 (비공개 글 필터링 적용)
+// ✅ 메인 페이지 (비공개 글 제목 공개 및 내용 숨김 적용)
 app.get('/', async (req, res) => {
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
 
   try {
-    let query = `
+    // 모든 글을 가져옵니다 (비공개 여부와 상관없이)
+    const [posts] = await db.query(`
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
-    `;
-    let queryParams = [];
+      ORDER BY created_at DESC
+    `);
 
-    // 비공개 글 필터링 조건 추가
-    if (!isAdmin) { // 관리자가 아니면
-      // 공개 글 (is_private = 0) 이거나, 현재 로그인된 사용자의 글 (user_id = ?) 만 가져옴
-      query += ` WHERE is_private = 0 OR user_id = ?`;
-      queryParams.push(userId);
-    }
-
-    query += ` ORDER BY created_at DESC`;
-
-    const [posts] = await db.query(query, queryParams);
+    // 비공개 글의 내용을 필터링합니다
+    const filteredPosts = posts.map(post => {
+      // 글이 비공개이고, 작성자도 아니고, 관리자도 아닌 경우
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.' // 내용은 숨기고 메시지 표시
+          // title과 is_private는 그대로 유지됩니다.
+        };
+      }
+      return post;
+    });
 
     const categorySet = new Set();
-    // 카테고리 추출 로직 (여기서는 모든 글의 카테고리를 추출)
-    posts.forEach(post => {
+    // 카테고리 추출 로직
+    filteredPosts.forEach(post => {
       post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
     });
 
     const categories = Array.from(categorySet);
 
     res.render('index', {
-      posts,
+      posts: filteredPosts, // 필터링된 글 목록 전달
       categories,
       isSearch: false,
       searchKeyword: '',
@@ -425,7 +432,7 @@ app.delete('/api/categories/:name', async (req, res) => {
 });
 
 
-// ✅ AJAX 검색 API (이 API도 메인/검색 페이지와 동일하게 비공개 글 필터링 로직 추가)
+// ✅ AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용)
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.json({ posts: [] });
@@ -434,22 +441,26 @@ app.get('/api/search', async (req, res) => {
   const isAdmin = req.session.user?.is_admin === 1;
 
   try {
-    let query = `
+    // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
+    const [posts] = await db.query(`
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
-      WHERE (title LIKE ? OR content LIKE ? OR categories LIKE ?)
-    `;
-    let queryParams = [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
+      WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
+      ORDER BY created_at DESC
+    `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
-    if (!isAdmin) { // 관리자가 아니면
-      query += ` AND (is_private = 0 OR user_id = ?)`; // 공개 글이거나, 내 글만 보여줌
-      queryParams.push(userId);
-    }
-
-    query += ` ORDER BY created_at DESC`;
-
-    const [posts] = await db.query(query, queryParams);
-    res.json({ posts });
+    // 비공개 글의 내용을 필터링합니다
+    const filteredPosts = posts.map(post => {
+      // 글이 비공개이고, 작성자도 아니고, 관리자도 아닌 경우
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.' // 내용은 숨기고 메시지 표시
+        };
+      }
+      return post;
+    });
+    res.json({ posts: filteredPosts }); // 필터링된 글 목록 전달
   } catch (err) {
     console.error('AJAX 검색 오류:', err);
     res.status(500).json({ error: '검색 중 오류 발생' });
