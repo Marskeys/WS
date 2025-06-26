@@ -104,7 +104,7 @@
                          data-post-id="<%= post.id %>"
                          data-is-private="<%= post.is_private ? '1' : '0' %>"
                          data-post-user-id="<%= post.user_id %>">
-                        <%= post.title %><% if (post.is_private) { %> �<% } %>
+                        <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                       </a>
                       <% if (user && user.id === post.user_id) { %>
                         <div class="action-icons">
@@ -153,7 +153,7 @@
            data-post-id="<%= post.id %>"
            data-is-private="<%= post.is_private ? '1' : '0' %>"
            data-post-user-id="<%= post.user_id %>">
-          <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
+          <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
         </a>
         <% if (user && user.id === post.user_id) { %>
           <div class="action-icons">
@@ -292,4 +292,3 @@
     </script>
   </body>
 </html>
-�
