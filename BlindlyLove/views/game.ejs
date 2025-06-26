@@ -11,8 +11,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start; /* 상단 정렬로 변경 */
-      min-height: 100vh; /* 최소 높이 설정 */
+      justify-content: flex-start; /* 상단 정렬 유지, 내부 flex-grow로 공간 분배 */
+      min-height: 100dvh; /* 최신 브라우저 지원, 모바일 UI 포함 실제 높이 */
+      min-height: 100vh; /* 폴백 (fallback) for 구형 브라우저 */
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       overflow: hidden; /* 스크롤 방지 */
@@ -22,6 +23,7 @@
       -moz-user-select: none; /* Firefox 텍스트 선택 방지 */
       -ms-user-select: none; /* IE/Edge 텍스트 선택 방지 */
       user-select: none; /* 표준 텍스트 선택 방지 */
+      position: relative; /* 자식 요소의 absolute 포지셔닝 기준 */
     }
 
     #game-container {
@@ -32,14 +34,19 @@
       max-width: 400px; /* 게임 영역 최대 너비 제한 */
       padding: 10px;
       box-sizing: border-box;
+      min-height: 0; /* min-height를 0으로 설정하여 유동적으로 콘텐츠 높이 허용 */
+      flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
+      justify-content: flex-start; /* 컨트롤이 오버레이되므로 상단 정렬 유지 */
+      position: relative; /* 캔버스 컨테이너를 기준으로 컨트롤 오버레이 */
     }
 
     #score {
-      font-size: 1.6rem; /* 점수판 글자 크기 키움 */
-      margin-top: 1rem;
-      margin-bottom: 0.8rem;
+      font-size: 1.6rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
       font-weight: bold;
       color: #38bdf8;
+      z-index: 10; /* 점수판이 컨트롤 위에 보이도록 */
     }
 
     #startBtn {
@@ -52,11 +59,13 @@
       cursor: pointer;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
       transition: background 0.2s ease-in-out;
+      margin-bottom: 0.8rem;
+      z-index: 10; /* 시작 버튼이 컨트롤 위에 보이도록 */
     }
     #startBtn:active {
         background: #258cdb;
     }
-    #startBtn:disabled { /* 이미지 로드 전 비활성화 */
+    #startBtn:disabled {
         background: #6c757d;
         cursor: not-allowed;
     }
@@ -64,28 +73,36 @@
     canvas {
       border: 3px solid #38bdf8;
       background: #000;
-      margin-top: 1rem;
-      touch-action: none; /* 캔버스에서 터치 스크롤 및 줌 방지 */
-      width: 100%; /* 너비를 100%로 설정하여 가로 너비에 맞춤 */
-      height: auto; /* 높이 자동 조정 */
-      max-height: 70vh; /* 화면 높이의 최대 70%까지 허용 */
+      margin-top: 0;
+      touch-action: none;
+      width: 100%;
+      height: auto;
+      max-height: 70vh; /* 캔버스 최대 높이 설정 (이전보다 조금 여유롭게) */
+      flex-shrink: 0;
+      z-index: 5; /* 캔버스 뒤에 오도록 */
     }
 
     #controls {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3열 그리드 */
-      gap: 15px; /* 버튼 간격 */
-      margin-top: 1.5rem;
+      position: absolute; /* 캔버스 위에 오버레이 */
+      top: 0; /* game-container에 맞춰 상단 시작 */
+      left: 0;
       width: 100%;
-      max-width: 300px; /* 컨트롤러 최대 너비 */
-      padding: 0 10px;
+      height: 100%; /* game-container 전체를 덮도록 */
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr; /* 좌 / 가운데 / 우 */
+      grid-template-rows: repeat(3, 1fr); /* 상 / 중 / 하 */
+      gap: 10px; /* 버튼 간격 */
+      padding: 10px;
       box-sizing: border-box;
+      pointer-events: none; /* 기본적으로 이 div는 클릭을 통과시킴 (버튼만 클릭 가능하게) */
+      z-index: 15; /* 캔버스 위에, 점수판/버튼보다도 위에 오도록 */
     }
 
     .control-btn {
+      /* 기존 스타일 유지 */
       padding: 1rem 0;
       font-size: 1.2rem;
-      background: #4a4a4a;
+      background: rgba(74, 74, 74, 0.6); /* 반투명 배경 */
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -95,23 +112,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      pointer-events: auto; /* 이 버튼은 클릭 가능하게 함 */
+      opacity: 0.8; /* 전체적인 투명도 */
     }
     .control-btn:active {
-      background: #6a6a6a;
+      background: rgba(106, 106, 106, 0.8); /* 클릭 시 좀 더 불투명 */
     }
-    .control-btn:disabled { /* 게임 중이 아니면 비활성화 */
-        background: #6c757d;
+    .control-btn:disabled {
+        background: rgba(108, 117, 125, 0.4); /* 비활성화 시 더 투명 */
         cursor: not-allowed;
+        opacity: 0.5;
     }
 
-    /* 특정 버튼 위치 조정 */
-    #left-btn { grid-column: 1 / 2; grid-row: 2 / 3; }
-    #right-btn { grid-column: 3 / 4; grid-row: 2 / 3; }
-    #rotate-left-btn { grid-column: 1 / 2; grid-row: 1 / 2; }
-    #rotate-right-btn { grid-column: 3 / 4; grid-row: 1 / 2; }
-    #down-btn { grid-column: 2 / 3; grid-row: 3 / 4; }
-    #hard-drop-btn { grid-column: 2 / 3; grid-row: 1 / 2; background: #e74c3c; } /* 하드 드롭 버튼 색상 변경 */
-    #hard-drop-btn:active { background: #c0392b; }
+    /* 버튼 위치 조정 - 화면 가장자리에 배치 */
+    #rotate-left-btn { grid-column: 1 / 2; grid-row: 1 / 2; align-self: start; justify-self: start; margin: 10px; }
+    #rotate-right-btn { grid-column: 3 / 4; grid-row: 1 / 2; align-self: start; justify-self: end; margin: 10px; }
+    #left-btn { grid-column: 1 / 2; grid-row: 3 / 4; align-self: end; justify-self: start; margin: 10px; }
+    #right-btn { grid-column: 3 / 4; grid-row: 3 / 4; align-self: end; justify-self: end; margin: 10px; }
+    #down-btn { grid-column: 2 / 3; grid-row: 3 / 4; align-self: end; justify-self: center; margin: 10px; } /* 아래 버튼은 여전히 중앙 하단 */
+    #hard-drop-btn { grid-column: 2 / 3; grid-row: 2 / 3; align-self: center; justify-self: center; /* 가운데 배치 */
+                      background: rgba(231, 76, 60, 0.6); /* 하드 드롭 버튼 색상 반투명 */ }
+    #hard-drop-btn:active { background: rgba(192, 57, 43, 0.8); }
 
     /* 모바일 가로 모드 및 작은 화면 최적화 */
     @media (max-width: 600px) and (orientation: landscape) {
@@ -125,32 +146,58 @@
         padding: 5px;
         flex-direction: row;
         gap: 10px;
+        flex-grow: 0;
+        height: 100%;
+        max-height: 100%;
+        justify-content: space-around;
+        position: relative; /* 가로 모드에서도 오버레이 기준 */
       }
       canvas {
-        max-width: 50vw;
+        max-width: 60vw; /* 가로 모드에서 캔버스 더 넓게 사용 */
         max-height: 90vh;
         margin-top: 0;
       }
       #controls {
-        margin-top: 0;
-        width: auto;
-        max-width: none;
-        flex-direction: column;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* 가로 모드에서 2열 그리드로 변경 */
-        gap: 10px;
-        padding: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(5, 1fr); /* 가로 모드에서 5열 그리드로 변경 (더 많은 컨트롤 가능) */
+        grid-template-rows: 1fr 1fr; /* 2열 유지 */
+        gap: 8px; /* 간격 줄임 */
+        padding: 8px;
       }
+      /* 가로 모드에서의 버튼 재배치 */
+      #rotate-left-btn { grid-column: 1 / 2; grid-row: 1 / 2; align-self: start; justify-self: start; margin: 0; }
+      #left-btn { grid-column: 1 / 2; grid-row: 2 / 3; align-self: end; justify-self: start; margin: 0; }
+      #hard-drop-btn { grid-column: 3 / 4; grid-row: 1 / 3; /* 중앙 세로로 길게 */
+                       align-self: center; justify-self: center; }
+      #rotate-right-btn { grid-column: 5 / 6; grid-row: 1 / 2; align-self: start; justify-self: end; margin: 0; }
+      #right-btn { grid-column: 5 / 6; grid-row: 2 / 3; align-self: end; justify-self: end; margin: 0; }
+      #down-btn { grid-column: 2 / 3; grid-row: 2 / 3; align-self: end; justify-self: center; margin: 0; } /* 아래 버튼 위치 변경 */
+      /* 중앙 공백 div는 더 이상 필요 없음 */
+      #controls > div { display: none; } /* 기존 중앙 공백 숨기기 */
+
       #score, #startBtn {
         margin-top: 0.5rem;
         font-size: 1.2rem;
+        position: relative; /* 오버레이 컨트롤 위로 올라오도록 */
+        z-index: 20;
       }
-      #score { order: -2; } /* 점수와 버튼의 순서 변경 */
+      #score { order: -2; }
       #startBtn { order: -1; }
     }
 
-    @media (max-height: 500px) { /* 매우 작은 세로 화면용 */
-      canvas { max-height: 60vh; }
+    /* 매우 작은 세로 화면용 (혹은 컨트롤러가 여전히 가려지는 경우) */
+    @media (max-height: 700px) and (orientation: portrait) {
+      canvas {
+        max-height: 55vh; /* 캔버스 높이 좀 더 유동적으로 */
+      }
+      #score { font-size: 1.4rem; }
+      #startBtn { font-size: 1rem; padding: 0.4rem 1rem; }
+      .control-btn { font-size: 1rem; padding: 0.8rem 0; } /* 버튼 패딩/폰트 크기 조정 */
+      #controls { gap: 8px; padding: 8px; } /* 간격도 줄여서 공간 확보 */
     }
   </style>
 </head>
@@ -164,7 +211,7 @@
       <button id="hard-drop-btn" class="control-btn">하드 드롭</button>
       <button id="rotate-right-btn" class="control-btn">회전 ▶</button>
       <button id="left-btn" class="control-btn">◀ 이동</button>
-      <div style="grid-column: 2 / 3; grid-row: 2 / 3;"></div> <button id="right-btn" class="control-btn">이동 ▶</button>
+      <button id="right-btn" class="control-btn">이동 ▶</button>
       <button id="down-btn" class="control-btn" style="grid-column: 1 / 4;">▼ 아래</button>
     </div>
   </div>
@@ -366,38 +413,47 @@
         return movedAnything;
     }
 
-    // 동물 매치를 찾는 함수 (4개 일치로 변경)
-    function findMatches() {
+    // 동물 매치를 찾는 함수 (클러스터 매치 방식으로 변경: 4개 이상 연결)
+    function findConnectedMatches() {
         const m = arena.spriteMap;
-        const currentToDel = []; // 이번 턴에 찾은 매치 블록의 좌표
-        const matchLength = 4; // 4개 일치로 변경!
-        const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // 가로, 세로, 대각선, 역대각선
+        const matchedCoords = new Set(); // 중복 방지를 위한 Set
+        const matchLength = 4; // 4개 이상 연결되어야 터짐
+        const visited = createMatrix(W, H); // 방문 여부 기록
+
+        // DFS (Depth First Search) 함수를 사용하여 연결된 블록 찾기
+        function dfs(y, x, targetValue, currentCluster) {
+            // 유효하지 않은 좌표이거나, 이미 방문했거나, 값이 없거나, 목표 값과 다르면 리턴
+            if (y < 0 || y >= H || x < 0 || x >= W || visited[y][x] || m[y][x] !== targetValue) {
+                return;
+            }
+
+            visited[y][x] = 1; // 방문 처리
+            currentCluster.push([y, x]); // 현재 클러스터에 추가
+
+            // 상하좌우 탐색 (대각선은 제외하고 상하좌우만 인접으로 간주)
+            dfs(y + 1, x, targetValue, currentCluster);
+            dfs(y - 1, x, targetValue, currentCluster);
+            dfs(y, x + 1, targetValue, currentCluster);
+            dfs(y, x - 1, targetValue, currentCluster);
+        }
 
         for (let y = 0; y < H; y++) {
             for (let x = 0; x < W; x++) {
-                const v = m[y][x];
-                if (!v) continue; // 빈 공간이면 건너뛰기
+                const value = m[y][x];
+                if (value !== 0 && !visited[y][x]) { // 값이 있고 아직 방문하지 않았다면
+                    const currentCluster = [];
+                    dfs(y, x, value, currentCluster); // 연결된 클러스터 탐색
 
-                directions.forEach(d => {
-                    const line = [];
-                    for (let k = 0; k < matchLength; k++) { // matchLength 개수만큼 연결 확인
-                        const nx = x + d[0] * k;
-                        const ny = y + d[1] * k;
-                        // 유효한 좌표이고 같은 동물일 경우 line에 추가
-                        if (m[ny] && m[ny][nx] === v) {
-                            line.push([ny, nx]);
-                        } else {
-                            break; // 다른 동물이거나 경계를 벗어나면 더 이상 검사할 필요 없음
-                        }
+                    if (currentCluster.length >= matchLength) {
+                        currentCluster.forEach(coord => {
+                            matchedCoords.add(JSON.stringify(coord)); // Set에 추가
+                        });
                     }
-                    if (line.length === matchLength) { // matchLength 개수 이상 연결된 경우
-                        currentToDel.push(...line);
-                    }
-                });
+                }
             }
         }
-        // 중복 제거 후 반환 (Set을 사용하여 고유한 좌표만 남김)
-        return Array.from(new Set(currentToDel.map(JSON.stringify)), JSON.parse);
+        // Set에 있는 좌표들을 배열로 변환하여 반환
+        return Array.from(matchedCoords).map(JSON.parse);
     }
 
     // 매치된 블록 제거 함수
@@ -408,60 +464,47 @@
         });
     }
 
-    // 매치 애니메이션 함수 (번쩍거리는 효과 추가)
-    // 매치 애니메이션 함수 (경계 번쩍임 및 글로우 효과 추가)
+    // 매치 애니메이션 함수 (경계 번쩍임 및 글로우 효과 강화)
     async function animateMatch(toDel) {
         const flashColor = 'rgba(255, 255, 0, 0.8)'; // 밝은 노란색 for flash/glow
         const boundaryFlashColor = 'rgba(0, 255, 255, 0.9)'; // 밝은 청록색 for boundary
 
+        // Draw the current game state first
+        draw(); 
+
         // 1단계: 매치된 블록 경계 번쩍임
-        ctx.lineWidth = 0.15;
+        ctx.lineWidth = 0.15; // 경계선 두께
         for (let i = 0; i < 2; i++) { // 두 번 깜빡임
             ctx.strokeStyle = boundaryFlashColor;
+            ctx.globalAlpha = 1; // 완전 불투명하게 그립니다.
             toDel.forEach(([yy, xx]) => {
                 ctx.strokeRect(xx, yy, 1, 1);
             });
-            draw();
-            await new Promise(resolve => setTimeout(resolve, 40));
-            ctx.strokeStyle = 'transparent'; // 잠시 지우기 위해 투명하게
-            draw();
-            await new Promise(resolve => setTimeout(resolve, 40));
+            await new Promise(resolve => setTimeout(resolve, 40)); // 40ms 대기
+
+            // 다시 그려서 경계선을 지우고 원래 상태로 돌아갑니다.
+            draw(); 
+            await new Promise(resolve => setTimeout(resolve, 40)); // 40ms 대기
         }
         ctx.lineWidth = 0.08; // 원래 lineWidth로 복구
 
         // 2단계: 매치된 블록 강조 (밝은 색으로 덮어쓰기 - 글로우 효과)
-        ctx.globalAlpha = 0.7;
+        ctx.globalAlpha = 0.7; // 투명도 조절
         ctx.fillStyle = flashColor;
         toDel.forEach(([yy, xx]) => {
             ctx.fillRect(xx, yy, 1, 1);
         });
-        ctx.globalAlpha = 1;
-        draw();
-        await new Promise(resolve => setTimeout(resolve, 80)); // 강조 시간
-
-        // 3단계: 희미해지는 효과 (선택 사항, 좀 더 부드러운 사라짐)
-        /*
-        for (let alpha = 0.7; alpha > 0; alpha -= 0.1) {
-            ctx.globalAlpha = alpha;
-            ctx.fillStyle = flashColor;
-            toDel.forEach(([yy, xx]) => {
-                ctx.fillRect(xx, yy, 1, 1);
-            });
-            draw();
-            await new Promise(resolve => setTimeout(resolve, 30));
-        }
-        ctx.globalAlpha = 1;
-        */
-        await new Promise(resolve => setTimeout(resolve, 50)); // 잠시 대기 전 사라짐
+        ctx.globalAlpha = 1; // 원상 복구
+        await new Promise(resolve => setTimeout(resolve, 80)); // 강조 시간 (80ms)
+        
+        // Remove the glow effect before proceeding to clear blocks
+        draw(); // Redraw the scene to clear the glow
     }
 
     // 연쇄 반응을 포함한 전체 매치 처리 로직
     // 이 함수는 애니메이션과 블록 하강을 비동기적으로 처리하며, 연쇄 반응을 담당합니다.
     async function processMatches() {
         if (isProcessingAnimation) {
-             // 만약 이미 애니메이션이 실행 중이라면, 새로운 매치 확인은 하지 않고
-             // 현재 실행 중인 애니메이션이 끝날 때까지 기다리도록 처리합니다.
-             // 이전에 발생한 매치 처리 루프가 끝난 후에 다시 processMatches를 호출하도록 합니다.
              return;
         }
 
@@ -469,17 +512,15 @@
         toggleControlButtons(false); // 애니메이션 중에는 컨트롤 버튼 비활성화
 
         let chainCount = 0; // 연쇄 반응 횟수
-        let anyMatchOrLineCleared = false; // 이번 processMatches 호출에서 실제 매치나 줄 삭제가 있었는지
 
         do {
             let foundMatchThisIteration = false;
             let clearedLineThisIteration = 0;
 
             // 1. 동물 매치 확인 및 처리
-            const matches = findMatches();
+            const matches = findConnectedMatches(); // 클러스터 매치 함수 호출
             if (matches.length > 0) {
                 foundMatchThisIteration = true;
-                anyMatchOrLineCleared = true;
                 chainCount++;
 
                 await animateMatch(matches); // 매치 애니메이션 (강조 & 번쩍)
@@ -487,25 +528,24 @@
                 score += matches.length * 10 * chainCount; // 연쇄 반응 점수 추가 (연쇄 계수)
                 updateScore();
                 
-                // 블록 터트릴때 속도를 살짝 느리게
-                dropInterval = Math.min(1000, dropInterval + (matches.length * 5)); // 최대 1000ms까지 느려짐
+                // 블록 터트릴때 속도를 살짝 느리게 (매치된 블록 수에 비례)
+                dropInterval = Math.min(1000, dropInterval + (matches.length * 20)); // 최대 1000ms까지 느려짐
                 
-                draw(); // 제거된 상태 그리기
-                await new Promise(resolve => setTimeout(resolve, 150)); // 블록이 사라진 후 150ms 대기
+                draw(); // 제거된 상태 그리기 
+                await new Promise(resolve => setTimeout(resolve, 100)); // 블록이 사라진 후 100ms 대기
 
                 const moved = applyGravityAfterMatch(); // 블록 아래로 떨어뜨리기 (이동 여부 반환)
-                draw(); // 떨어진 상태 그리기
-                await new Promise(resolve => setTimeout(resolve, 150)); // 블록이 떨어진 후 150ms 대기 (이동 시간)
+                draw(); // 떨어진 상태 그리기 
+                await new Promise(resolve => setTimeout(resolve, 100)); // 블록이 떨어진 후 100ms 대기 (이동 시간)
             }
 
             // 2. 줄 삭제 확인 및 처리 (동물 매치로 인해 새 줄이 완성될 수 있으므로 매치 후에도 다시 확인)
             const linesCleared = arenaSweep(); // 줄 삭제 함수 호출 (삭제된 줄 수 반환)
             if (linesCleared > 0) {
                 clearedLineThisIteration = linesCleared;
-                anyMatchOrLineCleared = true;
                 // arenaSweep 내에서 점수 업데이트 및 드롭 속도 조절은 이미 이루어집니다.
                 draw(); // 줄 삭제된 상태 그리기
-                await new Promise(resolve => setTimeout(resolve, 150)); // 줄 삭제 후 150ms 대기 (애니메이션 효과)
+                await new Promise(resolve => setTimeout(resolve, 100)); // 줄 삭제 후 100ms 대기 (애니메이션 효과)
             }
 
             // 더 이상 매치도 없고, 줄도 지워지지 않으면 연쇄 종료
