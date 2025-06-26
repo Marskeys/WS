@@ -6,18 +6,19 @@
   <body class="light">
     <%- include('partials/header') %>
 
-    <!-- 프리로더 -->
+    <!-- ⏳ 프리로더 -->
     <div id="preloader">
+      <!-- 🔄 스피너 -->
       <div class="spinner"></div>
     </div>
 
-    <!-- ✅ 전체 레이아웃 시작 -->
+    <!-- 🟡 전체 레이아웃 시작 -->
     <div class="full-layout">
-      
-      <!-- 좌측 패널 -->
-      <aside class="side-panel main-panel-only">  <!-- ✅ 광고 박스 -->
+      <!-- 🟡 좌측 패널 -->
+      <aside class="side-panel main-panel-only">
+        <!-- 🟡 광고 박스 -->
         <div class="ad-box">
-          <!-- side-panel-ad -->
+          <!-- 💎 사이드 패널 애드센스 광고 (좌) -->
           <ins class="adsbygoogle"
                style="display:block"
                data-ad-client="ca-pub-2585969189290118"
@@ -25,12 +26,12 @@
                data-ad-format="auto"
                data-full-width-responsive="true"></ins>
           <script>
-               (adsbygoogle = window.adsbygoogle || []).push({});
+            (adsbygoogle = window.adsbygoogle || []).push({});
           </script>
         </div>
       </aside>
 
-      <!-- 가운데 콘텐츠 -->
+      <!-- 🟡 가운데 콘텐츠 -->
       <div class="main-layout">
         <div class="main-panel">
           <div class="cherry-container">
@@ -38,12 +39,12 @@
           </div>
 
           <div class="search-container">
-            <!-- 로고 -->
+            <!-- 🟡 로고 -->
             <a href="/">
               <img src="/assets/images/1.png" alt="blindly.love 로고" class="site-logo" />
             </a>
-          
-            <!-- ✅ 검색창 & 캐릭터 같이 감싸는 박스 -->
+
+            <!-- 🟡 검색창 & 캐릭터 같이 감싸는 박스 -->
             <div class="search-wrapper">
               <div class="search-position-anchor">
                 <div class="character-stand">
@@ -59,21 +60,23 @@
             </div>
           </div>
 
+          <!-- 🟡 검색 결과 표시할 때 한국어 조사 선택 방법 -->
           <%
-          function choosePostposition(word) {
-            if (!word || word.length === 0) return '';
-            const lastChar = word[word.length - 1];
-            const lastCode = lastChar.charCodeAt(0);
-            const hasBatchim = (lastCode - 44032) % 28 !== 0;
-            return hasBatchim ? '으로' : '로';
-          }
-        %>
-        
-        <% if (isSearch && searchKeyword) { %>
-          <p class="search-result-msg">
-            ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
-          </p>
-        <% } %>
+            function choosePostposition(word) {
+              if (!word || word.length === 0) return '';
+              const lastChar = word[word.length - 1];
+              const lastCode = lastChar.charCodeAt(0);
+              const hasBatchim = (lastCode - 44032) % 28 !== 0;
+              return hasBatchim ? '으로' : '로';
+            }
+          %>
+
+          <!-- 🟡 검색 결과 안내 멘트 -->
+          <% if (isSearch && searchKeyword) { %>
+            <p class="search-result-msg">
+              ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
+            </p>
+          <% } %>
 
           <!-- 🟡 동적으로 생성된 카테고리 탭 -->
           <div class="tabs">
@@ -83,7 +86,7 @@
             <% }) %>
           </div>
 
-          <!-- 🟡 게시글 테이블 (데스크탑) -->
+          <!-- 🟡 게시글 리스트 (데스크탑) -->
           <table class="board-table">
             <thead>
               <tr>
@@ -98,7 +101,6 @@
                 <tr data-category="<%= post.categories %>">
                   <td>
                     <div class="table-title-and-actions" style="display: flex; justify-content: space-between; align-items: center;">
-                      <!-- 'a' 태그에 데이터 속성 추가 및 클래스 지정 -->
                       <a href="/post/<%= post.id %>"
                          class="post-detail-link"
                          data-post-id="<%= post.id %>"
@@ -111,7 +113,6 @@
                           <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
                             <i class="fas fa-pen"></i>
                           </a>
-                          <!-- 삭제 폼 onsubmit 수정 -->
                           <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
                             <button type="submit" class="icon-btn delete-btn" title="삭제">
                               <i class="fas fa-trash"></i>
@@ -129,152 +130,136 @@
             </tbody>
           </table>
 
-
-          <!-- ✅ 모바일 전용 게시판 리스트 -->
-<div class="mobile-board-list">
-  <% posts.forEach(post => { %>
-    <div class="mobile-post-item" data-category="<%= post.categories %>">
-      <div class="post-title-and-actions"> 
-        <!-- 'a' 태그에 데이터 속성 추가 및 클래스 지정 -->
-        <a href="/post/<%= post.id %>"
-           class="post-title post-detail-link"
-           data-post-id="<%= post.id %>"
-           data-is-private="<%= post.is_private ? '1' : '0' %>"
-           data-post-user-id="<%= post.user_id %>">
-          <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
-        </a>
-        <% if (user && user.id === post.user_id) { %>
-          <div class="action-icons">
-            <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-              <i class="fas fa-pen"></i>
-            </a>
-            <!-- 삭제 폼 onsubmit 수정 -->
-            <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-              <button type="submit" class="icon-btn delete-btn" title="삭제">
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
+          <!-- 🟡 게시글 리스트 (모바일) -->
+          <div class="mobile-board-list">
+            <% posts.forEach(post => { %>
+              <div class="mobile-post-item" data-category="<%= post.categories %>">
+                <div class="post-title-and-actions">
+                  <a href="/post/<%= post.id %>"
+                     class="post-title post-detail-link"
+                     data-post-id="<%= post.id %>"
+                     data-is-private="<%= post.is_private ? '1' : '0' %>"
+                     data-post-user-id="<%= post.user_id %>">
+                    <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+                  </a>
+                  <% if (user && user.id === post.user_id) { %>
+                    <div class="action-icons">
+                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                        <i class="fas fa-pen"></i>
+                      </a>
+                      <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                        <button type="submit" class="icon-btn delete-btn" title="삭제">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="post-info">
+                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
+                </div>
+              </div>
+            <% }) %>
           </div>
-        <% } %>
-      </div>
-
-      <div class="post-info">
-        <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
-      </div>
-    </div>
-  <% }) %>
-</div>
-          
         </div>
       </div>
 
-      <!-- 우측 패널 -->
+      <!-- 🟡 우측 패널 -->
       <aside class="side-panel right-panel-only">
+        <!-- 🟡 광고 박스 -->
         <div class="ad-box">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-     crossorigin="anonymous"></script>
-<!-- 데스크톱-오른쪽-패널 -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-2585969189290118"
-     data-ad-slot="5988925289"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
+           <!-- 💎 사이드 패널 애드센스 광고 (좌) -->
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
+            crossorigin="anonymous"></script>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-2585969189290118"
+               data-ad-slot="5988925289"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
       </aside>
-
     </div>
-    <!-- ✅ 전체 레이아웃 끝 -->
+    <!-- 🟡 전체 레이아웃 끝 -->
 
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
 
     <script>
-      // ✅ 커스텀 메시지 박스 및 입력 박스 구현
       function createMessageBox(message, isConfirm = false, onConfirm = null) {
-          let modal = document.getElementById('customMessageModal');
-          if (!modal) {
-              modal = document.createElement('div');
-              modal.id = 'customMessageModal';
-              // 스타일은 인라인으로 최소한만 적용하여 기본 디자인을 해치지 않도록 합니다.
-              // 필요하다면 이 스타일을 index.css에 추가하여 관리할 수 있습니다.
-              modal.style = `
-                  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                  background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-                  align-items: center; z-index: 1000;
-                  display: none; /* 기본 숨김 */
-              `;
-              document.body.appendChild(modal);
-          }
-          modal.innerHTML = `
-              <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                  <p style="color: black; margin-bottom: 15px;">${message}</p>
-                  ${isConfirm ? `
-                      <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                      <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-                  ` : `
-                      <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                  `}
-              </div>
+        let modal = document.getElementById('customMessageModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'customMessageModal';
+          modal.style = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+            display: none;
           `;
-          modal.style.display = 'flex'; // 모달 표시
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+          <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+            <p style="color: black; margin-bottom: 15px;">${message}</p>
+            ${isConfirm ? `
+              <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+              <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+            ` : `
+              <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+            `}
+          </div>
+        `;
+        modal.style.display = 'flex';
 
-          if (isConfirm) {
-              document.getElementById('confirmBtn').onclick = () => {
-                  modal.style.display = 'none';
-                  if (onConfirm) onConfirm();
-              };
-              document.getElementById('cancelBtn').onclick = () => {
-                  modal.style.display = 'none';
-              };
-          } else {
-              document.getElementById('okBtn').onclick = () => {
-                  modal.style.display = 'none';
-                  if (onConfirm) onConfirm();
-              };
-          }
+        if (isConfirm) {
+          document.getElementById('confirmBtn').onclick = () => {
+            modal.style.display = 'none';
+            if (onConfirm) onConfirm();
+          };
+          document.getElementById('cancelBtn').onclick = () => {
+            modal.style.display = 'none';
+          };
+        } else {
+          document.getElementById('okBtn').onclick = () => {
+            modal.style.display = 'none';
+            if (onConfirm) onConfirm();
+          };
+        }
       }
 
       function showCustomMessage(message, isConfirm = false, onConfirm = null) {
-          createMessageBox(message, isConfirm, onConfirm);
+        createMessageBox(message, isConfirm, onConfirm);
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        // 모든 게시물 상세 링크 선택
         const postDetailLinks = document.querySelectorAll('.post-detail-link');
-
-        // 현재 로그인된 사용자 정보 (EJS에서 JSON.stringify로 안전하게 전달)
         const currentUser = <%- JSON.stringify(user) %>;
         const currentUserId = currentUser ? currentUser.id : null;
         const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
 
         postDetailLinks.forEach(link => {
           link.addEventListener('click', (event) => {
-            // data- 속성에서 정보 가져오기
-            const isPrivate = event.currentTarget.dataset.isPrivate === '1'; // '1'을 true로 변환
+            const isPrivate = event.currentTarget.dataset.isPrivate === '1';
             const postUserId = event.currentTarget.dataset.postUserId;
-
-            // 비공개 글이고, 현재 사용자가 작성자도 아니고, 관리자도 아닌 경우
             if (isPrivate && postUserId !== currentUserId && !isAdmin) {
-              event.preventDefault(); // 기본 링크 이동 방지
-              showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다."); // 알림창 표시
+              event.preventDefault();
+              showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
             }
-            // 그 외의 경우는 기본 링크 이동을 허용 (브라우저가 /post/:id로 이동)
           });
         });
 
-        // 게시물 삭제 버튼에 대한 confirm 메시지 커스텀
         document.querySelectorAll('.delete-post-form').forEach(form => {
-            form.onsubmit = (e) => {
-                e.preventDefault(); // 기존 confirm 동작 방지
-                showCustomMessage('정말로 이 게시글을 삭제하시겠습니까?', true, () => {
-                    e.target.submit(); // '확인' 클릭 시 폼 제출
-                });
-                return false; // 폼 제출 방지 (추가 제출 방지)
-            };
+          form.onsubmit = (e) => {
+            e.preventDefault();
+            showCustomMessage('정말로 이 게시글을 삭제하시겠습니까?', true, () => {
+              e.target.submit();
+            });
+            return false;
+          };
         });
       });
     </script>
