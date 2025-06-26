@@ -300,6 +300,8 @@
 if (!title) return alert("제목을 입력해주세요.");
 if (selectedCategories.length === 0) return alert("최소 하나의 카테고리를 선택해주세요.");
 
+const isPrivate = document.querySelector('input[name="is_private"]').checked ? 1 : 0;
+
 fetch('/savePost', {
   method: 'POST',
   headers: {
@@ -308,7 +310,7 @@ fetch('/savePost', {
   body: JSON.stringify({
     title,
     content,
-    categories: selectedCategories
+    categories: selectedCategories,
     is_private: isPrivate
   })
 })
