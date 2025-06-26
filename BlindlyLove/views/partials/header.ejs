@@ -74,24 +74,6 @@
 
   <!-- ✅ 스타일 -->
   <style>
-    /* ✅ 다크모드 메뉴 대응 */
-html.dark body .menu-list > li > a {
-  color: #eee;
-}
-
-html.dark body .submenu {
-  background: #222;
-  border: 1px solid #444;
-}
-
-html.dark body .submenu li a {
-  color: #ddd;
-}
-
-html.dark body .submenu li a:hover {
-  background-color: #333;
-  color: #66b2ff;
-}
 
 
     .desktop-menu {
@@ -182,6 +164,26 @@ html.dark body .submenu li a:hover {
         pointer-events: none;
       }
     }
+
+        /* ✅ 다크모드 메뉴 대응 */
+html.dark body .menu-list > li > a {
+  color: #eee;
+}
+
+html.dark body .submenu {
+  background: #222;
+  border: 1px solid #444;
+}
+
+html.dark body .submenu li a {
+  color: #ddd;
+}
+
+html.dark body .submenu li a:hover {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #66b2ff;
+}
+
   </style>
 
   <!-- ✅ 스크립트 -->
