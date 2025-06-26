@@ -106,16 +106,28 @@
       }));
     }
 
-    function applyGravity(){
-      for(let x=0;x<W;x++){
-        let col=[];
-        for(let y=H-1;y>=0;y--){
-          if(arena[y][x]){ col.push({v:arena[y][x],s:arena.spriteMap[y][x]}); arena[y][x]=arena.spriteMap[y][x]=0; }
-        }
-        let y=H-1;
-        col.forEach(c=>{arena[y][x]=c.v; arena.spriteMap[y][x]=c.s; y--;});
+    function applyGravity() {
+  // Loop through only the columns where animals exploded
+  for (let x = 0; x < W; x++) {
+    let col = [];
+    // Check each row in the column for non-empty blocks
+    for (let y = H - 1; y >= 0; y--) {
+      if (arena[y][x] !== 0) {
+        col.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
+        arena[y][x] = 0;
+        arena.spriteMap[y][x] = 0;
       }
     }
+    // Only refill the column with the collected blocks, leaving other columns untouched
+    let y = H - 1;
+    for (let i = 0; i < col.length; i++) {
+      arena[y][x] = col[i].value;
+      arena.spriteMap[y][x] = col[i].sprite;
+      y--;
+    }
+  }
+}
+
 
     function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
