@@ -120,8 +120,13 @@
     
         <div id="editor" contenteditable="true" class="editor" spellcheck="false">
           <%- post && post.content ? post.content : '<p><br></p>' %>
-        </div>        
-    
+        </div>  
+
+        <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+          <input type="checkbox" name="is_private" <%= post?.is_private ? 'checked' : '' %> />
+          비공개 글로 설정
+        </label>
+        
         <div class="category-box">
           <label>카테고리:</label>
           <div class="category-list" id="categoryList"></div>
