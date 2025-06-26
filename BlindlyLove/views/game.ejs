@@ -2,74 +2,248 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>테트리스+동물매치</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>모바일 테트리스+동물매치</title>
   <style>
-    body { background:#111; color:#fff; display:flex; flex-direction:column; align-items:center; height:100vh; margin:0; font-family:'Segoe UI',sans-serif; }
-    #score { font-size:1.4rem; margin-top:1rem; }
-    #startBtn { padding:0.5rem 1.2rem; margin-top:0.5rem; font-size:1rem; border:none; background:#38bdf8; color:#fff; border-radius:6px; cursor:pointer; }
-    canvas { border:3px solid #38bdf8; background:#000; margin-top:1rem; }
+    body {
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* 상단 정렬로 변경 */
+      min-height: 100vh; /* 최소 높이 설정 */
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden; /* 스크롤 방지 */
+      -webkit-touch-callout: none; /* iOS에서 길게 눌러 선택 방지 */
+      -webkit-user-select: none; /* 텍스트 선택 방지 */
+      -khtml-user-select: none; /* KHTML 엔진 (Safari 이전) 텍스트 선택 방지 */
+      -moz-user-select: none; /* Firefox 텍스트 선택 방지 */
+      -ms-user-select: none; /* IE/Edge 텍스트 선택 방지 */
+      user-select: none; /* 표준 텍스트 선택 방지 */
+    }
+
+    #game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px; /* 게임 영역 최대 너비 제한 */
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #score {
+      font-size: 1.6rem; /* 점수판 글자 크기 키움 */
+      margin-top: 1rem;
+      margin-bottom: 0.8rem;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    #startBtn {
+      padding: 0.6rem 1.5rem;
+      font-size: 1.1rem;
+      border: none;
+      background: #38bdf8;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background 0.2s ease-in-out;
+    }
+    #startBtn:active {
+        background: #258cdb;
+    }
+
+    canvas {
+      border: 3px solid #38bdf8;
+      background: #000;
+      margin-top: 1rem;
+      touch-action: none; /* 캔버스에서 터치 스크롤 및 줌 방지 */
+      width: 100%; /* 너비를 100%로 설정하여 가로 너비에 맞춤 */
+      height: auto; /* 높이 자동 조정 */
+      max-height: 70vh; /* 화면 높이의 최대 70%까지 허용 */
+    }
+
+    #controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3열 그리드 */
+      gap: 15px; /* 버튼 간격 */
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 300px; /* 컨트롤러 최대 너비 */
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    .control-btn {
+      padding: 1rem 0;
+      font-size: 1.2rem;
+      background: #4a4a4a;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+      transition: background 0.2s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .control-btn:active {
+      background: #6a6a6a;
+    }
+
+    /* 특정 버튼 위치 조정 */
+    #left-btn { grid-column: 1 / 2; grid-row: 2 / 3; }
+    #right-btn { grid-column: 3 / 4; grid-row: 2 / 3; }
+    #rotate-left-btn { grid-column: 1 / 2; grid-row: 1 / 2; }
+    #rotate-right-btn { grid-column: 3 / 4; grid-row: 1 / 2; }
+    #down-btn { grid-column: 2 / 3; grid-row: 3 / 4; }
+    #hard-drop-btn { grid-column: 2 / 3; grid-row: 1 / 2; background: #e74c3c; } /* 하드 드롭 버튼 색상 변경 */
+    #hard-drop-btn:active { background: #c0392b; }
+
+    /* 모바일 가로 모드 및 작은 화면 최적화 */
+    @media (max-width: 600px) and (orientation: landscape) {
+      body {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+      #game-container {
+        width: auto;
+        padding: 5px;
+        flex-direction: row;
+        gap: 10px;
+      }
+      canvas {
+        max-width: 50vw;
+        max-height: 90vh;
+        margin-top: 0;
+      }
+      #controls {
+        margin-top: 0;
+        width: auto;
+        max-width: none;
+        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 가로 모드에서 2열 그리드로 변경 */
+        gap: 10px;
+        padding: 0;
+      }
+      #score, #startBtn {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+      }
+      #score { order: -2; } /* 점수와 버튼의 순서 변경 */
+      #startBtn { order: -1; }
+    }
+
+    @media (max-height: 500px) { /* 매우 작은 세로 화면용 */
+      canvas { max-height: 60vh; }
+    }
   </style>
 </head>
 <body>
-  <h2 id="score">점수: 0</h2>
-  <button id="startBtn">게임 시작</button>
-  <canvas id="tetris" width="240" height="400"></canvas>
+  <div id="game-container">
+    <h2 id="score">점수: 0</h2>
+    <button id="startBtn">게임 시작</button>
+    <canvas id="tetris" width="240" height="400"></canvas>
+
+    <div id="controls">
+      <button id="rotate-left-btn" class="control-btn">◀ 회전</button>
+      <button id="hard-drop-btn" class="control-btn">하드 드롭</button>
+      <button id="rotate-right-btn" class="control-btn">회전 ▶</button>
+      <button id="left-btn" class="control-btn">◀ 이동</button>
+      <div style="grid-column: 2 / 3; grid-row: 2 / 3;"></div> <button id="right-btn" class="control-btn">이동 ▶</button>
+      <button id="down-btn" class="control-btn" style="grid-column: 1 / 4;">▼ 아래</button>
+    </div>
+  </div>
+
   <script>
     const canvas = document.getElementById('tetris');
     const ctx = canvas.getContext('2d');
-    ctx.scale(20,20);
+    ctx.scale(20, 20); // 블록 크기
 
+    // 동물 스프라이트 이미지 경로 (실제 경로로 변경 필요)
     const spriteUrls = {
-      1: '/assets/images/dog.png',
-      2: '/assets/images/cat.png',
-      3: '/assets/images/bear.png',
-      4: '/assets/images/rabbit.png',
-      5: '/assets/images/monkey.png'
+      1: 'https://via.placeholder.com/20/FF6B6B/FFFFFF?text=D', // 임시 이미지 (강아지)
+      2: 'https://via.placeholder.com/20/FFD93D/FFFFFF?text=C', // 임시 이미지 (고양이)
+      3: 'https://via.placeholder.com/20/6BCB77/FFFFFF?text=B', // 임시 이미지 (곰)
+      4: 'https://via.placeholder.com/20/4D96FF/FFFFFF?text=R', // 임시 이미지 (토끼)
+      5: 'https://via.placeholder.com/20/FF922B/FFFFFF?text=M'  // 임시 이미지 (원숭이)
     };
     const spriteImgs = {};
-    for (let k in spriteUrls) {
-      const img = new Image();
-      img.src = spriteUrls[k];
-      spriteImgs[k] = img;
+    let imagesLoadedCount = 0;
+    const totalImages = Object.keys(spriteUrls).length;
+
+    // 이미지 로드 함수
+    function loadImages(callback) {
+      for (let k in spriteUrls) {
+        const img = new Image();
+        img.src = spriteUrls[k];
+        img.onload = () => {
+          imagesLoadedCount++;
+          if (imagesLoadedCount === totalImages) {
+            callback(); // 모든 이미지 로드 완료 후 콜백 실행
+          }
+        };
+        img.onerror = () => {
+          console.error(`Failed to load image: ${spriteUrls[k]}`);
+          imagesLoadedCount++; // 오류 발생해도 카운트 증가
+          if (imagesLoadedCount === totalImages) {
+            callback();
+          }
+        };
+        spriteImgs[k] = img;
+      }
     }
 
-    const W=12, H=20;
-    let arena = createMatrix(W,H);
-    let player = { pos:{x:0,y:0}, mat:null, imgMap:null };
-    let keyState={left:false,right:false,down:false};
-    let dropCounter=0, dropInterval=1000, lastTime=0, score=0, gameRunning=false, levelUpTimer=0, moveCounter=0;
-    const moveInterval=100;
-    const colors=[null,'#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#845EC2','#00C9A7'];
+    const W = 12, H = 20; // 아레나 너비와 높이
+    let arena = createMatrix(W, H); // 게임 보드
+    arena.spriteMap = createMatrix(W, H); // 동물 스프라이트 맵
 
-    function createMatrix(w,h) {
-      return Array.from({length:h},()=>Array(w).fill(0));
+    let player = { pos: { x: 0, y: 0 }, mat: null, imgMap: null }; // 현재 떨어지는 블록
+    let keyState = { left: false, right: false, down: false }; // 키 상태 (모바일에서는 사용 안함)
+    let dropCounter = 0, dropInterval = 1000, lastTime = 0, score = 0, gameRunning = false, levelUpTimer = 0, moveCounter = 0;
+    const moveInterval = 100; // 자동 이동 간격
+    const colors = [null, '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF922B', '#845EC2', '#00C9A7'];
+
+    // 행렬 생성
+    function createMatrix(w, h) {
+      return Array.from({ length: h }, () => Array(w).fill(0));
     }
 
+    // 테트리스 조각 생성
     function createPiece(type) {
       const t = {
-        T:[[0,1,0],[1,1,1],[0,0,0]],
-        O:[[2,2],[2,2]],
-        L:[[0,3,0],[0,3,0],[0,3,3]],
-        J:[[0,4,0],[0,4,0],[4,4,0]],
-        I:[[0,5,0,0],[0,5,0,0],[0,5,0,0],[0,5,0,0]],
-        S:[[0,6,6],[6,6,0],[0,0,0]],
-        Z:[[7,7,0],[0,7,7],[0,0,0]]
+        T: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
+        O: [[2, 2], [2, 2]],
+        L: [[0, 3, 0], [0, 3, 0], [0, 3, 3]],
+        J: [[0, 4, 0], [0, 4, 0], [4, 4, 0]],
+        I: [[0, 5, 0, 0], [0, 5, 0, 0], [0, 5, 0, 0], [0, 5, 0, 0]],
+        S: [[0, 6, 6], [6, 6, 0], [0, 0, 0]],
+        Z: [[7, 7, 0], [0, 7, 7], [0, 0, 0]]
       };
       return t[type];
     }
 
+    // 행렬 회전
     function rotateMatrix(matrix, dir) {
-      const m = JSON.parse(JSON.stringify(matrix));
+      const m = JSON.parse(JSON.stringify(matrix)); // 깊은 복사
       for (let y = 0; y < m.length; ++y) {
         for (let x = 0; x < y; ++x) {
-          [m[x][y], m[y][x]] = [m[y][x], m[x][y]];
+          [m[x][y], m[y][x]] = [m[y][x], m[x][y]]; // 전치
         }
       }
-      if (dir > 0) m.forEach(row => row.reverse());
-      else m.reverse();
+      if (dir > 0) m.forEach(row => row.reverse()); // 시계 방향
+      else m.reverse(); // 반시계 방향
       return m;
     }
 
+    // 행렬 그리기 (블록 및 동물 스프라이트)
     function drawMatrix(m, off, alpha = 1) {
       ctx.globalAlpha = alpha;
       for (let y = 0; y < m.length; y++) {
@@ -77,24 +251,28 @@
           const v = m[y][x];
           if (v) {
             const px = x + off.x, py = y + off.y;
-            const grad = ctx.createLinearGradient(px,py,px+1,py+1);
-            grad.addColorStop(0,'#fff');
-            grad.addColorStop(1,colors[v]);
+            // 블록 색상 (그라데이션)
+            const grad = ctx.createLinearGradient(px, py, px + 1, py + 1);
+            grad.addColorStop(0, '#fff');
+            grad.addColorStop(1, colors[v]);
             ctx.fillStyle = grad;
-            ctx.fillRect(px,py,1,1);
-            ctx.strokeStyle='#000'; ctx.lineWidth=0.08;
-            ctx.strokeRect(px,py,1,1);
-            ctx.fillStyle='rgba(255,255,255,0.2)';
-            ctx.fillRect(px,py,1,0.2);
+            ctx.fillRect(px, py, 1, 1);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 0.08;
+            ctx.strokeRect(px, py, 1, 1);
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.fillRect(px, py, 1, 0.2);
 
+            // 동물 스프라이트 그리기
             let imgId = null;
             if (m === player.mat && off === player.pos && player.imgMap) {
               imgId = player.imgMap[y][x];
             } else if (m === arena) {
               imgId = arena.spriteMap?.[y]?.[x];
             }
+
             if (imgId && spriteImgs[imgId]?.complete && spriteImgs[imgId].naturalWidth) {
-              ctx.drawImage(spriteImgs[imgId], px+0.1, py+0.1, 0.8, 0.8);
+              ctx.drawImage(spriteImgs[imgId], px + 0.1, py + 0.1, 0.8, 0.8);
             }
           }
         }
@@ -102,200 +280,285 @@
       ctx.globalAlpha = 1;
     }
 
+    // 고스트 블록 그리기
     function drawGhost() {
-      const g = { pos:{...player.pos}, mat: player.mat, imgMap: player.imgMap };
+      const g = { pos: { ...player.pos }, mat: player.mat, imgMap: player.imgMap };
       while (!collide(arena, g)) g.pos.y++;
-      g.pos.y--;
-      drawMatrix(g.mat, g.pos, 0.3);
+      g.pos.y--; // 충돌 직전 위치로 되돌리기
+      drawMatrix(g.mat, g.pos, 0.3); // 투명하게 그리기
     }
 
+    // 전체 화면 그리기
     function draw() {
-      ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      drawMatrix(arena,{x:0,y:0});
-      drawGhost();
-      drawMatrix(player.mat,player.pos);
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height); // 배경 지우기
+      drawMatrix(arena, { x: 0, y: 0 }); // 고정된 블록 그리기
+      drawGhost(); // 고스트 블록 그리기
+      drawMatrix(player.mat, player.pos); // 현재 떨어지는 블록 그리기
     }
 
+    // 충돌 감지
     function collide(ar, pl) {
       const m = pl.mat, o = pl.pos;
-      for (let y=0;y<m.length;y++){
-        for(let x=0;x<m[y].length;x++){
-          if (m[y][x] && (ar[y+o.y] && ar[y+o.y][x+o.x]) !== 0) return true;
+      for (let y = 0; y < m.length; y++) {
+        for (let x = 0; x < m[y].length; x++) {
+          if (m[y][x] !== 0 && // 블록의 일부가 채워져 있고
+              (ar[y + o.y] && ar[y + o.y][x + o.x]) !== 0) { // 아레나 범위 밖이거나 채워져 있으면 충돌
+            return true;
+          }
         }
       }
       return false;
     }
 
+    // 블록을 아레나에 병합
     function merge(ar, pl) {
-      pl.mat.forEach((row,y)=>{
-        row.forEach((v,x)=>{
-          if(v){
-            ar[y+pl.pos.y][x+pl.pos.x] = v;
-            arena.spriteMap[y+pl.pos.y][x+pl.pos.x] = player.imgMap[y][x];
+      pl.mat.forEach((row, y) => {
+        row.forEach((v, x) => {
+          if (v) {
+            ar[y + pl.pos.y][x + pl.pos.x] = v; // 블록 값 복사
+            arena.spriteMap[y + pl.pos.y][x + pl.pos.x] = player.imgMap[y][x]; // 스프라이트 값 복사
           }
         });
       });
     }
 
+    // 중력 적용 (동물 매치 후 블록 아래로 떨어뜨리기)
     function applyGravity() {
-      for (let x=0;x<W;x++){
-        let col=[];
-        for (let y=H-1;y>=0;y--){
-          if(arena[y][x]){
-            col.push({value:arena[y][x],sprite:arena.spriteMap[y][x]});
-            arena[y][x]=0; arena.spriteMap[y][x]=0;
+      for (let x = 0; x < W; x++) {
+        let col = [];
+        // 아래에서 위로 순회하며 빈 공간이 아닌 블록들을 수집
+        for (let y = H - 1; y >= 0; y--) {
+          if (arena[y][x]) {
+            col.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
+            arena[y][x] = 0; // 기존 위치 비우기
+            arena.spriteMap[y][x] = 0;
           }
         }
-        let y=H-1;
-        col.forEach(cell=>{
-          arena[y][x]=cell.value;
-          arena.spriteMap[y][x]=cell.sprite;
-          y--;
+        // 수집한 블록들을 아래부터 채우기
+        let currentY = H - 1;
+        col.forEach(cell => {
+          arena[currentY][x] = cell.value;
+          arena.spriteMap[currentY][x] = cell.sprite;
+          currentY--;
         });
       }
     }
 
+    // 동물 3개 매치 확인 및 제거
     function matchAnimals() {
       const m = arena.spriteMap;
-      const toDel=[];
-      for (let y=0;y<H;y++){
-        for (let x=0;x<W;x++){
+      const toDel = []; // 제거할 블록 좌표 저장
+      const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // 가로, 세로, 대각선, 역대각선
+
+      for (let y = 0; y < H; y++) {
+        for (let x = 0; x < W; x++) {
           const v = m[y][x];
-          if (!v) continue;
-          [[1,0],[0,1],[1,1],[1,-1]].forEach(d=>{
-            const line=[];
-            for(let k=0;k<3;k++){
-              const nx=x+d[0]*k, ny=y+d[1]*k;
-              if(m[ny] && m[ny][nx]===v) line.push([ny,nx]);
+          if (!v) continue; // 빈 공간이면 건너뛰기
+
+          directions.forEach(d => {
+            const line = [];
+            for (let k = 0; k < 3; k++) { // 3개 연결 확인
+              const nx = x + d[0] * k;
+              const ny = y + d[1] * k;
+              if (m[ny] && m[ny][nx] === v) { // 유효한 좌표이고 같은 동물일 경우
+                line.push([ny, nx]);
+              } else {
+                break; // 다른 동물이거나 경계를 벗어나면 더 이상 검사할 필요 없음
+              }
             }
-            if(line.length===3) toDel.push(...line);
+            if (line.length === 3) { // 3개 이상 연결된 경우
+              toDel.push(...line);
+            }
           });
         }
       }
-      if(toDel.length){
-        toDel.forEach(([yy,xx])=>{
-          arena[yy][xx]=0;
-          arena.spriteMap[yy][xx]=0;
+
+      if (toDel.length) {
+        // 중복 제거 (Set을 사용하여 고유한 좌표만 남김)
+        const uniqueToDel = Array.from(new Set(toDel.map(JSON.stringify)), JSON.parse);
+
+        uniqueToDel.forEach(([yy, xx]) => {
+          arena[yy][xx] = 0; // 블록 제거
+          arena.spriteMap[yy][xx] = 0; // 스프라이트 제거
         });
-        score += toDel.length*5;
-        dropInterval = Math.min(1000, dropInterval + toDel.length*20);
+        score += uniqueToDel.length * 5; // 점수 추가
+        dropInterval = Math.max(100, dropInterval - uniqueToDel.length * 10); // 동물 매치 시 속도 증가 (최소 100ms)
         updateScore();
-        applyGravity();
+        applyGravity(); // 블록 아래로 떨어뜨리기
       }
     }
 
+    // 가득 찬 줄 제거 및 점수 계산
     function arenaSweep() {
-      let rows=0;
-      for (let y=H-1;y>=0;y--){
-        if(arena[y].every(v=>v)){
-          rows++;
-          arena.splice(y,1); arena.unshift(Array(W).fill(0));
-          arena.spriteMap.splice(y,1); arena.spriteMap.unshift(Array(W).fill(0));
-          y++;
+      let rowsRemoved = 0;
+      for (let y = H - 1; y >= 0; y--) {
+        if (arena[y].every(v => v !== 0)) { // 줄이 모두 채워졌으면
+          rowsRemoved++;
+          arena.splice(y, 1); // 해당 줄 제거
+          arena.unshift(Array(W).fill(0)); // 맨 위에 빈 줄 추가
+          arena.spriteMap.splice(y, 1);
+          arena.spriteMap.unshift(Array(W).fill(0));
+          y++; // 제거된 줄 다음 줄부터 다시 검사
         }
       }
-      if(rows){
-        score += rows*10;
-        dropInterval = Math.max(100, dropInterval - rows*50);
+      if (rowsRemoved) {
+        score += rowsRemoved * 100; // 줄 제거 점수 추가
+        dropInterval = Math.max(100, dropInterval - rowsRemoved * 50); // 줄 제거 시 속도 증가 (최소 100ms)
         updateScore();
       }
-      matchAnimals();
+      matchAnimals(); // 줄 제거 후 동물 매치 확인
     }
 
-    function updateScore(){ document.getElementById('score').innerText = `점수: ${score}`; }
+    // 점수 업데이트
+    function updateScore() { document.getElementById('score').innerText = `점수: ${score}`; }
 
-    function playerDrop(){
+    // 블록 한 칸 아래로 떨어뜨리기
+    function playerDrop() {
       player.pos.y++;
-      if(collide(arena,player)){
-        player.pos.y--;
-        merge(arena,player);
-        playerReset();
-        arenaSweep();
+      if (collide(arena, player)) {
+        player.pos.y--; // 충돌했으면 이전 위치로
+        merge(arena, player); // 아레나에 블록 병합
+        playerReset(); // 새 블록 생성
+        arenaSweep(); // 줄 제거 및 동물 매치
       }
-      dropCounter=0;
+      dropCounter = 0;
     }
 
-    function playerHardDrop(){
-      while(!collide(arena,player)) player.pos.y++;
+    // 블록 즉시 바닥으로 떨어뜨리기 (하드 드롭)
+    function playerHardDrop() {
+      while (!collide(arena, player)) player.pos.y++;
       player.pos.y--;
-      merge(arena,player);
+      merge(arena, player);
       playerReset();
       arenaSweep();
-      dropCounter=0;
+      dropCounter = 0;
     }
 
-    function playerMove(dir){ player.pos.x+=dir; if(collide(arena,player)) player.pos.x-=dir; }
+    // 블록 좌우 이동
+    function playerMove(dir) {
+      player.pos.x += dir;
+      if (collide(arena, player)) player.pos.x -= dir; // 충돌 시 되돌리기
+    }
 
-    function playerRotate(dir){
+    // 블록 회전
+    function playerRotate(dir) {
       const pos = player.pos.x;
-      let offset=1;
+      let offset = 1;
       const rotMat = rotateMatrix(player.mat, dir);
       const rotImg = rotateMatrix(player.imgMap, dir);
       player.mat = rotMat;
       player.imgMap = rotImg;
-      while(collide(arena,player)){
+
+      while (collide(arena, player)) {
         player.pos.x += offset;
-        offset = -(offset + (offset>0?1:-1));
-        if (offset>player.mat[0].length){
-          player.mat = rotateMatrix(player.mat,-dir);
-          player.imgMap = rotateMatrix(player.imgMap,-dir);
+        offset = -(offset + (offset > 0 ? 1 : -1)); // 벽 차기 알고리즘
+        if (offset > player.mat[0].length) { // 너무 멀리 이동했으면 회전 취소
+          player.mat = rotateMatrix(player.mat, -dir);
+          player.imgMap = rotateMatrix(player.imgMap, -dir);
           player.pos.x = pos;
           return;
         }
       }
     }
 
-    function playerReset(){
-      const types='TJLOSZI';
-      player.mat = createPiece(types[Math.floor(Math.random()*7)]);
-      player.imgMap = player.mat.map(row=>row.map(v=>v?String(Math.ceil(Math.random()*5)):0));
-      player.pos.y=0;
-      player.pos.x=(W/2|0)-(player.mat[0].length/2|0);
-      if(collide(arena,player)){
-        gameRunning=false;
+    // 새 블록 생성 및 게임 오버 체크
+    function playerReset() {
+      const types = 'TJLOSZI';
+      player.mat = createPiece(types[Math.floor(Math.random() * 7)]);
+      // 각 블록 조각에 랜덤 동물 스프라이트 할당
+      player.imgMap = player.mat.map(row => row.map(v => v ? String(Math.ceil(Math.random() * 5)) : 0));
+      player.pos.y = 0;
+      player.pos.x = (W / 2 | 0) - (player.mat[0].length / 2 | 0); // 중앙 배치
+
+      if (collide(arena, player)) { // 새 블록 생성 시 충돌하면 게임 오버
+        gameRunning = false;
         alert(`게임 종료! 최종 점수: ${score}`);
       }
     }
 
-    function update(time=0){
-      if(!gameRunning) return;
-      const dt=time-lastTime; lastTime=time;
-      dropCounter+=dt; levelUpTimer+=dt; moveCounter+=dt;
-      if(dropCounter>dropInterval) playerDrop();
-      if(levelUpTimer>10000){ dropInterval = Math.max(100, dropInterval-100); levelUpTimer=0; }
-      if(moveCounter>moveInterval){
-        if(keyState.left) playerMove(-1);
-        if(keyState.right) playerMove(1);
-        if(keyState.down) playerDrop();
-        moveCounter=0;
+    // 게임 루프
+    function update(time = 0) {
+      if (!gameRunning) return;
+
+      const dt = time - lastTime;
+      lastTime = time;
+
+      dropCounter += dt;
+      levelUpTimer += dt;
+      moveCounter += dt;
+
+      // 자동 하강
+      if (dropCounter > dropInterval) {
+        playerDrop();
       }
-      draw(); requestAnimationFrame(update);
+
+      // 난이도 상승 (속도 증가)
+      if (levelUpTimer > 15000) { // 15초마다 레벨업
+        dropInterval = Math.max(100, dropInterval - 50); // 최소 100ms
+        levelUpTimer = 0;
+      }
+
+      // 모바일 컨트롤러 입력 처리 (버튼이 눌린 상태일 경우)
+      if (moveCounter > moveInterval) {
+        if (keyState.left) playerMove(-1);
+        if (keyState.right) playerMove(1);
+        if (keyState.down) playerDrop();
+        moveCounter = 0;
+      }
+
+      draw();
+      requestAnimationFrame(update); // 다음 프레임 요청
     }
 
-    document.addEventListener('keydown', e=>{
-      if(!gameRunning) return;
-      if(e.key==='ArrowLeft') keyState.left=true;
-      else if(e.key==='ArrowRight') keyState.right=true;
-      else if(e.key==='ArrowDown') keyState.down=true;
-      else if(e.key===' '){ e.preventDefault(); playerHardDrop(); }
-      else if(e.key==='q') playerRotate(-1);
-      else if(e.key==='w') playerRotate(1);
+    // 키보드 이벤트 (PC 디버깅용, 모바일에서는 버튼 사용)
+    document.addEventListener('keydown', e => {
+      if (!gameRunning) return;
+      if (e.key === 'ArrowLeft') keyState.left = true;
+      else if (e.key === 'ArrowRight') keyState.right = true;
+      else if (e.key === 'ArrowDown') keyState.down = true;
+      else if (e.key === ' ') { e.preventDefault(); playerHardDrop(); }
+      else if (e.key === 'q') playerRotate(-1);
+      else if (e.key === 'w') playerRotate(1);
     });
-    document.addEventListener('keyup', e=>{
-      if(e.key==='ArrowLeft') keyState.left=false;
-      if(e.key==='ArrowRight') keyState.right=false;
-      if(e.key==='ArrowDown') keyState.down=false;
+    document.addEventListener('keyup', e => {
+      if (e.key === 'ArrowLeft') keyState.left = false;
+      if (e.key === 'ArrowRight') keyState.right = false;
+      if (e.key === 'ArrowDown') keyState.down = false;
     });
 
-    document.getElementById('startBtn').onclick = ()=>{
-      gameRunning=true;
-      dropInterval=1000; levelUpTimer=0; score=0;
-      updateScore();
-      arena = createMatrix(W,H);
-      arena.spriteMap = createMatrix(W,H);
-      playerReset();
-      update();
+    // 모바일 터치 컨트롤러 이벤트 리스너
+    document.getElementById('left-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerMove(-1); });
+    document.getElementById('right-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerMove(1); });
+    document.getElementById('down-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerDrop(); });
+    document.getElementById('rotate-left-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(-1); });
+    document.getElementById('rotate-right-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(1); });
+    document.getElementById('hard-drop-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerHardDrop(); });
+
+    // 시작 버튼 클릭 이벤트
+    document.getElementById('startBtn').onclick = () => {
+      if (!gameRunning) { // 이미 게임이 실행 중이면 다시 시작하지 않음
+        gameRunning = true;
+        dropInterval = 1000;
+        levelUpTimer = 0;
+        score = 0;
+        updateScore();
+        arena = createMatrix(W, H);
+        arena.spriteMap = createMatrix(W, H); // 스프라이트 맵 초기화
+        playerReset();
+        lastTime = performance.now(); // 정확한 시간 측정을 위해 시작 시점 설정
+        update(); // 게임 루프 시작
+      }
     };
+
+    // 모든 이미지 로드 후 게임 시작 버튼 활성화
+    loadImages(() => {
+      document.getElementById('startBtn').disabled = false;
+      console.log('All images loaded!');
+    });
+
+    // 초기 점수 표시
+    updateScore();
   </script>
 </body>
 </html>
