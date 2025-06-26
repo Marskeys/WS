@@ -366,10 +366,11 @@
         return movedAnything;
     }
 
-    // 동물 매치를 찾는 함수
+    // 동물 매치를 찾는 함수 (4개 일치로 변경)
     function findMatches() {
         const m = arena.spriteMap;
         const currentToDel = []; // 이번 턴에 찾은 매치 블록의 좌표
+        const matchLength = 4; // 4개 일치로 변경!
         const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // 가로, 세로, 대각선, 역대각선
 
         for (let y = 0; y < H; y++) {
@@ -379,7 +380,7 @@
 
                 directions.forEach(d => {
                     const line = [];
-                    for (let k = 0; k < 3; k++) { // 3개 연결 확인
+                    for (let k = 0; k < matchLength; k++) { // matchLength 개수만큼 연결 확인
                         const nx = x + d[0] * k;
                         const ny = y + d[1] * k;
                         // 유효한 좌표이고 같은 동물일 경우 line에 추가
@@ -389,7 +390,7 @@
                             break; // 다른 동물이거나 경계를 벗어나면 더 이상 검사할 필요 없음
                         }
                     }
-                    if (line.length === 3) { // 3개 이상 연결된 경우
+                    if (line.length === matchLength) { // matchLength 개수 이상 연결된 경우
                         currentToDel.push(...line);
                     }
                 });
@@ -407,7 +408,7 @@
         });
     }
 
-    // 매치 애니메이션 함수 (강조 후 사라지게)
+    // 매치 애니메이션 함수 (번쩍거리는 효과 추가)
     async function animateMatch(toDel) {
         // 1단계: 매치된 블록 강조 (노란색으로 덧씌우기)
         ctx.globalAlpha = 0.5; // 투명도 조절
@@ -418,57 +419,79 @@
         });
         ctx.globalAlpha = 1; // 원상 복구
         draw(); // 강조된 상태 화면에 반영
-        await new Promise(resolve => setTimeout(resolve, 100)); // 애니메이션 속도 조절 (100ms)
+        await new Promise(resolve => setTimeout(resolve, 50)); // 짧게 강조 (50ms)
+
+        // 2단계: 깜빡이는 효과 (선택 사항) - 흰색으로 번쩍
+        ctx.globalAlpha = 0.8;
+        toDel.forEach(([yy, xx]) => {
+            const px = xx, py = yy;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'; // 흰색 번쩍임
+            ctx.fillRect(px, py, 1, 1);
+        });
+        ctx.globalAlpha = 1;
+        draw(); // 번쩍이는 상태 화면에 반영
+        await new Promise(resolve => setTimeout(resolve, 50)); // 짧게 번쩍 (50ms)
+
+        // 3단계: 원상복귀 (사라지기 전 원래 상태로 짧게 돌아옴)
+        draw(); // 원상복귀 상태 (이미지는 아직 안지워짐)
+        await new Promise(resolve => setTimeout(resolve, 50)); // 50ms 대기
     }
 
     // 연쇄 반응을 포함한 전체 매치 처리 로직
     // 이 함수는 애니메이션과 블록 하강을 비동기적으로 처리하며, 연쇄 반응을 담당합니다.
     async function processMatches() {
-        if (isProcessingAnimation) return; // 이미 처리 중이면 중복 호출 방지
+        if (isProcessingAnimation) {
+             // 만약 이미 애니메이션이 실행 중이라면, 새로운 매치 확인은 하지 않고
+             // 현재 실행 중인 애니메이션이 끝날 때까지 기다리도록 처리합니다.
+             // 이전에 발생한 매치 처리 루프가 끝난 후에 다시 processMatches를 호출하도록 합니다.
+             return;
+        }
+
         isProcessingAnimation = true; // 애니메이션 처리 시작 플래그 설정
         toggleControlButtons(false); // 애니메이션 중에는 컨트롤 버튼 비활성화
 
         let chainCount = 0; // 연쇄 반응 횟수
-        let didAnythingHappen = false; // 이번 processMatches 호출에서 실제 매치나 줄 삭제가 있었는지
+        let anyMatchOrLineCleared = false; // 이번 processMatches 호출에서 실제 매치나 줄 삭제가 있었는지
 
         do {
             let foundMatchThisIteration = false;
-            let clearedLineThisIteration = false;
+            let clearedLineThisIteration = 0;
 
             // 1. 동물 매치 확인 및 처리
             const matches = findMatches();
             if (matches.length > 0) {
                 foundMatchThisIteration = true;
-                didAnythingHappen = true;
+                anyMatchOrLineCleared = true;
                 chainCount++;
 
-                await animateMatch(matches); // 매치 애니메이션 (강조)
+                await animateMatch(matches); // 매치 애니메이션 (강조 & 번쩍)
                 clearMatchedBlocks(matches); // 매치된 블록 제거
                 score += matches.length * 10 * chainCount; // 연쇄 반응 점수 추가 (연쇄 계수)
                 updateScore();
+                
+                // 블록 터트릴때 속도를 살짝 느리게
+                dropInterval = Math.min(1000, dropInterval + (matches.length * 5)); // 최대 1000ms까지 느려짐
+                
                 draw(); // 제거된 상태 그리기
                 await new Promise(resolve => setTimeout(resolve, 150)); // 블록이 사라진 후 150ms 대기
 
                 const moved = applyGravityAfterMatch(); // 블록 아래로 떨어뜨리기 (이동 여부 반환)
                 draw(); // 떨어진 상태 그리기
                 await new Promise(resolve => setTimeout(resolve, 150)); // 블록이 떨어진 후 150ms 대기 (이동 시간)
-
-                // 중력 적용 후 다시 줄 삭제 및 매치 확인할 기회를 줍니다.
-                // 이 시점에서 새로운 줄이 완성될 수도, 새로운 동물 매치가 발생할 수도 있습니다.
             }
 
             // 2. 줄 삭제 확인 및 처리 (동물 매치로 인해 새 줄이 완성될 수 있으므로 매치 후에도 다시 확인)
             const linesCleared = arenaSweep(); // 줄 삭제 함수 호출 (삭제된 줄 수 반환)
             if (linesCleared > 0) {
-                clearedLineThisIteration = true;
-                didAnythingHappen = true;
+                clearedLineThisIteration = linesCleared;
+                anyMatchOrLineCleared = true;
                 // arenaSweep 내에서 점수 업데이트 및 드롭 속도 조절은 이미 이루어집니다.
                 draw(); // 줄 삭제된 상태 그리기
                 await new Promise(resolve => setTimeout(resolve, 150)); // 줄 삭제 후 150ms 대기 (애니메이션 효과)
             }
 
             // 더 이상 매치도 없고, 줄도 지워지지 않으면 연쇄 종료
-            if (!foundMatchThisIteration && !clearedLineThisIteration) {
+            if (!foundMatchThisIteration && clearedLineThisIteration === 0) {
                 break;
             }
 
@@ -512,7 +535,6 @@
         playerReset(); // 새 블록 생성
 
         // 블록 착지 후, 매치/줄 삭제 처리 시작
-        // 줄 삭제는 processMatches 내부에서 매치 처리와 함께 반복적으로 확인됩니다.
         processMatches();
       }
       dropCounter = 0; // 드롭 카운터 초기화
@@ -617,7 +639,12 @@
     function toggleControlButtons(enable) {
         const buttons = document.querySelectorAll('.control-btn');
         buttons.forEach(button => {
-            button.disabled = !enable;
+            // 게임이 실행 중이 아닐 때는 모든 버튼 비활성화 (시작 버튼 제외)
+            if (!gameRunning && button.id !== 'startBtn') {
+                button.disabled = true;
+            } else {
+                button.disabled = !enable;
+            }
         });
     }
 
@@ -650,7 +677,7 @@
     document.getElementById('startBtn').onclick = () => {
       if (!gameRunning) { // 이미 게임이 실행 중이 아니면 시작
         gameRunning = true;
-        dropInterval = 1000;
+        dropInterval = 1000; // 초기 드롭 속도
         levelUpTimer = 0;
         score = 0;
         updateScore();
