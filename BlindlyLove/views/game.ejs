@@ -11,7 +11,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: flex-start; /* 상단 정렬 유지 */
       min-height: 100dvh;
       min-height: 100vh; /* Fallback */
       margin: 0;
@@ -23,7 +23,7 @@
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      position: relative;
+      position: relative; /* 자식 요소의 absolute/fixed 포지셔닝 기준 */
     }
 
     #game-container {
@@ -31,11 +31,12 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 400px; /* 게임 영역 최대 너비 제한 */
       padding: 10px;
       box-sizing: border-box;
       flex-grow: 1; /* 남은 공간을 차지 */
       justify-content: flex-start; /* 콘텐츠를 상단부터 배치 */
+      position: relative; /* 캔버스를 포함하는 영역 */
     }
 
     #score {
@@ -58,7 +59,8 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
       transition: background 0.2s ease-in-out;
       margin-bottom: 0.8rem;
-      z-index: 10;
+      z-index: 1001; /* 모든 요소 위에 오도록 매우 높은 z-index */
+      position: relative; /* z-index 적용을 위해 필요 */
     }
     #startBtn:active { background: #258cdb; }
     #startBtn:disabled { background: #6c757d; cursor: not-allowed; }
@@ -70,9 +72,9 @@
       touch-action: none; /* Prevents default touch actions like scrolling */
       width: 100%;
       height: auto;
-      max-height: 65vh; /* 캔버스 높이 좀 더 제한 (컨트롤러 공간 확보) */
+      max-height: 60vh; /* 캔버스 높이 좀 더 제한 (컨트롤러 공간 확보) */
       flex-shrink: 0;
-      z-index: 5;
+      z-index: 5; /* 캔버스 뒤에 오도록 */
     }
 
     /* Floating Controls Container (Fixed at Bottom of Screen) */
@@ -82,26 +84,19 @@
       left: 0;
       width: 100%;
       display: flex;
-      justify-content: space-between; /* 양 끝으로 버튼 그룹 분배 */
-      align-items: flex-end; /* 버튼들을 하단에 정렬 */
+      justify-content: space-around; /* 버튼들을 하단 중앙에 분배 */
+      align-items: center; /* 세로 중앙 정렬 */
       padding: 10px; /* 패딩 추가 */
       box-sizing: border-box;
-      z-index: 100; /* 모든 게임 요소 위에 오도록 매우 높은 z-index */
+      z-index: 1000; /* 캔버스 위에, 시작 버튼 아래 (시작 버튼 Z-index가 더 높음) */
       background: rgba(17, 17, 17, 0.5); /* 하단 컨트롤 바 배경 (반투명) */
       backdrop-filter: blur(2px); /* 배경 흐림 효과 (선택 사항) */
       -webkit-backdrop-filter: blur(2px);
     }
 
-    .control-group {
-        display: flex;
-        flex-direction: row; /* 버튼 가로로 나열 */
-        gap: 15px; /* 버튼 간격 */
-        /* padding: 10px; */ /* 그룹 내부 패딩 */
-    }
-
     .control-btn {
-      padding: 1.2rem 2rem; /* 버튼 크기 키워서 누르기 쉽게 */
-      font-size: 1.3rem;
+      padding: 1.2rem 1.8rem; /* 버튼 크기 키워서 누르기 쉽게 */
+      font-size: 1.8rem; /* 심볼이 커보이도록 글자 크기 키움 */
       background: rgba(74, 74, 74, 0.7); /* 반투명 배경 (더 잘 보이게) */
       color: #fff;
       border: none;
@@ -116,14 +111,8 @@
       min-width: 80px; /* 최소 너비 확보 */
       min-height: 80px; /* 최소 높이 확보 */
     }
-    .control-btn:active {
-      background: rgba(106, 106, 106, 0.9);
-    }
-    .control-btn:disabled {
-        background: rgba(108, 117, 125, 0.4);
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
+    .control-btn:active { background: rgba(106, 106, 106, 0.9); }
+    .control-btn:disabled { background: rgba(108, 117, 125, 0.4); cursor: not-allowed; opacity: 0.5; }
 
     /* Specific button styling */
     #hard-drop-btn {
@@ -155,7 +144,7 @@
         max-height: 90vh;
       }
       #mobile-controls-container {
-        position: static; /* 가로 모드에서는 플로우에 따라 배치 */
+        position: static; /* 가로 모드에서는 플로우에 따라 배치 (fixed 해제) */
         width: auto;
         height: 100%;
         flex-direction: column; /* 세로로 버튼 그룹 배치 */
@@ -166,19 +155,15 @@
         backdrop-filter: blur(2px);
         -webkit-backdrop-filter: blur(2px);
       }
-      .control-group {
-        flex-direction: column; /* 가로 모드에서 그룹 내 버튼은 세로로 */
-        gap: 10px;
-      }
       .control-btn {
           padding: 1rem 1.2rem; /* 가로 모드에서 버튼 크기 조정 */
-          font-size: 1.1rem;
-          min-width: 60px;
-          min-height: 60px;
+          font-size: 1.6rem; /* 심볼 크기 조정 */
+          min-width: 70px;
+          min-height: 70px;
       }
       #score, #startBtn {
         font-size: 1.2rem;
-        position: relative;
+        position: relative; /* 가로 모드에서도 z-index 유지 */
         z-index: 20;
       }
     }
@@ -188,15 +173,14 @@
       #game-container { padding: 5px; }
       #score { font-size: 1.4rem; margin-top: 0.2rem; margin-bottom: 0.2rem; }
       #startBtn { font-size: 1rem; padding: 0.3rem 0.8rem; margin-bottom: 0.5rem; }
-      canvas { max-height: 50vh; } /* 더 줄여서 하단 컨트롤 공간 확보 */
+      canvas { max-height: 45vh; } /* 더 줄여서 하단 컨트롤 공간 확보 */
       .control-btn {
           padding: 0.8rem 1.5rem;
-          font-size: 1rem;
-          min-width: 65px;
-          min-height: 65px;
+          font-size: 1.4rem;
+          min-width: 70px;
+          min-height: 70px;
           border-radius: 10px;
       }
-      .control-group { gap: 10px; }
       #mobile-controls-container { padding: 5px; }
     }
   </style>
@@ -209,13 +193,7 @@
   </div>
 
   <div id="mobile-controls-container">
-      <div class="control-group left-side-controls">
-          <button id="rotate-btn" class="control-btn">회전</button>
-      </div>
-      <div class="control-group right-side-controls">
-          <button id="hard-drop-btn" class="control-btn">하드 드롭</button>
-      </div>
-  </div>
+      <button id="rotate-btn" class="control-btn">⟳</button> <button id="hard-drop-btn" class="control-btn">⇩</button> </div>
 
   <script>
     const canvas = document.getElementById('tetris');
@@ -259,7 +237,7 @@
     arena.spriteMap = createMatrix(W, H);
 
     let player = { pos: { x: 0, y: 0 }, mat: null, imgMap: null };
-    let keyState = { left: false, right: false, down: false }; // Keep for desktop debugging
+    let keyState = { left: false, right: false, down: false };
     let dropCounter = 0, dropInterval = 1000, lastTime = 0, score = 0, gameRunning = false, levelUpTimer = 0, moveCounter = 0;
     let isProcessingAnimation = false;
 
@@ -267,14 +245,14 @@
     const colors = [null, '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF922B', '#845EC2', '#00C9A7'];
 
     // --- Touch Gesture Variables ---
-    let touchStartX = 0;
-    let touchStartY = 0;
+    let initialTouchX = 0;
+    let initialTouchY = 0;
     let lastProcessedX = 0;
     let lastProcessedY = 0;
     let isDragging = false;
-    const swipeThresholdX = 20; // Pixels needed for horizontal move
-    const swipeThresholdY = 20; // Pixels needed for soft drop
-    const tapThreshold = 10; // Max pixels for a tap (for rotation)
+    const dragSensitivityX = 1.5; // Lower value for less sensitive drag (more pixels to move 1 block)
+    const dragSensitivityY = 2.5; // Lower value for less sensitive drag down (more pixels for a drop)
+    const tapThreshold = 10; // Max pixel movement for a tap (for rotation)
 
     function createMatrix(w, h) {
       return Array.from({ length: h }, () => Array(w).fill(0));
@@ -457,13 +435,12 @@
 
         // 1단계: 매치된 블록 경계 번쩍임 (현재 상태 위에 그림)
         ctx.lineWidth = 0.15;
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 2; i++) { // 두 번 깜빡임
             ctx.strokeStyle = boundaryFlashColor;
             ctx.globalAlpha = 1;
             toDel.forEach(([yy, xx]) => {
                 ctx.strokeRect(xx, yy, 1, 1);
             });
-            requestAnimationFrame(() => {}); // 강제 리페인트 (애니메이션이 바로 보이도록)
             await new Promise(resolve => setTimeout(resolve, 40));
 
             // 경계선 지우기 위해 다시 그림 (이전 게임 상태로 복귀)
@@ -479,7 +456,6 @@
             ctx.fillRect(xx, yy, 1, 1);
         });
         ctx.globalAlpha = 1;
-        requestAnimationFrame(() => {}); // 강제 리페인트
         await new Promise(resolve => setTimeout(resolve, 80));
         
         // 글로우 효과 지우기 위해 다시 그림
@@ -656,6 +632,7 @@
     function toggleControlButtons(enable) {
         const buttons = document.querySelectorAll('.control-btn');
         buttons.forEach(button => {
+            // 게임이 실행 중이 아닐 때는 모든 버튼 비활성화 (시작 버튼 제외)
             if (!gameRunning && button.id !== 'startBtn') {
                 button.disabled = true;
             } else {
@@ -664,30 +641,31 @@
         });
     }
 
-    // --- Touch Gesture Implementation ---
+    // --- Touch Gesture Implementation (Canvas Area) ---
     let initialTouchX = 0;
     let initialTouchY = 0;
     let lastProcessedX = 0;
     let lastProcessedY = 0;
     let isDragging = false;
-    const dragSensitivityX = 1.5; // Lower value for less sensitive drag (more pixels to move 1 block)
-    const dragSensitivityY = 2.5; // Lower value for less sensitive drag down (more pixels for a drop)
-    const tapThreshold = 10; // Max pixel movement for a tap (for rotation)
+    // 터치 민감도 조정 (이 값을 낮추면 더 적은 드래그로 움직임)
+    const dragSensitivityX = 1.5; // X축 드래그 민감도 (작을수록 민감)
+    const dragSensitivityY = 2.0; // Y축 드래그 민감도 (작을수록 민감)
+    const tapThreshold = 10; // 탭으로 간주할 최대 이동 거리 (픽셀)
 
-    // Listen for touch events on the canvas itself for drag gestures
+    // 캔버스 자체에 터치 이벤트 리스너 추가
     canvas.addEventListener('touchstart', (e) => {
         if (!gameRunning || isProcessingAnimation) return;
         isDragging = false;
         const touch = e.touches[0];
         initialTouchX = touch.clientX;
         initialTouchY = touch.clientY;
-        lastProcessedX = touch.clientX;
+        lastProcessedX = touch.clientX; // 드래그 시작점을 현재 처리점으로 설정
         lastProcessedY = touch.clientY;
-        e.preventDefault(); // Prevent default browser actions like scrolling
+        e.preventDefault(); // 기본 브라우저 동작(스크롤, 확대/축소) 방지
     }, { passive: false });
 
     canvas.addEventListener('touchmove', (e) => {
-        if (!gameRunning || isProcessingAnimation || e.touches.length > 1) return; // Ignore multi-touch
+        if (!gameRunning || isProcessingAnimation || e.touches.length > 1) return; // 게임 중이 아니거나 애니메이션 중이거나 멀티터치면 무시
         const touch = e.touches[0];
         const currentX = touch.clientX;
         const currentY = touch.clientY;
@@ -695,26 +673,26 @@
         const deltaX = currentX - lastProcessedX;
         const deltaY = currentY - lastProcessedY;
 
-        // Horizontal Movement
-        // Trigger a move if drag exceeds a quarter of a block width (adjust sensitivity)
+        // 가로 이동 (좌/우)
+        // 블록 한 칸 이동에 필요한 픽셀 거리 계산 (캔버스 너비 / 블록 개수 / 민감도)
         if (Math.abs(deltaX) >= (canvas.offsetWidth / W / dragSensitivityX)) {
             if (deltaX > 0) {
-                playerMove(1);
+                playerMove(1); // 오른쪽 이동
             } else {
-                playerMove(-1);
+                playerMove(-1); // 왼쪽 이동
             }
-            lastProcessedX = currentX; // Reset processed position
-            isDragging = true;
+            lastProcessedX = currentX; // 처리 완료된 위치 업데이트
+            isDragging = true; // 드래그 중임을 표시
         }
 
-        // Vertical Soft Drop
-        // Trigger a drop if drag exceeds a quarter of a block height (adjust sensitivity)
+        // 세로 소프트 드롭 (아래로)
+        // 블록 한 칸 드롭에 필요한 픽셀 거리 계산 (캔버스 높이 / 블록 개수 / 민감도)
         if (deltaY >= (canvas.offsetHeight / H / dragSensitivityY)) {
-            playerDrop();
-            lastProcessedY = currentY; // Reset processed position
-            isDragging = true;
+            playerDrop(); // 소프트 드롭
+            lastProcessedY = currentY; // 처리 완료된 위치 업데이트
+            isDragging = true; // 드래그 중임을 표시
         }
-        e.preventDefault();
+        e.preventDefault(); // 기본 브라우저 동작 방지
     }, { passive: false });
 
     canvas.addEventListener('touchend', (e) => {
@@ -726,16 +704,16 @@
         const totalDeltaX = Math.abs(touchEndX - initialTouchX);
         const totalDeltaY = Math.abs(touchEndY - initialTouchY);
 
-        // If it was a short tap (not a drag), then trigger rotation
+        // 짧은 탭 (드래그가 아닐 경우) 회전 동작
         if (totalDeltaX < tapThreshold && totalDeltaY < tapThreshold && !isDragging) {
-            playerRotate(1); // Single rotate direction
+            playerRotate(1); // 시계 방향 단일 회전
         }
-        isDragging = false; // Reset drag state
-        e.preventDefault();
+        isDragging = false; // 드래그 상태 초기화
+        e.preventDefault(); // 기본 브라우저 동작 방지
     }, { passive: false });
 
 
-    // Keyboard event listeners (for desktop debugging, not primary mobile control)
+    // 키보드 이벤트 리스너 (PC 디버깅용, 모바일에서는 사용 안 함)
     document.addEventListener('keydown', e => {
       if (!gameRunning || isProcessingAnimation) return;
       if (e.key === 'ArrowLeft') keyState.left = true;
@@ -751,9 +729,17 @@
       if (e.key === 'ArrowDown') keyState.down = false;
     });
 
-    // Mobile button listeners (only rotate and hard drop remain)
-    document.getElementById('rotate-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(1); });
-    document.getElementById('hard-drop-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerHardDrop(); });
+    // 모바일 버튼 리스너 (회전, 하드 드롭)
+    document.getElementById('rotate-btn').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (!gameRunning || isProcessingAnimation) return; // 추가적인 안전장치
+        playerRotate(1);
+    });
+    document.getElementById('hard-drop-btn').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (!gameRunning || isProcessingAnimation) return; // 추가적인 안전장치
+        playerHardDrop();
+    });
 
 
     document.getElementById('startBtn').onclick = () => {
@@ -779,7 +765,7 @@
     });
 
     updateScore();
-    toggleControlButtons(false);
+    toggleControlButtons(false); // 게임 시작 전에는 컨트롤 버튼 비활성화
   </script>
 </body>
 </html>
