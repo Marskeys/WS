@@ -378,6 +378,10 @@ db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
+  app.get('/game', (req, res) => {
+    res.render('game'); // views/game.ejs
+  });
+  
 // ✅ 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
