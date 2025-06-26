@@ -128,7 +128,7 @@
           <label>카테고리:</label>
           <div class="category-list" id="categoryList"></div>
           <button class="add-category-btn" onclick="addCategory()">➕ 카테고리 추가</button>
-          <button class="post-btn" onclick="postContent()">📬 포스팅</button>
+          <button class="post-btn" onclick="postContent()">� 포스팅</button>
           <button class="save-btn" onclick="saveContent()">💾 저장</button>
         </div>
       </div>
@@ -248,12 +248,14 @@
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              showCustomMessage("성공적으로 저장되었습니다!");
-              <% if (isEdit && post) { %>
-                window.location.href = "/post/<%= post.id %>";
-              <% } else { %>
-                window.location.href = "/";
-              <% } %>
+              // 메시지를 표시하고, 사용자가 '확인'을 클릭하면 페이지를 리디렉션합니다.
+              showCustomMessage("성공적으로 저장되었습니다!", false, () => {
+                <% if (isEdit && post) { %>
+                  window.location.href = "/post/<%= post.id %>";
+                <% } else { %>
+                  window.location.href = "/";
+                <% } %>
+              });
             } else {
               showCustomMessage("저장 실패: " + data.error);
             }
@@ -472,6 +474,8 @@
           } else {
               document.getElementById('okBtn').onclick = () => {
                   modal.style.display = 'none';
+                  // '확인' 버튼을 클릭하면 onConfirm 콜백을 실행합니다.
+                  if (onConfirm) onConfirm();
               };
           }
       }
@@ -556,3 +560,4 @@
       <%- include('partials/scripts') %>
     </body>
     </html>
+�
