@@ -2,34 +2,175 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>테트리스+동물매치 순차처리</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>테트리스+동물매치</title>
   <style>
-    body { background:#111; color:#fff; display:flex; flex-direction:column; align-items:center; height:100vh; margin:0; font-family:'Segoe UI',sans-serif; }
-    #score { font-size:1.4rem; margin-top:1rem; }
-    #startBtn { padding:0.5rem 1.2rem; margin-top:0.5rem; font-size:1rem; background:#38bdf8; border:none; border-radius:6px; cursor:pointer; }
-    canvas { border:3px solid #38bdf8; background:#000; margin-top:1rem; }
+    body {
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden; /* 모바일에서 스크롤 방지 */
+    }
+    #score {
+      font-size: 1.4rem;
+      margin-top: 1rem;
+    }
+    #startBtn, #fullscreenBtn {
+      padding: 0.5rem 1.2rem;
+      margin: 0.5rem 0.2rem;
+      font-size: 1rem;
+      border: none;
+      background: #38bdf8;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #buttonContainer {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+      gap: 10px; /* 버튼 간격 */
+      flex-wrap: wrap; /* 작은 화면에서 버튼 줄바꿈 */
+    }
+    .game-button {
+      padding: 1.2rem 1.8rem;
+      font-size: 1.5rem;
+      border: none;
+      background: #6a0dad; /* 보라색 계열 */
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      flex: 1; /* flex item으로 공간 분배 */
+      min-width: 80px; /* 최소 너비 설정 */
+    }
+    canvas {
+      border: 3px solid #38bdf8;
+      background: #000;
+      margin-top: 1rem;
+      touch-action: none; /* 캔버스 터치 액션 비활성화 (모바일 줌 방지) */
+    }
+
+    /* 모바일 가로 모드 최적화 */
+    @media (orientation: landscape) {
+      body {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+      canvas {
+        margin: 0 1rem;
+      }
+      #gameInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #buttonContainer {
+        flex-direction: column; /* 가로 모드에서 버튼 세로 정렬 */
+        margin-left: 1rem;
+      }
+      .game-button {
+        min-width: unset;
+        width: 120px; /* 가로 모드에서 버튼 너비 고정 */
+        margin-bottom: 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2 id="score">점수: 0</h2>
-  <button id="startBtn">게임 시작</button>
+  <div id="gameInfo">
+    <h2 id="score">점수: 0</h2>
+    <div>
+      <button id="startBtn" disabled>게임 시작</button> <button id="fullscreenBtn">전체 화면</button>
+    </div>
+  </div>
   <canvas id="tetris" width="240" height="400"></canvas>
+  <div id="buttonContainer">
+    <button class="game-button" id="moveLeftBtn">◀</button>
+    <button class="game-button" id="rotateLeftBtn">↺</button>
+    <button class="game-button" id="dropBtn">▼</button>
+    <button class="game-button" id="rotateRightBtn">↻</button>
+    <button class="game-button" id="moveRightBtn">▶</button>
+    <button class="game-button" id="hardDropBtn">⚡</button>
+  </div>
+
   <script>
     const canvas = document.getElementById('tetris'), ctx = canvas.getContext('2d');
-    ctx.scale(20,20);
+    // ctx.scale(20,20); // 캔버스 스케일은 반응형에서 동적으로 설정
+    let scale = 20; // 초기값
 
     const spriteUrls = {1:'./assets/images/dog.png',2:'./assets/images/cat.png',3:'./assets/images/bear.png',4:'./assets/images/rabbit.png',5:'./assets/images/monkey.png'};
     const spriteImgs = {};
-    for (let k in spriteUrls) {
-      const img = new Image();
-      img.src = spriteUrls[k];
-      spriteImgs[k] = img;
+    let imagesLoaded = 0;
+    const totalImages = Object.keys(spriteUrls).length;
+
+    // 이미지 로딩을 기다리는 함수
+    function loadImages(callback) {
+      if (totalImages === 0) {
+        callback();
+        return;
+      }
+      for (let k in spriteUrls) {
+        const img = new Image();
+        img.src = spriteUrls[k];
+        img.onload = () => {
+          spriteImgs[k] = img;
+          imagesLoaded++;
+          if (imagesLoaded === totalImages) {
+            callback(); // 모든 이미지 로드 완료 시 콜백 호출
+          }
+        };
+        img.onerror = () => {
+          console.error(`Error loading image: ${spriteUrls[k]}. Please check the path and file name.`);
+          imagesLoaded++;
+          if (imagesLoaded === totalImages) {
+            callback(); // 오류가 발생해도 모든 이미지 시도가 끝나면 콜백 호출
+          }
+        };
+      }
     }
+
 
     const W=12, H=20;
     let arena, player, keyState, dropCounter, dropInterval, lastTime, score, gameRunning, levelUpTimer, moveCounter;
     const moveInterval=100;
     const colors=[null,'#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B','#845EC2','#00C9A7'];
+
+    // 캔버스 크기 및 스케일 조절 함수
+    function resizeCanvas() {
+      const aspectRatio = W / H; // 12 / 20 = 0.6
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+
+      let canvasWidth, canvasHeight;
+
+      if (screenHeight * aspectRatio > screenWidth) { // 높이가 더 제한적일 때 (주로 가로 모드)
+        canvasWidth = screenWidth * 0.5; // 화면 너비의 절반 사용 (버튼 공간 확보)
+        canvasHeight = canvasWidth / aspectRatio;
+      } else { // 너비가 더 제한적일 때 (주로 세로 모드)
+        canvasHeight = screenHeight * 0.6; // 화면 높이의 절반 이상 사용 (버튼 공간 확보)
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      // 캔버스 최대 크기 제한 (너무 커지는 것을 방지)
+      const maxCanvasHeight = 600;
+      const maxCanvasWidth = maxCanvasHeight * aspectRatio;
+      if (canvasHeight > maxCanvasHeight) {
+        canvasHeight = maxCanvasHeight;
+        canvasWidth = maxCanvasWidth;
+      }
+
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+      scale = canvas.width / W; // 스케일 재계산
+      ctx.setTransform(scale, 0, 0, scale, 0, 0); // 스케일 적용
+    }
+
 
     function initVars(){
       arena = createMatrix(W,H);
@@ -69,14 +210,17 @@
         ctx.fillStyle='rgba(255,255,255,0.2)';
         ctx.fillRect(px,py,1,0.2);
 
-        let imgId = (m===player.mat && off===player.pos)? player.imgMap[y][x] : arena.spriteMap[y][x];
-        if(imgId && spriteImgs[imgId]?.complete) ctx.drawImage(spriteImgs[imgId], px+0.1, py+0.1, 0.8, 0.8);
+        // 이미지 로딩 여부를 다시 한번 확인
+        let imgId = (m===player.mat && off===player.pos && player.imgMap) ? player.imgMap[y][x] : arena.spriteMap?.[y]?.[x];
+        if(imgId && spriteImgs[imgId]?.complete && spriteImgs[imgId].naturalWidth > 0) {
+          ctx.drawImage(spriteImgs[imgId], px+0.1, py+0.1, 0.8, 0.8);
+        }
       }
       ctx.globalAlpha=1;
     }
 
     function draw(){
-      ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width / scale, canvas.height / scale); // 스케일 고려하여 배경 채우기
       drawMatrix(arena,{x:0,y:0});
       drawGhost();
       drawMatrix(player.mat,player.pos);
@@ -107,27 +251,23 @@
     }
 
     function applyGravity() {
-  // Loop through only the columns where animals exploded
-  for (let x = 0; x < W; x++) {
-    let col = [];
-    // Check each row in the column for non-empty blocks
-    for (let y = H - 1; y >= 0; y--) {
-      if (arena[y][x] !== 0) {
-        col.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
-        arena[y][x] = 0;
-        arena.spriteMap[y][x] = 0;
+      for (let x = 0; x < W; x++) {
+        let col = [];
+        for (let y = H - 1; y >= 0; y--) {
+          if (arena[y][x] !== 0) {
+            col.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
+            arena[y][x] = 0;
+            arena.spriteMap[y][x] = 0;
+          }
+        }
+        let y = H - 1;
+        for (let i = 0; i < col.length; i++) {
+          arena[y][x] = col[i].value;
+          arena.spriteMap[y][x] = col[i].sprite;
+          y--;
+        }
       }
     }
-    // Only refill the column with the collected blocks, leaving other columns untouched
-    let y = H - 1;
-    for (let i = 0; i < col.length; i++) {
-      arena[y][x] = col[i].value;
-      arena.spriteMap[y][x] = col[i].sprite;
-      y--;
-    }
-  }
-}
-
 
     function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
@@ -148,36 +288,35 @@
     }
 
     async function resolveMatches(){
-  let matched;
-  do {
-    matched = findMatches();
-    if(matched.length){
-      for(let i=0;i<3;i++){
-        matched.forEach(([y,x])=>arena.spriteMap[y][x]= i%2? '': arena.spriteMap[y][x]);
-        draw(); await sleep(150);
-      }
-      matched.forEach(([y,x])=>{ arena[y][x]=arena.spriteMap[y][x]=0; });
-      score += matched.length*5;
-      dropInterval = Math.min(1000, dropInterval+matched.length*20);
-      updateScore();
-      await sleep(200);
-      applyGravity();
-      draw(); await sleep(200);
-      
-      // ✅ 중력 적용 후 새로 가득 찬 줄이 있으면 삭제
-      await arenaSweep();
+      let matched;
+      do {
+        matched = findMatches();
+        if(matched.length){
+          // 블링크 효과
+          for(let i=0;i<3;i++){
+            matched.forEach(([y,x])=>arena.spriteMap[y][x]= i%2? '': arena.spriteMap[y][x]);
+            draw(); await sleep(150);
+          }
+          matched.forEach(([y,x])=>{ arena[y][x]=arena.spriteMap[y][x]=0; });
+          score += matched.length*5;
+          dropInterval = Math.max(100, dropInterval - matched.length*20); // 최소 낙하 간격 100ms
+          updateScore();
+          await sleep(200);
+          applyGravity();
+          draw(); await sleep(200);
+          
+          // 중력 적용 후 새로 가득 찬 줄이 있으면 삭제 (재귀 호출)
+          await arenaSweep(); // resolveMatches 내에서 arenaSweep 호출 시 await 필요
+        }
+      } while(matched.length);
     }
-  } while(matched.length);
-}
-
-  
 
     async function arenaSweep(){
       let rows;
       do {
         rows=0;
         for(let y=H-1;y>=0;y--){
-          if(arena[y].every(v=>v)){
+          if(arena[y].every(v=>v!==0)){ // 0이 아닌 값으로 가득 찼는지 확인
             rows++;
             arena.splice(y,1); arena.unshift(Array(W).fill(0));
             arena.spriteMap.splice(y,1); arena.spriteMap.unshift(Array(W).fill(0));
@@ -185,12 +324,12 @@
           }
         }
         if(rows){
-          score += rows*10;
+          score += rows*100; // 한 줄 제거 점수 증가
           dropInterval = Math.max(100, dropInterval-rows*50);
           updateScore();
           draw(); await sleep(200);
         }
-        await resolveMatches();
+        await resolveMatches(); // 줄 제거 후에도 동물 매칭 확인
       } while(rows);
     }
 
@@ -202,7 +341,13 @@
         player.pos.y--;
         merge(arena,player);
         playerReset();
-        arenaSweep();
+        // 비동기 처리된 arenaSweep을 여기서 호출해야 합니다.
+        // 하지만 update 함수는 동기적으로 동작하므로, 
+        // arenaSweep이 완료될 때까지 기다리지 못합니다.
+        // 따라서 playerDrop도 async로 만들고 await를 사용하거나,
+        // 아니면 arenaSweep의 호출 방식을 변경해야 합니다.
+        // 여기서는 가장 간단하게 바로 호출합니다.
+        arenaSweep(); 
       }
       dropCounter=0;
     }
@@ -212,7 +357,7 @@
       player.pos.y--;
       merge(arena,player);
       playerReset();
-      arenaSweep();
+      arenaSweep(); // 마찬가지로 비동기 함수이지만, 현재 구조에서는 동기처럼 호출됨
       dropCounter=0;
     }
 
@@ -225,7 +370,7 @@
       while(collide(arena,player)){
         player.pos.x+=offset;
         offset = -(offset+(offset>0?1:-1));
-        if(offset>player.mat[0].length){
+        if(offset>player.mat[0].length || offset < -player.mat[0].length){ // 벽차기 회전 로직 개선
           player.mat=rotateMatrix(player.mat,-dir);
           player.imgMap=rotateMatrix(player.imgMap,-dir);
           player.pos.x=pos; return;
@@ -239,7 +384,11 @@
       player.imgMap=player.mat.map(r=>r.map(v=>v?String(Math.ceil(Math.random()*5)):0));
       player.pos.y=0;
       player.pos.x=(W/2|0)-(player.mat[0].length/2|0);
-      if(collide(arena,player)){gameRunning=false; alert(`게임 끝! 점수: ${score}`);}
+      if(collide(arena,player)){
+        gameRunning=false;
+        alert(`게임 끝! 점수: ${score}`);
+        document.getElementById('startBtn').disabled = false; // 게임 오버 시 시작 버튼 활성화
+      }
     }
 
     function update(time=0){
@@ -257,14 +406,15 @@
       draw(); requestAnimationFrame(update);
     }
 
+    // --- 이벤트 리스너 ---
     document.addEventListener('keydown',e=>{
       if(!gameRunning)return;
       if(e.key==='ArrowLeft')keyState.left=true;
       else if(e.key==='ArrowRight')keyState.right=true;
       else if(e.key==='ArrowDown')keyState.down=true;
-      else if(e.key===' '){e.preventDefault();playerHardDrop();}
-      else if(e.key==='q')playerRotate(-1);
-      else if(e.key==='w')playerRotate(1);
+      else if(e.key===' ' || e.key === 'ArrowUp'){e.preventDefault();playerHardDrop();}
+      else if(e.key==='q' || e.key === 'z')playerRotate(-1);
+      else if(e.key==='w' || e.key === 'x')playerRotate(1);
     });
 
     document.addEventListener('keyup',e=>{
@@ -273,8 +423,57 @@
       if(e.key==='ArrowDown')keyState.down=false;
     });
 
+    // 터치 조작 버튼 이벤트 리스너
+    document.getElementById('moveLeftBtn').addEventListener('touchstart', (e) => { e.preventDefault(); playerMove(-1); });
+    document.getElementById('moveRightBtn').addEventListener('touchstart', (e) => { e.preventDefault(); playerMove(1); });
+    document.getElementById('dropBtn').addEventListener('touchstart', (e) => { e.preventDefault(); playerDrop(); });
+    document.getElementById('hardDropBtn').addEventListener('touchstart', (e) => { e.preventDefault(); playerHardDrop(); });
+    document.getElementById('rotateLeftBtn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(-1); });
+    document.getElementById('rotateRightBtn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(1); });
+
+    // 터치 이벤트를 통한 연속 이동/낙하 방지를 위해 touchend에서도 처리 (옵션)
+    document.querySelectorAll('.game-button').forEach(button => {
+      button.addEventListener('touchend', (e) => { e.preventDefault(); });
+    });
+
+
     document.getElementById('startBtn').onclick = () =>{
-      initVars(); playerReset(); gameRunning=true; requestAnimationFrame(update);
+      if (gameRunning) return; // 이미 게임 중이면 시작하지 않음
+      initVars(); // 변수 초기화 먼저
+      playerReset(); // 플레이어 조각 생성 및 위치 설정
+      gameRunning=true;
+      requestAnimationFrame(update);
+    };
+
+    // 전체 화면 버튼
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+        document.documentElement.msRequestFullscreen();
+      }
+    });
+
+    // 화면 크기 변경 시 캔버스 크기 재조정
+    window.addEventListener('resize', resizeCanvas);
+
+    // 페이지 로드 시 이미지 로드 및 초기화
+    window.onload = () => {
+      loadImages(() => {
+        resizeCanvas(); // 이미지 로드 후 캔버스 초기 크기 설정
+        document.getElementById('startBtn').disabled = false; // 이미지 로드 완료 후 버튼 활성화
+      });
+    };
+
+    // 게임 오버 시 시작 버튼 활성화 로직
+    const originalAlert = window.alert;
+    window.alert = function(message) {
+        originalAlert(message);
+        document.getElementById('startBtn').disabled = false; // 게임 종료 후 시작 버튼 활성화
     };
   </script>
 </body>
