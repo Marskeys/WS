@@ -11,19 +11,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start; /* 상단 정렬 유지, 내부 flex-grow로 공간 분배 */
-      min-height: 100dvh; /* 최신 브라우저 지원, 모바일 UI 포함 실제 높이 */
-      min-height: 100vh; /* 폴백 (fallback) for 구형 브라우저 */
+      justify-content: flex-start;
+      min-height: 100dvh;
+      min-height: 100vh; /* Fallback */
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      overflow: hidden; /* 스크롤 방지 */
-      -webkit-touch-callout: none; /* iOS에서 길게 눌러 선택 방지 */
-      -webkit-user-select: none; /* 텍스트 선택 방지 */
-      -khtml-user-select: none; /* KHTML 엔진 (Safari 이전) 텍스트 선택 방지 */
-      -moz-user-select: none; /* Firefox 텍스트 선택 방지 */
-      -ms-user-select: none; /* IE/Edge 텍스트 선택 방지 */
-      user-select: none; /* 표준 텍스트 선택 방지 */
-      position: relative; /* 자식 요소의 absolute 포지셔닝 기준 */
+      overflow: hidden;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      position: relative;
     }
 
     #game-container {
@@ -31,13 +31,13 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      max-width: 400px; /* 게임 영역 최대 너비 제한 */
+      max-width: 400px;
       padding: 10px;
       box-sizing: border-box;
-      min-height: 0; /* min-height를 0으로 설정하여 유동적으로 콘텐츠 높이 허용 */
-      flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
-      justify-content: flex-start; /* 컨트롤이 오버레이되므로 상단 정렬 유지 */
-      position: relative; /* 캔버스 컨테이너를 기준으로 컨트롤 오버레이 */
+      min-height: 0;
+      flex-grow: 1;
+      justify-content: flex-start;
+      position: relative; /* Controls will be absolutely positioned relative to this */
     }
 
     #score {
@@ -46,7 +46,7 @@
       margin-bottom: 0.5rem;
       font-weight: bold;
       color: #38bdf8;
-      z-index: 10; /* 점수판이 컨트롤 위에 보이도록 */
+      z-index: 10;
     }
 
     #startBtn {
@@ -60,7 +60,7 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
       transition: background 0.2s ease-in-out;
       margin-bottom: 0.8rem;
-      z-index: 10; /* 시작 버튼이 컨트롤 위에 보이도록 */
+      z-index: 10;
     }
     #startBtn:active {
         background: #258cdb;
@@ -74,67 +74,73 @@
       border: 3px solid #38bdf8;
       background: #000;
       margin-top: 0;
-      touch-action: none;
+      touch-action: none; /* Prevents default touch actions like scrolling */
       width: 100%;
       height: auto;
-      max-height: 70vh; /* 캔버스 최대 높이 설정 (이전보다 조금 여유롭게) */
+      max-height: 70vh; /* Allow more canvas height as controls are overlaid */
       flex-shrink: 0;
-      z-index: 5; /* 캔버스 뒤에 오도록 */
+      z-index: 5; /* Canvas behind overlay controls */
     }
 
-    #controls {
-      position: absolute; /* 캔버스 위에 오버레이 */
-      top: 0; /* game-container에 맞춰 상단 시작 */
+    /* New/Revised Controls Layout for Overlay */
+    #overlay-controls {
+      position: absolute;
+      top: 0;
       left: 0;
       width: 100%;
-      height: 100%; /* game-container 전체를 덮도록 */
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr; /* 좌 / 가운데 / 우 */
-      grid-template-rows: repeat(3, 1fr); /* 상 / 중 / 하 */
-      gap: 10px; /* 버튼 간격 */
+      height: 100%; /* Covers the game-container (which includes canvas) */
+      display: flex; /* Use flexbox for simple positioning */
+      justify-content: space-between; /* Space out the left and right groups */
+      align-items: flex-end; /* Align buttons to the bottom */
       padding: 10px;
       box-sizing: border-box;
-      pointer-events: none; /* 기본적으로 이 div는 클릭을 통과시킴 (버튼만 클릭 가능하게) */
-      z-index: 15; /* 캔버스 위에, 점수판/버튼보다도 위에 오도록 */
+      pointer-events: none; /* Allows clicks to pass through to canvas *unless* on a button */
+      z-index: 15; /* Above canvas, below score/start button */
+    }
+
+    .control-group {
+        display: flex;
+        flex-direction: column; /* Buttons stack vertically */
+        gap: 10px; /* Space between buttons in a group */
+        pointer-events: auto; /* Allows interaction within the group */
     }
 
     .control-btn {
-      /* 기존 스타일 유지 */
-      padding: 1rem 0;
+      padding: 1rem 1.5rem; /* Larger touch area */
       font-size: 1.2rem;
-      background: rgba(74, 74, 74, 0.6); /* 반투명 배경 */
+      background: rgba(74, 74, 74, 0.6); /* Semi-transparent */
       color: #fff;
       border: none;
       border-radius: 10px;
       cursor: pointer;
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-      transition: background 0.2s ease-in-out;
+      transition: background 0.2s ease-in-out, opacity 0.2s ease-in-out;
       display: flex;
       align-items: center;
       justify-content: center;
-      pointer-events: auto; /* 이 버튼은 클릭 가능하게 함 */
-      opacity: 0.8; /* 전체적인 투명도 */
+      pointer-events: auto; /* Allows interaction */
+      opacity: 0.8; /* Overall transparency */
+      min-width: 60px; /* Ensure a decent size */
+      min-height: 60px;
     }
     .control-btn:active {
-      background: rgba(106, 106, 106, 0.8); /* 클릭 시 좀 더 불투명 */
+      background: rgba(106, 106, 106, 0.8);
     }
     .control-btn:disabled {
-        background: rgba(108, 117, 125, 0.4); /* 비활성화 시 더 투명 */
+        background: rgba(108, 117, 125, 0.4);
         cursor: not-allowed;
         opacity: 0.5;
     }
 
-    /* 버튼 위치 조정 - 화면 가장자리에 배치 */
-    #rotate-left-btn { grid-column: 1 / 2; grid-row: 1 / 2; align-self: start; justify-self: start; margin: 10px; }
-    #rotate-right-btn { grid-column: 3 / 4; grid-row: 1 / 2; align-self: start; justify-self: end; margin: 10px; }
-    #left-btn { grid-column: 1 / 2; grid-row: 3 / 4; align-self: end; justify-self: start; margin: 10px; }
-    #right-btn { grid-column: 3 / 4; grid-row: 3 / 4; align-self: end; justify-self: end; margin: 10px; }
-    #down-btn { grid-column: 2 / 3; grid-row: 3 / 4; align-self: end; justify-self: center; margin: 10px; } /* 아래 버튼은 여전히 중앙 하단 */
-    #hard-drop-btn { grid-column: 2 / 3; grid-row: 2 / 3; align-self: center; justify-self: center; /* 가운데 배치 */
-                      background: rgba(231, 76, 60, 0.6); /* 하드 드롭 버튼 색상 반투명 */ }
-    #hard-drop-btn:active { background: rgba(192, 57, 43, 0.8); }
+    /* Specific button styling */
+    #hard-drop-btn {
+        background: rgba(231, 76, 60, 0.6);
+    }
+    #hard-drop-btn:active {
+        background: rgba(192, 57, 43, 0.8);
+    }
 
-    /* 모바일 가로 모드 및 작은 화면 최적화 */
+    /* Adjust positioning for landscape mode */
     @media (max-width: 600px) and (orientation: landscape) {
       body {
         flex-direction: row;
@@ -150,78 +156,63 @@
         height: 100%;
         max-height: 100%;
         justify-content: space-around;
-        position: relative; /* 가로 모드에서도 오버레이 기준 */
+        position: relative;
       }
       canvas {
-        max-width: 60vw; /* 가로 모드에서 캔버스 더 넓게 사용 */
+        max-width: 60vw;
         max-height: 90vh;
-        margin-top: 0;
       }
-      #controls {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        grid-template-columns: repeat(5, 1fr); /* 가로 모드에서 5열 그리드로 변경 (더 많은 컨트롤 가능) */
-        grid-template-rows: 1fr 1fr; /* 2열 유지 */
-        gap: 8px; /* 간격 줄임 */
-        padding: 8px;
+      #overlay-controls {
+        /* In landscape, place controls on the sides of the canvas */
+        flex-direction: row; /* Buttons are horizontal now */
+        align-items: center; /* Center vertically */
+        justify-content: space-between;
+        padding: 10px;
       }
-      /* 가로 모드에서의 버튼 재배치 */
-      #rotate-left-btn { grid-column: 1 / 2; grid-row: 1 / 2; align-self: start; justify-self: start; margin: 0; }
-      #left-btn { grid-column: 1 / 2; grid-row: 2 / 3; align-self: end; justify-self: start; margin: 0; }
-      #hard-drop-btn { grid-column: 3 / 4; grid-row: 1 / 3; /* 중앙 세로로 길게 */
-                       align-self: center; justify-self: center; }
-      #rotate-right-btn { grid-column: 5 / 6; grid-row: 1 / 2; align-self: start; justify-self: end; margin: 0; }
-      #right-btn { grid-column: 5 / 6; grid-row: 2 / 3; align-self: end; justify-self: end; margin: 0; }
-      #down-btn { grid-column: 2 / 3; grid-row: 2 / 3; align-self: end; justify-self: center; margin: 0; } /* 아래 버튼 위치 변경 */
-      /* 중앙 공백 div는 더 이상 필요 없음 */
-      #controls > div { display: none; } /* 기존 중앙 공백 숨기기 */
-
+      .control-group {
+        flex-direction: column; /* Buttons still stack vertically within groups */
+      }
       #score, #startBtn {
-        margin-top: 0.5rem;
         font-size: 1.2rem;
-        position: relative; /* 오버레이 컨트롤 위로 올라오도록 */
         z-index: 20;
       }
       #score { order: -2; }
       #startBtn { order: -1; }
     }
 
-    /* 매우 작은 세로 화면용 (혹은 컨트롤러가 여전히 가려지는 경우) */
+    /* Fine-tune for very small portrait screens */
     @media (max-height: 700px) and (orientation: portrait) {
       canvas {
-        max-height: 55vh; /* 캔버스 높이 좀 더 유동적으로 */
+        max-height: 55vh;
       }
       #score { font-size: 1.4rem; }
       #startBtn { font-size: 1rem; padding: 0.4rem 1rem; }
-      .control-btn { font-size: 1rem; padding: 0.8rem 0; } /* 버튼 패딩/폰트 크기 조정 */
-      #controls { gap: 8px; padding: 8px; } /* 간격도 줄여서 공간 확보 */
+      .control-btn { font-size: 1.1rem; padding: 0.8rem 0; min-width: 50px; min-height: 50px; }
+      #overlay-controls { gap: 8px; padding: 8px; }
     }
   </style>
 </head>
 <body>
   <div id="game-container">
     <h2 id="score">점수: 0</h2>
-    <button id="startBtn" disabled>게임 시작</button> <canvas id="tetris" width="240" height="400"></canvas>
+    <button id="startBtn" disabled>게임 시작</button>
+    <canvas id="tetris" width="240" height="400"></canvas>
 
-    <div id="controls">
-      <button id="rotate-left-btn" class="control-btn">◀ 회전</button>
-      <button id="hard-drop-btn" class="control-btn">하드 드롭</button>
-      <button id="rotate-right-btn" class="control-btn">회전 ▶</button>
-      <button id="left-btn" class="control-btn">◀ 이동</button>
-      <button id="right-btn" class="control-btn">이동 ▶</button>
-      <button id="down-btn" class="control-btn" style="grid-column: 1 / 4;">▼ 아래</button>
+    <div id="overlay-controls">
+        <div class="control-group left-controls">
+            <button id="rotate-btn" class="control-btn">회전</button>
+        </div>
+        <div class="control-group right-controls">
+            <button id="hard-drop-btn" class="control-btn">하드 드롭</button>
+        </div>
     </div>
   </div>
 
   <script>
     const canvas = document.getElementById('tetris');
     const ctx = canvas.getContext('2d');
-    ctx.scale(20, 20); // 블록 크기
+    ctx.scale(20, 20);
 
-    // 동물 스프라이트 이미지 경로 (BlindlyLove/public/assets/images/ 경로에 있어야 함)
     const spriteUrls = {
       1: '/assets/images/dog.png',
       2: '/assets/images/cat.png',
@@ -233,7 +224,6 @@
     let imagesLoadedCount = 0;
     const totalImages = Object.keys(spriteUrls).length;
 
-    // 이미지 로드 함수: 모든 이미지가 로드될 때까지 기다립니다.
     function loadImages(callback) {
       for (let k in spriteUrls) {
         const img = new Image();
@@ -241,12 +231,12 @@
         img.onload = () => {
           imagesLoadedCount++;
           if (imagesLoadedCount === totalImages) {
-            callback(); // 모든 이미지 로드 완료 후 콜백 실행
+            callback();
           }
         };
         img.onerror = () => {
-          console.error(`Failed to load image: ${spriteUrls[k]}. Please check the path and if the server is correctly serving static files.`);
-          imagesLoadedCount++; // 오류 발생해도 카운트 증가시켜 게임 시작 가능하게 함 (이미지 없어도 게임은 돌아가도록)
+          console.error(`Failed to load image: ${spriteUrls[k]}. Check path and server.`);
+          imagesLoadedCount++;
           if (imagesLoadedCount === totalImages) {
             callback();
           }
@@ -255,24 +245,31 @@
       }
     }
 
-    const W = 12, H = 20; // 아레나 너비와 높이
-    let arena = createMatrix(W, H); // 게임 보드
-    arena.spriteMap = createMatrix(W, H); // 동물 스프라이트 맵
+    const W = 12, H = 20;
+    let arena = createMatrix(W, H);
+    arena.spriteMap = createMatrix(W, H);
 
-    let player = { pos: { x: 0, y: 0 }, mat: null, imgMap: null }; // 현재 떨어지는 블록
-    let keyState = { left: false, right: false, down: false }; // 키 상태 (PC 디버깅용)
+    let player = { pos: { x: 0, y: 0 }, mat: null, imgMap: null };
+    let keyState = { left: false, right: false, down: false };
     let dropCounter = 0, dropInterval = 1000, lastTime = 0, score = 0, gameRunning = false, levelUpTimer = 0, moveCounter = 0;
-    let isProcessingAnimation = false; // 애니메이션(매치 강조, 블록 하강) 처리 중인지 나타내는 플래그 (사용자 조작만 막음)
+    let isProcessingAnimation = false;
 
-    const moveInterval = 100; // 자동 이동/드롭 간격
+    const moveInterval = 100;
     const colors = [null, '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF922B', '#845EC2', '#00C9A7'];
 
-    // 행렬 생성
+    // --- Touch Gesture Variables ---
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let lastMoveTime = 0;
+    const swipeThresholdX = 20; // Minimum horizontal pixel drag to register a move
+    const swipeThresholdY = 20; // Minimum vertical pixel drag to register a soft drop
+    const tapThreshold = 10; // Max pixel movement for a tap (for rotation)
+    const moveDelay = 100; // Delay between consecutive moves on touchmove
+
     function createMatrix(w, h) {
       return Array.from({ length: h }, () => Array(w).fill(0));
     }
 
-    // 테트리스 조각 생성
     function createPiece(type) {
       const t = {
         T: [[0, 1, 0], [1, 1, 1], [0, 0, 0]],
@@ -286,28 +283,25 @@
       return t[type];
     }
 
-    // 행렬 회전 (블록 자체)
     function rotateMatrix(matrix, dir) {
-      const m = JSON.parse(JSON.stringify(matrix)); // 깊은 복사
+      const m = JSON.parse(JSON.stringify(matrix));
       for (let y = 0; y < m.length; ++y) {
         for (let x = 0; x < y; ++x) {
-          [m[x][y], m[y][x]] = [m[y][x], m[x][y]]; // 전치
+          [m[x][y], m[y][x]] = [m[y][x], m[x][y]];
         }
       }
-      if (dir > 0) m.forEach(row => row.reverse()); // 시계 방향
-      else m.reverse(); // 반시계 방향
+      if (dir > 0) m.forEach(row => row.reverse());
+      else m.reverse();
       return m;
     }
 
-    // 행렬 그리기 (블록 및 동물 스프라이트)
     function drawMatrix(m, off, alpha = 1) {
       ctx.globalAlpha = alpha;
       for (let y = 0; y < m.length; y++) {
         for (let x = 0; x < m[y].length; x++) {
-          const v = m[y][x]; // 블록 타입
+          const v = m[y][x];
           if (v) {
             const px = x + off.x, py = y + off.y;
-            // 블록 색상 (그라데이션)
             const grad = ctx.createLinearGradient(px, py, px + 1, py + 1);
             grad.addColorStop(0, '#fff');
             grad.addColorStop(1, colors[v]);
@@ -319,15 +313,13 @@
             ctx.fillStyle = 'rgba(255,255,255,0.2)';
             ctx.fillRect(px, py, 1, 0.2);
 
-            // 동물 스프라이트 그리기
             let imgId = null;
             if (m === player.mat && off === player.pos && player.imgMap) {
-              imgId = player.imgMap[y][x]; // 현재 떨어지는 블록의 동물
+              imgId = player.imgMap[y][x];
             } else if (m === arena) {
-              imgId = arena.spriteMap?.[y]?.[x]; // 바닥에 고정된 블록의 동물
+              imgId = arena.spriteMap?.[y]?.[x];
             }
 
-            // 이미지가 로드 완료되었고, naturalWidth가 있으면 그립니다.
             if (imgId && spriteImgs[imgId]?.complete && spriteImgs[imgId].naturalWidth > 0) {
               ctx.drawImage(spriteImgs[imgId], px + 0.1, py + 0.1, 0.8, 0.8);
             }
@@ -337,30 +329,27 @@
       ctx.globalAlpha = 1;
     }
 
-    // 고스트 블록 그리기
     function drawGhost() {
       const g = { pos: { ...player.pos }, mat: player.mat, imgMap: player.imgMap };
       while (!collide(arena, g)) g.pos.y++;
-      g.pos.y--; // 충돌 직전 위치로 되돌리기
-      drawMatrix(g.mat, g.pos, 0.3); // 투명하게 그리기
+      g.pos.y--;
+      drawMatrix(g.mat, g.pos, 0.3);
     }
 
-    // 전체 화면 그리기
     function draw() {
       ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height); // 배경 지우기
-      drawMatrix(arena, { x: 0, y: 0 }); // 고정된 블록 그리기
-      drawGhost(); // 고스트 블록 그리기
-      drawMatrix(player.mat, player.pos); // 현재 떨어지는 블록 그리기
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      drawMatrix(arena, { x: 0, y: 0 });
+      drawGhost();
+      drawMatrix(player.mat, player.pos);
     }
 
-    // 충돌 감지
     function collide(ar, pl) {
       const m = pl.mat, o = pl.pos;
       for (let y = 0; y < m.length; y++) {
         for (let x = 0; x < m[y].length; x++) {
-          if (m[y][x] !== 0 && // 블록의 일부가 채워져 있고
-              (ar[y + o.y] && ar[y + o.y][x + o.x]) !== 0) { // 아레나 범위 밖이거나 채워져 있으면 충돌
+          if (m[y][x] !== 0 &&
+              (ar[y + o.y] && ar[y + o.y][x + o.x]) !== 0) {
             return true;
           }
         }
@@ -368,42 +357,36 @@
       return false;
     }
 
-    // 블록을 아레나에 병합
     function merge(ar, pl) {
       pl.mat.forEach((row, y) => {
         row.forEach((v, x) => {
           if (v) {
-            ar[y + pl.pos.y][x + pl.pos.x] = v; // 블록 값 복사
-            arena.spriteMap[y + pl.pos.y][x + pl.pos.x] = player.imgMap[y][x]; // 스프라이트 값 복사
+            ar[y + pl.pos.y][x + pl.pos.x] = v;
+            arena.spriteMap[y + pl.pos.y][x + pl.pos.x] = player.imgMap[y][x];
           }
         });
       });
     }
 
-    // 매치 제거 후 빈 공간을 채우기 위한 중력 적용 함수
-    // 이 함수는 매치로 인해 생긴 빈 공간만 채우고, 블록이 실제로 이동했는지 여부를 반환합니다.
     function applyGravityAfterMatch() {
         let movedAnything = false;
-        for (let x = 0; x < W; x++) { // 각 열에 대해
-            let filledCells = []; // 비어있지 않은 셀들을 임시로 저장
-            for (let y = H - 1; y >= 0; y--) { // 아래에서 위로 순회
+        for (let x = 0; x < W; x++) {
+            let filledCells = [];
+            for (let y = H - 1; y >= 0; y--) {
                 if (arena[y][x] !== 0) {
                     filledCells.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
                 }
             }
 
-            // 해당 열을 모두 0으로 초기화
             for (let y = 0; y < H; y++) {
                 arena[y][x] = 0;
                 arena.spriteMap[y][x] = 0;
             }
 
-            // 비어있지 않은 셀들을 아래에서부터 다시 채움
             let currentY = H - 1;
             for (let i = 0; i < filledCells.length; i++) {
                 arena[currentY][x] = filledCells[i].value;
                 arena.spriteMap[currentY][x] = filledCells[i].sprite;
-                // 만약 원래 위치와 현재 위치가 다르다면 이동이 발생한 것
                 if (currentY !== (H - 1 - i)) {
                     movedAnything = true;
                 }
@@ -413,24 +396,20 @@
         return movedAnything;
     }
 
-    // 동물 매치를 찾는 함수 (클러스터 매치 방식으로 변경: 4개 이상 연결)
     function findConnectedMatches() {
         const m = arena.spriteMap;
-        const matchedCoords = new Set(); // 중복 방지를 위한 Set
-        const matchLength = 4; // 4개 이상 연결되어야 터짐
-        const visited = createMatrix(W, H); // 방문 여부 기록
+        const matchedCoords = new Set();
+        const matchLength = 4;
+        const visited = createMatrix(W, H);
 
-        // DFS (Depth First Search) 함수를 사용하여 연결된 블록 찾기
         function dfs(y, x, targetValue, currentCluster) {
-            // 유효하지 않은 좌표이거나, 이미 방문했거나, 값이 없거나, 목표 값과 다르면 리턴
             if (y < 0 || y >= H || x < 0 || x >= W || visited[y][x] || m[y][x] !== targetValue) {
                 return;
             }
 
-            visited[y][x] = 1; // 방문 처리
-            currentCluster.push([y, x]); // 현재 클러스터에 추가
+            visited[y][x] = 1;
+            currentCluster.push([y, x]);
 
-            // 상하좌우 탐색 (대각선은 제외하고 상하좌우만 인접으로 간주)
             dfs(y + 1, x, targetValue, currentCluster);
             dfs(y - 1, x, targetValue, currentCluster);
             dfs(y, x + 1, targetValue, currentCluster);
@@ -440,248 +419,212 @@
         for (let y = 0; y < H; y++) {
             for (let x = 0; x < W; x++) {
                 const value = m[y][x];
-                if (value !== 0 && !visited[y][x]) { // 값이 있고 아직 방문하지 않았다면
+                if (value !== 0 && !visited[y][x]) {
                     const currentCluster = [];
-                    dfs(y, x, value, currentCluster); // 연결된 클러스터 탐색
+                    dfs(y, x, value, currentCluster);
 
                     if (currentCluster.length >= matchLength) {
                         currentCluster.forEach(coord => {
-                            matchedCoords.add(JSON.stringify(coord)); // Set에 추가
+                            matchedCoords.add(JSON.stringify(coord));
                         });
                     }
                 }
             }
         }
-        // Set에 있는 좌표들을 배열로 변환하여 반환
         return Array.from(matchedCoords).map(JSON.parse);
     }
 
-    // 매치된 블록 제거 함수
-    function clearMatchedBlocks(toDel) {
-        toDel.forEach(([yy, xx]) => {
-            arena[yy][xx] = 0; // 블록 값 0으로 설정 (사라짐)
-            arena.spriteMap[yy][xx] = 0; // 스프라이트 값도 0으로 설정 (사라짐)
-        });
-    }
-
-    // 매치 애니메이션 함수 (경계 번쩍임 및 글로우 효과 강화)
     async function animateMatch(toDel) {
-        const flashColor = 'rgba(255, 255, 0, 0.8)'; // 밝은 노란색 for flash/glow
-        const boundaryFlashColor = 'rgba(0, 255, 255, 0.9)'; // 밝은 청록색 for boundary
+        const flashColor = 'rgba(255, 255, 0, 0.8)';
+        const boundaryFlashColor = 'rgba(0, 255, 255, 0.9)';
 
-        // Draw the current game state first
+        // Draw current state before starting animations
         draw(); 
 
         // 1단계: 매치된 블록 경계 번쩍임
-        ctx.lineWidth = 0.15; // 경계선 두께
-        for (let i = 0; i < 2; i++) { // 두 번 깜빡임
+        ctx.lineWidth = 0.15;
+        for (let i = 0; i < 2; i++) {
             ctx.strokeStyle = boundaryFlashColor;
-            ctx.globalAlpha = 1; // 완전 불투명하게 그립니다.
+            ctx.globalAlpha = 1;
             toDel.forEach(([yy, xx]) => {
                 ctx.strokeRect(xx, yy, 1, 1);
             });
-            await new Promise(resolve => setTimeout(resolve, 40)); // 40ms 대기
+            await new Promise(resolve => setTimeout(resolve, 40));
 
-            // 다시 그려서 경계선을 지우고 원래 상태로 돌아갑니다.
-            draw(); 
-            await new Promise(resolve => setTimeout(resolve, 40)); // 40ms 대기
+            draw(); // Redraw the scene to clear the border
+            await new Promise(resolve => setTimeout(resolve, 40));
         }
-        ctx.lineWidth = 0.08; // 원래 lineWidth로 복구
+        ctx.lineWidth = 0.08;
 
-        // 2단계: 매치된 블록 강조 (밝은 색으로 덮어쓰기 - 글로우 효과)
-        ctx.globalAlpha = 0.7; // 투명도 조절
+        // 2단계: 매치된 블록 강조 (글로우 효과)
+        ctx.globalAlpha = 0.7;
         ctx.fillStyle = flashColor;
         toDel.forEach(([yy, xx]) => {
             ctx.fillRect(xx, yy, 1, 1);
         });
-        ctx.globalAlpha = 1; // 원상 복구
-        await new Promise(resolve => setTimeout(resolve, 80)); // 강조 시간 (80ms)
+        ctx.globalAlpha = 1;
+        await new Promise(resolve => setTimeout(resolve, 80));
         
-        // Remove the glow effect before proceeding to clear blocks
-        draw(); // Redraw the scene to clear the glow
+        draw(); // Clear the glow effect by redrawing
     }
 
-    // 연쇄 반응을 포함한 전체 매치 처리 로직
-    // 이 함수는 애니메이션과 블록 하강을 비동기적으로 처리하며, 연쇄 반응을 담당합니다.
     async function processMatches() {
         if (isProcessingAnimation) {
              return;
         }
 
-        isProcessingAnimation = true; // 애니메이션 처리 시작 플래그 설정
-        toggleControlButtons(false); // 애니메이션 중에는 컨트롤 버튼 비활성화
+        isProcessingAnimation = true;
+        toggleControlButtons(false);
 
-        let chainCount = 0; // 연쇄 반응 횟수
+        let chainCount = 0;
 
         do {
             let foundMatchThisIteration = false;
             let clearedLineThisIteration = 0;
 
-            // 1. 동물 매치 확인 및 처리
-            const matches = findConnectedMatches(); // 클러스터 매치 함수 호출
+            const matches = findConnectedMatches();
             if (matches.length > 0) {
                 foundMatchThisIteration = true;
                 chainCount++;
 
-                await animateMatch(matches); // 매치 애니메이션 (강조 & 번쩍)
-                clearMatchedBlocks(matches); // 매치된 블록 제거
-                score += matches.length * 10 * chainCount; // 연쇄 반응 점수 추가 (연쇄 계수)
+                await animateMatch(matches);
+                clearMatchedBlocks(matches);
+                score += matches.length * 10 * chainCount;
                 updateScore();
                 
-                // 블록 터트릴때 속도를 살짝 느리게 (매치된 블록 수에 비례)
-                dropInterval = Math.min(1000, dropInterval + (matches.length * 20)); // 최대 1000ms까지 느려짐
+                dropInterval = Math.min(1000, dropInterval + (matches.length * 20));
                 
-                draw(); // 제거된 상태 그리기 
-                await new Promise(resolve => setTimeout(resolve, 100)); // 블록이 사라진 후 100ms 대기
+                draw(); // Update visual after clearing
+                await new Promise(resolve => setTimeout(resolve, 100));
 
-                const moved = applyGravityAfterMatch(); // 블록 아래로 떨어뜨리기 (이동 여부 반환)
-                draw(); // 떨어진 상태 그리기 
-                await new Promise(resolve => setTimeout(resolve, 100)); // 블록이 떨어진 후 100ms 대기 (이동 시간)
+                const moved = applyGravityAfterMatch();
+                draw(); // Update visual after gravity
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            // 2. 줄 삭제 확인 및 처리 (동물 매치로 인해 새 줄이 완성될 수 있으므로 매치 후에도 다시 확인)
-            const linesCleared = arenaSweep(); // 줄 삭제 함수 호출 (삭제된 줄 수 반환)
+            const linesCleared = arenaSweep();
             if (linesCleared > 0) {
                 clearedLineThisIteration = linesCleared;
-                // arenaSweep 내에서 점수 업데이트 및 드롭 속도 조절은 이미 이루어집니다.
-                draw(); // 줄 삭제된 상태 그리기
-                await new Promise(resolve => setTimeout(resolve, 100)); // 줄 삭제 후 100ms 대기 (애니메이션 효과)
+                draw(); // Update visual after line clear
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            // 더 이상 매치도 없고, 줄도 지워지지 않으면 연쇄 종료
             if (!foundMatchThisIteration && clearedLineThisIteration === 0) {
                 break;
             }
 
-        } while (true); // 매치나 줄 삭제가 계속 발생하면 반복
+        } while (true);
 
-        isProcessingAnimation = false; // 애니메이션 처리 완료 플래그 해제
-        toggleControlButtons(true); // 컨트롤 버튼 다시 활성화
+        isProcessingAnimation = false;
+        toggleControlButtons(true);
     }
 
-    // 가득 찬 줄 제거 및 점수 계산
-    // 이제 이 함수는 삭제된 줄의 수를 반환합니다.
     function arenaSweep() {
       let rowsRemoved = 0;
       for (let y = H - 1; y >= 0; y--) {
-        if (arena[y].every(v => v !== 0)) { // 줄이 모두 채워졌으면 (0이 아닌 블록으로 가득 참)
+        if (arena[y].every(v => v !== 0)) {
           rowsRemoved++;
-          arena.splice(y, 1); // 해당 줄 제거
-          arena.unshift(Array(W).fill(0)); // 맨 위에 빈 줄 추가
-          arena.spriteMap.splice(y, 1); // 스프라이트 맵도 동일하게 처리
+          arena.splice(y, 1);
+          arena.unshift(Array(W).fill(0));
+          arena.spriteMap.splice(y, 1);
           arena.spriteMap.unshift(Array(W).fill(0));
-          y++; // 제거된 줄 다음 줄부터 다시 검사 (매치로 줄이 지워지면 y가 감소했으니 다시 원래 y 위치를 검사하기 위함)
+          y++;
         }
       }
       if (rowsRemoved > 0) {
-        score += rowsRemoved * 100; // 줄 제거 점수 추가
-        dropInterval = Math.max(100, dropInterval - rowsRemoved * 50); // 줄 제거 시 속도 증가 (최소 100ms)
+        score += rowsRemoved * 100;
+        dropInterval = Math.max(100, dropInterval - rowsRemoved * 50);
         updateScore();
       }
-      return rowsRemoved; // 삭제된 줄 수 반환
+      return rowsRemoved;
     }
 
-    // 점수 업데이트
     function updateScore() { document.getElementById('score').innerText = `점수: ${score}`; }
 
-    // 블록 한 칸 아래로 떨어뜨리기
     function playerDrop() {
       player.pos.y++;
       if (collide(arena, player)) {
-        player.pos.y--; // 충돌했으면 이전 위치로
-        merge(arena, player); // 아레나에 블록 병합
-        playerReset(); // 새 블록 생성
-
-        // 블록 착지 후, 매치/줄 삭제 처리 시작
+        player.pos.y--;
+        merge(arena, player);
+        playerReset();
         processMatches();
       }
-      dropCounter = 0; // 드롭 카운터 초기화
+      dropCounter = 0;
     }
 
-    // 블록 즉시 바닥으로 떨어뜨리기 (하드 드롭)
     function playerHardDrop() {
-      if (isProcessingAnimation) return; // 애니메이션 처리 중에는 하드 드롭 금지
+      if (isProcessingAnimation) return;
       while (!collide(arena, player)) player.pos.y++;
       player.pos.y--;
       merge(arena, player);
       playerReset();
-      processMatches(); // 블록 착지 후 매치/줄 삭제 처리
-      dropCounter = 0; // 드롭 카운터 초기화
+      processMatches();
+      dropCounter = 0;
     }
 
-    // 블록 좌우 이동
     function playerMove(dir) {
-      if (isProcessingAnimation) return; // 애니메이션 처리 중에는 이동 금지
+      if (isProcessingAnimation) return;
       player.pos.x += dir;
-      if (collide(arena, player)) player.pos.x -= dir; // 충돌 시 되돌리기
+      if (collide(arena, player)) player.pos.x -= dir;
     }
 
-    // 블록 회전
     function playerRotate(dir) {
-      if (isProcessingAnimation) return; // 애니메이션 처리 중에는 회전 금지
+      if (isProcessingAnimation) return;
 
       const pos = player.pos.x;
       let offset = 1;
       const rotMat = rotateMatrix(player.mat, dir);
-      const rotImg = rotateMatrix(player.imgMap, dir); // 스프라이트 맵도 함께 회전
+      const rotImg = rotateMatrix(player.imgMap, dir);
       player.mat = rotMat;
       player.imgMap = rotImg;
 
-      // 회전 후 벽/다른 블록에 충돌하는 경우 벽 차기 (Wall Kick)
       while (collide(arena, player)) {
         player.pos.x += offset;
-        offset = -(offset + (offset > 0 ? 1 : -1)); // 벽 차기 알고리즘
-        if (offset > player.mat[0].length) { // 너무 멀리 이동했으면 회전 취소
-          player.mat = rotateMatrix(player.mat, -dir); // 원래대로 되돌리기
-          player.imgMap = rotateMatrix(player.imgMap, -dir); // 스프라이트 맵도 원래대로
+        offset = -(offset + (offset > 0 ? 1 : -1));
+        if (offset > player.mat[0].length) {
+          player.mat = rotateMatrix(player.mat, -dir);
+          player.imgMap = rotateMatrix(player.imgMap, -dir);
           player.pos.x = pos;
           return;
         }
       }
     }
 
-    // 새 블록 생성 및 게임 오버 체크
     function playerReset() {
       const types = 'TJLOSZI';
       player.mat = createPiece(types[Math.floor(Math.random() * 7)]);
-      // 각 블록 조각에 랜덤 동물 스프라이트 할당 (1부터 5까지)
       player.imgMap = player.mat.map(row => row.map(v => v ? String(Math.ceil(Math.random() * 5)) : 0));
       player.pos.y = 0;
-      player.pos.x = (W / 2 | 0) - (player.mat[0].length / 2 | 0); // 중앙 배치
+      player.pos.x = (W / 2 | 0) - (player.mat[0].length / 2 | 0);
 
-      if (collide(arena, player)) { // 새 블록 생성 시 충돌하면 게임 오버
+      if (collide(arena, player)) {
         gameRunning = false;
         alert(`게임 종료! 최종 점수: ${score}`);
-        toggleControlButtons(false); // 게임 오버 시 컨트롤 비활성화
-        document.getElementById('startBtn').disabled = false; // 시작 버튼 다시 활성화
+        toggleControlButtons(false);
+        document.getElementById('startBtn').disabled = false;
       }
     }
 
-    // 게임 루프
     function update(time = 0) {
       if (!gameRunning) return;
 
       const dt = time - lastTime;
       lastTime = time;
 
-      // 블록 자동 하강 및 시간 기반 로직은 애니메이션 중에도 계속 진행
       dropCounter += dt;
       levelUpTimer += dt;
       moveCounter += dt;
 
-      // 자동 하강
       if (dropCounter > dropInterval) {
         playerDrop();
       }
 
-      // 난이도 상승 (속도 증가)
-      if (levelUpTimer > 15000) { // 15초마다 레벨업
-        dropInterval = Math.max(100, dropInterval - 50); // 최소 100ms
+      if (levelUpTimer > 15000) {
+        dropInterval = Math.max(100, dropInterval - 50);
         levelUpTimer = 0;
       }
 
-      // 키보드 입력에 의한 자동 이동/드롭 처리 (모바일에서는 버튼이 직접 호출)
-      // 사용자 입력은 isProcessingAnimation 플래그에 의해 각 함수에서 이미 제어됩니다.
+      // Key controls are still here for debugging/desktop
       if (moveCounter > moveInterval) {
         if (keyState.left) playerMove(-1);
         if (keyState.right) playerMove(1);
@@ -689,15 +632,13 @@
         moveCounter = 0;
       }
 
-      draw(); // 게임 화면 그리기
-      requestAnimationFrame(update); // 다음 프레임 요청
+      draw();
+      requestAnimationFrame(update);
     }
 
-    // 컨트롤 버튼 활성화/비활성화 함수
     function toggleControlButtons(enable) {
         const buttons = document.querySelectorAll('.control-btn');
         buttons.forEach(button => {
-            // 게임이 실행 중이 아닐 때는 모든 버튼 비활성화 (시작 버튼 제외)
             if (!gameRunning && button.id !== 'startBtn') {
                 button.disabled = true;
             } else {
@@ -706,15 +647,85 @@
         });
     }
 
-    // 키보드 이벤트 리스너 (PC 디버깅용)
+    // --- Touch Gesture Implementation ---
+    let initialTouchX = 0;
+    let initialTouchY = 0;
+    let lastProcessedX = 0;
+    let lastProcessedY = 0;
+    let isDragging = false;
+    const dragSensitivityX = 1.5; // Lower value for less sensitive drag (more pixels to move 1 block)
+    const dragSensitivityY = 2.5; // Lower value for less sensitive drag down (more pixels for a drop)
+
+    canvas.addEventListener('touchstart', (e) => {
+        if (!gameRunning || isProcessingAnimation) return;
+        isDragging = false;
+        const touch = e.touches[0];
+        initialTouchX = touch.clientX;
+        initialTouchY = touch.clientY;
+        lastProcessedX = touch.clientX;
+        lastProcessedY = touch.clientY;
+        e.preventDefault(); // Prevent default browser actions like scrolling
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        if (!gameRunning || isProcessingAnimation || e.touches.length > 1) return; // Ignore multi-touch
+        const touch = e.touches[0];
+        const currentX = touch.clientX;
+        const currentY = touch.clientY;
+
+        const deltaX = currentX - lastProcessedX;
+        const deltaY = currentY - lastProcessedY;
+
+        // Horizontal Movement
+        if (Math.abs(deltaX) >= (canvas.width / W / dragSensitivityX)) { // Move one block width
+            if (deltaX > 0) {
+                playerMove(1);
+            } else {
+                playerMove(-1);
+            }
+            lastProcessedX = currentX; // Reset processed position
+            isDragging = true;
+        }
+
+        // Vertical Soft Drop
+        if (deltaY >= (canvas.height / H / dragSensitivityY)) { // Drop one block height
+            playerDrop();
+            lastProcessedY = currentY; // Reset processed position
+            isDragging = true;
+        }
+        e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        if (!gameRunning || isProcessingAnimation) return;
+
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+
+        const totalDeltaX = Math.abs(touchEndX - initialTouchX);
+        const totalDeltaY = Math.abs(touchEndY - initialTouchY);
+
+        // If it was a short tap (not a drag), then trigger rotation
+        if (totalDeltaX < tapThreshold && totalDeltaY < tapThreshold && !isDragging) {
+            playerRotate(1); // Single rotate direction
+        }
+        isDragging = false; // Reset drag state
+        e.preventDefault();
+    }, { passive: false });
+
+
+    // Button listeners (only rotate and hard drop remain)
+    document.getElementById('rotate-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(1); });
+    document.getElementById('hard-drop-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerHardDrop(); });
+
+
     document.addEventListener('keydown', e => {
-      if (!gameRunning || isProcessingAnimation) return; // 게임 중이 아니거나 애니메이션 처리 중이면 무시
+      if (!gameRunning || isProcessingAnimation) return;
       if (e.key === 'ArrowLeft') keyState.left = true;
       else if (e.key === 'ArrowRight') keyState.right = true;
       else if (e.key === 'ArrowDown') keyState.down = true;
-      else if (e.key === ' ') { e.preventDefault(); playerHardDrop(); } // 스페이스바 하드 드롭
-      else if (e.key === 'q') playerRotate(-1); // Q키 반시계 회전
-      else if (e.key === 'w') playerRotate(1);  // W키 시계 방향 회전
+      else if (e.key === ' ') { e.preventDefault(); playerHardDrop(); }
+      else if (e.key === 'q' || e.key === 'w') playerRotate(1); // Any of these rotate (single direction)
     });
     document.addEventListener('keyup', e => {
       if (!gameRunning || isProcessingAnimation) return;
@@ -723,41 +734,29 @@
       if (e.key === 'ArrowDown') keyState.down = false;
     });
 
-    // 모바일 터치 컨트롤러 이벤트 리스너
-    document.getElementById('left-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerMove(-1); });
-    document.getElementById('right-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerMove(1); });
-    document.getElementById('down-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerDrop(); });
-    document.getElementById('rotate-left-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(-1); });
-    document.getElementById('rotate-right-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(1); });
-    document.getElementById('hard-drop-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerHardDrop(); });
-
-    // 게임 시작 버튼 클릭 이벤트
     document.getElementById('startBtn').onclick = () => {
-      if (!gameRunning) { // 이미 게임이 실행 중이 아니면 시작
+      if (!gameRunning) {
         gameRunning = true;
-        dropInterval = 1000; // 초기 드롭 속도
+        dropInterval = 1000;
         levelUpTimer = 0;
         score = 0;
         updateScore();
         arena = createMatrix(W, H);
-        arena.spriteMap = createMatrix(W, H); // 스프라이트 맵도 초기화
+        arena.spriteMap = createMatrix(W, H);
         playerReset();
-        lastTime = performance.now(); // 정확한 시간 측정을 위해 시작 시점 설정
-        toggleControlButtons(true); // 컨트롤 버튼 활성화
-        document.getElementById('startBtn').disabled = true; // 게임 시작 후 시작 버튼 비활성화
-        update(); // 게임 루프 시작
+        lastTime = performance.now();
+        toggleControlButtons(true);
+        document.getElementById('startBtn').disabled = true;
+        update();
       }
     };
 
-    // 모든 이미지 로드 후 게임 시작 버튼 활성화
     loadImages(() => {
       document.getElementById('startBtn').disabled = false;
       console.log('All images loaded!');
     });
 
-    // 초기 점수 표시
     updateScore();
-    // 초기에는 컨트롤 버튼 비활성화 (게임 시작 전)
     toggleControlButtons(false);
   </script>
 </body>
