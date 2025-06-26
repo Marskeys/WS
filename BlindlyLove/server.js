@@ -145,7 +145,7 @@ app.post('/savePost', async (req, res) => {
     return res.status(400).json({ success: false, error: '입력값 누락' });
   }
 
-  const isPrivate = is_private === 'on' ? 1 : 0;
+  const isPrivate = is_private === '1' ? 1 : 0;
 
   try {
     await db.query(
@@ -228,7 +228,7 @@ app.post('/edit/:id', async (req, res) => {
   const userId = req.session.user?.id;
   const { title, content, categories, is_private } = req.body;
 
-  const isPrivate = is_private === 'on' ? 1 : 0;
+  const isPrivate = is_private === '1' ? 1 : 0;
 
   try {
     const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
