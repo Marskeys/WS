@@ -98,20 +98,25 @@
                 <tr data-category="<%= post.categories %>">
                   <td>
                     <div class="table-title-and-actions" style="display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/post/<%= post.id %>"><%= post.title %></a>
-                    <% if (user && user.id === post.user_id) { %>
-                      <div class="action-icons">
-                        <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                          <i class="fas fa-pen"></i>
-                        </a>
-                        <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
-                          <button type="submit" class="icon-btn delete-btn" title="삭제">
-                            <i class="fas fa-trash"></i>
-                          </button>
-                        </form>
-                      </div>
+                      <a href="/post/<%= post.id %>">
+                        <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
+                      </a>
+                      <% if (user && user.id === post.user_id) { %>
+                        <div class="action-icons">
+                          <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                            <i class="fas fa-pen"></i>
+                          </a>
+                          <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
+                            <button type="submit" class="icon-btn delete-btn" title="삭제">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
+                        </div>
+                      <% } %>
                     </div>
-                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
                   </td>
                   <td><%= post.author %></td>
                   <td><%= post.categories %></td>
@@ -139,19 +144,24 @@
             <% posts.forEach(post => { %>
               <div class="mobile-post-item" data-category="<%= post.categories %>">
                 <div class="post-title-and-actions"> 
-                <a href="/post/<%= post.id %>" class="post-title"><%= post.title %></a>
-                <% if (user && user.id === post.user_id) { %>
-                  <div class="action-icons">
-                    <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                      <i class="fas fa-pen"></i>
-                    </a>
-                    <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
-                      <button type="submit" class="icon-btn delete-btn" title="삭제">
-                        <i class="fas fa-trash"></i>
-                      </button>
-                    </form>
-                  </div>
-                <% } %> </div>
+                  <a href="/post/<%= post.id %>" class="post-title">
+                    <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
+                  </a>
+                  <% if (user && user.id === post.user_id) { %>
+                    <div class="action-icons">
+                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                        <i class="fas fa-pen"></i>
+                      </a>
+                      <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
+                        <button type="submit" class="icon-btn delete-btn" title="삭제">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %> </div>
                 <div class="post-info">
                   <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
                 </div>

@@ -140,29 +140,25 @@ app.get('/signup-success', (req, res) => {
 
 // ✅ 글 저장
 app.post('/savePost', async (req, res) => {
-  const { title, content, categories } = req.body;
+  const { title, content, categories, is_private } = req.body;
   if (!title || !content || !categories) {
     return res.status(400).json({ success: false, error: '입력값 누락' });
   }
 
-  try {
-// 글 저장할 때
-await db.query(
-  'INSERT INTO posts (title, content, categories, author, user_id) VALUES (?, ?, ?, ?, ?)',
-  [
-    title,
-    content,
-    categories.join(','),
-    req.session.user.nickname,
-    req.session.user.id  // ← 문자열 user_id
-  ]
-);
+  const isPrivate = is_private === 'on' ? 1 : 0;
 
-    const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, user_id, created_at
-      FROM posts
-      ORDER BY created_at DESC
-    `);
+  try {
+    await db.query(
+      'INSERT INTO posts (title, content, categories, author, user_id, is_private) VALUES (?, ?, ?, ?, ?, ?)',
+      [
+        title,
+        content,
+        categories.join(','),
+        req.session.user.nickname,
+        req.session.user.id,
+        isPrivate
+      ]
+    );
 
     res.json({ success: true });
   } catch (err) {
@@ -170,6 +166,8 @@ await db.query(
     res.status(500).json({ success: false, error: '서버 오류' });
   }
 });
+
+
 
 app.post('/delete/:id', async (req, res) => {
   const postId = req.params.id;
@@ -228,21 +226,22 @@ app.get('/edit/:id', async (req, res) => {
 app.post('/edit/:id', async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id;
-  const { title, content, categories } = req.body;
+  const { title, content, categories, is_private } = req.body;
+
+  const isPrivate = is_private === 'on' ? 1 : 0;
 
   try {
     const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
     const post = rows[0];
-
     if (post.user_id !== userId) {
       return res.status(403).send('작성자만 수정할 수 있습니다.');
     }
 
     await db.query(
-      'UPDATE posts SET title = ?, content = ?, categories = ? WHERE id = ?',
-      [title, content, categories.join(','), postId]
+      'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ? WHERE id = ?',
+      [title, content, categories.join(','), isPrivate, postId]
     );
 
     res.json({ success: true, redirect: `/post/${postId}` });
@@ -252,6 +251,19 @@ app.post('/edit/:id', async (req, res) => {
   }
 });
 
+app.get('/post/:id', async (req, res) => {
+  const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
+  if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+
+  const post = rows[0];
+
+  // 비공개 접근 제한
+  if (post.is_private && (!req.session.user || req.session.user.id !== post.user_id)) {
+    return res.status(403).send('비공개 글입니다.');
+  }
+
+  res.render('post-view', { post, user: req.session.user });
+});
 
 // ✅ 검색 결과 페이지
 app.get('/search', async (req, res) => {
@@ -381,7 +393,7 @@ db.query('SELECT NOW()')
   app.get('/game', (req, res) => {
     res.render('game'); // views/game.ejs
   });
-  
+
 // ✅ 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
