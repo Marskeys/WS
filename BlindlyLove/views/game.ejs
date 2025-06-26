@@ -409,32 +409,50 @@
     }
 
     // 매치 애니메이션 함수 (번쩍거리는 효과 추가)
+    // 매치 애니메이션 함수 (경계 번쩍임 및 글로우 효과 추가)
     async function animateMatch(toDel) {
-        // 1단계: 매치된 블록 강조 (노란색으로 덧씌우기)
-        ctx.globalAlpha = 0.5; // 투명도 조절
-        toDel.forEach(([yy, xx]) => {
-            const px = xx, py = yy;
-            ctx.fillStyle = 'rgba(255, 255, 0, 0.7)'; // 노란색 강조
-            ctx.fillRect(px, py, 1, 1);
-        });
-        ctx.globalAlpha = 1; // 원상 복구
-        draw(); // 강조된 상태 화면에 반영
-        await new Promise(resolve => setTimeout(resolve, 50)); // 짧게 강조 (50ms)
+        const flashColor = 'rgba(255, 255, 0, 0.8)'; // 밝은 노란색 for flash/glow
+        const boundaryFlashColor = 'rgba(0, 255, 255, 0.9)'; // 밝은 청록색 for boundary
 
-        // 2단계: 깜빡이는 효과 (선택 사항) - 흰색으로 번쩍
-        ctx.globalAlpha = 0.8;
+        // 1단계: 매치된 블록 경계 번쩍임
+        ctx.lineWidth = 0.15;
+        for (let i = 0; i < 2; i++) { // 두 번 깜빡임
+            ctx.strokeStyle = boundaryFlashColor;
+            toDel.forEach(([yy, xx]) => {
+                ctx.strokeRect(xx, yy, 1, 1);
+            });
+            draw();
+            await new Promise(resolve => setTimeout(resolve, 40));
+            ctx.strokeStyle = 'transparent'; // 잠시 지우기 위해 투명하게
+            draw();
+            await new Promise(resolve => setTimeout(resolve, 40));
+        }
+        ctx.lineWidth = 0.08; // 원래 lineWidth로 복구
+
+        // 2단계: 매치된 블록 강조 (밝은 색으로 덮어쓰기 - 글로우 효과)
+        ctx.globalAlpha = 0.7;
+        ctx.fillStyle = flashColor;
         toDel.forEach(([yy, xx]) => {
-            const px = xx, py = yy;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'; // 흰색 번쩍임
-            ctx.fillRect(px, py, 1, 1);
+            ctx.fillRect(xx, yy, 1, 1);
         });
         ctx.globalAlpha = 1;
-        draw(); // 번쩍이는 상태 화면에 반영
-        await new Promise(resolve => setTimeout(resolve, 50)); // 짧게 번쩍 (50ms)
+        draw();
+        await new Promise(resolve => setTimeout(resolve, 80)); // 강조 시간
 
-        // 3단계: 원상복귀 (사라지기 전 원래 상태로 짧게 돌아옴)
-        draw(); // 원상복귀 상태 (이미지는 아직 안지워짐)
-        await new Promise(resolve => setTimeout(resolve, 50)); // 50ms 대기
+        // 3단계: 희미해지는 효과 (선택 사항, 좀 더 부드러운 사라짐)
+        /*
+        for (let alpha = 0.7; alpha > 0; alpha -= 0.1) {
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = flashColor;
+            toDel.forEach(([yy, xx]) => {
+                ctx.fillRect(xx, yy, 1, 1);
+            });
+            draw();
+            await new Promise(resolve => setTimeout(resolve, 30));
+        }
+        ctx.globalAlpha = 1;
+        */
+        await new Promise(resolve => setTimeout(resolve, 50)); // 잠시 대기 전 사라짐
     }
 
     // 연쇄 반응을 포함한 전체 매치 처리 로직
