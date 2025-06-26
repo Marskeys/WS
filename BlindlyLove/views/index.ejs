@@ -115,9 +115,6 @@
                       <% } %>
                     </div>
                   </td>
-                </tr>
-              <% }) %>
-                  </td>
                   <td><%= post.author %></td>
                   <td><%= post.categories %></td>
                   <td><%= post.created_at.toISOString().slice(0, 10) %></td>
@@ -140,35 +137,34 @@
 </script>
 
           <!-- ✅ 모바일 전용 게시판 리스트 -->
-          <div class="mobile-board-list">
-            <% posts.forEach(post => { %>
-              <div class="mobile-post-item" data-category="<%= post.categories %>">
-                <div class="post-title-and-actions"> 
-                  <a href="/post/<%= post.id %>" class="post-title">
-                    <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
-                  </a>
-                  <% if (user && user.id === post.user_id) { %>
-                    <div class="action-icons">
-                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                        <i class="fas fa-pen"></i>
-                      </a>
-                      <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
-                        <button type="submit" class="icon-btn delete-btn" title="삭제">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </form>
-                    </div>
-                  <% } %>
-                </div>
-              </div>
-            <% }) %> </div>
-                <div class="post-info">
-                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
-                </div>
-              </div>
-             
-            <% }) %>
+         <!-- ✅ 모바일 전용 게시판 리스트 -->
+<div class="mobile-board-list">
+  <% posts.forEach(post => { %>
+    <div class="mobile-post-item" data-category="<%= post.categories %>">
+      <div class="post-title-and-actions"> 
+        <a href="/post/<%= post.id %>" class="post-title">
+          <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
+        </a>
+        <% if (user && user.id === post.user_id) { %>
+          <div class="action-icons">
+            <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+              <i class="fas fa-pen"></i>
+            </a>
+            <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
+              <button type="submit" class="icon-btn delete-btn" title="삭제">
+                <i class="fas fa-trash"></i>
+              </button>
+            </form>
           </div>
+        <% } %>
+      </div>
+
+      <div class="post-info">
+        <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
+      </div>
+    </div>
+  <% }) %>
+</div>
           
         </div>
       </div>
