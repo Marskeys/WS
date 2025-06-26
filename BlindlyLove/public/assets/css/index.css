@@ -12,7 +12,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1100; /* 검색창보다 위, 메뉴보다 아래 */
+    z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
     pointer-events: none;
   }
   
@@ -48,7 +48,6 @@
   align-items: center;
   background-color: white;
   justify-content: space-between;
-  z-index: 1400;
 }
 
 .search-form:hover {
@@ -60,7 +59,6 @@
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
-  z-index: 2000;
 }
 
 .search-position-anchor {
