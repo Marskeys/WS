@@ -74,6 +74,27 @@
 
   <!-- ✅ 스타일 -->
   <style>
+
+    /* ✅ 다크모드 메뉴 대응 */
+html.dark body .menu-list > li > a {
+  color: #eee;
+}
+
+html.dark body .submenu {
+  background: #222;
+  border: 1px solid #444;
+}
+
+html.dark body .submenu li a {
+  color: #ddd;
+}
+
+html.dark body .submenu li a:hover {
+  background-color: #333;
+  color: #66b2ff;
+}
+
+
     .desktop-menu {
       display: flex;
       align-items: center;
