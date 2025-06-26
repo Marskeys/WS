@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ✅ 3. 프리로더 서서히 사라지기
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
   const preloader = document.getElementById('preloader');
 
   if (preloader) {
