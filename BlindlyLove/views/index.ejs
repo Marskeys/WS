@@ -1,280 +1,279 @@
 <!DOCTYPE html>
 <html lang="ko">
+<head>
   <%- include('partials/head') %>
-  <link rel="stylesheet" href="/assets/css/index.css" />
+  <meta charset="UTF-8" />
+  <title>블라인드 러브</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .header-top {
+      margin-top: 0 !important;
+    }
+    /* 게시물 목록 스타일 (예시, 실제 CSS 파일에 있을 수 있음) */
+    .post-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+      justify-content: center;
+    }
+    .post-item {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 15px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .post-item h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
+    .post-item p {
+      font-size: 0.9em;
+      color: #666;
+      line-height: 1.5;
+      flex-grow: 1; /* 내용이 길어도 높이 유지 */
+      overflow: hidden; /* 넘치는 내용 숨김 */
+      text-overflow: ellipsis; /* ... 표시 */
+      display: -webkit-box;
+      -webkit-line-clamp: 3; /* 3줄 이상일 경우 자르기 */
+      -webkit-box-orient: vertical;
+    }
+    .post-meta {
+      font-size: 0.8em;
+      color: #999;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .post-meta .categories span {
+      background-color: #e9e9e9;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-right: 5px;
+      font-size: 0.75em;
+    }
+    .post-link {
+        text-decoration: none;
+        color: inherit;
+        display: block; /* 링크 전체 영역 클릭 가능하도록 */
+    }
+    .post-title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 5px; /* 제목과 자물쇠 아이콘 사이 간격 */
+    }
+    .post-title-wrapper i {
+        color: #888; /* 자물쇠 아이콘 색상 */
+        font-size: 0.9em;
+    }
 
-  <body class="light">
-    <%- include('partials/header') %>
+    /* Custom Message Box & Input Box Styles */
+    #customMessageModal, #customInputModal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+        align-items: center; z-index: 1000;
+        display: none; /* 기본 숨김 */
+    }
+    #customMessageModal > div, #customInputModal > div {
+        background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        max-width: 400px; width: 90%; text-align: center;
+    }
+    #customMessageModal p, #customInputModal p {
+        color: black; /* 글자색 검정으로 명시 */
+        margin-bottom: 15px;
+    }
+    #customInputModal input {
+        width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;
+    }
+    #customMessageModal button, #customInputModal button {
+        padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    #customMessageModal button:hover, #customInputModal button:hover {
+        background-color: #0056b3;
+    }
+    #customMessageModal #cancelBtn, #customInputModal #inputCancelBtn {
+        background-color: #6c757d;
+    }
+    #customMessageModal #cancelBtn:hover, #customInputModal #inputCancelBtn:hover {
+        background-color: #5a6268;
+    }
 
-    <!-- 프리로더 -->
-    <div id="preloader">
-      <div class="spinner"></div>
-    </div>
+  </style>
+</head>
+<body>
+  <%- include('partials/header') %>
 
-    <!-- ✅ 전체 레이아웃 시작 -->
-    <div class="full-layout">
-      
-      <!-- 좌측 패널 -->
-      <aside class="side-panel main-panel-only">  <!-- ✅ 광고 박스 -->
-        <div class="ad-box">
-          <!-- side-panel-ad -->
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-2585969189290118"
-               data-ad-slot="5779573113"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
-          <script>
-               (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
-        </div>
-      </aside>
+  <div style="text-align: center; font-weight: bold; margin-top:3rem;">
+    <% if (user) { %>
+      <%= user.nickname %>님, 환영합니다!
+    <% } else { %>
+      방문자님, 환영합니다!
+    <% } %>
+  </div>
 
-      <!-- 가운데 콘텐츠 -->
-      <div class="main-layout">
-        <div class="main-panel">
-          <div class="cherry-container">
-            <canvas id="cherry-canvas"></canvas>
-          </div>
+  <div class="search-container">
+    <form action="/search" method="GET">
+      <input type="text" name="q" placeholder="검색어를 입력하세요" value="<%= searchKeyword %>" />
+      <button type="submit">검색</button>
+    </form>
+  </div>
 
-          <div class="search-container">
-            <!-- 로고 -->
-            <a href="/">
-              <img src="/assets/images/1.png" alt="blindly.love 로고" class="site-logo" />
-            </a>
-          
-            <!-- ✅ 검색창 & 캐릭터 같이 감싸는 박스 -->
-            <div class="search-wrapper">
-              <div class="search-position-anchor">
-                <div class="character-stand">
-                  <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+  <div class="category-filter">
+    <a href="/" class="<%= !isSearch && currentPath === '/' ? 'active' : '' %>">전체</a>
+    <% categories.forEach(cat => { %>
+      <a href="/search?q=<%= cat %>" class="<%= isSearch && searchKeyword === cat ? 'active' : '' %>"><%= cat %></a>
+    <% }); %>
+  </div>
+
+  <div class="post-list">
+    <% if (posts.length === 0) { %>
+      <p style="text-align: center; width: 100%; margin-top: 50px;">
+        <% if (isSearch) { %>
+          '<%= searchKeyword %>'에 대한 검색 결과가 없습니다.
+        <% } else { %>
+          아직 작성된 게시글이 없습니다.
+        <% } %>
+      </p>
+    <% } else { %>
+      <% posts.forEach(post => { %>
+        <div class="post-item">
+            <!-- 데스크탑 및 모바일 목록의 링크에 data- 속성 추가 -->
+            <a href="/post/<%= post.id %>" 
+               class="post-link post-link-item" 
+               data-post-id="<%= post.id %>" 
+               data-is-private="<%= post.is_private ? '1' : '0' %>" 
+               data-post-user-id="<%= post.user_id %>">
+                <div class="post-title-wrapper">
+                    <h3><%= post.title %></h3>
+                    <% if (post.is_private) { %>
+                        <i class="fas fa-lock" title="비공개 글"></i>
+                    <% } %>
                 </div>
-                <form method="get" action="/search" class="search-form">
-                  <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
-                  <button type="submit" class="icon-submit-btn">
-                    <i class="fas fa-search"></i>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <%
-          function choosePostposition(word) {
-            if (!word || word.length === 0) return '';
-            const lastChar = word[word.length - 1];
-            const lastCode = lastChar.charCodeAt(0);
-            const hasBatchim = (lastCode - 44032) % 28 !== 0;
-            return hasBatchim ? '으로' : '로';
-          }
-        %>
-        
-        <% if (isSearch && searchKeyword) { %>
-          <p class="search-result-msg">
-            ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
-          </p>
-        <% } %>
-
-          <!-- 🟡 동적으로 생성된 카테고리 탭 -->
-          <div class="tabs">
-            <button class="tab active" onclick="filterBoard('all')">전체글</button>
-            <% categories.forEach(category => { %>
-              <button class="tab" onclick="filterBoard('<%= category %>')"><%= category %></button>
-            <% }) %>
-          </div>
-
-          <!-- 🟡 게시글 테이블 (데스크탑) -->
-          <table class="board-table">
-            <thead>
-              <tr>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>카테고리</th>
-                <th>날짜</th>
-              </tr>
-            </thead>
-            <tbody id="board-content">
-              <% posts.forEach(post => { %>
-                <tr data-category="<%= post.categories %>">
-                  <td>
-                    <div class="table-title-and-actions" style="display: flex; justify-content: space-between; align-items: center;">
-                      <a href="/post/<%= post.id %>">
-                        <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
-                      </a>
-                      <% if (user && user.id === post.user_id) { %>
-                        <div class="action-icons">
-                          <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                            <i class="fas fa-pen"></i>
-                          </a>
-                          <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
-                            <button type="submit" class="icon-btn delete-btn" title="삭제">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          </form>
-                        </div>
-                      <% } %>
-                    </div>
-                  </td>
-                  <td><%= post.author %></td>
-                  <td><%= post.categories %></td>
-                  <td><%= post.created_at.toISOString().slice(0, 10) %></td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
-
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-     crossorigin="anonymous"></script>
-<!-- 모바일용 1 -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-2585969189290118"
-     data-ad-slot="8866052836"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-
-          <!-- ✅ 모바일 전용 게시판 리스트 -->
-         <!-- ✅ 모바일 전용 게시판 리스트 -->
-<div class="mobile-board-list">
-  <% posts.forEach(post => { %>
-    <div class="mobile-post-item" data-category="<%= post.categories %>">
-      <div class="post-title-and-actions"> 
-        <a href="/post/<%= post.id %>" class="post-title">
-          <%= post.title %><% if (post.is_private) { %> 🔒<% } %>
-        </a>
-        <% if (user && user.id === post.user_id) { %>
-          <div class="action-icons">
-            <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-              <i class="fas fa-pen"></i>
+                <p><%= post.content %></p>
             </a>
-            <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말 삭제할까요?')">
-              <button type="submit" class="icon-btn delete-btn" title="삭제">
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
-          </div>
-        <% } %>
-      </div>
-
-      <div class="post-info">
-        <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
-      </div>
-    </div>
-  <% }) %>
-</div>
-          
+            <div class="post-meta">
+                <span class="author"><%= post.author %></span>
+                <span class="date"><%= post.created_at.toLocaleString('ko-KR') %></span>
+                <div class="categories">
+                    <% post.categories.split(',').forEach(cat => { %>
+                        <% if (cat.trim()) { %>
+                            <span><%= cat.trim() %></span>
+                        <% } %>
+                    <% }); %>
+                </div>
+                <% if (user && (user.id === post.user_id || user.is_admin === 1)) { %>
+                    <div class="post-actions">
+                        <a href="/edit/<%= post.id %>" class="action-btn edit-btn">수정</a>
+                        <form action="/delete/<%= post.id %>" method="POST" onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
+                            <button type="submit" class="action-btn delete-btn">삭제</button>
+                        </form>
+                    </div>
+                <% } %>
+            </div>
         </div>
-      </div>
+      <% }); %>
+    <% } %>
+  </div>
 
-      <!-- 우측 패널 -->
-      <aside class="side-panel right-panel-only">
-        <div class="ad-box">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-     crossorigin="anonymous"></script>
-<!-- 데스크톱-오른쪽-패널 -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-2585969189290118"
-     data-ad-slot="5988925289"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
-      </aside>
+  <%- include('partials/scripts') %>
 
-    </div>
-    <!-- ✅ 전체 레이아웃 끝 -->
+  <script>
+    // ✅ 커스텀 메시지 박스 및 입력 박스 구현 (editor.ejs와 동일)
+    function createMessageBox(message, isConfirm = false, onConfirm = null) {
+        let modal = document.getElementById('customMessageModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'customMessageModal';
+            modal.style = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                align-items: center; z-index: 1000;
+            `;
+            document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+            <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+                <p style="color: black;">${message}</p>
+                ${isConfirm ? `
+                    <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                    <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+                ` : `
+                    <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                `}
+            </div>
+        `;
+        modal.style.display = 'flex';
 
-    <script>
-      // 이 스크립트 블록은 index.ejs 파일의 </body> 태그 닫히기 직전에 위치해야 합니다.
-    
-      // ✅ 커스텀 메시지 박스 및 입력 박스 구현 (alert, prompt 대체)
-      // editor.ejs에 있는 함수와 동일하게 복사하여 index.ejs에서도 사용 가능하게 합니다.
-      function createMessageBox(message, isConfirm = false, onConfirm = null) {
-          let modal = document.getElementById('customMessageModal');
-          if (!modal) {
-              modal = document.createElement('div');
-              modal.id = 'customMessageModal';
-              modal.style = `
-                  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                  background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-                  align-items: center; z-index: 1000;
-              `;
-              document.body.appendChild(modal);
+        if (isConfirm) {
+            document.getElementById('confirmBtn').onclick = () => {
+                modal.style.display = 'none';
+                if (onConfirm) onConfirm();
+            };
+            document.getElementById('cancelBtn').onclick = () => {
+                modal.style.display = 'none';
+            };
+        } else {
+            document.getElementById('okBtn').onclick = () => {
+                modal.style.display = 'none';
+                if (onConfirm) onConfirm();
+            };
+        }
+    }
+
+    function showCustomMessage(message, isConfirm = false, onConfirm = null) {
+        createMessageBox(message, isConfirm, onConfirm);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 모든 게시물 링크 선택 (class 'post-link-item'을 가진 <a> 태그)
+      const postLinks = document.querySelectorAll('.post-link-item');
+
+      // 현재 로그인된 사용자 정보 가져오기 (EJS에서 JSON.stringify로 안전하게 전달)
+      const currentUser = <%- JSON.stringify(user) %>;
+      const currentUserId = currentUser ? currentUser.id : null;
+      const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
+
+      postLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+          // data- 속성에서 정보 가져오기
+          const isPrivate = event.currentTarget.dataset.isPrivate === '1'; // '1' 또는 '0'을 boolean으로 변환
+          const postUserId = event.currentTarget.dataset.postUserId;
+
+          // 비공개 글이고, 현재 사용자가 작성자도 아니고, 관리자도 아닌 경우
+          if (isPrivate && postUserId !== currentUserId && !isAdmin) {
+            event.preventDefault(); // 기본 링크 이동 방지
+            showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다."); // 알림창 표시
           }
-          modal.innerHTML = `
-              <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                  <p style="color: black;">${message}</p>
-                  ${isConfirm ? `
-                      <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                      <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-                  ` : `
-                      <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                  `}
-              </div>
-          `;
-          modal.style.display = 'flex';
-    
-          if (isConfirm) {
-              document.getElementById('confirmBtn').onclick = () => {
-                  modal.style.display = 'none';
-                  if (onConfirm) onConfirm();
-              };
-              document.getElementById('cancelBtn').onclick = () => {
-                  modal.style.display = 'none';
-              };
-          } else {
-              document.getElementById('okBtn').onclick = () => {
-                  modal.style.display = 'none';
-                  if (onConfirm) onConfirm();
-              };
-          }
-      }
-    
-      function showCustomMessage(message, isConfirm = false, onConfirm = null) {
-          createMessageBox(message, isConfirm, onConfirm);
-      }
-    
-      // showCustomInput은 이 시나리오에서 직접 사용되지 않지만,
-      // 일관성을 위해 필요하다면 editor.ejs에서처럼 추가할 수 있습니다.
-      // function showCustomInput(...) { ... }
-    
-      document.addEventListener('DOMContentLoaded', () => {
-        const postLinks = document.querySelectorAll('.post-item a'); // 모든 게시물 링크 선택 (예: .post-item 클래스 안에 링크가 있다고 가정)
-    
-        postLinks.forEach(link => {
-          link.addEventListener('click', async (event) => {
-            const postId = event.currentTarget.dataset.postId || event.currentTarget.href.split('/').pop(); // data-post-id 속성 또는 href에서 ID 추출
-            
-            // 서버에 해당 글의 상태를 비동기적으로 요청하여 권한 확인
-            try {
-              const response = await fetch(`/post/${postId}`);
-              const data = await response.json(); // 서버에서 JSON 응답을 기대
-    
-              if (data.success === false) { // 서버에서 접근 거부 메시지를 보낸 경우
-                event.preventDefault(); // 기본 링크 이동 방지
-                showCustomMessage(data.message); // 알림창 표시
-              }
-              // else: success가 true이면 기본 링크 이동을 허용 (페이지 이동)
-            } catch (error) {
-              // fetch 오류 발생 (네트워크 문제, 서버 응답이 JSON이 아닌 경우 등)
-              console.error('게시글 정보 불러오기 오류:', error);
-              // 서버에서 HTML 403 페이지를 보낼 때 이쪽으로 올 수 있습니다.
-              // 이 경우 기본 링크 이동을 허용하여 기존 403 페이지로 이동하게 하거나,
-              // 다른 알림 메시지를 표시할 수 있습니다.
-              // 여기서는 안전하게 기본 동작을 허용하여 기존 403 페이지로 이동하도록 둡니다.
-            }
-          });
+          // 그 외의 경우는 기본 링크 이동을 허용 (브라우저가 /post/:id로 이동하여 서버에서 post-view.ejs 렌더링)
         });
       });
-    </script>
-    
-    <%- include('partials/footer') %>
-    <%- include('partials/scripts') %>
-  </body>
+
+      // 게시물 삭제 버튼에 대한 confirm 메시지 커스텀
+      document.querySelectorAll('.action-icons .delete-btn').forEach(button => {
+          button.closest('form').onsubmit = (e) => {
+              e.preventDefault(); // 기존 confirm 동작 방지
+              showCustomMessage('정말로 이 게시글을 삭제하시겠습니까?', true, () => {
+                  e.target.submit(); // '확인' 클릭 시 폼 제출
+              });
+              return false; // 폼 제출 방지
+          };
+      });
+    });
+  </script>
+</body>
 </html>
