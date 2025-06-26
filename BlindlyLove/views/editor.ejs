@@ -309,6 +309,7 @@ fetch('/savePost', {
     title,
     content,
     categories: selectedCategories
+    is_private: isPrivate
   })
 })
 .then(res => res.json())
