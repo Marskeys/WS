@@ -15,12 +15,12 @@ app.use(express.json());
 
 // ✅ 세션 설정
 app.use(session({
-  secret: '너만의_비밀문자열',
+  secret: '너만의_비밀문자열', // 이 값을 실제 운영 환경에서는 더 복잡하게 설정하세요.
   resave: false,
   saveUninitialized: true,
 }));
 
-// ✅ 사용자 정보 템플릿에 전달
+// ✅ 사용자 정보 템플릿에 전달 미들웨어
 app.use((req, res, next) => {
   res.locals.currentPath = req.path;
   res.locals.user = req.session.user || null;
@@ -46,7 +46,7 @@ app.get('/signup', (req, res) => {
   res.render('signup', { error: null });
 });
 
-// ✅ 로그인
+// ✅ 로그인 처리
 app.post('/login', async (req, res) => {
   const { id, password } = req.body;
   try {
@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// ✅ 로그아웃
+// ✅ 로그아웃 처리
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/');
@@ -79,17 +79,18 @@ app.get('/logout', (req, res) => {
 
 // ✅ 글쓰기 페이지
 app.get('/write', (req, res) => {
+  // 관리자만 글쓰기 가능하도록 권한 확인
   if (!req.session.user || req.session.user.is_admin !== 1) {
-    return res.status(403).send('접근 권한이 없습니다.');
+    return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
   }
   res.render('editor', {
     user: req.session.user,
-    post: null,      // ← 요거 추가!
-    isEdit: false    // ← 이것도 같이 보내면 좋아
+    post: null,      // 새 글 작성 시에는 post가 null
+    isEdit: false    // 새 글 작성 모드임을 나타냄
   });
 });
 
-// ✅ ID 중복 확인
+// ✅ ID 중복 확인 API
 app.get('/api/check-id', async (req, res) => {
   const { id } = req.query;
   try {
@@ -101,7 +102,7 @@ app.get('/api/check-id', async (req, res) => {
   }
 });
 
-// ✅ 닉네임 중복 확인
+// ✅ 닉네임 중복 확인 API
 app.get('/api/check-nickname', async (req, res) => {
   const { nickname } = req.query;
   try {
@@ -116,17 +117,20 @@ app.get('/api/check-nickname', async (req, res) => {
 // ✅ 회원가입 처리
 app.post('/signup', async (req, res) => {
   const { user_id, username, email, password } = req.body;
+  // 필수 정보 유효성 검사
   if (!user_id || !username || !password) {
     return res.render('signup', { error: '필수 정보를 모두 입력해주세요.' });
   }
 
   try {
+    // 비밀번호 해싱
     const hashedPw = await bcrypt.hash(password, 10);
+    // 사용자 정보 DB 저장
     await db.query(
       'INSERT INTO users (user_id, nickname, email, password) VALUES (?, ?, ?, ?)',
       [user_id, username, email || null, hashedPw]
     );
-    res.redirect('/signup-success');
+    res.redirect('/signup-success'); // 회원가입 성공 페이지로 리디렉션
   } catch (err) {
     console.error('회원가입 오류:', err);
     res.render('signup', { error: '회원가입 중 오류가 발생했습니다.' });
@@ -138,43 +142,49 @@ app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
-// ✅ 글 저장
+// ✅ 새 글 저장 처리
 app.post('/savePost', async (req, res) => {
   const { title, content, categories, is_private } = req.body;
+  // 필수 입력값 확인
   if (!title || !content || !categories) {
-    return res.status(400).json({ success: false, error: '입력값 누락' });
+    return res.status(400).json({ success: false, error: '제목, 내용, 카테고리를 모두 입력해주세요.' });
+  }
+  // 로그인한 사용자만 글을 쓸 수 있도록 권한 확인
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, error: '로그인이 필요합니다.' });
   }
 
-  const isPrivate = is_private === '1' ? 1 : 0;
+  // is_private 값을 1 (비공개) 또는 0 (공개)으로 변환
+  const isPrivate = is_private ? 1 : 0; // 프론트에서 1로 넘어오면 true, 아니면 false (0)
 
   try {
-    await db.query(
+    // 글 정보 DB 저장
+    const [result] = await db.query(
       'INSERT INTO posts (title, content, categories, author, user_id, is_private) VALUES (?, ?, ?, ?, ?, ?)',
       [
         title,
         content,
-        categories.join(','),
-        req.session.user.nickname,
-        req.session.user.id,
+        categories.join(','), // 카테고리 배열을 콤마로 구분된 문자열로 저장
+        req.session.user.nickname, // 세션에서 작성자 닉네임 가져오기
+        req.session.user.id,       // 세션에서 작성자 ID 가져오기
         isPrivate
       ]
     );
-
-    res.json({ success: true });
+    // 글 저장 성공 후, 저장된 글의 ID와 함께 성공 응답
+    res.json({ success: true, postId: result.insertId });
   } catch (err) {
     console.error('글 저장 오류:', err);
-    res.status(500).json({ success: false, error: '서버 오류' });
+    res.status(500).json({ success: false, error: '서버 오류로 글을 저장할 수 없습니다.' });
   }
 });
 
-
-
+// ✅ 글 삭제 처리
 app.post('/delete/:id', async (req, res) => {
   const postId = req.params.id;
-  const userId = req.session.user?.id;
+  const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
 
   try {
-    // 1️⃣ 해당 글 불러오기
+    // 1️⃣ 해당 글의 작성자 ID 불러오기
     const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) {
       return res.status(404).send('게시글을 찾을 수 없습니다.');
@@ -182,23 +192,24 @@ app.post('/delete/:id', async (req, res) => {
 
     const post = rows[0];
 
-    // 2️⃣ 권한 확인
-    if (post.user_id !== userId) {
-      return res.status(403).send('작성자만 삭제할 수 있습니다.');
+    // 2️⃣ 권한 확인: 글 작성자이거나 관리자인 경우에만 삭제 가능
+    if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
+      return res.status(403).send('글 작성자 또는 관리자만 삭제할 수 있습니다.');
     }
 
     // 3️⃣ 삭제 수행
     await db.query('DELETE FROM posts WHERE id = ?', [postId]);
-    res.redirect('/');
+    res.redirect('/'); // 삭제 후 메인 페이지로 리디렉션
   } catch (err) {
     console.error('삭제 오류:', err);
     res.status(500).send('서버 오류로 삭제할 수 없습니다.');
   }
 });
 
+// ✅ 글 수정 페이지
 app.get('/edit/:id', async (req, res) => {
   const postId = req.params.id;
-  const userId = req.session.user?.id;
+  const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
 
   try {
     const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
@@ -206,16 +217,16 @@ app.get('/edit/:id', async (req, res) => {
 
     const post = rows[0];
 
-    // 권한 체크
-    if (post.user_id !== userId) {
-      return res.status(403).send('작성자만 수정할 수 있습니다.');
+    // 권한 체크: 글 작성자이거나 관리자인 경우에만 수정 페이지 접근 가능
+    if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
+      return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
     }
 
-    // editor.ejs에 수정 모드로 렌더링
+    // `editor.ejs`에 수정 모드로 렌더링
     res.render('editor', {
       user: req.session.user,
-      post,  // 이걸로 title, content, categories 전달
-      isEdit: true
+      post,  // 기존 글 정보를 템플릿에 전달
+      isEdit: true // 수정 모드임을 나타냄
     });
   } catch (err) {
     console.error('수정 페이지 오류:', err);
@@ -223,60 +234,88 @@ app.get('/edit/:id', async (req, res) => {
   }
 });
 
+// ✅ 글 수정 처리
 app.post('/edit/:id', async (req, res) => {
   const postId = req.params.id;
-  const userId = req.session.user?.id;
+  const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
   const { title, content, categories, is_private } = req.body;
 
-  const isPrivate = is_private === '1' ? 1 : 0;
+  // is_private 값을 1 (비공개) 또는 0 (공개)으로 변환
+  const isPrivate = is_private ? 1 : 0;
 
   try {
+    // 글의 작성자 ID 확인
     const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
     const post = rows[0];
-    if (post.user_id !== userId) {
-      return res.status(403).send('작성자만 수정할 수 있습니다.');
+    // 권한 확인: 글 작성자이거나 관리자인 경우에만 수정 가능
+    if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
+      return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
     }
 
+    // 글 정보 DB 업데이트
     await db.query(
       'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ? WHERE id = ?',
       [title, content, categories.join(','), isPrivate, postId]
     );
 
-    res.json({ success: true, redirect: `/post/${postId}` });
+    res.json({ success: true, redirect: `/post/${postId}` }); // 수정 후 해당 글 페이지로 리디렉션
   } catch (err) {
     console.error('수정 처리 오류:', err);
     res.status(500).send('서버 오류');
   }
 });
 
+// ✅ 특정 글 보기 페이지
 app.get('/post/:id', async (req, res) => {
-  const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
-  if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+  try {
+    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
+    if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
-  const post = rows[0];
+    const post = rows[0];
 
-  // 비공개 접근 제한
-  if (post.is_private && (!req.session.user || req.session.user.id !== post.user_id)) {
-    return res.status(403).send('비공개 글입니다.');
+    // **비공개 글 접근 제한 로직**
+    // 1. 글이 비공개(is_private: 1)인 경우
+    // 2. 로그인하지 않았거나 (req.session.user 없음)
+    // 3. 로그인했더라도 현재 로그인된 사용자의 ID와 글 작성자 ID가 다르면 (req.session.user.id !== post.user_id)
+    //    -> 접근 거부 (403 Forbidden)
+    if (post.is_private && (!req.session.user || req.session.user.id !== post.user_id)) {
+      return res.status(403).send('이 글은 비공개로 설정되어 접근할 수 없습니다.');
+    }
+
+    res.render('post-view', { post, user: req.session.user });
+  } catch (err) {
+    console.error('글 보기 오류:', err);
+    res.status(500).send('서버 오류로 글을 불러올 수 없습니다.');
   }
-
-  res.render('post-view', { post, user: req.session.user });
 });
 
-// ✅ 검색 결과 페이지
+// ✅ 검색 결과 페이지 (비공개 글 필터링 적용)
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.redirect('/');
 
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+
   try {
-    const [posts] = await db.query(`
+    let query = `
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
-      WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
-      ORDER BY created_at DESC
-    `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+      WHERE (title LIKE ? OR content LIKE ? OR categories LIKE ?)
+    `;
+    let queryParams = [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
+
+    // 비공개 글 필터링 조건 추가
+    if (!isAdmin) { // 관리자가 아니면
+      query += ` AND (is_private = 0 OR user_id = ?)`; // 공개 글이거나, 내 글만 보여줌
+      queryParams.push(userId);
+    }
+
+    query += ` ORDER BY created_at DESC`;
+
+    const [posts] = await db.query(query, queryParams);
 
     const categorySet = new Set();
     posts.forEach(post => {
@@ -290,7 +329,7 @@ app.get('/search', async (req, res) => {
       categories,
       isSearch: true,
       searchKeyword: keyword,
-      currentPath: req.path  // ✅ 여기가 핵심
+      currentPath: req.path
     });
   } catch (err) {
     console.error('검색 오류:', err);
@@ -298,48 +337,73 @@ app.get('/search', async (req, res) => {
   }
 });
 
-// ✅ 메인 페이지
+// ✅ 메인 페이지 (비공개 글 필터링 적용)
 app.get('/', async (req, res) => {
-  const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, user_id, created_at, is_private
-    FROM posts
-    ORDER BY created_at DESC
-  `);
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
 
-  const categorySet = new Set();
-  posts.forEach(post => {
-    post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
-  });
+  try {
+    let query = `
+      SELECT id, title, content, categories, author, user_id, created_at, is_private
+      FROM posts
+    `;
+    let queryParams = [];
 
-  const categories = Array.from(categorySet);
+    // 비공개 글 필터링 조건 추가
+    if (!isAdmin) { // 관리자가 아니면
+      // 공개 글 (is_private = 0) 이거나, 현재 로그인된 사용자의 글 (user_id = ?) 만 가져옴
+      query += ` WHERE is_private = 0 OR user_id = ?`;
+      queryParams.push(userId);
+    }
 
-  res.render('index', {
-    posts,
-    categories,
-    isSearch: false,
-    searchKeyword: '',
-    currentPath: req.path  // ✅ 여기도 핵심
-  });
+    query += ` ORDER BY created_at DESC`;
+
+    const [posts] = await db.query(query, queryParams);
+
+    const categorySet = new Set();
+    // 카테고리 추출 로직 (여기서는 모든 글의 카테고리를 추출)
+    posts.forEach(post => {
+      post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
+    });
+
+    const categories = Array.from(categorySet);
+
+    res.render('index', {
+      posts,
+      categories,
+      isSearch: false,
+      searchKeyword: '',
+      currentPath: req.path
+    });
+  } catch (err) {
+    console.error('메인 페이지 로드 오류:', err);
+    res.status(500).send('메인 페이지 로드 중 오류 발생');
+  }
 });
 
 
-// ✅ 카테고리 전체 가져오기
+// ✅ 카테고리 전체 가져오기 API
 app.get('/api/categories', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM categories ORDER BY id ASC');
-    res.json({ categories: rows.map(r => r.name) }); // ✅ name만 추출해서 감싸서 보냄
+    res.json({ categories: rows.map(r => r.name) });
   } catch (err) {
     console.error('카테고리 조회 오류:', err);
     res.status(500).json({ error: '카테고리 불러오기 실패' });
   }
 });
 
-// ✅ 카테고리 추가
+// ✅ 카테고리 추가 API
 app.post('/api/categories', async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: '카테고리 이름이 필요합니다.' });
 
   try {
+    // 중복 카테고리 추가 방지
+    const [existing] = await db.query('SELECT * FROM categories WHERE name = ?', [name]);
+    if (existing.length > 0) {
+      return res.status(409).json({ success: false, error: '이미 존재하는 카테고리입니다.' });
+    }
     await db.query('INSERT INTO categories (name) VALUES (?)', [name]);
     res.json({ success: true });
   } catch (err) {
@@ -348,7 +412,7 @@ app.post('/api/categories', async (req, res) => {
   }
 });
 
-// ✅ 카테고리 삭제
+// ✅ 카테고리 삭제 API
 app.delete('/api/categories/:name', async (req, res) => {
   const { name } = req.params;
   try {
@@ -361,22 +425,38 @@ app.delete('/api/categories/:name', async (req, res) => {
 });
 
 
-// ✅ AJAX 검색 API
+// ✅ AJAX 검색 API (이 API도 메인/검색 페이지와 동일하게 비공개 글 필터링 로직 추가)
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.json({ posts: [] });
 
-  const [posts] = await db.query(`
-    SELECT id, title, content, categories, author, user_id, created_at, is_private
-    FROM posts
-    WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
-    ORDER BY created_at DESC
-  `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
 
-  res.json({ posts });
+  try {
+    let query = `
+      SELECT id, title, content, categories, author, user_id, created_at, is_private
+      FROM posts
+      WHERE (title LIKE ? OR content LIKE ? OR categories LIKE ?)
+    `;
+    let queryParams = [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
+
+    if (!isAdmin) { // 관리자가 아니면
+      query += ` AND (is_private = 0 OR user_id = ?)`; // 공개 글이거나, 내 글만 보여줌
+      queryParams.push(userId);
+    }
+
+    query += ` ORDER BY created_at DESC`;
+
+    const [posts] = await db.query(query, queryParams);
+    res.json({ posts });
+  } catch (err) {
+    console.error('AJAX 검색 오류:', err);
+    res.status(500).json({ error: '검색 중 오류 발생' });
+  }
 });
 
-// ✅ ads.txt
+// ✅ ads.txt (정적 파일 제공)
 app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
 // ✅ DB 연결 확인
@@ -384,9 +464,9 @@ db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
-  app.get('/game', (req, res) => {
-    res.render('game'); // views/game.ejs
-  });
+app.get('/game', (req, res) => {
+    res.render('game'); // views/game.ejs 렌더링
+});
 
 // ✅ 서버 실행
 app.listen(PORT, () => {
