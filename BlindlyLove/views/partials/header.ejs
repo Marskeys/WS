@@ -18,15 +18,32 @@
         </a>
       <% } %>
 
-      <!-- ✅ 데스크탑 메뉴 -->
+      <!-- ✅ 데스크탑 메뉴 시작 -->
       <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
         <nav class="desktop-menu">
-          <ul>
-            <li><a href="/tools/health-check">온라인 건강 진단 도구</a></li>
-            <li><a href="/tools/games">무료 온라인 게임</a></li>
+          <ul class="menu-list">
+            <li class="has-submenu">
+              <a href="#">온라인 건강 진단 도구</a>
+              <ul class="submenu">
+                <li><a href="/tools/health-check/hearing">간단 청력 검사</a></li>
+                <li><a href="/tools/health-check/vision">간단 시야 검사</a></li>
+                <li><a href="/tools/health-check/memory">간단 치매 검사</a></li>
+              </ul>
+            </li>
+            <li class="has-submenu">
+              <a href="#">무료 온라인 게임</a>
+              <ul class="submenu">
+                <li><a href="/tools/games/tetris">테트리스</a></li>
+                <li><a href="/tools/games/2048">2048</a></li>
+                <li><a href="/tools/games/snake">스네이크</a></li>
+                <li><a href="/tools/games/minesweeper">지뢰찾기</a></li>
+                <li><a href="/tools/games/memory">기억력 게임</a></li>
+              </ul>
+            </li>
           </ul>
         </nav>
       <% } %>
+      <!-- ✅ 데스크탑 메뉴 끝 -->
     </div>
 
     <div class="right-controls">
@@ -56,32 +73,67 @@
     </div>
   </div>
 
+  <!-- ✅ 스타일 -->
   <style>
     .desktop-menu {
       display: flex;
       align-items: center;
-      gap: 1rem;
       margin-left: 1.5rem;
     }
 
-    .desktop-menu ul {
+    .menu-list {
       list-style: none;
       display: flex;
-      gap: 1.5rem;
+      gap: 2rem;
       margin: 0;
       padding: 0;
     }
 
-    .desktop-menu a {
+    .menu-list > li {
+      position: relative;
+    }
+
+    .menu-list > li > a {
       text-decoration: none;
       color: #333;
       font-weight: bold;
       font-size: 0.95rem;
-      transition: color 0.2s ease;
+      padding: 0.5rem;
+      display: inline-block;
     }
 
-    .desktop-menu a:hover {
+    .submenu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 200px;
+      background: white;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+    }
+
+    .submenu li {
+      border-bottom: 1px solid #eee;
+    }
+
+    .submenu li a {
+      padding: 0.75rem 1rem;
+      display: block;
+      text-decoration: none;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    .submenu li a:hover {
+      background-color: #f0f8ff;
       color: #007bff;
+    }
+
+    .has-submenu:hover .submenu {
+      display: flex;
     }
 
     @media (max-width: 640px) {
@@ -110,6 +162,7 @@
     }
   </style>
 
+  <!-- ✅ 스크립트 -->
   <script>
     function delayNavigation(e, url) {
       e.preventDefault();
@@ -118,56 +171,4 @@
       }, 100);
     }
   </script>
-</div>
-
-<!-- ✅ 모바일 메뉴 -->
-<nav class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-header">
-    <!-- 필요시 로고나 닫기 버튼 -->
-  </div>
-
-  <div class="mobile-menu-links">
-    <a href="/tools/health-check">온라인 건강 진단 도구</a>
-    <a href="/tools/games">무료 온라인 게임</a>
-  </div>
-
-  <div class="social-login-buttons">
-    <!-- 기타 로그인 버튼 등 -->
-  </div>
-
-  <style>
-    .mobile-menu-links {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      padding: 1.5rem;
-    }
-
-    .mobile-menu-links a {
-      font-size: 1rem;
-      color: #333;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .mobile-menu-links a:hover {
-      color: #007bff;
-    }
-  </style>
-</nav>
-
-<!-- 로그인 팝업 -->
-<div id="loginBox" class="login-box" onclick="event.stopPropagation()">
-  <form action="/login" method="POST" class="pop-up-form">
-    <input type="text" name="id" placeholder="아이디" required>
-    <input type="password" name="password" placeholder="비밀번호" required>
-    <button type="submit">로그인</button>
-
-    <div class="login-footer-links">
-      <small>
-        아직 회원이 아니세요? <a href="/signup">회원가입</a> <br>
-        비밀번호가 기억나지 않으신다면? <a href="/reset-password">비밀번호 찾기</a>
-      </small>
-    </div>
-  </form>
 </div>
