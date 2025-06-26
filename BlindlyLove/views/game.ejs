@@ -215,7 +215,7 @@
     let player = { pos: { x: 0, y: 0 }, mat: null, imgMap: null }; // 현재 떨어지는 블록
     let keyState = { left: false, right: false, down: false }; // 키 상태 (PC 디버깅용)
     let dropCounter = 0, dropInterval = 1000, lastTime = 0, score = 0, gameRunning = false, levelUpTimer = 0, moveCounter = 0;
-    let isProcessingMatch = false; // 매치 처리 중인지 나타내는 플래그 (게임 일시정지용)
+    let isProcessingAnimation = false; // 애니메이션(매치 강조, 블록 하강) 처리 중인지 나타내는 플래그 (사용자 조작만 막음)
 
     const moveInterval = 100; // 자동 이동/드롭 간격
     const colors = [null, '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF922B', '#845EC2', '#00C9A7'];
@@ -418,49 +418,68 @@
         });
         ctx.globalAlpha = 1; // 원상 복구
         draw(); // 강조된 상태 화면에 반영
-        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms 대기 (강조 시간)
+        await new Promise(resolve => setTimeout(resolve, 100)); // 애니메이션 속도 조절 (100ms)
     }
 
     // 연쇄 반응을 포함한 전체 매치 처리 로직
+    // 이 함수는 애니메이션과 블록 하강을 비동기적으로 처리하며, 연쇄 반응을 담당합니다.
     async function processMatches() {
-        if (isProcessingMatch) return; // 이미 처리 중이면 중복 호출 방지
-        isProcessingMatch = true; // 매치 처리 시작 플래그 설정
-        toggleControlButtons(false); // 매치 처리 중에는 컨트롤 버튼 비활성화
+        if (isProcessingAnimation) return; // 이미 처리 중이면 중복 호출 방지
+        isProcessingAnimation = true; // 애니메이션 처리 시작 플래그 설정
+        toggleControlButtons(false); // 애니메이션 중에는 컨트롤 버튼 비활성화
 
         let chainCount = 0; // 연쇄 반응 횟수
+        let didAnythingHappen = false; // 이번 processMatches 호출에서 실제 매치나 줄 삭제가 있었는지
 
         do {
-            const matches = findMatches(); // 매치 찾기
+            let foundMatchThisIteration = false;
+            let clearedLineThisIteration = false;
 
+            // 1. 동물 매치 확인 및 처리
+            const matches = findMatches();
             if (matches.length > 0) {
+                foundMatchThisIteration = true;
+                didAnythingHappen = true;
                 chainCount++;
 
                 await animateMatch(matches); // 매치 애니메이션 (강조)
                 clearMatchedBlocks(matches); // 매치된 블록 제거
-                score += matches.length * 10 * chainCount; // 연쇄 반응 점수 추가
+                score += matches.length * 10 * chainCount; // 연쇄 반응 점수 추가 (연쇄 계수)
                 updateScore();
                 draw(); // 제거된 상태 그리기
-                await new Promise(resolve => setTimeout(resolve, 300)); // 블록이 사라진 후 300ms 대기
+                await new Promise(resolve => setTimeout(resolve, 150)); // 블록이 사라진 후 150ms 대기
 
                 const moved = applyGravityAfterMatch(); // 블록 아래로 떨어뜨리기 (이동 여부 반환)
                 draw(); // 떨어진 상태 그리기
-                await new Promise(resolve => setTimeout(resolve, 300)); // 블록이 떨어진 후 300ms 대기
+                await new Promise(resolve => setTimeout(resolve, 150)); // 블록이 떨어진 후 150ms 대기 (이동 시간)
 
-                // 블록이 움직이지 않았는데 매치가 계속될 리 없으므로, 더 이상 움직이지 않으면 루프 종료
-                if (!moved && findMatches().length === 0) {
-                     break;
-                }
-            } else {
-                break; // 더 이상 매치가 없으면 종료
+                // 중력 적용 후 다시 줄 삭제 및 매치 확인할 기회를 줍니다.
+                // 이 시점에서 새로운 줄이 완성될 수도, 새로운 동물 매치가 발생할 수도 있습니다.
             }
-        } while (true); // 매치가 계속 발생하면 반복
 
-        isProcessingMatch = false; // 매치 처리 완료 플래그 해제
+            // 2. 줄 삭제 확인 및 처리 (동물 매치로 인해 새 줄이 완성될 수 있으므로 매치 후에도 다시 확인)
+            const linesCleared = arenaSweep(); // 줄 삭제 함수 호출 (삭제된 줄 수 반환)
+            if (linesCleared > 0) {
+                clearedLineThisIteration = true;
+                didAnythingHappen = true;
+                // arenaSweep 내에서 점수 업데이트 및 드롭 속도 조절은 이미 이루어집니다.
+                draw(); // 줄 삭제된 상태 그리기
+                await new Promise(resolve => setTimeout(resolve, 150)); // 줄 삭제 후 150ms 대기 (애니메이션 효과)
+            }
+
+            // 더 이상 매치도 없고, 줄도 지워지지 않으면 연쇄 종료
+            if (!foundMatchThisIteration && !clearedLineThisIteration) {
+                break;
+            }
+
+        } while (true); // 매치나 줄 삭제가 계속 발생하면 반복
+
+        isProcessingAnimation = false; // 애니메이션 처리 완료 플래그 해제
         toggleControlButtons(true); // 컨트롤 버튼 다시 활성화
     }
 
     // 가득 찬 줄 제거 및 점수 계산
-    // 이 함수는 줄 삭제만 담당하며, 동물 매치 로직은 processMatches()가 처리합니다.
+    // 이제 이 함수는 삭제된 줄의 수를 반환합니다.
     function arenaSweep() {
       let rowsRemoved = 0;
       for (let y = H - 1; y >= 0; y--) {
@@ -470,16 +489,15 @@
           arena.unshift(Array(W).fill(0)); // 맨 위에 빈 줄 추가
           arena.spriteMap.splice(y, 1); // 스프라이트 맵도 동일하게 처리
           arena.spriteMap.unshift(Array(W).fill(0));
-          y++; // 제거된 줄 다음 줄부터 다시 검사
+          y++; // 제거된 줄 다음 줄부터 다시 검사 (매치로 줄이 지워지면 y가 감소했으니 다시 원래 y 위치를 검사하기 위함)
         }
       }
-      if (rowsRemoved) {
+      if (rowsRemoved > 0) {
         score += rowsRemoved * 100; // 줄 제거 점수 추가
         dropInterval = Math.max(100, dropInterval - rowsRemoved * 50); // 줄 제거 시 속도 증가 (최소 100ms)
         updateScore();
       }
-      // 줄 삭제 후에는 바로 동물 매치 처리를 시작 (매치된 블록이 떨어져 새 매치 발생할 수 있음)
-      // playerDrop에서 arenaSweep() 후에 processMatches()를 호출하는 방식이 더 일반적입니다.
+      return rowsRemoved; // 삭제된 줄 수 반환
     }
 
     // 점수 업데이트
@@ -493,35 +511,34 @@
         merge(arena, player); // 아레나에 블록 병합
         playerReset(); // 새 블록 생성
 
-        // 블록 착지 후, 줄 삭제를 먼저 시도하고 그 다음에 동물 매치 처리 시작
-        arenaSweep(); // 줄 삭제 처리
-        processMatches(); // 동물 매치 및 연쇄 반응 처리
+        // 블록 착지 후, 매치/줄 삭제 처리 시작
+        // 줄 삭제는 processMatches 내부에서 매치 처리와 함께 반복적으로 확인됩니다.
+        processMatches();
       }
       dropCounter = 0; // 드롭 카운터 초기화
     }
 
     // 블록 즉시 바닥으로 떨어뜨리기 (하드 드롭)
     function playerHardDrop() {
-      if (isProcessingMatch) return; // 매치 처리 중에는 하드 드롭 금지
+      if (isProcessingAnimation) return; // 애니메이션 처리 중에는 하드 드롭 금지
       while (!collide(arena, player)) player.pos.y++;
       player.pos.y--;
       merge(arena, player);
       playerReset();
-      arenaSweep(); // 줄 삭제 처리
-      processMatches(); // 동물 매치 및 연쇄 반응 처리
+      processMatches(); // 블록 착지 후 매치/줄 삭제 처리
       dropCounter = 0; // 드롭 카운터 초기화
     }
 
     // 블록 좌우 이동
     function playerMove(dir) {
-      if (isProcessingMatch) return; // 매치 처리 중에는 이동 금지
+      if (isProcessingAnimation) return; // 애니메이션 처리 중에는 이동 금지
       player.pos.x += dir;
       if (collide(arena, player)) player.pos.x -= dir; // 충돌 시 되돌리기
     }
 
     // 블록 회전
     function playerRotate(dir) {
-      if (isProcessingMatch) return; // 매치 처리 중에는 회전 금지
+      if (isProcessingAnimation) return; // 애니메이션 처리 중에는 회전 금지
 
       const pos = player.pos.x;
       let offset = 1;
@@ -567,13 +584,7 @@
       const dt = time - lastTime;
       lastTime = time;
 
-      // 매치 처리 중이면 블록 자동 하강 및 사용자 조작 로직을 건너뜁니다.
-      if (isProcessingMatch) {
-          draw(); // 매치 애니메이션을 위해 계속 그리기만 합니다.
-          requestAnimationFrame(update);
-          return;
-      }
-
+      // 블록 자동 하강 및 시간 기반 로직은 애니메이션 중에도 계속 진행
       dropCounter += dt;
       levelUpTimer += dt;
       moveCounter += dt;
@@ -590,6 +601,7 @@
       }
 
       // 키보드 입력에 의한 자동 이동/드롭 처리 (모바일에서는 버튼이 직접 호출)
+      // 사용자 입력은 isProcessingAnimation 플래그에 의해 각 함수에서 이미 제어됩니다.
       if (moveCounter > moveInterval) {
         if (keyState.left) playerMove(-1);
         if (keyState.right) playerMove(1);
@@ -611,7 +623,7 @@
 
     // 키보드 이벤트 리스너 (PC 디버깅용)
     document.addEventListener('keydown', e => {
-      if (!gameRunning || isProcessingMatch) return; // 게임 중이 아니거나 매치 처리 중이면 무시
+      if (!gameRunning || isProcessingAnimation) return; // 게임 중이 아니거나 애니메이션 처리 중이면 무시
       if (e.key === 'ArrowLeft') keyState.left = true;
       else if (e.key === 'ArrowRight') keyState.right = true;
       else if (e.key === 'ArrowDown') keyState.down = true;
@@ -620,7 +632,7 @@
       else if (e.key === 'w') playerRotate(1);  // W키 시계 방향 회전
     });
     document.addEventListener('keyup', e => {
-      if (!gameRunning || isProcessingMatch) return;
+      if (!gameRunning || isProcessingAnimation) return;
       if (e.key === 'ArrowLeft') keyState.left = false;
       if (e.key === 'ArrowRight') keyState.right = false;
       if (e.key === 'ArrowDown') keyState.down = false;
