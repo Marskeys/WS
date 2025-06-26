@@ -136,25 +136,29 @@
     }
 
     async function resolveMatches(){
-      let matched;
-      do {
-        matched = findMatches();
-        if(matched.length){
-          // 애니메이션: 깜빡임
-          for(let i=0;i<3;i++){
-            matched.forEach(([y,x])=>arena.spriteMap[y][x]= i%2? '': arena.spriteMap[y][x]);
-            draw(); await sleep(150);
-          }
-          matched.forEach(([y,x])=>{ arena[y][x]=arena.spriteMap[y][x]=0; });
-          score += matched.length*5;
-          dropInterval = Math.min(1000, dropInterval+matched.length*20);
-          updateScore();
-          await sleep(200);
-          applyGravity();
-          draw(); await sleep(200);
-        }
-      } while(matched.length);
+  let matched;
+  do {
+    matched = findMatches();
+    if(matched.length){
+      for(let i=0;i<3;i++){
+        matched.forEach(([y,x])=>arena.spriteMap[y][x]= i%2? '': arena.spriteMap[y][x]);
+        draw(); await sleep(150);
+      }
+      matched.forEach(([y,x])=>{ arena[y][x]=arena.spriteMap[y][x]=0; });
+      score += matched.length*5;
+      dropInterval = Math.min(1000, dropInterval+matched.length*20);
+      updateScore();
+      await sleep(200);
+      applyGravity();
+      draw(); await sleep(200);
+      
+      // ✅ 중력 적용 후 새로 가득 찬 줄이 있으면 삭제
+      await arenaSweep();
     }
+  } while(matched.length);
+}
+
+  
 
     async function arenaSweep(){
       let rows;
