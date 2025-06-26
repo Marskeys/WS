@@ -60,6 +60,6 @@ window.addEventListener('load', () => {
 
     setTimeout(() => {
       preloader.style.display = 'none';
-    }, 600); // 이 시간은 CSS에서 transition: opacity 0.6s와 동일해야 함
+    }, 200); // 이 시간은 CSS에서 transition: opacity 0.6s와 동일해야 함
   }
 });
