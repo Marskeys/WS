@@ -128,33 +128,25 @@
       });
     }
 
-    function arenaSweep() {
-  let rows;
-  do {
-    rows = 0;
-    for (let y = H - 1; y >= 0; y--) {
-      if (arena[y].every(v => v)) {
-        arena.splice(y, 1);
-        arena.unshift(Array(W).fill(0));
-        arena.spriteMap.splice(y, 1);
-        arena.spriteMap.unshift(Array(W).fill(0));
-        rows++;
-        y++; // 줄이 내려왔으므로 같은 y 다시 체크
+    function arenaSweep(){
+      let rows=0;
+      for(let y=H-1;y>=0;y--){
+        if(arena[y].every(v=>v)){
+          rows++;
+          arena.splice(y,1);
+          arena.unshift(Array(W).fill(0));
+          arena.spriteMap.splice(y,1);
+          arena.spriteMap.unshift(Array(W).fill(0));
+          y++;
+        }
       }
+      if(rows){
+        score += rows*10;
+        dropInterval = Math.min(1000, dropInterval + rows*50);
+        updateScore();
+      }
+      matchAnimals();
     }
-    if (rows) {
-      score += rows * 10;
-      dropInterval = Math.max(100, dropInterval - rows * 50);
-      updateScore();
-    }
-
-    // 🧩 동물 3개 매치 → 지우기 → 중력 → 줄 채워졌나 확인
-    matchAnimals();
-    applyGravity();
-
-  } while (rows > 0);
-}
-
 
     function matchAnimals(){
       const m = arena.spriteMap;
