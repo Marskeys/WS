@@ -290,6 +290,65 @@
       playerReset();
       update();
     };
+
+    function applyGravity() {
+  for (let x = 0; x < W; x++) {
+    let col = [];
+
+    // 아래에서부터 위로 올라가며 블록 수집
+    for (let y = H - 1; y >= 0; y--) {
+      if (arena[y][x] !== 0) {
+        col.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
+        arena[y][x] = 0;
+        arena.spriteMap[y][x] = 0;
+      }
+    }
+
+    // 아래부터 다시 채워넣기
+    let y = H - 1;
+    for (let i = 0; i < col.length; i++) {
+      arena[y][x] = col[i].value;
+      arena.spriteMap[y][x] = col[i].sprite;
+      y--;
+    }
+  }
+}
+
+function matchAnimals() {
+  const m = arena.spriteMap;
+  const toDel = [];
+
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const v = m[y][x];
+      if (!v) continue;
+
+      [[1, 0], [0, 1], [1, 1], [1, -1]].forEach(d => {
+        const line = [];
+        for (let k = 0; k < 3; k++) {
+          const nx = x + d[0] * k, ny = y + d[1] * k;
+          if (m[ny] && m[ny][nx] === v) line.push([ny, nx]);
+        }
+        if (line.length === 3) toDel.push(...line);
+      });
+    }
+  }
+
+  if (toDel.length) {
+    toDel.forEach(([y, x]) => {
+      arena[y][x] = 0;
+      arena.spriteMap[y][x] = 0;
+    });
+
+    score += toDel.length * 5;
+    dropInterval = Math.min(1000, dropInterval + toDel.length * 20);
+    updateScore();
+
+    applyGravity(); // ✅ 터지고 나서 중력 적용
+  }
+}
+
+
   </script>
 </body>
 </html>
