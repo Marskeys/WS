@@ -56,6 +56,10 @@
     #startBtn:active {
         background: #258cdb;
     }
+    #startBtn:disabled { /* 이미지 로드 전 비활성화 */
+        background: #6c757d;
+        cursor: not-allowed;
+    }
 
     canvas {
       border: 3px solid #38bdf8;
@@ -94,6 +98,10 @@
     }
     .control-btn:active {
       background: #6a6a6a;
+    }
+    .control-btn:disabled { /* 게임 중이 아니면 비활성화 */
+        background: #6c757d;
+        cursor: not-allowed;
     }
 
     /* 특정 버튼 위치 조정 */
@@ -149,8 +157,7 @@
 <body>
   <div id="game-container">
     <h2 id="score">점수: 0</h2>
-    <button id="startBtn">게임 시작</button>
-    <canvas id="tetris" width="240" height="400"></canvas>
+    <button id="startBtn" disabled>게임 시작</button> <canvas id="tetris" width="240" height="400"></canvas>
 
     <div id="controls">
       <button id="rotate-left-btn" class="control-btn">◀ 회전</button>
@@ -167,7 +174,7 @@
     const ctx = canvas.getContext('2d');
     ctx.scale(20, 20); // 블록 크기
 
-    // 동물 스프라이트 이미지 경로 (실제 경로로 변경 필요)
+    // 동물 스프라이트 이미지 경로 (BlindlyLove/public/assets/images/ 경로에 있어야 함)
     const spriteUrls = {
       1: '/assets/images/dog.png',
       2: '/assets/images/cat.png',
@@ -179,7 +186,7 @@
     let imagesLoadedCount = 0;
     const totalImages = Object.keys(spriteUrls).length;
 
-    // 이미지 로드 함수
+    // 이미지 로드 함수: 모든 이미지가 로드될 때까지 기다립니다.
     function loadImages(callback) {
       for (let k in spriteUrls) {
         const img = new Image();
@@ -191,8 +198,8 @@
           }
         };
         img.onerror = () => {
-          console.error(`Failed to load image: ${spriteUrls[k]}`);
-          imagesLoadedCount++; // 오류 발생해도 카운트 증가
+          console.error(`Failed to load image: ${spriteUrls[k]}. Please check the path and if the server is correctly serving static files.`);
+          imagesLoadedCount++; // 오류 발생해도 카운트 증가시켜 게임 시작 가능하게 함 (이미지 없어도 게임은 돌아가도록)
           if (imagesLoadedCount === totalImages) {
             callback();
           }
@@ -206,9 +213,11 @@
     arena.spriteMap = createMatrix(W, H); // 동물 스프라이트 맵
 
     let player = { pos: { x: 0, y: 0 }, mat: null, imgMap: null }; // 현재 떨어지는 블록
-    let keyState = { left: false, right: false, down: false }; // 키 상태 (모바일에서는 사용 안함)
+    let keyState = { left: false, right: false, down: false }; // 키 상태 (PC 디버깅용)
     let dropCounter = 0, dropInterval = 1000, lastTime = 0, score = 0, gameRunning = false, levelUpTimer = 0, moveCounter = 0;
-    const moveInterval = 100; // 자동 이동 간격
+    let isProcessingMatch = false; // 매치 처리 중인지 나타내는 플래그 (게임 일시정지용)
+
+    const moveInterval = 100; // 자동 이동/드롭 간격
     const colors = [null, '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF922B', '#845EC2', '#00C9A7'];
 
     // 행렬 생성
@@ -230,7 +239,7 @@
       return t[type];
     }
 
-    // 행렬 회전
+    // 행렬 회전 (블록 자체)
     function rotateMatrix(matrix, dir) {
       const m = JSON.parse(JSON.stringify(matrix)); // 깊은 복사
       for (let y = 0; y < m.length; ++y) {
@@ -248,7 +257,7 @@
       ctx.globalAlpha = alpha;
       for (let y = 0; y < m.length; y++) {
         for (let x = 0; x < m[y].length; x++) {
-          const v = m[y][x];
+          const v = m[y][x]; // 블록 타입
           if (v) {
             const px = x + off.x, py = y + off.y;
             // 블록 색상 (그라데이션)
@@ -266,12 +275,13 @@
             // 동물 스프라이트 그리기
             let imgId = null;
             if (m === player.mat && off === player.pos && player.imgMap) {
-              imgId = player.imgMap[y][x];
+              imgId = player.imgMap[y][x]; // 현재 떨어지는 블록의 동물
             } else if (m === arena) {
-              imgId = arena.spriteMap?.[y]?.[x];
+              imgId = arena.spriteMap?.[y]?.[x]; // 바닥에 고정된 블록의 동물
             }
 
-            if (imgId && spriteImgs[imgId]?.complete && spriteImgs[imgId].naturalWidth) {
+            // 이미지가 로드 완료되었고, naturalWidth가 있으면 그립니다.
+            if (imgId && spriteImgs[imgId]?.complete && spriteImgs[imgId].naturalWidth > 0) {
               ctx.drawImage(spriteImgs[imgId], px + 0.1, py + 0.1, 0.8, 0.8);
             }
           }
@@ -323,81 +333,142 @@
       });
     }
 
-    // 중력 적용 (동물 매치 후 블록 아래로 떨어뜨리기)
-    function applyGravity() {
-      for (let x = 0; x < W; x++) {
-        let col = [];
-        // 아래에서 위로 순회하며 빈 공간이 아닌 블록들을 수집
-        for (let y = H - 1; y >= 0; y--) {
-          if (arena[y][x]) {
-            col.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
-            arena[y][x] = 0; // 기존 위치 비우기
-            arena.spriteMap[y][x] = 0;
-          }
+    // 매치 제거 후 빈 공간을 채우기 위한 중력 적용 함수
+    // 이 함수는 매치로 인해 생긴 빈 공간만 채우고, 블록이 실제로 이동했는지 여부를 반환합니다.
+    function applyGravityAfterMatch() {
+        let movedAnything = false;
+        for (let x = 0; x < W; x++) { // 각 열에 대해
+            let filledCells = []; // 비어있지 않은 셀들을 임시로 저장
+            for (let y = H - 1; y >= 0; y--) { // 아래에서 위로 순회
+                if (arena[y][x] !== 0) {
+                    filledCells.push({ value: arena[y][x], sprite: arena.spriteMap[y][x] });
+                }
+            }
+
+            // 해당 열을 모두 0으로 초기화
+            for (let y = 0; y < H; y++) {
+                arena[y][x] = 0;
+                arena.spriteMap[y][x] = 0;
+            }
+
+            // 비어있지 않은 셀들을 아래에서부터 다시 채움
+            let currentY = H - 1;
+            for (let i = 0; i < filledCells.length; i++) {
+                arena[currentY][x] = filledCells[i].value;
+                arena.spriteMap[currentY][x] = filledCells[i].sprite;
+                // 만약 원래 위치와 현재 위치가 다르다면 이동이 발생한 것
+                if (currentY !== (H - 1 - i)) {
+                    movedAnything = true;
+                }
+                currentY--;
+            }
         }
-        // 수집한 블록들을 아래부터 채우기
-        let currentY = H - 1;
-        col.forEach(cell => {
-          arena[currentY][x] = cell.value;
-          arena.spriteMap[currentY][x] = cell.sprite;
-          currentY--;
-        });
-      }
+        return movedAnything;
     }
 
-    // 동물 3개 매치 확인 및 제거
-    function matchAnimals() {
-      const m = arena.spriteMap;
-      const toDel = []; // 제거할 블록 좌표 저장
-      const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // 가로, 세로, 대각선, 역대각선
+    // 동물 매치를 찾는 함수
+    function findMatches() {
+        const m = arena.spriteMap;
+        const currentToDel = []; // 이번 턴에 찾은 매치 블록의 좌표
+        const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // 가로, 세로, 대각선, 역대각선
 
-      for (let y = 0; y < H; y++) {
-        for (let x = 0; x < W; x++) {
-          const v = m[y][x];
-          if (!v) continue; // 빈 공간이면 건너뛰기
+        for (let y = 0; y < H; y++) {
+            for (let x = 0; x < W; x++) {
+                const v = m[y][x];
+                if (!v) continue; // 빈 공간이면 건너뛰기
 
-          directions.forEach(d => {
-            const line = [];
-            for (let k = 0; k < 3; k++) { // 3개 연결 확인
-              const nx = x + d[0] * k;
-              const ny = y + d[1] * k;
-              if (m[ny] && m[ny][nx] === v) { // 유효한 좌표이고 같은 동물일 경우
-                line.push([ny, nx]);
-              } else {
-                break; // 다른 동물이거나 경계를 벗어나면 더 이상 검사할 필요 없음
-              }
+                directions.forEach(d => {
+                    const line = [];
+                    for (let k = 0; k < 3; k++) { // 3개 연결 확인
+                        const nx = x + d[0] * k;
+                        const ny = y + d[1] * k;
+                        // 유효한 좌표이고 같은 동물일 경우 line에 추가
+                        if (m[ny] && m[ny][nx] === v) {
+                            line.push([ny, nx]);
+                        } else {
+                            break; // 다른 동물이거나 경계를 벗어나면 더 이상 검사할 필요 없음
+                        }
+                    }
+                    if (line.length === 3) { // 3개 이상 연결된 경우
+                        currentToDel.push(...line);
+                    }
+                });
             }
-            if (line.length === 3) { // 3개 이상 연결된 경우
-              toDel.push(...line);
-            }
-          });
         }
-      }
+        // 중복 제거 후 반환 (Set을 사용하여 고유한 좌표만 남김)
+        return Array.from(new Set(currentToDel.map(JSON.stringify)), JSON.parse);
+    }
 
-      if (toDel.length) {
-        // 중복 제거 (Set을 사용하여 고유한 좌표만 남김)
-        const uniqueToDel = Array.from(new Set(toDel.map(JSON.stringify)), JSON.parse);
-
-        uniqueToDel.forEach(([yy, xx]) => {
-          arena[yy][xx] = 0; // 블록 제거
-          arena.spriteMap[yy][xx] = 0; // 스프라이트 제거
+    // 매치된 블록 제거 함수
+    function clearMatchedBlocks(toDel) {
+        toDel.forEach(([yy, xx]) => {
+            arena[yy][xx] = 0; // 블록 값 0으로 설정 (사라짐)
+            arena.spriteMap[yy][xx] = 0; // 스프라이트 값도 0으로 설정 (사라짐)
         });
-        score += uniqueToDel.length * 5; // 점수 추가
-        dropInterval = Math.max(100, dropInterval - uniqueToDel.length * 10); // 동물 매치 시 속도 증가 (최소 100ms)
-        updateScore();
-        applyGravity(); // 블록 아래로 떨어뜨리기
-      }
+    }
+
+    // 매치 애니메이션 함수 (강조 후 사라지게)
+    async function animateMatch(toDel) {
+        // 1단계: 매치된 블록 강조 (노란색으로 덧씌우기)
+        ctx.globalAlpha = 0.5; // 투명도 조절
+        toDel.forEach(([yy, xx]) => {
+            const px = xx, py = yy;
+            ctx.fillStyle = 'rgba(255, 255, 0, 0.7)'; // 노란색 강조
+            ctx.fillRect(px, py, 1, 1);
+        });
+        ctx.globalAlpha = 1; // 원상 복구
+        draw(); // 강조된 상태 화면에 반영
+        await new Promise(resolve => setTimeout(resolve, 200)); // 200ms 대기 (강조 시간)
+    }
+
+    // 연쇄 반응을 포함한 전체 매치 처리 로직
+    async function processMatches() {
+        if (isProcessingMatch) return; // 이미 처리 중이면 중복 호출 방지
+        isProcessingMatch = true; // 매치 처리 시작 플래그 설정
+        toggleControlButtons(false); // 매치 처리 중에는 컨트롤 버튼 비활성화
+
+        let chainCount = 0; // 연쇄 반응 횟수
+
+        do {
+            const matches = findMatches(); // 매치 찾기
+
+            if (matches.length > 0) {
+                chainCount++;
+
+                await animateMatch(matches); // 매치 애니메이션 (강조)
+                clearMatchedBlocks(matches); // 매치된 블록 제거
+                score += matches.length * 10 * chainCount; // 연쇄 반응 점수 추가
+                updateScore();
+                draw(); // 제거된 상태 그리기
+                await new Promise(resolve => setTimeout(resolve, 300)); // 블록이 사라진 후 300ms 대기
+
+                const moved = applyGravityAfterMatch(); // 블록 아래로 떨어뜨리기 (이동 여부 반환)
+                draw(); // 떨어진 상태 그리기
+                await new Promise(resolve => setTimeout(resolve, 300)); // 블록이 떨어진 후 300ms 대기
+
+                // 블록이 움직이지 않았는데 매치가 계속될 리 없으므로, 더 이상 움직이지 않으면 루프 종료
+                if (!moved && findMatches().length === 0) {
+                     break;
+                }
+            } else {
+                break; // 더 이상 매치가 없으면 종료
+            }
+        } while (true); // 매치가 계속 발생하면 반복
+
+        isProcessingMatch = false; // 매치 처리 완료 플래그 해제
+        toggleControlButtons(true); // 컨트롤 버튼 다시 활성화
     }
 
     // 가득 찬 줄 제거 및 점수 계산
+    // 이 함수는 줄 삭제만 담당하며, 동물 매치 로직은 processMatches()가 처리합니다.
     function arenaSweep() {
       let rowsRemoved = 0;
       for (let y = H - 1; y >= 0; y--) {
-        if (arena[y].every(v => v !== 0)) { // 줄이 모두 채워졌으면
+        if (arena[y].every(v => v !== 0)) { // 줄이 모두 채워졌으면 (0이 아닌 블록으로 가득 참)
           rowsRemoved++;
           arena.splice(y, 1); // 해당 줄 제거
           arena.unshift(Array(W).fill(0)); // 맨 위에 빈 줄 추가
-          arena.spriteMap.splice(y, 1);
+          arena.spriteMap.splice(y, 1); // 스프라이트 맵도 동일하게 처리
           arena.spriteMap.unshift(Array(W).fill(0));
           y++; // 제거된 줄 다음 줄부터 다시 검사
         }
@@ -407,7 +478,8 @@
         dropInterval = Math.max(100, dropInterval - rowsRemoved * 50); // 줄 제거 시 속도 증가 (최소 100ms)
         updateScore();
       }
-      matchAnimals(); // 줄 제거 후 동물 매치 확인
+      // 줄 삭제 후에는 바로 동물 매치 처리를 시작 (매치된 블록이 떨어져 새 매치 발생할 수 있음)
+      // playerDrop에서 arenaSweep() 후에 processMatches()를 호출하는 방식이 더 일반적입니다.
     }
 
     // 점수 업데이트
@@ -420,42 +492,51 @@
         player.pos.y--; // 충돌했으면 이전 위치로
         merge(arena, player); // 아레나에 블록 병합
         playerReset(); // 새 블록 생성
-        arenaSweep(); // 줄 제거 및 동물 매치
+
+        // 블록 착지 후, 줄 삭제를 먼저 시도하고 그 다음에 동물 매치 처리 시작
+        arenaSweep(); // 줄 삭제 처리
+        processMatches(); // 동물 매치 및 연쇄 반응 처리
       }
-      dropCounter = 0;
+      dropCounter = 0; // 드롭 카운터 초기화
     }
 
     // 블록 즉시 바닥으로 떨어뜨리기 (하드 드롭)
     function playerHardDrop() {
+      if (isProcessingMatch) return; // 매치 처리 중에는 하드 드롭 금지
       while (!collide(arena, player)) player.pos.y++;
       player.pos.y--;
       merge(arena, player);
       playerReset();
-      arenaSweep();
-      dropCounter = 0;
+      arenaSweep(); // 줄 삭제 처리
+      processMatches(); // 동물 매치 및 연쇄 반응 처리
+      dropCounter = 0; // 드롭 카운터 초기화
     }
 
     // 블록 좌우 이동
     function playerMove(dir) {
+      if (isProcessingMatch) return; // 매치 처리 중에는 이동 금지
       player.pos.x += dir;
       if (collide(arena, player)) player.pos.x -= dir; // 충돌 시 되돌리기
     }
 
     // 블록 회전
     function playerRotate(dir) {
+      if (isProcessingMatch) return; // 매치 처리 중에는 회전 금지
+
       const pos = player.pos.x;
       let offset = 1;
       const rotMat = rotateMatrix(player.mat, dir);
-      const rotImg = rotateMatrix(player.imgMap, dir);
+      const rotImg = rotateMatrix(player.imgMap, dir); // 스프라이트 맵도 함께 회전
       player.mat = rotMat;
       player.imgMap = rotImg;
 
+      // 회전 후 벽/다른 블록에 충돌하는 경우 벽 차기 (Wall Kick)
       while (collide(arena, player)) {
         player.pos.x += offset;
         offset = -(offset + (offset > 0 ? 1 : -1)); // 벽 차기 알고리즘
         if (offset > player.mat[0].length) { // 너무 멀리 이동했으면 회전 취소
-          player.mat = rotateMatrix(player.mat, -dir);
-          player.imgMap = rotateMatrix(player.imgMap, -dir);
+          player.mat = rotateMatrix(player.mat, -dir); // 원래대로 되돌리기
+          player.imgMap = rotateMatrix(player.imgMap, -dir); // 스프라이트 맵도 원래대로
           player.pos.x = pos;
           return;
         }
@@ -466,7 +547,7 @@
     function playerReset() {
       const types = 'TJLOSZI';
       player.mat = createPiece(types[Math.floor(Math.random() * 7)]);
-      // 각 블록 조각에 랜덤 동물 스프라이트 할당
+      // 각 블록 조각에 랜덤 동물 스프라이트 할당 (1부터 5까지)
       player.imgMap = player.mat.map(row => row.map(v => v ? String(Math.ceil(Math.random() * 5)) : 0));
       player.pos.y = 0;
       player.pos.x = (W / 2 | 0) - (player.mat[0].length / 2 | 0); // 중앙 배치
@@ -474,6 +555,8 @@
       if (collide(arena, player)) { // 새 블록 생성 시 충돌하면 게임 오버
         gameRunning = false;
         alert(`게임 종료! 최종 점수: ${score}`);
+        toggleControlButtons(false); // 게임 오버 시 컨트롤 비활성화
+        document.getElementById('startBtn').disabled = false; // 시작 버튼 다시 활성화
       }
     }
 
@@ -483,6 +566,13 @@
 
       const dt = time - lastTime;
       lastTime = time;
+
+      // 매치 처리 중이면 블록 자동 하강 및 사용자 조작 로직을 건너뜁니다.
+      if (isProcessingMatch) {
+          draw(); // 매치 애니메이션을 위해 계속 그리기만 합니다.
+          requestAnimationFrame(update);
+          return;
+      }
 
       dropCounter += dt;
       levelUpTimer += dt;
@@ -499,7 +589,7 @@
         levelUpTimer = 0;
       }
 
-      // 모바일 컨트롤러 입력 처리 (버튼이 눌린 상태일 경우)
+      // 키보드 입력에 의한 자동 이동/드롭 처리 (모바일에서는 버튼이 직접 호출)
       if (moveCounter > moveInterval) {
         if (keyState.left) playerMove(-1);
         if (keyState.right) playerMove(1);
@@ -507,21 +597,30 @@
         moveCounter = 0;
       }
 
-      draw();
+      draw(); // 게임 화면 그리기
       requestAnimationFrame(update); // 다음 프레임 요청
     }
 
-    // 키보드 이벤트 (PC 디버깅용, 모바일에서는 버튼 사용)
+    // 컨트롤 버튼 활성화/비활성화 함수
+    function toggleControlButtons(enable) {
+        const buttons = document.querySelectorAll('.control-btn');
+        buttons.forEach(button => {
+            button.disabled = !enable;
+        });
+    }
+
+    // 키보드 이벤트 리스너 (PC 디버깅용)
     document.addEventListener('keydown', e => {
-      if (!gameRunning) return;
+      if (!gameRunning || isProcessingMatch) return; // 게임 중이 아니거나 매치 처리 중이면 무시
       if (e.key === 'ArrowLeft') keyState.left = true;
       else if (e.key === 'ArrowRight') keyState.right = true;
       else if (e.key === 'ArrowDown') keyState.down = true;
-      else if (e.key === ' ') { e.preventDefault(); playerHardDrop(); }
-      else if (e.key === 'q') playerRotate(-1);
-      else if (e.key === 'w') playerRotate(1);
+      else if (e.key === ' ') { e.preventDefault(); playerHardDrop(); } // 스페이스바 하드 드롭
+      else if (e.key === 'q') playerRotate(-1); // Q키 반시계 회전
+      else if (e.key === 'w') playerRotate(1);  // W키 시계 방향 회전
     });
     document.addEventListener('keyup', e => {
+      if (!gameRunning || isProcessingMatch) return;
       if (e.key === 'ArrowLeft') keyState.left = false;
       if (e.key === 'ArrowRight') keyState.right = false;
       if (e.key === 'ArrowDown') keyState.down = false;
@@ -535,18 +634,20 @@
     document.getElementById('rotate-right-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerRotate(1); });
     document.getElementById('hard-drop-btn').addEventListener('touchstart', (e) => { e.preventDefault(); playerHardDrop(); });
 
-    // 시작 버튼 클릭 이벤트
+    // 게임 시작 버튼 클릭 이벤트
     document.getElementById('startBtn').onclick = () => {
-      if (!gameRunning) { // 이미 게임이 실행 중이면 다시 시작하지 않음
+      if (!gameRunning) { // 이미 게임이 실행 중이 아니면 시작
         gameRunning = true;
         dropInterval = 1000;
         levelUpTimer = 0;
         score = 0;
         updateScore();
         arena = createMatrix(W, H);
-        arena.spriteMap = createMatrix(W, H); // 스프라이트 맵 초기화
+        arena.spriteMap = createMatrix(W, H); // 스프라이트 맵도 초기화
         playerReset();
         lastTime = performance.now(); // 정확한 시간 측정을 위해 시작 시점 설정
+        toggleControlButtons(true); // 컨트롤 버튼 활성화
+        document.getElementById('startBtn').disabled = true; // 게임 시작 후 시작 버튼 비활성화
         update(); // 게임 루프 시작
       }
     };
@@ -559,6 +660,8 @@
 
     // 초기 점수 표시
     updateScore();
+    // 초기에는 컨트롤 버튼 비활성화 (게임 시작 전)
+    toggleControlButtons(false);
   </script>
 </body>
 </html>
