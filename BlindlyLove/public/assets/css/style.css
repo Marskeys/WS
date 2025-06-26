@@ -640,7 +640,7 @@ body.no-fixed-footer footer {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.6s ease; /* 부드럽게 사라짐 */
+    transition: opacity 0.2s ease; /* 부드럽게 사라짐 */
   }
   
   #preloader.fade-out {
