@@ -18,7 +18,7 @@
     const canvas = document.getElementById('tetris'), ctx = canvas.getContext('2d');
     ctx.scale(20,20);
 
-    const spriteUrls = {1:'/assets/images/dog.png',2:'/assets/images/cat.png',3:'/assets/images/bear.png',4:'/assets/images/rabbit.png',5:'/assets/images/monkey.png'};
+    const spriteUrls = {1:'./assets/images/dog.png',2:'./assets/images/cat.png',3:'./assets/images/bear.png',4:'./assets/images/rabbit.png',5:'./assets/images/monkey.png'};
     const spriteImgs = {};
     for (let k in spriteUrls) {
       const img = new Image();
