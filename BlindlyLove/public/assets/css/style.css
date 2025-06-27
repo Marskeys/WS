@@ -746,15 +746,13 @@ html.dark body .mobile-menu{
 }
 
 
-/* 기본 상태 (작게 보임) */
 .tetris-icon {
   width: 30px;
   height: 30px;
   transition: width 0.4s ease, height 0.4s ease;
 }
 
-/* 모바일 메뉴가 열린 상태에서 커지게 */
-.mobile-menu.open .tetris-icon {
+.mobile-menu:hover .tetris-icon {
   width: 60px;
   height: 60px;
 }
