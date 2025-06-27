@@ -70,7 +70,7 @@ window.addEventListener('DOMContentLoaded', () => {
 const menu = document.querySelector('.mobile-menu');
 
 menu.addEventListener('mousemove', (e) => {
-  if (e.offsetY > 10) {
+  if (e.offsetY > 100) {
     menu.classList.add('hovered');
   } else {
     menu.classList.remove('hovered');
