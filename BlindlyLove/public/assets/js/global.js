@@ -65,14 +65,3 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// 모바일 메뉴의 상단 부분은 호버 작동 안 하게
-
-const menu = document.querySelector('.mobile-menu');
-
-menu.addEventListener('mousemove', (e) => {
-  if (e.offsetY > 100) {
-    menu.classList.add('hovered');
-  } else {
-    menu.classList.remove('hovered');
-  }
-});

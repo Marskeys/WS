@@ -178,6 +178,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // 모바일 메뉴의 상단 부분은 호버 작동 안 하게
+const menu = document.querySelector('.mobile-menu');
+
+if (menu) {
+  menu.addEventListener('mousemove', (e) => {
+    // 마우스가 메뉴 영역 안에서 얼마나 아래에 있는지 확인
+    if (e.offsetY > 40) {
+      menu.classList.add('hovered');
+    } else {
+      menu.classList.remove('hovered');
+    }
+  });
+
+  // 메뉴 바깥으로 나가면 hover 해제
+  menu.addEventListener('mouseleave', () => {
+    menu.classList.remove('hovered');
+  });
+}
+
   }
 
   window.addEventListener("resize", positionCharacterToSearchBox);
