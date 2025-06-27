@@ -388,6 +388,7 @@ html.dark body .hamburger.is-in-menu span {
 
 /* ✅ 모바일 메뉴 */
 .mobile-menu {
+  display:none;
   position: fixed;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
@@ -397,7 +398,7 @@ html.dark body .hamburger.is-in-menu span {
   background-color: #333;
   color: white;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-  z-index: -1;
+  z-index: 1;
   padding: 2rem;
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
