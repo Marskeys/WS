@@ -388,7 +388,6 @@ html.dark body .hamburger.is-in-menu span {
 
 /* ✅ 모바일 메뉴 */
 .mobile-menu {
-  display:none;
   position: fixed;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
@@ -398,7 +397,7 @@ html.dark body .hamburger.is-in-menu span {
   background-color: #333;
   color: white;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  z-index: 12000;
   padding: 2rem;
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
@@ -410,8 +409,7 @@ html.dark body .hamburger.is-in-menu span {
   /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 */
   /* transform과 opacity가 동시에 부드럽게 변하도록 합니다. */
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  
-  display: flex;
+  display: none;
   flex-direction: column;
 }
 
