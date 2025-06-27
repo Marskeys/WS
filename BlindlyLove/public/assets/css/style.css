@@ -405,7 +405,7 @@ html.dark body .hamburger.is-in-menu span {
   color: white;
   border-color: rgb(245, 139, 139);
   z-index: 12000;
-  padding: 0rem;
+  padding: 0rem;}
 
   html.dark body .mobile-menu{
   position: fixed;
@@ -413,7 +413,7 @@ html.dark body .hamburger.is-in-menu span {
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
   width: 60px;
   height: 100vh;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0, 1);
   color: rgb(0, 0, 0);
   border-color: rgb(245, 139, 139);
   z-index: 12000;
