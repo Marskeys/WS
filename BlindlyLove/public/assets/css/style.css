@@ -333,6 +333,14 @@ body.no-fixed-footer footer {
   z-index: 3000;
 }
 
+.hamburger {
+  display: flex !important;
+  position: fixed;
+  top: 1.2rem;
+  left: 1.2rem;
+  z-index: 3000;
+}
+
 /* ✅ 줄 스타일 (세 줄) */
 .hamburger span {
   display: block;
