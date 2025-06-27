@@ -122,8 +122,8 @@
   max-width: calc(100vw - 420px);
 }
 
-html.light body{
-  linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%);
+body{
+  linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%) !important;
 }
   /* ------------------------------
    ✅ 공통 레이아웃 스타일
