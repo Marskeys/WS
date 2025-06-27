@@ -379,7 +379,7 @@ html.dark body .hamburger span {
 /* ✅ 메뉴가 열렸을 때 오른쪽 상단으로 이동 */
 .hamburger.is-in-menu {
   top: 1.2rem;
-  right: 1.0rem;
+  right: 0.5rem;
   left: auto; /* 기존 left 무효화 */
   z-index: 3001;
 }
