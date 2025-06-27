@@ -385,7 +385,7 @@ html.dark body .hamburger span {
 }
 
 .hamburger.is-in-menu span {
-  background: rgb(255, 97, 97); /* 어두운 배경 위에서 보이게 */
+  background: rgb(0, 0, 0); /* 어두운 배경 위에서 보이게 */
 }
 
 html.dark body .hamburger.is-in-menu span {
@@ -403,7 +403,7 @@ html.dark body .hamburger.is-in-menu span {
   height: 80vh;
   background-color: rgb(255, 255, 255);
   color: white;
-  border-color: rgb(245, 139, 139);
+  border-color: rgb(0, 0, 0);
   z-index: 12000;
   margin-top: 3rem;
   margin-left: 0.5rem;
