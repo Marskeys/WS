@@ -320,7 +320,6 @@ body.no-fixed-footer footer {
 
 /* ✅ 햄버거 버튼 기본 */
 .hamburger {
-  /*display: none; /* 데스크탑에서 숨김 */
   display: flex !important;
   flex-direction: column;
   justify-content: space-between;
@@ -336,6 +335,7 @@ body.no-fixed-footer footer {
   transition: all 0.3s ease;
   z-index: 3000;
 }
+
 
 /* ✅ 줄 스타일 (세 줄) */
 .hamburger span {
@@ -359,40 +359,31 @@ body.no-fixed-footer footer {
 }
 
 /* ✅ 모바일 화면에서 보이게 */
-@media (max-width: 640px) {
-  .hamburger {
-    display: flex !important;
-    position: fixed;
-    top: 1.2rem;
-    left: 1.2rem;
-    z-index: 3000;
-  }
-
-  .hamburger span {
-    background: #333;
-  }
-
-  /* ✅ 다크모드 대응 */
-  html.dark body .hamburger span {
-    background: white;
-  }
-
-  /* ✅ 메뉴가 열렸을 때 오른쪽 상단으로 이동 */
-  .hamburger.is-in-menu {
-    top: 1.2rem;
-    right: 1.2rem;
-    left: auto; /* 기존 left 무효화 */
-    z-index: 3001;
-  }
-
-  .hamburger.is-in-menu span {
-    background: white; /* 어두운 배경 위에서 보이게 */
-  }
-
-  html.dark body .hamburger.is-in-menu span {
-    background: #eee; /* 다크모드 대응 */
-  }
+.hamburger span {
+  background: #333;
 }
+
+/* ✅ 다크모드 대응 */
+html.dark body .hamburger span {
+  background: white;
+}
+
+/* ✅ 메뉴가 열렸을 때 오른쪽 상단으로 이동 */
+.hamburger.is-in-menu {
+  top: 1.2rem;
+  right: 1.2rem;
+  left: auto; /* 기존 left 무효화 */
+  z-index: 3001;
+}
+
+.hamburger.is-in-menu span {
+  background: white; /* 어두운 배경 위에서 보이게 */
+}
+
+html.dark body .hamburger.is-in-menu span {
+  background: #eee; /* 다크모드 대응 */
+}
+
 
 
 /* ✅ 모바일 메뉴 */
