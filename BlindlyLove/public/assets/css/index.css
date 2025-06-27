@@ -112,7 +112,6 @@
   
     /* ✅ 왼쪽 패널: 위는 흰색 → 아래는 파스텔 */
 .main-panel {
-  background: linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%);
   min-height: 100vh;
   flex-direction: column;
   padding: 0 2rem; 
@@ -122,9 +121,6 @@
   max-width: calc(100vw - 420px);
 }
 
-body{
-  linear-gradient(to bottom, #ffffff 0%, #f5e6ff 60%, #fceacb 100%) !important;
-}
   /* ------------------------------
    ✅ 공통 레이아웃 스타일
 ------------------------------ */
