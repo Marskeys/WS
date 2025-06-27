@@ -163,18 +163,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
    // ✅ 햄버거 메뉴 기본으로 열기 (수정된 로직)
   // 페이지 로드 시 햄버거 메뉴와 버튼을 '열린' 상태로 설정
-  if (window.innerWidth <= 640 && hamburger && mobileMenu) { // 필요한 요소들이 존재하는지 확인
-    hamburger.classList.add("open", "is-in-menu"); // 햄버거 버튼에 'open'과 'is-in-menu' 클래스 추가
-    mobileMenu.classList.add("open"); // 모바일 메뉴에 'open' 클래스 추가
-    document.body.classList.add("menu-open"); // body에 'menu-open' 클래스 추가
-
-    // 중요: 햄버거 버튼을 모바일 메뉴 헤더 안으로 실제로 이동
-    // 이 시점에서는 mobileMenuHeader 변수가 이미 선언되어 있거나, 다시 찾아야 합니다.
+  if (window.innerWidth <= 640 && hamburger && mobileMenu) {
+    // 1. 메뉴 열기
+    mobileMenu.classList.add("open");
+    hamburger.classList.add("open", "is-in-menu");
+    document.body.classList.add("menu-open");
+  
+    // 2. 위치 이동
     const currentMobileMenuHeader = mobileMenu.querySelector(".mobile-menu-header");
     if (currentMobileMenuHeader) {
       currentMobileMenuHeader.appendChild(hamburger);
-    } else {
-      console.warn("모바일 메뉴 헤더(.mobile-menu-header)를 찾을 수 없습니다. 햄버거 버튼 이동 불가.");
+  
+      // ✅ 3. 강제로 reflow → 스타일 재적용 안정화
+      hamburger.offsetHeight; // 강제로 리렌더
+      hamburger.classList.add("open", "is-in-menu"); // 다시 확실하게 부착
     }
   }
 
