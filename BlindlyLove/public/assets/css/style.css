@@ -391,8 +391,8 @@ html.dark body .hamburger.is-in-menu span {
   position: fixed;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
-  width: 40vw;
-  max-width: 350px;
+  width: 30vw;
+  max-width: 200px;
   height: 100vh;
   background-color: #333;
   color: white;
