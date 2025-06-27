@@ -232,9 +232,15 @@
 }
 
 
-.board-table th,
+
 .board-table td {
   padding: 0.65rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.board-table th {
+  padding: 0.35rem;
   border-bottom: 1px solid #ddd;
   text-align: left;
 }
