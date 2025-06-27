@@ -406,7 +406,7 @@ html.dark body .hamburger.is-in-menu span {
   border-color: rgb(245, 139, 139);
   z-index: 12000;
   margin-top: 3rem;
-  border-radius: 100px;
+  border-radius: 40px;
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
   transform: translateX(-100%); 
@@ -421,7 +421,7 @@ html.dark body .hamburger.is-in-menu span {
   flex-direction: column;
 }
 
-html.dark body .mobile.menu{
+html.dark body .mobile-menu{
   background-color: rgb(0, 0, 0);
 }
 
