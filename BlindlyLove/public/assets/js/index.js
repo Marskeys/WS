@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
    // ✅ 햄버거 메뉴 기본으로 열기 (수정된 로직)
   // 페이지 로드 시 햄버거 메뉴와 버튼을 '열린' 상태로 설정
-  if (hamburger && mobileMenu) { // 필요한 요소들이 존재하는지 확인
+  if (window.innerWidth <= 640 && hamburger && mobileMenu) { // 필요한 요소들이 존재하는지 확인
     hamburger.classList.add("open", "is-in-menu"); // 햄버거 버튼에 'open'과 'is-in-menu' 클래스 추가
     mobileMenu.classList.add("open"); // 모바일 메뉴에 'open' 클래스 추가
     document.body.classList.add("menu-open"); // body에 'menu-open' 클래스 추가
