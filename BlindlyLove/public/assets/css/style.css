@@ -373,7 +373,7 @@ body.no-fixed-footer footer {
 
 /* ✅ 다크모드 대응 */
 html.dark body .hamburger span {
-  background: rgb(231, 88, 88);
+  background: white;
 }
 
 /* ✅ 메뉴가 열렸을 때 오른쪽 상단으로 이동 */
@@ -385,7 +385,7 @@ html.dark body .hamburger span {
 }
 
 .hamburger.is-in-menu span {
-  background: white; /* 어두운 배경 위에서 보이게 */
+  background: rgb(255, 97, 97); /* 어두운 배경 위에서 보이게 */
 }
 
 html.dark body .hamburger.is-in-menu span {
