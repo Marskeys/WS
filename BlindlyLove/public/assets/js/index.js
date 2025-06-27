@@ -160,6 +160,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }, 200);
     });
+
+     // ✅ 0. 햄버거 메뉴 기본으로 열기
+  const hamburger = document.querySelector(".hamburger");
+  const menu = document.querySelector(".mobile-menu");
+
+  if (hamburger && menu) {
+    hamburger.classList.add("open", "is-in-menu");
+    menu.classList.add("open");
+  }
+  
   }
 
   window.addEventListener("resize", positionCharacterToSearchBox);
