@@ -399,13 +399,13 @@ html.dark body .hamburger.is-in-menu span {
   position: fixed;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
-  width: 10px;
+  width: 30px;
   height: 100vh;
   background-color: rgba(51, 51, 51, 0.5);
   color: white;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
   z-index: 12000;
-  padding: 2rem;
+  padding: 0rem;
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
   transform: translateX(-100%); 
