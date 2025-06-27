@@ -397,6 +397,8 @@ html.dark body .hamburger.is-in-menu span {
 /* ✅ 모바일 메뉴 */
 .mobile-menu {
   position: fixed;
+  display: flex;
+  flex-direction: column;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
   width: 60px;
