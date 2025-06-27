@@ -419,11 +419,12 @@ html.dark body .hamburger.is-in-menu span {
   /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 */
   /* transform과 opacity가 동시에 부드럽게 변하도록 합니다. */
   transition:
-  width 0.6s ease,
-  border-radius 0.6s ease,
-  padding 0.6s ease,
-  box-shadow 0.6s ease;
-  flex-direction: column;
+    transform 0.3s ease-in-out,
+    opacity 0.3s ease-in-out,
+    width 0.6s ease,
+    border-radius 0.6s ease,
+    padding 0.6s ease,
+    box-shadow 0.6s ease;
 }
 
 .mobile-menu.open:hover {
