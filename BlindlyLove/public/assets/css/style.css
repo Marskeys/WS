@@ -746,7 +746,7 @@ html.dark body .mobile-menu{
 }
 
 
-.mobile-menu.open:hover.tetris-icon{
+.mobile-menu.open .tetris-icon {
   width: 60px;
   height: 60px;
 
