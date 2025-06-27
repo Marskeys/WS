@@ -403,11 +403,10 @@ html.dark body .hamburger.is-in-menu span {
   height: 80vh;
   background-color: rgb(255, 255, 255);
   color: white;
-  border-color: rgb(0, 0, 0, 1);
   z-index: 12000;
   margin-top: 3rem;
   margin-left: 0.5rem;
-  border: 2px solid rgb(245, 139, 139); 
+  border: 2px solid rgb(243, 168, 168); 
   border-radius: 40px;
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
