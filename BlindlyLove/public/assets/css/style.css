@@ -8,6 +8,14 @@ html, body {
   flex-direction: column;
   box-sizing: border-box;
   overflow-x: hidden; /* 가로 스크롤 방지 */
+  background: linear-gradient(
+  to bottom,
+  #ffffff 0%,     /* 하얀색 시작 */
+  #fff0f5 25%,    /* 라벤더블러쉬 같은 연분홍 */
+  #ffd1dc 50%,    /* 벚꽃잎 느낌 */
+  #fcb7c2 75%,    /* 더 진해짐 */
+  #e68cab 100%    /* 짙은 벚꽃핑크 */
+);
 }
 
 
