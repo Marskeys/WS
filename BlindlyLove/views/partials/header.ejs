@@ -17,32 +17,6 @@
           <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
         </a>
       <% } %>
-
-      <!-- ✅ 데스크탑 메뉴 시작 -->
-      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-        <nav class="desktop-menu">
-          <ul class="menu-list">
-            <li class="has-submenu">
-              <a href="#">온라인 건강 진단 도구</a>
-              <ul class="submenu">
-                <li><a href="/tools/health-check/hearing">간단 청력 검사</a></li>
-                <li><a href="/tools/health-check/vision">간단 시야 검사</a></li>
-                <li><a href="/tools/health-check/memory">간단 치매 검사</a></li>
-              </ul>
-            </li>
-            <li class="has-submenu">
-              <a href="#">무료 온라인 두뇌 게임</a>
-              <ul class="submenu">
-                <li><a href="/tools/games/tetris">테트리스</a></li>
-                <li><a href="/tools/games/2048">스도쿠</a></li>
-                <li><a href="/tools/games/minesweeper">지뢰찾기</a></li>
-                <li><a href="/tools/games/memory">기억력 게임</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
-      <% } %>
-      <!-- ✅ 데스크탑 메뉴 끝 -->
     </div>
 
     <div class="right-controls">
@@ -94,70 +68,6 @@
 
   <!-- ✅ 스타일 -->
   <style>
-    .desktop-menu {
-      display: flex;
-      align-items: center;
-      margin-left: 1.5rem;
-    }
-
-    .menu-list {
-      list-style: none;
-      display: flex;
-      gap: 2rem;
-      margin: 0;
-      padding: 0;
-    }
-
-    .menu-list > li {
-      position: relative;
-    }
-
-    .menu-list > li > a {
-      text-decoration: none;
-      color: #333;
-      font-weight: bold;
-      font-size: 0.95rem;
-      padding: 0.5rem;
-      display: inline-block;
-    }
-
-    .submenu {
-      position: absolute;
-      top: 100%;
-      list-style: none;
-      left: 0;
-      min-width: 200px;
-      background: white;
-      border: 1px solid #ccc;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      display: none;
-      flex-direction: column;
-      margin: 0;
-      padding: 0;
-      z-index: 999;
-    }
-
-    .submenu li {
-      border-bottom: 1px solid #eee;
-    }
-
-    .submenu li a {
-      padding: 0.75rem 1rem;
-      display: block;
-      text-decoration: none;
-      color: #333;
-      font-size: 0.9rem;
-    }
-
-    .submenu li a:hover {
-      background-color: #f0f8ff;
-      color: #007bff;
-    }
-
-    .has-submenu:hover .submenu {
-      display: flex;
-    }
-
     @media (max-width: 640px) {
       .desktop-menu {
         display: none;
@@ -182,26 +92,6 @@
         pointer-events: none;
       }
     }
-
-    /* ✅ 다크모드 메뉴 대응 */
-    html.dark body .menu-list > li > a {
-      color: #eee;
-    }
-
-    html.dark body .submenu {
-      background: #222;
-      border: 1px solid #444;
-    }
-
-    html.dark body .submenu li a {
-      color: #ddd;
-    }
-
-    html.dark body .submenu li a:hover {
-      transition: background-color 0.3s ease, color 0.3s ease;
-      color: #66b2ff;
-    }
-
   </style>
 
   <!-- ✅ 스크립트 -->
