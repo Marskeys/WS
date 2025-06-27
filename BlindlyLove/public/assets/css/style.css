@@ -320,7 +320,7 @@ body.no-fixed-footer footer {
 
 /* ✅ 햄버거 버튼 기본 */
 .hamburger {
-  display: none; /* 데스크탑에서 숨김 */
+  /*display: none; /* 데스크탑에서 숨김 */
   flex-direction: column;
   justify-content: space-between;
   width: 30px;
