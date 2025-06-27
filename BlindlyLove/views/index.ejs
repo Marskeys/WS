@@ -90,6 +90,7 @@
           <table class="board-table">
             <thead>
               <tr>
+                <th>번호</th>
                 <th>제목</th>
                 <th>작성자</th>
                 <th>카테고리</th>
@@ -99,6 +100,7 @@
             <tbody id="board-content">
               <% posts.forEach(post => { %>
                 <tr data-category="<%= post.categories %>">
+                  <td><%= post.id %></td>
                   <td>
                     <div class="table-title-and-actions" style="display: flex; justify-content: space-between; align-items: center;">
                       <a href="/post/<%= post.id %>"
@@ -135,6 +137,7 @@
             <% posts.forEach(post => { %>
               <div class="mobile-post-item" data-category="<%= post.categories %>">
                 <div class="post-title-and-actions">
+                  <span class="post-id" style="font-size: 0.85rem; color: #aaa; margin-right: 0.5rem;">#<%= post.id %></span> <!-- 🔼 추가 -->
                   <a href="/post/<%= post.id %>"
                      class="post-title post-detail-link"
                      data-post-id="<%= post.id %>"
