@@ -405,19 +405,7 @@ html.dark body .hamburger.is-in-menu span {
   color: white;
   border-color: rgb(245, 139, 139);
   z-index: 12000;
-  padding: 0rem;}
-
-  html.dark .mobile-menu{
-  position: fixed;
-  top: 0;
-  left: 0; /* 초기 left 값을 0으로 유지합니다. */
-  width: 60px;
-  height: 100vh;
-  background-color: rgb(0, 0, 0, 1);
-  color: rgb(0, 0, 0, 1);
-  border-color: rgb(245, 139, 139);
   padding: 0rem;
-  }
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
   transform: translateX(-100%); 
