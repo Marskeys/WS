@@ -398,6 +398,10 @@ html.dark body .hamburger.is-in-menu span {
 .mobile-menu {
   position: fixed;
   display: flex;
+  align-items: center;
+  justify-content: center; /* 가운데 정렬 */
+  gap: 1rem;
+  padding: 10px;
   flex-direction: column;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
