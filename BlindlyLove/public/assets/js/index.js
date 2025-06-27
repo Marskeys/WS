@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.innerWidth >= 640 && hamburger && mobileMenu) { // 필요한 요소들이 존재하는지 확인
     hamburger.classList.add("open", "is-in-menu"); // 햄버거 버튼에 'open'과 'is-in-menu' 클래스 추가
     mobileMenu.classList.add("open"); // 모바일 메뉴에 'open' 클래스 추가
-
+    document.body.classList.add("menu-open"); // body에 'menu-open' 클래스 추가
 
     // 중요: 햄버거 버튼을 모바일 메뉴 헤더 안으로 실제로 이동
     // 이 시점에서는 mobileMenuHeader 변수가 이미 선언되어 있거나, 다시 찾아야 합니다.

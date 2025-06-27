@@ -419,7 +419,7 @@ html.dark body .hamburger.is-in-menu span {
   /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 */
   /* transform과 opacity가 동시에 부드럽게 변하도록 합니다. */
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  display: flex;
+  display: non;
   flex-direction: column;
 }
 
@@ -429,6 +429,7 @@ html.dark body .mobile-menu{
 
 .mobile-menu.open {
   /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
+  display: flex;
   transform: translateX(0); 
   opacity: 1;
   pointer-events: auto; /* 메뉴가 열렸을 때 클릭 이벤트를 허용합니다. */
