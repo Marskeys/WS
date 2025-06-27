@@ -421,9 +421,10 @@ html.dark body .hamburger.is-in-menu span {
   flex-direction: column;
 }
 
-html.dark .mobile.menu{
+html.dark body .mobile.menu{
   background-color: rgb(0, 0, 0);
 }
+
 .mobile-menu.open {
   /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
   transform: translateX(0); 
