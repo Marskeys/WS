@@ -59,7 +59,7 @@
               <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
             </div>
           </div>
-          <button onclick="showTOC()" data-tooltip="목차 보기">📑 목차</button>
+          <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
           <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
           <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
           <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
@@ -556,55 +556,51 @@
           });
       };
 
-      function showTOC() {
-  const editor = document.getElementById('editor');
-  const headings = editor.querySelectorAll('h1, h2');
+      function insertTOC() {
+  const editor = document.getElementById("editor");
+  const headings = editor.querySelectorAll("h1, h2");
+
   if (!headings.length) {
-    showCustomMessage("목차로 만들 수 있는 제목이 없습니다.");
+    showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
     return;
   }
 
-  let tocHTML = `
-    <div style="
-      max-height: 400px;
-      overflow-y: auto;
-      padding: 1rem;
-      text-align: left;
-      border-left: 4px solid #007bff;
-      background: #f9f9f9;
-      font-family: 'Nanum Gothic', sans-serif;
-      line-height: 1.6;
-    ">
-      <h3 style="margin-top: 0;">📑 목차</h3>
-      <ul style="list-style: none; padding-left: 0;">
+  // 기존 목차 제거
+  const oldTOC = editor.querySelector(".auto-toc");
+  if (oldTOC) oldTOC.remove();
+
+  // 목차 생성
+  const toc = document.createElement("div");
+  toc.className = "auto-toc";
+  toc.style = `
+    background: #f0f8ff;
+    border-left: 4px solid #007bff;
+    padding: 1em;
+    margin-bottom: 1em;
+    font-family: 'Nanum Gothic', sans-serif;
+    font-size: 0.95rem;
   `;
+
+  toc.innerHTML = "<strong>📑 목차</strong><ul style='padding-left:1em; margin-top:0.5em;'>";
 
   headings.forEach((el, i) => {
     const id = `toc-${i}`;
     el.id = id;
-    const indent = el.tagName === 'H2' ? '1em' : '0';
-    tocHTML += `
-      <li style="margin-left: ${indent}; margin-bottom: 0.5em;">
-        <a href="#${id}" style="text-decoration: none; color: #007bff;"
-           onclick="document.getElementById('${id}').scrollIntoView({behavior:'smooth'}); hideCustomMessage(); return false;">
+
+    toc.innerHTML += `
+      <li style="margin-left:${el.tagName === "H2" ? "1em" : "0"}">
+        <a href="#${id}" style="color:#007bff; text-decoration:none;">
           ${el.innerText}
         </a>
-      </li>
-    `;
+      </li>`;
   });
 
-  tocHTML += `
-      </ul>
-    </div>
-  `;
+  toc.innerHTML += "</ul>";
 
-  createMessageBox(tocHTML);
+  // 맨 앞에 삽입
+  editor.insertBefore(toc, editor.firstChild);
 }
 
-function hideCustomMessage() {
-  const modal = document.getElementById('customMessageModal');
-  if (modal) modal.style.display = 'none';
-}
     </script>
       
       <%- include('partials/scripts') %>
