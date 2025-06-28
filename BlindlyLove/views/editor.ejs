@@ -624,38 +624,46 @@ html.dark .auto-toc a {
   const oldTOC = editor.querySelector(".auto-toc");
   if (oldTOC) oldTOC.remove();
 
-  // 새 목차 생성
   const tocWrapper = document.createElement("div");
   tocWrapper.className = "auto-toc";
-  tocWrapper.contentEditable = "false"; // 에디터에서 실수로 편집 방지
+  tocWrapper.contentEditable = "false";
 
-  tocWrapper.innerHTML = `
-    <strong class="toc-title">📑 목차</strong>
-    <ul class="toc-list">
-      ${Array.from(headings).map((el, i) => {
-        const id = `toc-${i}`;
-        el.id = id;
+  const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
+  const tocList = document.createElement("ul");
+  tocList.className = "toc-list";
+  tocList.style.margin = "0";
+  tocList.style.padding = "0";
 
-        const indent = el.tagName.toLowerCase() === 'h2' ? ' style="margin-left:1em;"' : '';
-        return `<li${indent}>
-                  <a href="#${id}" onclick="event.preventDefault(); document.getElementById('${id}').scrollIntoView({ behavior: 'smooth' });"
-                     style="color:#0366d6; text-decoration:none;">
-                    ${el.textContent}
-                  </a>
-                </li>`;
-      }).join('')}
-    </ul>
-  `;
+  headings.forEach((el, i) => {
+    const id = `toc-${i}`;
+    el.id = id;
 
-  // p 태그 바깥에 삽입
-  const firstEl = editor.firstElementChild;
-  if (firstEl?.tagName.toLowerCase() === 'p') {
-    editor.insertBefore(tocWrapper, firstEl);
-  } else {
-    editor.prepend(tocWrapper);
-  }
+    const li = document.createElement("li");
+    li.className = `toc-item toc-${el.tagName.toLowerCase()}`;
+    li.style.margin = "0.2em 0";
+    li.style.lineHeight = "1.2";
+
+    const a = document.createElement("a");
+    a.href = `#${id}`;
+    a.textContent = `${i + 1}. ${el.textContent.trim()}`;
+    a.onclick = function (e) {
+      e.preventDefault();
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    };
+    a.style.color = "#0366d6";
+    a.style.textDecoration = "none";
+
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+
+  tocWrapper.innerHTML = tocTitle;
+  tocWrapper.appendChild(tocList);
+
+  // h1 앞에 제대로 삽입
+  const firstHeading = [...headings][0];
+  editor.insertBefore(tocWrapper, firstHeading);
 }
-
 
     </script>
       
