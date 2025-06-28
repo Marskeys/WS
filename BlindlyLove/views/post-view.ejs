@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <%- include('partials/head') %>
   <style>
-    /* 📑 목차 디자인 및 줄간격 최적화 */
+    /* 📑 목차 박스 디자인 */
     .post-content .auto-toc {
       background: #f7f9fa;
       border: 1px solid #d0d7de;
@@ -33,19 +33,35 @@
       line-height: 1.2;
     }
 
+    /* 📘 라이트모드 링크 기본 + hover */
     .post-content .auto-toc li a {
-  color: #0366d6;
-  text-decoration: none;
-}
-
-html.dark .post-content .auto-toc li a {
-  color: #6fb7ff; /* 💡 밝고 선명한 파란색 */
-}
+      color: #0366d6;
+      text-decoration: none;
+      transition: color 0.2s ease, text-decoration 0.2s ease;
+    }
 
     .post-content .auto-toc li a:hover {
+      color: #024aa5;
       text-decoration: underline;
     }
 
+    /* 🌙 다크모드 링크 기본 + hover */
+    html.dark .post-content .auto-toc {
+      background: #1f1f2b;
+      border: 1px solid #444;
+      color: #ddd;
+    }
+
+    html.dark .post-content .auto-toc li a {
+      color: #6fb7ff !important;
+    }
+
+    html.dark .post-content .auto-toc li a:hover {
+      color: #a2d4ff !important;
+      text-decoration: underline;
+    }
+
+    /* 제목 간격 조정 */
     .post-content h1,
     .post-content h2 {
       margin-top: 0.8em;
@@ -56,16 +72,6 @@ html.dark .post-content .auto-toc li a {
     .post-content .auto-toc + h1,
     .post-content .auto-toc + h2 {
       margin-top: 0.5rem !important;
-    }
-
-    html.dark .post-content .auto-toc {
-      background: #1f1f2b;
-      border: 1px solid #444;
-      color: #ddd;
-    }
-
-    html.dark .post-content .auto-toc a {
-      color: #ffffff !important;
     }
 
     /* 📄 일반 글 스타일 */
