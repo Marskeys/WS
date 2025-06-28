@@ -572,24 +572,15 @@
   // 목차 생성
   const toc = document.createElement("div");
   toc.className = "auto-toc";
-  toc.style = `
-    background: #f0f8ff;
-    border-left: 4px solid #007bff;
-    padding: 1em;
-    margin-bottom: 1em;
-    font-family: 'Nanum Gothic', sans-serif;
-    font-size: 0.95rem;
-  `;
-
-  toc.innerHTML = "<strong>📑 목차</strong><ul style='padding-left:1em; margin-top:0.5em;'>";
+  toc.innerHTML = "<strong class='toc-title'>📑 목차</strong><ul class='toc-list'>";
 
   headings.forEach((el, i) => {
     const id = `toc-${i}`;
     el.id = id;
 
     toc.innerHTML += `
-      <li style="margin-left:${el.tagName === "H2" ? "1em" : "0"}">
-        <a href="#${id}" style="color:#007bff; text-decoration:none;">
+      <li class="toc-item toc-${el.tagName.toLowerCase()}">
+        <a href="#${id}" onclick="event.preventDefault(); document.getElementById('${id}').scrollIntoView({ behavior: 'smooth' });">
           ${el.innerText}
         </a>
       </li>`;
@@ -597,9 +588,9 @@
 
   toc.innerHTML += "</ul>";
 
-  // 맨 앞에 삽입
   editor.insertBefore(toc, editor.firstChild);
 }
+
 
     </script>
       

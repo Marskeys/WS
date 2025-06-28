@@ -567,3 +567,57 @@ html.dark body .editor footer {
       html.dark body label {
         color: #ccc;
       }
+
+
+      /* 📑 목차 박스 스타일 */
+.auto-toc {
+  background: #f7f9fa;
+  border: 1px solid #d0d7de;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.auto-toc .toc-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.auto-toc .toc-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.auto-toc .toc-item {
+  margin-bottom: 0.3rem;
+}
+
+.auto-toc .toc-h1 a {
+  color: #0366d6;
+  font-weight: 600;
+}
+
+.auto-toc .toc-h2 {
+  margin-left: 1em;
+}
+
+.auto-toc .toc-h2 a {
+  color: #0366d6;
+  font-weight: 400;
+  font-size: 0.94em;
+}
+
+/* 🌙 다크모드 적용 */
+html.dark .auto-toc {
+  background: #1f1f2b;
+  border: 1px solid #444;
+  color: #ddd;
+}
+
+html.dark .auto-toc a {
+  color: #6fb7ff;
+}
