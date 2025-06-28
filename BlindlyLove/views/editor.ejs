@@ -634,18 +634,34 @@ html.dark .auto-toc a {
   tocList.style.margin = "0";
   tocList.style.padding = "0";
 
-  headings.forEach((el, i) => {
-    const id = `toc-${i}`;
+  let h1Count = 0;
+  let h2Count = 0;
+
+  headings.forEach((el) => {
+    const tag = el.tagName.toLowerCase();
+    let number = "";
+
+    if (tag === "h1") {
+      h1Count++;
+      h2Count = 0;
+      number = `${h1Count}.`;
+    } else if (tag === "h2") {
+      h2Count++;
+      number = `${h1Count}.${h2Count}`;
+    }
+
+    const id = `toc-${number.replace(/\./g, "-")}`;
     el.id = id;
 
     const li = document.createElement("li");
-    li.className = `toc-item toc-${el.tagName.toLowerCase()}`;
+    li.className = `toc-item toc-${tag}`;
     li.style.margin = "0.2em 0";
     li.style.lineHeight = "1.2";
+    if (tag === "h2") li.style.marginLeft = "1.2rem";
 
     const a = document.createElement("a");
     a.href = `#${id}`;
-    a.textContent = `${i + 1}. ${el.textContent.trim()}`;
+    a.textContent = `${number} ${el.textContent.trim()}`;
     a.onclick = function (e) {
       e.preventDefault();
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -664,6 +680,7 @@ html.dark .auto-toc a {
   const firstHeading = [...headings][0];
   editor.insertBefore(tocWrapper, firstHeading);
 }
+
 
     </script>
       
