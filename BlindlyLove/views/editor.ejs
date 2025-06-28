@@ -624,26 +624,36 @@ html.dark .auto-toc a {
   const oldTOC = editor.querySelector(".auto-toc");
   if (oldTOC) oldTOC.remove();
 
-  // 목차 생성
-  const toc = document.createElement("div");
-  toc.className = "auto-toc";
-  toc.innerHTML = "<strong class='toc-title'>📑 목차</strong><ul class='toc-list'>";
+  // 새 목차 생성
+  const tocWrapper = document.createElement("div");
+  tocWrapper.className = "auto-toc";
+  tocWrapper.contentEditable = "false"; // 에디터에서 실수로 편집 방지
 
-  headings.forEach((el, i) => {
-    const id = `toc-${i}`;
-    el.id = id;
+  tocWrapper.innerHTML = `
+    <strong class="toc-title">📑 목차</strong>
+    <ul class="toc-list">
+      ${Array.from(headings).map((el, i) => {
+        const id = `toc-${i}`;
+        el.id = id;
 
-    toc.innerHTML += `
-      <li class="toc-item toc-${el.tagName.toLowerCase()}">
-        <a href="#${id}" onclick="event.preventDefault(); document.getElementById('${id}').scrollIntoView({ behavior: 'smooth' });">
-          ${el.innerText}
-        </a>
-      </li>`;
-  });
+        const indent = el.tagName.toLowerCase() === 'h2' ? ' style="margin-left:1em;"' : '';
+        return `<li${indent}>
+                  <a href="#${id}" onclick="event.preventDefault(); document.getElementById('${id}').scrollIntoView({ behavior: 'smooth' });"
+                     style="color:#0366d6; text-decoration:none;">
+                    ${el.textContent}
+                  </a>
+                </li>`;
+      }).join('')}
+    </ul>
+  `;
 
-  toc.innerHTML += "</ul>";
-
-  editor.insertBefore(toc, editor.firstChild);
+  // p 태그 바깥에 삽입
+  const firstEl = editor.firstElementChild;
+  if (firstEl?.tagName.toLowerCase() === 'p') {
+    editor.insertBefore(tocWrapper, firstEl);
+  } else {
+    editor.prepend(tocWrapper);
+  }
 }
 
 
