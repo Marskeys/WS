@@ -5,49 +5,48 @@
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <%- include('partials/head') %>
   <style>
+/* 📑 auto-toc 목차 */
 .auto-toc {
   background: #f7f9fa;
   border: 1px solid #d0d7de;
   padding: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border-radius: 6px;
   font-size: 0.95rem;
-  line-height: 1.6;
-  font-family: 'Nanum Gothic', sans-serif;
+  line-height: 1.4;
 }
 
-.auto-toc strong {
-  display: block;
-  margin-bottom: 0.5rem;
+.auto-toc .toc-title {
   font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
-.auto-toc ul {
+.auto-toc .toc-list {
   list-style: none;
   padding-left: 0;
   margin: 0;
 }
 
-.auto-toc li {
-  margin-bottom: 0.3rem;
+.auto-toc .toc-list li {
+  margin: 0.2em 0;
+  line-height: 1.3;
 }
 
-.auto-toc li:nth-child(n) {
-  margin-left: 0;
-}
-
-.auto-toc li:nth-child(n+2) {
-  margin-left: 1em;
-}
-
-.auto-toc a {
+.auto-toc .toc-list li a {
   color: #0366d6;
   text-decoration: none;
-  font-weight: 500;
+  font-size: 0.95em;
 }
 
-.auto-toc a:hover {
+.auto-toc .toc-list li a:hover {
   text-decoration: underline;
+}
+
+/* 줄 간격 너무 벌어지는 것 방지 */
+.auto-toc + h1,
+.auto-toc + h2 {
+  margin-top: 0.5rem;
 }
 
 /* 🌙 다크모드 대응 */
