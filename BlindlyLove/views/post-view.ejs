@@ -5,97 +5,67 @@
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <%- include('partials/head') %>
   <style>
-/* 📑 auto-toc 목차 */
-.auto-toc {
-  background: #f7f9fa;
-  border: 1px solid #d0d7de;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
+    /* 📑 목차 디자인 및 줄간격 최적화 */
+    .post-content .auto-toc {
+      background: #f7f9fa;
+      border: 1px solid #d0d7de;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
 
-.auto-toc .toc-title {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: block;
-}
+    .post-content .auto-toc .toc-title {
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
 
-.auto-toc .toc-list {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
+    .post-content .auto-toc ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-.auto-toc .toc-list li {
-  margin: 0.2em 0;
-  line-height: 1.3;
-}
+    .post-content .auto-toc li {
+      margin: 0.1em 0;
+      line-height: 1.2;
+    }
 
-.auto-toc .toc-list li a {
-  color: #0366d6;
-  text-decoration: none;
-  font-size: 0.95em;
-}
+    .post-content .auto-toc li a {
+      color: #0366d6;
+      text-decoration: none;
+      font-size: 0.95em;
+    }
 
-.auto-toc .toc-list li a:hover {
-  text-decoration: underline;
-}
+    .post-content .auto-toc li a:hover {
+      text-decoration: underline;
+    }
 
-/* 줄 간격 너무 벌어지는 것 방지 */
-.auto-toc + h1,
-.auto-toc + h2 {
-  margin-top: 0.5rem;
-}
+    .post-content h1,
+    .post-content h2 {
+      margin-top: 0.8em;
+      margin-bottom: 0.4em;
+      line-height: 1.3;
+    }
 
-/* 🌙 다크모드 대응 */
-html.dark .auto-toc {
-  background: #1f1f2b;
-  border: 1px solid #444;
-  color: #ddd;
-}
+    .post-content .auto-toc + h1,
+    .post-content .auto-toc + h2 {
+      margin-top: 0.5rem !important;
+    }
 
-html.dark .auto-toc a {
-  color: #6fb7ff;
-}
+    html.dark .post-content .auto-toc {
+      background: #1f1f2b;
+      border: 1px solid #444;
+      color: #ddd;
+    }
 
+    html.dark .post-content .auto-toc a {
+      color: #6fb7ff;
+    }
 
-    .post-actions a.edit-btn,
-  .post-actions form button {
-    display: inline-block;
-    padding: 4px 10px;              /* ✅ 작아진 패딩 */
-    margin: 0 4px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.75rem;             /* ✅ 작아진 글자 크기 */
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-  }
-
-  .post-actions a.edit-btn {
-    background-color: #f0f8ff;
-    color: #0077cc;
-    text-decoration: none;
-  }
-
-  .post-actions a.edit-btn:hover {
-    background-color: #d8edff;
-    color: #005fa3;
-  }
-
-  .post-actions form button {
-    background-color: #fff0f0;
-    color: #cc0000;
-    border: 1px solid #cc0000;
-  }
-
-  .post-actions form button:hover {
-    background-color: #ffe5e5;
-    color: #a30000;
-  }
-
+    /* 📄 일반 글 스타일 */
     .post-title {
       font-size: 1.5rem;
       font-weight: bold;
@@ -115,70 +85,107 @@ html.dark .auto-toc a {
       font-size: 1rem;
       white-space: pre-wrap;
       color: #333;
-      max-width: 640px;         /* ✅ 너무 넓지 않게 */
-      margin: 0 auto;           /* ✅ 가운데 정렬 */
-      padding-left: 0.5rem;     
+      max-width: 640px;
+      margin: 0 auto;
+      padding-left: 0.5rem;
     }
 
     html.dark body .post-content {
       color: #ddd;
     }
 
-    .logo-wrap {
-  display: flex;
-  justify-content: center;  /* ✅ 가로 가운데 정렬 */
-  align-items: center;      /* ✅ 세로 가운데 정렬 (필요시) */
-}
+    .post-actions a.edit-btn,
+    .post-actions form button {
+      display: inline-block;
+      padding: 4px 10px;
+      margin: 0 4px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
 
-.logo-wrap img {
-  max-width: 150px;
-  height: auto;
-  display: block;
-  margin-bottom: 1rem;
-}
+    .post-actions a.edit-btn {
+      background-color: #f0f8ff;
+      color: #0077cc;
+      text-decoration: none;
+    }
+
+    .post-actions a.edit-btn:hover {
+      background-color: #d8edff;
+      color: #005fa3;
+    }
+
+    .post-actions form button {
+      background-color: #fff0f0;
+      color: #cc0000;
+      border: 1px solid #cc0000;
+    }
+
+    .post-actions form button:hover {
+      background-color: #ffe5e5;
+      color: #a30000;
+    }
+
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-wrap img {
+      max-width: 150px;
+      height: auto;
+      display: block;
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 <body class="no-fixed-footer">
   <%- include('partials/header') %>
 
-  <div class="signup-container"> <!-- 기존 디자인 활용 -->
+  <div class="signup-container">
     <div class="logo-wrap">
       <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
     </div>
 
     <div class="post-title"><%= post.title %></div>
+
     <div class="post-meta">
       <span>카테고리: <%= post.categories %></span><br>
       <span>작성자: <%= post.author %></span><br>
       <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
 
+    <!-- 📢 광고 삽입 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
      crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-2585969189290118"
-     data-ad-slot="3406391330"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="ca-pub-2585969189290118"
+         data-ad-slot="3406391330"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
+    <!-- 📜 게시글 내용 -->
     <div class="post-content">
       <%- post.content %>
     </div>
 
+    <!-- ✏️ 수정 / 삭제 버튼 -->
     <% if (user && post.user_id == user.id) { %>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
-        <a href="/edit/<%= post.id %>" class="edit-btn" style="margin-right: 10px;">✏️ 수정하기</a>
+        <a href="/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
         <form action="/delete/<%= post.id %>" method="POST" style="display: inline;">
           <button type="submit" onclick="return confirm('정말 삭제하시겠어요?');">🗑 삭제하기</button>
         </form>
       </div>
     <% } %>
 
-    <div class="extra" style="margin-top: 2rem;">
+    <div class="extra" style="margin-top: 2rem; text-align: center;">
       <a href="/" class="back-home-link">← 홈으로 돌아가기</a>
     </div>
   </div>
