@@ -39,8 +39,10 @@
 .post-content .auto-toc li a {
   color: #0366d6;
   text-decoration: none;
-  display: inline;
-  padding: 2px 4px;
+  display: inline-block;        /* ✅ inline은 줄바꿈 안됨. inline-block으로 바꿔 */
+  max-width: 100%;              /* ✅ 부모 요소보다 더 넓어지지 않게 제한 */
+  width: fit-content;           /* ✅ 글자 길이만큼만 차지하도록 */
+  padding: 2px 6px;
   border-radius: 4px;
   transition: all 0.2s ease;
 }
