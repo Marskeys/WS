@@ -59,7 +59,7 @@
               <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
             </div>
           </div>
-    
+          <button onclick="showTOC()" data-tooltip="목차 보기">📑 목차</button>
           <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
           <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
           <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
@@ -555,6 +555,56 @@
               button.addEventListener('mousedown', saveSelection);
           });
       };
+
+      function showTOC() {
+  const editor = document.getElementById('editor');
+  const headings = editor.querySelectorAll('h1, h2');
+  if (!headings.length) {
+    showCustomMessage("목차로 만들 수 있는 제목이 없습니다.");
+    return;
+  }
+
+  let tocHTML = `
+    <div style="
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 1rem;
+      text-align: left;
+      border-left: 4px solid #007bff;
+      background: #f9f9f9;
+      font-family: 'Nanum Gothic', sans-serif;
+      line-height: 1.6;
+    ">
+      <h3 style="margin-top: 0;">📑 목차</h3>
+      <ul style="list-style: none; padding-left: 0;">
+  `;
+
+  headings.forEach((el, i) => {
+    const id = `toc-${i}`;
+    el.id = id;
+    const indent = el.tagName === 'H2' ? '1em' : '0';
+    tocHTML += `
+      <li style="margin-left: ${indent}; margin-bottom: 0.5em;">
+        <a href="#${id}" style="text-decoration: none; color: #007bff;"
+           onclick="document.getElementById('${id}').scrollIntoView({behavior:'smooth'}); hideCustomMessage(); return false;">
+          ${el.innerText}
+        </a>
+      </li>
+    `;
+  });
+
+  tocHTML += `
+      </ul>
+    </div>
+  `;
+
+  createMessageBox(tocHTML);
+}
+
+function hideCustomMessage() {
+  const modal = document.getElementById('customMessageModal');
+  if (modal) modal.style.display = 'none';
+}
     </script>
       
       <%- include('partials/scripts') %>
