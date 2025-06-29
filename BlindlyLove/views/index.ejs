@@ -292,25 +292,7 @@
       });
     </script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const trigger = document.querySelector('.search-wrapper'); // 원래 위치에 있던 검색창
-    const fixedSearch = document.querySelector('.icon-submit-btn'); // 헤더에 숨겨둔 고정 검색창
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
-        fixedSearch.style.display = 'flex';
-      } else {
-        fixedSearch.style.display = 'none';
-      }
-    }, {
-      threshold: 0,
-      rootMargin: '-5px'
-    });
-
-    if (trigger && fixedSearch) observer.observe(trigger);
-  });
-</script>
 
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
