@@ -497,7 +497,19 @@ html.dark body .search-result-msg {
   border-radius: 0;
 }
 
-
+@keyframes slide-expand {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
 
 .fixed-search-wrapper {
   display: none;
@@ -516,6 +528,8 @@ html.dark body .search-result-msg {
   max-width: 480px;         /* ✅ 여기서 너비 제한 (줄일수록 여백 줄어듦) */
   padding: 0 0.5rem;        /* ✅ 좌우 패딩 줄이기 */
   z-index: 5000;            /* ✅ 헤더 위에 올려야 하면 */
+
+  animation: slide-expand 0.5s ease forwards;
 }
 
 .fixed-search-form {
