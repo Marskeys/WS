@@ -108,10 +108,11 @@
                        const isEdited = updatedAt > createdAt;
                      %>
                    
-                     <% if (isNew) { %>
-                      <span class="label-icon new-icon"></span>
-                    <% } else if (isEdited) { %>
+                     <% if (isEdited) { %>
                       <span class="label-icon edited-icon"></span>
+                    <% } else if (isNew) { %>
+                      <span class="label-icon new-icon"></span>
+                    <% } %>
                     <% } %>
             
                          <% if (post.is_pinned) { %><span>📌</span><% } %>
@@ -162,10 +163,11 @@
                      const isEdited = updatedAt > createdAt;
                    %>
                  
-                   <% if (isNew) { %>
-                    <span class="label-icon new-icon"></span>
-                  <% } else if (isEdited) { %>
+                   <% if (isEdited) { %>
                     <span class="label-icon edited-icon"></span>
+                  <% } else if (isNew) { %>
+                    <span class="label-icon new-icon"></span>
+                  <% } %>
                   <% } %>
               
                     <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
