@@ -214,7 +214,14 @@
     </div>
   </div>
 
-  
+<script> 
+  document.getElementById("editor").addEventListener("paste", function (e) {
+    e.preventDefault();
+    const clipboardData = e.clipboardData || window.clipboardData;
+    const text = clipboardData.getData("text/plain"); // 스타일 없는 순수 텍스트
+    document.execCommand("insertText", false, text);
+  });
+</script>
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
 </body>
