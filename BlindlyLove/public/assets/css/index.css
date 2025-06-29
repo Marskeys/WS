@@ -238,7 +238,22 @@
   padding: 0.65rem;
   border-bottom: 1px solid #ddd;
   text-align: left;
-  vertical-align: middle; 
+  
+}
+
+.board-table td a.post-detail-link {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.board-table td .action-icons {
+  display: inline-block; /* ✅ 줄 안에서 정렬되게 */
+  vertical-align: middle; /* ✅ 위/아래 기준 맞추기 */
+  margin-left: 0.5rem;
 }
 
 .board-table th {
