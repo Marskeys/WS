@@ -329,7 +329,7 @@ html, body {
 }
 .icon-submit-btn:hover i {
   color: #caa8ff;
-  transform: scale(1.15);
+  transform: translateY(-50%) scale(1.15);
 }
 
 
