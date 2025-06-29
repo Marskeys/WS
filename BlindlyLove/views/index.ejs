@@ -109,9 +109,10 @@
                      %>
                    
                      <% if (isNew) { %>
-                       <span class="new-label">NEW!</span>
-                     <% } else if (isEdited) { %>
-                       <span class="edited-label">EDITED!</span>
+                      <span class="label-icon new-icon"></span>
+                    <% } else if (isEdited) { %>
+                      <span class="label-icon edited-icon"></span>
+                    <% } %>
                      <% } %>
                          <% if (post.is_pinned) { %><span>📌</span><% } %>
                         <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
@@ -162,9 +163,10 @@
                    %>
                  
                    <% if (isNew) { %>
-                     <span class="new-label">NEW!</span>
-                   <% } else if (isEdited) { %>
-                     <span class="edited-label">EDITED!</span>
+                    <span class="label-icon new-icon"></span>
+                  <% } else if (isEdited) { %>
+                    <span class="label-icon edited-icon"></span>
+                  <% } %>
                    <% } %>
                     <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                   </a>
