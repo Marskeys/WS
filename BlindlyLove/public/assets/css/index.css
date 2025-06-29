@@ -546,3 +546,28 @@ form button:hover {
   color: #4efff9 !important; /* 원하는 색으로 변경 가능 */
   font-weight: bold;
 }
+
+.new-label,
+.edited-label {
+  display: inline-block;
+  font-size: 0.78rem;         /* 글씨 조금 더 큼 */
+  font-weight: bold;
+  padding: 3px 7px;
+  border-radius: 6px;
+  margin-right: 6px;
+  color: white;
+  text-shadow: 0 0 2px white;  /* ✅ 하얀 글씨 테두리 효과 */
+  border: 1px solid rgba(255, 255, 255, 0.7); /* ✅ 테두리 선도 추가 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);   /* ✅ 약간의 입체감 */
+  vertical-align: middle;
+}
+
+/* ✅ NEW: 주황 그라데이션 */
+.new-label {
+  background: linear-gradient(to right, #f7971e, #ffd200);
+}
+
+/* ✅ EDITED: 파랑 그라데이션 */
+.edited-label {
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+}
