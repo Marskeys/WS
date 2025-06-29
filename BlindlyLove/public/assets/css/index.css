@@ -504,17 +504,18 @@ html.dark body .search-result-msg {
   position: static;
   top: 100%; /* 헤더 내부에서 아래로 약간 뜨는 느낌이면 사용 */
   left: 0;
-  z-index: 1000;
 
   width: 100%;
-  max-width: 320px; /* ✅ 너무 크지 않게 */
-  padding: 0.25rem 0.75rem;
   background-color: transparent;
   box-shadow: none;
   margin: 0rem; 
 
   display: flex;
   align-items: center;
+
+  max-width: 480px;         /* ✅ 여기서 너비 제한 (줄일수록 여백 줄어듦) */
+  padding: 0 0.5rem;        /* ✅ 좌우 패딩 줄이기 */
+  z-index: 5000;            /* ✅ 헤더 위에 올려야 하면 */
 }
 
 .fixed-search-form {
