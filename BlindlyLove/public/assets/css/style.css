@@ -642,7 +642,7 @@ html.dark body .mobile-menu{
 
 @media (max-width: 640px) {
   .header-top {
-    position: relative;;
+    position: sticky;
   }
 
   .logo-link {
