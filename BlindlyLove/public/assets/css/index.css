@@ -543,6 +543,6 @@ form button:hover {
 }
 
 .pinned-title {
-  color: #4efff9; /* 원하는 색으로 변경 가능 */
+  color: #4efff9 !important; /* 원하는 색으로 변경 가능 */
   font-weight: bold;
 }
