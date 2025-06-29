@@ -32,7 +32,6 @@ html, body {
   background-color: #fff;
   box-sizing: border-box;
   flex-shrink: 0;
-  position: sticky;
   top: 0;
   z-index: 9000;
   position: relative;
@@ -642,7 +641,7 @@ html.dark body .mobile-menu{
 
 @media (max-width: 640px) {
   .header-top {
-    position: sticky;
+    position: relative;;
   }
 
   .logo-link {
