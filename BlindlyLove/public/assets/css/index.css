@@ -527,7 +527,7 @@ form button:hover {
 /* 🖥️ 데스크탑 테이블 제목 */
 .board-table .post-detail-link {
   display: inline-block;
-  max-width: 300px; /* 너비 조정 가능 */
+  max-width: 400px; /* 너비 조정 가능 */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
