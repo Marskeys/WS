@@ -96,7 +96,7 @@
                   <td>
                     <div class="table-title-and-actions" style="display: flex; justify-content: space-between; align-items: center;">
                       <a href="/post/<%= post.id %>"
-                         class="post-detail-link"
+                         class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                          data-post-id="<%= post.id %>"
                          data-is-private="<%= post.is_private ? '1' : '0' %>"
                          data-post-user-id="<%= post.user_id %>">
@@ -135,7 +135,7 @@
                     <span class="pinned-icon" title="상단 고정" style="margin-right: 0.3rem;">📌</span>
                   <% } %>
                   <a href="/post/<%= post.id %>"
-                     class="post-title post-detail-link"
+                     class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                      data-post-id="<%= post.id %>"
                      data-is-private="<%= post.is_private ? '1' : '0' %>"
                      data-post-user-id="<%= post.user_id %>">

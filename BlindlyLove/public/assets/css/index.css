@@ -541,3 +541,8 @@ form button:hover {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.pinned-title {
+  color: #4efff9; /* 원하는 색으로 변경 가능 */
+  font-weight: bold;
+}
