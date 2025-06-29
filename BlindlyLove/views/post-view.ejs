@@ -115,7 +115,7 @@
     }
 
     html.dark body .post-content {
-      color: #ddd !important;
+      color: #ddd;
     }
 
     .post-actions a.edit-btn,
@@ -214,6 +214,22 @@
     </div>
   </div>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      if (!isDark) return;
+  
+      const paragraphs = document.querySelectorAll(".post-content p");
+  
+      paragraphs.forEach(p => {
+        const hasColor = p.style && p.style.color;
+        if (!hasColor) {
+          p.style.color = "#ddd";
+        }
+      });
+    });
+  </script>
+  
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
 </body>
