@@ -498,7 +498,7 @@ form button:hover {
  overflow: hidden; /* 넘치는 텍스트 숨김 */
  text-overflow: ellipsis; /* 넘치는 텍스트를 ...으로 표시 */
  white-space: nowrap; /* 텍스트를 한 줄에 유지 */
- max-width: 30%; 
+ max-width: none;
 
  /* ✅ 중요: 뷰포트 크기에 따른 폰트 크기 조절 (clamp 사용 권장) */
  font-size: clamp(0.9rem, 4vw, 1.5rem); /* 최소 0.9rem, 선호 4vw, 최대 1.5rem */
