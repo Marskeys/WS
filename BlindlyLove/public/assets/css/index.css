@@ -547,13 +547,21 @@ form button:hover {
   font-weight: bold;
 }
 
+@keyframes wiggle-float {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-2px) rotate(-2deg); }
+  50%  { transform: translateY(0) rotate(1deg); }
+  75%  { transform: translateY(2px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
 .label-icon {
   display: inline-block;
-  width: auto;
   height: 20px;
   background-repeat: no-repeat;
   background-size: contain;
   vertical-align: middle;
+  animation: wiggle-float 1.8s ease-in-out infinite;
 }
 
 /* NEW! 배지 - 여백 최소화 */
