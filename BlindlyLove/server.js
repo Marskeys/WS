@@ -144,7 +144,8 @@ app.get('/signup-success', (req, res) => {
 
 // ✅ 새 글 저장 처리
 app.post('/savePost', async (req, res) => {
-  const { title, content, categories, is_private } = req.body;
+  const { title, content, categories, is_private, is_pinned } = req.body;
+  const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
   // 필수 입력값 확인
   if (!title || !content || !categories) {
     return res.status(400).json({ success: false, error: '제목, 내용, 카테고리를 모두 입력해주세요.' });
@@ -160,14 +161,15 @@ app.post('/savePost', async (req, res) => {
   try {
     // 글 정보 DB 저장
     const [result] = await db.query(
-      'INSERT INTO posts (title, content, categories, author, user_id, is_private) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO posts (title, content, categories, author, user_id, is_private, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         title,
         content,
         categories.join(','), // 카테고리 배열을 콤마로 구분된 문자열로 저장
         req.session.user.nickname, // 세션에서 작성자 닉네임 가져오기
         req.session.user.id,       // 세션에서 작성자 ID 가져오기
-        isPrivate
+        isPrivate,
+        pinnedValue
       ]
     );
     // 글 저장 성공 후, 저장된 글의 ID와 함께 성공 응답

@@ -179,6 +179,13 @@ html.dark .auto-toc a {
           비공개 글로 설정
         </label>
 
+        <% if (user && Number(user.is_admin) === 1) { %>
+          <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+            <input type="checkbox" id="isPinnedCheckbox" name="is_pinned" value="1" <%= post?.is_pinned ? 'checked' : '' %> />
+            상단에 고정하기 📌
+          </label>
+        <% } %>
+
         <div class="category-box">
           <label>카테고리:</label>
           <div class="category-list" id="categoryList"></div>
@@ -284,7 +291,8 @@ html.dark .auto-toc a {
           const content = document.getElementById('editor').innerHTML.trim();
           const categoriesToSend = selectedCategories;
           const isPrivate = document.getElementById('isPrivateCheckbox').checked ? 1 : 0;
-      
+          const isPinned = document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0;
+
           if (!title) return showCustomMessage("제목을 입력해주세요.");
           if (!content || content === '<div><br></div>' || content === '<p><br></p>') return showCustomMessage("내용을 입력해주세요.");
           if (!categoriesToSend || categoriesToSend.length === 0) return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
@@ -297,6 +305,7 @@ html.dark .auto-toc a {
               content,
               categories: categoriesToSend,
               is_private: isPrivate, // 비공개 여부 추가
+              is_pinned: isPinned,
               // user_id는 서버에서 세션으로 가져오는 것이 더 안전하므로 클라이언트에서 보내지 않습니다.
             })
           })

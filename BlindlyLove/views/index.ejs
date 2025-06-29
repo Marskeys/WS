@@ -100,6 +100,7 @@
                          data-post-id="<%= post.id %>"
                          data-is-private="<%= post.is_private ? '1' : '0' %>"
                          data-post-user-id="<%= post.user_id %>">
+                         <% if (post.is_pinned) { %><span>📌</span><% } %>
                         <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                       </a>
                       <% if (user && user.id === post.user_id) { %>
