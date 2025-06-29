@@ -131,6 +131,9 @@
               <div class="mobile-post-item" data-category="<%= post.categories %>">
                 <div class="post-title-and-actions">
                   <span class="post-id" style="font-size: 0.85rem; color: #aaa; margin-right: 0.5rem;">#<%= post.id %></span> <!-- 🔼 추가 -->
+                  <% if (post.is_pinned) { %>
+                    <span class="pinned-icon" title="상단 고정" style="margin-right: 0.3rem;">📌</span>
+                  <% } %>
                   <a href="/post/<%= post.id %>"
                      class="post-title post-detail-link"
                      data-post-id="<%= post.id %>"

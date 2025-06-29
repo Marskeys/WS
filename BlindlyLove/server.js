@@ -311,7 +311,7 @@ app.get('/search', async (req, res) => {
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
       WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
-      ORDER BY created_at DESC
+      ORDER BY is_pinned DESC, created_at DESC
     `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
     // 비공개 글의 내용을 필터링합니다
@@ -357,7 +357,7 @@ app.get('/', async (req, res) => {
     const [posts] = await db.query(`
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
-      ORDER BY created_at DESC
+      ORDER BY is_pinned DESC, created_at DESC
     `);
 
     // 비공개 글의 내용을 필터링합니다
@@ -452,7 +452,7 @@ app.get('/api/search', async (req, res) => {
       SELECT id, title, content, categories, author, user_id, created_at, is_private
       FROM posts
       WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
-      ORDER BY created_at DESC
+      ORDER BY is_pinned DESC, created_at DESC
     `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
     // 비공개 글의 내용을 필터링합니다
