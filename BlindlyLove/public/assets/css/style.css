@@ -99,8 +99,10 @@ html, body {
 
 @media (max-width: 640px) {
   .floating-home-logo {
+    margin: 0 !important;
+    position: static !important;
     width: 22vw;
-    margin-top: 0.2rem; 
+    height: auto;
   }
 }
 
@@ -673,10 +675,12 @@ html.dark body .mobile-menu{
   }
 
   .logo-link {
-    position: absolute;
+    position: absolute !important;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%) !important;
     z-index: 2000;
+    margin: 0 !important;
   }}
   
 
