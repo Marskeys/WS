@@ -523,3 +523,21 @@ form button:hover {
   margin-top: 0.5rem; /* 제목과 메타정보 사이 여백 */
   gap: 0.5rem;
 }
+
+/* 🖥️ 데스크탑 테이블 제목 */
+.board-table .post-detail-link {
+  display: inline-block;
+  max-width: 300px; /* 너비 조정 가능 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 📱 모바일 리스트 제목 */
+.mobile-post-item .post-title {
+  display: inline-block;
+  max-width: 80vw; /* 모바일에선 화면 비율 기준 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
