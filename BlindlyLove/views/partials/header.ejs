@@ -10,6 +10,7 @@
   <% } %>
   <% } %>
 
+
   <div class="top-controls">
     <div class="left-controls">
       <% if (
@@ -22,6 +23,16 @@
           <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
         </a>
       <% } %>
+
+        <!-- 🧷 고정 검색창 (처음엔 안보임) -->
+<div class="fixed-search-wrapper" style="display: none;">
+  <form method="get" action="/search" class="search-form fixed-search-form">
+    <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
+    <button type="submit" class="icon-submit-btn">
+      <i class="fas fa-search"></i>
+    </button>
+  </form>
+</div>
     </div>
 
     <div class="right-controls">

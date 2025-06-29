@@ -496,3 +496,28 @@ html.dark body .search-result-msg {
   box-shadow: none;
   border-radius: 0;
 }
+
+
+
+.fixed-search-wrapper {
+  position: fixed;
+  top: 3.5rem; /* 헤더 아래에 붙이고 싶을 경우 조정해 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  width: 100%;
+  max-width: 640px;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-color, white); /* 라이트모드/다크모드 대응 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* 처음엔 안보이게 */
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.fixed-search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
