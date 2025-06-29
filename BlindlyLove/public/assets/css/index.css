@@ -500,8 +500,9 @@ html.dark body .search-result-msg {
 
 
 .fixed-search-wrapper {
-  top: 3.5rem; /* 헤더 아래에 붙이고 싶을 경우 조정해 */
+  /* top: 3.5rem; 헤더 아래에 붙이고 싶을 경우 조정 */
   left: 50%;
+  position: absolute; 
   transform: translateX(-50%);
   z-index: 9999;
   width: 100%;
