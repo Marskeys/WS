@@ -306,6 +306,15 @@ html, body {
   color: #9d6bff;
   font-size: 1.5rem;
   transition: transform 0.2s ease, color 0.3s ease;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9d6bff;
 }
 .icon-submit-btn:hover i {
   color: #caa8ff;
