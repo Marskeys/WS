@@ -294,7 +294,7 @@ form button:hover {
   .tab-board {
     width: 100%;
     max-width: 100%;
-    padding: 0rem;
+    padding: 0 0.8rem;
     box-sizing: border-box;
   }
 
@@ -348,7 +348,7 @@ form button:hover {
     text-decoration: none;
     display: block;
     margin-bottom: 0.4rem;
-    max-width: 80vw;
+    max-width: 90vw;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
