@@ -94,6 +94,7 @@
                 <tr data-category="<%= post.categories %>">
                   <td><%= post.id %></td>
                   <td>
+                    <div class="post-title-and-actions">
                     <a href="/post/<%= post.id %>"
                       class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                       data-post-id="<%= post.id %>"
@@ -130,7 +131,7 @@
                           </form>
                         </div>
                       <% } %>
-                    </div>
+                      </div>
                   </td>
                   <td><%= post.author %></td>
                   <td><%= post.categories %></td>
