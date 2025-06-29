@@ -355,7 +355,7 @@ app.get('/', async (req, res) => {
   try {
     // 모든 글을 가져옵니다 (비공개 여부와 상관없이)
     const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, user_id, created_at, is_private, is_pinned
+      SELECT id, title, content, categories, author, user_id, created_at, updated_at, is_private, is_pinned
       FROM posts
       ORDER BY is_pinned DESC, updated_at DESC, created_at DESC
     `);
