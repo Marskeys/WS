@@ -218,6 +218,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  z-index: 2;
 }
 
 .board-table td a {
@@ -321,6 +322,7 @@
   /* ✅ 데스크탑 테이블 숨김, 모바일 게시판 표시 */
   .board-table {
     display: none;
+    z-index: 2;
   }
 
   .mobile-board-list {
