@@ -1,28 +1,37 @@
+/* ============================
+   🌸 체리 애니메이션
+============================ */
 .cherry-container {
-    position: relative;
-    width: 100%;
-    height: 100px;
-    margin-bottom: -100px; /* 검색창에 가까이, 이게 밑에까지 꽃잎 안 내려오는 이유 */
-    overflow: hidden;
-  }
-  
-  #cherry-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
-    pointer-events: none;
-  }
-  
-/* ✅ 검색창 기준으로 상대 위치를 정해줄 부모 */
+  position: relative;
+  width: 100%;
+  height: 100px;
+  margin-bottom: -100px; /* 검색창에 가까이 */
+  overflow: hidden;
+}
+
+#cherry-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
+  pointer-events: none;
+}
+
+/* ============================
+   🔍 검색창 + 캐릭터 위치
+============================ */
 .search-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   padding-top: 3rem;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .search-top-box {
@@ -30,29 +39,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: -1.5rem; /* 검색창 쪽으로 당김 */
-}
-
-
-
-.search-form {
-  position: relative; /* ✅ 캐릭터 위치 기준점 */
-  width: 100%;
-  max-width: 100%;
-  height: 43px;
-  padding: 0 1.5rem;
-  box-sizing: border-box;
-  border: 1px solid #a48fdd;
-  border-radius: 999px;
-  display: flex;
-  align-items: center;
-  background-color: white;
-  justify-content: space-between;
-}
-
-.search-form:hover {
-  border-color: #9d6bff;
-  box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
+  margin-bottom: -1.5rem;
 }
 
 .search-wrapper {
@@ -62,27 +49,33 @@
 }
 
 .search-position-anchor {
-  position: relative;    /* ✅ 캐릭터의 기준점 */
+  position: relative;
   width: 100%;
 }
 
 .search-form {
+  position: relative;
   width: 100%;
-  height: 40px;
+  height: 43px;
   padding: 0 1.5rem;
   border: 1px solid #a48fdd;
   border-radius: 999px;
-  box-sizing: border-box;
   background-color: white;
   display: flex;
   align-items: center;
-  position: static;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.search-form:hover {
+  border-color: #9d6bff;
+  box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
 }
 
 .character-stand {
   position: absolute;
-  bottom: 100%;           /* ✅ 검색창 위에 */
-  left: 20px;             /* ✅ 검색창 안에서 상대 위치 */
+  bottom: 100%;
+  left: 20px;
   transform: translateY(7px);
   pointer-events: none;
   z-index: 1000;
@@ -95,35 +88,24 @@
 
 @media (max-width: 640px) {
   #character-svg {
-    width: 80%;           /* ✅ 부모 기준으로 자연스럽게 줄어들게 */
-    min-width: 150px;      /* ✅ 너무 작아지지 않게 최소 보장 */
-    max-width: 240px;     /* ✅ 너무 커지지도 않게 */
+    width: 80%;
+    min-width: 150px;
+    max-width: 240px;
     height: auto;
   }
 }
 
-
-
-  
-  .character-anim {
-    opacity: 1;
-    transition: opacity 0.4s ease;
-  }
-  
-    /* ✅ 왼쪽 패널: 위는 흰색 → 아래는 파스텔 */
-.main-panel {
-  min-height: 100vh;
-  flex-direction: column;
-  padding: 0 2rem; 
-  display: flex;
-  width: 100%;
-  align-items: center;  
-  max-width: calc(100vw - 420px);
+/* ============================
+   🌬️ 캐릭터 애니메이션
+============================ */
+.character-anim {
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
 
-  /* ------------------------------
-   ✅ 공통 레이아웃 스타일
------------------------------- */
+/* ============================
+   🧱 전체 레이아웃
+============================ */
 .full-layout {
   display: flex;
   justify-content: space-between;
@@ -133,12 +115,30 @@
   margin: 0 auto;
 }
 
+.main-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.main-panel {
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 0 2rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  max-width: calc(100vw - 420px);
+}
+
 .side-panel {
-  flex: 1; /* 💡 비율 기반으로 너비 설정 */
+  flex: 1;
   max-width: 180px;
-  min-width: 150px; /* 💡 너무 좁아지지 않게 */
-  /*background-color: #98103e;*/
-  background-color:transparent;
+  min-width: 150px;
+  background-color: transparent;
   border-radius: 0;
   min-height: 100vh;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
@@ -151,30 +151,14 @@
   width: 300px;
 }
 
-
-.main-layout {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  flex-wrap: nowrap;
-  min-width: 0;
-}
-
-
-.search-container,
+/* ============================
+   🧾 탭 + 게시판 (데스크탑)
+============================ */
 .tab-board {
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
-}
-
-
-/* ------------------------------
-   ✅ 데스크탑용 게시판 (테이블)
------------------------------- */
-.tab-board {
-  padding: 0 4rem 0 4rem; 
+  padding: 0 4rem;
   font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -184,7 +168,6 @@
   margin-bottom: 1rem;
   margin-right: 1rem;
 }
-
 
 .tab {
   margin-top: 2rem;
@@ -211,60 +194,17 @@
   font-weight: bold;
 }
 
-
-
 .board-table {
-  box-sizing: border-box;
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  box-sizing: border-box;
   z-index: 2;
 }
 
-.board-table td a {
-  color: #333;               /* 자연스러운 검회색 계열 */
-  text-decoration: none;     /* 밑줄 제거 */
-  font-weight: 500;          /* 적당한 굵기 */
-}
-
-.board-table td a:hover {
-  color: #ff6666;            /* 마우스 올리면 살짝 포인트 색상 */
-  text-decoration: underline;/* 원하면 다시 밑줄 살짝 */
-}
-
-
-
+.board-table th,
 .board-table td {
   padding: 0.65rem;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  
-}
-
-.board-table td a.post-detail-link {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.board-table td .action-icons {
-  display: inline-block; /* ✅ 줄 안에서 정렬되게 */
-  vertical-align: middle; /* ✅ 위/아래 기준 맞추기 */
-  margin-left: 0.5rem;
-}
-
-.board-table td .action-icons {
-  display: inline-flex;   /* ✅ inline-block → inline-flex로 */
-  align-items: center;
-  gap: 0rem;
-  vertical-align: middle;
-}
-
-.board-table th {
-  padding: 0.35rem;
   border-bottom: 1px solid #ddd;
   text-align: left;
 }
@@ -274,38 +214,71 @@
   color: #333;
 }
 
-/* 삭제/수정 버튼 */
+.board-table td a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.board-table td a:hover {
+  color: #ff6666;
+  text-decoration: underline;
+}
+
+.board-table td a.post-detail-link {
+  display: inline-block;
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.board-table td .action-icons {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  gap: 0rem;
+}
+
+/* ============================
+   ✍️ 수정/삭제 버튼
+============================ */
 .icon-btn,
 .action-icons a,
-.action-icons form {
+.action-icons form,
+form button {
   margin: 0;
-  padding: 0;
-  font-size: 1rem;     /* 너무 크면 옆 간격 생김 */
-  line-height: 1;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  color: #666;
+  background: none;
+  border: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
+  cursor: pointer;
 }
 
+.icon-btn:hover,
+form button:hover {
+  color: #d9534f;
+}
 
+.icon-btn i {
+  margin-right: 0.2rem;
+}
 
-/* ------------------------------
-   ✅ 모바일용 게시판 (리스트)
------------------------------- */
+/* ============================
+   📱 모바일 게시판
+============================ */
 .mobile-board-list {
-  display: none; /* 기본은 숨김 */
+  display: none;
 }
 
-
-/* ------------------------------
-   ✅ 반응형 (모바일 ≤ 640px)
------------------------------- */
 @media (max-width: 640px) {
-
   .tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
     margin-right: 4rem;
   }
 
@@ -318,32 +291,20 @@
     display: none;
   }
 
-  .main-layout {
-    width: 100%;
-    max-width: 100%;
-    padding: 0 1rem;
-  }
-
-  .main-panel {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 100%;
-    min-width: 320px;  
-  }
-
+  .main-layout,
+  .main-panel,
   .search-container,
   .tab-board {
     width: 100%;
     max-width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
   }
 
-  .search-container {
-    padding-right: 3rem;
-    padding-left: 1rem;
-    box-sizing: border-box;}
+  .main-panel {
+    min-width: 320px;
+  }
 
-  /* ✅ 탭 스크롤 */
   .tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -356,28 +317,27 @@
     padding: 0.4rem 0.6rem;
   }
 
-  /* ✅ 데스크탑 테이블 숨김, 모바일 게시판 표시 */
   .board-table {
     display: none;
-    z-index: 2;
   }
 
   .mobile-board-list {
     display: block;
-    width: 100%;
     padding: 0 1rem;
     z-index: 3;
   }
 
   .mobile-post-item {
+    display: flex;
+    flex-direction: column;
     position: relative;
     padding: 1rem 0;
   }
-  
+
   .mobile-post-item::after {
     content: '';
     position: absolute;
-    left: 0.5rem;        
+    left: 0.5rem;
     right: 5rem;
     bottom: 0;
     height: 1px;
@@ -391,8 +351,11 @@
     text-decoration: none;
     display: block;
     margin-bottom: 0.4rem;
+    max-width: 80vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-
 
   .mobile-post-item .post-title:hover {
     color: #a26bff;
@@ -405,14 +368,107 @@
   }
 }
 
-.ad-box {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
-  border-radius: 0;
+/* ============================
+   🎀 제목과 버튼 정렬
+============================ */
+.post-title-and-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  width: 90%;
 }
 
+.post-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  max-width: none;
+  font-size: clamp(0.9rem, 4vw, 1.5rem);
+}
+
+.action-icons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.post-info {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.post-title-and-actions + .post-info {
+  margin-top: 0.5rem;
+}
+
+/* ============================
+   📌 상단고정 스타일
+============================ */
+.pinned-title {
+  color: #000 !important;
+  font-weight: bold !important;
+}
+
+html.dark body .pinned-title {
+  color: #fefefe !important;
+  font-weight: bold !important;
+}
+
+/* ============================
+   🔖 배지 스타일
+============================ */
+@keyframes wiggle-float {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-1px) rotate(-2deg); }
+  60% { transform: translateY(0) rotate(1deg); }
+  80% { transform: translateY(1px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.label-icon {
+  display: inline-block;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: middle;
+  animation: wiggle-float 0.9s ease-in-out infinite;
+}
+
+.new-icon,
+.edited-icon {
+  height: 20px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+}
+
+.new-icon {
+  width: 38px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='%23f7971e' stroke='%23bb88aa' stroke-width='0.6'>NEW!</text></svg>");
+}
+
+.edited-icon {
+  width: 58px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 20'><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='%233399ff' stroke='%23bb88aa' stroke-width='0.6'>EDITED</text></svg>");
+}
+
+html.dark body .new-icon {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23f7971e'/><stop offset='100%' stop-color='%23ffd200'/></linearGradient></defs><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='url(%23grad)' stroke='white' stroke-width='0.6'>NEW!</text></svg>");
+}
+
+html.dark body .edited-icon {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 20'><defs><linearGradient id='grad-edited' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%2300c6ff'/><stop offset='100%' stop-color='%230072ff'/></linearGradient></defs><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='url(%23grad-edited)' stroke='white' stroke-width='0.6'>EDITED</text></svg>");
+}
+
+/* ============================
+   🔍 검색결과 메시지
+============================ */
 .search-result-msg {
   margin: 2rem auto 1.5rem;
   padding: 0.5rem 1rem;
@@ -433,222 +489,13 @@ html.dark body .search-result-msg {
   color: #ccc;
 }
 
-
-/* 삭제 버튼 스타일 */
-.icon-btn.delete-btn {
-  background: none;
-  border: none;
-  padding: 0.3rem 0.6rem;
-  font-size: 1.1rem;
-  color: #666;
-  cursor: pointer;
-  display: inline-flex;  /* 버튼을 인라인으로 설정해서 다른 요소와 나란히 정렬 */
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-btn.delete-btn:hover {
-  color: #d9534f; /* 삭제 버튼 색을 빨간색으로 */
-}
-
-/* 버튼과 아이콘 간격을 맞추기 */
-.icon-btn i {
-  margin-right: 0.2rem;  /* 아이콘과 텍스트 사이 간격 */
-}
-
-/* form 태그 안의 button이 숨겨지지 않도록 스타일 설정 */
-form button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.3rem 0.6rem;
-  font-size: 1.1rem;
-  border: none;
-  background: none;
-  color: #666;
-  cursor: pointer;
-}
-
-/* 삭제 버튼을 눌렀을 때 색상 변경 */
-form button:hover {
-  color: #d9534f;
-}
-
-
-.mobile-post-item {
-  display: flex;
-  flex-direction: column; /* 한 게시글 안에서 세로 배치 */
-}
-
-.post-title-and-actions {
-  display: flex;
-  justify-content: space-between; /* 제목과 버튼을 한 줄에 배치 */
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 0.5rem; /* 제목과 수정/삭제 버튼 사이 간격 */
-  width: 90%;
-}
-
-
-.action-icons {
-  display: flex;
-  gap: 0.5rem; /* 버튼 사이 간격 */
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  padding: 0.3rem 0.6rem;
-  font-size: 1.1rem;
-  color: #666;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-btn:hover {
-  color: #333;
-}
-
-.post-info {
-  display: block; /* 메타정보는 줄바꿈 처리 */
-  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
-  font-size: 0.9rem;
-  color: #777;
-}
-
-
-/* 제목과 액션 버튼을 한 줄로 배치 */
-.post-title-and-actions {
-  display: flex;
-  justify-content: space-between;  /* 제목과 버튼을 양 끝에 배치 */
-  align-items: center;  /* 수직 중앙 정렬 */
-  gap: 0.5rem;  /* 제목과 버튼 간격 좁히기 */
-}
-
-/* 제목 스타일 */
-.post-title {
- /* ✅ 중요: 제목이 유연하게 줄어들고, 넘칠 때 처리 */
- flex-grow: 1; /* 가능한 공간을 차지 */
- flex: 1 1 auto; 
- font-weight: 500;
- flex-shrink: 1; /* 공간이 부족하면 줄어들 수 있도록 허용 */
- min-width: 0; /* flex 아이템의 기본 min-width를 재정의하여 넘침 방지 */
- overflow: hidden; /* 넘치는 텍스트 숨김 */
- text-overflow: ellipsis; /* 넘치는 텍스트를 ...으로 표시 */
- white-space: nowrap; /* 텍스트를 한 줄에 유지 */
- max-width: none;
-
- /* ✅ 중요: 뷰포트 크기에 따른 폰트 크기 조절 (clamp 사용 권장) */
- font-size: clamp(0.9rem, 4vw, 1.5rem); /* 최소 0.9rem, 선호 4vw, 최대 1.5rem */
- /* 모바일에서 1rem (16px)보다 약간 작게 시작해서, 화면이 커지면 최대 1.5rem까지 커지도록 조정 */
-}
-
-
-/* 수정 및 삭제 버튼 */
-.action-icons {
-  display: flex;
-  gap: 0.5rem;  /* 버튼 간격 */
-  align-items: center;
-}
-
-/* 메타정보 스타일 */
-.post-info {
-  display: block; /* 줄바꿈 처리 */
-  margin-top: 0.5rem; /* 제목/버튼과 메타정보 사이에 여백 추가 */
-  font-size: 0.9rem;
-  color: #777;
-}
-
-/* .post-title-and-actions과 .post-info 사이에 공간 추가 */
-.post-title-and-actions + .post-info {
-  margin-top: 0.5rem; /* 제목과 메타정보 사이 여백 */
-  gap: 0.5rem;
-}
-
-/* 🖥️ 데스크탑 테이블 제목 */
-.board-table .post-detail-link {
-  display: inline-block;
-  max-width: 500px; /* 너비 조정 가능 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* 📱 모바일 리스트 제목 */
-.mobile-post-item .post-title {
-  display: inline-block;
-  max-width: 80vw; /* 모바일에선 화면 비율 기준 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.pinned-title {
-  color: #000000 !important; /* 원하는 색으로 변경 가능 */
-  font-weight: bold !important;
-}
-
-html.dark body .pinned-title {
-  color: #fefefe !important; /* 원하는 색으로 변경 가능 */
-  font-weight: bold !important;
-}
-
-@keyframes wiggle-float {
-  0%   { transform: translateY(0) rotate(0deg); }
-  25%  { transform: translateY(-1px) rotate(-2deg); }
-  60%  { transform: translateY(0) rotate(1deg); }
-  80%  { transform: translateY(1px) rotate(-1deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-}
-
-.label-icon {
-  display: inline-block;
-  height: 20px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  vertical-align: middle;
-  animation: wiggle-float 0.9s ease-in-out infinite;
-}
-
-/* NEW 배지 (단색 주황 + 연보라 테두리) */
-.new-icon {
-  width: 38px;
-  height: 20px;
-  background-image: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'>\
-<text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' \
-fill='%23f7971e' stroke='%23bb88aa' stroke-width='0.6'>NEW!</text></svg>");
-  background-repeat: no-repeat;
-  background-size: contain;
-  display: inline-block;
-}
-
-/* EDITED 배지 (밝은 파랑 + 연보라 테두리) */
-.edited-icon {
-  width: 58px;
-  height: 20px;
-  background-image: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 20'>\
-<text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' \
-fill='%233399ff' stroke='%23bb88aa' stroke-width='0.6'>EDITED</text></svg>");
-  background-repeat: no-repeat;
-  background-size: contain;
-  display: inline-block;
-}
-
-
-
-
-/* NEW! 배지 - 여백 최소화 */
-html.dark body .new-icon {
-  width: 38px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23f7971e'/><stop offset='100%' stop-color='%23ffd200'/></linearGradient></defs><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='url(%23grad)' stroke='white' stroke-width='0.6'>NEW!</text></svg>");
-}
-
-/* EDITED 배지 - 여백 최소화 */
-html.dark body .edited-icon {
-  width: 58px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 20'><defs><linearGradient id='grad-edited' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%2300c6ff'/><stop offset='100%' stop-color='%230072ff'/></linearGradient></defs><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='url(%23grad-edited)' stroke='white' stroke-width='0.6'>EDITED</text></svg>");
+/* ============================
+   📦 광고 박스 (좌패널)
+============================ */
+.ad-box {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
 }
