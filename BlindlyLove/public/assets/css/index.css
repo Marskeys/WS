@@ -256,6 +256,13 @@
   margin-left: 0.5rem;
 }
 
+.board-table td .action-icons {
+  display: inline-flex;   /* ✅ inline-block → inline-flex로 */
+  align-items: center;
+  gap: 0.3rem;
+  vertical-align: middle;
+}
+
 .board-table th {
   padding: 0.35rem;
   border-bottom: 1px solid #ddd;
