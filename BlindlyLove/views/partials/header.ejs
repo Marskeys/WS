@@ -1,10 +1,13 @@
 <div class="header-top">
+
+  <% if (user && Number(user.is_admin) === 1) { %>
   <% if (currentPath === '/' || currentPath === '/index') { %>
   <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
     <span></span>
     <span></span>
     <span></span>
   </button>
+  <% } %>
   <% } %>
 
   <div class="top-controls">
@@ -48,6 +51,7 @@
     </div>
   </div>
 
+  <% if (user && Number(user.is_admin) === 1) { %>
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
     <a href="https://www.blindly.love/game" target="_blank">
@@ -55,6 +59,7 @@
     </a>
     <span class="menu-label">테트리스</span>
   </nav>
+  <% } %>
 
   <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
     <form action="/login" method="POST" class="pop-up-form">
