@@ -27,6 +27,7 @@ html, body {
 
 .header-top {
   display: flex;
+  position: sticky;
   align-items: center;
   padding: 0.6rem 1rem;
   background-color: #fff;
