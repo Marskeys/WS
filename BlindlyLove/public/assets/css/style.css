@@ -589,6 +589,7 @@ html.dark body .mobile-menu{
   .search-form {
     max-width: 95% !important;
     width: 100%;
+    display: flex;  
     box-sizing: border-box;
   }
 }
