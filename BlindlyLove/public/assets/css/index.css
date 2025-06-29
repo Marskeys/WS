@@ -501,8 +501,8 @@ html.dark body .search-result-msg {
 
 .fixed-search-wrapper {
   display: none;
-  position: absolute;
-  top: 50%; /* 헤더 내부에서 아래로 약간 뜨는 느낌이면 사용 */
+  position: static;
+  top: 100%; /* 헤더 내부에서 아래로 약간 뜨는 느낌이면 사용 */
   left: 0;
   z-index: 1000;
 
