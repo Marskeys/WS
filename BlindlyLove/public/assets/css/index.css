@@ -525,7 +525,7 @@ html.dark body .search-result-msg {
   display: flex;
   align-items: center;
 
-  max-width: 280px;         /* ✅ 여기서 너비 제한 (줄일수록 여백 줄어듦) */
+  max-width: 500px;         /* ✅ 여기서 너비 제한 (줄일수록 여백 줄어듦) */
   padding: 0 0rem;        /* ✅ 좌우 패딩 줄이기 */
   z-index: 5000;            /* ✅ 헤더 위에 올려야 하면 */
 
