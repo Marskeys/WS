@@ -271,7 +271,8 @@
                       </style>
                   </head>
                   <body>
-                      ${decodedHtmlContent}\n<script> // ⭐⭐⭐ 여기를 수정했습니다! \n 추가 ⭐⭐⭐
+                      ${decodedHtmlContent.replace(/`/g, '\\`')} // ⭐⭐⭐ 여기를 수정했습니다! 백틱 이스케이프 처리 ⭐⭐⭐
+                      \n<script> 
                           // 이 스크립트는 iframe 내부에서 실행되어 부모 페이지에게 자신의 높이를 전달합니다.
                           function sendHeightToParent() {
                               const body = document.body;
