@@ -216,15 +216,12 @@
 
 
 <script> 
-// post-view.ejs 파일의 기존 <script> 태그 안에 있는 DOMContentLoaded 이벤트 리스너를 아래 코드로 교체합니다.
-  document.addEventListener("DOMContentLoaded", () => {
-  // 모든 HTML 스니펫 위젯을 찾습니다.
+ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
-    const encoded = el.getAttribute("data-code"); // Base64로 인코딩된 HTML 코드 가져오기
+    const encoded = el.getAttribute("data-code");
     if (!encoded) return;
 
     try {
-      // Base64 디코딩
       const binaryString = atob(encoded);
       const len = binaryString.length;
       const bytes = new Uint8Array(len);
@@ -232,105 +229,88 @@
           bytes[i] = binaryString.charCodeAt(i);
       }
       const decoder = new TextDecoder('utf-8');
-      const decodedHtmlContent = decoder.decode(bytes); // 사용자가 에디터에 입력했던 순수 HTML
+      const decoded = decoder.decode(bytes);
 
       const iframe = document.createElement('iframe');
-      // iframe 보안 설정 (매우 중요!)
-      // 'allow-scripts': iframe 내부에서 스크립트 실행 허용
-      // 'allow-same-origin': iframe이 부모 페이지와 동일한 출처인 것처럼 행동하게 하여 postMessage 통신을 가능하게 함
-      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin'); 
-      iframe.setAttribute('referrerpolicy', 'no-referrer'); // 리퍼러 정보 전송 방지
-      iframe.setAttribute('title', '삽입된 HTML'); // 스크린 리더를 위한 제목
-      iframe.setAttribute('name', `snippet-iframe-${index}`); // 이 iframe을 식별하기 위한 고유한 이름
-
-      // iframe 기본 스타일 설정
-      iframe.style.width = '100%';
-      iframe.style.minHeight = '100px'; // 초기 최소 높이 (콘텐츠 로딩 중 잘림 방지)
-      iframe.style.border = '1px solid #ccc'; // 테두리 (선택 사항)
-      iframe.style.borderRadius = '8px'; // 둥근 모서리 (선택 사항)
-      iframe.style.margin = '1rem 0'; // 위아래 여백 (선택 사항)
-      iframe.style.overflow = 'hidden'; // iframe 자체에 스크롤바가 생기지 않도록 함
-      iframe.scrolling = 'no'; // iframe 스크롤바 비활성화 (구형 브라우저 호환성)
+      iframe.setAttribute('sandbox', 'allow-scripts'); // 보안 설정
+      iframe.setAttribute('referrerpolicy', 'no-referrer');
+      iframe.setAttribute('title', '삽입된 HTML');
+      // ✨ 2-1. iframe에 고유한 name 속성 부여 (높이 전달 시 식별용)
+      iframe.setAttribute('name', `snippet-iframe-${index}`); // 게시글 내 여러 iframe을 구분하기 위해 index 사용
       
-      el.innerHTML = ''; // 기존의 '[HTML 코드 삽입됨]' 같은 텍스트 제거
-      el.appendChild(iframe); // iframe을 HTML 스니펫 자리(el)에 삽입
+      iframe.style.width = '100%';
+      iframe.style.minHeight = '100px'; // ✨ 2-2. 초기 높이를 최소로 설정 (로딩 전 잘림 방지, 나중에 실제 높이로 업데이트)
+      iframe.style.border = '1px solid #ccc';
+      iframe.style.borderRadius = '8px';
+      iframe.style.margin = '1rem 0';
+      iframe.srcdoc = decoded;
 
-      // ⭐⭐⭐ iframe이 완전히 로드된 후, 그 내부에 HTML 콘텐츠와 높이 조절 스크립트를 주입합니다. ⭐⭐⭐
-      iframe.onload = () => {
-          try {
-              const iframeDoc = iframe.contentWindow.document; // iframe 내부 문서 객체 가져오기
-              iframeDoc.open(); // 문서 쓰기 시작
-              // iframe 내부에 완전한 HTML 문서 구조와 높이 조절 스크립트를 작성합니다.
-              iframeDoc.write(`
-                  <!DOCTYPE html>
-                  <html>
-                  <head>
-                      <style>
-                          /* iframe 내부의 기본 마진/패딩 제거 및 스크롤바 숨김 */
-                          body, html { margin: 0; padding: 0; overflow: hidden; }
-                      </style>
-                  </head>
-                  <body>
-                      ${decodedHtmlContent} <script>
-                          // 이 스크립트는 iframe 내부에서 실행되어 부모 페이지에게 자신의 높이를 전달합니다.
-                          function sendHeightToParent() {
-                              const body = document.body;
-                              const html = document.documentElement;
-                              // iframe 내부 콘텐츠의 실제 높이를 정확히 측정합니다.
-                              const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-                              const iframeName = window.name; // 부모 페이지에서 이 iframe을 식별할 이름
-
-                              // 부모 창으로 메시지를 보냅니다.
-                              if (window.parent) {
-                                  window.parent.postMessage({
-                                      type: 'setIframeHeight', // 메시지 타입 (부모에서 필터링용)
-                                      height: height,           // 측정된 높이
-                                      iframeName: iframeName    // 어떤 iframe인지 식별자
-                                  }, '*'); // 중요: '*'는 모든 출처를 허용. 보안상 실제 도메인 명시 권장.
-                              }
-                          }
-                          // iframe 콘텐츠 로드 및 DOM 준비 시 높이 전송
-                          window.addEventListener('load', sendHeightToParent);
-                          document.addEventListener('DOMContentLoaded', sendHeightToParent);
-                          // iframe 내부 콘텐츠가 동적으로 변할 때 높이 다시 전송 (MutationObserver)
-                          const observer = new MutationObserver(sendHeightToParent);
-                          observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-                          // iframe 크기 자체가 변경될 때 높이 다시 전송 (resize 이벤트)
-                          window.addEventListener('resize', sendHeightToParent);
-                      </script>
-                  </body>
-                  </html>
-              `);
-              iframeDoc.close(); // 문서 쓰기 종료
-          } catch (e) {
-              console.error("iframe 내부 콘텐츠 주입 오류:", e);
-              // 오류 발생 시 iframe에 사용자에게 보이는 메시지 표시
-              iframe.contentWindow.document.write('<p style="color:red; padding: 10px;">[HTML 코드 로드 실패]</p>');
-          }
-      };
-
+      el.innerHTML = '';
+      el.appendChild(iframe);
     } catch (e) {
-      // Base64 디코딩 오류 발생 시
-      el.innerHTML = '<p style="color:red; padding: 10px;">[HTML 코드 디코딩 실패]</p>';
+      el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
       console.error('디코딩 오류:', e);
     }
   });
 
-  // iframe에서 보내는 메시지를 수신하는 리스너 (부모 페이지에서 iframe 높이를 업데이트)
+  // ✨ 2-3. iframe에서 오는 postMessage 수신 리스너 추가
   window.addEventListener('message', (event) => {
-    // 보안을 위해 event.origin을 확인하는 것이 좋지만, 현재는 모든 출처 허용
-    // if (event.origin !== "http://your-domain.com") return; // 실제 도메인으로 변경
+    // 메시지 출처 확인 (보안 강화): 
+    // 로컬 환경에서는 event.origin이 'null'일 수 있습니다.
+    // 실제 배포 시에는 `if (event.origin !== 'https://your-domain.com') return;` 와 같이 설정.
+    // srcdoc iframe의 origin은 보통 'null' 또는 'about:srcdoc'이므로, 개발 시에는 조건 없이 진행할 수 있습니다.
+    // 현재는 sandbox로 격리되므로 와일드카드 '*'로 받아도 비교적 안전합니다.
 
     if (event.data && event.data.type === 'setIframeHeight') {
       const iframeName = event.data.iframeName;
       const height = event.data.height;
-      const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`); // 해당 iframe 찾기
-      if (targetIfㅁㄹrame) {
-        targetIframe.style.height = `${height}px`; // 높이 업데이트
+      const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`); // name 속성을 사용하여 해당 iframe 찾기
+      if (targetIframe) {
+        targetIframe.style.height = `${height}px`; // 전달받은 높이로 업데이트
       }
     }
   });
 });
+
+ // 이 스크립트는 iframe 내부에서 실행됩니다.
+    // ✨ 1. 부모에게 높이를 전달하는 함수
+    function sendHeightToParent() {
+      const body = document.body;
+      const html = document.documentElement;
+      // 가장 큰 높이 값을 사용 (스크롤 높이, 클라이언트 높이 등)
+      const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+      
+      // ✨ 2. window.name을 사용하여 부모에게 자신의 iframe 이름을 전달
+      // post-view.ejs에서 iframe에 부여한 name 속성을 사용합니다.
+      const iframeName = window.name; 
+
+      if (window.parent) {
+        window.parent.postMessage({
+          type: 'setIframeHeight',
+          height: height,
+          iframeName: iframeName // 자신의 iframe 이름 전달
+        }, '*'); // 모든 출처 허용. 실제 환경에서는 보안을 위해 특정 도메인을 명시하는 것이 좋습니다.
+      }
+    }
+
+    // ✨ 3. 콘텐츠 로드 후 높이 측정 및 전달 (초기 로드 시)
+    // 이미지 등 비동기 로딩 콘텐츠를 위해 load 이벤트 리스너도 추가
+    window.addEventListener('load', sendHeightToParent);
+    
+    // ✨ 4. DOMContentLoaded 시점에도 한 번 호출하여 빠른 높이 조절
+    document.addEventListener('DOMContentLoaded', sendHeightToParent);
+
+    // ✨ 5. iframe 내부 콘텐츠 크기 변화 감지 (MutationObserver)
+    // 콘텐츠가 동적으로 변경될 경우를 대비
+    const observer = new MutationObserver(sendHeightToParent);
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true
+    });
+
+    // ✨ 6. (선택 사항) 리사이즈 이벤트에도 대응
+    window.addEventListener('resize', sendHeightToParent);
 </script>
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
