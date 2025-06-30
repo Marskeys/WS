@@ -209,52 +209,21 @@ html.dark .auto-toc a {
 
 // editor.ejs (openHtmlPopup 함수) - 수정된 부분
 
-// editor.ejs (openHtmlPopup 함수) - 최종 수정본 (높이 조절 + 인코딩 + 문법 수정)
-
 function openHtmlPopup() {
   // showCustomInput 함수가 비동기 콜백을 처리할 수 있도록,
   // 콜백 함수 자체를 async로 만듭니다.
-  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
+  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => { // ⭐ 여기 async 키워드 추가
     if (!rawCode) return;
 
-    // ✨ 1-1. iframe 내부에서 높이를 전달하는 스크립트 (HTML 문자열로)
-    // 이 스크립트는 srcdoc에 포함되어 iframe 내부에서 실행됩니다.
-    const heightReportingScript = `
-        <script>
-            // load 이벤트는 모든 콘텐츠(이미지 포함)가 로드된 후 실행되므로, 최종 높이 계산에 더 적합합니다.
-            window.addEventListener('load', () => {
-                // 문서의 실제 높이를 다양한 방식으로 계산하여 가장 큰 값 선택
-                const contentHeight = Math.max(
-                    document.body.scrollHeight, 
-                    document.documentElement.scrollHeight,
-                    document.body.offsetHeight, 
-                    document.documentElement.offsetHeight,
-                    document.body.clientHeight, 
-                    document.documentElement.clientHeight
-                );
-                // 부모 창으로 메시지 전송
-                if (window.parent && window.parent.postMessage) {
-                    window.parent.postMessage({
-                        type: 'setIframeHeight',
-                        iframeName: window.name, // iframe의 name 속성을 통해 어떤 iframe인지 식별
-                        height: contentHeight + 30 // 콘텐츠 아래 여유 공간 30px 추가 (필요시 조절)
-                    }, '*'); // 보안을 강화하려면 '*' 대신 여러분의 사이트 도메인(예: 'http://localhost:3000')을 넣으세요.
-                }
-            });
-        </script>
-    `;
-
-    // 1-2. 사용자가 입력한 rawCode에 높이 전달 스크립트를 삽입
-    // </body> 태그를 찾아 바로 앞에 스크립트를 삽입합니다. (대소문자 구분 없이)
-    const finalHtmlContent = rawCode.replace(/<\/body>/i, `${heightReportingScript}</body>`);
-    
-    // 1-3. Base64 인코딩 방식 (TextEncoder + FileReader 방식 유지)
+    // ✨ Base64 인코딩 방식 변경: unescape(encodeURIComponent()) -> TextEncoder + FileReader
     const encoder = new TextEncoder();
-    const encodedUint8 = encoder.encode(finalHtmlContent);
+    const encodedUint8 = encoder.encode(rawCode); // UTF-8 문자열을 Uint8Array로 인코딩
 
+    // FileReader를 사용하여 Uint8Array를 Base64 문자열로 비동기적으로 변환
     const base64Code = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
+            // "data:application/octet-stream;base64," 부분을 제거하고 순수 Base64 데이터만 추출
             const result = reader.result;
             if (typeof result === 'string') {
                 resolve(result.split(',')[1]);
@@ -264,12 +233,14 @@ function openHtmlPopup() {
         };
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(new Blob([encodedUint8]));
+
+        
     });
 
     const wrapper = document.createElement("div");
     wrapper.className = "custom-widget";
     wrapper.setAttribute("data-type", "html-snippet");
-    wrapper.setAttribute("data-code", base64Code);
+    wrapper.setAttribute("data-code", base64Code); // ⭐ 새로 인코딩된 base64Code 사용
 
     // ✅ 삽입 미리보기 (에디터 안에는 표시되지만 저장될 땐 진짜 코드로 들어감)
     wrapper.innerHTML = `<div style="border: 1px dashed gray; padding: 0.5rem; color: #666;">[HTML 코드 삽입됨]</div>`;
@@ -285,16 +256,15 @@ function openHtmlPopup() {
       const editor = document.getElementById("editor");
       editor.appendChild(wrapper);
     }
-    // ⭐ 여기서 saveSelection()을 호출합니다.
-    saveSelection(); 
+    // ✅ selection 복구 (이 부분은 원래 함수 마지막에 있었을 겁니다.)
+    saveSelection();
   });
-  // ⭐ 이 위치에 saveSelection()이 또 있으면 삭제해주세요.
-  // 이 괄호(});)는 showCustomInput의 끝이자 openHtmlPopup 함수의 끝입니다.
 }
 
-// 만약 이 함수 정의 바로 아래에 독립적인 saveSelection();이 있었다면 삭제해야 합니다.
-// 전체 editor.ejs 파일에서 `saveSelection();` 단독으로 호출되는 부분이
-// openHtmlPopup 함수 내부의 마지막에 한 번만 있도록 해주세요.
+    // ✅ selection 복구
+    saveSelection();
+
+
     
 
 
