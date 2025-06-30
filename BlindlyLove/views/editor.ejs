@@ -215,6 +215,7 @@ function openHtmlPopup() {
     // ✨ 1-1. iframe 내부에서 높이를 전달하는 스크립트 (HTML 문자열로)
     // 이 스크립트는 srcdoc에 포함되어 iframe 내부에서 실행됩니다.
     const heightReportingScript = `
+        <script>
             // load 이벤트는 모든 콘텐츠(이미지 포함)가 로드된 후 실행되므로, 최종 높이 계산에 더 적합합니다.
             window.addEventListener('load', () => {
                 // 문서의 실제 높이를 다양한 방식으로 계산하여 가장 큰 값 선택
