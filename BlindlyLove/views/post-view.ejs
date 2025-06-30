@@ -216,36 +216,36 @@
 
 
 <script> 
-  document.addEventListener("DOMContentLoaded", () => {
+ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
     const encoded = el.getAttribute("data-code");
     if (!encoded) return;
 
     try {
-      // ✨ Base64 디코딩 방식 변경: atob() -> atob() + TextDecoder
-      const binaryString = atob(encoded); // Base64를 8비트 이진 문자열로 변환 (UTF-8 바이트 아님)
+      const binaryString = atob(encoded);
       const len = binaryString.length;
       const bytes = new Uint8Array(len);
       for (let i = 0; i < len; i++) {
           bytes[i] = binaryString.charCodeAt(i);
       }
-      const decoder = new TextDecoder('utf-8'); // UTF-8 디코더 생성
-      const decoded = decoder.decode(bytes); // 바이트 배열을 UTF-8 문자열로 디코딩
+      const decoder = new TextDecoder('utf-8');
+      const decoded = decoder.decode(bytes);
 
       const iframe = document.createElement('iframe');
-      // 샌드박스 설정 (보안 강화: allow-same-origin 제거)
-      iframe.setAttribute('sandbox', 'allow-scripts'); // ⭐ 중요한 보안 설정
+      iframe.setAttribute('sandbox', 'allow-scripts'); // 보안 설정
       iframe.setAttribute('referrerpolicy', 'no-referrer');
       iframe.setAttribute('title', '삽입된 HTML');
-      // iframe 고정 높이 (임시 해결책) - 필요에 따라 픽셀 값 조정
+      // ✨ 2-1. iframe에 고유한 name 속성 부여 (높이 전달 시 식별용)
+      iframe.setAttribute('name', `snippet-iframe-${index}`); // 게시글 내 여러 iframe을 구분하기 위해 index 사용
+      
       iframe.style.width = '100%';
-      iframe.style.height = '700px'; // ⭐ 계산기 앱이 잘리지 않도록 충분한 높이로 설정 (예: 700px)
+      iframe.style.minHeight = '100px'; // ✨ 2-2. 초기 높이를 최소로 설정 (로딩 전 잘림 방지, 나중에 실제 높이로 업데이트)
       iframe.style.border = '1px solid #ccc';
       iframe.style.borderRadius = '8px';
       iframe.style.margin = '1rem 0';
-      iframe.srcdoc = decoded; // ⭐ 디코딩된 UTF-8 문자열을 srcdoc에 할당
+      iframe.srcdoc = decoded;
 
-      el.innerHTML = ''; // 플레이스홀더 텍스트 제거
+      el.innerHTML = '';
       el.appendChild(iframe);
     } catch (e) {
       el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
@@ -253,8 +253,23 @@
     }
   });
 
-  // 이전 단계에서 추가했던 window.addEventListener('message', ...) 코드가 있다면 그대로 유지해주세요.
-  // 이 수정은 문자 깨짐 문제 해결에 초점을 맞춘 것입니다.
+  // ✨ 2-3. iframe에서 오는 postMessage 수신 리스너 추가
+  window.addEventListener('message', (event) => {
+    // 메시지 출처 확인 (보안 강화): 
+    // 로컬 환경에서는 event.origin이 'null'일 수 있습니다.
+    // 실제 배포 시에는 `if (event.origin !== 'https://your-domain.com') return;` 와 같이 설정.
+    // srcdoc iframe의 origin은 보통 'null' 또는 'about:srcdoc'이므로, 개발 시에는 조건 없이 진행할 수 있습니다.
+    // 현재는 sandbox로 격리되므로 와일드카드 '*'로 받아도 비교적 안전합니다.
+
+    if (event.data && event.data.type === 'setIframeHeight') {
+      const iframeName = event.data.iframeName;
+      const height = event.data.height;
+      const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`); // name 속성을 사용하여 해당 iframe 찾기
+      if (targetIframe) {
+        targetIframe.style.height = `${height}px`; // 전달받은 높이로 업데이트
+      }
+    }
+  });
 });
 </script>
   <%- include('partials/footer') %>

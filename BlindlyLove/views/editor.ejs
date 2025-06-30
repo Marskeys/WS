@@ -204,21 +204,15 @@ html.dark .auto-toc a {
   const postUrl = (isEdit && post) ? `/edit/${post.id}` : '/savePost';
   const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
 %>
-
-    <script>
-
-// editor.ejs (openHtmlPopup 함수) - 수정된 부분
-
-// editor.ejs (openHtmlPopup 함수) - 최종 수정본 (높이 조절 + 인코딩 + 문법 수정)
+<script>
 
 function openHtmlPopup() {
-  // showCustomInput 함수가 비동기 콜백을 처리할 수 있도록,
-  // 콜백 함수 자체를 async로 만듭니다.
   showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
     if (!rawCode) return;
 
     // ✨ 1-1. iframe 내부에서 높이를 전달하는 스크립트 (HTML 문자열로)
     // 이 스크립트는 srcdoc에 포함되어 iframe 내부에서 실행됩니다.
+    // ⭐⭐⭐ 여기가 수정된 부분입니다: <script> 태그와 닫는 백틱(``)을 추가했습니다.
     const heightReportingScript = `
         <script>
             // load 이벤트는 모든 콘텐츠(이미지 포함)가 로드된 후 실행되므로, 최종 높이 계산에 더 적합합니다.
@@ -242,7 +236,7 @@ function openHtmlPopup() {
                 }
             });
         </script>
-    `;
+    `; // ⭐⭐⭐ 여기에 닫는 백틱(`)이 있습니다.
 
     // 1-2. 사용자가 입력한 rawCode에 높이 전달 스크립트를 삽입
     // </body> 태그를 찾아 바로 앞에 스크립트를 삽입합니다. (대소문자 구분 없이)
@@ -288,6 +282,10 @@ function openHtmlPopup() {
     // ⭐ 여기서 saveSelection()을 호출합니다.
     saveSelection(); 
   });
+  // ⭐ 이 위치에 saveSelection(); 이 또 있었다면 삭제해주세요.
+  // 이 괄호(});)는 showCustomInput의 끝이자 openHtmlPopup 함수의 끝입니다.
+}
+ 
   // ⭐ 이 위치에 saveSelection()이 또 있으면 삭제해주세요.
   // 이 괄호(});)는 showCustomInput의 끝이자 openHtmlPopup 함수의 끝입니다.
 }
@@ -784,7 +782,6 @@ function openHtmlPopup() {
   const firstHeading = [...headings][0];
   editor.insertBefore(tocWrapper, firstHeading);
 }
-
 
     </script>
       
