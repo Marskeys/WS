@@ -205,6 +205,7 @@ html.dark .auto-toc a {
   const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
 %>
 <script>
+
 function openHtmlPopup() {
   showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
     if (!rawCode) return;
@@ -281,7 +282,10 @@ function openHtmlPopup() {
     // ⭐ 여기서 saveSelection()을 호출합니다.
     saveSelection(); 
   });
-}
+
+    
+
+
       // 모든 JavaScript 코드를 하나의 스크립트 블록으로 통합합니다.
       let selectedCategories = <%- JSON.stringify(categoryList) %>;
       let categories = [];
