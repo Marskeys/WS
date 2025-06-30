@@ -229,11 +229,11 @@
     if (!encoded) return;
 
     try {
-      const decoded = atob(encoded); // 이젠 escape 없어도 됨
+      const decoded = atob(encoded); // base64 → 원래 HTML 코드
 
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin'); // ✅ 핵심
-      iframe.setAttribute('referrerpolicy', 'no-referrer');              // ✅ 보안 안정
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+      iframe.setAttribute('referrerpolicy', 'no-referrer');
       iframe.setAttribute('title', '삽입된 HTML');
       iframe.style.width = '100%';
       iframe.style.minHeight = '400px';
@@ -250,11 +250,6 @@
     }
   });
 });
-
-// ✅ 0.5초 후 강제로 실행 (DOM 완전히 로드된 후)
-setTimeout(renderHtmlSnippets, 500);
-
-
 </script>
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
