@@ -221,6 +221,29 @@
     const text = clipboardData.getData("text/plain"); // 스타일 없는 순수 텍스트
     document.execCommand("insertText", false, text);
   });
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach(el => {
+    const encoded = el.getAttribute("data-code");
+    try {
+      const decoded = decodeURIComponent(escape(atob(encoded)));
+
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('sandbox', 'allow-scripts');
+      iframe.style.width = '100%';
+      iframe.style.minHeight = '300px';
+      iframe.style.border = '1px solid #ccc';
+      iframe.srcdoc = decoded;
+
+      el.innerHTML = '';
+      el.appendChild(iframe);
+    } catch (e) {
+      el.innerHTML = '<p style="color:red">[HTML 코드 오류]</p>';
+    }
+  });
+});
+</script>
 </script>
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
