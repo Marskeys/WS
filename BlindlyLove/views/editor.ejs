@@ -16,81 +16,52 @@
   
   <style>
 .mode-toggle {
-  margin: 2rem auto 0;
-  width: fit-content;
-  display: flex;
-  border-bottom: 1px solid #ccc;
-  border-radius: 8px 8px 0 0;
-  overflow: hidden;
+  margin-top: 1rem;
+  text-align: right;
 }
 
-/* 버튼을 탭처럼 */
 .mode-toggle button {
-  padding: 8px 16px;
-  font-size: 0.95rem;
+  margin-left: 0.5rem;
+  padding: 3px 10px;
+  font-size: 0.7rem;
   font-weight: 500;
-  border: none;
-  background: #f0f0f0;
-  color: #444;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-  border-right: 1px solid #ddd;
-}
-
-.mode-toggle button:last-child {
-  border-right: none;
-}
-
-/* 탭 hover */
-.mode-toggle button:hover {
-  background: #e0e0e0;
-}
-
-/* active 효과를 위해 클래스 추가 필요 */
-.mode-toggle button.active {
-  background: white;
-  color: black;
-  font-weight: 600;
-}
-
-/* 편집창과 이어지는 느낌 만들기 */
-#editor, #htmlEditor {
-  border-top: none !important;
   border: 1px solid #ccc;
-  border-radius: 0 0 8px 8px;
-  padding: 1rem;
-  min-height: 400px;
-  margin-bottom: 3rem;
-  background: white;
+  border-radius: 6px;
+  background: linear-gradient(to bottom right, #fdfdfd, #f1f1f1);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* 🌙 다크모드 */
-html.dark body .mode-toggle {
-  border-bottom: 1px solid #555;
+.mode-toggle button:hover {
+  background: linear-gradient(to bottom right, #eaeaea, #dcdcdc);
+  color: #000;
+  transform: scale(1.03);
 }
 
+/* 🌙 다크모드 대응 */
 html.dark body .mode-toggle button {
-  background: #333;
-  color: #ccc;
-  border-right: 1px solid #444;
+  background: linear-gradient(to bottom right, #2c2f35, #3a3d45);
+  color: #eee;
+  border: 1px solid #555;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 html.dark body .mode-toggle button:hover {
-  background: #444;
+  background: linear-gradient(to bottom right, #3a3d45, #4b4e57);
+  color: #fff;
+  transform: scale(1.03);
 }
-
-html.dark body .mode-toggle button.active {
-  background: #1e1e1e;
-  color: white;
+#htmlEditor {
+  width: 100%;
+  height: 400px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
-
-html.dark body #editor,
-html.dark body #htmlEditor {
-  background: #1e1e28;
-  border: 1px solid #444;
-  color: #eee;
-}
-
 
     /* 📑 목차 박스 스타일 */
 .auto-toc {
