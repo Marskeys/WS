@@ -210,20 +210,72 @@ html.dark .auto-toc a {
 // editor.ejs (openHtmlPopup 함수) - 수정된 부분
 
 function openHtmlPopup() {
-  // showCustomInput 함수가 비동기 콜백을 처리할 수 있도록,
-  // 콜백 함수 자체를 async로 만듭니다.
-  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => { // ⭐ 여기 async 키워드 추가
+  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
     if (!rawCode) return;
 
-    // ✨ Base64 인코딩 방식 변경: unescape(encodeURIComponent()) -> TextEncoder + FileReader
+    // --- ⭐ 여기에 추가/수정될 코드 시작 ⭐ ---
+    // 사용자가 입력한 HTML(rawCode)을 iframe에 넣을 완전한 HTML 문서 형태로 만듭니다.
+    const iframeContent = `<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* iframe 내부의 기본 마진/패딩 제거 및 스크롤바 숨김 */
+  body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+  }
+</style>
+</head>
+<body>
+  ${rawCode} <script>
+    // 이 스크립트는 iframe 내부에서 실행되어 부모에게 높이를 전달합니다.
+    function sendHeightToParent() {
+      const body = document.body;
+      const html = document.documentElement;
+      // iframe 내부 콘텐츠의 실제 높이를 측정합니다.
+      const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+      
+      // post-view.ejs에서 iframe에 부여한 고유한 name 속성을 가져옵니다.
+      const iframeName = window.name; 
+
+      // 부모 창(post-view.ejs)으로 iframe의 높이 정보를 보냅니다.
+      if (window.parent) {
+        window.parent.postMessage({
+          type: 'setIframeHeight', // 메시지 타입 (부모가 필터링할 수 있도록)
+          height: height,           // 측정된 높이
+          iframeName: iframeName    // 어떤 iframe의 높이인지 식별자
+        }, '*'); // 보안상 실제 배포 시에는 특정 도메인(예: 'https://your-domain.com')을 명시해야 합니다.
+      }
+    }
+
+    // iframe 콘텐츠가 로드되거나 DOM이 준비되었을 때 높이를 측정하여 보냅니다.
+    window.addEventListener('load', sendHeightToParent);
+    document.addEventListener('DOMContentLoaded', sendHeightToParent);
+
+    // iframe 내부 콘텐츠의 크기가 동적으로 변할 경우를 대비하여 감시합니다.
+    const observer = new MutationObserver(sendHeightToParent);
+    observer.observe(document.body, {
+      attributes: true,   // 속성 변경 감지
+      childList: true,    // 자식 노드 추가/제거 감지
+      subtree: true       // 모든 하위 요소 감지
+    });
+
+    // iframe의 크기 자체가 변경될 때도 높이를 다시 보냅니다.
+    window.addEventListener('resize', sendHeightToParent);
+  </script>
+</body>
+</html>`;
+
+    // 이제 이 'iframeContent' 문자열을 Base64로 인코딩합니다.
     const encoder = new TextEncoder();
-    const encodedUint8 = encoder.encode(rawCode); // UTF-8 문자열을 Uint8Array로 인코딩
+    const encodedUint8 = encoder.encode(iframeContent); // ⭐ rawCode 대신 iframeContent를 인코딩합니다.
+    // --- ⭐ 여기에 추가/수정될 코드 끝 ⭐ ---
 
     // FileReader를 사용하여 Uint8Array를 Base64 문자열로 비동기적으로 변환
     const base64Code = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
-            // "data:application/octet-stream;base64," 부분을 제거하고 순수 Base64 데이터만 추출
             const result = reader.result;
             if (typeof result === 'string') {
                 resolve(result.split(',')[1]);
@@ -233,8 +285,6 @@ function openHtmlPopup() {
         };
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(new Blob([encodedUint8]));
-
-        
     });
 
     const wrapper = document.createElement("div");
@@ -261,11 +311,9 @@ function openHtmlPopup() {
   });
 }
 
-    // ✅ selection 복구
-    saveSelection();
 
 
-    
+
 
 
       // 모든 JavaScript 코드를 하나의 스크립트 블록으로 통합합니다.
@@ -754,7 +802,6 @@ function openHtmlPopup() {
   const firstHeading = [...headings][0];
   editor.insertBefore(tocWrapper, firstHeading);
 }
-
 
 
     </script>
