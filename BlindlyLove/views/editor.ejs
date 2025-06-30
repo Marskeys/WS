@@ -204,7 +204,9 @@ html.dark .auto-toc a {
   const postUrl = (isEdit && post) ? `/edit/${post.id}` : '/savePost';
   const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
 %>
-<script>
+
+    <script>
+
 // editor.ejs (openHtmlPopup 함수) - 수정된 부분
 
 // editor.ejs (openHtmlPopup 함수) - 최종 수정본 (높이 조절 + 인코딩 + 문법 수정)
@@ -239,7 +241,8 @@ function openHtmlPopup() {
                     }, '*'); // 보안을 강화하려면 '*' 대신 여러분의 사이트 도메인(예: 'http://localhost:3000')을 넣으세요.
                 }
             });
-
+        </script>
+    `;
 
     // 1-2. 사용자가 입력한 rawCode에 높이 전달 스크립트를 삽입
     // </body> 태그를 찾아 바로 앞에 스크립트를 삽입합니다. (대소문자 구분 없이)
@@ -781,6 +784,7 @@ function openHtmlPopup() {
   const firstHeading = [...headings][0];
   editor.insertBefore(tocWrapper, firstHeading);
 }
+
 
     </script>
       
