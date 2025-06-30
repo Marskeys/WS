@@ -207,14 +207,38 @@ html.dark .auto-toc a {
 
     <script>
 
+// editor.ejs (openHtmlPopup 함수) - 수정된 부분
+
 function openHtmlPopup() {
-  showCustomInput("삽입할 HTML 코드를 입력하세요:", (rawCode) => {
+  // showCustomInput 함수가 비동기 콜백을 처리할 수 있도록,
+  // 콜백 함수 자체를 async로 만듭니다.
+  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => { // ⭐ 여기 async 키워드 추가
     if (!rawCode) return;
+
+    // ✨ Base64 인코딩 방식 변경: unescape(encodeURIComponent()) -> TextEncoder + FileReader
+    const encoder = new TextEncoder();
+    const encodedUint8 = encoder.encode(rawCode); // UTF-8 문자열을 Uint8Array로 인코딩
+
+    // FileReader를 사용하여 Uint8Array를 Base64 문자열로 비동기적으로 변환
+    const base64Code = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            // "data:application/octet-stream;base64," 부분을 제거하고 순수 Base64 데이터만 추출
+            const result = reader.result;
+            if (typeof result === 'string') {
+                resolve(result.split(',')[1]);
+            } else {
+                reject(new Error("FileReader result is not a string."));
+            }
+        };
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(new Blob([encodedUint8]));
+    });
 
     const wrapper = document.createElement("div");
     wrapper.className = "custom-widget";
     wrapper.setAttribute("data-type", "html-snippet");
-    wrapper.setAttribute("data-code", btoa(unescape(encodeURIComponent(rawCode))));
+    wrapper.setAttribute("data-code", base64Code); // ⭐ 새로 인코딩된 base64Code 사용
 
     // ✅ 삽입 미리보기 (에디터 안에는 표시되지만 저장될 땐 진짜 코드로 들어감)
     wrapper.innerHTML = `<div style="border: 1px dashed gray; padding: 0.5rem; color: #666;">[HTML 코드 삽입됨]</div>`;
@@ -230,6 +254,10 @@ function openHtmlPopup() {
       const editor = document.getElementById("editor");
       editor.appendChild(wrapper);
     }
+    // ✅ selection 복구 (이 부분은 원래 함수 마지막에 있었을 겁니다.)
+    saveSelection();
+  });
+}
 
     // ✅ selection 복구
     saveSelection();

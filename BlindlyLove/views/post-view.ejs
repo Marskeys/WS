@@ -217,31 +217,44 @@
 
 <script> 
   document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach(el => {
+  document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
     const encoded = el.getAttribute("data-code");
     if (!encoded) return;
 
     try {
-      const decoded = atob(encoded); // base64 → 원래 HTML 코드
+      // ✨ Base64 디코딩 방식 변경: atob() -> atob() + TextDecoder
+      const binaryString = atob(encoded); // Base64를 8비트 이진 문자열로 변환 (UTF-8 바이트 아님)
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+      }
+      const decoder = new TextDecoder('utf-8'); // UTF-8 디코더 생성
+      const decoded = decoder.decode(bytes); // 바이트 배열을 UTF-8 문자열로 디코딩
 
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('sandbox', 'allow-scripts'); 
+      // 샌드박스 설정 (보안 강화: allow-same-origin 제거)
+      iframe.setAttribute('sandbox', 'allow-scripts'); // ⭐ 중요한 보안 설정
       iframe.setAttribute('referrerpolicy', 'no-referrer');
       iframe.setAttribute('title', '삽입된 HTML');
+      // iframe 고정 높이 (임시 해결책) - 필요에 따라 픽셀 값 조정
       iframe.style.width = '100%';
-      iframe.style.minHeight = '800px';
+      iframe.style.height = '700px'; // ⭐ 계산기 앱이 잘리지 않도록 충분한 높이로 설정 (예: 700px)
       iframe.style.border = '1px solid #ccc';
       iframe.style.borderRadius = '8px';
       iframe.style.margin = '1rem 0';
-      iframe.srcdoc = decoded;
+      iframe.srcdoc = decoded; // ⭐ 디코딩된 UTF-8 문자열을 srcdoc에 할당
 
-      el.innerHTML = '';
+      el.innerHTML = ''; // 플레이스홀더 텍스트 제거
       el.appendChild(iframe);
     } catch (e) {
       el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
       console.error('디코딩 오류:', e);
     }
   });
+
+  // 이전 단계에서 추가했던 window.addEventListener('message', ...) 코드가 있다면 그대로 유지해주세요.
+  // 이 수정은 문자 깨짐 문제 해결에 초점을 맞춘 것입니다.
 });
 </script>
   <%- include('partials/footer') %>
