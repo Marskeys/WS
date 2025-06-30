@@ -167,9 +167,11 @@ html.dark .auto-toc a {
           
     
           <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-          <button onclick="openHtmlPopup()" data-tooltip="HTML 삽입">
-            <i class="fas fa-code"></i>
-          </button>
+          <% if (user && Number(user.is_admin) === 1) { %>
+            <button onclick="openHtmlPopup()" data-tooltip="HTML 삽입">
+              <i class="fas fa-code"></i>
+            </button>
+          <% } %>
           <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
         </div>
     
