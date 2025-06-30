@@ -271,8 +271,7 @@
                       </style>
                   </head>
                   <body>
-                      ${decodedHtmlContent.replace(/`/g, '\\`')} // ⭐⭐⭐ 여기를 수정했습니다! 백틱 이스케이프 처리 ⭐⭐⭐
-                      \n<script> 
+                      ${decodedHtmlContent} <script>
                           // 이 스크립트는 iframe 내부에서 실행되어 부모 페이지에게 자신의 높이를 전달합니다.
                           function sendHeightToParent() {
                               const body = document.body;
@@ -326,7 +325,7 @@
       const iframeName = event.data.iframeName;
       const height = event.data.height;
       const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`); // 해당 iframe 찾기
-      if (targetIframe) {
+      if (targetIfㅁㄹrame) {
         targetIframe.style.height = `${height}px`; // 높이 업데이트
       }
     }
