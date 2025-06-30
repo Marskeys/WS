@@ -205,7 +205,6 @@ html.dark .auto-toc a {
   const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
 %>
 <script>
-
 function openHtmlPopup() {
   showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
     if (!rawCode) return;
@@ -282,17 +281,8 @@ function openHtmlPopup() {
     // ⭐ 여기서 saveSelection()을 호출합니다.
     saveSelection(); 
   });
-  // ⭐ 이 위치에 saveSelection(); 이 또 있었다면 삭제해주세요.
-  // 이 괄호(});)는 showCustomInput의 끝이자 openHtmlPopup 함수의 끝입니다.
-}
- 
-  // ⭐ 이 위치에 saveSelection()이 또 있으면 삭제해주세요.
-  // 이 괄호(});)는 showCustomInput의 끝이자 openHtmlPopup 함수의 끝입니다.
 }
 
-// 만약 이 함수 정의 바로 아래에 독립적인 saveSelection();이 있었다면 삭제해야 합니다.
-// 전체 editor.ejs 파일에서 `saveSelection();` 단독으로 호출되는 부분이
-// openHtmlPopup 함수 내부의 마지막에 한 번만 있도록 해주세요.
     
 
 
