@@ -191,18 +191,15 @@ html.dark .auto-toc a {
           
     
           <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-          <% if (user && Number(user.is_admin) === 1) { %>
-            <button onclick="openHtmlPopup()" data-tooltip="HTML 삽입">
-              <i class="fas fa-code"></i>
-            </button>
-          <% } %>
           <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
         </div>
     
+        <% if (user && Number(user.is_admin) === 1) { %>
         <div class="mode-toggle">
           <button onclick="switchToDesignMode()">디자인 모드</button>
           <button onclick="switchToHtmlMode()">HTML 모드</button>
         </div>
+        <% } %>
         
         <div id="editorWrapper">
           <div id="editor" contenteditable="true" class="editor" spellcheck="false">
