@@ -210,79 +210,22 @@ html.dark .auto-toc a {
 // editor.ejs (openHtmlPopup 함수) - 수정된 부분
 
 function openHtmlPopup() {
-  // HTML 코드 입력을 위한 팝업창을 띄웁니다.
-  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
-    if (!rawCode) return; // 입력된 코드가 없으면 아무것도 하지 않습니다.
+  // showCustomInput 함수가 비동기 콜백을 처리할 수 있도록,
+  // 콜백 함수 자체를 async로 만듭니다.
+  showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => { // ⭐ 여기 async 키워드 추가
+    if (!rawCode) return;
 
-    // ⭐ 핵심: 사용자가 입력한 rawCode를 iframe에 필요한 완전한 HTML 문서 형태로 만듭니다.
-    // 이 문자열 안에 iframe의 높이를 자동으로 조절할 스크립트가 포함됩니다.
-    const iframeContent = `<!DOCTYPE html>
-<html>
-<head>
-<style>
-  /* iframe 내부의 기본 마진/패딩 제거 및 스크롤바 숨김 */
-  body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* iframe 자체에 스크롤바가 생기지 않도록 합니다. */
-  }
-</style>
-</head>
-<body>
-  ${rawCode} <script>
-    // 이 스크립트는 iframe 내부(post-view.ejs에 삽입될)에서 실행됩니다.
-    // 부모 페이지(post-view.ejs)에게 자신의 높이를 전달하는 역할을 합니다.
-    function sendHeightToParent() {
-      const body = document.body;
-      const html = document.documentElement;
-      // iframe 내부 콘텐츠의 실제 높이를 측정합니다.
-      // scrollHeight, offsetHeight, clientHeight 중 가장 큰 값을 사용해 정확도를 높입니다.
-      const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-      
-      // 부모 페이지(post-view.ejs)에서 이 iframe을 식별할 수 있도록 부여된 name 속성(iframeName)을 가져옵니다.
-      const iframeName = window.name; 
-
-      // 부모 창으로 메시지를 보냅니다.
-      if (window.parent) {
-        window.parent.postMessage({
-          type: 'setIframeHeight', // 메시지 타입 (부모 페이지에서 메시지를 필터링할 때 사용)
-          height: height,           // 측정된 iframe의 높이
-          iframeName: iframeName    // 어떤 iframe으로부터 온 메시지인지 식별자
-        }, '*'); // 중요: '*'는 모든 출처를 허용한다는 의미입니다. 보안상 실제 서비스에서는
-                 // 'https://your-domain.com'과 같이 특정 도메인을 명시하는 것이 좋습니다.
-      }
-    }
-
-    // iframe 콘텐츠가 완전히 로드되거나 DOM 구조가 준비되었을 때 높이를 측정하여 보냅니다.
-    window.addEventListener('load', sendHeightToParent);
-    document.addEventListener('DOMContentLoaded', sendHeightToParent);
-
-    // iframe 내부 콘텐츠의 크기가 동적으로 변할 경우를 대비하여 감시합니다.
-    // (예: JavaScript로 콘텐츠가 추가되거나 이미지가 로드될 때)
-    const observer = new MutationObserver(sendHeightToParent);
-    observer.observe(document.body, {
-      attributes: true,   // 요소의 속성 변경 감지 (예: style 변경)
-      childList: true,    // 자식 노드 추가/제거 감지
-      subtree: true       // 모든 하위 요소에서 변경 감지
-    });
-
-    // iframe의 크기 자체가 변경될 때도 높이를 다시 보냅니다.
-    window.addEventListener('resize', sendHeightToParent);
-  </script>
-</body>
-</html>`;
-
-    // 이 'iframeContent' 문자열을 Base64 형식으로 인코딩합니다.
-    // 이는 데이터베이스에 저장될 때 안전하게 전송하고, post-view.ejs에서 다시 디코딩하기 위함입니다.
+    // ✨ Base64 인코딩 방식 변경: unescape(encodeURIComponent()) -> TextEncoder + FileReader
     const encoder = new TextEncoder();
-    const encodedUint8 = encoder.encode(iframeContent); 
+    const encodedUint8 = encoder.encode(rawCode); // UTF-8 문자열을 Uint8Array로 인코딩
 
+    // FileReader를 사용하여 Uint8Array를 Base64 문자열로 비동기적으로 변환
     const base64Code = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
+            // "data:application/octet-stream;base64," 부분을 제거하고 순수 Base64 데이터만 추출
             const result = reader.result;
             if (typeof result === 'string') {
-                // "data:application/octet-stream;base64," 부분을 제거하고 순수 Base64 데이터만 추출합니다.
                 resolve(result.split(',')[1]);
             } else {
                 reject(new Error("FileReader result is not a string."));
@@ -290,29 +233,31 @@ function openHtmlPopup() {
         };
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(new Blob([encodedUint8]));
+
+        
     });
 
-    // 에디터 내부에 삽입될 '자리 표시자' div를 생성합니다.
     const wrapper = document.createElement("div");
-    wrapper.className = "custom-widget"; // CSS 스타일링을 위한 클래스
-    wrapper.setAttribute("data-type", "html-snippet"); // 이 위젯의 타입을 나타냄
-    wrapper.setAttribute("data-code", base64Code); // Base64 인코딩된 HTML 콘텐츠를 데이터 속성으로 저장
+    wrapper.className = "custom-widget";
+    wrapper.setAttribute("data-type", "html-snippet");
+    wrapper.setAttribute("data-code", base64Code); // ⭐ 새로 인코딩된 base64Code 사용
 
-    // 에디터 내부에 사용자에게 보여질 미리보기 (실제 iframe 아님)
+    // ✅ 삽입 미리보기 (에디터 안에는 표시되지만 저장될 땐 진짜 코드로 들어감)
     wrapper.innerHTML = `<div style="border: 1px dashed gray; padding: 0.5rem; color: #666;">[HTML 코드 삽입됨]</div>`;
 
-    // 현재 에디터의 선택 영역에 자리 표시자 div를 삽입합니다.
+    // ✅ 선택한 위치에 삽입
     const sel = window.getSelection();
     if (sel && sel.rangeCount > 0) {
       const range = sel.getRangeAt(0);
-      range.deleteContents(); // 선택된 내용이 있다면 삭제
-      range.insertNode(wrapper); // 새로운 자리 표시자 삽입
+      range.deleteContents();
+      range.insertNode(wrapper);
     } else {
-      // 선택 영역이 없다면 에디터 맨 뒤에 추가합니다.
+      // 선택 영역 없을 때는 그냥 editor 맨 뒤에 넣기
       const editor = document.getElementById("editor");
       editor.appendChild(wrapper);
     }
-    saveSelection(); // 삽입 후 선택 영역을 복구하여 에디터 기능을 계속 사용할 수 있도록 합니다.
+    // ✅ selection 복구 (이 부분은 원래 함수 마지막에 있었을 겁니다.)
+    saveSelection();
   });
 }
 
