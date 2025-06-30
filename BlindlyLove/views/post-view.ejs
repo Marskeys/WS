@@ -225,7 +225,7 @@
       const decoded = atob(encoded); // base64 → 원래 HTML 코드
 
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+      iframe.setAttribute('sandbox', 'allow-scripts'); 
       iframe.setAttribute('referrerpolicy', 'no-referrer');
       iframe.setAttribute('title', '삽입된 HTML');
       iframe.style.width = '100%';
