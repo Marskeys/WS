@@ -223,26 +223,35 @@
   });
 
 
-document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach(el => {
     const encoded = el.getAttribute("data-code");
+    if (!encoded) return;
+
     try {
-      const decoded = decodeURIComponent(escape(atob(encoded)));
+      const decoded = atob(encoded); // 이젠 escape 없어도 됨
 
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('sandbox', 'allow-scripts');
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin'); // ✅ 핵심
+      iframe.setAttribute('referrerpolicy', 'no-referrer');              // ✅ 보안 안정
+      iframe.setAttribute('title', '삽입된 HTML');
       iframe.style.width = '100%';
-      iframe.style.minHeight = '300px';
+      iframe.style.minHeight = '400px';
       iframe.style.border = '1px solid #ccc';
+      iframe.style.borderRadius = '8px';
+      iframe.style.margin = '1rem 0';
       iframe.srcdoc = decoded;
 
       el.innerHTML = '';
       el.appendChild(iframe);
     } catch (e) {
-      el.innerHTML = '<p style="color:red">[HTML 코드 오류]</p>';
+      el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
+      console.error('디코딩 오류:', e);
     }
   });
 });
+
+
 
 </script>
   <%- include('partials/footer') %>
