@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,6 +9,7 @@
   <title>BlindLove 에디터</title>
 
   <% if (user) { %>
+    <!-- ✅ 로그인한 사용자라면 -->
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
 
@@ -82,6 +86,7 @@ html.dark .auto-toc a {
 <body>
   <%- include('partials/header') %>
   <% const isEdit = typeof post !== 'undefined'; %>
+  <!-- ✅ 사용자 정보 표시 예시 (원하면 생략 가능) -->
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold; margin-top:3rem;">
       <%= user.nickname %>님, 에디터에 오신 걸 환영합니다!
@@ -165,7 +170,7 @@ html.dark .auto-toc a {
           
     
           <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-          <button id="openHtmlPopupButton" data-tooltip="HTML 삽입">
+          <button onclick="openHtmlPopup()" data-tooltip="HTML 삽입">
             <i class="fas fa-code"></i>
           </button>
           <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
@@ -203,7 +208,6 @@ html.dark .auto-toc a {
   const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
 %>
 <script>
-// openHtmlPopup 함수 정의 (위치는 그대로 둡니다)
 function openHtmlPopup() {
   showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
     if (!rawCode) return;
@@ -519,10 +523,6 @@ function openHtmlPopup() {
               sel.removeAllRanges();
               sel.addRange(savedRange);
           }
-          const editor = document.getElementById('editor');
-          if (editor) { // 에디터가 있는지 확인
-              editor.focus();
-          }
       }
 
       // --- 수정된 setColor 함수 ---
@@ -597,7 +597,8 @@ function openHtmlPopup() {
           }
           modal.innerHTML = `
               <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                  <p style="color: black;">${message}</p> ${isConfirm ? `
+                  <p style="color: black;">${message}</p> <!-- ✅ 글자색을 검은색으로 변경 -->
+                  ${isConfirm ? `
                       <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
                       <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
                   ` : `
@@ -642,7 +643,8 @@ function openHtmlPopup() {
           }
           modal.innerHTML = `
               <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                  <p style="color: black;">${message}</p> <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
+                  <p style="color: black;">${message}</p> <!-- ✅ 입력창 메시지 글자색도 검은색으로 변경 -->
+                  <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
                   <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
                   <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
               </div>
@@ -669,9 +671,9 @@ function openHtmlPopup() {
           }
       };
 
-      // ✅ DOMContentLoaded 이벤트 리스너 사용
-      // DOM 트리가 완전히 로드되고 파싱된 후 스크립트가 실행되도록 합니다.
-      document.addEventListener('DOMContentLoaded', function() {
+      // `window.onload`는 한 번만 할당되어야 합니다.
+      // 모든 함수 정의를 이전에 배치하여 오류 없이 호출될 수 있도록 합니다.
+      window.onload = () => {
           // 카테고리 불러오기 및 렌더링
           fetch('/api/categories')
             .then(res => res.json())
@@ -695,101 +697,83 @@ function openHtmlPopup() {
           // 툴바 버튼 이벤트 리스너 추가 (선택 영역 저장)
           const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
           toolbarButtons.forEach(button => {
-              // openHtmlPopupButton은 아래에서 별도로 처리하므로 제외
-              if (button.id !== 'openHtmlPopupButton') {
-                  button.addEventListener('mousedown', saveSelection);
-              }
+              button.addEventListener('mousedown', saveSelection);
           });
-
-          // ✅ HTML 삽입 버튼에 클릭 및 mousedown 이벤트 리스너 추가
-          const openHtmlButton = document.getElementById('openHtmlPopupButton');
-          if (openHtmlButton) {
-              openHtmlButton.addEventListener('click', openHtmlPopup);
-              openHtmlButton.addEventListener('mousedown', saveSelection);
-          }
-      });
+      };
 
       function insertTOC() {
-        const editor = document.getElementById("editor");
-        const headings = editor.querySelectorAll("h1, h2");
+  const editor = document.getElementById("editor");
+  const headings = editor.querySelectorAll("h1, h2");
 
-        if (!headings.length) {
-          showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
-          return;
-        }
+  if (!headings.length) {
+    showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
+    return;
+  }
 
-        // 기존 목차 제거
-        const oldTOC = editor.querySelector(".auto-toc");
-        if (oldTOC) oldTOC.remove();
+  // 기존 목차 제거
+  const oldTOC = editor.querySelector(".auto-toc");
+  if (oldTOC) oldTOC.remove();
 
-        const tocWrapper = document.createElement("div");
-        tocWrapper.className = "custom-widget auto-toc"; // custom-widget 추가
-        tocWrapper.setAttribute("data-type", "toc"); // 타입 지정
-        tocWrapper.contentEditable = "false";
+  const tocWrapper = document.createElement("div");
+  tocWrapper.className = "auto-toc";
+  tocWrapper.contentEditable = "false";
 
-        const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
-        const tocList = document.createElement("ul");
-        tocList.className = "toc-list";
-        tocList.style.margin = "0";
-        tocList.style.padding = "0";
+  const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
+  const tocList = document.createElement("ul");
+  tocList.className = "toc-list";
+  tocList.style.margin = "0";
+  tocList.style.padding = "0";
 
-        let h1Count = 0;
-        let h2Count = 0;
+  let h1Count = 0;
+  let h2Count = 0;
 
-        headings.forEach((el) => {
-          const tag = el.tagName.toLowerCase();
-          let number = "";
+  headings.forEach((el) => {
+    const tag = el.tagName.toLowerCase();
+    let number = "";
 
-          if (tag === "h1") {
-            h1Count++;
-            h2Count = 0;
-            number = `${h1Count}.`;
-          } else if (tag === "h2") {
-            h2Count++;
-            number = `${h1Count}.${h2Count}`;
-          }
+    if (tag === "h1") {
+      h1Count++;
+      h2Count = 0;
+      number = `${h1Count}.`;
+    } else if (tag === "h2") {
+      h2Count++;
+      number = `${h1Count}.${h2Count}`;
+    }
 
-          const id = `toc-${number.replace(/\./g, "-")}`;
-          el.id = id;
+    const id = `toc-${number.replace(/\./g, "-")}`;
+    el.id = id;
 
-          const li = document.createElement("li");
-          li.className = `toc-item toc-${tag}`;
-          li.style.margin = "0.2em 0";
-          li.style.lineHeight = "1.2";
-          if (tag === "h2") li.style.marginLeft = "1.2rem";
+    const li = document.createElement("li");
+    li.className = `toc-item toc-${tag}`;
+    li.style.margin = "0.2em 0";
+    li.style.lineHeight = "1.2";
+    if (tag === "h2") li.style.marginLeft = "1.2rem";
 
-          const a = document.createElement("a");
-          a.href = `#${id}`;
-          a.textContent = `${number} ${el.textContent.trim()}`;
-          a.onclick = function (e) {
-            e.preventDefault();
-            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-          };
-          a.style.color = "#0366d6";
-          a.style.textDecoration = "none";
+    const a = document.createElement("a");
+    a.href = `#${id}`;
+    a.textContent = `${number} ${el.textContent.trim()}`;
+    a.onclick = function (e) {
+      e.preventDefault();
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    };
+    a.style.color = "#0366d6";
+    a.style.textDecoration = "none";
 
-          li.appendChild(a);
-          tocList.appendChild(li);
-        });
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
 
-        tocWrapper.innerHTML = tocTitle;
-        tocWrapper.appendChild(tocList);
+  tocWrapper.innerHTML = tocTitle;
+  tocWrapper.appendChild(tocList);
 
-        // ✅ 선택 영역에 삽입 또는 에디터 맨 뒤에 삽입
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) {
-          const range = sel.getRangeAt(0);
-          range.deleteContents();
-          range.insertNode(tocWrapper);
-        } else {
-          // 선택 영역 없을 때는 그냥 editor 맨 뒤에 넣기
-          editor.appendChild(tocWrapper);
-        }
-        saveSelection();
-      }
+  // h1 앞에 제대로 삽입
+  const firstHeading = [...headings][0];
+  editor.insertBefore(tocWrapper, firstHeading);
+}
 
     </script>
       
       <%- include('partials/scripts') %>
     </body>
     </html>
+
