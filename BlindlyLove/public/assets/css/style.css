@@ -434,12 +434,11 @@ html.dark body .hamburger.is-in-menu span {
   padding: 1px;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
-  width: 50px;
-  height: 80vh;
+  width: 50vw;
+  height: 100vh;
   background-color: transparent;
   color: white;
   z-index: 12000;
-  top: 1rem;
   border: 0px solid rgb(255, 255, 255); 
   border-radius: 3px;
   
