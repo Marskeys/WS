@@ -498,6 +498,20 @@ form button:hover {
   align-items: center;
 }
 
+@media (max-width: 640px) {
+  .action-icons {
+    gap: 0.2rem;
+  }
+
+  .icon-btn,
+  .action-icons a,
+  .action-icons form,
+  form button {
+    padding: 0.2rem 0.4rem;
+    font-size: 1rem; /* 필요시 더 줄여줘도 돼 */
+  }
+}
+
 .post-info {
   display: flex;
   margin-top: 0.5rem;
