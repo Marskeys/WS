@@ -183,8 +183,8 @@
 .tab {
   margin-top: 2rem;
   padding: 0.3rem 0.9rem;
-  background: #f0f0ff;
-  border: 1px solid #ccc;
+  border: 1px solid #d0cce6;
+  background: #000000;
   cursor: pointer;
   border-radius: 999px;
   font-size: 0.9rem;
@@ -192,6 +192,19 @@
   color: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease-in-out;
+}
+
+.tab:hover {
+  color: white;
+  background-color: rgba(247, 243, 255, 0.3);
+  border-color: #c4b2ff;
+}
+
+.tab.active {
+  background: #f6f6f6;
+  color: black;
+  border-color: #ff9999;
+  font-weight: bold;
 }
 
 
