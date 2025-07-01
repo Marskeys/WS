@@ -287,7 +287,17 @@ html, body {
 
 
 
-
+/* ✅ 검색 input - 기존 유지 */
+.search-box {
+  flex: 1;
+  padding: 10px 52px 10px 5px; /* 🔑 오른쪽 버튼 공간 확보 */
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  border-radius: 999px;
+  background: transparent;
+  box-sizing: border-box;      /* 🔥 꼭 필요함!! */
+}
 
 /* ✅ 검색 버튼 - 기존 유지 */
 .icon-submit-btn {
