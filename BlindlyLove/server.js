@@ -352,6 +352,8 @@ app.get('/search', async (req, res) => {
         total: totalPages,
         range: paginationRange
       }
+      selectedCategory: null, 
+      user: req.session.user   
     });
   } catch (err) {
     console.error('검색 오류:', err);
