@@ -181,15 +181,19 @@
 }
 
 .tab {
-  flex-shrink: 0;
-  padding: 0.4rem 1rem;
+  margin-top: 2rem;
+  padding: 0.3rem 0.9rem;
   background: #f0f0ff;
   border: 1px solid #ccc;
+  cursor: pointer;
   border-radius: 999px;
   font-size: 0.9rem;
-  white-space: nowrap;
-  cursor: pointer;
+  font-weight: 500;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
 }
+
 
 .tabs::-webkit-scrollbar {
   display: none;
