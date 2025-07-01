@@ -1,6 +1,3 @@
-let isPetalPaused = false;
-let isCharPaused = false;
-
 function filterBoard(category) {
   const allTabs = document.querySelectorAll(".tab");
   const allDesktopRows = document.querySelectorAll(".board-table tbody tr");
