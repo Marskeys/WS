@@ -760,30 +760,4 @@ html.dark body .mobile-menu{
 }
 
 
-.tetris-icon {
-}
 
-.tetris-icon:hover {
-}
-
-
-.tetris-icon {
-}
-
-.mobile-menu:hover .tetris-icon {
-}
-.menu-label {
-  font-size: 0.2rem;
-  color: rgb(255, 255, 255);
-  font-weight: 300;
-  margin-top: -1.5rem;
-  transition: font-size 0.4s ease, opacity 0.4s ease;
-  opacity: 0.6;
-}
-
-/* 메뉴 열리면 글자도 좀 또렷하게 */
-.mobile-menu.open .menu-label {
-  font-size: 0.6rem;
-
-  opacity: 1;
-}
