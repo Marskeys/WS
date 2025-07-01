@@ -206,6 +206,13 @@
   font-weight: bold;
 }
 
+@media (max-width: 640px) {
+  .tabs-wrapper {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
 .board-table {
   width: 100%;
   border-collapse: collapse;
