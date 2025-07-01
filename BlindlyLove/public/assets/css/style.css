@@ -471,7 +471,7 @@ html.dark body .mobile-menu{
 
 .mobile-menu.open {
   /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
-  display: flex;
+  display: none;
   transform: translateX(0); 
   opacity: 1;
   pointer-events: auto; /* 메뉴가 열렸을 때 클릭 이벤트를 허용합니다. */
