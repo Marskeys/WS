@@ -764,6 +764,9 @@ html.dark body .mobile-menu{
     display: flex;
   }
 
+  .mobile-menu {
+  }
+
   .mobile-menu.open {
     /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
     display: flex;
@@ -775,7 +778,4 @@ html.dark body .mobile-menu{
     /* 여기에 다시 transition을 정의할 필요가 없습니다. */
   }
 
-.mobile-menu {
-  display: flex;
-}
 }
