@@ -429,8 +429,8 @@ form button:hover {
 
   .mobile-post-item {
     box-sizing: border-box;
-    padding-left: 0.3rem;
-    padding-right: 0.2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     width: 100%;
     position: relative;
     padding: 1rem 0;
@@ -453,7 +453,7 @@ form button:hover {
     text-decoration: none;
     display: block;
     margin-bottom: 0.4rem;
-    max-width: 80vw;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
