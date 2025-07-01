@@ -84,6 +84,15 @@
           </div>
           </div>
 
+          <!-- 🟡 페이지네이션 -->
+<% if (pagination.total > 1) { %>
+  <div class="pagination">
+    <% for (let i = 1; i <= pagination.total; i++) { %>
+      <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+  </div>
+<% } %>
+
           <!-- 🟡 게시글 리스트 (데스크탑) -->
           <table class="board-table">
             <thead>
@@ -200,6 +209,15 @@
           </div>
         </div>
       </div>
+
+      <!-- 🟡 페이지네이션 -->
+<% if (pagination.total > 1) { %>
+  <div class="pagination">
+    <% for (let i = 1; i <= pagination.total; i++) { %>
+      <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+  </div>
+<% } %>
 
       <!-- 🟡 우측 패널 -->
       <aside class="side-panel right-panel-only">
