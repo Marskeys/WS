@@ -763,6 +763,18 @@ html.dark body .mobile-menu{
   .hamburger {
     display: flex;
   }
+
+  .mobile-menu.open {
+    /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
+    display: flex;
+    transform: translateX(0); 
+    opacity: 1;
+    pointer-events: auto; /* 메뉴가 열렸을 때 클릭 이벤트를 허용합니다. */
+  
+    /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 (위의 .mobile-menu에서 이미 정의) */
+    /* 여기에 다시 transition을 정의할 필요가 없습니다. */
+  }
+
 .mobile-menu {
   display: flex;
 }
