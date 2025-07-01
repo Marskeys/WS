@@ -351,7 +351,7 @@ app.get('/search', async (req, res) => {
         current: page,
         total: totalPages,
         range: paginationRange
-      }
+      },
       selectedCategory: null, 
       user: req.session.user   
     });
