@@ -440,8 +440,8 @@ html.dark body .hamburger.is-in-menu span {
   z-index: 12000;
   margin-top: 3rem;
   margin-left: 0.5rem;
-  border: 2px solid rgb(244, 188, 188); 
-  border-radius: 40px;
+  border: 2px solid rgb(255, 255, 255); 
+  border-radius: 3px;
   
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
   transform: translateX(-100%); 
@@ -461,7 +461,6 @@ html.dark body .hamburger.is-in-menu span {
 }
 
 .mobile-menu.open:hover {
-  width: 180px;
 }
 
 
