@@ -427,7 +427,7 @@ html.dark body .hamburger.is-in-menu span {
 /* ✅ 모바일 메뉴 */
 .mobile-menu {
   position: fixed;
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
