@@ -65,7 +65,6 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
-  z-index:-1;
 }
 
 .search-form:hover {
@@ -179,29 +178,7 @@
   width: 100%;
 }
 
-/* 왼쪽 블러 */
-.tabs-blur-left {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0));
-  z-index: 5;
-}
 
-/* 오른쪽 블러 */
-.tabs-blur-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(to left, rgba(255,255,255,0.8), rgba(255,255,255,0));
-  z-index: 5;
-}
 
 html.dark .tabs-blur-right {
   background: linear-gradient(to left,
