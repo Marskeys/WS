@@ -167,6 +167,16 @@
   gap: 0.5rem;
   margin-bottom: 1rem;
   margin-right: 1rem;
+   /* ✅ 가로 스크롤 적용 */
+   overflow-x: auto;
+   white-space: nowrap;
+   -webkit-overflow-scrolling: touch; /* 모바일 스크롤 부드럽게 */
+   /* ✅ 스크롤바 숨기기 (옵션) */
+   scrollbar-width: none; /* Firefox */
+}
+
+.tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .tab {
