@@ -163,9 +163,11 @@
 }
 
 .tabs-wrapper {
-  overflow-x: auto; /* X축 스크롤 허용 */
-  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
-  width: 100%; /* 부모 너비에 맞춤 */
+  width: 100%; /* 부모 요소의 너비에 맞게 100% 설정 */
+  overflow-x: auto; /* ✨ 중요: X축 스크롤을 활성화 */
+  -webkit-overflow-scrolling: touch; /* iOS에서 스크롤 부드럽게 */
+  padding: 0 1rem; /* 좌우 패딩을 줘서 탭이 잘리지 않고 보이도록 여백 확보 */
+  box-sizing: border-box; /* 패딩이 너비 계산에 포함되도록 */
 }
 
 .tabs {
