@@ -169,32 +169,30 @@
   width: 100%;
   padding: 0 1rem;
   box-sizing: border-box;
+  border: 1px solid pink;
 }
 
 .tabs {
-  display: inline-flex;      /* ✅ 핵심: inline-flex */
+  display: inline-flex; /* ✅ 핵심 */
   flex-wrap: nowrap;
   white-space: nowrap;
   gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.tab {
+  flex-shrink: 0;
+  padding: 0.4rem 1rem;
+  background: #f0f0ff;
+  border: 1px solid #ccc;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .tabs::-webkit-scrollbar {
   display: none;
-}
-
-.tab {
-  flex-shrink: 0; /* 탭이 줄어들지 않도록 */
-  margin-top: 2rem;
-  padding: 0.3rem 0.9rem;
-  border: 1px solid #d0cce6;
-  background: #fefeff;
-  cursor: pointer;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #333;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease-in-out;
 }
 
 .tab:hover {
