@@ -65,6 +65,7 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  z-index: 10000;
 }
 
 .search-form:hover {
