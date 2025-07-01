@@ -386,26 +386,39 @@ function generatePagination(current, total) {
   return rangeWithDots;
 }
 
-// ✅ 메인 페이지 (비공개 글 제목 공개 및 내용 숨김 적용)
 app.get('/', async (req, res) => {
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
+  const category = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
 
-  try {
-    // 총 게시글 수 조회 (비공개 포함)
-    const [[{ count }]] = await db.query('SELECT COUNT(*) AS count FROM posts');
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
 
-    // 페이징된 글 조회
-    const [posts] = await db.query(`
+  try {
+    // 카테고리 조건에 따라 쿼리 다르게 구성
+    let baseQuery = `
       SELECT id, title, content, categories, author, user_id, created_at, updated_at, is_private, is_pinned
       FROM posts
-      ORDER BY is_pinned DESC, GREATEST(updated_at, created_at) DESC
-      LIMIT ? OFFSET ?
-    `, [limit, offset]);
+    `;
+    let countQuery = `SELECT COUNT(*) as count FROM posts`;
+    const params = [];
+    const countParams = [];
 
+    if (category !== 'all') {
+      baseQuery += ` WHERE FIND_IN_SET(?, categories)`;
+      countQuery += ` WHERE FIND_IN_SET(?, categories)`;
+      params.push(category);
+      countParams.push(category);
+    }
+
+    baseQuery += ` ORDER BY is_pinned DESC, GREATEST(updated_at, created_at) DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+
+    // 게시글 조회
+    const [posts] = await db.query(baseQuery, params);
+
+    // 비공개 필터링
     const filteredPosts = posts.map(post => {
       if (post.is_private && post.user_id !== userId && !isAdmin) {
         return {
@@ -416,21 +429,24 @@ app.get('/', async (req, res) => {
       return post;
     });
 
-    const categorySet = new Set();
-    filteredPosts.forEach(post => {
-      post.categories.split(',').map(c => c.trim()).forEach(c => c && categorySet.add(c));
-    });
-
-    const categories = Array.from(categorySet);
+    // 전체 개수
+    const [[{ count }]] = await db.query(countQuery, countParams);
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
 
+    // 카테고리 목록 만들기
+    const categorySet = new Set();
+    filteredPosts.forEach(post => {
+      post.categories?.split(',').map(c => c.trim()).forEach(c => c && categorySet.add(c));
+    });
+
     res.render('index', {
       posts: filteredPosts,
-      categories,
+      categories: Array.from(categorySet),
       isSearch: false,
       searchKeyword: '',
       currentPath: req.path,
+      selectedCategory: category === 'all' ? null : category,
       pagination: {
         current: page,
         total: totalPages,
