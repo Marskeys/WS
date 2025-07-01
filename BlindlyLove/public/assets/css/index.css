@@ -499,6 +499,13 @@ form button:hover {
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #777;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .post-title-and-actions + .post-info {
