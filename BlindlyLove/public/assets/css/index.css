@@ -187,12 +187,14 @@
   background: #f9eded;
   cursor: pointer;
   border-radius: 999px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 300;
   color: #2a2a2a;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease-in-out;
 }
+
+
 
 .tab:hover {
   color: white;
@@ -239,6 +241,9 @@
     display: none;                 /* Webkit 계열 */
   }
 
+  .tab{
+    font-size: 0.7rem;
+  }
 }
 
 .board-table {
