@@ -609,14 +609,10 @@ html.dark body .mobile-menu{
 /* ✅ 모바일 검색 시 헤더 고정 검색창 길이 - 기존 유지 */
 @media (max-width: 640px) {
   .search-form {
-    max-width: 25% !important;
+    max-width: 95% !important;
     width: 90%;
     display: flex;  
     box-sizing: border-box;
-
-    background-color: #454545;
-    border: 1px solid #555;
-    box-shadow: none;
   }
 }
 
