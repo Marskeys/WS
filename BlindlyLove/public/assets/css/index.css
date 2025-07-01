@@ -172,6 +172,18 @@
   box-sizing: border-box;
 }
 
+.tabs-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(to left, white, transparent);
+}
+
 .tabs {
   display: inline-flex; /* ✅ 핵심 */
   flex-wrap: nowrap;
