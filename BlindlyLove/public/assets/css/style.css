@@ -610,9 +610,13 @@ html.dark body .mobile-menu{
 @media (max-width: 640px) {
   .search-form {
     max-width: 95% !important;
-    width: 100%;
+    width: 90%;
     display: flex;  
     box-sizing: border-box;
+
+    background-color: #454545;
+    border: 1px solid #555;
+    box-shadow: none;
   }
 }
 
