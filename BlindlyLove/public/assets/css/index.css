@@ -164,22 +164,18 @@
 
 .tabs-wrapper {
   display: block;
-  width: 100%; /* 부모 요소의 너비에 맞게 100% 설정 */
-  overflow-x: auto; /* ✨ 중요: X축 스크롤을 활성화 */
-  -webkit-overflow-scrolling: touch; /* iOS에서 스크롤 부드럽게 */
-  padding: 0 1rem; /* 좌우 패딩을 줘서 탭이 잘리지 않고 보이도록 여백 확보 */
-  box-sizing: border-box; /* 패딩이 너비 계산에 포함되도록 */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .tabs {
-  display: flex;
+  display: inline-flex;      /* ✅ 핵심: inline-flex */
+  flex-wrap: nowrap;
+  white-space: nowrap;
   gap: 0.5rem;
-  margin-bottom: 1rem;
-  width: max-content;
-  min-width: 100%; 
-  /* margin-right: 1rem;  이 부분은 스크롤 시 불필요할 수 있습니다. 제거하거나 조정하세요. */
-  white-space: nowrap; /* 탭들이 한 줄에 유지되도록 */
-  scrollbar-width: none; /* Firefox 스크롤바 숨기기 */
 }
 
 .tabs::-webkit-scrollbar {
