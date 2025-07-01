@@ -768,14 +768,9 @@ html.dark body .mobile-menu{
 
 
 .tetris-icon {
-  width: 30px;
-  height: 30px;
-  transition: width 0.4s ease, height 0.4s ease;
 }
 
 .mobile-menu:hover .tetris-icon {
-  width: 60px;
-  height: 60px;
 }
 .menu-label {
   font-size: 0.2rem;
