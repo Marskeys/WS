@@ -173,6 +173,11 @@
   box-sizing: border-box;
 }
 
+.tabs-container {
+  position: relative;
+  width: 100%;
+}
+
 /* 왼쪽 블러 */
 .tabs-blur-left {
   position: absolute;
