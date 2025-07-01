@@ -438,7 +438,7 @@ html.dark body .hamburger.is-in-menu span {
   background-color: rgb(255, 255, 255);
   color: white;
   z-index: 12000;
-  margin-top: 3rem;
+  margin-top: 4rem;
   margin-left: 0.5rem;
   border: 2px solid rgb(255, 255, 255); 
   border-radius: 3px;
@@ -760,10 +760,4 @@ html.dark body .mobile-menu{
 }
 
 
-#mobile-menu {
-  background-image: url('/assets/images/back.png'); /* 👉 그림 경로 */
-  background-size: cover;         /* 전체 채우기 */
-  background-position: center;    /* 가운데 정렬 */
-  background-repeat: no-repeat;   /* 반복 안 함 */
-}
 
