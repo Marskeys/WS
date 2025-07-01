@@ -321,6 +321,8 @@ form button:hover {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    display: inline-flex;   /* 또는 display: flex + width: max-content */
+    width: max-content;
   }
 
   .tab {
