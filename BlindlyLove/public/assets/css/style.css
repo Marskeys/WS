@@ -360,7 +360,7 @@ body.no-fixed-footer footer {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  position: fixed;
+  position: absolute;
   top: 1.2rem;
   left: 1.2rem;
   width: 30px;
