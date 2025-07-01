@@ -7,7 +7,7 @@ function filterBoard(category) {
   allTabs.forEach((tab) => {
     tab.classList.remove("active");
     if (
-      tab.textContent === category || // "정치", "종교" 등
+      tab.textContent === category ||
       (category === "all" && tab.textContent === "전체글")
     ) {
       tab.classList.add("active");
@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hamburger = document.getElementById("hamburger-btn");
   const mobileMenu = document.getElementById("mobile-menu");
   const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
+  const headerTop = document.querySelector(".header-top");
   const canvas = document.getElementById("cherry-canvas");
   const ctx = canvas?.getContext("2d");
   const characterObject = document.getElementById("character-svg");
@@ -44,13 +45,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileResults = document.getElementById("mobile-search-results");
   const rightPanel = document.querySelector(".right-panel-only");
 
-  // 🍔 햄버거 메뉴
+  // ✅ 처음엔 항상 헤더에 햄버거 버튼 붙이기
+  if (hamburger && headerTop && !hamburger.classList.contains("is-in-menu")) {
+    headerTop.prepend(hamburger);
+  }
+
+  // 🍔 햄버거 메뉴 열고 닫기
   hamburger?.addEventListener("click", () => {
     if (!mobileMenu.classList.contains("open")) {
       mobileMenuHeader?.appendChild(hamburger);
       hamburger.classList.add("is-in-menu");
     } else {
-      document.querySelector(".header-top")?.prepend(hamburger);
+      headerTop?.prepend(hamburger);
       hamburger.classList.remove("is-in-menu");
     }
 
@@ -160,34 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }, 200);
     });
+  }
 
-  
-   document.addEventListener("DOMContentLoaded", () => {
-    const hamburger = document.getElementById("hamburger-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
-    
-    // ✅ 처음엔 항상 헤더에 햄버거 버튼 붙이기
-    const headerTop = document.querySelector(".header-top");
-    if (hamburger && headerTop && !hamburger.classList.contains("is-in-menu")) {
-      headerTop.prepend(hamburger); // 초기 위치는 헤더 바깥
-    }
-  
-    // 🍔 햄버거 클릭 시 열고 닫기
-    hamburger?.addEventListener("click", () => {
-      if (!mobileMenu.classList.contains("open")) {
-        mobileMenuHeader?.appendChild(hamburger);
-        hamburger.classList.add("is-in-menu");
-      } else {
-        headerTop?.prepend(hamburger);
-        hamburger.classList.remove("is-in-menu");
-      }
-  
-      mobileMenu.classList.toggle("open");
-      hamburger.classList.toggle("open");
-      document.body.classList.toggle("menu-open");
-    });
-
+  // 👀 캐릭터 위치 반응
   window.addEventListener("resize", positionCharacterToSearchBox);
   window.addEventListener("scroll", positionCharacterToSearchBox);
 
@@ -224,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // 검색결과 탭 추가
     document.getElementById("search-tab")?.remove();
     const searchTab = document.createElement("button");
     searchTab.className = "tab active";
@@ -235,9 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     searchTab.classList.add("active");
   });
-
- 
-
 });
 
 window.filterBoard = filterBoard;
