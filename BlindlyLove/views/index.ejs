@@ -86,7 +86,7 @@
 
           <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
-  <div class="pagination">
+  <div class="pagination pagination-top desktop-only">
     <% for (let i = 1; i <= pagination.total; i++) { %>
       <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
     <% } %>
@@ -158,7 +158,7 @@
 
              <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
-  <div class="pagination">
+  <div class="pagination pagination-bottom desktop-only">
     <% for (let i = 1; i <= pagination.total; i++) { %>
       <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
     <% } %>
@@ -218,7 +218,7 @@
           </div>
              <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
-  <div class="pagination">
+  <div class="pagination pagination-mobile mobile-only">
     <% for (let i = 1; i <= pagination.total; i++) { %>
       <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
     <% } %>
