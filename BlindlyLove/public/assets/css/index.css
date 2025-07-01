@@ -163,20 +163,18 @@
 }
 
 .tabs-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  width: 100%;
+  overflow-x: auto; /* X축 스크롤 허용 */
+  -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+  width: 100%; /* 부모 너비에 맞춤 */
 }
 
 .tabs {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  margin-right: 1rem;
-
-  white-space: nowrap;
-  scrollbar-width: none;
-  width: max-content;   /* 💡 자식 크기만큼 넓어지게 */
+  /* margin-right: 1rem;  이 부분은 스크롤 시 불필요할 수 있습니다. 제거하거나 조정하세요. */
+  white-space: nowrap; /* 탭들이 한 줄에 유지되도록 */
+  scrollbar-width: none; /* Firefox 스크롤바 숨기기 */
 }
 
 .tabs::-webkit-scrollbar {
@@ -184,7 +182,7 @@
 }
 
 .tab {
-  flex-shrink: 0;
+  flex-shrink: 0; /* 탭이 줄어들지 않도록 */
   margin-top: 2rem;
   padding: 0.3rem 0.9rem;
   border: 1px solid #d0cce6;
@@ -321,7 +319,7 @@ form button:hover {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    display: inline-flex;   /* 또는 display: flex + width: max-content */
+    display: flex;
     width: max-content;
   }
 
