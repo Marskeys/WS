@@ -347,6 +347,33 @@ app.get('/search', async (req, res) => {
   }
 });
 
+function generatePagination(current, total) {
+  const delta = 2;
+  const range = [];
+  const rangeWithDots = [];
+  let l;
+
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (let i of range) {
+    if (l) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (i - l > 2) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(i);
+    l = i;
+  }
+
+  return rangeWithDots;
+}
+
 // ✅ 메인 페이지 (비공개 글 제목 공개 및 내용 숨김 적용)
 app.get('/', async (req, res) => {
   const userId = req.session.user?.id;
@@ -384,6 +411,7 @@ app.get('/', async (req, res) => {
 
     const categories = Array.from(categorySet);
     const totalPages = Math.ceil(count / limit);
+    const paginationRange = generatePagination(page, totalPages);
 
     res.render('index', {
       posts: filteredPosts,
@@ -393,7 +421,8 @@ app.get('/', async (req, res) => {
       currentPath: req.path,
       pagination: {
         current: page,
-        total: totalPages
+        total: totalPages,
+        range: paginationRange
       }
     });
   } catch (err) {

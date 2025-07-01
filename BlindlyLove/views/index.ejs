@@ -87,9 +87,43 @@
           <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
   <div class="pagination pagination-top desktop-only">
-    <% for (let i = 1; i <= pagination.total; i++) { %>
-      <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
+    <% // « 맨앞 페이지 버튼 %>
+    <% if (pagination.current > 1) { %>
+      <a href="/?page=1" class="page-link" aria-label="First">«</a>
+    <% } else { %>
+      <span class="page-link disabled">«</span>
     <% } %>
+
+    <% // ‹ 이전 페이지 버튼 %>
+    <% if (pagination.current > 1) { %>
+      <a href="/?page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+    <% } else { %>
+      <span class="page-link disabled">‹</span>
+    <% } %>
+
+    <% // 숫자 페이지 또는 점 ... 표시 %>
+    <% pagination.range.forEach(p => { %>
+      <% if (p === '...') { %>
+        <span class="page-ellipsis">…</span>
+      <% } else { %>
+        <a href="/?page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+    <% }) %>
+
+    <% // › 다음 페이지 버튼 %>
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+    <% } else { %>
+      <span class="page-link disabled">›</span>
+    <% } %>
+
+    <% // » 맨끝 페이지 버튼 %>
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+    <% } else { %>
+      <span class="page-link disabled">»</span>
+    <% } %>
+
   </div>
 <% } %>
 
@@ -159,9 +193,43 @@
              <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
   <div class="pagination pagination-bottom desktop-only">
-    <% for (let i = 1; i <= pagination.total; i++) { %>
-      <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
+    <% // « 맨앞 페이지 버튼 %>
+    <% if (pagination.current > 1) { %>
+      <a href="/?page=1" class="page-link" aria-label="First">«</a>
+    <% } else { %>
+      <span class="page-link disabled">«</span>
     <% } %>
+
+    <% // ‹ 이전 페이지 버튼 %>
+    <% if (pagination.current > 1) { %>
+      <a href="/?page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+    <% } else { %>
+      <span class="page-link disabled">‹</span>
+    <% } %>
+
+    <% // 숫자 페이지 또는 점 ... 표시 %>
+    <% pagination.range.forEach(p => { %>
+      <% if (p === '...') { %>
+        <span class="page-ellipsis">…</span>
+      <% } else { %>
+        <a href="/?page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+    <% }) %>
+
+    <% // › 다음 페이지 버튼 %>
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+    <% } else { %>
+      <span class="page-link disabled">›</span>
+    <% } %>
+
+    <% // » 맨끝 페이지 버튼 %>
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+    <% } else { %>
+      <span class="page-link disabled">»</span>
+    <% } %>
+
   </div>
 <% } %>
 
@@ -219,9 +287,43 @@
              <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
   <div class="pagination pagination-mobile mobile-only">
-    <% for (let i = 1; i <= pagination.total; i++) { %>
-      <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
+    <% // « 맨앞 페이지 버튼 %>
+    <% if (pagination.current > 1) { %>
+      <a href="/?page=1" class="page-link" aria-label="First">«</a>
+    <% } else { %>
+      <span class="page-link disabled">«</span>
     <% } %>
+
+    <% // ‹ 이전 페이지 버튼 %>
+    <% if (pagination.current > 1) { %>
+      <a href="/?page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+    <% } else { %>
+      <span class="page-link disabled">‹</span>
+    <% } %>
+
+    <% // 숫자 페이지 또는 점 ... 표시 %>
+    <% pagination.range.forEach(p => { %>
+      <% if (p === '...') { %>
+        <span class="page-ellipsis">…</span>
+      <% } else { %>
+        <a href="/?page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+    <% }) %>
+
+    <% // › 다음 페이지 버튼 %>
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+    <% } else { %>
+      <span class="page-link disabled">›</span>
+    <% } %>
+
+    <% // » 맨끝 페이지 버튼 %>
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+    <% } else { %>
+      <span class="page-link disabled">»</span>
+    <% } %>
+
   </div>
 <% } %>
         </div>

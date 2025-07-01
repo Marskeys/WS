@@ -747,3 +747,14 @@ html.dark .page-link.active {
     display: block;
   }
 }
+
+.page-link.disabled {
+  color: #ccc;
+  background-color: #eee;
+  pointer-events: none;
+  cursor: default;
+}
+html.dark .page-link.disabled {
+  color: #555;
+  background-color: #333;
+}
