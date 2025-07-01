@@ -161,10 +161,32 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 200);
     });
 
-   // ✅ 햄버거 메뉴 기본으로 열기 (수정된 로직)
-
-
   
+   document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.getElementById("hamburger-btn");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
+    
+    // ✅ 처음엔 항상 헤더에 햄버거 버튼 붙이기
+    const headerTop = document.querySelector(".header-top");
+    if (hamburger && headerTop && !hamburger.classList.contains("is-in-menu")) {
+      headerTop.prepend(hamburger); // 초기 위치는 헤더 바깥
+    }
+  
+    // 🍔 햄버거 클릭 시 열고 닫기
+    hamburger?.addEventListener("click", () => {
+      if (!mobileMenu.classList.contains("open")) {
+        mobileMenuHeader?.appendChild(hamburger);
+        hamburger.classList.add("is-in-menu");
+      } else {
+        headerTop?.prepend(hamburger);
+        hamburger.classList.remove("is-in-menu");
+      }
+  
+      mobileMenu.classList.toggle("open");
+      hamburger.classList.toggle("open");
+      document.body.classList.toggle("menu-open");
+    });
 
   window.addEventListener("resize", positionCharacterToSearchBox);
   window.addEventListener("scroll", positionCharacterToSearchBox);
