@@ -1,3 +1,6 @@
+let isPetalPaused = false;
+let isCharPaused = false;
+
 function filterBoard(category) {
   const allTabs = document.querySelectorAll(".tab");
   const allDesktopRows = document.querySelectorAll(".board-table tbody tr");
@@ -30,6 +33,9 @@ function filterBoard(category) {
   });
 }
 
+let isPetalPaused = false;
+let isCharPaused = false;
+
 document.addEventListener("DOMContentLoaded", () => {
   const hamburger = document.getElementById("hamburger-btn");
   const mobileMenu = document.getElementById("mobile-menu");
@@ -52,6 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🍔 햄버거 메뉴 열고 닫기
   hamburger?.addEventListener("click", () => {
+
+    
     if (!mobileMenu.classList.contains("open")) {
       mobileMenuHeader?.appendChild(hamburger);
       hamburger.classList.add("is-in-menu");
@@ -63,6 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
     mobileMenu.classList.toggle("open");
     hamburger.classList.toggle("open");
     document.body.classList.toggle("menu-open");
+
+    const isOpen = mobileMenu.classList.contains("open");
+    if (isOpen) {
+      isPetalPaused = true;
+      isCharPaused = true;
+    } else {
+      isPetalPaused = false;
+      isCharPaused = false;
+      drawPetals();
+      const svgDoc = characterObject?.contentDocument;
+      if (svgDoc) animateChar2(svgDoc);
+    }
   });
 
   // 🌸 벚꽃 애니메이션
@@ -89,6 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function drawPetals() {
+      if (isPetalPaused) return;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let p of petals) {
         ctx.save();
@@ -128,6 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function frame() {
       if (paused) return;
+      if (isCharPaused || paused) return; 
+
       const flip = direction === -1 ? -1 : 1;
       const waveY = Math.sin(x * 0.05) * 3;
       const bump = Math.random() * 1.2 - 0.6;
@@ -218,3 +242,4 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.filterBoard = filterBoard;
+
