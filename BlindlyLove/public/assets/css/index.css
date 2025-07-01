@@ -58,7 +58,7 @@
   width: 100%;
   height: 43px;
   padding: 0 1.5rem;
-  border: 1px solid #a48fdd;
+  border: 5px solid #a48fdd;
   border-radius: 999px;
   background-color: white;
   display: flex;
@@ -178,7 +178,29 @@
   width: 100%;
 }
 
+/* 왼쪽 블러 */
+.tabs-blur-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0));
+  z-index: 0;
+}
 
+/* 오른쪽 블러 */
+.tabs-blur-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(255,255,255,0.8), rgba(255,255,255,0));
+  z-index: 0;
+}
 
 html.dark .tabs-blur-right {
   background: linear-gradient(to left,
