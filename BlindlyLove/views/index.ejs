@@ -156,6 +156,15 @@
             </tbody>
           </table>
 
+             <!-- 🟡 페이지네이션 -->
+<% if (pagination.total > 1) { %>
+  <div class="pagination">
+    <% for (let i = 1; i <= pagination.total; i++) { %>
+      <a href="/?page=<%= i %>" class="page-link <%= i === pagination.current ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+  </div>
+<% } %>
+
           <!-- 🟡 게시글 리스트 (모바일) -->
           <div class="mobile-board-list">
             <% posts.forEach(post => { %>
@@ -207,8 +216,7 @@
               </div>
             <% }) %>
           </div>
-        </div>
-           <!-- 🟡 페이지네이션 -->
+             <!-- 🟡 페이지네이션 -->
 <% if (pagination.total > 1) { %>
   <div class="pagination">
     <% for (let i = 1; i <= pagination.total; i++) { %>
@@ -216,6 +224,8 @@
     <% } %>
   </div>
 <% } %>
+        </div>
+        
       </div>
 
    
