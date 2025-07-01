@@ -320,10 +320,8 @@ form button:hover {
 
   .tabs {
     padding: 0 1rem; 
-    flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    display: flex;
     width: max-content;
   }
 
