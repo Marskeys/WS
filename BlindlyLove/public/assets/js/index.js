@@ -71,8 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isOpen = mobileMenu.classList.contains("open");
     if (isOpen) {
-      isPetalPaused = true;
-      isCharPaused = true;
+      setTimeout(() => {
+        isPetalPaused = true;
+        isCharPaused = true;
+      }, 200); // 0.4초 후에 멈춤
     } else {
       isPetalPaused = false;
       isCharPaused = false;
