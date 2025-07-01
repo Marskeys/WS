@@ -141,37 +141,43 @@ document.addEventListener("DOMContentLoaded", () => {
   // 👩‍🦽 캐릭터 애니메이션
   function positionCharacterToSearchBox() { /* TODO */ }
 
-  function animateChar2(svgDoc) {
-    const group = svgDoc.getElementById("char-2");
-    if (!group) return;
-    group.setAttribute("style", "transform-box: fill-box; transform-origin: center;");
-    let x = 0, direction = 1, step = 2.5, speed = 12, maxX = 500, minX = 0, paused = false;
+  // 🔥 전역 변수
+let charX = 0;
+let charDirection = 1;
+let charPaused = false;
 
-    function frame() {
-      if (paused) return;
-      if (isCharPaused || paused) return; 
+function animateChar2(svgDoc) {
+  const group = svgDoc.getElementById("char-2");
+  if (!group) return;
 
-      const flip = direction === -1 ? -1 : 1;
-      const waveY = Math.sin(x * 0.05) * 3;
-      const bump = Math.random() * 1.2 - 0.6;
-      const y = waveY + bump;
-      group.setAttribute("transform", `translate(${x}, ${y}) scale(${flip},1)`);
-      x += step * direction;
+  group.setAttribute("style", "transform-box: fill-box; transform-origin: center;");
+  const step = 2.5, speed = 12, maxX = 500, minX = 0;
 
-      if ((direction === 1 && x >= maxX) || (direction === -1 && x <= minX)) {
-        paused = true;
-        setTimeout(() => {
-          direction *= -1;
-          paused = false;
-          frame();
-        }, 500);
-      } else {
-        setTimeout(frame, speed);
-      }
+  function frame() {
+    if (charPaused || isCharPaused) return;
+
+    const flip = charDirection === -1 ? -1 : 1;
+    const waveY = Math.sin(charX * 0.05) * 3;
+    const bump = Math.random() * 1.2 - 0.6;
+    const y = waveY + bump;
+
+    group.setAttribute("transform", `translate(${charX}, ${y}) scale(${flip},1)`);
+    charX += step * charDirection;
+
+    if ((charDirection === 1 && charX >= maxX) || (charDirection === -1 && charX <= minX)) {
+      charPaused = true;
+      setTimeout(() => {
+        charDirection *= -1;
+        charPaused = false;
+        frame();
+      }, 500);
+    } else {
+      setTimeout(frame, speed);
     }
-
-    frame();
   }
+
+  frame();
+}
 
   if (characterObject) {
     characterObject.addEventListener("load", () => {
