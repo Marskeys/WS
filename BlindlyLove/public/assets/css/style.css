@@ -761,18 +761,9 @@ html.dark body .mobile-menu{
 
 
 .tetris-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 16px;
-  object-fit: cover;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-  cursor: pointer;
 }
 
 .tetris-icon:hover {
-  transform: scale(0.95); /* 눌리는 느낌 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* 그림자 약간 줄이기 */
 }
 
 
