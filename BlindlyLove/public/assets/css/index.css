@@ -424,8 +424,10 @@ form button:hover {
   }
 
   .mobile-post-item {
-    display: flex;
-    flex-direction: column;
+    box-sizing: border-box;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%;
     position: relative;
     padding: 1rem 0;
   }
@@ -497,7 +499,6 @@ form button:hover {
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #777;
-  width: 100%;
 }
 
 .post-title-and-actions + .post-info {
