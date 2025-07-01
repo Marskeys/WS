@@ -777,3 +777,11 @@ html.dark body .mobile-menu{
   }
 
 }
+
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  touch-action: none; /* 모바일 터치 막기 */
+}
