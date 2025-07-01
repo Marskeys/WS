@@ -305,41 +305,53 @@ app.get('/search', async (req, res) => {
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
 
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
   try {
-    // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
-    const [posts] = await db.query(`
+    // 전체 글 중 검색어에 해당하는 글만 가져옴
+    const [allPosts] = await db.query(`
       SELECT id, title, content, categories, author, user_id, created_at, is_private, is_pinned
       FROM posts
       WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
       ORDER BY is_pinned DESC, GREATEST(updated_at, created_at) DESC
     `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
-    // 비공개 글의 내용을 필터링합니다
-    const filteredPosts = posts.map(post => {
-      // 글이 비공개이고, 작성자도 아니고, 관리자도 아닌 경우
+    // 비공개 글 필터링
+    const filteredAll = allPosts.map(post => {
       if (post.is_private && post.user_id !== userId && !isAdmin) {
         return {
           ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.' // 내용은 숨기고 메시지 표시
-          // title과 is_private는 그대로 유지됩니다.
+          content: '이 글은 비공개로 설정되어 있습니다.'
         };
       }
       return post;
     });
 
+    const total = filteredAll.length;
+    const totalPages = Math.ceil(total / limit);
+    const paginationRange = generatePagination(page, totalPages);
+
+    const paginatedPosts = filteredAll.slice(offset, offset + limit);
+
     const categorySet = new Set();
-    filteredPosts.forEach(post => {
+    filteredAll.forEach(post => {
       post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
     });
-
     const categories = Array.from(categorySet);
 
     res.render('index', {
-      posts: filteredPosts, // 필터링된 글 목록 전달
+      posts: paginatedPosts,
       categories,
       isSearch: true,
       searchKeyword: keyword,
-      currentPath: req.path
+      currentPath: req.path,
+      pagination: {
+        current: page,
+        total: totalPages,
+        range: paginationRange
+      }
     });
   } catch (err) {
     console.error('검색 오류:', err);
