@@ -374,6 +374,7 @@ body.no-fixed-footer footer {
 }
 
 
+
 /* ✅ 줄 스타일 (세 줄) */
 .hamburger span {
   display: block;
@@ -426,7 +427,7 @@ html.dark body .hamburger.is-in-menu span {
 /* ✅ 모바일 메뉴 */
 .mobile-menu {
   position: fixed;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
@@ -460,8 +461,6 @@ html.dark body .hamburger.is-in-menu span {
     box-shadow 0.6s ease;
 }
 
-.mobile-menu.open:hover {
-}
 
 
 
@@ -760,4 +759,10 @@ html.dark body .mobile-menu{
 }
 
 
-
+@media (max-width: 640px) {
+  .hamburger {
+    display: flex;
+  }
+.mobile-menu {
+  display: flex;
+}
