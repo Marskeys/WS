@@ -171,19 +171,13 @@
   padding: 0 0.2rem;
   margin-bottom: 0.1rem;
   box-sizing: border-box;
+
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to left, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to left, black 90%, transparent);
 }
 
-.tabs-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 32px;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  background: linear-gradient(to left, white, transparent);
-}
+
 
 .tabs {
   display: inline-flex; /* ✅ 핵심 */
