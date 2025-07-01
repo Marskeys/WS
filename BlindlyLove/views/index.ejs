@@ -71,11 +71,13 @@
           <% } %>
 
           <!-- 🟡 동적으로 생성된 카테고리 탭 -->
+          <div class="tabs-wrapper">
           <div class="tabs">
             <button class="tab active" onclick="filterBoard('all')">전체글</button>
             <% categories.forEach(category => { %>
               <button class="tab" onclick="filterBoard('<%= category %>')"><%= category %></button>
             <% }) %>
+          </div>
           </div>
 
           <!-- 🟡 게시글 리스트 (데스크탑) -->
