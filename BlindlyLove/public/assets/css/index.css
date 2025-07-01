@@ -187,7 +187,7 @@
   height: 100%;
   pointer-events: none;
   background: linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0));
-  z-index: 0;
+  z-index: 5;
 }
 
 /* 오른쪽 블러 */
@@ -199,7 +199,7 @@
   height: 100%;
   pointer-events: none;
   background: linear-gradient(to left, rgba(255,255,255,0.8), rgba(255,255,255,0));
-  z-index: 0;
+  z-index: 5;
 }
 
 html.dark .tabs-blur-right {
