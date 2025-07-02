@@ -774,7 +774,11 @@ html.dark .page-link.disabled {
 .panel-section .mobile {
   padding: 1.3rem 2.1rem;
   margin-left: -2rem;
-  margin-bottom: -2rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel-section .testing {
+  margin-top:4rem;
 }
 
 .panel-title {
