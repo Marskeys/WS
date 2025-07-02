@@ -793,3 +793,7 @@ body.menu-open {
   height: 100%;
   touch-action: none; /* 모바일 터치 막기 */
 }
+
+.spacer {
+  height: 10rem;
+}
