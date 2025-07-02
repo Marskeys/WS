@@ -760,3 +760,36 @@ html.dark .page-link.disabled {
   color: #555;
   background-color: #333;
 }
+
+.panel-section {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.panel-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+  color: #444;
+}
+
+.app-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.app-button {
+  display: inline-block;
+  background: #f0f0f5;
+  color: #333;
+  text-decoration: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.app-button:hover {
+  background: #e0e0f0;
+}
