@@ -824,7 +824,7 @@ html.dark .app-button:hover {
 
 .app-button.tetris {
   background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 1)), /* ✨ 어두→밝은 그라데이션 추가 */
+  linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0)), /* ✨ 어두→밝은 그라데이션 추가 */
   url('/assets/images/apps/tetris.png'); /* 🎮 원래 그림 */
 }
 
