@@ -856,5 +856,6 @@ html.dark .app-button:hover {
 .app-button:hover {
   background-position: bottom; /* 아래쪽 영역으로 슬라이드 */
   background-size: 100% auto;
+  filter: brightness(1.2); 
 }
 
