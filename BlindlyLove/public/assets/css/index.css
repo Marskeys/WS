@@ -783,7 +783,7 @@ html.dark .page-link.disabled {
 .app-button {
   display: inline-block;
   background: #f0f0f5;
-  color: #333;
+  color: transparent;
   text-decoration: none;
   padding: 0.4rem 0.8rem;
   border-radius: 8px;
