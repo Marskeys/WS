@@ -787,10 +787,11 @@ html.dark .page-link.disabled {
   text-decoration: none;
   padding: 0.4rem 0.8rem;
   border-radius: 8px;
-  font-family: 'Gowun Dodum', sans-serif;
+  font-family: 'Gowun Dodum', sans-serif; 
   font-size: 1rem;
   transition: 0.2s;
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.7); /* 💡 얇은 글로우 */
+  filter: brightness(1.5); 
 }
 
 .app-button:hover {
@@ -818,8 +819,7 @@ html.dark .app-button:hover {
 
 
 .app-button.tetris {
-  background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), 
+  background-image: 
   url('/assets/images/apps/tetris.png'); /* 🎮 원래 그림 */
 }
 
@@ -858,6 +858,5 @@ html.dark .app-button:hover {
 .app-button:hover {
   background-position: bottom; /* 아래쪽 영역으로 슬라이드 */
   background-size: 100% auto;
-  filter: brightness(1.2); 
 }
 
