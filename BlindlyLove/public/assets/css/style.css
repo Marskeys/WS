@@ -21,13 +21,15 @@ html, body {
 
 
 .header-cover {
-  position: absolute;
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 40px;
-  background: white;
+  height: 0; /* 시작은 0 */
+  background: white; /* ✅ 헤더 배경과 꼭 맞추기 */
   z-index: 9998;
   pointer-events: none;
+  transition: height 0.2s ease; /* 부드럽게 */
 }
 
 html.dark .header-top::before {

@@ -49,6 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+    // ✅ 3. header-cover 초기 위치 설정
+    updateHeaderCover();
+    
 });
 
 // ✅ 3. 프리로더 서서히 사라지기
@@ -65,12 +69,16 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 function updateHeaderCover() {
   const header = document.querySelector('.header-top');
   const cover = document.querySelector('.header-cover');
-  const rect = header.getBoundingClientRect();
 
-  cover.style.top = (window.scrollY + rect.top - 40) + 'px'; // 40 = cover 높이
+  const rect = header.getBoundingClientRect();
+  const headerTop = rect.top;
+
+  // 💡 헤더가 아래로 밀려 있으면, 그 만큼 커버의 height 증가
+  cover.style.height = headerTop > 0 ? headerTop + 'px' : '0px';
 }
 
 window.addEventListener('scroll', updateHeaderCover);
