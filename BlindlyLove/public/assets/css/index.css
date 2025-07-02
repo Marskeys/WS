@@ -770,6 +770,7 @@ html.dark .page-link.disabled {
 .panel-section mobile {
   padding: 0 0rem;
 }
+
 .panel-title {
   font-weight: bold;
   font-size: 0.85rem;
@@ -783,6 +784,11 @@ html.dark .page-link.disabled {
   width: 90%;
   margin-right: 0.2rem;
   gap: 0.4rem;
+}
+
+.app-button-group mobile {
+  width: 100%;
+  margin-right: 0.2rem;
 }
 
 .app-button {
