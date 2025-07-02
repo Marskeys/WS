@@ -841,7 +841,7 @@ html.dark .app-button:hover {
 }
 
 .app-button {
-  background-size: 100% 100%; /* 가로에 맞추고 세로는 자동 */
+  background-size: 100% auto;  /* 가로에 맞추고 세로는 자동 */
   background-repeat: no-repeat;
   background-position: center top; /* 초기 위치 */
   transition: background-position 0.4s ease; /* 부드럽게 이동 */
@@ -862,5 +862,6 @@ html.dark .app-button:hover {
 
 .app-button:hover {
   background-position: bottom; /* 아래쪽 영역으로 슬라이드 */
+  background-size: 100% auto;
 }
 
