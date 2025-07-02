@@ -127,11 +127,11 @@
 .main-panel {
   min-height: 100vh;
   flex-direction: column;
-  padding: 0 2rem;
+  padding: 0 0.5rem;
   display: flex;
   width: 100%;
   align-items: center;
-  max-width: calc(100vw - 420px);
+  max-width: calc(100vw - 430px);
 }
 
 .side-panel {
