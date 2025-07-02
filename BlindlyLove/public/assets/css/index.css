@@ -825,6 +825,7 @@ html.dark .app-button:hover {
 
 .app-button.tetris {
   background-image: url('/assets/images/apps/tetris.png') ;
+  background-size: 600px 200px; /* 이미지 크기 조절 (예: 24px) */
   background-repeat: no-repeat; /* 이미지 반복 안 함 */
 
 }
