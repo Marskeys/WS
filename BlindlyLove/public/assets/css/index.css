@@ -823,32 +823,25 @@ html.dark .app-button:hover {
 
 
 .app-button.tetris {
-  font-size: 0.85rem;
-  color: transparent;
   background-image: url('/assets/images/apps/tetris.png');
   background-size: 100% auto;  /* 가로에 맞추고 세로는 자동 */
   background-repeat: no-repeat;
   background-position: center top; /* 초기 위치 */
   transition: background-position 0.4s ease; /* 부드럽게 이동 */
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .app-button.tetris:hover {
   background-position: center bottom; /* 아래쪽 영역으로 슬라이드 */
 }
 
-.app-button.tetris::after {
-  content: '테트리스';
-  font-weight: 900;
-  font-size: 0.85rem;
-  color: #ff3c3c;
-  text-shadow:
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-family: 'Arial Black', sans-serif;
-  display: block;
-  text-align: center;
-}
