@@ -27,13 +27,21 @@ html, body {
   width: 100%;
   height: 0; /* 시작은 0 */
   background: white; /* ✅ 헤더 배경과 꼭 맞추기 */
-  z-index: 4000;
+  z-index: 2000;
   pointer-events: none;
   transition: height 0.2s ease; /* 부드럽게 */
 }
 
 html.dark .header-cover {
   background-color: #141433 !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0; /* 시작은 0 */
+  z-index: 2000;
+  pointer-events: none;
+  transition: height 0.2s ease; /* 부드럽게 */
 }
 
 
