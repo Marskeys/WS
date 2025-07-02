@@ -833,3 +833,20 @@ html.dark .app-button:hover {
 .app-button.tetris:hover {
   background-position: center bottom; /* 아래쪽 영역으로 슬라이드 */
 }
+
+.app-button.tetris::after {
+  content: 'TETRIS';
+  font-weight: 900;
+  font-size: 0.85rem;
+  color: #ff3c3c;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Arial Black', sans-serif;
+  display: block;
+  text-align: center;
+}
