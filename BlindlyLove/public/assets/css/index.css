@@ -789,7 +789,6 @@ html.dark .page-link.disabled {
 
 .app-button-group .mobile {
   width: 100%;
-  margin-right: 0.0rem;
 }
 
 .app-button {
@@ -798,7 +797,7 @@ html.dark .page-link.disabled {
   background: #f0f0f5;
   color: transparent;
   text-decoration: none;
-  padding: 0.4rem 0.8rem;
+  padding: 0.4rem 1rem;
   border-radius: 8px;
   font-family: 'Gowun Dodum', sans-serif; 
   font-size: 1rem;
