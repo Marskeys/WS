@@ -860,3 +860,8 @@ html.dark .app-button:hover {
   background-size: 100% auto;
 }
 
+.tab-spacer {
+  width: 1.5rem; /* 원하는 초기 여백 */
+  flex-shrink: 0;
+  pointer-events: none;
+}
