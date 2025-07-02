@@ -431,7 +431,10 @@ html.dark body .hamburger.is-in-menu span {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  padding: 1px;
+  padding: 1
+  
+  
+  px;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
   width: 50vw;
@@ -441,7 +444,8 @@ html.dark body .hamburger.is-in-menu span {
   z-index: 12000;
   border: 0px solid rgb(255, 255, 255); 
   border-radius: 3px;
-  
+  box-sizing: border-box;
+
   /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
   transform: translateX(-100%); 
   opacity: 0; 
