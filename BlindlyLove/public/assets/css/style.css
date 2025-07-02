@@ -430,7 +430,7 @@ html.dark body .hamburger.is-in-menu span {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   padding-right: 0.2rem;
   top: 0;
   left: 0; /* 초기 left 값을 0으로 유지합니다. */
