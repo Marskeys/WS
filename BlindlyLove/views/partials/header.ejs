@@ -55,7 +55,28 @@
   <% if (user && Number(user.is_admin) === 1) { %>
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
-   
+    <!-- 🎮 무료 온라인 게임 -->
+<div class="panel-section">
+  <div class="panel-title">🎮 무료 온라인 게임</div>
+  <div class="app-button-group">
+    <a href="/game/reaction" class="app-button tetris">테트리스</a>
+    <a href="/game/sudoku" class="app-button">스도쿠</a>
+    <a href="/game/memory" class="app-button">가로세로낱말퍼즐</a>
+    <a href="/game/typing" class="app-button">틀린그림찾기</a>
+    <a href="/game/reaction" class="app-button">순발력테스트</a>
+  </div>
+</div>
+
+<!-- 🩺 간단 온라인 건강 검진 -->
+<div class="panel-section">
+  <div class="panel-title">🩺 간단 온라인 건강 검진</div>
+  <div class="app-button-group">
+    <a href="/health/depression" class="app-button">우울검사</a>
+    <a href="/health/anxiety" class="app-button">불안검사</a>
+    <a href="/health/stress" class="app-button">스트레스</a>
+    <a href="/health/sleep" class="app-button">수면상태</a>
+  </div>
+</div>
   </nav>
   <% } %>
 
