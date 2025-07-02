@@ -823,6 +823,8 @@ html.dark .app-button:hover {
 
 
 .app-button.tetris {
+  font-size: 0;
+  line-height: 0;
   background-image: url('/assets/images/apps/tetris.png');
   background-size: 100% auto;  /* 가로에 맞추고 세로는 자동 */
   background-repeat: no-repeat;
@@ -835,7 +837,7 @@ html.dark .app-button:hover {
 }
 
 .app-button.tetris::after {
-  content: 'TETRIS';
+  content: '테트리스';
   font-weight: 900;
   font-size: 0.85rem;
   color: #ff3c3c;
