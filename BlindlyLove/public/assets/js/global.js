@@ -68,17 +68,26 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
+let ticking = false;
 
 function updateHeaderCover() {
-  const header = document.querySelector('.top-controls');
-  const cover = document.querySelector('.header-cover');
+  if (ticking) return; // 이전 프레임 끝나기 전이면 패스
 
-  const rect = header.getBoundingClientRect();
-  const headerTop = rect.top;
+  ticking = true;
 
-  // 💡 헤더가 아래로 밀려 있으면, 그 만큼 커버의 height 증가
-  cover.style.height = headerTop > 0 ? headerTop + 'px' : '0px';
+  requestAnimationFrame(() => {
+    const header = document.querySelector('.top-controls');
+    const cover = document.querySelector('.header-cover');
+
+    if (!header || !cover) return;
+
+    const rect = header.getBoundingClientRect();
+    const headerTop = rect.top;
+
+    cover.style.height = headerTop > 0 ? headerTop + 'px' : '0px';
+
+    ticking = false; // 다음 프레임부터 또 가능하게
+  });
 }
 
 window.addEventListener('scroll', updateHeaderCover);
