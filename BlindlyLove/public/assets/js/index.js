@@ -248,3 +248,28 @@ function animateChar2(svgDoc) {
 
 window.filterBoard = filterBoard;
 
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrapper = document.querySelector('.tabs-wrapper');
+    const tabs = wrapper.querySelector('.tabs');
+    const blurLeft = wrapper.querySelector('.tabs-blur-left');
+    const blurRight = wrapper.querySelector('.tabs-blur-right');
+
+    function updateBlurVisibility() {
+      const scrollable = tabs.scrollWidth > wrapper.clientWidth;
+
+      if (scrollable) {
+        blurLeft.style.display = 'block';
+        blurRight.style.display = 'block';
+      } else {
+        blurLeft.style.display = 'none';
+        blurRight.style.display = 'none';
+      }
+    }
+
+    updateBlurVisibility();
+    window.addEventListener('resize', updateBlurVisibility);
+  });
+</script>
