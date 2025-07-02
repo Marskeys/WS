@@ -814,7 +814,7 @@ html.dark .page-link.disabled {
   background: #e0e0f0;
   box-shadow: 0 3px 8px rgba(197, 175, 12, 0.7);
   transform: scale(1.05);
-  filter: brightness(2.0) contrast(1.5) saturate(1.2);
+  filter: brightness(2.0) contrast(1.0) saturate(1.2);
 }
 
 /* 🌞 라이트 기본 */
