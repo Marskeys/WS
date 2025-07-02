@@ -840,7 +840,7 @@ html.dark .app-button:hover {
   url('/assets/images/apps/hearing-test.png'); /* 🎮 원래 그림 */
 }
 
-.app-button. {
+.app-button {
   background-size: 100% auto;  /* 가로에 맞추고 세로는 자동 */
   background-repeat: no-repeat;
   background-position: center top; /* 초기 위치 */
