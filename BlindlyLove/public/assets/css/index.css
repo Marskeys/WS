@@ -840,7 +840,7 @@ html.dark .app-button:hover {
   url('/assets/images/apps/hearing-test.png'); /* 🎮 원래 그림 */
 }
 
-.app-button.tetris {
+.app-button. {
   background-size: 100% auto;  /* 가로에 맞추고 세로는 자동 */
   background-repeat: no-repeat;
   background-position: center top; /* 초기 위치 */
@@ -860,7 +860,7 @@ html.dark .app-button:hover {
 }
 
 
-.app-button.tetris:hover {
+.app-button:hover {
   background-position: center bottom; /* 아래쪽 영역으로 슬라이드 */
 }
 
