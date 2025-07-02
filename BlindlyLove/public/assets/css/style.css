@@ -430,11 +430,12 @@ html.dark body .hamburger.is-in-menu span {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  /* padding-right: 0.2rem;  이 줄은 이전에 제거를 논의했으므로, 다시 확인해 주세요. */
   top: 0;
-  left: 0; /* 초기 left 값을 0으로 유지합니다. */
+  left: 0; 
   width: 70vw;
-  height: 100vh;
+  /* height: 100vh; 대신 max-height 사용 */
+  max-height: 100vh; /* 뷰포트 높이를 넘지 않는 선에서 최대 높이 설정 */
   background-color: transparent;
   color: white;
   z-index: 12000;
@@ -442,14 +443,16 @@ html.dark body .hamburger.is-in-menu span {
   border-radius: 3px;
   box-sizing: border-box;
 
-  /* 초기 상태 (닫혔을 때): 왼쪽으로 완전히 숨겨져 있고, 투명함 */
+  /* 내용이 넘칠 때 스크롤바 생성 */
+  overflow-y: auto; 
+  /* 스크롤바 숨기기 (선택 사항) */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
   transform: translateX(-100%); 
   opacity: 0; 
-  /* pointer-events: none; 를 추가하여 메뉴가 닫혔을 때 클릭 이벤트를 막을 수 있습니다. */
   pointer-events: none;
 
-  /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 */
-  /* transform과 opacity가 동시에 부드럽게 변하도록 합니다. */
   transition:
     transform 0.3s ease-in-out,
     opacity 0.3s ease-in-out,
@@ -457,6 +460,11 @@ html.dark body .hamburger.is-in-menu span {
     border-radius 0.6s ease,
     padding 0.6s ease,
     box-shadow 0.6s ease;
+}
+
+/* Webkit 계열 브라우저 (Chrome, Safari)에서 스크롤바 숨기기 */
+.mobile-menu::-webkit-scrollbar {
+  display: none;
 }
 
 
