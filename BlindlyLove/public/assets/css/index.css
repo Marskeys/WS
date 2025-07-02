@@ -145,6 +145,7 @@
   opacity: 0.95;
   overflow: hidden;
   padding: 0 0.5rem;
+  z-index: 8000;
 }
 
 .side-panel.right-panel-only {
