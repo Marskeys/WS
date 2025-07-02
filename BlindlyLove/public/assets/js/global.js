@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ 3. header-cover 초기 위치 설정
     updateHeaderCover();
-    
+
 });
 
 // ✅ 3. 프리로더 서서히 사라지기
@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 function updateHeaderCover() {
-  const header = document.querySelector('.header-top');
+  const header = document.querySelector('.top-controls');
   const cover = document.querySelector('.header-cover');
 
   const rect = header.getBoundingClientRect();
