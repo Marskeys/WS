@@ -767,7 +767,7 @@ html.dark .page-link.disabled {
   padding: 0 1rem;
 }
 
-.panel-section mobile {
+.panel-section .mobile {
   padding: 0 0rem;
 }
 
@@ -786,7 +786,7 @@ html.dark .page-link.disabled {
   gap: 0.4rem;
 }
 
-.app-button-group mobile {
+.app-button-group .mobile {
   width: 100%;
   margin-right: 0.2rem;
 }
