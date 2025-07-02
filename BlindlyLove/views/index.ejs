@@ -88,8 +88,8 @@
             <div class="tabs-blur-left"></div>
             <div class="tabs-blur-right"></div>
           <div class="tabs-wrapper">
-            <div class="tab-spacer"></div> <!-- 💡 왼쪽 여백 -->
           <div class="tabs">
+            <div class="tab-spacer"></div> <!-- 💡 왼쪽 여백 -->
             <a href="/?category=all" class="tab <%= !selectedCategory || selectedCategory === 'all' ? 'active' : '' %>">전체글</a>
             <% categories.forEach(category => { %>
               <a href="/?category=<%= category %>" class="tab <%= selectedCategory === category ? 'active' : '' %>"><%= category %></a>
