@@ -23,10 +23,10 @@ html, body {
 html.dark .header-top::before {
   content: "";
   position: fixed;
-  top: 0;
+  top: 10vh; 
   left: 0;
   width: 100%;
-  height: 70px; /* 👉 꼬리가 삐져나오는 예상 높이 */
+  height: 60px; /* 👉 꼬리가 삐져나오는 예상 높이 */
   background-color: #141433 !important;
   z-index: 500; /* 헤더 바로 아래, 광고 위에 */
   pointer-events: none;
@@ -36,10 +36,10 @@ html.dark .header-top::before {
   background-color: #fff;
   content: "";
   position: fixed;
-  top: 0;
+  top: 10vh; 
   left: 0;
   width: 100%;
-  height: 70px; /* 👉 꼬리가 삐져나오는 예상 높이 */
+  height: 60px; /* 👉 꼬리가 삐져나오는 예상 높이 */
   z-index: 500; /* 헤더 바로 아래, 광고 위에 */
   pointer-events: none;
 }
