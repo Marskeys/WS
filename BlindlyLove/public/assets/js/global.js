@@ -96,12 +96,12 @@ setInterval(() => {
 }, 10);
 
 function positionMobileMenu() {
-  const header = document.querySelector('.header-top');
+  const header = document.querySelector('.top-controls');
   const mobileMenu = document.querySelector('.mobile-menu');
   if (!header || !mobileMenu) return;
 
   const rect = header.getBoundingClientRect();
-  mobileMenu.style.top = rect.bottom + 'px'; // 헤더 아랫면 기준
+  mobileMenu.style.top = rect.top + 'px';  // 헤더 윗면 기준
 }
 
 // 적용 시점
