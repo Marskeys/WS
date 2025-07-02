@@ -768,7 +768,9 @@ html.dark .page-link.disabled {
 }
 
 .panel-section .mobile {
-  padding: 1rem 1rem;
+  padding: 1rem;
+  padding-right: 3rem;
+  padding-left: 3rem;
 }
 
 .panel-title {
