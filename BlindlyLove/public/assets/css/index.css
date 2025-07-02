@@ -839,6 +839,10 @@ html.dark .app-button:hover {
      1px  1px 0 #000;
   text-transform: uppercase;
   letter-spacing: 1px;
+  background: linear-gradient(to right, #222, #fff);  /* 어두운 회색 → 밝은 흰색 */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; /* Safari, Chrome */
+  color: transparent; /* fallback */
 }
 
 .app-button.tetris:hover {
