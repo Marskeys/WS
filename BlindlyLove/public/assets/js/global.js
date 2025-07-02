@@ -84,7 +84,7 @@ function updateHeaderCover() {
     const rect = header.getBoundingClientRect();
     const headerTop = rect.top;
 
-    cover.style.height = headerTop > 0 ? headerTop + 20 + 'px' : '0px';
+    cover.style.height = headerTop > 0 ? headerTop + 40 + 'px' : '0px';
 
     ticking = false; // 다음 프레임부터 또 가능하게
   });
