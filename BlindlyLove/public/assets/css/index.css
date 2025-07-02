@@ -789,6 +789,7 @@ html.dark .page-link.disabled {
   border-radius: 8px;
   font-size: 1rem;
   transition: 0.2s;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.7); /* 💡 얇은 글로우 */
 }
 
 .app-button:hover {
@@ -824,19 +825,19 @@ html.dark .app-button:hover {
 
 .app-button.tetris {
   background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0)), /* ✨ 어두→밝은 그라데이션 추가 */
+  linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0)), /* ✨ 어두→밝은 그라데이션 추가 */
   url('/assets/images/apps/tetris.png'); /* 🎮 원래 그림 */
 }
 
 .app-button.sudoku {
   background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.05)), /* ✨ 어두→밝은 그라데이션 추가 */
+  linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), /* ✨ 어두→밝은 그라데이션 추가 */
   url('/assets/images/apps/sudoku.png'); /* 🎮 원래 그림 */
 }
 
 .app-button.hearing-test {
   background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.05)), /* ✨ 어두→밝은 그라데이션 추가 */
+  linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), /* ✨ 어두→밝은 그라데이션 추가 */
   url('/assets/images/apps/hearing-test.png'); /* 🎮 원래 그림 */
 }
 
