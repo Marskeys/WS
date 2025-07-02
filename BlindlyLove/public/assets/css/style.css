@@ -80,6 +80,7 @@ html.dark .header-top::before {
   align-items: center;
   width: 100%;
   flex-wrap: nowrap; 
+  z-index:5000;
 }
 
 .left-controls {
