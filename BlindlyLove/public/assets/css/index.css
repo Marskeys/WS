@@ -791,7 +791,7 @@ html.dark .page-link.disabled {
   font-size: 1rem;
   transition: 0.2s;
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.7); /* 💡 얇은 글로우 */
-  filter: brightness(1.5); 
+  filter: brightness(1.5) contrast(1.3) saturate(1.2);
 }
 
 .app-button:hover {
