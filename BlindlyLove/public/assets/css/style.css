@@ -20,6 +20,16 @@ html, body {
 }
 
 
+.header-cover {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: white;
+  z-index: 9998;
+  pointer-events: none;
+}
+
 html.dark .header-top::before {
   content: "";
   position: fixed;

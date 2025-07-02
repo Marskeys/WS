@@ -65,3 +65,14 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
+function updateHeaderCover() {
+  const header = document.querySelector('.header-top');
+  const cover = document.querySelector('.header-cover');
+  const rect = header.getBoundingClientRect();
+
+  cover.style.top = (window.scrollY + rect.top - 40) + 'px'; // 40 = cover 높이
+}
+
+window.addEventListener('scroll', updateHeaderCover);
+window.addEventListener('resize', updateHeaderCover);
+window.addEventListener('load', updateHeaderCover);
