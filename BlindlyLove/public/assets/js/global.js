@@ -93,7 +93,7 @@ function updateHeaderCover() {
 // ✅ 1초에 10번 체크 (100ms마다)
 setInterval(() => {
   updateHeaderCover();
-}, 100);
+}, 10);
 
 window.addEventListener('scroll', updateHeaderCover);
 window.addEventListener('resize', updateHeaderCover);
