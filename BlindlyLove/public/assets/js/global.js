@@ -95,6 +95,22 @@ setInterval(() => {
   updateHeaderCover();
 }, 10);
 
+function positionMobileMenu() {
+  const header = document.querySelector('.header-top');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  if (!header || !mobileMenu) return;
+
+  const rect = header.getBoundingClientRect();
+  mobileMenu.style.top = rect.bottom + 'px'; // 헤더 아랫면 기준
+}
+
+// 적용 시점
+window.addEventListener('scroll', positionMobileMenu);
+window.addEventListener('resize', positionMobileMenu);
+window.addEventListener('load', positionMobileMenu);
+document.addEventListener('DOMContentLoaded', positionMobileMenu);
+setInterval(positionMobileMenu, 20); // 광고 꼬리 당김 대응
+
 window.addEventListener('scroll', updateHeaderCover);
 window.addEventListener('resize', updateHeaderCover);
 window.addEventListener('load', updateHeaderCover);
