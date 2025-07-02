@@ -794,7 +794,30 @@ html.dark .page-link.disabled {
   background: #e0e0f0;
 }
 
-.left-panel {
-  padding-top: 4rem; /* 헤더 높이만큼 공간 확보 */
-  overflow-y: auto;  /* 내용 넘치면 스크롤 */
+/* 🌞 라이트 기본 */
+.panel-title {
+  color: #444;
+}
+
+.app-button {
+  background: #f0f0f5;
+  color: #333;
+}
+
+.app-button:hover {
+  background: #e0e0f0;
+}
+
+/* 🌙 다크모드 */
+html.dark .panel-title {
+  color: #ddd;
+}
+
+html.dark .app-button {
+  background: #333;         /* 어두운 배경 */
+  color: #f2f2f2;
+}
+
+html.dark .app-button:hover {
+  background: #444;
 }
