@@ -794,6 +794,7 @@ html.dark .page-link.disabled {
 
 .app-button:hover {
   background: #e0e0f0;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.7); /* 💡 얇은 글로우 */
 }
 
 /* 🌞 라이트 기본 */
@@ -801,14 +802,6 @@ html.dark .page-link.disabled {
   color: #444;
 }
 
-.app-button {
-  background: #f0f0f5;
-  color: #333;
-}
-
-.app-button:hover {
-  background: #e0e0f0;
-}
 
 /* 🌙 다크모드 */
 html.dark .panel-title {
