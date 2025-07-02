@@ -1,6 +1,6 @@
 <div class="header-top">
 
-  <!--<% if (user && Number(user.is_admin) === 1) { %> -->
+  <% if (user && Number(user.is_admin) === 1) { %>
   <% if (currentPath === '/' || currentPath === '/index') { %>
   <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
     <span></span>
@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <% if (user && Number(user.is_admin) === 1) { %>
+<% if (user && Number(user.is_admin) === 1) { %> 
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
     <!-- 🎮 무료 온라인 게임 -->
