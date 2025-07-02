@@ -1,10 +1,52 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // ✅ 1. 로그인 submit 처리
+// ✅ 빠르고 부드러운 헤더 커버 업데이트
+function updateHeaderCover() {
+  const header = document.querySelector('.top-controls');
+  const cover = document.querySelector('.header-cover');
+  if (!header || !cover) return;
+
+  const rect = header.getBoundingClientRect();
+  const headerTop = rect.top;
+
+  cover.style.height = headerTop > 0 ? headerTop + 'px' : '0px';
+}
+
+// ✅ 모바일 메뉴 위치를 헤더 윗면에 맞춤
+function positionMobileMenu() {
+  const header = document.querySelector('.top-controls');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  if (!header || !mobileMenu) return;
+
+  const rect = header.getBoundingClientRect();
+  mobileMenu.style.top = rect.top + 'px';
+}
+
+// ✅ 둘 다 계속 감지해서 자연스럽게 붙어 있게!
+function syncLoop() {
+  updateHeaderCover();
+  positionMobileMenu();
+  requestAnimationFrame(syncLoop);
+}
+requestAnimationFrame(syncLoop);
+
+// ✅ 이벤트 기반 보강 (스크롤, 리사이즈, 광고 등)
+['scroll', 'resize', 'load'].forEach(evt => {
+  window.addEventListener(evt, () => {
+    updateHeaderCover();
+    positionMobileMenu();
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateHeaderCover();
+  positionMobileMenu();
+
+  // ✅ 로그인 관련 처리
   const loginForm = document.querySelector("#loginBox form");
+  const loginBtn = document.getElementById("login");
+  const loginBox = document.getElementById("loginBox");
 
   loginForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const formData = new FormData(loginForm);
     const id = formData.get("id");
     const password = formData.get("password");
@@ -29,10 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ 2. 로그인 버튼 토글
-  const loginBtn = document.getElementById("login");
-  const loginBox = document.getElementById("loginBox");
-
   if (loginBtn && loginBox) {
     loginBtn.addEventListener("click", (e) => {
       e.preventDefault();  
@@ -49,68 +87,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-    // ✅ 3. header-cover 초기 위치 설정
-    updateHeaderCover();
-
 });
 
-// ✅ 3. 프리로더 서서히 사라지기
+// ✅ 프리로더 제거
 window.addEventListener('DOMContentLoaded', () => {
   const preloader = document.getElementById('preloader');
-
   if (preloader) {
     preloader.classList.add('fade-out');
-
     setTimeout(() => {
       preloader.style.display = 'none';
-    }, 200); // 이 시간은 CSS에서 transition: opacity 0.6s와 동일해야 함
+    }, 200);
   }
 });
-
-let ticking = false;
-
-function updateHeaderCover() {
-  if (ticking) return; // 이전 프레임 끝나기 전이면 패스
-
-  ticking = true;
-
-  requestAnimationFrame(() => {
-    const header = document.querySelector('.top-controls');
-    const cover = document.querySelector('.header-cover');
-
-    if (!header || !cover) return;
-
-    const rect = header.getBoundingClientRect();
-    const headerTop = rect.top;
-
-    cover.style.height = headerTop > 0 ? headerTop + 40 + 'px' : '0px';
-
-    ticking = false; // 다음 프레임부터 또 가능하게
-  });
-}
-
-// ✅ 1초에 10번 체크 (100ms마다)
-setInterval(() => {
-  updateHeaderCover();
-}, 10);
-
-function positionMobileMenu() {
-  const header = document.querySelector('.top-controls');
-  const mobileMenu = document.querySelector('.mobile-menu');
-  if (!header || !mobileMenu) return;
-
-  const rect = header.getBoundingClientRect();
-  mobileMenu.style.top = rect.top + 'px';  // 헤더 윗면 기준
-}
-
-// 적용 시점
-window.addEventListener('scroll', positionMobileMenu);
-window.addEventListener('resize', positionMobileMenu);
-window.addEventListener('load', positionMobileMenu);
-document.addEventListener('DOMContentLoaded', positionMobileMenu);
-setInterval(positionMobileMenu, 20); // 광고 꼬리 당김 대응
-
-window.addEventListener('scroll', updateHeaderCover);
-window.addEventListener('resize', updateHeaderCover);
-window.addEventListener('load', updateHeaderCover);
