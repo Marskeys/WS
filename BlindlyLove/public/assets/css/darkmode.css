@@ -229,7 +229,7 @@ html.dark body .header-top::after {
     transparent 100%
   );
   filter: blur(8px);
-  z-index: -1;
+  z-index: -1 !important;
 }
 
 
