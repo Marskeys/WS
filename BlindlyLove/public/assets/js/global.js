@@ -11,8 +11,6 @@ function positionMobileMenu() {
 }
 
 
-requestAnimationFrame(syncLoop);
-
 // ✅ 이벤트 기반 보강 (스크롤, 리사이즈, 광고 등)
 ['scroll', 'resize', 'load'].forEach(evt => {
   window.addEventListener(evt, () => {
