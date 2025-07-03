@@ -207,13 +207,26 @@ html.dark body .main-panel {
 }
 
 html.dark body .header-top {
+  position: relative; /* 👈 꼭 있어야 해 */
   z-index: 9000;
   background-color: #141433 !important;
-  box-shadow:
-    0 6px 10px rgba(255, 215, 0, 0.3),
-    0 12px 25px rgba(255, 215, 0, 0.4),
-    0 18px 40px rgba(255, 200, 0, 0.6) !important;
   border-bottom: none !important;
+  box-shadow: none !important; /* 기존 그림자 제거 */
+}
+
+html.dark body .header-top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 10px;
+  box-shadow:
+    0 10px 10px rgba(255, 215, 0, 0.3),
+    0 15px 25px rgba(255, 215, 0, 0.4),
+    0 20px 40px rgba(255, 200, 0, 0.6);
+  pointer-events: none;
+}
 
 
 html.dark body .login-box {
