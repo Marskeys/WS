@@ -206,20 +206,12 @@ html.dark body .main-panel {
   box-shadow: none !important;
 }
 
-html.dark body .header-top {
-  position: relative;
-  z-index: 9000;
-  background-color: #141433 !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
-}
-
 html.dark body .header-top::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -5px; /* 약간 겹치게 */
+  bottom: -5px;
   height: 20px;
   pointer-events: none;
   background: radial-gradient(
@@ -229,7 +221,7 @@ html.dark body .header-top::after {
     transparent 100%
   );
   filter: blur(8px);
-  z-index: -1 !important;
+  z-index: 1; /* ✅ header-top보다 낮고, 다른 요소보다 위 */
 }
 
 
