@@ -1,14 +1,4 @@
-// ✅ 빠르고 부드러운 헤더 커버 업데이트
-function updateHeaderCover() {
-  const header = document.querySelector('.top-controls');
-  const cover = document.querySelector('.header-cover');
-  if (!header || !cover) return;
 
-  const rect = header.getBoundingClientRect();
-  const headerTop = rect.top;
-
-  cover.style.height = headerTop > 0 ? headerTop + 'px' : '0px';
-}
 
 // ✅ 모바일 메뉴 위치를 헤더 윗면에 맞춤
 function positionMobileMenu() {
