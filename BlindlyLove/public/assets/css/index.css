@@ -12,11 +12,10 @@
 #cherry-canvas {
   position: absolute; /* ✅ fixed → absolute */
   top: 100%;          /* ✅ header 아래부터 시작 */
-  top: 0;
   left: 0;
   width: 100vw;
   height: 80vh;
-  z-index: 9000; /* 검색창보다 위, 메뉴보다 아래 */
+  z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
   pointer-events: none;
 }
 
