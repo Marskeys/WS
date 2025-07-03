@@ -442,8 +442,8 @@ html.dark body .hamburger.is-in-menu span {
   width: 70vw;
   /* height: 100vh; 대신 max-height 사용 */
   max-height: 100vh; /* 뷰포트 높이를 넘지 않는 선에서 최대 높이 설정 */
-  background-color: white;
-  color: rgb(255, 255, 255, 0.8); 
+  background-color: rgb(255, 255, 255, 0.8); 
+  color: white;
   z-index: 12000;
   border: 0px solid rgb(255, 255, 255); 
   border-radius: 3px;
