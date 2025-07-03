@@ -11,7 +11,7 @@
 
 #cherry-canvas {
   position: absolute; /* ✅ fixed → absolute */
-  top: 30px;          /* ✅ header 아래부터 시작 */
+  top: 10px;          /* ✅ header 아래부터 시작 */
   left: 0;
   width: 100vw;
   height: 80vh;
