@@ -206,26 +206,15 @@ html.dark body .main-panel {
   box-shadow: none !important;
 }
 
-html.dark body .header-top::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -5px;
-  height: 30px; /* 좀 넓게 */
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse at center bottom,
-    rgba(255, 215, 0, 0.5),
-    rgba(255, 200, 0, 0.1) 70%,
-    transparent 100%
-  );
-  filter: blur(8px);
-  z-index: 1;
-  mix-blend-mode: normal;  /* ✅ 이걸 꼭 추가 */
-  backdrop-filter: none;   /* ✅ 혹시라도 있었으면 제거 */
+html.dark body .header-top {
+  z-index: 9000;
+  background-color: #141433 !important;
+  border-bottom: none !important;
+  box-shadow:
+    0 6px 10px rgba(255, 215, 0, 0.3),
+    0 12px 25px rgba(255, 215, 0, 0.4),
+    0 18px 40px rgba(255, 200, 0, 0.6) !important;
 }
-
 
 html.dark body .login-box {
   background: linear-gradient(135deg, #202020, #2a2a2a);
