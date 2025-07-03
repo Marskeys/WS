@@ -69,12 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (loginBox.style.display === "block") {
         loginBox.style.display = "none";
       } else {
-        loginBox.style.display = "block";
+          // ✅ 먼저 보여주고 offsetWidth 계산!
+    loginBox.style.display = "block";
 
-        const rect = loginBtn.getBoundingClientRect();
-        loginBox.style.top = rect.bottom + window.scrollY + "px";
-        loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
-      }
+    // ✅ 위치 계산은 그다음
+    const rect = loginBtn.getBoundingClientRect();
+    loginBox.style.top = rect.bottom + window.scrollY + "px";
+    loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
+  }
     });
   }
 });
