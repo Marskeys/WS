@@ -212,7 +212,7 @@ html.dark body .header-top::after {
   left: 0;
   right: 0;
   bottom: -5px;
-  height: 20px;
+  height: 30px; /* 좀 넓게 */
   pointer-events: none;
   background: radial-gradient(
     ellipse at center bottom,
@@ -221,7 +221,9 @@ html.dark body .header-top::after {
     transparent 100%
   );
   filter: blur(8px);
-  z-index: 1; /* ✅ header-top보다 낮고, 다른 요소보다 위 */
+  z-index: 1;
+  mix-blend-mode: normal;  /* ✅ 이걸 꼭 추가 */
+  backdrop-filter: none;   /* ✅ 혹시라도 있었으면 제거 */
 }
 
 
