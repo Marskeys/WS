@@ -211,9 +211,9 @@ html.dark body .header-top {
   background-color: #141433 !important;
   border-bottom: none !important;
   box-shadow:
-    0 6px 8px rgba(255, 215, 0, 0.3),
-    0 12px 10px rgba(255, 215, 0, 0.4),
-    0 18px 30px rgba(255, 200, 0, 0.6) !important;
+    0 3px 4px rgba(255, 215, 0, 0.2),
+    0 6px 6px rgba(255, 215, 0, 0.25),
+    0 10px 10px rgba(255, 200, 0, 0.3) !important;
 }
 
 html.dark body .login-box {
