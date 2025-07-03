@@ -10,24 +10,18 @@ function positionMobileMenu() {
   mobileMenu.style.top = rect.top + 'px';
 }
 
-// ✅ 둘 다 계속 감지해서 자연스럽게 붙어 있게!
-function syncLoop() {
-  updateHeaderCover();
-  positionMobileMenu();
-  requestAnimationFrame(syncLoop);
-}
+
 requestAnimationFrame(syncLoop);
 
 // ✅ 이벤트 기반 보강 (스크롤, 리사이즈, 광고 등)
 ['scroll', 'resize', 'load'].forEach(evt => {
   window.addEventListener(evt, () => {
-    updateHeaderCover();
     positionMobileMenu();
   });
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  updateHeaderCover();
+
   positionMobileMenu();
 
   // ✅ 로그인 관련 처리
@@ -69,14 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (loginBox.style.display === "block") {
         loginBox.style.display = "none";
       } else {
-          // ✅ 먼저 보여주고 offsetWidth 계산!
-    loginBox.style.display = "block";
+        loginBox.style.display = "block";
 
-    // ✅ 위치 계산은 그다음
-    const rect = loginBtn.getBoundingClientRect();
-    loginBox.style.top = rect.bottom + window.scrollY + "px";
-    loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
-  }
+        const rect = loginBtn.getBoundingClientRect();
+        loginBox.style.top = rect.bottom + window.scrollY + "px";
+        loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
+      }
     });
   }
 });

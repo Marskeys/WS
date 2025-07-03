@@ -140,6 +140,7 @@ html.dark body .auth-btn.login {
   font-weight: 600;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
   transition: all 0.1s ease;
+  z-index: 9999;
 }
 
 /* 로그인 버튼 (hover - 노란빛 glow) */
