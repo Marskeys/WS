@@ -206,16 +206,14 @@ html.dark body .main-panel {
   box-shadow: none !important;
 }
 
-/* ✅ 최종: header-top은 이 정의 하나로 충분 */
 html.dark body .header-top {
   z-index: 9000;
   background-color: #141433 !important;
   box-shadow:
-    0 3px 10px rgba(255, 215, 0, 0.3),
-    0 0 25px rgba(255, 215, 0, 0.4),
-    0 0 40px rgba(255, 200, 0, 0.6) !important;
+    0 6px 10px rgba(255, 215, 0, 0.3),
+    0 12px 25px rgba(255, 215, 0, 0.4),
+    0 18px 40px rgba(255, 200, 0, 0.6) !important;
   border-bottom: none !important;
-}
 
 
 html.dark body .login-box {
