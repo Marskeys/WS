@@ -137,16 +137,13 @@
     html.dark body .post-content {
       color: #ddd;
     }
-
-    .post-content li { /*리스트 벌어지는 현상 수정*/
-       font-size: 0; /* ✅ 줄바꿈 공백 제거 */
-    }
-
     .post-content li a {
-      font-size: 1rem;       /* ✅ 다시 되살림 */
-      display: block;        /* ✅ 한 줄 전체 클릭 가능 + 공백 제거 */
-       line-height: 1.5;
-    }
+  display: inline-block;     /* ✅ 줄바꿈 공백 제거 */
+  line-height: 1.5;
+  padding: 2px 4px;
+  text-decoration: none;
+  color: #0366d6;
+}
 
     .post-actions a.edit-btn,
     .post-actions form button {
