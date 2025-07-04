@@ -137,20 +137,19 @@
     html.dark body .post-content {
       color: #ddd;
     }
-    .post-content li {
+
+    .post-content ul,
+.post-content ol {
   margin: 0;
-  padding: 0;
-  line-height: 1;              /* ✅ 항목 간 줄 간격 확 줄임 */
+  padding: 0 0 0 1.2rem;  /* 좌측 들여쓰기만 딱! */
+  list-style: disc;       /* 원형 목록 마크 복원 */
 }
 
-.post-content li a {
-  display: inline-block;       /* ✅ 줄바꿈 공백 제거 */
-  font-size: 1rem;
-  line-height: 1;              /* ✅ 링크 내부 줄 간격도 최소 */
-  padding: 0.05rem 0.2rem;     /* ✅ 위아래 거의 없게 */
+.post-content li {
   margin: 0;
-  text-decoration: none;
-  color: #0366d6;
+  padding: 0;
+  margin-bottom: 0.2rem;  /* 항목 간 여백 최소화 */
+  line-height: 1.4;
 }
 
     .post-actions a.edit-btn,
