@@ -137,12 +137,18 @@
     html.dark body .post-content {
       color: #ddd;
     }
-    .post-content li a {
-  display: inline-block;      /* ✅ 줄바꿈 공백 제거 */
+    .post-content li {
+  margin: 0;
+  padding: 0;
+  line-height: 1;              /* ✅ 항목 간 줄 간격 확 줄임 */
+}
+
+.post-content li a {
+  display: inline-block;       /* ✅ 줄바꿈 공백 제거 */
   font-size: 1rem;
-  line-height: 1.2;           /* ✅ 간격 줄이기 */
-  padding: 0.1rem 0.4rem;     /* ✅ 세로 패딩 줄이기 */
-  margin: 0;                  /* ✅ 혹시 margin 있었다면 제거 */
+  line-height: 1;              /* ✅ 링크 내부 줄 간격도 최소 */
+  padding: 0.05rem 0.2rem;     /* ✅ 위아래 거의 없게 */
+  margin: 0;
   text-decoration: none;
   color: #0366d6;
 }
