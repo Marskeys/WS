@@ -220,9 +220,8 @@
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
     <!-- 📜 게시글 내용 -->
-    <div class="post-content">
-      <%- post.content %>
-    </div>
+  <!-- 게시글 내용 삽입될 자리 -->
+<div id="post-content-wrapper"></div>
 
     <!-- ✏️ 수정 / 삭제 버튼 -->
     <% if (user && post.user_id == user.id) { %>
@@ -316,33 +315,38 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const container = document.querySelector('.post-content');
-  
-    // 1. container 안의 script 태그 전부 찾아서
-    const scripts = container.querySelectorAll('script');
-  
-    scripts.forEach((oldScript) => {
-      const newScript = document.createElement('script');
-  
-      // src가 있는 외부 스크립트면 src 붙여줌
+    // ✅ post.content를 JS 문자열로 안전하게 escape
+    const raw = `<%= post.content
+      .replace(/\\/g, '\\\\')
+      .replace(/`/g, '\\`')
+      .replace(/\$/g, '\\$')
+      .replace(/<\/script>/g, '<\\/script>')
+      .replace(/'/g, "\\'")
+    %>`;
+
+    const wrapper = document.getElementById("post-content-wrapper");
+    wrapper.innerHTML = raw;
+
+    // ✅ 삽입된 script 태그 실행
+    wrapper.querySelectorAll("script").forEach((oldScript) => {
+      const newScript = document.createElement("script");
+
       if (oldScript.src) {
         newScript.src = oldScript.src;
         newScript.async = false;
       } else {
         newScript.textContent = oldScript.textContent;
       }
-  
-      // script 태그 속성 그대로 옮기기
-      [...oldScript.attributes].forEach(attr =>
+
+      [...oldScript.attributes].forEach((attr) =>
         newScript.setAttribute(attr.name, attr.value)
       );
-  
-      // 기존 script를 새로운 실행 가능한 script로 교체
+
       oldScript.replaceWith(newScript);
     });
   });
-  </script>
-  
+</script>
+
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
 </body>
