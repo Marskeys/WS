@@ -219,10 +219,13 @@
          data-ad-slot="3406391330"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
-    <!-- 📜 게시글 내용 -->
-  <!-- 게시글 내용 삽입될 자리 -->
-<div id="post-content-wrapper"></div>
+<!-- 🔐 게시글 내용을 template으로 먼저 감춤 -->
+<script id="post-content-template" type="text/template">
+  <%- post.content %>
+</script>
 
+<!-- 보여줄 영역 -->
+<div id="post-content-wrapper"></div>
     <!-- ✏️ 수정 / 삭제 버튼 -->
     <% if (user && post.user_id == user.id) { %>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
@@ -315,31 +318,30 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // ✅ EJS에서 문자열로 안전하게 넣기
-    const raw = <%- JSON.stringify(post.content) %>;
-
+    const raw = document.getElementById("post-content-template").textContent;
     const wrapper = document.getElementById("post-content-wrapper");
+  
     wrapper.innerHTML = raw;
-
-    // ✅ 삽입된 script 태그 실행
+  
+    // 스크립트 재삽입해서 실행
     wrapper.querySelectorAll("script").forEach((oldScript) => {
       const newScript = document.createElement("script");
-
+  
       if (oldScript.src) {
         newScript.src = oldScript.src;
         newScript.async = false;
       } else {
         newScript.textContent = oldScript.textContent;
       }
-
+  
       [...oldScript.attributes].forEach((attr) =>
         newScript.setAttribute(attr.name, attr.value)
       );
-
+  
       oldScript.replaceWith(newScript);
     });
   });
-</script>
+  </script>
 
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
