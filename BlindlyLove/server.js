@@ -240,7 +240,7 @@ app.get('/edit/:id', async (req, res) => {
 app.post('/edit/:id', async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
-  const { title, content, categories, is_private } = req.body;
+  const { title, content, categories, is_private, is_pinned } = req.body;
 
   // is_private 값을 1 (비공개) 또는 0 (공개)으로 변환
   const isPrivate = is_private ? 1 : 0;
@@ -256,10 +256,13 @@ app.post('/edit/:id', async (req, res) => {
       return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
     }
 
+    const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
+
+
     // 글 정보 DB 업데이트
     await db.query(
-      'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [title, content, categories.join(','), isPrivate, postId]
+      'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [title, content, categories.join(','), isPrivate, pinnedValue, postId]
     );
 
     res.json({ success: true, redirect: `/post/${postId}` }); // 수정 후 해당 글 페이지로 리디렉션
