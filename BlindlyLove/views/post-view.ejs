@@ -315,14 +315,8 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // ✅ post.content를 JS 문자열로 안전하게 escape
-    const raw = `<%= post.content
-      .replace(/\\/g, '\\\\')
-      .replace(/`/g, '\\`')
-      .replace(/\$/g, '\\$')
-      .replace(/<\/script>/g, '<\\/script>')
-      .replace(/'/g, "\\'")
-    %>`;
+    // ✅ EJS에서 문자열로 안전하게 넣기
+    const raw = <%- JSON.stringify(post.content) %>;
 
     const wrapper = document.getElementById("post-content-wrapper");
     wrapper.innerHTML = raw;
