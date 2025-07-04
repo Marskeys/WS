@@ -138,9 +138,11 @@
       color: #ddd;
     }
     .post-content li a {
-  display: inline-block;     /* ✅ 줄바꿈 공백 제거 */
-  line-height: 1.5;
-  padding: 2px 4px;
+  display: inline-block;      /* ✅ 줄바꿈 공백 제거 */
+  font-size: 1rem;
+  line-height: 1.2;           /* ✅ 간격 줄이기 */
+  padding: 0.1rem 0.4rem;     /* ✅ 세로 패딩 줄이기 */
+  margin: 0;                  /* ✅ 혹시 margin 있었다면 제거 */
   text-decoration: none;
   color: #0366d6;
 }
