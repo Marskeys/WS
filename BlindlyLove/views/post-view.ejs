@@ -6,30 +6,55 @@
   <%- include('partials/head') %>
   <style>
     /* 📑 목차 박스 디자인 */
+    .toc-list {
+      font-size: 0; /* 줄바꿈 공백 제거 */
+    }
 
-    
-.post-content ul, .post-content ol {
-  padding-left: 1em; 
-  margin: 0.3rem 0;     /* 전체 리스트의 상하 여백 조절 */
-}
+    .toc-list a {
+      font-size: 14px;
+      display: block; /* 한 줄 전체 클릭 가능 */
+      line-height: 1.4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0366d6;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
 
+    .toc-list a:hover {
+      color: #999ff9 !important;
+      text-decoration: underline !important;
+    }
 
-.post-content li {
-  margin: 0em 0;     /* 항목 간격 최소화 */
-  padding: 0;
-}
+    html.dark .toc-list a {
+      color: #6fb7ff !important;
+    }
 
-.post-content footer {
-  display: block;
-  font-size: 0.85rem;
-  color: #666;
-  margin: 0.3em 0;
-  line-height: 1.5;
-}
+    html.dark .toc-list a:hover {
+      color: #a2d4ff !important;
+    }
 
-html.dark .post-content footer {
-  color: #aaa;
-}
+    .post-content ul, .post-content ol {
+      padding-left: 1em;
+      margin: 0.3rem 0;
+    }
+
+    .post-content li {
+      margin: 0;
+      padding: 0;
+    }
+
+    .post-content footer {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin: 0.3em 0;
+      line-height: 1.5;
+    }
+
+    html.dark .post-content footer {
+      color: #aaa;
+    }
 
     .post-content .auto-toc {
       background: #f7f9fa;
@@ -39,10 +64,9 @@ html.dark .post-content footer {
       border-radius: 6px;
       font-size: 0.95rem;
       line-height: 1.4;
-
-      max-width: 280px;       /* 💡 박스 너비 제한 */
-      width: 100%;            /* 반응형 유지 */
-      margin-left: 0;      /* 💡 가운데 정렬 */
+      max-width: 280px;
+      width: 100%;
+      margin-left: 0;
       margin-right: auto;
     }
 
@@ -61,44 +85,13 @@ html.dark .post-content footer {
     .post-content .auto-toc li {
       margin: 0.1em 0;
       line-height: 1.2;
-      padding-right: 0; 
+      padding-right: 0;
     }
 
-
-/* 🌞 라이트모드 링크 및 호버 효과 */
-.post-content .auto-toc li a {
-  color: #0366d6;
-  text-decoration: none;
-  display: inline-block;        /* ✅ inline은 줄바꿈 안됨. inline-block으로 바꿔 */
-  max-width: 100%;              /* ✅ 부모 요소보다 더 넓어지지 않게 제한 */
-  width: fit-content;           /* ✅ 글자 길이만큼만 차지하도록 */
-  padding: 2px 6px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.post-content .auto-toc li a:hover {
-  color: #999ff9 !important;
-  text-decoration: underline !important;
-}
-
-
-
-
-    /* 🌙 다크모드 링크 기본 + hover */
     html.dark .post-content .auto-toc {
       background: #1f1f2b;
       border: 1px solid #444;
       color: #ddd;
-    }
-
-    html.dark .post-content .auto-toc li a {
-      color: #6fb7ff !important;
-    }
-
-    html.dark .post-content .auto-toc li a:hover {
-      color: #a2d4ff !important;
-      text-decoration: underline;
     }
 
     /* 제목 간격 조정 */
@@ -114,7 +107,6 @@ html.dark .post-content footer {
       margin-top: 0.5rem !important;
     }
 
-    /* 📄 일반 글 스타일 */
     .post-title {
       font-size: 1.5rem;
       font-weight: bold;
@@ -239,104 +231,81 @@ html.dark .post-content footer {
     </div>
   </div>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
+        const encoded = el.getAttribute("data-code");
+        if (!encoded) return;
 
-<script> 
- document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
-    const encoded = el.getAttribute("data-code");
-    if (!encoded) return;
+        try {
+          const binaryString = atob(encoded);
+          const len = binaryString.length;
+          const bytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const decoder = new TextDecoder('utf-8');
+          const decoded = decoder.decode(bytes);
 
-    try {
-      const binaryString = atob(encoded);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-      }
-      const decoder = new TextDecoder('utf-8');
-      const decoded = decoder.decode(bytes);
+          const iframe = document.createElement('iframe');
+          iframe.setAttribute('sandbox', 'allow-scripts');
+          iframe.setAttribute('referrerpolicy', 'no-referrer');
+          iframe.setAttribute('title', '삽입된 HTML');
+          iframe.setAttribute('name', `snippet-iframe-${index}`);
 
-      const iframe = document.createElement('iframe');
-      iframe.setAttribute('sandbox', 'allow-scripts'); // 보안 설정
-      iframe.setAttribute('referrerpolicy', 'no-referrer');
-      iframe.setAttribute('title', '삽입된 HTML');
-      // ✨ 2-1. iframe에 고유한 name 속성 부여 (높이 전달 시 식별용)
-      iframe.setAttribute('name', `snippet-iframe-${index}`); // 게시글 내 여러 iframe을 구분하기 위해 index 사용
-      
-      iframe.style.width = '100%';
-      iframe.style.minHeight = '100px'; // ✨ 2-2. 초기 높이를 최소로 설정 (로딩 전 잘림 방지, 나중에 실제 높이로 업데이트)
-      iframe.style.border = '1px solid #ccc';
-      iframe.style.borderRadius = '8px';
-      iframe.style.margin = '1rem 0';
-      iframe.srcdoc = decoded;
+          iframe.style.width = '100%';
+          iframe.style.minHeight = '100px';
+          iframe.style.border = '1px solid #ccc';
+          iframe.style.borderRadius = '8px';
+          iframe.style.margin = '1rem 0';
+          iframe.srcdoc = decoded;
 
-      el.innerHTML = '';
-      el.appendChild(iframe);
-    } catch (e) {
-      el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
-      console.error('디코딩 오류:', e);
-    }
-  });
+          el.innerHTML = '';
+          el.appendChild(iframe);
+        } catch (e) {
+          el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
+          console.error('디코딩 오류:', e);
+        }
+      });
 
-  // ✨ 2-3. iframe에서 오는 postMessage 수신 리스너 추가
-  window.addEventListener('message', (event) => {
-    // 메시지 출처 확인 (보안 강화): 
-    // 로컬 환경에서는 event.origin이 'null'일 수 있습니다.
-    // 실제 배포 시에는 `if (event.origin !== 'https://your-domain.com') return;` 와 같이 설정.
-    // srcdoc iframe의 origin은 보통 'null' 또는 'about:srcdoc'이므로, 개발 시에는 조건 없이 진행할 수 있습니다.
-    // 현재는 sandbox로 격리되므로 와일드카드 '*'로 받아도 비교적 안전합니다.
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'setIframeHeight') {
+          const iframeName = event.data.iframeName;
+          const height = event.data.height;
+          const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`);
+          if (targetIframe) {
+            targetIframe.style.height = `${height}px`;
+          }
+        }
+      });
+    });
 
-    if (event.data && event.data.type === 'setIframeHeight') {
-      const iframeName = event.data.iframeName;
-      const height = event.data.height;
-      const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`); // name 속성을 사용하여 해당 iframe 찾기
-      if (targetIframe) {
-        targetIframe.style.height = `${height}px`; // 전달받은 높이로 업데이트
-      }
-    }
-  });
-});
-
- // 이 스크립트는 iframe 내부에서 실행됩니다.
-    // ✨ 1. 부모에게 높이를 전달하는 함수
     function sendHeightToParent() {
       const body = document.body;
       const html = document.documentElement;
-      // 가장 큰 높이 값을 사용 (스크롤 높이, 클라이언트 높이 등)
       const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-      
-      // ✨ 2. window.name을 사용하여 부모에게 자신의 iframe 이름을 전달
-      // post-view.ejs에서 iframe에 부여한 name 속성을 사용합니다.
-      const iframeName = window.name; 
+      const iframeName = window.name;
 
       if (window.parent) {
         window.parent.postMessage({
           type: 'setIframeHeight',
           height: height,
-          iframeName: iframeName // 자신의 iframe 이름 전달
-        }, '*'); // 모든 출처 허용. 실제 환경에서는 보안을 위해 특정 도메인을 명시하는 것이 좋습니다.
+          iframeName: iframeName
+        }, '*');
       }
     }
 
-    // ✨ 3. 콘텐츠 로드 후 높이 측정 및 전달 (초기 로드 시)
-    // 이미지 등 비동기 로딩 콘텐츠를 위해 load 이벤트 리스너도 추가
     window.addEventListener('load', sendHeightToParent);
-    
-    // ✨ 4. DOMContentLoaded 시점에도 한 번 호출하여 빠른 높이 조절
     document.addEventListener('DOMContentLoaded', sendHeightToParent);
-
-    // ✨ 5. iframe 내부 콘텐츠 크기 변화 감지 (MutationObserver)
-    // 콘텐츠가 동적으로 변경될 경우를 대비
     const observer = new MutationObserver(sendHeightToParent);
     observer.observe(document.body, {
       attributes: true,
       childList: true,
       subtree: true
     });
-
-    // ✨ 6. (선택 사항) 리사이즈 이벤트에도 대응
     window.addEventListener('resize', sendHeightToParent);
-</script>
+  </script>
+
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
 </body>
