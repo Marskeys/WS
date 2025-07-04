@@ -312,6 +312,17 @@
       subtree: true
     });
     window.addEventListener('resize', sendHeightToParent);
+
+    // post-view.ejs 아래쪽 <script>에 추가
+document.querySelectorAll('.post-body script').forEach(script => {
+  const newScript = document.createElement('script');
+  if (script.src) {
+    newScript.src = script.src;
+  } else {
+    newScript.textContent = script.textContent;
+  }
+  document.body.appendChild(newScript);
+});
   </script>
 
   <%- include('partials/footer') %>
