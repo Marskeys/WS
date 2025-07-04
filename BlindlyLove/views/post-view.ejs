@@ -314,6 +314,35 @@
     window.addEventListener('resize', sendHeightToParent);
   </script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.querySelector('.post-content');
+  
+    // 1. container 안의 script 태그 전부 찾아서
+    const scripts = container.querySelectorAll('script');
+  
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement('script');
+  
+      // src가 있는 외부 스크립트면 src 붙여줌
+      if (oldScript.src) {
+        newScript.src = oldScript.src;
+        newScript.async = false;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+  
+      // script 태그 속성 그대로 옮기기
+      [...oldScript.attributes].forEach(attr =>
+        newScript.setAttribute(attr.name, attr.value)
+      );
+  
+      // 기존 script를 새로운 실행 가능한 script로 교체
+      oldScript.replaceWith(newScript);
+    });
+  });
+  </script>
+  
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
 </body>
