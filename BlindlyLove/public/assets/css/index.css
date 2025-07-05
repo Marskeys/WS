@@ -520,7 +520,6 @@ form button:hover {
   margin-top: 0.2rem;
   font-size: 0.7rem;
   color: #777;
-
   padding-left: 1rem;
   padding-right: 1rem;
   box-sizing: border-box;
@@ -530,7 +529,7 @@ form button:hover {
 }
 
 .post-title-and-actions + .post-info {
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
 }
 
 /* ============================
