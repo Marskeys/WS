@@ -206,18 +206,18 @@
 
 html.dark .tabs-blur-right {
   background: linear-gradient(to left,
-  rgba(0, 0, 0, 1) 0%,
-  rgba(0, 0, 0, 0.6) 30%,
-  rgba(0, 0, 0, 0.2) 60%,
-  rgba(0, 0, 0, 0) 100%);
+    rgba(11, 11, 26, 1) 0%,
+    rgba(11, 11, 26, 0.6) 30%,
+    rgba(11, 11, 26, 0.2) 60%,
+    rgba(11, 11, 26, 0) 100%);
 }
 
-html.dark .tabs-blur-left{
+html.dark .tabs-blur-left {
   background: linear-gradient(to right,
-  rgba(0, 0, 0, 1) 0%,
-  rgba(0, 0, 0, 0.6) 30%,
-  rgba(0, 0, 0, 0.2) 60%,
-  rgba(0, 0, 0, 0) 100%);
+    rgba(11, 11, 26, 1) 0%,
+    rgba(11, 11, 26, 0.6) 30%,
+    rgba(11, 11, 26, 0.2) 60%,
+    rgba(11, 11, 26, 0) 100%);
 }
 
 
