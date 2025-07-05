@@ -436,7 +436,7 @@ form button:hover {
     padding-right: 0.2rem;
     width: 100%;
     position: relative;
-    padding: 0 0;
+    padding: 0.1rem 0;
   }
 
   .mobile-post-item::after {
@@ -450,12 +450,12 @@ form button:hover {
   }
 
   .mobile-post-item .post-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
     color: #333;
     text-decoration: none;
     display: block;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.1rem;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -468,7 +468,7 @@ form button:hover {
   }
 
   .mobile-post-item .post-info {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     color: #777;
   }
 }
