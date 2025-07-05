@@ -432,8 +432,8 @@ form button:hover {
 
   .mobile-post-item {
     box-sizing: border-box;
-    padding-left: 0.1rem;
-    padding-right: 0.1rem;
+    padding-left: 0rem;
+    padding-right: 0rem;
     width: 100%;
     position: relative;
     padding: 0.3rem 0;
@@ -445,7 +445,7 @@ form button:hover {
     left: 0rem;
     right: 0rem;
     bottom: 0;
-    height: 1px;
+    height: 0.5px;
     background-color: #ddd;
   }
 
