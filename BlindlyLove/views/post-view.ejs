@@ -227,6 +227,7 @@
       <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
 
+    <!-- 📢 광고 삽입 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
      crossorigin="anonymous"></script>
     <ins class="adsbygoogle"
@@ -235,10 +236,14 @@
          data-ad-format="fluid"
          data-ad-client="ca-pub-2585969189290118"
          data-ad-slot="3406391330"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+
+    <!-- 📜 게시글 내용 -->
     <div class="post-content">
       <%- post.content %>
     </div>
 
+    <!-- ✏️ 수정 / 삭제 버튼 -->
     <% if (user && post.user_id == user.id) { %>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
         <a href="/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
@@ -317,8 +322,12 @@
             adContainer.innerHTML = adCode;
             
             targetElement.insertAdjacentElement('afterend', adContainer);
-
-            // ⚠️ (수정) 루프 안의 push 호출 삭제됨
+            
+            try {
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+              console.error("Adsense push error: ", e);
+            }
           }
         });
       }
@@ -332,15 +341,6 @@
               newScript.textContent = script.textContent;
           }
           document.body.appendChild(newScript);
-      });
-
-      // ✨ (수정) 4. 페이지의 모든 광고 슬롯을 한 번에 초기화
-      document.querySelectorAll('.adsbygoogle').forEach(ad => {
-        try {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-          console.error("Adsense push error:", e, ad);
-        }
       });
     });
   
