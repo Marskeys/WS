@@ -413,7 +413,7 @@ app.get('/', async (req, res) => {
   try {
     // 카테고리 조건에 따라 쿼리 다르게 구성
     let baseQuery = `
-      SELECT id, title, content, categories, author, user_id, created_at, updated_at, is_private, is_pinned
+      SELECT id, title, content, categories, author, user_id, created_at, updated_at, is_private, is_pinned, IFNULL(views, 0) AS views
       FROM posts
     `;
     let countQuery = `SELECT COUNT(*) as count FROM posts`;
