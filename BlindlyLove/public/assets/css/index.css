@@ -462,9 +462,10 @@ form button:hover {
     background-color: #870000;
   }
 
-  html.dark .mobile-post-itel:after{
+  html.dark .mobile-post-item::after{
     background-color: #ddd;
   }
+
   .mobile-post-item .post-title {
     font-size: 0.9rem;
     font-weight: 500;
