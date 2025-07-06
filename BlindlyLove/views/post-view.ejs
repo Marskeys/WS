@@ -259,11 +259,16 @@
   </div>
 
   <script>
+    // ----------------------------------------------------
+    // 모든 DOM 로딩이 완료된 후 스크립트 실행
+    // ----------------------------------------------------
     document.addEventListener("DOMContentLoaded", () => {
+  
+      // 1. 내가 만든 HTML 위젯(iframe) 처리 로직
       document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
         const encoded = el.getAttribute("data-code");
         if (!encoded) return;
-
+  
         try {
           const binaryString = atob(encoded);
           const len = binaryString.length;
@@ -273,20 +278,20 @@
           }
           const decoder = new TextDecoder('utf-8');
           const decoded = decoder.decode(bytes);
-
+  
           const iframe = document.createElement('iframe');
           iframe.setAttribute('sandbox', 'allow-scripts');
           iframe.setAttribute('referrerpolicy', 'no-referrer');
           iframe.setAttribute('title', '삽입된 HTML');
           iframe.setAttribute('name', `snippet-iframe-${index}`);
-
+  
           iframe.style.width = '100%';
           iframe.style.minHeight = '100px';
           iframe.style.border = '1px solid #ccc';
           iframe.style.borderRadius = '8px';
           iframe.style.margin = '1rem 0';
           iframe.srcdoc = decoded;
-
+  
           el.innerHTML = '';
           el.appendChild(iframe);
         } catch (e) {
@@ -294,25 +299,61 @@
           console.error('디코딩 오류:', e);
         }
       });
-
-      window.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'setIframeHeight') {
-          const iframeName = event.data.iframeName;
-          const height = event.data.height;
-          const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`);
-          if (targetIframe) {
-            targetIframe.style.height = `${height}px`;
+  
+      // 2. 본문 내 광고 동적 삽입 로직
+      const adCode = `
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-2585969189290118"
+             data-ad-slot="7758400001"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      `;
+      const postContent = document.querySelector('.post-content');
+      if (postContent) {
+        const potentialAdTargets = postContent.querySelectorAll('p, h2');
+        const adPositions = [2, 6]; // 👈 광고 위치는 여기서 조절
+  
+        adPositions.forEach(position => {
+          if (potentialAdTargets.length > position) {
+            const targetElement = potentialAdTargets[position];
+            const adContainer = document.createElement('div');
+            adContainer.style.margin = '2rem 0';
+            adContainer.innerHTML = adCode;
+            
+            targetElement.insertAdjacentElement('afterend', adContainer);
+            
+            try {
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+              console.error("Adsense push error: ", e);
+            }
           }
-        }
+        });
+      }
+  
+      // 3. .post-body 안의 스크립트 실행 로직 (필요 시 사용)
+      document.querySelectorAll('.post-body script').forEach(script => {
+          const newScript = document.createElement('script');
+          if (script.src) {
+              newScript.src = script.src;
+          } else {
+              newScript.textContent = script.textContent;
+          }
+          document.body.appendChild(newScript);
       });
     });
-
+  
+    // ----------------------------------------------------
+    // iframe 높이 조절 관련 함수 및 이벤트 리스너
+    // (DOMContentLoaded 바깥에 있어도 괜찮은 부분)
+    // ----------------------------------------------------
     function sendHeightToParent() {
       const body = document.body;
       const html = document.documentElement;
       const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
       const iframeName = window.name;
-
+  
       if (window.parent) {
         window.parent.postMessage({
           type: 'setIframeHeight',
@@ -321,28 +362,24 @@
         }, '*');
       }
     }
-
-    window.addEventListener('load', sendHeightToParent);
-    document.addEventListener('DOMContentLoaded', sendHeightToParent);
-    const observer = new MutationObserver(sendHeightToParent);
-    observer.observe(document.body, {
-      attributes: true,
-      childList: true,
-      subtree: true
+  
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'setIframeHeight') {
+        const iframeName = event.data.iframeName;
+        const height = event.data.height;
+        const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`);
+        if (targetIframe) {
+          targetIframe.style.height = `${height}px`;
+        }
+      }
     });
+  
+    window.addEventListener('load', sendHeightToParent);
+    const observer = new MutationObserver(sendHeightToParent);
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
     window.addEventListener('resize', sendHeightToParent);
-
-    // post-view.ejs 아래쪽 <script>에 추가
-document.querySelectorAll('.post-body script').forEach(script => {
-  const newScript = document.createElement('script');
-  if (script.src) {
-    newScript.src = script.src;
-  } else {
-    newScript.textContent = script.textContent;
-  }
-  document.body.appendChild(newScript);
-});
   </script>
+ 
 
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
