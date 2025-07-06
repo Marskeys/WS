@@ -297,7 +297,7 @@ app.get('/post/:id', async (req, res) => {
 
     // ✅ 중복 조회 방지: 세션에 이 글 ID가 없을 때만 카운트 증가
     if (!req.session.viewedPosts.includes(postId)) {
-      await db.query('UPDATE posts SET views = views + 1 WHERE id = ?', [postId]);
+      await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
       req.session.viewedPosts.push(postId);
     }
 
