@@ -275,25 +275,35 @@ app.post('/edit/:id', async (req, res) => {
 // ✅ 특정 글 보기 페이지 (비공개 글 접근 시 JSON 응답으로 변경)
 app.get('/post/:id', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [req.params.id]);
+    const postId = req.params.id;
+
+    // ✅ 세션에 viewedPosts 배열이 없으면 초기화
+    if (!req.session.viewedPosts) {
+      req.session.viewedPosts = [];
+    }
+
+    // ✅ 글 정보 조회
+    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) {
-      // 게시글을 찾을 수 없으면 404 응답을 JSON으로 보냅니다.
       return res.status(404).json({ success: false, message: '게시글을 찾을 수 없습니다.' });
     }
 
     const post = rows[0];
 
-    // **비공개 글 접근 제한 로직**
-    // 1. 글이 비공개(is_private: 1)인 경우
-    // 2. 로그인하지 않았거나 (req.session.user 없음)
-    // 3. 로그인했더라도 현재 로그인된 사용자의 ID와 글 작성자 ID가 다르면 (req.session.user.id !== post.user_id)
-    //    -> JSON 응답으로 접근 거부 메시지 전송 (클라이언트에서 처리)
+    // ✅ 비공개 글 접근 제한
     if (post.is_private && (!req.session.user || req.session.user.id !== post.user_id)) {
       return res.status(403).json({ success: false, message: '이 글은 비공개로 설정되어 접근할 수 없습니다.' });
     }
 
-    // 접근이 허용된 경우, post-view 템플릿 렌더링
+    // ✅ 중복 조회 방지: 세션에 이 글 ID가 없을 때만 카운트 증가
+    if (!req.session.viewedPosts.includes(postId)) {
+      await db.query('UPDATE posts SET views = views + 1 WHERE id = ?', [postId]);
+      req.session.viewedPosts.push(postId);
+    }
+
+    // ✅ 렌더링
     res.render('post-view', { post, user: req.session.user });
+
   } catch (err) {
     console.error('글 보기 오류:', err);
     res.status(500).json({ success: false, message: '서버 오류로 글을 불러올 수 없습니다.' });

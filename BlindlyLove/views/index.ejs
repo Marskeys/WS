@@ -137,6 +137,7 @@
                 <th>작성자</th>
                 <th>카테고리</th>
                 <th>날짜</th>
+                <th>조회수</th>
               </tr>
             </thead>
             <tbody id="board-content">
@@ -186,6 +187,7 @@
                   <td><%= post.author %></td>
                   <td style = "text-align: center;"}><%= post.categories %></td>
                   <td><%= post.created_at.toISOString().slice(0, 10) %></td>
+                  <td style="text-align: center;"><%= post.views %></td>
                 </tr>
               <% }) %>
             </tbody>
@@ -267,8 +269,7 @@
                   <% } %>
                 </div>
                 <div class="post-info">
-                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 없음 | <%= post.categories %>
-                </div>
+                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.categories %>
               </div>
             <% }) %>
           </div>
