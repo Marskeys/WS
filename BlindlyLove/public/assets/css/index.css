@@ -459,9 +459,12 @@ form button:hover {
     right: 0rem;
     bottom: 0;
     height: 0.5px;
-    background-color: #ddd;
+    background-color: #870000;
   }
 
+  html.dark .mobile-post-itel:after{
+    background-color: #ddd;
+  }
   .mobile-post-item .post-title {
     font-size: 0.9rem;
     font-weight: 500;
