@@ -37,12 +37,11 @@
     <div class="light-beam beam-right"></div>
     <img src="/assets/images/spotlight_right.svg" class="spotlight spotlight-right" alt="Spotlight Right" />
 
-    <!-- ✅ 기존 기능들 유지 -->
     <div class="auth-buttons">
       <% if (user) { %>
         <% if (Number(user.is_admin) === 1) { %>
           <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-          <a href="/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
+          <a href="/write" class="auth-btn write-post"><i class="fas fa-pen"></i> 글쓰기</a>
         <% } %>
         <a href="/logout" class="auth-btn logout">로그아웃</a>
       <% } else { %>
@@ -51,17 +50,11 @@
       <% } %>
     </div>
 
-    <div class="light-switch"
-         role="switch"
-         aria-checked="false"
-         aria-label="다크 모드 전환"
-         tabindex="0"
-         id="mode-toggle-accessible">
+    <div class="light-switch" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0" id="mode-toggle-accessible">
       <span class="switch-label"><span class="switch-handle"></span></span>
     </div>
   </nav>
 
-  <!-- ✅ 모바일 메뉴 -->
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
 
@@ -82,7 +75,6 @@
     </div>
   </nav>
 
-  <!-- ✅ 로그인 팝업 -->
   <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
     <form action="/login" method="POST" class="pop-up-form">
       <input type="text" name="id" placeholder="아이디" required>
@@ -97,8 +89,71 @@
     </form>
   </div>
 
-  <!-- ✅ 스타일 -->
   <style>
+    .header-top {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #111;
+      color: white;
+      z-index: 10;
+    }
+
+    .logo-img {
+      height: 48px;
+    }
+
+    .spotlight {
+      height: 64px;
+      width: auto;
+      margin-right: 0.5rem;
+    }
+
+    .light-beam {
+      width: 60px;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+      position: absolute;
+      top: 64px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .beam-left {
+      left: 2rem;
+      transform-origin: top left;
+    }
+
+    .beam-right {
+      right: 2rem;
+      transform-origin: top right;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 0.8rem;
+      margin-left: 1rem;
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 1.1rem;
+    }
+
     @media (max-width: 640px) {
       .desktop-menu {
         display: none;
@@ -122,16 +177,43 @@
         color: #666;
         pointer-events: none;
       }
+
+      .nav-left, .nav-right {
+        display: none;
+      }
     }
   </style>
-
-  <!-- ✅ 스크립트 -->
-  <script>
-    function delayNavigation(e, url) {
-      e.preventDefault();
-      setTimeout(() => {
-        window.location.href = url;
-      }, 100);
-    }
-  </script>
 </div>
+
+<script>
+  document.addEventListener('mousemove', (e) => {
+    const mouseY = e.clientY;
+
+    const spotlightLeft = document.querySelector('.spotlight-left');
+    const beamLeft = document.querySelector('.beam-left');
+    const spotlightRight = document.querySelector('.spotlight-right');
+    const beamRight = document.querySelector('.beam-right');
+
+    if (!spotlightLeft || !beamLeft || !spotlightRight || !beamRight) return;
+
+    const lightY = spotlightLeft.getBoundingClientRect().bottom;
+    const dy = mouseY - lightY;
+
+    const angleRad = Math.atan2(dy, 100);
+    const angleDeg = angleRad * (180 / Math.PI);
+
+    const offset = -110;
+
+    let leftAngle = angleDeg + offset;
+    let rightAngle = angleDeg + offset;
+
+    leftAngle = Math.max(-100, Math.min(-10, leftAngle));
+    rightAngle = Math.max(-100, Math.min(-10, rightAngle));
+
+    spotlightLeft.style.transform = `rotate(${leftAngle}deg)`;
+    beamLeft.style.transform = `rotate(${leftAngle}deg)`;
+
+    spotlightRight.style.transform = `scaleX(-1) rotate(${rightAngle}deg)`;
+    beamRight.style.transform = `scaleX(-1) rotate(${rightAngle}deg)`;
+  });
+</script>
