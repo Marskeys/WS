@@ -90,7 +90,7 @@ html, body {
     position: sticky;
     align-items: center;
     padding: 0.6rem 1rem;
-    background-color:  rgb(74, 55, 36);
+    background-color:  rgb(65,42,19);
     box-sizing: border-box;
     flex-shrink: 0;
     top: 0;
@@ -103,7 +103,7 @@ html, body {
     height: auto;   /* 비율 유지하면서 줄이기 */
     display: block; /* 여백 없애고 깔끔하게 */
   }
-  
+
   /* ✅ 소셜 아이콘 */
   .social-icons {
     display: flex;
