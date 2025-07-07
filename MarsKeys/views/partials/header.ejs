@@ -1,92 +1,96 @@
-<div class="header-top">
-
-
+<div class="header-top site-header">
   <% if (currentPath === '/' || currentPath === '/index') { %>
-  <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
+    <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   <% } %>
 
-
-  <div class="top-controls">
-    <div class="left-controls">
-      <% if (
-        ['/signup', '/editor', '/login', '/write'].includes(currentPath) ||
-        currentPath.startsWith('/post') ||
-        currentPath.startsWith('/edit')
-      ) { %>
-        <!-- 로고 출력 -->
-        <a href="/" class="logo-link">
-          <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
-        </a>
-      <% } %>
+  <nav class="nav-left">
+    <img src="/assets/images/spotlight_left.svg" class="spotlight spotlight-left" alt="Spotlight Left" />
+    <div class="light-beam beam-left"></div>
+    <ul class="nav-links">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Lessons</a></li>
+      <li><a href="#">Videos</a></li>
+    </ul>
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://naver.com" target="_blank"><i class="fa-solid fa-n"></i></a>
+      <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
     </div>
+  </nav>
 
-    <div class="right-controls">
-      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-        <div class="auth-buttons">
-          <% if (user) { %>
-            <% if (Number(user.is_admin) === 1) { %>
-              <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-              <a href="/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
-            <% } %>
-            <a href="/logout" class="auth-btn logout">로그아웃</a>
-          <% } else { %>
-            <a class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
-            <button class="auth-btn login" id="login" type="button">로그인</button>
-          <% } %>
-        </div>
-      <% } %>
-
-      <div class="light-switch"
-           role="switch"
-           aria-checked="false"
-           aria-label="다크 모드 전환"
-           tabindex="0"
-           id="mode-toggle-accessible">
-        <span class="switch-label"><span class="switch-handle"></span></span>
-      </div>
-    </div>
+  <div class="logo-wrapper">
+    <a href="/" class="logo-link">
+      <img src="/assets/images/logo.svg" alt="로고" class="logo-img" />
+    </a>
   </div>
 
+  <nav class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#">Sheet Music</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="light-beam beam-right"></div>
+    <img src="/assets/images/spotlight_right.svg" class="spotlight spotlight-right" alt="Spotlight Right" />
 
+    <!-- ✅ 기존 기능들 유지 -->
+    <div class="auth-buttons">
+      <% if (user) { %>
+        <% if (Number(user.is_admin) === 1) { %>
+          <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+          <a href="/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
+        <% } %>
+        <a href="/logout" class="auth-btn logout">로그아웃</a>
+      <% } else { %>
+        <a class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+        <button class="auth-btn login" id="login" type="button">로그인</button>
+      <% } %>
+    </div>
+
+    <div class="light-switch"
+         role="switch"
+         aria-checked="false"
+         aria-label="다크 모드 전환"
+         tabindex="0"
+         id="mode-toggle-accessible">
+      <span class="switch-label"><span class="switch-handle"></span></span>
+    </div>
+  </nav>
+
+  <!-- ✅ 모바일 메뉴 -->
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
-    <!-- 🎮 무료 온라인 게임 -->
-<div class="panel-section mobile">
-  <div class="panel-title mobile">🎮 무료 온라인 게임</div>
-  <div class="app-button-group mobile">
-    <a href="" class="app-button mobile tetris">테트리스</a>
-    <a href="" class="app-button mobile sudoku">스도쿠</a>
-  </div>
-</div>
 
-<!-- 🩺 간단 온라인 건강 검진 -->
-<div class="panel-section mobile testing">
-  <div class="panel-title mobile">🩺 초간단 건강 진단</div>
-  <div class="app-button-group mobile">
-    <a href="" class="app-button mobile hearing-test">청력검사</a>
-    <div class = "spacer"></div>
-    <div class = "spacer"></div>
-    <div class = "spacer"></div>
-    <div class = "spacer"></div>
-    <div class = "spacer"></div>
-  </div>
-</div>
+    <div class="panel-section mobile">
+      <div class="panel-title mobile">🎮 무료 온라인 게임</div>
+      <div class="app-button-group mobile">
+        <a href="" class="app-button mobile tetris">테트리스</a>
+        <a href="" class="app-button mobile sudoku">스도쿠</a>
+      </div>
+    </div>
+
+    <div class="panel-section mobile testing">
+      <div class="panel-title mobile">🩺 초간단 건강 진단</div>
+      <div class="app-button-group mobile">
+        <a href="" class="app-button mobile hearing-test">청력검사</a>
+        <div class="spacer"></div><div class="spacer"></div><div class="spacer"></div><div class="spacer"></div>
+      </div>
+    </div>
   </nav>
- 
 
+  <!-- ✅ 로그인 팝업 -->
   <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
     <form action="/login" method="POST" class="pop-up-form">
       <input type="text" name="id" placeholder="아이디" required>
       <input type="password" name="password" placeholder="비밀번호" required>
       <button type="submit">로그인</button>
-
       <div class="login-footer-links">
         <small>
-          아직 회원이 아니세요? <a href="/signup">회원가입</a> <br>
+          아직 회원이 아니세요? <a href="/signup">회원가입</a><br>
           비밀번호가 기억나지 않으신다면? <a href="/reset-password">비밀번호 찾기</a>
         </small>
       </div>
