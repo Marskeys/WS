@@ -1,0 +1,202 @@
+body {
+    background: linear-gradient(135deg, #fff7f0, #ffe4e1); /* 회원가입 페이지에만 적용되는 배경*/
+  }
+
+  .signup-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 2rem;
+  }
+
+  .logo-wrap {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .logo-wrap img {
+    height: 80px;
+    margin-bottom: -0.6rem;
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.3rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="id"],
+  input[type="password"] {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+  
+  
+  .signup-btn {
+    padding: 0.75rem;
+    background: #6b4cff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .signup-btn:hover {
+    background: #5432dc;
+  }
+
+  .extra {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .extra a {
+    color: #6b4cff;
+    text-decoration: none;
+  }
+
+  .error-msg {
+    color: red;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  html.dark body .signup-container {
+    background: rgb(0, 0, 0);
+    border-radius: 20px;
+    /* 기존 그림자를 유지하면서 황금빛 글로우 효과 추가 */
+    box-shadow: 
+      0 8px 30px rgba(0, 0, 0, 0.1), /* 기존 그림자 */
+      0 0 15px 5px rgba(255, 215, 0, 0.3), /* 황금빛 글로우 (확산 효과) */
+      0 0 30px 10px rgba(255, 215, 0, 0.1); /* 더 넓고 흐린 황금빛 글로우 */
+    width: 90%;
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 2rem;
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  html.dark body input[type="text"],
+  html.dark body input[type="text"],
+  html.dark body input[type="email"],
+  html.dark body input[type="password"] {
+    background: #333; /* 어두운 회색 계열 */
+    color: #ffffff !important;      /* 글자색을 밝게 */
+    border: 1px solid #555; /* 테두리도 어둡게 */
+  }
+
+  html.dark body h2 {
+    color: white;
+  }
+  html.dark body  .extra a {
+    color: #ff0101;
+    text-decoration: none;
+  }
+
+  html.dark body  .extra a:hover {
+    color: #fffcfc;
+    text-decoration: none;
+  }
+
+
+  .input-with-button {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    margin-bottom: -1rem; /* ✅ 기본 여백 줄이기 */
+  }
+  
+  .input-with-button input[type="text"] {
+    flex: 1;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.95rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+  }
+  
+  .check-btn {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    background-color: transparent;
+    border: 1px solid #bbb;
+    color: #555;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .check-btn:hover {
+    background-color: #f3f3f3;
+    border-color: #888;
+    color: #222;
+  }
+  
+  .check-msg {
+    height: 0;
+    overflow: hidden;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    opacity: 0;
+    padding-left: 2px;
+    margin-top: 0;       /* ✅ 여백 제거 */
+    margin-bottom: 0;    /* ✅ 여백 제거 */
+  }
+  .check-msg.show {
+    height: auto;
+    margin-top: 0.2rem;   /* ✅ 보여줄 때만 살짝 여백 */
+    margin-bottom: 0.7rem;
+    opacity: 1;
+  }
+  
+  .check-msg.valid {
+    color: #2e8b57; /* 초록색 */
+  }
+  
+  .check-msg.invalid {
+    color: #d94343; /* 붉은색 */
+  }
+  
+  .input-with-button input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+@media (max-width: 640px) {
+    .signup-container {
+      width: 100%;
+      max-width: 320px;
+      margin: 40px auto;
+      padding: 1rem 0.8rem;
+    }
+  
+    html.dark body .signup-container {
+      width: 100%;
+      max-width: 320px;
+      margin: 40px auto;
+      padding: 1rem 0.8rem;
+    }
+  }

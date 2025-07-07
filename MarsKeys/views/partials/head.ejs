@@ -1,0 +1,36 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google-adsense-anchor-top" content="false">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blindly Love | 당신 곁의 복지 가이드</title>
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128">
+
+  <link rel="preload" as="image" href="/assets/images/apps/tetris.png">
+  <link rel="preload" as="image" href="/assets/images/apps/sudoku.png">
+  <link rel="preload" as="image" href="/assets/images/apps/hearing-test.png">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+  <!-- ✅ 테마를 페이지 렌더 전에 미리 적용 -->
+  <script>
+    (function() {
+      const STORAGE_KEY = 'theme-mode';
+      const savedTheme = localStorage.getItem(STORAGE_KEY);
+      const isDark = !savedTheme || savedTheme === 'dark';
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/darkmode.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
+    crossorigin="anonymous"></script>
+</head>

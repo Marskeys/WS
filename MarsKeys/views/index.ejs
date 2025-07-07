@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class = "dark" lang="ko">
+  <%- include('partials/head') %>
+  <link rel="stylesheet" href="/assets/css/index.css" />
+
+  <body class="light">
+    <%- include('partials/header') %>
+
+    <!-- ⏳ 프리로더 -->
+    <div id="preloader">
+      <!-- 🔄 스피너 -->
+      <div class="spinner"></div>
+    </div>
+
+    <!-- 🟡 전체 레이아웃 시작 -->
+    <div class="full-layout">
+      <!-- 🟡 좌측 패널 -->
+      <aside class="side-panel main-panel-only">
+
+  <!-- 🎮 무료 온라인 게임 -->
+<div class="panel-section desktop">
+  <div class="panel-title">🎮 무료 온라인 게임</div>
+  <div class="app-button-group">
+    <a href="" class="app-button tetris">테트리스</a>
+    <a href="" class="app-button sudoku">스도쿠</a>
+  </div>
+</div>
+
+<!-- 🩺 간단 온라인 건강 검진 -->
+<div class="panel-section desktop">
+  <div class="panel-title">🩺 간단 온라인 건강 검진</div>
+  <div class="app-button-group">
+    <a href="" class="app-button hearing-test">청력</a>
+  </div>
+</div>
+
+      </aside>
+
+      <!-- 🟡 가운데 콘텐츠 -->
+      <div class="main-layout">
+        <div class="main-panel">
+          <div class="cherry-container">
+            <canvas id="cherry-canvas"></canvas>
+          </div>
+
+          <div class="search-container">
+            <!-- 🟡 로고 -->
+            <a href="/">
+              <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
+            </a>
+
+            <!-- 🟡 검색창 & 캐릭터 같이 감싸는 박스 -->
+            <div class="search-wrapper">
+              <div class="search-position-anchor">
+                <div class="character-stand">
+                  <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+                </div>
+                <form method="get" action="/search" class="search-form">
+                  <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
+                  <button type="submit" class="icon-submit-btn">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- 🟡 검색 결과 표시할 때 한국어 조사 선택 방법 -->
+          <%
+            function choosePostposition(word) {
+              if (!word || word.length === 0) return '';
+              const lastChar = word[word.length - 1];
+              const lastCode = lastChar.charCodeAt(0);
+              const hasBatchim = (lastCode - 44032) % 28 !== 0;
+              return hasBatchim ? '으로' : '로';
+            }
+          %>
+
+          <!-- 🟡 검색 결과 안내 멘트 -->
+          <% if (isSearch && searchKeyword) { %>
+            <p class="search-result-msg">
+              ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
+            </p>
+          <% } %>
+
+          <!-- 🟡 동적으로 생성된 카테고리 탭 -->
+          <div class="tabs-container">
+            <div class="tabs-blur-left"></div>
+            <div class="tabs-blur-right"></div>
+          <div class="tabs-wrapper">
+          <div class="tabs">
+               <div class="tab-spacer"></div> <!-- 💡 왼쪽 여백 -->
+            <a href="/?category=all" class="tab <%= !selectedCategory || selectedCategory === 'all' ? 'active' : '' %>">전체글</a>
+            <% categories.forEach(category => { %>
+              <a href="/?category=<%= category %>" class="tab <%= selectedCategory === category ? 'active' : '' %>"><%= category %></a>
+            <% }) %>
+          </div>
+          </div>
+          </div>
+
+ <!-- 🟡 페이지네이션 -->
+<% if (pagination.total > 1) { %>
+  <div class="pagination pagination-top desktop-only">
+    <% if (pagination.current > 1) { %>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=1" class="page-link" aria-label="First">«</a>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+    <% } else { %>
+      <span class="page-link disabled">«</span>
+      <span class="page-link disabled">‹</span>
+    <% } %>
+
+    <% pagination.range.forEach(p => { %>
+      <% if (p === '...') { %>
+        <span class="page-ellipsis">…</span>
+      <% } else { %>
+        <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+    <% }) %>
+
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+    <% } else { %>
+      <span class="page-link disabled">›</span>
+      <span class="page-link disabled">»</span>
+    <% } %>
+  </div>
+<% } %>
+
+
+          <!-- 🟡 게시글 리스트 (데스크탑) -->
+          <table class="board-table">
+            <thead>
+              <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>카테고리</th>
+                <th>날짜</th>
+                <th>조회수</th>
+              </tr>
+            </thead>
+            <tbody id="board-content">
+              <% posts.forEach(post => { %>
+            
+                  <td><%= post.id %></td>
+                  <td>
+                    <div class="post-title-and-actions">
+                    <a href="/post/<%= post.id %>"
+                      class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
+                      data-post-id="<%= post.id %>"
+                      data-is-private="<%= post.is_private ? '1' : '0' %>"
+                      data-post-user-id="<%= post.user_id %>">
+                      
+                     <% 
+                       const now = new Date();
+                       const createdAt = new Date(post.created_at);
+                       const updatedAt = new Date(post.updated_at);
+                       const isNew = (now - createdAt) < 1000 * 60 * 60 * 24;
+                       const isEdited = updatedAt > createdAt && (now - updatedAt) < 1000 * 60 * 60 * 24;
+                     %>
+                   
+                     <% if (isEdited) { %>
+                      <span class="label-icon edited-icon"></span>
+                    <% } else if (isNew) { %>
+                      <span class="label-icon new-icon"></span>
+                    <% } %>
+               
+            
+                         <% if (post.is_pinned) { %><span>📌</span><% } %>
+                        <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+                      </a>
+                      <% if (user && user.id === post.user_id) { %>
+                        <div class="action-icons">
+                          <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                            <i class="fas fa-pen"></i>
+                          </a>
+                          <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                            <button type="submit" class="icon-btn delete-btn" title="삭제">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
+                        </div>
+                      <% } %>
+                      </div>
+                  </td>
+                  <td><%= post.author %></td>
+                  <td style = "text-align: center;"}><%= post.categories %></td>
+                  <td><%= post.created_at.toISOString().slice(0, 10) %></td>
+                  <td style="text-align: center;"><%= post.views %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+
+           <!-- 🟡 페이지네이션 (하단) -->
+<% if (pagination.total > 1) { %>
+  <div class="pagination pagination-bottom desktop-only">
+    <% if (pagination.current > 1) { %>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=1" class="page-link" aria-label="First">«</a>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+    <% } else { %>
+      <span class="page-link disabled">«</span>
+      <span class="page-link disabled">‹</span>
+    <% } %>
+
+    <% pagination.range.forEach(p => { %>
+      <% if (p === '...') { %>
+        <span class="page-ellipsis">…</span>
+      <% } else { %>
+        <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+    <% }) %>
+
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+    <% } else { %>
+      <span class="page-link disabled">›</span>
+      <span class="page-link disabled">»</span>
+    <% } %>
+  </div>
+<% } %>
+
+
+          <!-- 🟡 게시글 리스트 (모바일) -->
+          <div class="mobile-board-list">
+            <% posts.forEach(post => { %>
+              <div class="mobile-post-item" data-category="<%= post.categories %>">
+                <div class="post-title-and-actions">
+                  <span class="post-id" style="font-size: 0.85rem; color: #aaa; margin-right: 0.5rem;">#<%= post.id %></span> <!-- 🔼 추가 -->
+                  <% if (post.is_pinned) { %>
+                    <span class="pinned-icon" title="상단 고정" style="margin-right: 0.3rem;">📌</span>
+                  <% } %>
+                  <a href="/post/<%= post.id %>"
+                    class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
+                    data-post-id="<%= post.id %>"
+                    data-is-private="<%= post.is_private ? '1' : '0' %>"
+                    data-post-user-id="<%= post.user_id %>">
+                 
+                   <% 
+                     const now = new Date();
+                     const createdAt = new Date(post.created_at);
+                     const updatedAt = new Date(post.updated_at);
+                     const isNew = (now - createdAt) < 1000 * 60 * 60 * 24;
+                     const isEdited = updatedAt > createdAt && (now - updatedAt) < 1000 * 60 * 60 * 24;
+                   %>
+                 
+                   <% if (isEdited) { %>
+                    <span class="label-icon edited-icon"></span>
+                  <% } else if (isNew) { %>
+                    <span class="label-icon new-icon"></span>
+                  <% } %>
+               
+              
+                    <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+                  </a>
+                  <% if (user && user.id === post.user_id) { %>
+                    <div class="action-icons">
+                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                        <i class="fas fa-pen"></i>
+                      </a>
+                      <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                        <button type="submit" class="icon-btn delete-btn" title="삭제">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="post-info">
+                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.categories %>
+                </div>
+                </div>
+            <% }) %>
+          </div>
+          <!-- 🟡 페이지네이션 (모바일) -->
+<% if (pagination.total > 1) { %>
+  <div class="pagination pagination-mobile mobile-only">
+    <% if (pagination.current > 1) { %>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=1" class="page-link" aria-label="First">«</a>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+    <% } else { %>
+      <span class="page-link disabled">«</span>
+      <span class="page-link disabled">‹</span>
+    <% } %>
+
+    <% pagination.range.forEach(p => { %>
+      <% if (p === '...') { %>
+        <span class="page-ellipsis">…</span>
+      <% } else { %>
+        <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+      <% } %>
+    <% }) %>
+
+    <% if (pagination.current < pagination.total) { %>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+      <a href="/?category=<%= selectedCategory || 'all' %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+    <% } else { %>
+      <span class="page-link disabled">›</span>
+      <span class="page-link disabled">»</span>
+    <% } %>
+  </div>
+<% } %>
+
+<div class = "spacer"></div>
+  </div>
+
+        </div>
+        
+      </div>
+
+   
+
+      <!-- 🟡 우측 패널 -->
+      <aside class="side-panel right-panel-only">
+        <!-- 🟡 광고 박스 -->
+        <div class="ad-box">
+           <!-- 💎 사이드 패널 애드센스 광고 (우) -->
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
+            crossorigin="anonymous"></script>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-2585969189290118"
+               data-ad-slot="5988925289"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </aside>
+    </div>
+    <!-- 🟡 전체 레이아웃 끝 -->
+
+    <script>
+      function createMessageBox(message, isConfirm = false, onConfirm = null) {
+        let modal = document.getElementById('customMessageModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'customMessageModal';
+          modal.style = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+            display: none;
+          `;
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+          <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+            <p style="color: black; margin-bottom: 15px;">${message}</p>
+            ${isConfirm ? `
+              <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+              <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+            ` : `
+              <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+            `}
+          </div>
+        `;
+        modal.style.display = 'flex';
+
+        if (isConfirm) {
+          document.getElementById('confirmBtn').onclick = () => {
+            modal.style.display = 'none';
+            if (onConfirm) onConfirm();
+          };
+          document.getElementById('cancelBtn').onclick = () => {
+            modal.style.display = 'none';
+          };
+        } else {
+          document.getElementById('okBtn').onclick = () => {
+            modal.style.display = 'none';
+            if (onConfirm) onConfirm();
+          };
+        }
+      }
+
+      function showCustomMessage(message, isConfirm = false, onConfirm = null) {
+        createMessageBox(message, isConfirm, onConfirm);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const postDetailLinks = document.querySelectorAll('.post-detail-link');
+        const currentUser = <%- JSON.stringify(user) %>;
+        const currentUserId = currentUser ? currentUser.id : null;
+        const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
+
+        postDetailLinks.forEach(link => {
+          link.addEventListener('click', (event) => {
+            const isPrivate = event.currentTarget.dataset.isPrivate === '1';
+            const postUserId = event.currentTarget.dataset.postUserId;
+            if (isPrivate && postUserId !== currentUserId && !isAdmin) {
+              event.preventDefault();
+              showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
+            }
+          });
+        });
+
+        document.querySelectorAll('.delete-post-form').forEach(form => {
+          form.onsubmit = (e) => {
+            e.preventDefault();
+            showCustomMessage('정말로 이 게시글을 삭제하시겠습니까?', true, () => {
+              e.target.submit();
+            });
+            return false;
+          };
+        });
+      });
+    </script>
+
+
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+  </body>
+</html>
