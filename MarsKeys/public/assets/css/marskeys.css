@@ -83,29 +83,23 @@
   }
   
   .light-beam {
+    width: 180px;              /* 💡 빛의 너비 넓힘 */
+    height: 500px;             /* 💡 빛의 길이 충분히 늘림 */
+    background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
     position: absolute;
-    width: 300px;
-    height: 1000px;
+    top: 100px;                /* 💡 이미지보다 약간 아래서 시작 */
+    z-index: 0;
     pointer-events: none;
-    z-index: 2;
-    background: radial-gradient(
-      ellipse at top,
-      rgba(255, 255, 180, 0.4),
-      rgba(255, 255, 180, 0.05),
-      transparent 80%
-    );
-    filter: blur(12px);
-    transform-origin: 50% 5%;
+    filter: blur(12px);        /* 💡 퍼지게 보이도록 */
+    opacity: 0.6;
+    transition: transform 0.1s ease-out;
   }
-  
   .beam-left {
-    top: 95%;
-    left: -100px;
+    left: 1.5rem;
+    transform-origin: top left;
   }
-  
   .beam-right {
-    top: 95%;
-    right: -100px;
-    transform: scaleX(-1);
+    right: 1.5rem;
+    transform-origin: top right;
   }
   
