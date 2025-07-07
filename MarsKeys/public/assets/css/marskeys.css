@@ -1,3 +1,28 @@
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+  }
+  
+  .nav-left,
+  .nav-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .logo-wrapper {
+    flex-shrink: 0;
+  }
+  
+  .logo-img {
+    height: 32px;
+  }
+  
 .site-header {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
