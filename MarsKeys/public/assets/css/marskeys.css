@@ -144,3 +144,14 @@
     }
   }
   
+  .spotlight-wrapper {
+    flex-shrink: 0;
+  }
+  
+  .spotlight {
+    width: 64px;
+    height: auto;
+    max-height: 64px;
+    object-fit: contain;
+  }
+  
