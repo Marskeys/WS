@@ -1,41 +1,47 @@
-<div class="header-top site-header">
-  <% if (currentPath === '/' || currentPath === '/index') { %>
-    <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  <% } %>
+<div class="header-top">
+  <!-- ✅ 왼쪽 메뉴 + 스포트라이트 -->
+  <div class="nav-left">
+    <% if (currentPath === '/' || currentPath === '/index') { %>
+      <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    <% } %>
 
-  <nav class="nav-left">
     <div class="spotlight-wrapper">
       <img src="/assets/images/spotlight_left.svg" class="spotlight spotlight-left" alt="Spotlight Left" />
       <div class="light-beam beam-left"></div>
     </div>
+
     <ul class="nav-links">
       <li><a href="#">About</a></li>
       <li><a href="#">Lessons</a></li>
       <li><a href="#">Videos</a></li>
     </ul>
+
     <div class="social-icons">
       <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
       <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
       <a href="https://naver.com" target="_blank"><i class="fa-solid fa-n"></i></a>
       <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
     </div>
-  </nav>
+  </div>
 
-  <div class="logo-wrapper">
+  <!-- ✅ 중앙 로고 -->
+  <div class="logo-center">
     <a href="/" class="logo-link">
       <img src="/assets/images/logo.png" alt="로고" class="logo-img" />
     </a>
   </div>
 
-  <nav class="nav-right">
+  <!-- ✅ 오른쪽 메뉴 + 스포트라이트 + 로그인 -->
+  <div class="nav-right">
     <ul class="nav-links">
       <li><a href="#">Sheet Music</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
+
     <div class="spotlight-wrapper">
       <div class="light-beam beam-right"></div>
       <img src="/assets/images/spotlight_right.svg" class="spotlight spotlight-right" alt="Spotlight Right" />
@@ -53,7 +59,7 @@
         <button class="auth-btn login" id="login" type="button">로그인</button>
       <% } %>
     </div>
-  </nav>
+  </div>
 </div>
 
 <script>
