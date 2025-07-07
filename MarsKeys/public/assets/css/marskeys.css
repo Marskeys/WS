@@ -98,6 +98,12 @@ html, body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
   }
   
+  .logo-img {
+    width: 120px;   /* 너비 조절: 필요에 따라 100px, 80px 등으로 바꿔 */
+    height: auto;   /* 비율 유지하면서 줄이기 */
+    display: block; /* 여백 없애고 깔끔하게 */
+  }
+  
   /* ✅ 소셜 아이콘 */
   .social-icons {
     display: flex;
