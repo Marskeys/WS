@@ -121,3 +121,12 @@
     color: #999;
   }
   
+  .post-detail-link {
+    color: #eee;
+    text-decoration: none;
+  }
+  
+  .post-detail-link:hover {
+    color: #ff99cc;
+    text-decoration: underline;
+  }
