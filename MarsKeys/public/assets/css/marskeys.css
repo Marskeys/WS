@@ -25,13 +25,11 @@
   }
   
   /* ✅ Masonry */
- /* ✅ Masonry */
-.grid-container {
+  .grid-container {
     max-width: 1400px;
     margin: 2rem auto;
     position: relative;
   }
-  
   .grid-sizer {
     width: 250px;
   }
@@ -44,7 +42,7 @@
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    transition: 0.2s;
+    transition: all 0.3s ease;
   }
   
   /* ✅ 크기 분기 (grid-sizer 단위 기준으로 배수로 설정) */
@@ -52,28 +50,25 @@
     width: 5%;
   }
   .box.medium {
-    width: 10%; /* 2칸 + gutter */
+    width: 10%;
   }
   .box.large {
-    width: 20%; /* 3칸 + gutter * 2 */
+    width: 20%;
   }
   .box.xlarge {
-    width: 30%x; /* 4칸 + gutter * 3 */
+    width: 30%;
   }
   .box.ultra {
-    width: 50%; /* 5칸 + gutter * 4 */
+    width: 50%;
     background: #000;
     padding: 0;
   }
-
   
-  .box {
-    transition: all 0.3s ease;
-  }
-  
+  /* ✅ 호버 시 실제로 커지게 */
   .box:hover {
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    width: 270px;
     background: #3a3a3a;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }
   
   /* ✅ 유튜브 캐러셀 */
@@ -126,7 +121,11 @@
   
   /* ✅ 반응형 대응 */
   @media (max-width: 1024px) {
-    .box.small, .box.medium, .box.large, .box.xlarge {
+    .box.small,
+    .box.medium,
+    .box.large,
+    .box.xlarge,
+    .box.ultra {
       width: 100% !important;
       max-width: 100% !important;
     }
