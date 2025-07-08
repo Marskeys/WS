@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Masonry Layout</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/assets/css/marskeys.css" />
 </head>
 <body>
   <div class="grid">
-    <div class="box tall">Tall</div>
-    <div class="box wide">Wide</div>
-    <div class="box square">Square</div>
-    <div class="box small">Small</div>
-    <div class="box big">Big</div>
-    <div class="box">Normal</div>
-    <!-- 원하면 더 추가 -->
+    <div class="grid-sizer"></div>
+
+    <div class="grid-item tall">Tall</div>
+    <div class="grid-item wide">Wide</div>
+    <div class="grid-item square">Square</div>
+    <div class="grid-item small">Small</div>
+    <div class="grid-item big">Big</div>
+    <div class="grid-item">Normal</div>
   </div>
 
   <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
   <script>
-    const grid = document.querySelector('.grid');
-    new Masonry(grid, {
-      itemSelector: '.box',
-      columnWidth: '.box',
-      percentPosition: true,
-      gutter: 10
+    window.addEventListener('load', () => {
+      new Masonry('.grid', {
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-sizer',
+        percentPosition: true,
+        gutter: 10
+      });
     });
   </script>
 </body>
