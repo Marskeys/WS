@@ -24,31 +24,49 @@
     font-weight: bold;
   }
   
-  /* ✅ Masonry 그리드 컨테이너 */
+  /* ✅ 그리드 컨테이너 */
   .grid-container {
     max-width: 1300px;
     margin: 2rem auto;
     position: relative;
   }
   
-  /* ✅ grid-sizer (Masonry 레이아웃 기준 너비 설정용) */
+  /* ✅ Masonry 기준선 */
   .grid-sizer {
     width: 25%;
   }
   
-  /* ✅ 공통 박스 스타일 */
+  /* ✅ 박스 공통 스타일 */
   .box {
     background: #2b2b2b;
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    transition: 0.2s;
+    transition: 0.2s ease;
     margin-bottom: 10px;
+  }
+  
+  /* ✅ 박스 크기 클래스 */
+  .box.small {
+    width: 25%;
+    min-height: 120px;
+  }
+  .box.medium {
+    width: 33.33%;
+    min-height: 160px;
+  }
+  .box.large {
+    width: 50%;
+    min-height: 200px;
+  }
+  .box.xlarge {
+    width: 66.66%;
+    min-height: 220px;
+  }
+  .box.ultra {
     width: 100%;
-    min-height: 180px; /* 👈 최소 높이로 납작 방지 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 0;
+    background: transparent;
   }
   
   /* ✅ hover 효과 */
@@ -57,21 +75,11 @@
     background: #3a3a3a;
   }
   
-  /* ✅ 사이즈 클래스 (높이로 구분만) */
-  .box.small { min-height: 160px; }
-  .box.medium { min-height: 220px; }
-  .box.large { min-height: 300px; }
-  .box.xlarge { min-height: 350px; }
-  .box.ultra { min-height: 400px; }
-  
   /* ✅ 유튜브 캐러셀 */
   .box.youtube-carousel {
-    background: #000;
-    padding: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    align-items: stretch;
   }
   .youtube-label {
     color: white;
@@ -83,13 +91,13 @@
     display: flex;
     flex-direction: row;
     overflow-x: auto;
+    scroll-behavior: smooth;
     gap: 1rem;
     padding: 0 1rem 1rem;
-    scroll-behavior: smooth;
   }
   .carousel-track iframe {
-    flex: 0 0 100%;
-    aspect-ratio: 16 / 9;
+    flex: 0 0 320px;
+    height: 180px;
     border-radius: 10px;
     border: none;
     background: #000;
@@ -114,23 +122,25 @@
     margin-bottom: 0.5rem;
   }
   
-  /* ✅ 반응형 대응 */
+  /* ✅ 반응형 */
   @media (max-width: 1024px) {
-    .grid-sizer {
-      width: 33.3333%;
+    .box.small,
+    .box.medium,
+    .box.large,
+    .box.xlarge {
+      width: 48% !important;
     }
   }
   @media (max-width: 768px) {
-    .grid-sizer {
-      width: 50%;
-    }
-  }
-  @media (max-width: 480px) {
-    .grid-sizer {
-      width: 100%;
+    .box.small,
+    .box.medium,
+    .box.large,
+    .box.xlarge {
+      width: 100% !important;
     }
     .carousel-track iframe {
       flex: 0 0 100%;
+      height: 200px;
     }
   }
   
