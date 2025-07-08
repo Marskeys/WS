@@ -49,16 +49,16 @@
   
   /* ✅ 크기 분기 (grid-sizer 단위 기준으로 배수로 설정) */
   .box.small {
-    width: 15%;
+    width: 5%;
   }
   .box.medium {
-    width: 25%; /* 2칸 + gutter */
+    width: 10%; /* 2칸 + gutter */
   }
   .box.large {
-    width: 30%; /* 3칸 + gutter * 2 */
+    width: 20%; /* 3칸 + gutter * 2 */
   }
   .box.xlarge {
-    width: 40%x; /* 4칸 + gutter * 3 */
+    width: 30%x; /* 4칸 + gutter * 3 */
   }
   .box.ultra {
     width: 50%; /* 5칸 + gutter * 4 */
