@@ -109,3 +109,47 @@
     color: #ff99cc;
     text-decoration: underline;
   }
+
+  .tabs-wrapper {
+    position: relative;
+    margin-top: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab {
+    background: rgba(255, 255, 255, 0.1);
+    color: #eee;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+  }
+  
+  .tab:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  
+  .tab.active {
+    background: #ff99cc;
+    color: #fff;
+    border-color: #ff99cc;
+    font-weight: bold;
+  }
+  
