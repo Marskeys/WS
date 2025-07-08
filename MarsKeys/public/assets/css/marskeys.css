@@ -48,9 +48,9 @@
   
   /* 크기 분기 */
   .box.small { width: 25%; }
-  .box.medium { width: 50%; }
-  .box.large { width: 75%; }
-  .box.ultra { width: 100%; }
+  .box.medium { width: 30%; }
+  .box.large { width: 45%; }
+  .box.ultra { width: 60%; }
   
   .box:hover {
     transform: scale(1.03);
