@@ -216,9 +216,3 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  @media (max-width: 767px) {
-    .grid-item.big {
-      grid-row: auto / span 2; /* ✅ 너무 길게 안 뻗게 줄임 */
-  min-height: 320px; /* ← 이거 추가! (또는 높이를 고정해) */
-    }
-  }
