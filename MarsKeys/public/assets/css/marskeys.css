@@ -97,11 +97,13 @@
     padding: 0 1rem 1rem;
     width: 100%;
     box-sizing: border-box;
+    scroll-padding-left: 1rem; /* 스크롤 시 기준점 보정 */
   }
   
   /* ✅ 유튜브 아이프레임 */
   .carousel-track iframe {
-    flex: 0 0 clamp(240px, 80vw, 400px); /* 반응형 너비 */
+    flex: 0 0 90%; /* ✅ 거의 다 채우되... */
+    max-width: 500px;
     aspect-ratio: 16 / 9;
     border-radius: 10px;
     border: none;
