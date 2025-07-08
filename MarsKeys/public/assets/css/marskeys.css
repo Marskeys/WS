@@ -182,16 +182,24 @@
   
   
   .board-wrapper {
-    grid-column: 1 / -1;       /* ✅ 유튜브 박스처럼 전체 너비 차지 */
-    grid-row: span 2;          /* 필요 시 높이도 크게 */
-    padding: 1rem;
-    background: #111;
+    background-color: #1a1a1a;
     border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     overflow-x: auto;
+    max-width: 100%;
   }
-  .board-table {
+/* 테이블이 너무 커지지 않게 */
+.board-table {
     width: 100%;
-    table-layout: auto; /* 또는 fixed */
+    border-collapse: collapse;
     font-size: 0.95rem;
+    color: #eee;
+  }
+  .mobile-board-list {
+    padding: 1rem;
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
   
