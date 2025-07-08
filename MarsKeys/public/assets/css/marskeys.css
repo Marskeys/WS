@@ -1,3 +1,4 @@
+/* ✅ 기본 설정 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,18 +12,18 @@
     color: #fff;
   }
   
-  /* ✅ 반응형 CSS Grid */
+  /* ✅ Grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    grid-auto-rows: 160px; /* 기본 박스 높이 단위 */
+    grid-auto-rows: 160px;
     gap: 15px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
   }
   
-  /* ✅ 박스 공통 스타일 */
+  /* ✅ 박스 공통 */
   .grid-item {
     background: #222;
     border-radius: 12px;
@@ -38,70 +39,27 @@
     overflow: hidden;
   }
   
-  /* ✅ 다양한 크기 조합 */
-  .grid-item.small {
+  /* ✅ 크기 다양화 */
+  .grid-item.small { grid-column: span 1; grid-row: span 1; }
+  .grid-item.tall  { grid-column: span 1; grid-row: span 2; }
+  .grid-item.wide  { grid-column: span 2; grid-row: span 1; }
+  .grid-item.big   { grid-column: span 2; grid-row: span 2; }
+  .grid-item:not(.small):not(.tall):not(.wide):not(.big):not(.youtube-carousel) {
     grid-column: span 1;
     grid-row: span 1;
   }
   
-  .grid-item.tall {
-    grid-column: span 1;
-    grid-row: span 2;
-  }
-  
-  .grid-item.wide {
-    grid-column: span 2;
-    grid-row: span 1;
-  }
-  
-  .grid-item.big {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-  
-  /* 기본 박스 */
-  .grid-item:not(.small):not(.tall):not(.wide):not(.big) {
-    grid-column: span 1;
-    grid-row: span 1;
-  }
-  
-  /* ✅ 호버 반응 */
-  .grid-item:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    z-index: 1;
-  }
-  
-  /* ✅ 캐러셀 레이아웃 */
-.youtube-carousel {
-    grid-column: 1 / -1; /* ✅ 전체 가로 너비 차지 */
+  /* ✅ 유튜브 캐러셀 */
+  .youtube-carousel {
+    grid-column: 1 / -1; /* 전체 가로 차지 */
     background: #000;
     padding: 0;
     display: flex;
-    align-items: center;
     justify-content: center;
-    overflow: hidden;
+    align-items: center;
+    height: auto;
   }
   
-  /* ✅ 데스크탑에서 너비 제한해 절반 느낌 주기 */
-  @media (min-width: 768px) {
-    .youtube-carousel {
-      justify-content: center;
-    }
-  
-    .youtube-carousel .carousel-track {
-      max-width: 600px; /* 👉 이게 화면 절반 느낌 */
-    }
-  }
-  
-  /* ✅ 모바일에선 꽉 차게 */
-  @media (max-width: 767px) {
-    .youtube-carousel .carousel-track {
-      max-width: 100%;
-    }
-  }
-  
-  /* ✅ 캐러셀 내부 */
   .carousel-track {
     display: flex;
     gap: 10px;
@@ -109,15 +67,25 @@
     scroll-snap-type: x mandatory;
     padding: 1rem;
     width: 100%;
+    max-width: 100%;
+    justify-content: center;
   }
   
   .carousel-track iframe {
     flex: 0 0 auto;
     width: 100%;
-    max-width: 300px;
+    max-width: 500px;
     aspect-ratio: 16 / 9;
     border: none;
     border-radius: 12px;
     scroll-snap-align: center;
     background: #111;
   }
+  
+  /* ✅ 모바일 대응 */
+  @media (max-width: 767px) {
+    .carousel-track iframe {
+      max-width: 100%;
+    }
+  }
+  
