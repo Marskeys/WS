@@ -18,13 +18,13 @@
     margin: 0 auto;
     position: relative;
   }
-  
   .grid-sizer {
-    width: 250px; /* 열 기준 고정 */
+    width: 50%; /* 기본: 무조건 2열 유지 */
   }
   
   .grid-item {
-    width: 250px;
+    width: 50%;
+    min-width: 180px; /* 너무 작아지지 않도록 방어선 */
     background: #333;
     border-radius: 10px;
     padding: 1rem;
@@ -38,22 +38,28 @@
     text-align: center;
   }
   
-  /* ✅ 높이 다양하게 */
-  .grid-item.small {
-    height: 150px;
-  }
+  /* ✅ 다양한 높이 유지 */
+  .grid-item.small { height: 150px; }
+  .grid-item.tall { height: 300px; }
+  .grid-item.big { height: 400px; }
   
-  .grid-item.tall {
-    height: 300px;
-  }
-  
-  .grid-item.big {
-    height: 400px;
-  }
-  
-  /* ✅ 호버 효과 */
+  /* ✅ 호버 확대 */
   .grid-item:hover {
     transform: scale(1.05);
     z-index: 2;
+  }
+  
+  /* ✅ 큰 화면에서 열 수 늘리기 */
+  @media (min-width: 768px) {
+    .grid-sizer,
+    .grid-item {
+      width: 33.333%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-sizer,
+    .grid-item {
+      width: 25%;
+    }
   }
   
