@@ -2,15 +2,6 @@
 <html lang="ko">
   <head>
     <%- include('partials/head') %>
-    <style>
-      /* ✅ Masonry hover 시 크기 증가를 위한 클래스 */
-      .box.hover-grow {
-        width: 270px !important;
-        background: #3a3a3a;
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-      }
-    </style>
   </head>
   <body>
     <%- include('partials/header') %>
@@ -64,29 +55,29 @@
 
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
-      window.addEventListener('load', () => {
-        const grid = document.querySelector('.grid-container');
-        const msnry = new Masonry(grid, {
-          itemSelector: '.box',
-          columnWidth: '.grid-sizer',
-          gutter: 10,
-          fitWidth: true
-        });
+     window.addEventListener('load', () => {
+    const grid = document.querySelector('.grid-container');
+    const msnry = new Masonry(grid, {
+      itemSelector: '.box',
+      columnWidth: '.grid-sizer',
+      gutter: 10,
+      fitWidth: true
+    });
 
-        const boxes = document.querySelectorAll('.box');
+    const boxes = document.querySelectorAll('.box');
 
-        boxes.forEach(box => {
-          box.addEventListener('mouseenter', () => {
-            box.classList.add('hover-grow');
-            msnry.layout();
-          });
-
-          box.addEventListener('mouseleave', () => {
-            box.classList.remove('hover-grow');
-            msnry.layout();
-          });
-        });
+    boxes.forEach(box => {
+      box.addEventListener('mouseenter', () => {
+        box.classList.add('hover-grow');
+        msnry.layout(); // Masonry에게 "다시 정렬해!"라고 말함
       });
+
+      box.addEventListener('mouseleave', () => {
+        box.classList.remove('hover-grow');
+        msnry.layout();
+      });
+    });
+  });
     </script>
   </body>
 </html>
