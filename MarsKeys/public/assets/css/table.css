@@ -33,7 +33,7 @@
   .post-title {
     font-size: 1rem;
     font-weight: 500;
-    color: #fff;
+    color: #fff !important;
     text-decoration: none;
     flex: 1; /* 🔥 제목은 자동 너비 확보 */
   }
