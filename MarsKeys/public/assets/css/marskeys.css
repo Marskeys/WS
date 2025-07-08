@@ -67,10 +67,14 @@
   }
 
   
-  /* ✅ box 효과 */
-  .box:hover {
-    transform: scale(1.03);
-    background: #3a3a3a;
+  .box {
+    transition: all 0.3s ease;
+  }
+  
+  .box.hover-grow {
+    width: calc(100% + 10px);
+    height: auto;
+    z-index: 2;
   }
   
   /* ✅ 유튜브 캐러셀 */
