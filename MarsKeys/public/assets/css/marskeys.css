@@ -186,7 +186,6 @@
     color: rgb(0, 0, 0);
     overflow: hidden;
     padding: 0;
-    padding-bottom: 7px;
     transform: rotate(45deg);
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
     z-index: 20;
@@ -202,7 +201,7 @@
     font-weight: bold;
     letter-spacing: 1px;
     line-height: 28px;        /* ✅ 글씨 세로 정렬 */
-    padding-top: 2px;         /* ✅ 약간 아래로 내림 */
+    padding-top: 0px;         /* ✅ 약간 아래로 내림 */
   }
   
   @keyframes scroll-left {
