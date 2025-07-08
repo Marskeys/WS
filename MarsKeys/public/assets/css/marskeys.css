@@ -134,3 +134,18 @@
       grid-column: span 1;
     }
   }
+
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  
+    .youtube-carousel {
+      grid-column: 1 / 3 !important;
+      grid-row: span 2;
+    }
+  
+    .tall, .wide, .big {
+      grid-column: span 1;
+    }
+  }
