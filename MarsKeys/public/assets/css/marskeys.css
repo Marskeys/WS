@@ -26,24 +26,22 @@
   
   /* ✅ Masonry 그리드 컨테이너 */
   .grid-container {
-    margin: 2rem auto;
     column-count: 4;
     column-gap: 10px;
-    padding: 0 1rem;
+    padding: 1rem;
   }
   
-  /* ✅ Masonry 박스 공통 스타일 */
   .box {
+    display: inline-block;
+    width: 100%;           /* ❌ 이거 지워야 해! */
+    width: auto;           /* ✅ 또는 고정값으로! */
+    max-width: 100%;       /* ✅ 필요하면 */
     background: #2b2b2b;
     border-radius: 12px;
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
     break-inside: avoid;
     padding: 1rem;
     text-align: center;
-    font-size: 1.2rem;
-    transition: transform 0.2s ease;
   }
   
   .box:hover {
