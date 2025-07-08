@@ -7,7 +7,7 @@
     <%- include('partials/header') %>
 
     <main class="grid-container">
-      <!-- ✅ 유튜브 캐러셀 -->
+      <!-- ✅ 유튜브 캐러셀 (Masonry 안에서 하나의 박스로 취급) -->
       <div class="box ultra youtube-carousel">
         <div class="youtube-label">YouTube</div>
         <div class="carousel-track">
@@ -51,7 +51,7 @@
       <div class="box">📷 Visual FX</div>
     </main>
 
-    <!-- ✅ Masonry 스크립트는 body 맨 아래에! -->
+    <!-- ✅ Masonry 스크립트 (fitWidth 제거됨) -->
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
       window.addEventListener('load', () => {
@@ -60,7 +60,6 @@
           new Masonry(grid, {
             itemSelector: '.box',
             gutter: 10,
-            fitWidth: true,
             horizontalOrder: false
           });
         }
