@@ -153,6 +153,15 @@
     font-weight: bold;
   }
   
+  .tabs-container {
+    position: relative; /* ✅ 이거 꼭 필요! */
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    overflow-x: auto;
+    z-index: 2;
+  }
+  
   .tabs-blur-left,
 .tabs-blur-right {
   position: absolute;
