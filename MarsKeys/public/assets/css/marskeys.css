@@ -61,6 +61,8 @@
     grid-row: span 2; /* ✅ 두 칸 높이 차지 */
     justify-content: center;
     align-items: stretch; /* ← 위아래 꽉 채워지게 */
+  
+    border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
   
  /* 리본 */
