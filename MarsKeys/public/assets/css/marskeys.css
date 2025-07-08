@@ -225,3 +225,18 @@
   }
 
   
+  .grid-item.small {
+    background: transparent; /* 배경 투명 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  .grid-item.small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 꽉 차게, 비율 맞춰 자름 */
+    display: block;
+  }
