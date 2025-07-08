@@ -12,20 +12,22 @@
     color: #fff;
   }
   
+  /* ✅ Masonry 그리드 */
   .grid {
     max-width: 1280px;
+    min-width: 420px; /* ✅ 최소 2열 강제 확보 */
     margin: 0 auto;
     position: relative;
     padding: 1rem;
   }
   
-  /* Masonry가 열 계산할 기준 */
+  /* Masonry 열 기준 */
   .grid-sizer {
     width: 50%;
     height: 0;
     display: block;
     visibility: hidden;
-    min-width: 180px;  /* 💡 너무 좁아지는 거 방지 */
+    min-width: 180px;
   }
   
   .grid-item {
@@ -44,12 +46,12 @@
     text-align: center;
   }
   
-  /* 높이 조절 */
+  /* ✅ 높이 다양하게 */
   .grid-item.small { height: 150px; }
   .grid-item.tall { height: 300px; }
   .grid-item.big { height: 400px; }
   
-  /* 호버 */
+  /* ✅ 호버 효과 */
   .grid-item:hover {
     transform: scale(1.05);
     z-index: 2;
