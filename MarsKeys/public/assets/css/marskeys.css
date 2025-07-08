@@ -223,3 +223,9 @@
       grid-row: span 2;
     }
   }
+
+  @media (max-width: 767px) {
+    .grid {
+      grid-auto-flow: row !important;
+    }
+  }
