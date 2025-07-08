@@ -200,7 +200,7 @@
     display: block;
     height: auto !important;
     overflow: visible;
-    grid-row: auto / span 999; /* ✅ 원하는 만큼 크게 보장 */
+    grid-row: auto / span 3; /* ✅ 원하는 만큼 크게 보장 */
   }
 
   .mobile-board-list {
