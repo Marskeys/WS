@@ -67,6 +67,14 @@
           });
         }
       });
+
+      new Masonry(grid, {
+  itemSelector: '.box',
+  columnWidth: '.grid-sizer',
+  gutter: 10,
+  fitWidth: true,
+  percentPosition: true, // ✅ 요거!!
+});
     </script>
   </body>
 </html>
