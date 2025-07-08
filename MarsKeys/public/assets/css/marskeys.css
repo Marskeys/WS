@@ -194,17 +194,5 @@
   
     border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
-/* 테이블이 너무 커지지 않게 */
-.board-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-    color: #eee;
-  }
-  .mobile-board-list {
-    padding: 1rem;
-    background-color: #1a1a1a;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  }
+
   
