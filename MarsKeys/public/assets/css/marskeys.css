@@ -49,19 +49,19 @@
   
   /* ✅ 크기 분기 (grid-sizer 단위 기준으로 배수로 설정) */
   .box.small {
-    width: 250px;
+    width: 15%;
   }
   .box.medium {
-    width: 520px; /* 2칸 + gutter */
+    width: 25%; /* 2칸 + gutter */
   }
   .box.large {
-    width: 790px; /* 3칸 + gutter * 2 */
+    width: 30%; /* 3칸 + gutter * 2 */
   }
   .box.xlarge {
-    width: 1060px; /* 4칸 + gutter * 3 */
+    width: 40%x; /* 4칸 + gutter * 3 */
   }
   .box.ultra {
-    width: 1330px; /* 5칸 + gutter * 4 */
+    width: 50%; /* 5칸 + gutter * 4 */
     background: #000;
     padding: 0;
   }
