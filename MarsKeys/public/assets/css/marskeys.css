@@ -1,53 +1,59 @@
-body {
+/* ✅ 기본 설정 */
+* {
+    box-sizing: border-box;
     margin: 0;
-    padding: 2rem;
+    padding: 0;
+  }
+  
+  body {
     background: #111;
-    font-family: sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 2rem;
     color: #fff;
   }
   
-  /* 그리드 컨테이너 */
+  /* ✅ Masonry 그리드 */
   .grid {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     position: relative;
   }
   
-  /* 그리드 사이저 (기준 열 너비) */
   .grid-sizer {
-    width: 20%;
+    width: 250px; /* 열 기준 고정 */
   }
   
-  /* 박스 공통 스타일 */
   .grid-item {
+    width: 250px;
     background: #333;
-    border-radius: 8px;
+    border-radius: 10px;
+    padding: 1rem;
     margin-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
     transition: transform 0.2s ease;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     font-weight: bold;
-    font-size: 1rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    text-align: center;
   }
   
-  /* 다양한 박스 높이 */
-  .grid-item.tall { height: 300px; }
-  .grid-item.wide { height: 150px; width: 60%; }
-  .grid-item.square { height: 200px; }
-  .grid-item.small { height: 100px; }
-  .grid-item.big { height: 300px; width: 60%; }
-  
-  /* 기본 박스 크기 (column 기준) */
-  .grid-item {
-    width: 20%;
-    min-height: 150px;
+  /* ✅ 높이 다양하게 */
+  .grid-item.small {
+    height: 150px;
   }
   
-  /* 호버 효과 */
+  .grid-item.tall {
+    height: 300px;
+  }
+  
+  .grid-item.big {
+    height: 400px;
+  }
+  
+  /* ✅ 호버 효과 */
   .grid-item:hover {
     transform: scale(1.05);
-    z-index: 1;
+    z-index: 2;
   }
   

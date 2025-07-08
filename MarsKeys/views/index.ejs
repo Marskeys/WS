@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Masonry Layout</title>
-  <link rel="stylesheet" href="/assets/css/marskeys.css" />
-</head>
-<body>
-  <div class="grid">
-    <div class="grid-sizer"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MarsKeys Masonry</title>
+    <link rel="stylesheet" href="/assets/css/marskeys.css" />
+  </head>
+  <body>
+    <main class="grid">
+      <div class="grid-sizer"></div>
 
-    <div class="grid-item tall">Tall</div>
-    <div class="grid-item wide">Wide</div>
-    <div class="grid-item square">Square</div>
-    <div class="grid-item small">Small</div>
-    <div class="grid-item big">Big</div>
-    <div class="grid-item">Normal</div>
-  </div>
+      <div class="grid-item tall">Tall</div>
+      <div class="grid-item small">Small</div>
+      <div class="grid-item big">Big</div>
+      <div class="grid-item">Normal</div>
+      <div class="grid-item tall">Tall again</div>
+      <div class="grid-item small">Small again</div>
+      <div class="grid-item">More</div>
+    </main>
 
-  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-  <script>
-    window.addEventListener('load', () => {
-      new Masonry('.grid', {
-        itemSelector: '.grid-item',
-        columnWidth: '.grid-sizer',
-        percentPosition: true,
-        gutter: 10
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        new Masonry('.grid', {
+          itemSelector: '.grid-item',
+          columnWidth: '.grid-sizer',
+          gutter: 10,
+          percentPosition: false
+        });
       });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
