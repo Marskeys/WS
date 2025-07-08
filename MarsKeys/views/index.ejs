@@ -1,92 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poki Style Grid</title>
-    <link rel="stylesheet" href="marskeys.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masonry Layout</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="grid-container"></div>
+  <div class="grid">
+    <div class="box tall">Tall</div>
+    <div class="box wide">Wide</div>
+    <div class="box square">Square</div>
+    <div class="box small">Small</div>
+    <div class="box big">Big</div>
+    <div class="box">Normal</div>
+    <!-- 원하면 더 추가 -->
+  </div>
 
-    <script>
-        const gridContainer = document.getElementById('grid-container');
-        const availableSizes = [50, 75, 100, 125, 150]; // 정사각형의 가능한 크기 (px)
-        const colors = ['#FFC107', '#E91E63', '#9C27B0', '#2196F3', '#4CAF50', '#FF5722']; // 정사각형 색상
-
-        function getRandomSize() {
-            return availableSizes[Math.floor(Math.random() * availableSizes.length)];
-        }
-
-        function getRandomColor() {
-            return colors[Math.floor(Math.random() * colors.length)];
-        }
-
-        function createGrid() {
-            gridContainer.innerHTML = ''; // 기존 그리드 초기화
-            const containerWidth = window.innerWidth;
-            const containerHeight = window.innerHeight;
-
-            // 이미 채워진 공간을 추적하는 배열 (간단한 구현)
-            const filledRects = [];
-
-            // 그리드 아이템을 생성하고 배치하는 함수
-            function placeItem(x, y, size, color) {
-                if (x + size > containerWidth || y + size > containerHeight) {
-                    return false; // 컨테이너를 벗어나면 배치하지 않음
-                }
-
-                // 기존 아이템과 겹치는지 확인 (간단한 충돌 감지)
-                for (const rect of filledRects) {
-                    if (!(x + size <= rect.x || x >= rect.x + rect.size ||
-                          y + size <= rect.y || y >= rect.y + rect.size)) {
-                        return false; // 겹치면 배치하지 않음
-                    }
-                }
-
-                const gridItem = document.createElement('div');
-                gridItem.classList.add('grid-item');
-                gridItem.style.width = `${size}px`;
-                gridItem.style.height = `${size}px`;
-                gridItem.style.backgroundColor = color;
-                gridItem.style.left = `${x}px`;
-                gridItem.style.top = `${y}px`;
-
-                gridContainer.appendChild(gridItem);
-                filledRects.push({ x, y, size });
-                return true;
-            }
-
-            // 화면을 채우는 시도
-            let attempts = 0;
-            const maxAttempts = 5000; // 최대 시도 횟수 설정 (무한 루프 방지)
-
-            while (attempts < maxAttempts) {
-                const size = getRandomSize();
-                const color = getRandomColor();
-
-                // 무작위 위치에서 시작하여 빈 공간을 찾음
-                const startX = Math.floor(Math.random() * (containerWidth - size + 1));
-                const startY = Math.floor(Math.random() * (containerHeight - size + 1));
-
-                if (placeItem(startX, startY, size, color)) {
-                    // 성공적으로 배치되면 다음 시도로 넘어감
-                } else {
-                    // 실패하면 (겹치거나 공간 부족) 주변에서 다시 시도
-                    // 이 부분에서 더 정교한 공간 탐색 로직이 필요하지만, 여기서는 간단히 무작위 재시도를 반복합니다.
-                }
-                attempts++;
-            }
-
-            // 그래도 빈 공간이 많이 남는다면, 남은 공간에 작은 아이템 채워넣기 시도 (선택 사항, 복잡성 증가)
-            // 이 부분은 더 복잡한 알고리즘이 필요하므로, 현재는 무작위 배치를 우선합니다.
-        }
-
-
-        // 초기 로드 시 그리드 생성
-        window.addEventListener('load', createGrid);
-        // 윈도우 크기 변경 시 그리드 재생성 (반응형 대응)
-        window.addEventListener('resize', createGrid);
-    </script>
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script>
+    const grid = document.querySelector('.grid');
+    new Masonry(grid, {
+      itemSelector: '.box',
+      columnWidth: '.box',
+      percentPosition: true,
+      gutter: 10
+    });
+  </script>
 </body>
 </html>
