@@ -89,8 +89,8 @@
   }
   
   .page-link.active {
-    background: #ff99cc;
-    color: white;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
     font-weight: bold;
   }
   
@@ -161,7 +161,7 @@
     overflow-x: auto;
     z-index: 2;
   }
-  
+
   .tabs-blur-left,
 .tabs-blur-right {
   position: absolute;
