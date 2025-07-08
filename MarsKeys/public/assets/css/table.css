@@ -153,3 +153,22 @@
     font-weight: bold;
   }
   
+  .tabs-blur-left,
+.tabs-blur-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tabs-blur-left {
+  left: 0;
+  background: linear-gradient(to right, #111, transparent);
+}
+
+.tabs-blur-right {
+  right: 0;
+  background: linear-gradient(to left, #111, transparent);
+}
