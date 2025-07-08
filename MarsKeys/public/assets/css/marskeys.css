@@ -181,7 +181,7 @@
     top: 12px;
     right: -40px;
     width: 150px;
-    height: 24px;
+    height: 28px;
     background: #ff5500;
     color: white;
     overflow: hidden;
@@ -191,14 +191,17 @@
     z-index: 20;
   }
   
+  /* 움직이는 텍스트 */
   .sc-scroll {
     display: inline-block;
     white-space: nowrap;
-    padding-left: 100%; /* 시작 위치 바깥으로 */
-    animation: scroll-left 6s linear infinite;
+    padding-left: 100%;
+    animation: scroll-left 10s linear infinite; /* ✅ 느리게! */
     font-size: 0.75rem;
     font-weight: bold;
     letter-spacing: 1px;
+    line-height: 28px;        /* ✅ 글씨 세로 정렬 */
+    padding-top: 2px;         /* ✅ 약간 아래로 내림 */
   }
   
   @keyframes scroll-left {
