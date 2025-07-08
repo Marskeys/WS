@@ -59,12 +59,12 @@
     const grid = document.querySelector('.grid-container');
     if (grid) {
       new Masonry(grid, {
-        itemSelector: '.box',
-        columnWidth: '.grid-sizer',
-        gutter: 10,
-        fitWidth: true,
-        percentPosition: false  // 🔥 중요!
-      });
+  itemSelector: '.box',
+  columnWidth: '.grid-sizer',
+  gutter: 20,           // 👉 간격 넉넉하게
+  fitWidth: true,
+  percentPosition: true // 👉 퍼센트 기반 레이아웃
+});
     }
   });
     </script>

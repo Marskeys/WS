@@ -26,54 +26,46 @@
   
   /* ✅ Masonry */
  /* ✅ Masonry */
+/* ✅ Masonry 기반 반응형 */
 .grid-container {
     max-width: 1400px;
     margin: 2rem auto;
     position: relative;
   }
   
+  /* ✅ gutter 기준 단위 박스 */
   .grid-sizer {
-    width: 250px;
+    width: 20%;  /* 5열 기준 */
   }
-  
- /* ✅ 공통 box 스타일 */
+  /* ✅ 공통 box 스타일 */
 .box {
-    width: 250px;
-    margin: 10px; /* ← 상하좌우 모두 간격 추가 */
+    width: 20%;           /* Masonry가 알아서 배치할 크기 */
+    margin-bottom: 20px;  /* 요소간 수직 간격 */
     background: #2b2b2b;
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    transition: 0.2s;
-  }
-  
-  /* ✅ 크기 분기 (grid-sizer 단위 기준으로 배수로 설정) */
-  .box.small {
-    width: 5%;
-  }
-  .box.medium {
-    width: 10%; /* 2칸 + gutter */
-  }
-  .box.large {
-    width: 20%; /* 3칸 + gutter * 2 */
-  }
-  .box.xlarge {
-    width: 30%x; /* 4칸 + gutter * 3 */
-  }
-  .box.ultra {
-    width: 50%; /* 5칸 + gutter * 4 */
-    background: #000;
-    padding: 0;
-  }
-
-  
-  .box {
     transition: all 0.3s ease;
   }
   
+  /* ✅ 크기별 box 배율 (grid-sizer 기준) */
+  .box.small { width: 20%; }
+  .box.medium { width: 40%; }
+  .box.large { width: 60%; }
+  .box.xlarge { width: 80%; }
+  .box.ultra { width: 100%; padding: 0; background: #000; }
+  
+  /* ✅ hover 효과 */
   .box:hover {
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     background: #3a3a3a;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+  
+  /* ✅ 반응형 대응 */
+  @media (max-width: 1024px) {
+    .box {
+      width: 100% !important;
+    }
   }
   
   /* ✅ 유튜브 캐러셀 */
