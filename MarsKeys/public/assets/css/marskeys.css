@@ -28,55 +28,56 @@
   .grid-container {
     max-width: 1300px;
     margin: 2rem auto;
-    /* Masonry용 */
     position: relative;
   }
   
-  /* 👇 Masonry 칼럼 기준 */
+  /* ✅ grid-sizer (Masonry 레이아웃 기준 너비 설정용) */
   .grid-sizer {
     width: 25%;
   }
   
+  /* ✅ 공통 박스 스타일 */
   .box {
-    margin-bottom: 10px;
     background: #2b2b2b;
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
     transition: 0.2s;
+    margin-bottom: 10px;
+    width: 100%;
+    min-height: 180px; /* 👈 최소 높이로 납작 방지 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  /* 크기 분기 */
-  .box.small { width: 25%; }
-  .box.medium { width: 30%; }
-  .box.large { width: 45%; }
-  .box.ultra { width: 60%; }
-  
+  /* ✅ hover 효과 */
   .box:hover {
     transform: scale(1.03);
     background: #3a3a3a;
   }
   
-  
-  
-  .box.ultra {
-    background: #000;
-    padding: 0;
-    height: auto;
-  }
+  /* ✅ 사이즈 클래스 (높이로 구분만) */
+  .box.small { min-height: 160px; }
+  .box.medium { min-height: 220px; }
+  .box.large { min-height: 300px; }
+  .box.xlarge { min-height: 350px; }
+  .box.ultra { min-height: 400px; }
   
   /* ✅ 유튜브 캐러셀 */
   .box.youtube-carousel {
+    background: #000;
+    padding: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    align-items: stretch;
   }
   .youtube-label {
     color: white;
     font-size: 1.2rem;
     font-weight: bold;
     margin: 1rem;
-    font-family: 'Segoe UI', sans-serif;
   }
   .carousel-track {
     display: flex;
@@ -88,7 +89,6 @@
   }
   .carousel-track iframe {
     flex: 0 0 100%;
-    max-width: none;
     aspect-ratio: 16 / 9;
     border-radius: 10px;
     border: none;
@@ -104,7 +104,6 @@
     justify-content: flex-start;
     padding: 1rem;
     overflow: hidden;
-    height: 300px;
   }
   .box.soundcloud-box:hover {
     background: linear-gradient(135deg, #ff9933, #ff5500);
@@ -113,24 +112,22 @@
     font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
   }
   
   /* ✅ 반응형 대응 */
   @media (max-width: 1024px) {
-    .grid-container {
-      column-count: 3;
+    .grid-sizer {
+      width: 33.3333%;
     }
   }
   @media (max-width: 768px) {
-    .grid-container {
-      column-count: 2;
+    .grid-sizer {
+      width: 50%;
     }
   }
   @media (max-width: 480px) {
-    .grid-container {
-      column-count: 1;
+    .grid-sizer {
+      width: 100%;
     }
     .carousel-track iframe {
       flex: 0 0 100%;
