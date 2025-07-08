@@ -404,7 +404,7 @@ function generatePagination(current, total) {
 app.get('/', async (req, res) => {
   const category = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
-  const limit = 8;
+  const limit = 9;
   const offset = (page - 1) * limit;
 
   const userId = req.session.user?.id;
