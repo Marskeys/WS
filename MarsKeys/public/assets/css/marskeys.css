@@ -196,7 +196,7 @@
     display: inline-block;
     white-space: nowrap;
     padding-left: 100%;
-    animation: scroll-left 15s linear infinite; /* ✅ 느리게! */
+    animation: scroll-left 7s linear infinite; /* ✅ 느리게! */
     font-size: 0.75rem;
     font-weight: bold;
     letter-spacing: 1px;
