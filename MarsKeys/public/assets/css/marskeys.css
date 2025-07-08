@@ -9,7 +9,7 @@
     background: #f9f6f2;
     font-family: 'Segoe UI', sans-serif;
     padding: 0.2rem;
-    color: #fff;
+    background: #2c2c2c;
   }
   
   /* ✅ Grid */
@@ -52,7 +52,7 @@
   
   .youtube-carousel {
     grid-column: 1 / -1;
-    background: #ff0032;
+    background: linear-gradient(135deg, #4a000e, #8b1e2b, #c33e45);
     position: relative;
     overflow: hidden;
     padding: 0;
