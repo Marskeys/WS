@@ -72,19 +72,36 @@
     z-index: 1;
   }
   
-  /* ✅ 유튜브 캐러셀 박스: 기본적으로 넓고 높게 */
+  /* ✅ 캐러셀 레이아웃 */
 .youtube-carousel {
-    grid-column: span 2;
-    grid-row: span 2;
+    grid-column: 1 / -1; /* ✅ 전체 가로 너비 차지 */
     background: #000;
-    overflow: hidden;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
   
-  /* ✅ 캐러셀 트랙 */
+  /* ✅ 데스크탑에서 너비 제한해 절반 느낌 주기 */
+  @media (min-width: 768px) {
+    .youtube-carousel {
+      justify-content: center;
+    }
+  
+    .youtube-carousel .carousel-track {
+      max-width: 600px; /* 👉 이게 화면 절반 느낌 */
+    }
+  }
+  
+  /* ✅ 모바일에선 꽉 차게 */
+  @media (max-width: 767px) {
+    .youtube-carousel .carousel-track {
+      max-width: 100%;
+    }
+  }
+  
+  /* ✅ 캐러셀 내부 */
   .carousel-track {
     display: flex;
     gap: 10px;
@@ -104,18 +121,3 @@
     scroll-snap-align: center;
     background: #111;
   }
-  
-  /* ✅ 모바일일 때는 100% 너비, 데스크탑일 때는 절반 */
-  @media (max-width: 767px) {
-    .youtube-carousel {
-      grid-column: span 2 !important; /* 전체폭 */
-    }
-  }
-  
-  @media (min-width: 768px) {
-    .youtube-carousel {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-  }
-  
