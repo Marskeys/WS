@@ -1,4 +1,3 @@
-/* ✅ 기본 설정 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -13,22 +12,18 @@
   }
   
   .grid {
-    max-width: 100vw;
+    max-width: 1280px;
     margin: 0 auto;
     position: relative;
     padding: 1rem;
   }
   
-  /* Masonry 열 기준 */
   .grid-sizer {
-    width: calc(50vw - 15px); /* ✅ 한 줄에 두 칸 정확히 맞춤 */
-    height: 0;
-    display: block;
-    visibility: hidden;
+    width: 50%;
   }
   
   .grid-item {
-    width: calc(50vw - 15px); /* ✅ 한 줄에 두 칸 */
+    width: 50%;
     margin-bottom: 10px;
     background: #333;
     border-radius: 10px;
@@ -42,14 +37,28 @@
     text-align: center;
   }
   
-  /* 높이 다양하게 */
+  /* 높이 다양화 */
   .grid-item.small { height: 150px; }
   .grid-item.tall { height: 300px; }
-  .grid-item.big { height: 400px; }
+  .grid-item.big  { height: 400px; }
   
   /* 호버 */
   .grid-item:hover {
     transform: scale(1.05);
     z-index: 2;
+  }
+  
+  /* 열 수 증가 */
+  @media (min-width: 768px) {
+    .grid-sizer,
+    .grid-item {
+      width: 33.333%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-sizer,
+    .grid-item {
+      width: 25%;
+    }
   }
   

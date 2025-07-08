@@ -21,18 +21,25 @@
 
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
+      let msnry;
+    
       function initMasonry() {
-        new Masonry('.grid', {
+        if (msnry) msnry.destroy(); // 💥 기존 인스턴스 제거
+    
+        msnry = new Masonry('.grid', {
           itemSelector: '.grid-item',
           columnWidth: '.grid-sizer',
           gutter: 10,
-          percentPosition: false // ✅ calc(vw) 쓸 땐 false
+          percentPosition: true
         });
       }
     
       window.addEventListener('load', initMasonry);
-      window.addEventListener('resize', initMasonry); // 리사이즈에도 재실행
+      window.addEventListener('resize', () => {
+        initMasonry();
+      });
     </script>
+    
     
   </body>
 </html>
