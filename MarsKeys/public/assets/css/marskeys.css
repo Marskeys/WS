@@ -90,3 +90,10 @@
     aspect-ratio: 16 / 9;
   }
   
+  .box.ultra {
+    grid-column: span 4;
+    grid-row: span 2;
+    background: #000; /* 유튜브용은 진하게 */
+    overflow: hidden;
+  }
+  
