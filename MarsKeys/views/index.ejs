@@ -55,26 +55,18 @@
 
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
-      window.addEventListener('load', () => {
-        const grid = document.querySelector('.grid-container');
-        if (grid) {
-          new Masonry(grid, {
-            itemSelector: '.box',
-            columnWidth: '.grid-sizer',
-            gutter: 10,
-            fitWidth: true,
-            horizontalOrder: false
-          });
-        }
-      });
-
+       window.addEventListener('load', () => {
+    const grid = document.querySelector('.grid-container');
+    if (grid) {
       new Masonry(grid, {
-  itemSelector: '.box',
-  columnWidth: '.grid-sizer',
-  gutter: 10,
-  fitWidth: true,
-  percentPosition: true, // ✅ 요거!!
-});
+        itemSelector: '.box',
+        columnWidth: '.grid-sizer',
+        gutter: 10,
+        fitWidth: true,
+        percentPosition: false  // 🔥 중요!
+      });
+    }
+  });
     </script>
   </body>
 </html>

@@ -25,18 +25,20 @@
   }
   
   /* ✅ Masonry */
-  .grid-container {
+ /* ✅ Masonry */
+.grid-container {
     max-width: 1400px;
     margin: 2rem auto;
     position: relative;
   }
+  
   .grid-sizer {
-    width: 20%;
-    max-width: 250px;
+    width: 250px;
   }
   
   /* ✅ 공통 box 스타일 */
   .box {
+    width: 250px; /* 기본 크기 */
     margin-bottom: 10px;
     background: #2b2b2b;
     border-radius: 12px;
@@ -45,28 +47,25 @@
     transition: 0.2s;
   }
   
-  /* ✅ 크기 분기 */
+  /* ✅ 크기 분기 (grid-sizer 단위 기준으로 배수로 설정) */
   .box.small {
-    width: calc(20% - 10px);
-    max-width: 250px;
+    width: 250px;
   }
   .box.medium {
-    width: calc(40% - 10px);
-    max-width: 500px;
+    width: 520px; /* 2칸 + gutter */
   }
   .box.large {
-    width: calc(50% - 10px);
-    max-width: 700px;
+    width: 790px; /* 3칸 + gutter * 2 */
   }
   .box.xlarge {
-    width: calc(70% - 10px);
-    max-width: 900px;
+    width: 1060px; /* 4칸 + gutter * 3 */
   }
   .box.ultra {
-    width: 70%;
+    width: 1330px; /* 5칸 + gutter * 4 */
     background: #000;
     padding: 0;
   }
+
   
   /* ✅ box 효과 */
   .box:hover {
