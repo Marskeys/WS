@@ -24,13 +24,13 @@
     font-weight: bold;
   }
   
-  /* ✅ 반응형 박스 그리드 */
+  /* ✅ Masonry 그리드 컨테이너 */
   .grid-container {
-    padding: 1rem;
-    box-sizing: border-box;
+    max-width: 1300px;
+    margin: 2rem auto;
   }
   
-  /* ✅ 모든 박스를 정사각형으로 유지 */
+  /* ✅ Masonry 박스 공통 스타일 */
   .box {
     background: #2b2b2b;
     border-radius: 12px;
@@ -40,12 +40,7 @@
     font-size: 1.2rem;
     text-align: center;
     transition: transform 0.2s ease;
-    aspect-ratio: 1 / 1;
-    width: 100%;
-  }
-
-  .box.youtube-carousel {
-    aspect-ratio: unset; /* ✅ 정사각형 무시 */
+    margin-bottom: 10px;
   }
   
   .box:hover {
@@ -53,34 +48,37 @@
     background: #3a3a3a;
   }
   
-  /* ✅ 박스 크기 다양화 */
+  /* ✅ Masonry 박스 크기 다양화 (폭+높이 조절) */
+  .box.small {
+    width: 160px;
+    height: 160px;
+  }
   .box.medium {
-    grid-column: span 2;
+    width: 200px;
+    height: 220px;
   }
   .box.large {
-    grid-column: span 2;
-    grid-row: span 2;
+    width: 260px;
+    height: 300px;
   }
   .box.xlarge {
-    grid-column: span 3;
-    grid-row: span 2;
-    background: #2b2b2b;  /* ✅ 일반 박스와 동일하게 */
-    overflow: hidden;
+    width: 320px;
+    height: 350px;
   }
-  .box.ultra.youtube-carousel {
-    aspect-ratio: unset; /* ✅ 정사각형 강제 제거 */
-    height: auto;        /* ✅ 자동 높이 */
-    min-height: 300px;   /* ✅ 영상 최소 높이 */
-    grid-column: span 4;
-    grid-row: span 2;
-    background: #ff0000;
+  .box.ultra {
+    width: 100%;
+    min-height: 300px;
+  }
+  
+  /* ✅ 유튜브 캐러셀 */
+  .box.youtube-carousel {
+    background: #000;
     display: flex;
     flex-direction: column;
     padding: 1rem 0;
     overflow: hidden;
   }
   
-  /* ✅ 유튜브 캐러셀 라벨 */
   .youtube-label {
     color: white;
     font-size: 1.2rem;
@@ -89,41 +87,26 @@
     font-family: 'Segoe UI', sans-serif;
   }
   
-  /* ✅ 유튜브 캐러셀 트랙 (가로 스크롤) */
   .carousel-track {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
-    overflow-y: hidden;
     scroll-behavior: smooth;
     gap: 1rem;
     padding: 0 1rem 1rem;
-    width: 100%;
-    box-sizing: border-box;
-    scroll-padding-left: 1rem; /* 스크롤 시 기준점 보정 */
+    scroll-padding-left: 1rem;
   }
   
-  /* ✅ 유튜브 아이프레임 */
   .carousel-track iframe {
-    flex: 0 0 100%;              /* ✅ 박스 가로 전체 채우기 */
-    max-width: none;            /* ✅ 제한 없애기 */
+    flex: 0 0 100%;
+    max-width: none;
     aspect-ratio: 16 / 9;
     border-radius: 10px;
     border: none;
     background: #000;
   }
   
-  /* ✅ 좁은 화면 대응 */
-  @media (max-width: 768px) {
-    .box.medium,
-    .box.large,
-    .box.xlarge,
-    .box.ultra {
-      grid-column: span 2 !important;
-      grid-row: auto;
-    }
-  }
-  
+  /* ✅ 사운드클라우드 박스 */
   .box.soundcloud-box {
     background: linear-gradient(135deg, #ff7700, #ff4400);
     color: white;
@@ -132,6 +115,8 @@
     justify-content: flex-start;
     padding: 1rem;
     overflow: hidden;
+    width: 260px;
+    height: 300px;
   }
   
   .box.soundcloud-box:hover {
@@ -146,21 +131,25 @@
     font-family: 'Segoe UI', sans-serif;
     color: white;
   }
-
-  /* Masonry용 박스 높이 클래스 */
-.box.short {
-    height: 150px;
-  }
-  .box.medium {
-    height: 240px;
-  }
-  .box.tall {
-    height: 360px;
-  }
-  .box.wide {
-    height: 200px; /* 유튜브용: 넓은 가로 느낌 */
-  }
-  .box.vertical {
-    height: 420px; /* 사운드클라우드용: 세로 느낌 */
+  
+  /* ✅ 반응형 대응 */
+  @media (max-width: 768px) {
+    .grid-container {
+      padding: 1rem;
+    }
+  
+    .box,
+    .box.small,
+    .box.medium,
+    .box.large,
+    .box.xlarge,
+    .box.ultra {
+      width: 100% !important;
+      height: auto !important;
+    }
+  
+    .carousel-track iframe {
+      flex: 0 0 100%;
+    }
   }
   
