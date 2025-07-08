@@ -26,42 +26,39 @@
   
   /* ✅ Masonry 그리드 컨테이너 */
   .grid-container {
-    column-count: 4;
-    column-gap: 10px;
-    padding: 1rem;
+    max-width: 1300px;
+    margin: 2rem auto;
+    /* Masonry용 */
+    position: relative;
+  }
+  
+  /* 👇 Masonry 칼럼 기준 */
+  .grid-sizer {
+    width: 25%;
   }
   
   .box {
-    display: inline-block;
-    width: 100%;           /* ❌ 이거 지워야 해! */
-    width: auto;           /* ✅ 또는 고정값으로! */
-    max-width: 100%;       /* ✅ 필요하면 */
+    margin-bottom: 10px;
     background: #2b2b2b;
     border-radius: 12px;
-    margin: 0 0 10px;
-    break-inside: avoid;
     padding: 1rem;
     text-align: center;
+    transition: 0.2s;
   }
+  
+  /* 크기 분기 */
+  .box.small { width: 25%; }
+  .box.medium { width: 50%; }
+  .box.large { width: 75%; }
+  .box.ultra { width: 100%; }
   
   .box:hover {
     transform: scale(1.03);
     background: #3a3a3a;
   }
   
-  /* ✅ Masonry 박스 높이 다양화 */
-  .box.small {
-    height: 160px;
-  }
-  .box.medium {
-    height: 220px;
-  }
-  .box.large {
-    height: 300px;
-  }
-  .box.xlarge {
-    height: 350px;
-  }
+  
+  
   .box.ultra {
     background: #000;
     padding: 0;
