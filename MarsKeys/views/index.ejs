@@ -22,13 +22,13 @@
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
       window.addEventListener('load', () => {
-      new Masonry('.grid', {
-  itemSelector: '.grid-item',
-  columnWidth: '.grid-sizer',
-  gutter: 10,
-  percentPosition: true
-});
-
+        new Masonry('.grid', {
+          itemSelector: '.grid-item',
+          columnWidth: '.grid-sizer',
+          gutter: 10,
+          percentPosition: true
+        });
+      }); // ← ✅ 이게 빠졌었어!
     </script>
   </body>
 </html>
