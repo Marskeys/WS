@@ -7,7 +7,6 @@
     <%- include('partials/header') %>
 
     <main class="grid-container">
-      <!-- ✅ Masonry 기준선 -->
       <div class="grid-sizer"></div>
 
       <!-- ✅ 유튜브 캐러셀 -->
@@ -54,21 +53,20 @@
       <div class="box small">📷 Visual FX</div>
     </main>
 
-   <!-- ✅ Masonry 스크립트 -->
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-<script>
-  window.addEventListener('load', () => {
-    const grid = document.querySelector('.grid-container');
-    if (grid) {
-      new Masonry(grid, {
-        itemSelector: '.box',
-        columnWidth: '.grid-sizer',
-        gutter: 10,
-        fitWidth: true,
-        horizontalOrder: false  // ✅ 순서 무시하고 가장 낮은 열부터 채우기
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script>
+      window.addEventListener('load', () => {
+        const grid = document.querySelector('.grid-container');
+        if (grid) {
+          new Masonry(grid, {
+            itemSelector: '.box',
+            columnWidth: '.grid-sizer',
+            gutter: 10,
+            fitWidth: true,
+            horizontalOrder: false
+          });
+        }
       });
-    }
-  });
-</script>
+    </script>
   </body>
 </html>

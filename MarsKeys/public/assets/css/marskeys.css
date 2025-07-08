@@ -1,4 +1,4 @@
-/* ✅ 기본 초기화 */
+/* ✅ 초기화 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -24,59 +24,58 @@
     font-weight: bold;
   }
   
-  /* ✅ 그리드 컨테이너 */
+  /* ✅ Masonry */
   .grid-container {
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 2rem auto;
     position: relative;
   }
-  
-  /* ✅ Masonry 기준선 */
   .grid-sizer {
-    width: 25%;
+    width: 20%;
+    max-width: 250px;
   }
   
-  /* ✅ 박스 공통 스타일 */
+  /* ✅ 공통 box 스타일 */
   .box {
+    margin-bottom: 10px;
     background: #2b2b2b;
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    transition: 0.2s ease;
-    margin-bottom: 10px;
+    transition: 0.2s;
   }
   
-  /* ✅ 박스 크기 클래스 */
+  /* ✅ 크기 분기 */
   .box.small {
-    width: 20%;
-    min-height: 120px;
+    width: calc(20% - 10px);
+    max-width: 250px;
   }
   .box.medium {
-    width: 33.33%;
-    min-height: 160px;
+    width: calc(40% - 10px);
+    max-width: 500px;
   }
   .box.large {
-    width: 50%;
-    min-height: 200px;
+    width: calc(60% - 10px);
+    max-width: 700px;
   }
   .box.xlarge {
-    width: 66.66%;
-    min-height: 220px;
+    width: calc(80% - 10px);
+    max-width: 900px;
   }
   .box.ultra {
     width: 100%;
+    background: #000;
     padding: 0;
-    background: transparent;
   }
   
-  /* ✅ hover 효과 */
+  /* ✅ box 효과 */
   .box:hover {
     transform: scale(1.03);
     background: #3a3a3a;
   }
   
   /* ✅ 유튜브 캐러셀 */
-  .box.youtube-carousel {
+  .youtube-carousel {
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -89,22 +88,22 @@
   }
   .carousel-track {
     display: flex;
-    flex-direction: row;
     overflow-x: auto;
-    scroll-behavior: smooth;
     gap: 1rem;
     padding: 0 1rem 1rem;
+    scroll-behavior: smooth;
   }
   .carousel-track iframe {
-    flex: 0 0 320px;
-    height: 180px;
+    flex: 0 0 100%;
+    max-width: none;
+    aspect-ratio: 16 / 9;
     border-radius: 10px;
     border: none;
     background: #000;
   }
   
   /* ✅ 사운드클라우드 박스 */
-  .box.soundcloud-box {
+  .soundcloud-box {
     background: linear-gradient(135deg, #ff7700, #ff4400);
     color: white;
     display: flex;
@@ -112,8 +111,9 @@
     justify-content: flex-start;
     padding: 1rem;
     overflow: hidden;
+    height: 300px;
   }
-  .box.soundcloud-box:hover {
+  .soundcloud-box:hover {
     background: linear-gradient(135deg, #ff9933, #ff5500);
   }
   .sc-label {
@@ -122,25 +122,11 @@
     margin-bottom: 0.5rem;
   }
   
-  /* ✅ 반응형 */
+  /* ✅ 반응형 대응 */
   @media (max-width: 1024px) {
-    .box.small,
-    .box.medium,
-    .box.large,
-    .box.xlarge {
-      width: 48% !important;
-    }
-  }
-  @media (max-width: 768px) {
-    .box.small,
-    .box.medium,
-    .box.large,
-    .box.xlarge {
+    .box.small, .box.medium, .box.large, .box.xlarge {
       width: 100% !important;
-    }
-    .carousel-track iframe {
-      flex: 0 0 100%;
-      height: 200px;
+      max-width: 100% !important;
     }
   }
   
