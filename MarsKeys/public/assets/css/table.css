@@ -175,10 +175,10 @@
 
 .tabs-blur-left {
   left: 0;
-  background: linear-gradient(to right, #111, transparent);
+  background: linear-gradient(to right, rgb(35, 50, 123), transparent);
 }
 
 .tabs-blur-right {
   right: 0;
-  background: linear-gradient(to left, #111, transparent);
+  background: linear-gradient(to left, rgb(35, 50, 123), transparent);
 }
