@@ -71,10 +71,9 @@
     transition: all 0.3s ease;
   }
   
-  .box.hover-grow {
-    width: calc(100% + 10px);
-    height: auto;
-    z-index: 2;
+  .box:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    background: #3a3a3a;
   }
   
   /* ✅ 유튜브 캐러셀 */
