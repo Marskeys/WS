@@ -113,12 +113,7 @@
     }
   }
 
-  @media (max-width: 767px) {
-    .grid-break {
-      grid-column: 1 / -1;
-      height: 0;
-    }
-  }
+
 
   @media (max-width: 767px) {
     .grid {
