@@ -176,39 +176,4 @@
     background: #000; /* 로딩 중 배경 */
   }
   
-  .sc-ribbon {
-    position: absolute;
-    top: 9px;
-    right: -45px;
-    width: 150px;
-    height: 22px;
-    background: #ffffff;
-    color: rgb(0, 0, 0);
-    overflow: hidden;
-    padding: 0;
-    transform: rotate(45deg);
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-    z-index: 20;
-  }
   
-  /* 움직이는 텍스트 */
-  .sc-scroll {
-    display: inline-block;
-    white-space: nowrap;
-    padding-left: 100%;
-    animation: scroll-left 7s linear infinite; /* ✅ 느리게! */
-    font-size: 0.75rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    line-height: 28px;        /* ✅ 글씨 세로 정렬 */
-    padding-top: 0px;         /* ✅ 약간 아래로 내림 */
-  }
-  
-  @keyframes scroll-left {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
