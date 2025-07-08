@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- 📱 모바일 게시판 -->
   <div class="mobile-board-list mobile-only">
     <% posts.forEach(post => { %>
@@ -50,9 +50,8 @@
         </div>
       </div>
     <% }) %>
-  </div>
-  
-  <!-- 📱 모바일 페이지네이션 -->
+
+     <!-- 📱 모바일 페이지네이션 -->
   <% if (pagination.total > 1) { %>
     <div class="pagination pagination-mobile mobile-only">
       <% if (pagination.current > 1) { %>
@@ -80,4 +79,8 @@
       <% } %>
     </div>
   <% } %>
+  
+  </div>
+  
+ 
   
