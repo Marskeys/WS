@@ -211,4 +211,7 @@
     padding: 1rem;
     background: #1a1a1a;
     border-radius: 12px;
+  
+    /* ✅ 얇은 경계선 추가 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
