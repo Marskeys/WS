@@ -73,22 +73,40 @@
   .youtube-carousel {
     position: relative;
     padding: 0;
-  }
-  .carousel-track {
     display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 0.5rem;
-    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: #ff0000;
+    flex-direction: column;
+    overflow: hidden;
   }
-  .carousel-track iframe {
-    flex: 1 0 auto;
+  
+  .youtube-wrapper {
+    width: 100%;
     height: 100%;
-    border-radius: 8px;
-    border: none;
+    padding: 1rem 0; /* 여백용 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .youtube-label {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .youtube-wrapper iframe {
+    width: 90%;
     aspect-ratio: 16 / 9;
+    border: none;
+    border-radius: 10px;
+    max-height: 100%;
   }
+  
   
   .box.ultra {
     grid-column: span 4;
@@ -96,4 +114,3 @@
     background: #000; /* 유튜브용은 진하게 */
     overflow: hidden;
   }
-  
