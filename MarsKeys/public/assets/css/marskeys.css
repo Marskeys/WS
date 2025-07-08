@@ -47,6 +47,10 @@
     aspect-ratio: 1 / 1;
     width: 100%;
   }
+
+  .box.youtube-carousel {
+    aspect-ratio: unset; /* ✅ 정사각형 무시 */
+  }
   
   .box:hover {
     transform: scale(1.03);
@@ -68,8 +72,11 @@
     overflow: hidden;
   }
   .box.ultra.youtube-carousel {
+    aspect-ratio: unset; /* ✅ 정사각형 강제 제거 */
+    height: auto;        /* ✅ 자동 높이 */
+    min-height: 300px;   /* ✅ 영상 최소 높이 */
     grid-column: span 4;
-    grid-row: span 3;
+    grid-row: span 2;
     background: #ff0000;
     display: flex;
     flex-direction: column;
@@ -102,7 +109,7 @@
   
   /* ✅ 유튜브 아이프레임 */
   .carousel-track iframe {
-    flex: 0 0 90%; /* ✅ 거의 다 채우되... */
+    flex: 0 0 90%;
     max-width: 500px;
     aspect-ratio: 16 / 9;
     border-radius: 10px;
