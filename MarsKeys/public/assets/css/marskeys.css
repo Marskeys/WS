@@ -187,7 +187,9 @@
     padding: 1.5rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     overflow-x: auto;
-    max-width: 100%;
+    max-height: none;        /* ✅ 높이 제한 해제 */
+    height: auto !important; /* ✅ 강제 자동 확장 */
+    grid-row: span 2;        /* ✅ 필요시 아래줄까지 넓히기 */
   }
 /* 테이블이 너무 커지지 않게 */
 .board-table {
