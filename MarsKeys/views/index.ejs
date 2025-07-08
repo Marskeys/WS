@@ -3,43 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>MarsKeys Masonry</title>
+    <title>MarsKeys Grid</title>
     <link rel="stylesheet" href="/assets/css/marskeys.css" />
   </head>
   <body>
     <main class="grid">
-      <div class="grid-sizer"></div>
-
-      <div class="grid-item tall">Tall</div>
-      <div class="grid-item small">Small</div>
-      <div class="grid-item big">Big</div>
-      <div class="grid-item">Normal</div>
-      <div class="grid-item tall">Tall again</div>
-      <div class="grid-item small">Small again</div>
-      <div class="grid-item">More</div>
+      <div class="grid-item">Game 1</div>
+      <div class="grid-item">Game 2</div>
+      <div class="grid-item">Game 3</div>
+      <div class="grid-item">Game 4</div>
+      <div class="grid-item">Game 5</div>
+      <div class="grid-item">Game 6</div>
+      <div class="grid-item">Game 7</div>
+      <div class="grid-item">Game 8</div>
     </main>
-
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script>
-      let msnry;
-    
-      function initMasonry() {
-        if (msnry) msnry.destroy(); // 💥 기존 인스턴스 제거
-    
-        msnry = new Masonry('.grid', {
-          itemSelector: '.grid-item',
-          columnWidth: '.grid-sizer',
-          gutter: 10,
-          percentPosition: true
-        });
-      }
-    
-      window.addEventListener('load', initMasonry);
-      window.addEventListener('resize', () => {
-        initMasonry();
-      });
-    </script>
-    
-    
   </body>
 </html>

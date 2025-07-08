@@ -1,3 +1,4 @@
+/* ✅ 기본 설정 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,54 +12,36 @@
     color: #fff;
   }
   
+  /* ✅ Poki 스타일 그리드 */
   .grid {
-    max-width: 1280px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+    max-width: 1200px;
     margin: 0 auto;
-    position: relative;
     padding: 1rem;
   }
   
-  .grid-sizer {
-    width: 50%;
-  }
-  
+  /* ✅ 카드 스타일 */
   .grid-item {
-    width: 50%;
-    margin-bottom: 10px;
-    background: #333;
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease;
+    background: #222;
+    border-radius: 12px;
+    aspect-ratio: 1 / 1; /* ✅ 정사각형 유지 */
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     font-weight: bold;
-    text-align: center;
+    font-size: 1rem;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
   }
   
-  /* 높이 다양화 */
-  .grid-item.small { height: 150px; }
-  .grid-item.tall { height: 300px; }
-  .grid-item.big  { height: 400px; }
-  
-  /* 호버 */
+  /* ✅ 호버 반응 */
   .grid-item:hover {
     transform: scale(1.05);
-    z-index: 2;
-  }
-  
-  /* 열 수 증가 */
-  @media (min-width: 768px) {
-    .grid-sizer,
-    .grid-item {
-      width: 33.333%;
-    }
-  }
-  @media (min-width: 1024px) {
-    .grid-sizer,
-    .grid-item {
-      width: 25%;
-    }
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    z-index: 1;
   }
   
