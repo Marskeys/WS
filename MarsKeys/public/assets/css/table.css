@@ -19,15 +19,31 @@
   
   .post-title-and-actions {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap; /* 🔥 핵심! 줄 바꿈 허용 */
+  }
+  
+  .post-id {
+    font-weight: bold;
+    color: #ffcc00;
+  }
+  
+  .post-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    flex: 1; /* 🔥 제목은 자동 너비 확보 */
   }
   
   .action-icons {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     align-items: center;
   }
+  
   
   .icon-btn {
     background: none;
