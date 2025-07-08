@@ -112,3 +112,10 @@
       min-width: 50%; /* ✅ 강제로 너비 확보해 옆에 못 붙게 */
     }
   }
+
+  @media (max-width: 767px) {
+    .grid-break {
+      grid-column: 1 / -1;
+      height: 0;
+    }
+  }
