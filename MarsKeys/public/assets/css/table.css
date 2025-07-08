@@ -1,22 +1,4 @@
-.board-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
-    color: #eee !important; 
-  }
-  
-  .board-table th, .board-table td {
-    padding: 0.65rem;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  .board-table th {
-    background-color: #fafafa;
-    text-align: center;
-    color: #333;
-  }
-  
+
   .post-title-and-actions {
     display: flex;
     flex-direction: row;
@@ -59,13 +41,10 @@
   
   /* 📱 모바일 게시판 */
   .mobile-board-list {
-    display: none;
+    display: block;
   }
   
   @media (max-width: 640px) {
-    .board-table {
-      display: none;
-    }
   
     .mobile-board-list {
       display: block;
