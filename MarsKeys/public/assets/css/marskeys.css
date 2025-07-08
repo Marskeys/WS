@@ -54,6 +54,7 @@
     background: #000;
     padding: 0;
     display: flex;
+    grid-row: span 2; /* ✅ 두 칸 높이 차지 */
     justify-content: center;
     align-items: center;
   }
@@ -90,7 +91,7 @@
     height: 100%;
     border: none;
   }
-  
+
   /* ✅ 모바일 대응 */
   @media (max-width: 767px) {
     .carousel-track iframe {
