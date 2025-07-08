@@ -23,7 +23,6 @@
     margin: 0 auto;
     padding: 1rem;
     grid-auto-flow: dense; /* ✅ 가능한 공간에 끼워넣기 허용 */
-    grid-auto-rows: minmax(160px, auto); /* ✅ 자동 높이 늘어남 */
   }
   
   /* ✅ 박스 공통 */
@@ -197,3 +196,19 @@
   }
 
   
+  .grid-item.big {
+    display: block;
+    height: auto !important;
+    overflow: visible;
+    grid-row: auto / span 999; /* ✅ 원하는 만큼 크게 보장 */
+  }
+
+  .mobile-board-list {
+    display: block;
+    width: 100%;
+    height: auto !important;
+    overflow: visible;
+    padding: 1rem;
+    background: #1a1a1a;
+    border-radius: 12px;
+  }
