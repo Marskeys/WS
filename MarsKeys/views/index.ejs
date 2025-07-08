@@ -10,51 +10,55 @@
   <%- include('partials/header') %>
 
   <main class="grid-container">
-<!-- ✅ 유튜브 캐러셀 (가장 큰 ultra 박스, 상하 여백 빨간색) -->
-<div class="box ultra youtube-carousel">
-  <div class="youtube-label">YouTube</div>
-  <div class="carousel-track">
-    <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" allowfullscreen></iframe>
-    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-    <iframe src="https://www.youtube.com/embed/3tmd-ClpJxA" allowfullscreen></iframe>
-  </div>
-</div>
+    <!-- ✅ 유튜브 캐러셀 (가로로 긴 박스) -->
+    <div class="box wide youtube-carousel">
+      <div class="youtube-label">YouTube</div>
+      <div class="carousel-track">
+        <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/3tmd-ClpJxA" allowfullscreen></iframe>
+      </div>
+    </div>
 
-<!-- ✅ 더 작고 균형 잡힌 사운드클라우드 박스 -->
-<div class="box large soundcloud-box">
-  <div class="sc-label">SoundCloud</div>
-  <iframe 
-    width="100%" 
-    height="120" 
-    scrolling="no" 
-    frameborder="no" 
-    allow="autoplay" 
-    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/308181181&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
-  </iframe>
-</div>
+    <!-- ✅ 사운드클라우드 박스 (세로로 긴 박스) -->
+    <div class="box vertical soundcloud-box">
+      <div class="sc-label">SoundCloud</div>
+      <iframe 
+        width="100%" 
+        height="166" 
+        scrolling="no" 
+        frameborder="no" 
+        allow="autoplay" 
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/308181181&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+      </iframe>
+    </div>
 
-    <!-- ✅ 아주 큰 박스 2~3개 -->
-    <div class="box xlarge">🎥 Video Lab</div>
-    <div class="box xlarge">🧪 Experimental FX</div>
-
-    <!-- ✅ 큰 박스들 -->
-    <div class="box large">🎹 Music Tools</div>
-    <div class="box large">🎼 Composer's Room</div>
-    <div class="box large">🖥️ Synth Lab</div>
-
-    <!-- ✅ 중간 박스들 -->
-    <div class="box medium">📚 Music Theory</div>
+    <!-- ✅ 다양한 높이의 일반 박스들 -->
+    <div class="box tall">🎥 Video Lab</div>
+    <div class="box medium">🧪 Experimental FX</div>
+    <div class="box tall">🎼 Composer's Room</div>
     <div class="box medium">🧠 Brain Games</div>
-    <div class="box medium">📈 Analyzer</div>
+    <div class="box short">📚 Music Theory</div>
+    <div class="box short">🎮 Mini Games</div>
     <div class="box medium">📤 Upload Zone</div>
+    <div class="box short">📷 Visual FX</div>
     <div class="box medium">🪐 Composition FX</div>
-
-    <!-- ✅ 아주 소수의 기본 박스 -->
-    <div class="box">🎮 Mini Games</div>
-    <div class="box">🔊 Audio FX</div>
-    <div class="box">🧬 Sound Design</div>
-    <div class="box">🧩 Puzzles</div>
-    <div class="box">📷 Visual FX</div>
+    <div class="box tall">🧬 Sound Design</div>
+    <div class="box short">🔊 Audio FX</div>
+    <div class="box medium">📈 Analyzer</div>
+    <div class="box short">🧩 Puzzles</div>
   </main>
+
+  <!-- ✅ Masonry CDN + 초기화 스크립트 -->
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      new Masonry('.grid-container', {
+        itemSelector: '.box',
+        gutter: 16,          // 박스 사이 여백
+        fitWidth: true       // 가운데 정렬
+      });
+    });
+  </script>
 </body>
 </html>

@@ -26,11 +26,7 @@
   
   /* ✅ 반응형 박스 그리드 */
   .grid-container {
-    display: grid;
-    gap: 1rem;               /* ✅ 간격을 넉넉하게! */
-    padding: 1.5rem 1rem;    /* ✅ 화면 여백도 살짝 */
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    grid-auto-flow: dense;
+    padding: 1rem;
     box-sizing: border-box;
   }
   
@@ -150,3 +146,21 @@
     font-family: 'Segoe UI', sans-serif;
     color: white;
   }
+
+  /* Masonry용 박스 높이 클래스 */
+.box.short {
+    height: 150px;
+  }
+  .box.medium {
+    height: 240px;
+  }
+  .box.tall {
+    height: 360px;
+  }
+  .box.wide {
+    height: 200px; /* 유튜브용: 넓은 가로 느낌 */
+  }
+  .box.vertical {
+    height: 420px; /* 사운드클라우드용: 세로 느낌 */
+  }
+  
