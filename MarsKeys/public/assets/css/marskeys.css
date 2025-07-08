@@ -106,3 +106,9 @@
       grid-row: span 2;
     }
   }
+
+  @media (max-width: 767px) {
+    .tall, .wide, .big {
+      min-width: 50%; /* ✅ 강제로 너비 확보해 옆에 못 붙게 */
+    }
+  }
