@@ -1,47 +1,53 @@
-/* 기본 설정 */
 body {
     margin: 0;
     padding: 2rem;
     background: #111;
     font-family: sans-serif;
+    color: #fff;
   }
   
   /* 그리드 컨테이너 */
   .grid {
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
   }
   
-  /* 박스 공통 */
-  .box {
-    background: #444;
-    color: #fff;
+  /* 그리드 사이저 (기준 열 너비) */
+  .grid-sizer {
+    width: 20%;
+  }
+  
+  /* 박스 공통 스타일 */
+  .grid-item {
+    background: #333;
+    border-radius: 8px;
     margin-bottom: 10px;
-    border-radius: 10px;
     transition: transform 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
   }
   
-  /* 크기 클래스 */
-  .tall { height: 300px; width: 200px; }
-  .wide { height: 150px; width: 400px; }
-  .square { height: 200px; width: 200px; }
-  .small { height: 100px; width: 150px; }
-  .big { height: 300px; width: 300px; }
+  /* 다양한 박스 높이 */
+  .grid-item.tall { height: 300px; }
+  .grid-item.wide { height: 150px; width: 60%; }
+  .grid-item.square { height: 200px; }
+  .grid-item.small { height: 100px; }
+  .grid-item.big { height: 300px; width: 60%; }
   
-  /* 기본 박스 (예: Normal) */
-  .box:not(.tall):not(.wide):not(.square):not(.small):not(.big) {
-    height: 180px;
-    width: 220px;
+  /* 기본 박스 크기 (column 기준) */
+  .grid-item {
+    width: 20%;
+    min-height: 150px;
   }
   
   /* 호버 효과 */
-  .box:hover {
+  .grid-item:hover {
     transform: scale(1.05);
-    z-index: 2;
+    z-index: 1;
   }
   
