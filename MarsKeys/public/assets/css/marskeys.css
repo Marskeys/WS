@@ -73,33 +73,35 @@
   .box.ultra.youtube-carousel {
     grid-column: span 4;
     grid-row: span 3;
-    background: #ff0000;
+    background: #ff0000; /* 위아래 여백 빨간색 */
     display: flex;
     flex-direction: column;
+    padding: 1rem 0;
     overflow: hidden;
   }
   
   .youtube-label {
-    padding: 0.5rem 1rem;
     color: white;
-    font-weight: bold;
     font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0 1rem 0.5rem;
     font-family: 'Segoe UI', sans-serif;
   }
   
-  .youtube-list {
-    flex: 1;
-    overflow-y: auto; /* ✅ 세로 스크롤 허용 */
-    padding: 1rem;
+  .carousel-track {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-behavior: smooth;
     gap: 1rem;
+    padding: 0 1rem 1rem;
   }
   
-  .youtube-list iframe {
-    width: 100%;
+  .carousel-track iframe {
+    flex: 0 0 auto;
+    width: 400px;
     aspect-ratio: 16 / 9;
-    border: none;
     border-radius: 10px;
+    border: none;
   }
   
