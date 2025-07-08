@@ -49,15 +49,13 @@
     grid-row: span 1;
   }
   
-  /* ✅ 유튜브 캐러셀 */
   .youtube-carousel {
-    grid-column: 1 / -1; /* 전체 가로 차지 */
+    grid-column: 1 / -1;
     background: #000;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: auto;
   }
   
   .carousel-track {
@@ -68,18 +66,19 @@
     padding: 1rem;
     width: 100%;
     max-width: 100%;
-    justify-content: center;
+    aspect-ratio: 16 / 9;  /* ✅ 상하 비율 고정 */
   }
   
   .carousel-track iframe {
     flex: 0 0 auto;
-    width: 100%;
-    max-width: 500px;
-    aspect-ratio: 16 / 9;
+    height: 100%;           /* ✅ 부모의 높이에 맞추기 */
+    width: auto;
+    min-width: 300px;
     border: none;
     border-radius: 12px;
     scroll-snap-align: center;
     background: #111;
+    object-fit: contain;    /* ✅ 가로세로 안 잘리게 */
   }
   
   /* ✅ 모바일 대응 */
