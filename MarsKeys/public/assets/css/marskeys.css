@@ -64,10 +64,10 @@
   }
   
  /* 리본 */
-.corner-ribbon {
+ .corner-ribbon {
     position: absolute;
     top: 12px;
-    right: -40px; /* 중심축 회전 대비해서 당김 */
+    right: -40px;
     width: 150px;
     background: #ff0000;
     color: white;
@@ -76,8 +76,9 @@
     font-weight: bold;
     padding: 4px 0;
     padding-left: 16px;
-    transform: rotate(45deg);
-    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+    transform: rotate(45deg) translateY(-2px); /* ← 살짝 위로 띄움 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* ← 진하고 멀리 퍼지는 그림자 */
+    outline: 1px solid rgba(255, 255, 255, 0.2); /* ← 빛이 반사되는 듯한 라인 */
     z-index: 20;
     letter-spacing: 1px;
   }
