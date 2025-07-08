@@ -181,14 +181,31 @@
     top: 12px;
     right: -40px;
     width: 150px;
-    background: #ff3300;
+    height: 24px;
+    background: #ff5500;
     color: white;
-    text-align: left;
-    padding: 4px 0 4px 12px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    overflow: hidden;
+    padding: 0;
     transform: rotate(45deg);
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
     z-index: 20;
+  }
+  
+  .sc-scroll {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%; /* 시작 위치 바깥으로 */
+    animation: scroll-left 6s linear infinite;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  @keyframes scroll-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
   }
