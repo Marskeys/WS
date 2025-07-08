@@ -73,7 +73,7 @@
   .box.ultra.youtube-carousel {
     grid-column: span 4;
     grid-row: span 3;
-    background: #ff0000; /* 위아래 여백 빨간색 */
+    background: #ff0000;
     display: flex;
     flex-direction: column;
     padding: 1rem 0;
@@ -91,17 +91,21 @@
   .carousel-track {
     display: flex;
     flex-direction: row;
-    overflow-x: auto;
+    overflow-x: auto;            /* ✅ 가로 스크롤 허용 */
+    overflow-y: hidden;
     scroll-behavior: smooth;
     gap: 1rem;
     padding: 0 1rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
   }
   
+  /* 실제로 스크롤 생기게 하려면 최소 너비가 있어야 해 */
   .carousel-track iframe {
-    flex: 0 0 auto;
-    width: 400px;
+    flex: 0 0 400px;             /* ✅ 고정 너비 필수! */
     aspect-ratio: 16 / 9;
     border-radius: 10px;
     border: none;
+    background: #000;
   }
   
