@@ -1,4 +1,3 @@
-/* ✅ 기본 설정 */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -12,21 +11,21 @@
     color: #fff;
   }
   
-  /* ✅ Poki 스타일 그리드 */
+  /* ✅ 반응형 CSS Grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-auto-rows: 160px; /* 기본 박스 높이 단위 */
     gap: 15px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
   }
   
-  /* ✅ 카드 스타일 */
+  /* ✅ 박스 공통 스타일 */
   .grid-item {
     background: #222;
     border-radius: 12px;
-    aspect-ratio: 1 / 1; /* ✅ 정사각형 유지 */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -36,11 +35,39 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.4);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    overflow: hidden;
+  }
+  
+  /* ✅ 다양한 크기 조합 */
+  .grid-item.small {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+  
+  .grid-item.tall {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+  
+  .grid-item.wide {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  
+  .grid-item.big {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  
+  /* 기본 박스 */
+  .grid-item:not(.small):not(.tall):not(.wide):not(.big) {
+    grid-column: span 1;
+    grid-row: span 1;
   }
   
   /* ✅ 호버 반응 */
   .grid-item:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     z-index: 1;
   }
