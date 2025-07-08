@@ -21,19 +21,18 @@
 
     <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
     <script>
-      function runMasonry() {
+      function initMasonry() {
         new Masonry('.grid', {
           itemSelector: '.grid-item',
           columnWidth: '.grid-sizer',
           gutter: 10,
-          percentPosition: true
+          percentPosition: false // ✅ calc(vw) 쓸 땐 false
         });
       }
     
-      window.addEventListener('load', runMasonry);
-      window.addEventListener('resize', () => {
-        runMasonry(); // 💡 화면 크기 바뀔 때마다 Masonry 다시 적용
-      });
+      window.addEventListener('load', initMasonry);
+      window.addEventListener('resize', initMasonry); // 리사이즈에도 재실행
     </script>
+    
   </body>
 </html>

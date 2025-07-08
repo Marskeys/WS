@@ -12,10 +12,8 @@
     color: #fff;
   }
   
-  /* ✅ Masonry 그리드 */
   .grid {
-    max-width: 1280px;
-    min-width: 420px; /* ✅ 최소 2열 강제 확보 */
+    max-width: 100vw;
     margin: 0 auto;
     position: relative;
     padding: 1rem;
@@ -23,16 +21,14 @@
   
   /* Masonry 열 기준 */
   .grid-sizer {
-    width: 50%;
+    width: calc(50vw - 15px); /* ✅ 한 줄에 두 칸 정확히 맞춤 */
     height: 0;
     display: block;
     visibility: hidden;
-    min-width: 180px;
   }
   
   .grid-item {
-    width: 50%;
-    min-width: 180px;
+    width: calc(50vw - 15px); /* ✅ 한 줄에 두 칸 */
     margin-bottom: 10px;
     background: #333;
     border-radius: 10px;
@@ -46,28 +42,14 @@
     text-align: center;
   }
   
-  /* ✅ 높이 다양하게 */
+  /* 높이 다양하게 */
   .grid-item.small { height: 150px; }
   .grid-item.tall { height: 300px; }
   .grid-item.big { height: 400px; }
   
-  /* ✅ 호버 효과 */
+  /* 호버 */
   .grid-item:hover {
     transform: scale(1.05);
     z-index: 2;
-  }
-  
-  /* ✅ 큰 화면에서 열 수 늘리기 */
-  @media (min-width: 768px) {
-    .grid-sizer,
-    .grid-item {
-      width: 33.333%;
-    }
-  }
-  @media (min-width: 1024px) {
-    .grid-sizer,
-    .grid-item {
-      width: 25%;
-    }
   }
   
