@@ -52,12 +52,12 @@
   
   .youtube-carousel {
     grid-column: 1 / -1;
-    grid-row: span 2;
     background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: stretch; /* ✅ 부모 높이 다 채우도록 */
     padding: 0;
+    display: flex;
+    grid-row: span 2; /* ✅ 두 칸 높이 차지 */
+    justify-content: center;
+    align-items: stretch; /* ← 위아래 꽉 채워지게 */
   }
   
   .carousel-track {
@@ -67,22 +67,23 @@
     scroll-snap-type: x mandatory;
     padding: 1rem;
     width: 100%;
-    height: 100%; /* ✅ 그리드 셀 높이를 다 채움 */
+    max-width: 100%;
   }
   
-  /* ✅ 비율 박스 안에서도 높이 꽉 채우기 */
+  /* ✅ 정석적인 비율 박스 */
   .video-wrapper {
     position: relative;
     flex: 0 0 auto;
     width: 100%;
     max-width: 500px;
-    height: 100%;           /* ✅ 핵심! */
+    aspect-ratio: 16 / 9;
     scroll-snap-align: center;
     background: #000;
     border-radius: 12px;
     overflow: hidden;
   }
   
+  /* ✅ iframe 꽉 채우기 */
   .video-wrapper iframe {
     position: absolute;
     top: 0;
