@@ -182,14 +182,17 @@
   
   
   .board-wrapper {
-    background-color: #1a1a1a;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    overflow-x: auto;
-    max-height: none;        /* ✅ 높이 제한 해제 */
-    height: auto !important; /* ✅ 강제 자동 확장 */
-    grid-row: span 2;        /* ✅ 필요시 아래줄까지 넓히기 */
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #fd0e0e, #8b1e2b, #fd0e0e);
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    grid-row: span 2; /* ✅ 두 칸 높이 차지 */
+    justify-content: center;
+    align-items: stretch; /* ← 위아래 꽉 채워지게 */
+  
+    border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
 /* 테이블이 너무 커지지 않게 */
 .board-table {
