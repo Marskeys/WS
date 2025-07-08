@@ -72,3 +72,50 @@
     z-index: 1;
   }
   
+  /* ✅ 유튜브 캐러셀 박스: 기본적으로 넓고 높게 */
+.youtube-carousel {
+    grid-column: span 2;
+    grid-row: span 2;
+    background: #000;
+    overflow: hidden;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ✅ 캐러셀 트랙 */
+  .carousel-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 1rem;
+    width: 100%;
+  }
+  
+  .carousel-track iframe {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 16 / 9;
+    border: none;
+    border-radius: 12px;
+    scroll-snap-align: center;
+    background: #111;
+  }
+  
+  /* ✅ 모바일일 때는 100% 너비, 데스크탑일 때는 절반 */
+  @media (max-width: 767px) {
+    .youtube-carousel {
+      grid-column: span 2 !important; /* 전체폭 */
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .youtube-carousel {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+  }
+  
