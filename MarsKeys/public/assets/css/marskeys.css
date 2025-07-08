@@ -128,3 +128,25 @@
     }
   }
   
+  .box.soundcloud-box {
+    background: linear-gradient(135deg, #ff7700, #ff4400);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 1rem;
+    overflow: hidden;
+  }
+  
+  .box.soundcloud-box:hover {
+    background: linear-gradient(135deg, #ff9933, #ff5500);
+    transform: scale(1.03);
+  }
+  
+  .sc-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+  }
