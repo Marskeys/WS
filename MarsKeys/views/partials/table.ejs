@@ -1,0 +1,145 @@
+<!-- 🔳 데스크탑용 게시판 -->
+<table class="board-table desktop-only">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>카테고리</th>
+        <th>날짜</th>
+        <th>조회수</th>
+      </tr>
+    </thead>
+    <tbody id="board-content">
+      <% posts.forEach(post => { %>
+        <tr>
+          <td><%= post.id %></td>
+          <td>
+            <div class="post-title-and-actions">
+              <a href="/post/<%= post.id %>" class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>">
+                <% 
+                  const now = new Date();
+                  const createdAt = new Date(post.created_at);
+                  const updatedAt = new Date(post.updated_at);
+                  const isNew = (now - createdAt) < 86400000;
+                  const isEdited = updatedAt > createdAt && (now - updatedAt) < 86400000;
+                %>
+                <% if (isEdited) { %><span class="label-icon edited-icon"></span>
+                <% } else if (isNew) { %><span class="label-icon new-icon"></span>
+                <% } %>
+                <% if (post.is_pinned) { %>📌 <% } %>
+                <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+              </a>
+              <% if (user && user.id === post.user_id) { %>
+                <div class="action-icons">
+                  <a href="/edit/<%= post.id %>" class="icon-btn"><i class="fas fa-pen"></i></a>
+                  <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                    <button type="submit" class="icon-btn"><i class="fas fa-trash"></i></button>
+                  </form>
+                </div>
+              <% } %>
+            </div>
+          </td>
+          <td><%= post.author %></td>
+          <td><%= post.categories %></td>
+          <td><%= post.created_at.toISOString().slice(0, 10) %></td>
+          <td><%= post.views %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  
+  <!-- 🔳 데스크탑 페이지네이션 -->
+  <% if (pagination.total > 1) { %>
+    <div class="pagination pagination-bottom desktop-only">
+      <% if (pagination.current > 1) { %>
+        <a href="?page=1" class="page-link">«</a>
+        <a href="?page=<%= pagination.current - 1 %>" class="page-link">‹</a>
+      <% } else { %>
+        <span class="page-link disabled">«</span>
+        <span class="page-link disabled">‹</span>
+      <% } %>
+  
+      <% pagination.range.forEach(p => { %>
+        <% if (p === '...') { %>
+          <span class="page-ellipsis">…</span>
+        <% } else { %>
+          <a href="?page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+        <% } %>
+      <% }) %>
+  
+      <% if (pagination.current < pagination.total) { %>
+        <a href="?page=<%= pagination.current + 1 %>" class="page-link">›</a>
+        <a href="?page=<%= pagination.total %>" class="page-link">»</a>
+      <% } else { %>
+        <span class="page-link disabled">›</span>
+        <span class="page-link disabled">»</span>
+      <% } %>
+    </div>
+  <% } %>
+  
+  <!-- 📱 모바일 게시판 -->
+  <div class="mobile-board-list mobile-only">
+    <% posts.forEach(post => { %>
+      <div class="mobile-post-item">
+        <div class="post-title-and-actions">
+          <span class="post-id">#<%= post.id %></span>
+          <% if (post.is_pinned) { %><span class="pinned-icon">📌</span><% } %>
+          <a href="/post/<%= post.id %>" class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>">
+            <% 
+              const now = new Date();
+              const createdAt = new Date(post.created_at);
+              const updatedAt = new Date(post.updated_at);
+              const isNew = (now - createdAt) < 86400000;
+              const isEdited = updatedAt > createdAt && (now - updatedAt) < 86400000;
+            %>
+            <% if (isEdited) { %><span class="label-icon edited-icon"></span>
+            <% } else if (isNew) { %><span class="label-icon new-icon"></span>
+            <% } %>
+            <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+          </a>
+          <% if (user && user.id === post.user_id) { %>
+            <div class="action-icons">
+              <a href="/edit/<%= post.id %>" class="icon-btn"><i class="fas fa-pen"></i></a>
+              <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                <button type="submit" class="icon-btn"><i class="fas fa-trash"></i></button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+        <div class="post-info">
+          <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.categories %>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+  
+  <!-- 📱 모바일 페이지네이션 -->
+  <% if (pagination.total > 1) { %>
+    <div class="pagination pagination-mobile mobile-only">
+      <% if (pagination.current > 1) { %>
+        <a href="?page=1" class="page-link">«</a>
+        <a href="?page=<%= pagination.current - 1 %>" class="page-link">‹</a>
+      <% } else { %>
+        <span class="page-link disabled">«</span>
+        <span class="page-link disabled">‹</span>
+      <% } %>
+  
+      <% pagination.range.forEach(p => { %>
+        <% if (p === '...') { %>
+          <span class="page-ellipsis">…</span>
+        <% } else { %>
+          <a href="?page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+        <% } %>
+      <% }) %>
+  
+      <% if (pagination.current < pagination.total) { %>
+        <a href="?page=<%= pagination.current + 1 %>" class="page-link">›</a>
+        <a href="?page=<%= pagination.total %>" class="page-link">»</a>
+      <% } else { %>
+        <span class="page-link disabled">›</span>
+        <span class="page-link disabled">»</span>
+      <% } %>
+    </div>
+  <% } %>
+  

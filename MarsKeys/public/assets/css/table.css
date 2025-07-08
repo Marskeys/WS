@@ -1,0 +1,106 @@
+.board-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  
+  .board-table th, .board-table td {
+    padding: 0.65rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .board-table th {
+    background-color: #fafafa;
+    text-align: center;
+    color: #333;
+  }
+  
+  .post-title-and-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .action-icons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    font-size: 1.1rem;
+  }
+  
+  .icon-btn:hover {
+    color: #d9534f;
+  }
+  
+  /* 📱 모바일 게시판 */
+  .mobile-board-list {
+    display: none;
+  }
+  
+  @media (max-width: 640px) {
+    .board-table {
+      display: none;
+    }
+  
+    .mobile-board-list {
+      display: block;
+      padding: 1rem 0.5rem;
+    }
+  
+    .mobile-post-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #ccc;
+    }
+  
+    .mobile-post-item .post-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #333;
+      text-decoration: none;
+      display: block;
+    }
+  
+    .mobile-post-item .post-info {
+      font-size: 0.7rem;
+      color: #777;
+    }
+  }
+  
+  /* 페이지네이션 공통 */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 1.2rem 0;
+    font-size: 0.85rem;
+  }
+  
+  .page-link {
+    padding: 0.4rem 0.7rem;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .page-link.active {
+    background: #ff99cc;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .page-link.disabled {
+    pointer-events: none;
+    background: #eee;
+    color: #999;
+  }
+  
