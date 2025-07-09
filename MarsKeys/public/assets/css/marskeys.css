@@ -318,9 +318,8 @@ body::-webkit-scrollbar {
     width: 100%;
     height: auto !important;
     overflow: visible;
-    padding: 1rem;
+    padding: 2rem;
     background: black;
-    z-index:0;
     /* border-radius: 12px; */
   
     /* ✅ 얇은 경계선 추가 */
