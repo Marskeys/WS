@@ -94,7 +94,6 @@
 
   
   .carousel-track {
-    border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
     display: flex;
     gap: 10px;
     overflow-x: auto;
@@ -113,6 +112,7 @@
     background: #000;
     flex: 0 0 auto;
     border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
   
   .video-thumbnail {
