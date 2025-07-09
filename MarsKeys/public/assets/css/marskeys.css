@@ -77,13 +77,15 @@ display: none;
   align-items: center;
   overflow: hidden;
   padding: 1rem 0;
-  /* height: auto;  이전 설정 제거 */
+  /* height: auto; 이전 설정 제거 */
   position: relative;
   background: black;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  /* ✅ 뷰포트 너비에 따라 유동적으로 최소 높이 설정 */
-  min-height: 20vw; /* 이 값을 조절하여 원하는 최소 높이 감을 찾으세요 */
-  max-height: 500px; /* 너무 커지는 것을 방지 (선택 사항) */
+  /* ✅ 캐러셀 전체 컨테이너 높이 설정. 뷰포트 높이 또는 고정px 중 선택 */
+  /* 현재 grid-row: span 3; 이므로 이미 높이가 어느정도 확보되어 있음. */
+  /* 여기서는 flexbox의 align-items: center가 제대로 작동하도록 min-height를 줍니다. */
+  min-height: 300px; /* 데스크톱에서 최소 높이, 필요에 따라 조절 (vh 사용 가능) */
+  /* min-height: 40vh; */ /* 뷰포트 높이에 비례하여 유연하게 조절 */
 }
 
 .carousel-track {
@@ -94,41 +96,28 @@ display: none;
   padding: 0 1rem;
   margin: 0;
   width: 100%;
-  /* height: 100%; 이전 설정 제거 */
-  /* ✅ flex 아이템이 콘텐츠에 맞춰 높이를 결정하도록 */
-  height: auto; 
-  -webkit-overflow-scrolling: touch; /* 기존 속성 유지 */
+  height: 100%; /* 부모 .youtube-carousel의 높이를 채우도록 */
+  -webkit-overflow-scrolling: touch;
 }
 
 .video-wrapper {
   flex: 0 0 auto;
-  width: 80vw;
-  max-width: 500px;
-  /* aspect-ratio: 16 / 9 !important; 대신 padding-top 사용 */
-  height: 0; /* 실제 높이는 padding-top으로 제어 */
-  padding-top: calc(80vw * 9 / 16); /* width: 80vw에 대한 16:9 비율 높이 */
-  position: relative; /* 내부 iframe의 absolute 포지셔닝을 위한 기준 */
+  width: 100%; /* ✅ 부모의 100% 너비를 차지하도록 변경 */
+  max-width: 500px; /* ✅ 최대 너비는 500px로 제한 */
+  aspect-ratio: 16 / 9; /* ✅ 이 속성으로 16:9 비율을 유지합니다. */
+  /* !important는 일반적으로 불필요하며 다른 CSS와 충돌 가능성을 높입니다. 제거했습니다. */
   scroll-snap-align: center;
   border-radius: 12px;
   overflow: hidden;
   background: #000;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-/* video-wrapper의 max-width가 적용될 때 padding-top 값 조정 */
-/* (500px / 0.8) = 625px (80vw가 500px이 되는 뷰포트 너비) */
-@media (min-width: 625px) {
-  .video-wrapper {
-    padding-top: calc(500px * 9 / 16); /* max-width인 500px에 대한 16:9 비율 높이 */
-  }
+  border: 1px solid rgba(255, 255, 255, 0.4);            /* ← 명시적 지정 */
+  /* padding-top과 height: 0;은 aspect-ratio가 지원되는 브라우저에서는 필요 없습니다. */
+  /* padding-top은 aspect-ratio가 잘 작동하지 않을 때의 대체 방식입니다. */
 }
 
 .yt-player {
-  position: absolute; /* 부모 video-wrapper에 맞춰 배치 */
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%; /* 부모 video-wrapper의 패딩으로 인한 높이를 꽉 채움 */
+  height: 100%; /* ✅ video-wrapper의 16:9 비율 높이를 꽉 채우도록 */
   z-index: 1;
 }
 /* ✅ 유튜브 캐러셀 관련 수정 끝 */
@@ -139,9 +128,8 @@ display: none;
   .youtube-carousel {
     padding-bottom: 0 !important; /* 💥 바닥 여백 제거 */
     margin-bottom: 0 !important;
-    height: auto !important;
-    min-height: unset; /* 모바일에서는 최소 높이 제한 해제 */
-    max-height: unset; /* 모바일에서는 최대 높이 제한 해제 */
+    height: auto !important; /* 모바일에서는 auto 유지 */
+    min-height: unset; /* ✅ 모바일에서는 최소 높이 제한 해제 */
   }
 
   .carousel-track {
@@ -151,15 +139,14 @@ display: none;
   }
 
   .video-wrapper {
-    width: 90vw;
-    max-width: 100%;
-    /* aspect-ratio: 16 / 9; 대신 padding-top 사용 */
-    height: 0; /* 패딩 탑으로 높이 제어 */
-    padding-top: calc(90vw * 9 / 16); /* width: 90vw에 대한 16:9 비율 높이 */
+    width: 90vw; /* ✅ 모바일에서는 90vw 너비 사용 */
+    max-width: 100%; /* ✅ 모바일에서는 최대 너비를 100%로 설정하여 넘침 방지 */
+    aspect-ratio: 16 / 9; /* ✅ 16:9 비율 유지 */
+  }
+  .carousel-track iframe {
+    max-width: 100%; /* 이 속성은 video-wrapper가 처리하므로 굳이 필요없지만 유지 */
   }
 }
-
-
 
 
 /* 리본 */
@@ -176,13 +163,38 @@ display: none;
   padding: 4px 0;
   padding-left: 16px;
   transform: rotate(45deg) translateY(-2px); /* ← 살짝 위로 띄움 */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* ← 진하고 멀리 퍼지는 그림자 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5); /* ← 진하고 멀리 퍼지는 그림자 */
   outline: 1px solid rgba(255, 255, 255, 0.2); /* ← 빛이 반사되는 듯한 라인 */
   z-index: 20;
   letter-spacing: 1px;
 }
 
 
+
+
+
+.carousel-track {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0rem;
+  margin: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.video-wrapper {
+  position: relative;
+  /* width: 80vw; 이전에 수정된 부분은 이 위에서 처리 */
+  /* max-width: 500px; 이전에 수정된 부분은 이 위에서 처리 */
+  /* aspect-ratio: 16 / 9; 이전에 수정된 부분은 이 위에서 처리 */
+  scroll-snap-align: center;
+  overflow: hidden;
+  background: #000;
+  flex: 0 0 auto;
+  /* border-radius: 12px; */
+  border: 1px solid rgb(94, 92, 92); /* ✅ 얇은 하얀 경계선 */
+}
 
 .video-thumbnail {
   position: absolute;
@@ -226,9 +238,11 @@ display: none;
 
 /* ✅ 모바일 대응 */
 @media (max-width: 767px) {
-  .carousel-track iframe {
-    max-width: 100%;
-  }
+  /*.youtube-carousel {
+    grid-row: auto !important;
+    height: auto !important;
+  }*/
+
 }
 
 @media (max-width: 767px) {
