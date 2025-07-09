@@ -210,12 +210,14 @@ balls.forEach((ball, i) => {
 });
 
 function createTrail(x, y, color) {
+  const radius = 3; // 공 크기의 반
+
   const trail = document.createElement('div');
   trail.style.position = 'absolute';
-  trail.style.left = `${x}px`;
-  trail.style.top = `${y}px`;
-  trail.style.width = '2px'; // 아주 얇게
-  trail.style.height = '2px'; // 정중앙만 따라가게
+  trail.style.left = `${x + radius}px`;
+  trail.style.top = `${y + radius}px`;
+  trail.style.width = '2px';
+  trail.style.height = '2px';
   trail.style.borderRadius = '50%';
   trail.style.background = color;
   trail.style.opacity = '0.6';
@@ -225,13 +227,11 @@ function createTrail(x, y, color) {
 
   document.body.appendChild(trail);
 
-  // 자연스럽게 사라지게
   requestAnimationFrame(() => {
     trail.style.opacity = '0';
     trail.style.transform = 'scale(0.2)';
   });
 
-  // 제거
   setTimeout(() => {
     trail.remove();
   }, 600);
