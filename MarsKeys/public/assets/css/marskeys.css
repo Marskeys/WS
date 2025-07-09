@@ -106,12 +106,6 @@ body::-webkit-scrollbar {
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
 
-  @supports (-webkit-touch-callout: none) {
-    .video-wrapper {
-      height: 100%;
-      aspect-ratio: unset;
-      position: relative;
-    }
     
     .video-wrapper::before {
       content: "";
@@ -562,3 +556,11 @@ body::-webkit-scrollbar {
   width: 2px;
   height: 60px;
 }
+
+
+@supports (-webkit-touch-callout: none) {
+  .video-wrapper {
+    height: 100%;
+    aspect-ratio: unset;
+    position: relative;
+  }
