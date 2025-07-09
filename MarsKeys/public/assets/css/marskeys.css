@@ -419,10 +419,10 @@
   
   .orbit-ball {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    opacity: 0.85;
+    opacity: 0.75;
     transition: transform 0.1s linear;
   }
   
@@ -432,8 +432,8 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    filter: blur(4px);
-    opacity: 0.4;
+    filter: blur(3px);
+    opacity: 0.2;
     animation: trail 1s infinite;
     pointer-events: none;
   }
