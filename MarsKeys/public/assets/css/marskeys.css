@@ -83,7 +83,7 @@
     max-width: 500px;
     aspect-ratio: 16 / 9;
     scroll-snap-align: center;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     overflow: hidden;
     background: #000;
     border: 1px solid rgba(255, 255, 255, 0.4);
@@ -154,7 +154,7 @@
     overflow: hidden;
     background: #000;
     flex: 0 0 auto;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
   
@@ -268,7 +268,7 @@
 
   .soundcloud-box {
     position: relative;
-    border-radius: 12px;
+    /* border-radius: 12px; */
     overflow: hidden;
     box-shadow: 0 0 8px rgba(0,0,0,0.4);
     background: #ffffff; /* 로딩 중 배경 */
@@ -305,7 +305,7 @@
     overflow: visible;
     padding: 1rem;
     background: #1a1a1a;
-    border-radius: 12px;
+    /* border-radius: 12px; */
   
     /* ✅ 얇은 경계선 추가 */
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -344,7 +344,7 @@
     white-space: normal;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
+    /* border-radius: 12px; */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     font-family: 'Segoe UI', sans-serif;
   }
