@@ -74,10 +74,7 @@
     display: none;                /* WebKit 브라우저 (크롬, 사파리 등) */
   }
 
-  .youtube-carousel {
-    grid-row: auto !important;
-    height: auto !important;
-  }
+ 
 
  /* 리본 */
  .corner-ribbon {
@@ -137,6 +134,12 @@
     .carousel-track iframe {
       max-width: 100%;
     }
+
+    .youtube-carousel {
+      grid-row: auto !important;
+      height: auto !important;
+    }
+    
   }
   
   @media (max-width: 767px) {
