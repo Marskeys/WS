@@ -84,175 +84,185 @@
     </main>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-      const players = {}; // player 객체 저장용
-    
-      // 유튜브 API가 로드되면 호출됨
-      function onYouTubeIframeAPIReady() {
-        document.querySelectorAll('.video-wrapper').forEach(wrapper => {
-          const videoId = wrapper.dataset.videoId;
-          const playerId = wrapper.dataset.playerId;
-    
-          players[playerId] = new YT.Player(playerId, {
-            videoId: videoId,
-            playerVars: {
-              autoplay: 0,
-              rel: 0,
-              playsinline: 1
-            },
-            events: {
-              'onReady': () => {
-                const button = wrapper.querySelector('.play-button');
-                button.addEventListener('click', () => {
-                  wrapper.querySelector('.video-thumbnail').remove();
-                  players[playerId].playVideo();
-                });
-              }
-            }
-          });
-        });
-      }
+<script>
+  const players = {}; // player 객체 저장용
 
-      const items = document.querySelectorAll('.grid-item');
-const ballContainer = document.getElementById('orbit-balls');
+  // 유튜브 API가 로드되면 호출됨
+  function onYouTubeIframeAPIReady() {
+    document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+      const videoId = wrapper.dataset.videoId;
+      const playerId = wrapper.dataset.playerId;
 
-// 공 5개, 색상 다 다르게
-const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff6600'];
-const balls = [];
-
-colors.forEach((color, i) => {
-  const ball = document.createElement('div');
-  ball.className = 'orbit-ball';
-  ball.style.background = color;
-  ball.style.zIndex = 1000 + i;
-
-  // 꼬리 색도 각 공 색으로
-  ball.style.setProperty('--glow-color', color);
-  ball.style.boxShadow = `0 0 8px ${color}, 0 0 15px ${color}`;
-  ball.style.setProperty('--glow-shadow', color);
-
-  const after = document.createElement('style');
-  document.head.appendChild(after);
-  after.sheet.insertRule(`
-    .orbit-ball:nth-child(${i + 1})::after {
-      background: ${color};
-    }
-  `);
-
-  ballContainer.appendChild(ball);
-  balls.push(ball);
-});
-
-function getBoxPath(box) {
-  const rect = box.getBoundingClientRect();
-  const style = window.getComputedStyle(box);
-  const radius = parseFloat(style.borderRadius || '0');
-
-  const basePadding = 4;
-  const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
-  const radiusFix = 3;
-
-  const x0 = rect.left + window.scrollX - basePadding + hologramFix;
-  const y0 = rect.top + window.scrollY - basePadding + hologramFix;
-  const w = rect.width + basePadding * 2 - hologramFix * 2;
-  const h = rect.height + basePadding * 2 - hologramFix * 2;
-
-  // ✅ 모든 경우에 return 해야 해!
-  const path = [
-    [x0, y0],
-    [x0 + w - radiusFix * 2, y0],
-    [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
-    [x0, y0 + h - radiusFix * 2],
-    [x0, y0]
-  ];
-
-  return path;
-}
-
-
-
-function moveBall(ball, path, next) {
-  let i = 0;
-  const steps = 120; // 더 부드럽고 천천히
-  function moveSegment() {
-    if (i >= path.length - 1) return next();
-    const [x1, y1] = path[i];
-    const [x2, y2] = path[i + 1];
-    const dx = (x2 - x1) / steps;
-    const dy = (y2 - y1) / steps;
-    let step = 0;
-
-    function stepMove() {
-      if (step <= steps) {
-        ball.style.left = (x1 + dx * step) + 'px';
-        ball.style.top = (y1 + dy * step) + 'px';
-        createTrail(x1 + dx * step, y1 + dy * step, ball.style.background);
-        step++;
-        requestAnimationFrame(stepMove);
-      } else {
-        i++;
-        moveSegment();
-      }
-    }
-
-    stepMove();
-  }
-
-  moveSegment();
-}
-
-function startLoop(ball, offset = 0) {
-  let current = offset % items.length;
-
-  function loop() {
-    const box = items[current];
-    const path = getBoxPath(box);
-    moveBall(ball, path, () => {
-      current = (current + 1) % items.length;
-      setTimeout(loop, 300);
+      players[playerId] = new YT.Player(playerId, {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 0,
+          rel: 0,
+          playsinline: 1
+        },
+        events: {
+          'onReady': () => {
+            const button = wrapper.querySelector('.play-button');
+            button.addEventListener('click', () => {
+              wrapper.querySelector('.video-thumbnail').remove();
+              players[playerId].playVideo();
+            });
+          }
+        }
+      });
     });
   }
 
-  loop();
-}
+  const items = document.querySelectorAll('.grid-item');
+  const ballContainer = document.getElementById('orbit-balls');
 
-// 시작
-balls.forEach((ball, i) => {
-  setTimeout(() => startLoop(ball, i), i * 1200); // 시간차 출발
-});
+  // 공 5개, 색상 다 다르게
+  const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff6600'];
+  const balls = [];
 
-function createTrail(x, y, color) {
-  const radius = 3; // 공의 절반 크기 (공 중심)
+  colors.forEach((color, i) => {
+    const ball = document.createElement('div');
+    ball.className = 'orbit-ball';
+    ball.style.background = color;
+    ball.style.zIndex = 1000 + i;
 
-  const trail = document.createElement('div');
-  trail.style.position = 'absolute';
-  trail.style.left = `${x + radius}px`;  // 항상 공 중심!
-  trail.style.top = `${y + radius}px`;
-  trail.style.width = '2px';
-  trail.style.height = '2px';
-  trail.style.borderRadius = '50%';
-  trail.style.background = color;
-  trail.style.opacity = '0.6';
-  trail.style.pointerEvents = 'none';
-  trail.style.zIndex = '1';
-  trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+    ball.style.setProperty('--glow-color', color);
+    ball.style.boxShadow = `0 0 8px ${color}, 0 0 15px ${color}`;
+    ball.style.setProperty('--glow-shadow', color);
 
-  document.body.appendChild(trail);
+    const after = document.createElement('style');
+    document.head.appendChild(after);
+    after.sheet.insertRule(`
+      .orbit-ball:nth-child(${i + 1})::after {
+        background: ${color};
+      }
+    `);
 
-  requestAnimationFrame(() => {
-    trail.style.opacity = '0';
-    trail.style.transform = 'scale(0.2)';
+    ballContainer.appendChild(ball);
+    balls.push(ball);
   });
 
-  setTimeout(() => {
-    trail.remove();
-  }, 600);
-}
+  function getBoxPath(box) {
+    const rect = box.getBoundingClientRect();
+    const style = window.getComputedStyle(box);
+    const basePadding = 4;
+    const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
+    const radiusFix = 3;
 
+    const x0 = rect.left + window.scrollX - basePadding + hologramFix;
+    const y0 = rect.top + window.scrollY - basePadding + hologramFix;
+    const w = rect.width + basePadding * 2 - hologramFix * 2;
+    const h = rect.height + basePadding * 2 - hologramFix * 2;
 
+    const path = [
+      [x0, y0],
+      [x0 + w - radiusFix * 2, y0],
+      [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
+      [x0, y0 + h - radiusFix * 2],
+      [x0, y0]
+    ];
 
-    </script>
-    
+    return path;
+  }
+
+  function fadeOut(ball, callback) {
+    ball.style.transition = 'opacity 0.3s ease-out';
+    ball.style.opacity = '0';
+    setTimeout(() => {
+      if (callback) callback();
+    }, 300);
+  }
+
+  function fadeIn(ball) {
+    ball.style.transition = 'opacity 0.3s ease-in';
+    ball.style.opacity = '1';
+  }
+
+  function moveBall(ball, path, next) {
+    let i = 0;
+    const steps = 120;
+
+    fadeOut(ball, () => {
+      function moveSegment() {
+        if (i >= path.length - 1) {
+          fadeIn(ball);
+          return next();
+        }
+
+        const [x1, y1] = path[i];
+        const [x2, y2] = path[i + 1];
+        const dx = (x2 - x1) / steps;
+        const dy = (y2 - y1) / steps;
+        let step = 0;
+
+        function stepMove() {
+          if (step <= steps) {
+            ball.style.left = (x1 + dx * step) + 'px';
+            ball.style.top = (y1 + dy * step) + 'px';
+            createTrail(x1 + dx * step, y1 + dy * step, ball.style.background);
+            step++;
+            requestAnimationFrame(stepMove);
+          } else {
+            i++;
+            moveSegment();
+          }
+        }
+
+        stepMove();
+      }
+
+      moveSegment();
+    });
+  }
+
+  function startLoop(ball, offset = 0) {
+    let current = offset % items.length;
+
+    function loop() {
+      const box = items[current];
+      const path = getBoxPath(box);
+      moveBall(ball, path, () => {
+        current = (current + 1) % items.length;
+        setTimeout(loop, 300);
+      });
+    }
+
+    loop();
+  }
+
+  balls.forEach((ball, i) => {
+    setTimeout(() => startLoop(ball, i), i * 1200);
+  });
+
+  function createTrail(x, y, color) {
+    const radius = 3;
+
+    const trail = document.createElement('div');
+    trail.style.position = 'absolute';
+    trail.style.left = `${x + radius}px`;
+    trail.style.top = `${y + radius}px`;
+    trail.style.width = '2px';
+    trail.style.height = '2px';
+    trail.style.borderRadius = '50%';
+    trail.style.background = color;
+    trail.style.opacity = '0.6';
+    trail.style.pointerEvents = 'none';
+    trail.style.zIndex = '1';
+    trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+
+    document.body.appendChild(trail);
+
+    requestAnimationFrame(() => {
+      trail.style.opacity = '0';
+      trail.style.transform = 'scale(0.2)';
+    });
+
+    setTimeout(() => {
+      trail.remove();
+    }, 600);
+  }
+</script>
+
     
 
 
