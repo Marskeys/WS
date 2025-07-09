@@ -435,7 +435,7 @@ body::-webkit-scrollbar {
     background-size: 300%;
     background-clip: text;
     -webkit-background-clip: text; /* 사파리 대응 */
-    color: transparent;
+    color: black;
     -webkit-text-fill-color: transparent;
     animation: hologram-text 10s linear infinite;
   }
