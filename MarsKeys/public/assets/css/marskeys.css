@@ -63,9 +63,11 @@
     align-items: stretch; /* ← 위아래 꽉 채워지게 */
   
     border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
+  }
 
-    height: auto !important;
-    align-items: flex-start !important;
+  .youtube-carousel {
+    grid-row: auto !important;
+    height: fit-content !important;
   }
   
 
