@@ -106,6 +106,12 @@ body::-webkit-scrollbar {
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
 
+  @supports (-webkit-touch-callout: none) {
+    iframe {
+      /* Safari 전용 스타일 */
+      height: 300px !important; /* 예시 */
+    }
+  }
 
 
   @media (max-width: 767px) {
