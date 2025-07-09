@@ -166,12 +166,12 @@
   .tabs-blur-left,
 .tabs-blur-right {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 5px;
+  height: 20px;  /* ✅ 원하는 높이 설정 */
+  bottom: auto;  /* ✅ 반드시 초기화해줘야 위에 덮어씀 */
   width: 20px;
   pointer-events: none;
   z-index: 1;
-  transform: translateZ(-1px); /* ✅ 시각적으로 아래로 밀어내기 */
 }
 
 .tabs-blur-left {
