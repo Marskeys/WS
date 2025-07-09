@@ -79,7 +79,19 @@ body::-webkit-scrollbar {
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
   
-  
+    /* ✅ 기본 설정 */
+    .youtube-carousel {
+  overflow: auto; /* ← 스크롤은 유지 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE, Edge */
+}
+
+/* ✅ Webkit 기반 브라우저 (Chrome, Safari 등) */
+.youtube-carousel::-webkit-scrollbar,
+.youtube-carousel::-webkit-scrollbar {
+  display: none;
+}
+
   .carousel-track {
     display: flex;
     gap: 10px;
