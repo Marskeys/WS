@@ -145,20 +145,30 @@ colors.forEach((color, i) => {
 
 function getBoxPath(box) {
   const rect = box.getBoundingClientRect();
-  const padding = 4;
-  const radius = 3; // orbit-ball의 반지름
-  const x0 = rect.left + window.scrollX - padding;
-  const y0 = rect.top + window.scrollY - padding;
-  const w = rect.width + padding * 2;
-  const h = rect.height + padding * 2;
+  const style = window.getComputedStyle(box);
+  const radius = parseFloat(style.borderRadius || '0');
 
-  return [
-    [x0, y0],                             // 좌상단
-    [x0 + w - radius * 2, y0],           // 우상단 (← 안쪽으로 살짝)
-    [x0 + w - radius * 2, y0 + h - radius * 2], // 우하단
-    [x0, y0 + h - radius * 2],           // 좌하단
-    [x0, y0]                              // 다시 시작점
-  ];
+  const basePadding = 4;
+  const hologramFix = box.classList.contains('hologram-border') ? 6 : 0; // 💡 조정치
+  const radiusFix = 3; // 공 반지름
+
+  const x0 = rect.left + window.scrollX - basePadding + hologramFix;
+  const y0 = rect.top + window.scrollY - basePadding + hologramFix;
+  const w = rect.width + basePadding * 2 - hologramFix * 2;
+  const h = rect.height + basePadding * 2 - hologramFix * 2;
+
+  // 나머지 경로 생성은 동일
+  if (radius === 0) {
+    return [
+      [x0, y0],
+      [x0 + w - radiusFix * 2, y0],
+      [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
+      [x0, y0 + h - radiusFix * 2],
+      [x0, y0]
+    ];
+  }
+
+  // radius가 있을 경우에는 원호 경로 사용 (생략 가능)
 }
 
 
