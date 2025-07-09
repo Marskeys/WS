@@ -53,7 +53,7 @@
   
   .youtube-carousel {
     grid-column: 1 / -1;
-    background: white;
+    background: transparent;
     position: relative;
     overflow: hidden;
     padding: 0;
@@ -103,8 +103,8 @@
     max-width: 500px;
     aspect-ratio: 16 / 9;
     scroll-snap-align: center;
-    background: #000;
-    /* border-radius: 12px; */
+    background: transparent;
+    border-radius: 12px;
     overflow: hidden;
   }
   
