@@ -115,20 +115,34 @@
 
       const items = document.querySelectorAll('.grid-item');
 const ballContainer = document.getElementById('orbit-balls');
-const ballCount = 5; // 여러 개의 공
-const delayBetween = 700; // 밀리초
 
-let balls = [];
+// 공 5개, 색상 다 다르게
+const colors = ['#00ffff', '#ff00ff', '#ffff00', '#00ff00', '#ff6600'];
+const balls = [];
 
-// 공 여러 개 만들기
-for (let i = 0; i < ballCount; i++) {
-  const b = document.createElement('div');
-  b.className = 'orbit-ball';
-  ballContainer.appendChild(b);
-  balls.push(b);
-}
+colors.forEach((color, i) => {
+  const ball = document.createElement('div');
+  ball.className = 'orbit-ball';
+  ball.style.background = color;
+  ball.style.zIndex = 1000 + i;
 
-// 경로 계산 함수 (시계 방향 테두리 따라감)
+  // 꼬리 색도 각 공 색으로
+  ball.style.setProperty('--glow-color', color);
+  ball.style.boxShadow = `0 0 8px ${color}, 0 0 15px ${color}`;
+  ball.style.setProperty('--glow-shadow', color);
+
+  const after = document.createElement('style');
+  document.head.appendChild(after);
+  after.sheet.insertRule(`
+    .orbit-ball:nth-child(${i + 1})::after {
+      background: ${color};
+    }
+  `);
+
+  ballContainer.appendChild(ball);
+  balls.push(ball);
+});
+
 function getBoxPath(box) {
   const rect = box.getBoundingClientRect();
   const padding = 4;
@@ -145,20 +159,19 @@ function getBoxPath(box) {
   ];
 }
 
-// 하나의 공을 path 따라 움직이기
 function moveBall(ball, path, next) {
   let i = 0;
-
+  const steps = 60; // 더 부드럽고 천천히
   function moveSegment() {
     if (i >= path.length - 1) return next();
     const [x1, y1] = path[i];
     const [x2, y2] = path[i + 1];
-    const dx = (x2 - x1) / 20;
-    const dy = (y2 - y1) / 20;
+    const dx = (x2 - x1) / steps;
+    const dy = (y2 - y1) / steps;
     let step = 0;
 
     function stepMove() {
-      if (step <= 20) {
+      if (step <= steps) {
         ball.style.left = (x1 + dx * step) + 'px';
         ball.style.top = (y1 + dy * step) + 'px';
         step++;
@@ -175,7 +188,6 @@ function moveBall(ball, path, next) {
   moveSegment();
 }
 
-// 순차적으로 각 박스를 돌게 하기
 function startLoop(ball, offset = 0) {
   let current = offset % items.length;
 
@@ -184,7 +196,7 @@ function startLoop(ball, offset = 0) {
     const path = getBoxPath(box);
     moveBall(ball, path, () => {
       current = (current + 1) % items.length;
-      setTimeout(loop, 300); // 다음 박스 이동 전 살짝 텀
+      setTimeout(loop, 300);
     });
   }
 
@@ -193,7 +205,7 @@ function startLoop(ball, offset = 0) {
 
 // 시작
 balls.forEach((ball, i) => {
-  setTimeout(() => startLoop(ball, i), i * delayBetween);
+  setTimeout(() => startLoop(ball, i), i * 1200); // 시간차 출발
 });
 
 
