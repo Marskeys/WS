@@ -295,7 +295,7 @@ body::-webkit-scrollbar {
     background: linear-gradient(135deg, #fd0e0e, #8b1e2b, #fd0e0e);
     position: relative;
     overflow: hidden;
-    padding: 0;
+    padding: 1rem;
     display: flex;
     grid-row: span 3; /* ✅ 두 칸 높이 차지 */
     justify-content: center;
@@ -318,7 +318,7 @@ body::-webkit-scrollbar {
     width: 100%;
     height: auto !important;
     overflow: visible;
-    padding: 2rem;
+    padding: 1rem;
     background: black;
     /* border-radius: 12px; */
   
