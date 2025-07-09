@@ -94,6 +94,7 @@
 
   
   .carousel-track {
+    border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
     display: flex;
     gap: 10px;
     overflow-x: auto;
@@ -306,33 +307,7 @@
   }
 
   
-  .video-thumbnail {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    aspect-ratio: 16 / 9;
-    cursor: pointer;
-    overflow: hidden;
-  }
-  
-  .thumbnail-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  
-  .play-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 64px;
-    height: 64px;
-    background: url('/assets/images/play-icon.svg') no-repeat center center;
-    background-size: contain;
-    opacity: 0.9;
-  }
+ 
 
   .video-wrapper,
 .video-thumbnail,
