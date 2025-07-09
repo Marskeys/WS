@@ -407,9 +407,36 @@
 
 
   .marskeys-intro {
-    /* border: transparent; */
+    background: linear-gradient(
+      115deg,
+      #ff00cc,
+      #3333ff,
+      #00ffff,
+      #00ff00,
+      #ffff00,
+      #ff0000,
+      #ff00cc
+    );
+    background-size: 300%;
+    background-clip: text;
+    -webkit-background-clip: text; /* 사파리 대응 */
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: hologram-text 6s linear infinite;
   }
 
+  @keyframes hologram-text {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
   #orbit-balls {
     position: absolute;
     top: 0;
