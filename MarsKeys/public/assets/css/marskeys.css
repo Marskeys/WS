@@ -422,7 +422,7 @@
     -webkit-background-clip: text; /* 사파리 대응 */
     color: transparent;
     -webkit-text-fill-color: transparent;
-    animation: hologram-text 6s linear infinite;
+    animation: hologram-text 10s linear infinite;
   }
 
   @keyframes hologram-text {
@@ -436,7 +436,7 @@
       background-position: 0% 50%;
     }
   }
-  
+
   #orbit-balls {
     position: absolute;
     top: 0;
