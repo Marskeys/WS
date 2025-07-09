@@ -139,7 +139,7 @@
       grid-row: auto !important;
       height: auto !important;
     }
-    
+
   }
   
   @media (max-width: 767px) {
@@ -257,4 +257,17 @@
     height: 100%;
     object-fit: cover; /* 이미지가 꽉 차게, 비율 맞춰 자름 */
     display: block;
+  }
+
+  .marskeys-intro {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    padding: 1.5rem;
+    text-align: center;
+    white-space: normal;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', sans-serif;
   }
