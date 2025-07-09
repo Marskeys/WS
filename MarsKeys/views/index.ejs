@@ -211,11 +211,11 @@ balls.forEach((ball, i) => {
 
 function createTrail(x, y, color, dx = 0, dy = 0) {
   const trail = document.createElement('div');
-  const radius = 3; // orbit-ball의 절반 크기
+  const radius = 3;
 
-  // 방향 보정: trail을 박스 쪽에 더 가까이 붙이기
-  const shiftX = dx < 0 ? radius : dx > 0 ? -radius : 0;
-  const shiftY = dy < 0 ? radius : dy > 0 ? -radius : 0;
+  // ❗ 뒤쪽으로 꼬리를 당김: dx가 +면 trail을 -로 밀어줘야 함
+  const shiftX = dx > 0 ? -radius : dx < 0 ? radius : 0;
+  const shiftY = dy > 0 ? -radius : dy < 0 ? radius : 0;
 
   trail.style.position = 'absolute';
   trail.style.left = `${x + shiftX}px`;
@@ -240,6 +240,7 @@ function createTrail(x, y, color, dx = 0, dy = 0) {
     trail.remove();
   }, 600);
 }
+
 
 
     </script>
