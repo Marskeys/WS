@@ -97,7 +97,7 @@ body::-webkit-scrollbar {
     flex: 0 0 auto;
     width: 80vw;
     max-width: 500px;
-    aspect-ratio: 16 / 14 !important;
+    aspect-ratio: 16 / 9 !important;
     scroll-snap-align: center;
     border-radius: 12px;
     overflow: hidden;
