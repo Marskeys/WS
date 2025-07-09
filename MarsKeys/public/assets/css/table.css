@@ -134,7 +134,7 @@
   .tab {
     background: rgba(255, 255, 255, 0.1);
     color: #eee;
-    padding: 0.4rem 0.9rem;
+    padding: 0.3rem 0.8rem;
     border-radius: 2rem;
     text-decoration: none;
     font-size: 0.85rem;
@@ -148,7 +148,7 @@
   }
   
   .tab.active {
-    background: rgb(255, 255, 255, 0.8);
+    background: rgb(255, 255, 255);
     color: #000000;
     border-color: #000000;
     font-weight: bold;
