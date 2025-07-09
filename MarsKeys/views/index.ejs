@@ -157,17 +157,72 @@ function getBoxPath(box) {
   const w = rect.width + basePadding * 2 - hologramFix * 2;
   const h = rect.height + basePadding * 2 - hologramFix * 2;
 
-  // ✅ 모든 경우에 return 해야 해!
-  const path = [
-    [x0, y0],
-    [x0 + w - radiusFix * 2, y0],
-    [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
-    [x0, y0 + h - radiusFix * 2],
-    [x0, y0]
-  ];
+  const stepsPerCorner = 6;
+  const path = [];
+
+  // ↗️ 좌상단 → 우상단 (위쪽 직선)
+  path.push([x0 + radius, y0]);
+  path.push([x0 + w - radius, y0]);
+
+  // ⤴️ 우상단 곡선 (0 → 90도)
+  for (let i = 0; i < stepsPerCorner; i++) {
+    const angle = (Math.PI / 2) * (i / (stepsPerCorner - 1));
+    const cx = x0 + w - radius;
+    const cy = y0 + radius;
+    path.push([
+      cx + radius * Math.cos(angle),
+      cy - radius * Math.sin(angle),
+    ]);
+  }
+
+  // ↘️ 오른쪽 직선
+  path.push([x0 + w, y0 + radius]);
+  path.push([x0 + w, y0 + h - radius]);
+
+  // ⤵️ 우하단 곡선 (90 → 180도)
+  for (let i = 0; i < stepsPerCorner; i++) {
+    const angle = (Math.PI / 2) * (i / (stepsPerCorner - 1));
+    const cx = x0 + w - radius;
+    const cy = y0 + h - radius;
+    path.push([
+      cx + radius * Math.sin(angle),
+      cy + radius * Math.cos(angle),
+    ]);
+  }
+
+  // ↙️ 아래쪽 직선
+  path.push([x0 + w - radius, y0 + h]);
+  path.push([x0 + radius, y0 + h]);
+
+  // ⤶ 좌하단 곡선 (180 → 270도)
+  for (let i = 0; i < stepsPerCorner; i++) {
+    const angle = (Math.PI / 2) * (i / (stepsPerCorner - 1));
+    const cx = x0 + radius;
+    const cy = y0 + h - radius;
+    path.push([
+      cx - radius * Math.cos(angle),
+      cy + radius * Math.sin(angle),
+    ]);
+  }
+
+  // ↖️ 왼쪽 직선
+  path.push([x0, y0 + h - radius]);
+  path.push([x0, y0 + radius]);
+
+  // ⤷ 좌상단 곡선 (270 → 360도)
+  for (let i = 0; i < stepsPerCorner; i++) {
+    const angle = (Math.PI / 2) * (i / (stepsPerCorner - 1));
+    const cx = x0 + radius;
+    const cy = y0 + radius;
+    path.push([
+      cx - radius * Math.sin(angle),
+      cy - radius * Math.cos(angle),
+    ]);
+  }
 
   return path;
 }
+
 
 
 
