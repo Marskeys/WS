@@ -53,25 +53,15 @@
   
   .youtube-carousel {
     grid-column: 1 / -1;
+    grid-row: span 3; /* 이건 그대로 두고 */
+    height: 100%; /* 여기서 높이 확정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
     background: transparent;
     position: relative;
     overflow: hidden;
-    padding: 0;
-    display: flex;
-    grid-row: span 2; /* ✅ 두 칸 높이 차지 */
-    justify-content: center;
-    align-items: stretch; /* ← 위아래 꽉 채워지게 */
-  
-    border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
-  }
-
-  .youtube-carousel {
-    grid-column: 1 / -1;
-    grid-row: span 3;
-    position: relative;
-    overflow: hidden;
-    height: 0;
-    padding-bottom: 56.25%; /* 영상 16:9 비율에 맞게 공간 확보 */
   }
   
   .carousel-track {
