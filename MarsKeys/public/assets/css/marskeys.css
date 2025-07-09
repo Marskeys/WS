@@ -106,6 +106,15 @@ body::-webkit-scrollbar {
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
 
+  @media not all and (min-resolution: 0.001dpcm) {
+    @supports (-webkit-appearance: none) {
+      /* 👉 Safari 전용 스타일 */
+      .video-wrapper iframe {
+        min-height: 100%; /* Safari에서만 iframe 작게 나오는 문제 대응 */
+      }
+    }
+  }
+
   @media (max-width: 767px) {
     .youtube-carousel {
       padding-bottom: 0 !important; /* 💥 바닥 여백 제거 */
