@@ -209,17 +209,13 @@ balls.forEach((ball, i) => {
   setTimeout(() => startLoop(ball, i), i * 1200); // 시간차 출발
 });
 
-function createTrail(x, y, color, dx = 0, dy = 0) {
+function createTrail(x, y, color) {
+  const radius = 3; // 공의 절반 크기 (공 중심)
+
   const trail = document.createElement('div');
-  const radius = 3;
-
-  // 💥 방향별로 꼬리를 반대쪽으로 shift
-  const shiftX = dx > 0 ? -radius : dx < 0 ? radius : 0;
-  const shiftY = dy > 0 ? -radius : dy < 0 ? radius : 0;
-
   trail.style.position = 'absolute';
-  trail.style.left = `${x + shiftX}px`;
-  trail.style.top = `${y + shiftY}px`;
+  trail.style.left = `${x + radius}px`;  // 항상 공 중심!
+  trail.style.top = `${y + radius}px`;
   trail.style.width = '2px';
   trail.style.height = '2px';
   trail.style.borderRadius = '50%';
