@@ -108,26 +108,27 @@
     gap: 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
     padding: 1rem;
+    -webkit-overflow-scrolling: touch;
   }
   
   .video-wrapper {
     flex: 0 0 auto;
-    width: 80vw; /* 모바일 기준 한 화면의 80% */
+    width: 80vw;
     max-width: 500px;
     aspect-ratio: 16 / 9;
     scroll-snap-align: center;
+    position: relative;
     border-radius: 12px;
     overflow: hidden;
-    position: relative;
     background: #000;
   }
   
   .video-thumbnail {
+    position: absolute;
     width: 100%;
     height: 100%;
-    position: relative;
+    z-index: 2;
     cursor: pointer;
   }
   
@@ -135,7 +136,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
   }
   
   .play-button {
@@ -145,8 +145,7 @@
     transform: translate(-50%, -50%);
     width: 64px;
     height: 64px;
-    z-index: 2;
-    transition: transform 0.2s;
+    z-index: 3;
   }
   
   .play-button svg {
@@ -154,9 +153,13 @@
     height: 100%;
   }
   
-  .play-button:hover {
-    transform: translate(-50%, -50%) scale(1.1);
+  iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1;
   }
+  
   
 
   

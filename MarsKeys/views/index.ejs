@@ -23,46 +23,50 @@
       <div class="grid-item youtube-carousel">
         <div class="corner-ribbon">YouTube</div>
         <div class="carousel-track">
-          <!-- 🎬 영상 1 -->
+          <!-- 🎬 1 -->
           <div class="video-wrapper">
-            <div class="video-thumbnail" data-video-id="dQw4w9WgXcQ">
+            <div class="video-thumbnail">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Video Thumbnail">
-              <div class="play-button">
+              <div class="play-button" data-video-id="dQw4w9WgXcQ">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
                   <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
                 </svg>
               </div>
             </div>
+            <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
           </div>
       
-          <!-- 🎬 영상 2 -->
+          <!-- 🎬 2 -->
           <div class="video-wrapper">
-            <div class="video-thumbnail" data-video-id="3tmd-ClpJxA">
+            <div class="video-thumbnail">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/3tmd-ClpJxA/hqdefault.jpg" alt="Video Thumbnail">
-              <div class="play-button">
+              <div class="play-button" data-video-id="3tmd-ClpJxA">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
                   <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
                 </svg>
               </div>
             </div>
+            <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
           </div>
       
-          <!-- 🎬 영상 3 -->
+          <!-- 🎬 3 -->
           <div class="video-wrapper">
-            <div class="video-thumbnail" data-video-id="ScMzIvxBSi4">
+            <div class="video-thumbnail">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/ScMzIvxBSi4/hqdefault.jpg" alt="Video Thumbnail">
-              <div class="play-button">
+              <div class="play-button" data-video-id="ScMzIvxBSi4">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
                   <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
                 </svg>
               </div>
             </div>
+            <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
           </div>
         </div>
       </div>
+      
       
       
 
@@ -90,26 +94,15 @@
     </main>
 
     <script>
-      document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
-        thumbnail.addEventListener('click', () => {
-          const videoId = thumbnail.dataset.videoId;
-          const wrapper = thumbnail.closest('.video-wrapper');
+      document.querySelectorAll('.play-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const videoId = button.dataset.videoId;
+          const wrapper = button.closest('.video-wrapper');
+          const iframe = wrapper.querySelector('iframe');
+          const src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
     
-          const iframe = document.createElement('iframe');
-          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
-          iframe.setAttribute('allow', 'autoplay; encrypted-media');
-          iframe.setAttribute('allowfullscreen', '');
-          iframe.setAttribute('frameborder', '0');
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.position = 'absolute';
-          iframe.style.top = '0';
-          iframe.style.left = '0';
-          iframe.style.zIndex = '3';
-    
-          // 썸네일 제거, iframe 삽입
-          thumbnail.remove();
-          wrapper.appendChild(iframe);
+          iframe.src = src;
+          wrapper.querySelector('.video-thumbnail').remove();
         });
       });
     </script>
