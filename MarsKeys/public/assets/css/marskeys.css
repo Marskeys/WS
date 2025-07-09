@@ -107,9 +107,24 @@ body::-webkit-scrollbar {
   }
 
   @supports (-webkit-touch-callout: none) {
-    iframe {
-      /* Safari 전용 스타일 */
-      height: 300px !important; /* 예시 */
+    .video-wrapper {
+      height: 100%;
+      aspect-ratio: unset;
+      position: relative;
+    }
+    
+    .video-wrapper::before {
+      content: "";
+      display: block;
+      padding-top: 56.25%; /* 16:9 비율 */
+    }
+    
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
   }
 
