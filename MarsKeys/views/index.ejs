@@ -23,7 +23,7 @@
       <div class="grid-item youtube-carousel">
         <div class="corner-ribbon">YouTube</div>
         <div class="carousel-track">
-          <!-- 🎬 썸네일 → 클릭 시 iframe으로 전환 -->
+          <!-- 🎬 1 -->
           <div class="video-wrapper">
             <div class="video-thumbnail" data-video-id="dQw4w9WgXcQ">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Video Thumbnail">
@@ -31,15 +31,24 @@
             </div>
           </div>
       
-          <!-- 🎞️ 그냥 iframe으로 바로 보여주는 영상 -->
+          <!-- 🎬 2 -->
           <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/3tmd-ClpJxA" allowfullscreen></iframe>
+            <div class="video-thumbnail" data-video-id="3tmd-ClpJxA">
+              <img class="thumbnail-img" src="https://img.youtube.com/vi/3tmd-ClpJxA/hqdefault.jpg" alt="Video Thumbnail">
+              <div class="play-button"></div>
+            </div>
           </div>
+      
+          <!-- 🎬 3 -->
           <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" allowfullscreen></iframe>
+            <div class="video-thumbnail" data-video-id="ScMzIvxBSi4">
+              <img class="thumbnail-img" src="https://img.youtube.com/vi/ScMzIvxBSi4/hqdefault.jpg" alt="Video Thumbnail">
+              <div class="play-button"></div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="grid-item tall soundcloud-box">      
         <iframe 
           width="100%" 
@@ -74,12 +83,11 @@
           iframe.allowFullscreen = true;
           iframe.style.width = "100%";
           iframe.style.height = "100%";
-    
-          el.innerHTML = '';
-          el.appendChild(iframe);
+          el.parentNode.replaceWith(iframe);
         });
       });
     </script>
+    
 
   </body>
 </html>
