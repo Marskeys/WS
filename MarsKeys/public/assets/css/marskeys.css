@@ -419,12 +419,20 @@
   
   .orbit-ball {
     position: absolute;
-    width: 5px;
-    height: 5px;
+    width: 4px; /* 더 작게 */
+    height: 4px;
     border-radius: 50%;
-    opacity: 0.75;
+    opacity: 0.6;
+    background: radial-gradient(circle at center, var(--glow-color), transparent 70%);
+    box-shadow:
+      0 0 6px var(--glow-color),
+      0 0 12px var(--glow-color),
+      0 0 18px rgba(255, 255, 255, 0.2); /* 살짝 흰광 추가 */
+    mix-blend-mode: screen; /* 홀로그램스러운 겹침 효과 */
     transition: transform 0.1s linear;
+    z-index: 999;
   }
+  
   
   .orbit-ball::after {
     content: "";
@@ -432,20 +440,21 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    filter: blur(3px);
-    opacity: 0.2;
-    animation: trail 1s infinite;
+    background: var(--glow-color);
+    filter: blur(6px);
+    opacity: 0.15;
+    animation: trail 1.2s ease-out infinite;
     pointer-events: none;
   }
   
   @keyframes trail {
     0% {
-      opacity: 0.4;
+      opacity: 0.25;
       transform: scale(1);
     }
     100% {
       opacity: 0;
-      transform: scale(2.5);
+      transform: scale(3);
     }
   }
   
