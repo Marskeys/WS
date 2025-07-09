@@ -295,7 +295,7 @@
     height: auto !important;
     overflow: visible;
     grid-row: auto / span 4; /* ✅ 원하는 만큼 크게 보장 */
-    background: transparent;
+    background: black;
   }
 
   .mobile-board-list {

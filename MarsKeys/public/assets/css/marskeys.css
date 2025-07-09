@@ -9,7 +9,7 @@
     background: #000000;
     font-family: 'Segoe UI', sans-serif;
     padding: 0rem;
-
+    background-image: url('/assets/images/glow-circuit-bg.png');
   }
 
   /* ✅ 기본 설정 */
@@ -75,7 +75,7 @@ body::-webkit-scrollbar {
     padding: 1rem 0;
     height: auto;
     position: relative;
-    background: transparent;
+    background: black;
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
   
@@ -286,7 +286,7 @@ body::-webkit-scrollbar {
     /* border-radius: 12px; */
     overflow: hidden;
     box-shadow: 0 0 8px rgba(0,0,0,0.4);
-    background: transparent; /* 로딩 중 배경 */
+    background: black; /* 로딩 중 배경 */
   }
   
   
@@ -310,7 +310,7 @@ body::-webkit-scrollbar {
     height: auto !important;
     overflow: visible;
     grid-row: auto / span 4; /* ✅ 원하는 만큼 크게 보장 */
-    background: transparent;
+    background: black;
   }
 
   .mobile-board-list {
@@ -319,7 +319,7 @@ body::-webkit-scrollbar {
     height: auto !important;
     overflow: visible;
     padding: 1rem;
-    background: transparent;
+    background: black;
     /* border-radius: 12px; */
   
     /* ✅ 얇은 경계선 추가 */
@@ -335,7 +335,7 @@ body::-webkit-scrollbar {
 
   
   .grid-item.small {
-    background: transparent; /* 배경 투명 */
+    background: black; /* 배경 투명 */
     display: flex;
     align-items: center;
     justify-content: center;
