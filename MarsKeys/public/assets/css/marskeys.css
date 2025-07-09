@@ -499,3 +499,24 @@
     padding: 0;
     margin: 0.8rem -0.1rem;
   }
+
+  .orbit-ball::before,
+.orbit-ball::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 2px;
+  background: var(--glow-color);
+  transform: translate(-50%, -50%);
+  filter: blur(6px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.orbit-ball::after {
+  width: 2px;
+  height: 60px;
+}
