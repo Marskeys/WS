@@ -9,10 +9,22 @@
     background: #000000;
     font-family: 'Segoe UI', sans-serif;
     padding: 0rem;
-    overflow-x: hidden;
-    overflow-y: auto;
+
   }
-  
+
+  /* ✅ 기본 설정 */
+html, body {
+  overflow: auto; /* ← 스크롤은 유지 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE, Edge */
+}
+
+/* ✅ Webkit 기반 브라우저 (Chrome, Safari 등) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
   /* ✅ Grid */
   .grid {
     display: grid;
