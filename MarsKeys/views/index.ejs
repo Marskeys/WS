@@ -94,14 +94,22 @@
           const videoId = thumbnail.dataset.videoId;
           const wrapper = thumbnail.closest('.video-wrapper');
     
+          // ❗ 완전 새로운 iframe 생성
           const iframe = document.createElement('iframe');
-          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
           iframe.allow = "autoplay; encrypted-media";
           iframe.allowFullscreen = true;
+          iframe.setAttribute("frameborder", "0");
+          iframe.style.position = "absolute";
+          iframe.style.top = "0";
+          iframe.style.left = "0";
+          iframe.style.width = "100%";
+          iframe.style.height = "100%";
+          iframe.style.zIndex = "5";
     
-          // ❌ 기존 구조 변경 없이, wrapper에 덮어씌움
+          // ❗ 기존 썸네일 제거 + iframe 삽입
+          thumbnail.remove();
           wrapper.appendChild(iframe);
-          thumbnail.remove(); // 썸네일 제거 (iframe만 남음)
         });
       });
     </script>

@@ -97,24 +97,26 @@
   }
 
   .carousel-track {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 0.2rem 1rem;
-    width: 100%;
-    max-width: 100%;
+    .carousel-track {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 1rem;
+      width: 100%;
+    }
   }
   
   .video-wrapper {
-    position: relative;
-    width: 100%;
+    flex: 0 0 auto;
+    width: 80vw; /* ✅ 모바일 기준으로 한 화면의 80% 너비 */
     max-width: 500px;
     aspect-ratio: 16 / 9;
     scroll-snap-align: center;
-    background: #000;
     border-radius: 12px;
     overflow: hidden;
+    position: relative;
+    background: #000;
   }
   
   .video-wrapper iframe {
