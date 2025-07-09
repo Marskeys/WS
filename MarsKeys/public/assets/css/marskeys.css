@@ -15,6 +15,7 @@
   /* ✅ 기본 설정 */
 html, body {
   overflow: auto; /* ← 스크롤은 유지 */
+  overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE, Edge */
 }
