@@ -104,7 +104,7 @@ body::-webkit-scrollbar {
     background: #000;
     border: 1px solid rgba(255, 255, 255, 0.4);
     height: auto;              /* ← 명시적 지정 */
-    min-height: 400px !important;         /* ← 최소 보장 */
+    min-height: 460px !important;         /* ← 최소 보장 */
   }
 
 
