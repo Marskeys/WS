@@ -75,7 +75,7 @@
   }
 
   .youtube-carousel {
-    grid-row: auto !important;
+    grid-row: span 2 !important;
     height: auto !important;
   }
 
