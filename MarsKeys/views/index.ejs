@@ -77,7 +77,7 @@
       <div class="grid-item">Shop </div>
       <div class="grid-item wide"> About Me </div>
   
-  
+      <div id="circle-outline"></div>
 
 
  
@@ -112,6 +112,26 @@
           });
         });
       }
+
+      const items = document.querySelectorAll('.grid-item');
+const circle = document.getElementById('circle-outline');
+
+let index = 0;
+
+function moveCircle() {
+  const item = items[index];
+  const rect = item.getBoundingClientRect();
+
+  circle.style.width = rect.width + 'px';
+  circle.style.height = rect.height + 'px';
+  circle.style.left = rect.left + window.scrollX + 'px';
+  circle.style.top = rect.top + window.scrollY + 'px';
+
+  index = (index + 1) % items.length;
+}
+
+setInterval(moveCircle, 1500);
+
     </script>
     
     
