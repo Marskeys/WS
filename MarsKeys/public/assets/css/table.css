@@ -174,11 +174,13 @@
 }
 
 .tabs-blur-left {
+  z-index:0;
   left: 0;
   background: linear-gradient(to right, rgb(0, 0, 0), transparent);
 }
 
 .tabs-blur-right {
+  z-index:0;
   right: 0;
   background: linear-gradient(to left, rgb(0, 0, 0), transparent);
 }
