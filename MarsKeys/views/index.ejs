@@ -89,17 +89,19 @@
     </main>
 
     <script>
-      document.querySelectorAll('.video-thumbnail').forEach(el => {
-        el.addEventListener('click', () => {
-          const videoId = el.dataset.videoId;
+      document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+        thumbnail.addEventListener('click', () => {
+          const videoId = thumbnail.dataset.videoId;
+          const wrapper = thumbnail.closest('.video-wrapper');
+    
           const iframe = document.createElement('iframe');
           iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
           iframe.allow = "autoplay; encrypted-media";
-          iframe.frameBorder = "0";
           iframe.allowFullscreen = true;
-          iframe.style.width = "100%";
-          iframe.style.height = "100%";
-          el.parentNode.replaceWith(iframe);
+    
+          // ❌ 기존 구조 변경 없이, wrapper에 덮어씌움
+          wrapper.appendChild(iframe);
+          thumbnail.remove(); // 썸네일 제거 (iframe만 남음)
         });
       });
     </script>
