@@ -213,7 +213,7 @@ function createTrail(x, y, color, dx = 0, dy = 0) {
   const trail = document.createElement('div');
   const radius = 3;
 
-  // ❗ 뒤쪽으로 꼬리를 당김: dx가 +면 trail을 -로 밀어줘야 함
+  // 💥 방향별로 꼬리를 반대쪽으로 shift
   const shiftX = dx > 0 ? -radius : dx < 0 ? radius : 0;
   const shiftY = dy > 0 ? -radius : dy < 0 ? radius : 0;
 
