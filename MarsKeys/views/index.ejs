@@ -146,18 +146,21 @@ colors.forEach((color, i) => {
 function getBoxPath(box) {
   const rect = box.getBoundingClientRect();
   const padding = 4;
+  const radius = 3; // orbit-ball의 반지름
   const x0 = rect.left + window.scrollX - padding;
   const y0 = rect.top + window.scrollY - padding;
   const w = rect.width + padding * 2;
   const h = rect.height + padding * 2;
+
   return [
-    [x0, y0],
-    [x0 + w, y0],
-    [x0 + w, y0 + h],
-    [x0, y0 + h],
-    [x0, y0]
+    [x0, y0],                             // 좌상단
+    [x0 + w - radius * 2, y0],           // 우상단 (← 안쪽으로 살짝)
+    [x0 + w - radius * 2, y0 + h - radius * 2], // 우하단
+    [x0, y0 + h - radius * 2],           // 좌하단
+    [x0, y0]                              // 다시 시작점
   ];
 }
+
 
 function moveBall(ball, path, next) {
   let i = 0;
