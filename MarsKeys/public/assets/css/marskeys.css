@@ -356,7 +356,7 @@
   .hologram-border {
     position: relative;
     border: 4px solid transparent; /* 기존 border 제거 */
-    border-radius: 0.5px;
+    border-radius: 0px;
     z-index: 0;
   }
   
@@ -364,7 +364,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 12px;
+    border-radius: 0px;
     padding: 1px;
     margin: 1px;
     background: linear-gradient(
