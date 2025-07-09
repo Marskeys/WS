@@ -82,30 +82,51 @@ body::-webkit-scrollbar {
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
   
- 
+ /* ✅ 캐러셀 가짜 높이로 비율 고정 */
+.youtube-carousel::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%; /* 16:9 비율 확보 → 그리드가 인식 */
+}
 
-  .carousel-track {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 0 1rem;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
+/* ✅ 유튜브 캐러셀 내부 절대 위치 */
+.carousel-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 1rem;
+  margin: 0;
+}
 
-  .video-wrapper {
-    flex: 0 0 auto;
-    width: 80vw;
-    max-width: 500px;
-    aspect-ratio: 16 / 9;
-    scroll-snap-align: center;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-  }
+.video-wrapper {
+  flex: 0 0 auto;
+  width: 80vw;
+  max-width: 500px;
+  height: 100%;
+  scroll-snap-align: center;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  position: relative;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+}
 
   @media (max-width: 767px) {
     .youtube-carousel {
