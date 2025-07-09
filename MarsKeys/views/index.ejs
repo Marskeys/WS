@@ -173,7 +173,7 @@ function getBoxPath(box) {
 
 function moveBall(ball, path, next) {
   let i = 0;
-  const steps = 60; // 더 부드럽고 천천히
+  const steps = 120; // 더 부드럽고 천천히
   function moveSegment() {
     if (i >= path.length - 1) return next();
     const [x1, y1] = path[i];
