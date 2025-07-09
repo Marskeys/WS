@@ -78,7 +78,7 @@
     grid-row: auto !important;
     height: auto !important;
   }
-  
+
  /* 리본 */
  .corner-ribbon {
     position: absolute;
@@ -104,7 +104,7 @@
     gap: 10px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    padding: 0rem;
+    padding: 0.5rem;
     width: 100%;
     max-width: 100%;
   }
