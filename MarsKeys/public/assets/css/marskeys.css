@@ -409,13 +409,35 @@
     border: transparent;
   }
 
-  #orbit-ball {
+  #orbit-balls {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  
+  .orbit-ball {
+    position: absolute;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: radial-gradient(circle, #0ff, #00f);
-    z-index: 9999;
-    pointer-events: none;
+    box-shadow: 0 0 10px #0ff, 0 0 20px rgba(0,255,255,0.4);
+    opacity: 0.9;
+    animation: trail 1s ease-out infinite;
+    transition: transform 0.1s linear;
   }
+  
+  @keyframes trail {
+    0% {
+      box-shadow: 0 0 10px #0ff, 0 0 20px rgba(0,255,255,0.4);
+      opacity: 0.9;
+    }
+    100% {
+      box-shadow: 0 0 0px #0ff, 0 0 0px rgba(0,255,255,0);
+      opacity: 0;
+    }
+  }
+  
   
