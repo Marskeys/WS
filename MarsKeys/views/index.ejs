@@ -23,9 +23,15 @@
       <div class="grid-item youtube-carousel">
         <div class="corner-ribbon">YouTube</div>
         <div class="carousel-track">
+          <!-- 🎬 썸네일 → 클릭 시 iframe으로 전환 -->
           <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+            <div class="video-thumbnail" data-video-id="dQw4w9WgXcQ">
+              <img class="thumbnail-img" src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Video Thumbnail">
+              <div class="play-button"></div>
+            </div>
           </div>
+      
+          <!-- 🎞️ 그냥 iframe으로 바로 보여주는 영상 -->
           <div class="video-wrapper">
             <iframe src="https://www.youtube.com/embed/3tmd-ClpJxA" allowfullscreen></iframe>
           </div>
@@ -34,7 +40,6 @@
           </div>
         </div>
       </div>
-
       <div class="grid-item tall soundcloud-box">      
         <iframe 
           width="100%" 
@@ -57,6 +62,24 @@
 
  
     </main>
+
+    <script>
+      document.querySelectorAll('.video-thumbnail').forEach(el => {
+        el.addEventListener('click', () => {
+          const videoId = el.dataset.videoId;
+          const iframe = document.createElement('iframe');
+          iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+          iframe.allow = "autoplay; encrypted-media";
+          iframe.frameBorder = "0";
+          iframe.allowFullscreen = true;
+          iframe.style.width = "100%";
+          iframe.style.height = "100%";
+    
+          el.innerHTML = '';
+          el.appendChild(iframe);
+        });
+      });
+    </script>
 
   </body>
 </html>
