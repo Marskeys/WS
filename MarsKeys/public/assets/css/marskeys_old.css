@@ -378,7 +378,7 @@
     );
     background-size: 400%;
     animation: hologram-move 6s linear infinite;
-    z-index: -1;
+    z-index: 3;
   
     /* 보더처럼 보이도록 마스킹 */
     mask: 
