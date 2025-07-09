@@ -378,7 +378,9 @@
     );
     background-size: 400%;
     animation: hologram-move 6s linear infinite;
-    z-index: 3;
+    z-index: 10; /* ✅ tab blur보다 확실히 위로 */
+    pointer-events: none; /* 혹시 interaction 문제 생기면 */
+    position: absolute; /* ✅ 필수! */
   
     /* 보더처럼 보이도록 마스킹 */
     mask: 
