@@ -9,7 +9,8 @@
     background: #000000;
     font-family: 'Segoe UI', sans-serif;
     padding: 0rem;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
   
   /* ✅ Grid */
