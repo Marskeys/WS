@@ -96,10 +96,12 @@ body::-webkit-scrollbar {
 
   .video-wrapper {
     position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 */
+    width: 90vw;           /* 📱 전체 너비 말고 적당히 줄이자 */
+    max-width: 500px;      /* 💻 데스크탑에서 너무 커지지 않게 */
+    padding-top: 56.25%;   /* 16:9 비율 유지 */
+    margin: 0 auto;
     height: auto;
-    aspect-ratio: unset; /* Safari 비호환 방지 */
+    aspect-ratio: unset;   /* Safari 대응 */
   }
   .video-wrapper iframe,
   .video-wrapper .yt-player {
