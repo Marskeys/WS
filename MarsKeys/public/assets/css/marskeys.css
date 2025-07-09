@@ -103,7 +103,10 @@ body::-webkit-scrollbar {
     overflow: hidden;
     background: #000;
     border: 1px solid rgba(255, 255, 255, 0.4);
+    height: auto;              /* ← 명시적 지정 */
+    min-height: 360px;         /* ← 최소 보장 */
   }
+
 
 
 
@@ -542,8 +545,3 @@ body::-webkit-scrollbar {
 }
 
 
-.yt-player iframe {
-  height: 360px !important;
-  width: 100% !important;
-  display: block !important;
-}
