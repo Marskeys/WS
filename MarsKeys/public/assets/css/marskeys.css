@@ -66,9 +66,11 @@
   }
 
   .youtube-carousel {
-    grid-row: auto !important;
-    height: fit-content !important;
-    min-height: 160px; /* grid-auto-rows: 160px과 일치시킴 */
+    grid-row: span 3 !important;
+    height: auto !important;
+    min-height: unset !important;
+    position: relative;
+    z-index: 1;
   }
   
 
