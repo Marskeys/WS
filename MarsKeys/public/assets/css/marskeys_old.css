@@ -365,7 +365,6 @@
     position: absolute;
     inset: 0;
     border-radius: 12px;
-    padding: 2px;
     background: linear-gradient(
       115deg,
       #ff00cc,
@@ -378,20 +377,19 @@
     );
     background-size: 400%;
     animation: hologram-move 6s linear infinite;
-    z-index: 10; /* ✅ tab blur보다 확실히 위로 */
-    pointer-events: none; /* 혹시 interaction 문제 생기면 */
-    position: absolute; /* ✅ 필수! */
+    z-index: 10;
+    pointer-events: none;
   
-    /* 보더처럼 보이도록 마스킹 */
-    mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask-composite: destination-out;
+    /* ✅ 마스크 제거 */
+    mask: none;
+    -webkit-mask: none;
+  
+    /* ✅ 바깥쪽 glow 효과처럼 보이게 하려면 box-shadow로 대체 가능 */
+    box-shadow: 0 0 8px #fff, 0 0 15px #00ffff;
+    mix-blend-mode: screen;
+    opacity: 0.6;
   }
+ 
 
   
   @keyframes hologram-move {
