@@ -44,7 +44,7 @@
   .grid-item.small { grid-column: span 1; grid-row: span 1; }
   .grid-item.tall  { grid-column: span 1; grid-row: span 2; }
   .grid-item.wide  { grid-column: span 3; grid-row: span 3; }
-  .grid-item.ultrawide {grid-column: span 4; grid-row: span 3;}
+  .grid-item.ultrawide {grid-column: 1 / -1; grid-row: span 3;}
   .grid-item.big   { grid-column: span 2; grid-row: span 2; }
   .grid-item:not(.small):not(.tall):not(.wide):not(.big):not(.youtube-carousel) {
     grid-column: span 1;
