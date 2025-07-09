@@ -1,7 +1,10 @@
 <header class="mk-header">
   <div class="logo-wrapper">
-    <a href="/">
-    </a>
+    <h1 class="hologram-title">
+      <span>M</span><span>a</span><span>r</span><span>s</span>
+      <span class="space">&nbsp;</span>
+      <span>K</span><span>e</span><span>y</span><span>s</span>
+    </h1>
   </div>
 
   <nav class="mk-nav">
@@ -22,3 +25,71 @@
     </a>
   </nav>
 </header>
+<style>
+  .hologram-title {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin: 2rem 0;
+}
+
+.hologram-title span {
+  opacity: 0;
+  transform: scale(1.8);
+  animation: glowIn 1.2s forwards;
+  animation-delay: calc(var(--i) * 0.2s);
+  background: linear-gradient(
+    115deg,
+    #ff00cc,
+    #3333ff,
+    #00ffff,
+    #00ff00,
+    #ffff00,
+    #ff0000,
+    #ff00cc
+  );
+  background-size: 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 4px #fff) drop-shadow(0 0 12px #0ff);
+  animation-name: glowIn, shimmer;
+  animation-duration: 1.2s, 6s;
+  animation-iteration-count: 1, infinite;
+  animation-timing-function: ease-out, linear;
+}
+
+@keyframes glowIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.8) rotate(-15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 400% 50%;
+  }
+}
+
+</style>
+<script>
+
+  const spans = document.querySelectorAll('.hologram-title span');
+  spans.forEach((span, index) => {
+    span.style.setProperty('--i', index);
+  });
+
+
+</script>
