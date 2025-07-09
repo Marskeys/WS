@@ -69,7 +69,7 @@ body::-webkit-scrollbar {
   
   .youtube-carousel {
     grid-column: 1 / -1;
-    grid-row: span 3;
+    grid-row: auto;
     display: flex;
     justify-content: center;
     align-items: center;
