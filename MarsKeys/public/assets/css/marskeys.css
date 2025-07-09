@@ -20,7 +20,7 @@
     max-width: none;
     width: 100%;
     margin: 0 auto;
-    padding: 1rem;
+    /* padding: 1rem; */
     grid-auto-flow: dense; /* ✅ 가능한 공간에 끼워넣기 허용 */
   }
   
