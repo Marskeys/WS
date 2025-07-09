@@ -540,3 +540,10 @@ body::-webkit-scrollbar {
   width: 2px;
   height: 60px;
 }
+
+
+.yt-player iframe {
+  height: 360px !important;
+  width: 100% !important;
+  display: block !important;
+}
