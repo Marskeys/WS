@@ -97,13 +97,12 @@ body::-webkit-scrollbar {
     flex: 0 0 auto;
     width: 80vw;
     max-width: 500px;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 16;
     scroll-snap-align: center;
     border-radius: 12px;
     overflow: hidden;
     background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    height: auto;              /* ← 명시적 지정 */
+    border: 1px solid rgba(255, 255, 255, 0.4);            /* ← 명시적 지정 */
   }
 
 
