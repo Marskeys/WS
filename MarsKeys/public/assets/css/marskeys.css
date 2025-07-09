@@ -455,7 +455,7 @@
       0 0 6px var(--glow-color),
       0 0 12px var(--glow-color),
       0 0 16px rgba(255, 255, 255, 0.2);
-    opacity: 0.9;
+    opacity: 1;
     transition: transform 0.1s linear;
     mix-blend-mode: screen;
     z-index: 999;
