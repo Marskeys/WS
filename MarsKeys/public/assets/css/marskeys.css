@@ -8,7 +8,7 @@
   body {
     background: #f9f6f2;
     font-family: 'Segoe UI', sans-serif;
-    padding: 0.2rem;
+    padding: 0rem;
   }
   
   /* ✅ Grid */
@@ -65,6 +65,15 @@
     border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
   
+  .carousel-track {
+    /* ✅ 스크롤바 숨기기 (크롬, 사파리, 엣지) */
+    scrollbar-width: none;        /* Firefox */
+    -ms-overflow-style: none;     /* IE 10+ */
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;                /* WebKit 브라우저 (크롬, 사파리 등) */
+  }
+
  /* 리본 */
  .corner-ribbon {
     position: absolute;
