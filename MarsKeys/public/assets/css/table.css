@@ -171,6 +171,7 @@
   width: 20px;
   pointer-events: none;
   z-index: 1;
+  transform: translateZ(-1px); /* ✅ 시각적으로 아래로 밀어내기 */
 }
 
 .tabs-blur-left {
