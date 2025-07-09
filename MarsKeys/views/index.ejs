@@ -23,51 +23,38 @@
       <div class="grid-item youtube-carousel">
         <div class="corner-ribbon">YouTube</div>
         <div class="carousel-track">
-          
-          <!-- 🎬 영상 1 -->
-          <div class="video-wrapper">
+      
+          <!-- 🎬 플레이어 1 -->
+          <div class="video-wrapper" data-video-id="dQw4w9WgXcQ" data-player-id="player1">
             <div class="video-thumbnail">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Video Thumbnail">
-              <div class="play-button" data-video-id="dQw4w9WgXcQ">
+              <div class="play-button">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
                   <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
                 </svg>
               </div>
             </div>
-            <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
+            <div id="player1" class="yt-player"></div>
           </div>
       
-          <!-- 🎬 영상 2 -->
-          <div class="video-wrapper">
+          <!-- 🎬 플레이어 2 -->
+          <div class="video-wrapper" data-video-id="3tmd-ClpJxA" data-player-id="player2">
             <div class="video-thumbnail">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/3tmd-ClpJxA/hqdefault.jpg" alt="Video Thumbnail">
-              <div class="play-button" data-video-id="3tmd-ClpJxA">
+              <div class="play-button">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
                   <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
                 </svg>
               </div>
             </div>
-            <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
-          </div>
-      
-          <!-- 🎬 영상 3 -->
-          <div class="video-wrapper">
-            <div class="video-thumbnail">
-              <img class="thumbnail-img" src="https://img.youtube.com/vi/ScMzIvxBSi4/hqdefault.jpg" alt="Video Thumbnail">
-              <div class="play-button" data-video-id="ScMzIvxBSi4">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
-                  <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
-                </svg>
-              </div>
-            </div>
-            <iframe allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>
+            <div id="player2" class="yt-player"></div>
           </div>
       
         </div>
       </div>
+      
       
       
       
@@ -96,19 +83,37 @@
  
     </main>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-      document.querySelectorAll('.play-button').forEach(button => {
-        button.addEventListener('click', () => {
-          const videoId = button.dataset.videoId;
-          const wrapper = button.closest('.video-wrapper');
-          const iframe = wrapper.querySelector('iframe');
-          const src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
+      const players = {}; // player 객체 저장용
     
-          iframe.src = src;
-          wrapper.querySelector('.video-thumbnail').remove();
+      // 유튜브 API가 로드되면 호출됨
+      function onYouTubeIframeAPIReady() {
+        document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+          const videoId = wrapper.dataset.videoId;
+          const playerId = wrapper.dataset.playerId;
+    
+          players[playerId] = new YT.Player(playerId, {
+            videoId: videoId,
+            playerVars: {
+              autoplay: 0,
+              rel: 0,
+              playsinline: 1
+            },
+            events: {
+              'onReady': () => {
+                const button = wrapper.querySelector('.play-button');
+                button.addEventListener('click', () => {
+                  wrapper.querySelector('.video-thumbnail').remove();
+                  players[playerId].playVideo();
+                });
+              }
+            }
+          });
         });
-      });
+      }
     </script>
+    
     
     
 

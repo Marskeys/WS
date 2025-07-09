@@ -103,21 +103,19 @@
   }
   
   .video-wrapper {
-    flex: 0 0 auto;
+    position: relative;
     width: 80vw;
     max-width: 500px;
     aspect-ratio: 16 / 9;
     scroll-snap-align: center;
-    position: relative;
-    border-radius: 12px;
     overflow: hidden;
     background: #000;
+    flex: 0 0 auto;
+    border-radius: 12px;
   }
   
   .video-thumbnail {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     z-index: 2;
@@ -140,7 +138,6 @@
     height: 64px;
     z-index: 3;
     cursor: pointer;
-    pointer-events: auto;
   }
   
   .play-button svg {
@@ -149,13 +146,12 @@
     pointer-events: none;
   }
   
-  iframe {
+  .yt-player {
     width: 100%;
     height: 100%;
-    display: block;
     z-index: 1;
-    border: none;
   }
+  
   
   
   
