@@ -79,7 +79,12 @@
   }
   
   .video-wrapper {
-    margin-bottom: 0 !important;
+    aspect-ratio: 16 / 9;
+    width: 80vw;
+    max-width: 500px;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
   }
 
 
