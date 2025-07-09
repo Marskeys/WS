@@ -65,14 +65,7 @@
     border: 1px solid rgba(255, 255, 255, 0.4); /* ✅ 얇은 하얀 경계선 */
   }
   
-  .carousel-track {
-    /* ✅ 스크롤바 숨기기 (크롬, 사파리, 엣지) */
-    scrollbar-width: none;        /* Firefox */
-    -ms-overflow-style: none;     /* IE 10+ */
-  }
-  .carousel-track::-webkit-scrollbar {
-    display: none;                /* WebKit 브라우저 (크롬, 사파리 등) */
-  }
+
 
  
 
@@ -96,28 +89,9 @@
     letter-spacing: 1px;
   }
 
-  .carousel-track {
-    .carousel-track {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 1rem;
-      width: 100%;
-    }
-  }
+
   
-  .video-wrapper {
-    flex: 0 0 auto;
-    width: 80vw; /* ✅ 모바일 기준으로 한 화면의 80% 너비 */
-    max-width: 500px;
-    aspect-ratio: 16 / 9;
-    scroll-snap-align: center;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    background: #000;
-  }
+
   
   .video-wrapper iframe {
     position: absolute;
@@ -129,13 +103,32 @@
     z-index: 5;
   }
   
+  .carousel-track {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
+  }
+  
+  .video-wrapper {
+    flex: 0 0 auto;
+    width: 80vw; /* 모바일 기준 한 화면의 80% */
+    max-width: 500px;
+    aspect-ratio: 16 / 9;
+    scroll-snap-align: center;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    background: #000;
+  }
+  
   .video-thumbnail {
     width: 100%;
     height: 100%;
     position: relative;
     cursor: pointer;
-    margin: 0; /* ✅ 여백 제거 */
-    display: block;
   }
   
   .thumbnail-img {
@@ -143,7 +136,6 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    margin: 0; /* ✅ 여백 제거 */
   }
   
   .play-button {
@@ -154,7 +146,6 @@
     width: 64px;
     height: 64px;
     z-index: 2;
-    cursor: pointer;
     transition: transform 0.2s;
   }
   
@@ -167,6 +158,9 @@
     transform: translate(-50%, -50%) scale(1.1);
   }
   
+
+  
+
   
   
 

@@ -23,7 +23,7 @@
       <div class="grid-item youtube-carousel">
         <div class="corner-ribbon">YouTube</div>
         <div class="carousel-track">
-          <!-- 🎬 1 -->
+          <!-- 🎬 영상 1 -->
           <div class="video-wrapper">
             <div class="video-thumbnail" data-video-id="dQw4w9WgXcQ">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Video Thumbnail">
@@ -36,7 +36,7 @@
             </div>
           </div>
       
-          <!-- 🎬 2 -->
+          <!-- 🎬 영상 2 -->
           <div class="video-wrapper">
             <div class="video-thumbnail" data-video-id="3tmd-ClpJxA">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/3tmd-ClpJxA/hqdefault.jpg" alt="Video Thumbnail">
@@ -49,7 +49,7 @@
             </div>
           </div>
       
-          <!-- 🎬 3 -->
+          <!-- 🎬 영상 3 -->
           <div class="video-wrapper">
             <div class="video-thumbnail" data-video-id="ScMzIvxBSi4">
               <img class="thumbnail-img" src="https://img.youtube.com/vi/ScMzIvxBSi4/hqdefault.jpg" alt="Video Thumbnail">
@@ -63,6 +63,7 @@
           </div>
         </div>
       </div>
+      
       
 
       <div class="grid-item tall soundcloud-box">      
@@ -94,25 +95,25 @@
           const videoId = thumbnail.dataset.videoId;
           const wrapper = thumbnail.closest('.video-wrapper');
     
-          // ❗ 완전 새로운 iframe 생성
           const iframe = document.createElement('iframe');
           iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
-          iframe.allow = "autoplay; encrypted-media";
-          iframe.allowFullscreen = true;
-          iframe.setAttribute("frameborder", "0");
-          iframe.style.position = "absolute";
-          iframe.style.top = "0";
-          iframe.style.left = "0";
-          iframe.style.width = "100%";
-          iframe.style.height = "100%";
-          iframe.style.zIndex = "5";
+          iframe.setAttribute('allow', 'autoplay; encrypted-media');
+          iframe.setAttribute('allowfullscreen', '');
+          iframe.setAttribute('frameborder', '0');
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          iframe.style.position = 'absolute';
+          iframe.style.top = '0';
+          iframe.style.left = '0';
+          iframe.style.zIndex = '3';
     
-          // ❗ 기존 썸네일 제거 + iframe 삽입
+          // 썸네일 제거, iframe 삽입
           thumbnail.remove();
           wrapper.appendChild(iframe);
         });
       });
     </script>
+    
     
 
   </body>
