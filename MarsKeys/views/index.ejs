@@ -174,6 +174,7 @@ function moveBall(ball, path, next) {
       if (step <= steps) {
         ball.style.left = (x1 + dx * step) + 'px';
         ball.style.top = (y1 + dy * step) + 'px';
+        createTrail(x1 + dx * step, y1 + dy * step, ball.style.background);
         step++;
         requestAnimationFrame(stepMove);
       } else {
