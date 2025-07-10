@@ -223,39 +223,38 @@ body.post-view-bg {
   }
 
 
-  .glow-ball {
+/* 💡 공 본체 + 십자 글로우 */
+.glow-ball {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 10px;
+  background: #e6ccff;
   border-radius: 50%;
-  background: radial-gradient(circle, #e6ccff, #b388ff);
   box-shadow:
-    0 0 10px rgba(230, 204, 255, 0.7),
-    0 0 20px rgba(179, 136, 255, 0.5);
-  pointer-events: none;
-  z-index: 999;
+    0 0 8px #e6ccff,
+    0 0 15px #b388ff;
+  z-index: 2;
 }
 
 .glow-ball::before,
 .glow-ball::after {
-  content: '';
+  content: "";
   position: absolute;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 2px;
-}
-
-.glow-ball::before {
-  width: 2px;
-  height: 12px;
-  top: 2px;
-  left: 7px;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 2px;
+  background: #e6ccff;
+  transform: translate(-50%, -50%);
+  filter: blur(6px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .glow-ball::after {
-  width: 12px;
-  height: 2px;
-  top: 7px;
-  left: 2px;
+  width: 2px;
+  height: 60px;
 }
 
 
