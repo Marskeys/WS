@@ -239,18 +239,19 @@
         loop();
       }
     
-      balls.forEach((ball, i) => {
-  // ✅ 랜덤 초기 위치 설정
-  const targetBox = items[Math.floor(Math.random() * items.length)];
-  const rect = targetBox.getBoundingClientRect();
-  const x = rect.left + window.scrollX + Math.random() * rect.width;
-  const y = rect.top + window.scrollY + Math.random() * rect.height;
-  ball.style.position = 'absolute';
-  ball.style.left = `${x}px`;
-  ball.style.top = `${y}px`;
 
-  // ✅ 루프 시작은 조금 뒤에
-  setTimeout(() => startLoop(ball, i), i * 1200);
+window.addEventListener('load', () => {
+  balls.forEach((ball, i) => {
+    const targetBox = items[Math.floor(Math.random() * items.length)];
+    const rect = targetBox.getBoundingClientRect();
+    const x = rect.left + window.scrollX + Math.random() * rect.width;
+    const y = rect.top + window.scrollY + Math.random() * rect.height;
+    ball.style.position = 'absolute';
+    ball.style.left = `${x}px`;
+    ball.style.top = `${y}px`;
+
+    setTimeout(() => startLoop(ball, i), i * 1200);
+  });
 });
     
       function createTrail(x, y, color) {
