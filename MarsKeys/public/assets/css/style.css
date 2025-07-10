@@ -8,6 +8,8 @@
   position: relative;
   top: 0;
   z-index: 100;
+    /* ✨ 아래쪽만 부드럽게 떠 있는 느낌의 그림자 */
+    box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.6);
 }
 
 .mk-logo a {
