@@ -22,29 +22,29 @@
   </nav>
 </header>
 
+<!-- JavaScript -->
 <script>
   const obj = document.getElementById('logo');
   obj.addEventListener('load', () => {
     const svgDoc = obj.contentDocument;
-    const character = svgDoc.getElementById('character');
+
+    const whole = svgDoc.getElementById('whole');
     const eyebrow = svgDoc.getElementById('eyebrow');
 
-    // 색상 바꾸기
-    if (character) character.setAttribute('fill', 'white');
+    // ✅ 색상 흰색 지정
+    if (whole) {
+      whole.setAttribute('fill', 'white');
+    }
 
-    // 애니메이션 적용 (Web Animations API)
+    // ✅ 애니메이션 추가
     if (eyebrow) {
-      eyebrow.animate(
-        [
-          { transform: 'translateY(-2px)' },
-          { transform: 'translateY(2px)' },
-          { transform: 'translateY(-2px)' }
-        ],
-        {
-          duration: 1000,
-          iterations: Infinity
-        }
-      );
+      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+      animate.setAttribute("attributeName", "transform");
+      animate.setAttribute("type", "translate");
+      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
+      animate.setAttribute("dur", "1s");
+      animate.setAttribute("repeatCount", "indefinite");
+      eyebrow.appendChild(animate);
     }
   });
 </script>
