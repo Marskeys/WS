@@ -19,8 +19,8 @@ html, body {
   overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE, Edge */
-  overscroll-behavior: none;
-  touch-action: none;
+  overscroll-behavior: contain; /* ✅ 바운스는 막고, 새로고침은 허용 */
+  touch-action: manipulation;   /* ✅ 터치스크롤은 허용, 핀치/확대는 차단 */
 
 }
 
