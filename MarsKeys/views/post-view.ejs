@@ -446,7 +446,7 @@ body.post-view-bg {
     container.style.position = 'relative';
   
     let t = 0;
-    const speed = 1.5; // 속도 조절
+    const speed = 3; // 속도 조절
     const updatePosition = () => {
       const w = container.clientWidth;
       const h = container.clientHeight;
@@ -469,8 +469,8 @@ body.post-view-bg {
         y = h - (dist - (2 * w + h));
       }
   
-      const offsetX = -3; // x축 이동량
-      const offsetY = -3; // y축 이동량
+      const offsetX = -2.5; // x축 이동량
+      const offsetY = -2.5; // y축 이동량
 
 ball.style.left = `${x + offsetX}px`;
 ball.style.top = `${y + offsetY}px`;
