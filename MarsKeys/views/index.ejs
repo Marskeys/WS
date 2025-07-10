@@ -162,8 +162,8 @@
         const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
         const radiusFix = box.classList.contains('marskeys-intro') ? 0.5 : 3;
     
-        const x0 = rect.left + window.scrollX - basePadding + hologramFix;
-        const y0 = rect.top + window.scrollY - basePadding + hologramFix;
+        let x0 = rect.left + window.scrollX - basePadding + hologramFix;
+        let y0 = rect.top + window.scrollY - basePadding + hologramFix;
         const w = rect.width + basePadding * 2 - hologramFix * 2;
         const h = rect.height + basePadding * 2 - hologramFix * 2;
     
@@ -172,7 +172,7 @@
     x0 -= 4; // ← 왼쪽으로 4px 이동
     y0 += 3; // ↓ 아래로 3px 이동
   }
-  
+
         return [
           [x0, y0],
           [x0 + w - radiusFix * 2, y0],
