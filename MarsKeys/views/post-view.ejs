@@ -226,8 +226,8 @@ body.post-view-bg {
 /* 💡 공 본체 + 십자 글로우 */
 .glow-ball {
   position: absolute;
-  width: 3px;
-  height: 3px;
+  width: 15px;
+  height: 15px;
   background: #e6ccff;
   border-radius: 50%;
   box-shadow:
@@ -446,7 +446,7 @@ body.post-view-bg {
     container.style.position = 'relative';
   
     let t = 0;
-    const speed = 20; // 속도 조절
+    const speed = 5; // 속도 조절
     const updatePosition = () => {
       const w = container.clientWidth - 4;
       const h = container.clientHeight - 3;
