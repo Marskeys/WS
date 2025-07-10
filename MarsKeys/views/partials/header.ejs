@@ -1,8 +1,6 @@
 <header class="mk-header">
   <div class="logo-wrapper">
-    <div class="ball-container">
-      <div class="hologram-ball"></div>
-    </div>
+      <object id="logo" type="image/svg+xml" data="/assets/images/logo.svg"></object>
   </div>
 
   <nav class="mk-nav">
@@ -23,4 +21,31 @@
     </a>
   </nav>
 </header>
+
+<script>
+  const obj = document.getElementById('logo');
+  obj.addEventListener('load', () => {
+    const svgDoc = obj.contentDocument;
+    const character = svgDoc.getElementById('character');
+    const eyebrow = svgDoc.getElementById('eyebrow');
+
+    // 색상 바꾸기
+    if (character) character.setAttribute('fill', 'white');
+
+    // 애니메이션 적용 (Web Animations API)
+    if (eyebrow) {
+      eyebrow.animate(
+        [
+          { transform: 'translateY(-2px)' },
+          { transform: 'translateY(2px)' },
+          { transform: 'translateY(-2px)' }
+        ],
+        {
+          duration: 1000,
+          iterations: Infinity
+        }
+      );
+    }
+  });
+</script>
 
