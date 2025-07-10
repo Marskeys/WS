@@ -222,16 +222,43 @@ body.post-view-bg {
     background-image: url('/assets/images/post-view-bg.png') !important;
   }
 
-  .orbit-ball-signup {
+
+  .glow-ball {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ff66aa, #aa33cc);
-  box-shadow: 0 0 8px rgba(255, 100, 200, 0.7);
+  background: radial-gradient(circle, #e6ccff, #b388ff);
+  box-shadow:
+    0 0 10px rgba(230, 204, 255, 0.7),
+    0 0 20px rgba(179, 136, 255, 0.5);
   pointer-events: none;
-  z-index: 3;
+  z-index: 999;
 }
+
+.glow-ball::before,
+.glow-ball::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 2px;
+}
+
+.glow-ball::before {
+  width: 2px;
+  height: 12px;
+  top: 2px;
+  left: 7px;
+}
+
+.glow-ball::after {
+  width: 12px;
+  height: 2px;
+  top: 7px;
+  left: 2px;
+}
+
+
   </style>
 
 </head>
@@ -246,7 +273,7 @@ body.post-view-bg {
   <%- include('partials/header') %>
 
   <div class="signup-container">
-    <div class="orbit-ball-signup"></div>
+    <div class="glow-ball"></div>
     <div class="logo-wrap">
     </div>
 
@@ -412,33 +439,45 @@ body.post-view-bg {
  
  <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const ball = document.querySelector(".orbit-ball-signup");
+    const ball = document.querySelector(".glow-ball");
     const container = document.querySelector(".signup-container");
   
     if (!ball || !container) return;
   
-    // 궤도 정보 계산
-    const margin = 4; // container 테두리로부터 거리
-    const speed = 0.05; // 각도 증가 속도
-    let angle = 0;
+    container.style.position = 'relative';
   
-    function updatePosition() {
-      const rect = container.getBoundingClientRect();
-      const w = rect.width - margin * 2;
-      const h = rect.height - margin * 2;
+    let t = 0;
+    const speed = 1.5; // 속도 조절
+    const updatePosition = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const perimeter = 2 * (w + h);
+      const dist = (t * speed) % perimeter;
   
-      // 궤도: 타원형 또는 사각형
-      const x = Math.cos(angle) * (w / 2) + (rect.left + w / 2 + margin);
-      const y = Math.sin(angle) * (h / 2) + (rect.top + h / 2 + margin);
+      let x, y;
+  
+      if (dist < w) {
+        x = dist;
+        y = 0;
+      } else if (dist < w + h) {
+        x = w;
+        y = dist - w;
+      } else if (dist < 2 * w + h) {
+        x = w - (dist - (w + h));
+        y = h;
+      } else {
+        x = 0;
+        y = h - (dist - (2 * w + h));
+      }
   
       ball.style.left = `${x}px`;
       ball.style.top = `${y}px`;
   
-      angle += speed;
+      t += 1;
       requestAnimationFrame(updatePosition);
-    }
+    };
   
-    requestAnimationFrame(updatePosition);
+    updatePosition();
   });
   </script>
 
