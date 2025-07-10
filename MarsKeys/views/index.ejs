@@ -157,24 +157,30 @@
       });
     
       function getBoxPath(box) {
-        const rect = box.getBoundingClientRect();
-        const basePadding = 4;
-        const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
-        const radiusFix = box.classList.contains('marskeys-intro') ? 1.5 : 3;
-    
-        const x0 = rect.left + window.scrollX - basePadding + hologramFix;
-        const y0 = rect.top + window.scrollY - basePadding + hologramFix;
-        const w = rect.width + basePadding * 2 - hologramFix * 2;
-        const h = rect.height + basePadding * 2 - hologramFix * 2;
-    
-        return [
-          [x0, y0],
-          [x0 + w - radiusFix * 2, y0],
-          [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
-          [x0, y0 + h - radiusFix * 2],
-          [x0, y0]
-        ];
-      }
+  const rect = box.getBoundingClientRect();
+  const basePadding = 4;
+  const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
+  const radiusFix = box.classList.contains('marskeys-intro') ? 1.5 : 3;
+
+  const x0 = rect.left + window.scrollX - basePadding + hologramFix;
+  const y0 = rect.top + window.scrollY - basePadding + hologramFix;
+  const w = rect.width + basePadding * 2 - hologramFix * 2;
+  const h = rect.height + basePadding * 2 - hologramFix * 2;
+
+  // ✅ 각 방향별로 미세 조정
+  const offsetTop    = radiusFix;   // 윗면 → 오른쪽
+  const offsetRight  = radiusFix;   // 오른쪽면 → 아래
+  const offsetBottom = radiusFix;   // 아랫면 → 왼쪽
+  const offsetLeft   = radiusFix;   // 왼쪽면 → 위로
+
+  return [
+    [x0 + offsetLeft, y0 + offsetTop],                                 // 좌상단 (출발점)
+    [x0 + w - offsetRight, y0 + offsetTop],                            // 우상단
+    [x0 + w - offsetRight, y0 + h - offsetBottom],                     // 우하단
+    [x0 + offsetLeft, y0 + h - offsetBottom],                          // 좌하단
+    [x0 + offsetLeft, y0 + offsetTop]                                  // 다시 출발점
+  ];
+}
     
       function moveBall(ball, path, next) {
         let i = 0;
