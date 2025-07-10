@@ -30,13 +30,36 @@
 
     const whole = svgDoc.getElementById('whole');
     const eyebrow = svgDoc.getElementById('eyebrow');
-
-    // ✅ 색상 흰색 지정
     if (whole) {
-      const paths = whole.querySelectorAll('*');
-      paths.forEach(el => el.setAttribute('fill', 'yellow'));
-      whole.setAttribute('fill', 'white');
+  const paths = whole.querySelectorAll('*');
+
+  let t = 0;
+  let direction = 1;
+
+  function animateFade() {
+    // t 값: 0 → 1 → 0 → 1 … 반복
+    t += direction * 0.01;
+
+    if (t >= 1) {
+      t = 1;
+      direction = -1;
+    } else if (t <= 0) {
+      t = 0;
+      direction = 1;
     }
+
+    // 검정~흰색 사이 색상 보간
+    const v = Math.floor(t * 255);
+    const color = `rgb(${v}, ${v}, ${v})`;
+
+    paths.forEach(el => el.setAttribute('fill', color));
+    whole.setAttribute('fill', color);
+
+    requestAnimationFrame(animateFade);
+  }
+
+  animateFade(); // 시작
+}
 
     // ✅ 애니메이션 추가
     if (eyebrow) {
