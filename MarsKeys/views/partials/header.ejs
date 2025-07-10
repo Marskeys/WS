@@ -34,33 +34,24 @@
   const paths = whole.querySelectorAll('*');
 
   let t = 0;
-let direction = 1;
 
-function animateFade() {
-  // 페이드인: 빠르게 (0 → 1)
-  // 페이드아웃: 느리게 (1 → 0)
-  const speed = direction === 1 ? 0.02 : 0.005;
+  function animateFadeInOnce() {
+    t += 0.01; // 페이드인 속도 (빠르게 하고 싶으면 0.02)
 
-  t += direction * speed;
+    if (t >= 1) {
+      t = 1;
+    } else {
+      requestAnimationFrame(animateFadeInOnce); // 아직 1이 아니면 계속
+    }
 
-  if (t >= 1) {
-    t = 1;
-    direction = -1; // 페이드아웃 시작
-  } else if (t <= 0) {
-    t = 0;
-    direction = 1; // 다시 페이드인
+    const v = Math.floor(t * 255);
+    const color = `rgb(${v}, ${v}, ${v})`;
+
+    paths.forEach(el => el.setAttribute('fill', color));
+    whole.setAttribute('fill', color);
   }
 
-  const v = Math.floor(t * 255);
-  const color = `rgb(${v}, ${v}, ${v})`;
-
-  paths.forEach(el => el.setAttribute('fill', color));
-  whole.setAttribute('fill', color);
-
-  requestAnimationFrame(animateFade);
-}
-
-animateFade();
+  animateFadeInOnce(); // 시작
     }
 
     // ✅ 애니메이션 추가
