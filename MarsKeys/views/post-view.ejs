@@ -6,6 +6,11 @@
   <%- include('partials/head') %>
   <style>
     /* 📑 목차 박스 디자인 */
+    body.postview-bg {
+  filter: hue-rotate(250deg) saturate(1.5) brightness(0.9);
+  transition: filter 0.8s ease;
+}
+
     .toc-list {
       font-size: 0; /* 줄바꿈 공백 제거 */
     }
@@ -212,7 +217,7 @@
   </style>
 </head>
 
-<body class="no-fixed-footer">
+<body class="no-fixed-footer postview-bg">
   <%- include('partials/header') %>
 
   <div class="signup-container">
