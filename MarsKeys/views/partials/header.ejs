@@ -25,29 +25,48 @@
 <!-- JavaScript -->
 <script>
   const obj = document.getElementById('logo');
-  obj.addEventListener('load', () => {
-    const svgDoc = obj.contentDocument;
+obj.addEventListener('load', () => {
+  const svgDoc = obj.contentDocument;
+  const whole = svgDoc.getElementById('whole');
 
-    const whole = svgDoc.getElementById('whole');
-    const eyebrow = svgDoc.getElementById('eyebrow');
+  if (!whole) return;
 
-    // ✅ 색상 흰색 지정
-    if (whole) {
-      const paths = whole.querySelectorAll('*');
-      paths.forEach(el => el.setAttribute('fill', 'white'));
-      whole.setAttribute('fill', 'white');
-    }
+  const paths = whole.querySelectorAll('*');
 
-    // ✅ 애니메이션 추가
-    if (eyebrow) {
-      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-      animate.setAttribute("attributeName", "transform");
-      animate.setAttribute("type", "translate");
-      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
-      animate.setAttribute("dur", "1s");
-      animate.setAttribute("repeatCount", "indefinite");
-      eyebrow.appendChild(animate);
-    }
-  });
+  // 색상 시퀀스 (홀로그램 느낌)
+  const colors = [
+    'white',
+    '#00ffff', // 시안
+    '#cc66ff', // 보라
+    '#66ffcc', // 민트
+    '#ffffff',
+  ];
+
+  function applyColor(color) {
+    paths.forEach(el => el.setAttribute('fill', color));
+    whole.setAttribute('fill', color);
+  }
+
+  // 초기엔 흰색
+  applyColor('white');
+
+  // ⏱️ 랜덤 간격으로 색상 변경 (홀로그램 느낌)
+  function startHoloPulse() {
+    setTimeout(() => {
+      // 랜덤하게 홀로그램 색 1개 선택
+      const nextColor = colors[Math.floor(Math.random() * (colors.length - 1)) + 1];
+      applyColor(nextColor);
+
+      // 짧게 유지한 뒤 다시 흰색
+      setTimeout(() => {
+        applyColor('white');
+        startHoloPulse(); // 다음 주기 예약
+      }, 400 + Math.random() * 300); // 400~700ms
+
+    }, 3000 + Math.random() * 5000); // 3~8초마다 반짝
+  }
+
+  startHoloPulse();
+});
 </script>
 
