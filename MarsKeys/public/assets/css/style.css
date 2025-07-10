@@ -47,7 +47,13 @@
   object-fit: contain;
 }
 
+[data-barba="wrapper"] {
+  perspective: 1200px;
+  perspective-origin: center;
+  position: relative;
+}
+
 [data-barba="container"] {
-  transition: transform 0.8s ease-in-out;
   backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
