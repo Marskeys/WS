@@ -19,6 +19,9 @@ html, body {
   overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE, Edge */
+  overscroll-behavior: none;
+  touch-action: none;
+
 }
 
 /* ✅ Webkit 기반 브라우저 (Chrome, Safari 등) */
