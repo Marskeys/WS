@@ -479,6 +479,11 @@ ball.style.top = `${y + offsetY}px`;
       requestAnimationFrame(updatePosition);
     };
   
+      // 🎯 초기 위치 설정 (t = 0일 때)
+  const { x: initX, y: initY } = getPosition(0);
+  ball.style.left = `${initX}px`;
+  ball.style.top = `${initY}px`;
+  
     updatePosition();
   });
   </script>
