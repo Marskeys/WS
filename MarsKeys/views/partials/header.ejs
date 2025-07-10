@@ -33,6 +33,8 @@
 
     // ✅ 색상 흰색 지정
     if (whole) {
+      const paths = whole.querySelectorAll('*');
+      paths.forEach(el => el.setAttribute('fill', 'white'));
       whole.setAttribute('fill', 'white');
     }
 
