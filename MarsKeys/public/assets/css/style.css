@@ -46,3 +46,8 @@
   width: auto;
   object-fit: contain;
 }
+
+[data-barba="container"] {
+  transition: transform 0.8s ease-in-out;
+  backface-visibility: hidden;
+}
