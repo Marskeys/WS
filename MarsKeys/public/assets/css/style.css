@@ -47,13 +47,28 @@
   object-fit: contain;
 }
 
-[data-barba="wrapper"] {
-  perspective: 1200px;
-  perspective-origin: center;
-  position: relative;
-}
+/* 📱 모바일용 레이아웃 */
+@media (max-width: 768px) {
+  .mk-header {
+    flex-direction: column; /* 모바일: 세로 배치 */
+    align-items: center;
+  }
 
-[data-barba="container"] {
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
+  .logo-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .logo-wrapper object {
+    max-width: 70%; /* 너무 크면 줄여 */
+  }
+
+  .mk-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
 }
