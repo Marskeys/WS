@@ -12,8 +12,23 @@
     <link rel="stylesheet" href="/assets/css/table.css" />
   </head>
   <body>
+
+    <style>
+      .bg-preload {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        background-image: url('/assets/images/glow-circuit-bg.png');
+      }
+    </style>
+
     <%- include('partials/header') %>
     <main class="grid">
+
+         <!-- head 끝나기 직전이나 body 맨 위에 -->
+<div class="bg-preload" aria-hidden="true"></div>
+
 
       <div class="grid-item ultrawide marskeys-intro hologram-border">
         MarsKeys is where sound meets imagination.<br>
