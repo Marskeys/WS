@@ -6,10 +6,15 @@
   <%- include('partials/head') %>
   <style>
     /* 📑 목차 박스 디자인 */
-    body.postview-bg {
-  filter: hue-rotate(250deg) saturate(1.5) brightness(3);
-  transition: filter 0.8s ease;
-}
+
+      .bg-preload {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        background-image: url('/assets/images/post-view-bg.png');
+      }
+
 
     .toc-list {
       font-size: 0; /* 줄바꿈 공백 제거 */
@@ -213,11 +218,21 @@
   margin-top: 2rem;
 }
 
+body .postview-bg {
+    background-image: url('/assets/images/post-view-bg.png');
+  }
 
   </style>
+
 </head>
 
+
+
 <body class="no-fixed-footer postview-bg">
+
+             <!-- head 끝나기 직전이나 body 맨 위에 -->
+<div class="bg-preload" aria-hidden="true"></div>
+
   <%- include('partials/header') %>
 
   <div class="signup-container">
