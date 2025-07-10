@@ -8,7 +8,7 @@ body {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 500px;
-    margin: 0 auto;
+    margin: 2rem auto;
     padding: 1rem;
   }
 
@@ -77,42 +77,6 @@ body {
     text-align: center;
   }
 
-  html.dark body .signup-container {
-    background: rgb(0, 0, 0);
-    border-radius: 0px;
-    /* 기존 그림자를 유지하면서 황금빛 글로우 효과 추가 */
-    box-shadow: 
-      0 8px 30px rgba(0, 0, 0, 0.1), /* 기존 그림자 */
-      0 0 15px 5px rgba(255, 215, 0, 0.3), /* 황금빛 글로우 (확산 효과) */
-      0 0 30px 10px rgba(255, 215, 0, 0.1); /* 더 넓고 흐린 황금빛 글로우 */
-    width: 90%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 1rem;
-    transition: box-shadow 0.3s ease-in-out;
-  }
-
-  html.dark body input[type="text"],
-  html.dark body input[type="text"],
-  html.dark body input[type="email"],
-  html.dark body input[type="password"] {
-    background: #333; /* 어두운 회색 계열 */
-    color: #ffffff !important;      /* 글자색을 밝게 */
-    border: 1px solid #555; /* 테두리도 어둡게 */
-  }
-
-  html.dark body h2 {
-    color: white;
-  }
-  html.dark body  .extra a {
-    color: #ff0101;
-    text-decoration: none;
-  }
-
-  html.dark body  .extra a:hover {
-    color: #fffcfc;
-    text-decoration: none;
-  }
 
 
   .input-with-button {
