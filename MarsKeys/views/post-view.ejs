@@ -447,14 +447,17 @@ body.post-view-bg {
   
     let t = 0;
     const speed = 5; // 속도 조절
-    const updatePosition = () => {
+    const offsetX = -6; // x축 이동량
+    const offsetY = -6; // y축 이동량
+
+    // ✅ 궤도 위치 계산 함수
+    const getPosition = (t) => {
       const w = container.clientWidth - 2.5;
       const h = container.clientHeight - 3;
       const perimeter = 2 * (w + h);
       const dist = (t * speed) % perimeter;
-  
+
       let x, y;
-  
       if (dist < w) {
         x = dist;
         y = 0;
@@ -468,25 +471,29 @@ body.post-view-bg {
         x = 0;
         y = h - (dist - (2 * w + h));
       }
-  
-      const offsetX = -6; // x축 이동량
-      const offsetY = -6; // y축 이동량
 
-ball.style.left = `${x + offsetX}px`;
-ball.style.top = `${y + offsetY}px`;
-  
+      return { x, y };
+    };
+
+    // ✅ 처음 위치 한번 미리 지정
+    const { x: initX, y: initY } = getPosition(t);
+    ball.style.left = `${initX + offsetX}px`;
+    ball.style.top = `${initY + offsetY}px`;
+
+    // ✅ 애니메이션 시작
+    const updatePosition = () => {
+      const { x, y } = getPosition(t);
+      ball.style.left = `${x + offsetX}px`;
+      ball.style.top = `${y + offsetY}px`;
+
       t += 1;
       requestAnimationFrame(updatePosition);
     };
-  
-      // 🎯 초기 위치 설정 (t = 0일 때)
-  const { x: initX, y: initY } = getPosition(0);
-  ball.style.left = `${initX}px`;
-  ball.style.top = `${initY}px`;
-  
+
     updatePosition();
   });
-  </script>
+</script>
+
 
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
