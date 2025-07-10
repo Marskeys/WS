@@ -448,7 +448,7 @@ body.post-view-bg {
     let t = 0;
     const speed = 9; // 속도 조절
     const updatePosition = () => {
-      const w = container.clientWidth;
+      const w = container.clientWidth - 2;
       const h = container.clientHeight;
       const perimeter = 2 * (w + h);
       const dist = (t * speed) % perimeter;
