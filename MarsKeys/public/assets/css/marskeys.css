@@ -369,7 +369,11 @@ body::-webkit-scrollbar {
     font-family: 'Segoe UI', sans-serif;
   }
 
-  
+  @media (max-width: 768px) {
+    .marskeys-intro {
+     margin : 2rem;
+    }
+  }
  
 
 
