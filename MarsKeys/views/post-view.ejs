@@ -477,10 +477,15 @@ body.post-view-bg {
       return { x, y };
     };
 
-    // ✅ 처음 위치 한번 미리 지정
-    const { x: initX, y: initY } = getPosition(t);
-    ball.style.left = `${initX + offsetX}px`;
-    ball.style.top = `${initY + offsetY}px`;
+// ✅ 처음 위치 한번 미리 지정
+const { x: initX, y: initY } = getPosition(t);
+ball.style.left = `${initX + offsetX}px`;
+ball.style.top = `${initY + offsetY}px`;
+
+// 💡 다음 렌더 프레임에서 opacity 주기
+requestAnimationFrame(() => {
+  ball.style.opacity = 1; // ✅ 초기 위치 지정 후 공 나타나게
+});
 
     // ✅ 애니메이션 시작
     const updatePosition = () => {
