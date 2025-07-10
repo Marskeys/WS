@@ -222,6 +222,16 @@ body.post-view-bg {
     background-image: url('/assets/images/post-view-bg.png') !important;
   }
 
+  .orbit-ball-signup {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff66aa, #aa33cc);
+  box-shadow: 0 0 8px rgba(255, 100, 200, 0.7);
+  pointer-events: none;
+  z-index: 3;
+}
   </style>
 
 </head>
@@ -236,6 +246,7 @@ body.post-view-bg {
   <%- include('partials/header') %>
 
   <div class="signup-container">
+    <div class="orbit-ball-signup"></div>
     <div class="logo-wrap">
     </div>
 
@@ -399,6 +410,37 @@ body.post-view-bg {
     window.addEventListener('resize', sendHeightToParent);
   </script>
  
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const ball = document.querySelector(".orbit-ball-signup");
+    const container = document.querySelector(".signup-container");
+  
+    if (!ball || !container) return;
+  
+    // 궤도 정보 계산
+    const margin = 4; // container 테두리로부터 거리
+    const speed = 0.05; // 각도 증가 속도
+    let angle = 0;
+  
+    function updatePosition() {
+      const rect = container.getBoundingClientRect();
+      const w = rect.width - margin * 2;
+      const h = rect.height - margin * 2;
+  
+      // 궤도: 타원형 또는 사각형
+      const x = Math.cos(angle) * (w / 2) + (rect.left + w / 2 + margin);
+      const y = Math.sin(angle) * (h / 2) + (rect.top + h / 2 + margin);
+  
+      ball.style.left = `${x}px`;
+      ball.style.top = `${y}px`;
+  
+      angle += speed;
+      requestAnimationFrame(updatePosition);
+    }
+  
+    requestAnimationFrame(updatePosition);
+  });
+  </script>
 
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
