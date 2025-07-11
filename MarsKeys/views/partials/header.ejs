@@ -99,7 +99,7 @@
       eyebrow.appendChild(animate);
     }
 
-    // ✅ glow: 빨간 글로우 + 천천히 켜졌다 꺼졌다 반복
+    // ✅ glow: 빨간 글로우 + 내부 빨간 fill 함께 천천히 켜졌다 꺼졌다
     const glow = svgDoc.getElementById('glow');
     if (glow) {
       glow.setAttribute('filter', 'url(#glow-red)');
@@ -117,8 +117,15 @@
         }
 
         const blur = 2 + glowT * 6;
+        const fillColor = `rgba(255, 0, 0, ${glowT.toFixed(2)})`;
+
         const shadow = defs.querySelector('#glow-red feDropShadow');
         if (shadow) shadow.setAttribute('stdDeviation', blur.toFixed(2));
+
+        // 내부 색상도 점점 강하게
+        const glowPaths = glow.querySelectorAll('*');
+        glowPaths.forEach(el => el.setAttribute('fill', fillColor));
+        glow.setAttribute('fill', fillColor);
 
         requestAnimationFrame(animateGlowPulse);
       }
@@ -143,6 +150,7 @@
     applyWhiteFill('atelier', 7);
   });
 </script>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
