@@ -103,14 +103,7 @@
       eyebrow.appendChild(move);
     }
 
-const glow = svgDoc.getElementById('glow');
-if (glow) {
-  const children = glow.querySelectorAll('*');
-
-  let hue = 240; // 시작 색상 (보라 계열 추천)
-  const colorAt = (t) => `hsla(${hue}, 100%, 85%, ${t})`;
-
-  // 페이드인
+  // ⏳ 페이드인
   let t = 0;
   const duration = 1000;
   const step = 16 / duration;
@@ -118,22 +111,23 @@ if (glow) {
     t += step;
     if (t > 1) t = 1;
 
-    const color = colorAt(t);
+    const color = `rgba(255,255,255,${t})`;
     children.forEach(el => el.setAttribute('fill', color));
     glow.setAttribute('fill', color);
 
     if (t < 1) {
       requestAnimationFrame(fadeIn);
     } else {
-      startHologram();
+      startHologram(t);  // 현재 밝기 그대로 넘김
     }
   };
   fadeIn();
 
-  // 루프: 색상만 계속 돌림
-  const startHologram = () => {
+  // 🌈 홀로그램 색상 루프
+  const startHologram = (initialOpacity = 1) => {
+    let hue = 60; // 노란~흰톤부터 시작
     const loop = () => {
-      hue = (hue + 1.5) % 360;
+      hue = (hue + 1.8) % 360;
       const color = `hsl(${hue}, 100%, 85%)`;
       children.forEach(el => el.setAttribute('fill', color));
       glow.setAttribute('fill', color);
@@ -141,7 +135,6 @@ if (glow) {
     };
     loop();
   };
-}
 
     // ✅ keys: 연보라 fill + 보라 glow + 페이드인
     const keys = getAll('keys', 4);
