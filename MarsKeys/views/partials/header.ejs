@@ -98,26 +98,12 @@ if (eyebrow) {
   const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
   move.setAttribute('attributeName', 'transform');
   move.setAttribute('type', 'translate');
-  move.setAttribute('dur', '2s'); // 전체 주기 길게
+  move.setAttribute('dur', '2s');
   move.setAttribute('repeatCount', 'indefinite');
-
-  // ✅ 2번 들썩 (위-아래-위-아래) 후 멈춤
-  move.setAttribute('values', `
-    0,-2; 0,2; 0,-2; 0,2; 0,2; 0,2
-  `.trim().replace(/\s+/g, ''));
-
-  // ✅ 움직임 타이밍 분배
+  move.setAttribute('values', '0,-2;0,2;0,-2;0,2;0,2;0,2');
   move.setAttribute('keyTimes', '0;0.2;0.4;0.6;0.8;1');
-
-  // ✅ 중간까지는 들썩이고, 뒤에는 멈춤 효과
   move.setAttribute('calcMode', 'spline');
-  move.setAttribute('keySplines', `
-    0.4 0 0.6 1;
-    0.4 0 0.6 1;
-    0.4 0 0.6 1;
-    0.4 0 0.6 1;
-    0 0 1 1
-  `.trim().replace(/\s+/g, ''));
+  move.setAttribute('keySplines', '0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0 0 1 1');
 
   eyebrow.appendChild(move);
 }
