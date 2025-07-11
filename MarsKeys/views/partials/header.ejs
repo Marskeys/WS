@@ -73,7 +73,7 @@
     const glowBlue = document.createElementNS("http://www.w3.org/2000/svg", "filter");
     glowBlue.setAttribute("id", "glow-blue");
     glowBlue.innerHTML = `
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="deepskyblue" flood-opacity="1"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="deepskyblue" flood-opacity="1"/>
     `;
     defs.appendChild(glowBlue);
 
@@ -135,7 +135,6 @@ if (glow) {
   '#222', '#222', '#222', // 어두운 색 더 자주
 
   'hsl(45, 100%, 65%)',     // ✅ 짙은 노란빛 (글로우 없음)
-  '#fff200', // 진하고 선명한 샛노랑 (주황기 살짝 있음)
   'rgba(255,255,255,1)',    // 하얀빛
   'hsl(100, 100%, 85%)',    // 연두빛
   'hsl(210, 100%, 85%)',    // 푸른 파란빛
@@ -149,7 +148,7 @@ if (glow) {
       const color = hologramColors[Math.floor(Math.random() * hologramColors.length)];
 
       // 글로우 적용은 밝은 색상일 때만
-      const isGlow = color !== '#222' && color !== '#fff200';
+      const isGlow = color !== '#222';
       if (isGlow) {
         glow.setAttribute('filter', 'url(#glow-blue)');
       } else {
