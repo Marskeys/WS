@@ -44,7 +44,7 @@
       requestAnimationFrame(animateFadeInOnce); // 아직 1이 아니면 계속
     }
 
-    const v = Math.floor(t * 255);
+    const v = Math.floor(t * 0);
     const color = `rgb(${v}, ${v}, ${v})`;
 
     paths.forEach(el => el.setAttribute('fill', color));
