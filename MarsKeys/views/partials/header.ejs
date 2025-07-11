@@ -132,12 +132,15 @@ if (glow) {
   fadeIn();
 
   const hologramColors = [
-  '#222', '#222', // 어두운 원래색 더 자주 등장
+  '#222', '#222', '#222', // 어두운 색 더 자주
 
-  'hsl(50, 100%, 85%)',      // 노란빛
-  'rgba(255,255,255,1)',     // 하얀빛
-  'hsl(280, 100%, 85%)',     // 보라빛
-  'hsl(340, 100%, 85%)'      // 더 붉은 붉은빛
+  'hsl(45, 100%, 65%)',     // ✅ 짙은 노란빛 (글로우 없음)
+  'hsl(50, 100%, 85%)',     // 노란빛 (글로우 있음)
+  'rgba(255,255,255,1)',    // 하얀빛
+  'hsl(100, 100%, 85%)',    // 연두빛
+  'hsl(210, 100%, 85%)',    // 푸른 파란빛
+  'hsl(280, 100%, 85%)',    // 보라빛
+  'hsl(340, 100%, 85%)'     // 더 붉은 붉은빛
 ];
 
   const startRandomBlink = () => {
@@ -146,7 +149,7 @@ if (glow) {
       const color = hologramColors[Math.floor(Math.random() * hologramColors.length)];
 
       // 글로우 적용은 밝은 색상일 때만
-      const isGlow = color !== '#222';
+      const isGlow = color !== '#222' && color !== 'hsl(45, 100%, 65%)';
       if (isGlow) {
         glow.setAttribute('filter', 'url(#glow-blue)');
       } else {
