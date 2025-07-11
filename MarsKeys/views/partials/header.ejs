@@ -176,12 +176,12 @@
 
     // ✅ keys_1~4: 항상 푸른 글로우 + 연보라 fill
     for (let i = 1; i <= 4; i++) {
-      const el = svgDoc.getElementById(`keys_${i}`);
-      if (el) {
-        el.setAttribute('filter', 'url(#glow-blue-static)');
-        el.setAttribute('fill', '#dcd0ff'); // 연보라
-      }
-    }
+  const el = svgDoc.getElementById(`keys_${i}`);
+  if (el) {
+    el.setAttribute('filter', 'url(#glow-blue-static)');
+    el.setAttribute('fill', '#bca3ff'); // ← 연보라 → 보라 강조
+  }
+}
 
     // ✅ sonic, atelier: 흰색
     const applyWhiteFill = (prefix, count) => {
