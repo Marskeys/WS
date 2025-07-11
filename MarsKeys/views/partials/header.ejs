@@ -48,25 +48,31 @@
   const obj = document.getElementById('logo');
   obj.addEventListener('load', () => {
     const svgDoc = obj.contentDocument;
+
     const whole = svgDoc.getElementById('whole');
     const eyebrow = svgDoc.getElementById('eyebrow');
 
-    // ✅ 글로우 필터 추가
+    // ✅ 필터 정의 추가
     const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
-    const glowFilter = svgDoc.createElementNS("http://www.w3.org/2000/svg", "filter");
-    glowFilter.setAttribute("id", "glow");
-    glowFilter.innerHTML = `
-      <feGaussianBlur stdDeviation="2.5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    `;
-    defs.appendChild(glowFilter);
+
+    const makeGlowFilter = (id, color, stdDev = 3) => {
+      const filter = svgDoc.createElementNS("http://www.w3.org/2000/svg", "filter");
+      filter.setAttribute("id", id);
+      filter.innerHTML = `
+        <feDropShadow dx="0" dy="0" stdDeviation="${stdDev}" flood-color="${color}" flood-opacity="1"/>
+      `;
+      return filter;
+    };
+
+    defs.appendChild(makeGlowFilter("glow-white", "white"));
+    defs.appendChild(makeGlowFilter("glow-red", "red"));
+    defs.appendChild(makeGlowFilter("glow-yellow", "yellow"));
+
     if (!svgDoc.querySelector('defs')) {
       svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
     }
 
+    // ✅ whole 처리 (검정 페이드인 + 흰색 stroke)
     if (whole) {
       const paths = whole.querySelectorAll('*');
       let t = 0;
@@ -83,19 +89,17 @@
           el.setAttribute('fill', color);
           el.setAttribute('stroke', 'white');
           el.setAttribute('stroke-width', '0.5');
-          el.setAttribute('filter', 'url(#glow)');
         });
 
         whole.setAttribute('fill', color);
         whole.setAttribute('stroke', 'white');
         whole.setAttribute('stroke-width', '0.5');
-        whole.setAttribute('filter', 'url(#glow)');
       }
 
       animateFadeInOnce();
     }
 
-    // 눈썹 애니메이션 유지
+    // ✅ eyebrow 위아래 애니메이션
     if (eyebrow) {
       const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
       animate.setAttribute("attributeName", "transform");
@@ -104,6 +108,22 @@
       animate.setAttribute("dur", "1s");
       animate.setAttribute("repeatCount", "indefinite");
       eyebrow.appendChild(animate);
+    }
+
+    // ✅ glow 요소들 필터 적용
+    const redGlow = svgDoc.getElementById('glow');
+    if (redGlow) redGlow.setAttribute('filter', 'url(#glow-red)');
+
+    // ✅ keys 요소들
+    for (let i = 1; i <= 4; i++) {
+      const key = svgDoc.getElementById(`keys_${i}`);
+      if (key) key.setAttribute('filter', 'url(#glow-yellow)');
+    }
+
+    // ✅ atelier 요소들
+    for (let i = 1; i <= 7; i++) {
+      const at = svgDoc.getElementById(`atelier_${i}`);
+      if (at) at.setAttribute('filter', 'url(#glow-white)');
     }
   });
 </script>
