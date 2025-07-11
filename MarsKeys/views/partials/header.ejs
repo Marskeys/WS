@@ -82,14 +82,22 @@
 
     svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
-    // ✅ whole 전체를 페이드인
+    // ✅ keys 제외 목록
+    const excludedKeys = ['keys_1', 'keys_2', 'keys_3', 'keys_4'];
+
+    // ✅ whole 전체를 페이드인 (keys는 제외)
     let wholeVisible = false;
     if (whole) {
       const paths = whole.querySelectorAll('*');
       let t = 0;
 
-      // 모두 투명하게 시작
-      paths.forEach(el => el.setAttribute('fill', 'rgba(255,255,255,0)'));
+      // 모두 투명하게 시작 (keys 제외)
+      paths.forEach(el => {
+        if (!excludedKeys.includes(el.id)) {
+          el.setAttribute('fill', 'rgba(255,255,255,0)');
+        }
+      });
+
       if (glow) {
         const glowPaths = glow.querySelectorAll('*');
         glowPaths.forEach(el => el.setAttribute('fill', 'rgba(255,255,255,0)'));
@@ -107,7 +115,12 @@
         const alpha = t;
         const fillColor = `rgba(255, 255, 255, ${alpha})`;
 
-        paths.forEach(el => el.setAttribute('fill', fillColor));
+        paths.forEach(el => {
+          if (!excludedKeys.includes(el.id)) {
+            el.setAttribute('fill', fillColor);
+          }
+        });
+
         if (glow) {
           const glowPaths = glow.querySelectorAll('*');
           glowPaths.forEach(el => el.setAttribute('fill', fillColor));
@@ -117,7 +130,7 @@
       animateFadeInOnce();
     }
 
-    // ✅ eyebrow 애니메이션
+    // ✅ eyebrow 위아래 애니메이션
     if (eyebrow) {
       const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
       animate.setAttribute("attributeName", "transform");
@@ -128,7 +141,7 @@
       eyebrow.appendChild(animate);
     }
 
-    // ✅ glow 애니메이션 (fill → 더 푸르게)
+    // ✅ glow 애니메이션 (fill → 푸르게 점멸)
     if (glow) {
       glow.setAttribute('filter', 'url(#glow-gradient-blue)');
       let increasing = true;
@@ -161,12 +174,12 @@
       animateGlowPulse();
     }
 
-    // ✅ keys: 항상 푸른 글로우 + 보라빛 내부 fill
+    // ✅ keys_1~4: 항상 푸른 글로우 + 연보라 fill
     for (let i = 1; i <= 4; i++) {
       const el = svgDoc.getElementById(`keys_${i}`);
       if (el) {
         el.setAttribute('filter', 'url(#glow-blue-static)');
-        el.setAttribute('fill', '#dcd0ff'); // 은은한 연보라
+        el.setAttribute('fill', '#dcd0ff'); // 연보라
       }
     }
 
@@ -181,6 +194,7 @@
     applyWhiteFill('atelier', 7);
   });
 </script>
+
 
 
 
