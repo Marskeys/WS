@@ -108,7 +108,7 @@
   opacity: 1;
   transform: translateY(0); /* 제자리로 */
   pointer-events: auto;
-  background: rgba(2, 146, 0, 0.6)
+  background: rgba(0, 0, 0, 1)
 }
 
 .sticky-header.show {
@@ -125,8 +125,8 @@
   }
 
   .sticky-header .nav-icon {
-    font-size: 1.1rem;
-    line-height: 1;
+    font-size: 1rem;
+    line-height: 0.8;
     padding: 0rem 0.3rem;
   }
 }
