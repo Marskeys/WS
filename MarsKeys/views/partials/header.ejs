@@ -50,7 +50,7 @@
     const svgDoc = obj.contentDocument;
 
     const getAll = (prefix, count) =>
-      Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}_${i + 1}`)).filter(Boolean);
+      Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}${i + 1}`)).filter(Boolean);
 
     const fadeIn = (elements, duration = 1000, baseColor = [255, 255, 255]) => {
       elements.forEach(el => el.setAttribute('fill', `rgba(${baseColor[0]},${baseColor[1]},${baseColor[2]},0)`));
@@ -103,7 +103,7 @@
       eyebrow.appendChild(move);
     }
 
-    // ✅ glow: 블루 테두리 + 밝은 블루 fill → 점멸
+    // ✅ glow: 파란 glow → 밝은 파란 fill → 하얀 fill 반복
     const glow = svgDoc.getElementById('glow');
     if (glow) {
       const children = glow.querySelectorAll('*');
@@ -141,17 +141,16 @@
       }, 1300);
     }
 
-    // ✅ keys: 연보라 fill + 보라 글로우 + 페이드인
+    // ✅ keys: 연보라 fill + 보라 glow + 페이드인
     const keys = getAll('keys', 4);
-    keys.forEach(el => {
-      el.setAttribute('filter', 'url(#glow-purple)');
-    });
+    keys.forEach(el => el.setAttribute('filter', 'url(#glow-purple)'));
     fadeIn(keys, 1000, [226, 210, 255]);
 
-    // ✅ sonic + atelier: 흰색 페이드인, 글로우 없음
+    // ✅ sonic + atelier: 하얀 fill 페이드인, 글로우 없음
     fadeIn([...getAll('sonic', 5), ...getAll('atelier', 7)], 1000, [255, 255, 255]);
   });
 </script>
+
 
 
 
