@@ -25,6 +25,7 @@
 <!-- JavaScript -->
 <script>
   const obj = document.getElementById('logo');
+
   obj.addEventListener('load', () => {
     const svgDoc = obj.contentDocument;
     const whole = svgDoc.getElementById('whole');
@@ -33,11 +34,13 @@
     if (whole) {
       const paths = whole.querySelectorAll('*');
       let t = 0;
-      const colorStart = [200, 200, 200]; // 실버 느낌
-      const colorEnd = [230, 200, 150];   // 은은한 골드 느낌
+
+      // 고급스러운 실버 → 골드 느낌
+      const colorStart = [160, 160, 160]; // 더 어두운 실버톤
+      const colorEnd = [218, 187, 138];   // 더 따뜻한 골드톤
 
       function animateFadeInOnce() {
-        t += 0.01;
+        t += 0.012; // 약간 더 부드러운 속도
         const easedT = t < 1 ? 1 - Math.pow(1 - t, 3) : 1;
 
         if (t < 1) requestAnimationFrame(animateFadeInOnce);
@@ -47,7 +50,9 @@
         const b = Math.floor(colorStart[2] + (colorEnd[2] - colorStart[2]) * easedT);
         const color = `rgb(${r}, ${g}, ${b})`;
 
-        paths.forEach(el => el.setAttribute('fill', color));
+        paths.forEach(el => {
+          if (el.hasAttribute('fill')) el.setAttribute('fill', color);
+        });
         whole.setAttribute('fill', color);
       }
 
@@ -58,12 +63,10 @@
       const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
       animate.setAttribute("attributeName", "transform");
       animate.setAttribute("type", "translate");
-      animate.setAttribute("values", "0,-1.5; 0,1.5; 0,-1.5");
-      animate.setAttribute("dur", "1.4s");
+      animate.setAttribute("values", "0,-1.2; 0,1.2; 0,-1.2");
+      animate.setAttribute("dur", "1.6s");
       animate.setAttribute("repeatCount", "indefinite");
       eyebrow.appendChild(animate);
     }
   });
 </script>
-
-
