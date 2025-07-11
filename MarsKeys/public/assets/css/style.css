@@ -101,7 +101,7 @@
   pointer-events: none;
 
   box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0.3);
-  transition: opacity 2s ease, transform 2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .sticky-header.show {
@@ -112,5 +112,5 @@
 }
 
 .sticky-header.show {
-  transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+  transition: opacity 2s ease-out, transform 2s ease-out;
 }
