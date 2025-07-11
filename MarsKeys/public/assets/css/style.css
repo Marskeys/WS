@@ -178,7 +178,7 @@
   text-decoration: none;
   font-size: 14px;
   border-radius: 6px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.1s, color 0.1s;
   white-space: nowrap;        /* 👉 줄바꿈 방지 */
   display: inline-block;      /* 👉 너비 정상 계산 */
 }
