@@ -110,3 +110,7 @@
   pointer-events: auto;
   background: rgb(255, 255, 255, 0.3)
 }
+
+.sticky-header.show {
+  transition: opacity 0.3s ease-out, transform 0.2s ease-out;
+}
