@@ -142,18 +142,15 @@
   }
 }
 
+/* ✅ 로고 & 메뉴 정렬 */
 .mk-header-inner {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 1rem;
+  gap: 1rem;
 }
 
-.left-group {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
+
 
 /* 버튼 정렬 */
 /* ✅ 오른쪽 상단 버튼 */
