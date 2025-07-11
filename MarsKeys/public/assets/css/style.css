@@ -121,12 +121,12 @@
 
 @media (max-width: 768px) {
   .sticky-header {
-    padding: 0.2rem 0.8rem !important; /* 위아래 살짝 줄이기 */
+    padding: 0.1rem 0.8rem !important; /* 위아래 살짝 줄이기 */
   }
 
   .sticky-header .nav-icon {
     font-size: 1.1rem;
     line-height: 1;
-    padding: 0.2rem 0.3rem;
+    padding: 0.1rem 0.3rem;
   }
 }
