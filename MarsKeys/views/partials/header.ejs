@@ -65,7 +65,7 @@
     };
 
     defs.appendChild(makeGlowFilter("glow-red", "red", 4));
-    defs.appendChild(makeGlowFilter("glow-yellow", "yellow", 3));
+    defs.appendChild(makeGlowFilter("glow-blue", "deepskyblue", 3)); // keys용 푸른 글로우
     svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
     // ✅ whole: 페이드인 (흰색 fill)
@@ -99,30 +99,40 @@
       eyebrow.appendChild(animate);
     }
 
-    // ✅ glow: 빨간 글로우 + fade-in glow 애니메이션
+    // ✅ glow: 빨간 글로우 + 천천히 켜졌다 꺼졌다 반복
     const glow = svgDoc.getElementById('glow');
     if (glow) {
       glow.setAttribute('filter', 'url(#glow-red)');
+      let increasing = true;
       let glowT = 0;
-      function animateGlow() {
-        glowT += 0.015;
-        if (glowT > 1) glowT = 1;
-        else requestAnimationFrame(animateGlow);
 
-        const blur = 1 + glowT * 5;
+      function animateGlowPulse() {
+        glowT += increasing ? 0.01 : -0.01;
+        if (glowT >= 1) {
+          glowT = 1;
+          increasing = false;
+        } else if (glowT <= 0.2) {
+          glowT = 0.2;
+          increasing = true;
+        }
+
+        const blur = 2 + glowT * 6;
         const shadow = defs.querySelector('#glow-red feDropShadow');
         if (shadow) shadow.setAttribute('stdDeviation', blur.toFixed(2));
+
+        requestAnimationFrame(animateGlowPulse);
       }
-      animateGlow();
+
+      animateGlowPulse();
     }
 
-    // ✅ keys_1~4: 노란 글로우
+    // ✅ keys_1~4: 푸른 글로우 (항상 켜짐)
     for (let i = 1; i <= 4; i++) {
       const el = svgDoc.getElementById(`keys_${i}`);
-      if (el) el.setAttribute('filter', 'url(#glow-yellow)');
+      if (el) el.setAttribute('filter', 'url(#glow-blue)');
     }
 
-    // ✅ sonic_1~5, atelier_1~7: 글로우 없이 흰색
+    // ✅ sonic_1~5, atelier_1~7: 글로우 없이 흰색 fill
     const applyWhiteFill = (prefix, count) => {
       for (let i = 1; i <= count; i++) {
         const el = svgDoc.getElementById(`${prefix}_${i}`);
