@@ -168,10 +168,9 @@ if (glow) {
   };
 }
 
-    // ✅ keys: 연보라 fill + 보라 glow + 페이드인
-    const keys = getAll('keys', 4);
-    keys.forEach(el => el.setAttribute('filter', 'url(#glow-purple)'));
-    fadeIn(keys, 1000, [226, 210, 255]);
+const keys = getAll('keys', 4);
+// filter 제거 👇
+fadeIn(keys, 1000, [226, 210, 255]); // 연보라 색
 
     // ✅ sonic + atelier: 하얀 fill 페이드인, 글로우 없음
     fadeIn([...getAll('sonic', 5), ...getAll('atelier', 7)], 1000, [255, 255, 255]);
