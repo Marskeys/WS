@@ -84,18 +84,28 @@
 .sticky-header {
   position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
   z-index: 999;
   background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.5rem 1rem;
-  display: none; /* 처음엔 숨겨짐 */
+
+  display: flex;
   justify-content: center;
   align-items: center;
+
+  opacity: 0;
+  transform: translateY(-20px); /* 위에 떠있게 */
+  pointer-events: none;
+
   box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0.3);
-  transition: all 0.5s ease;
-  width: 100vw; 
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .sticky-header.show {
-  display: flex;
+  opacity: 1;
+  transform: translateY(0); /* 제자리로 */
+  pointer-events: auto;
 }
