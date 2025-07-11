@@ -1,7 +1,6 @@
 .mk-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 1rem 1rem;
   background: #000000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -10,6 +9,8 @@
   z-index: 100;
     /* ✨ 아래쪽만 부드럽게 떠 있는 느낌의 그림자 */
     box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.6);
+    flex-direction: column; /* 모바일: 세로 배치 */
+    align-items: center;
 }
 
 .mk-logo a {
