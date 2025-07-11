@@ -52,7 +52,7 @@
     const whole = svgDoc.getElementById('whole');
     const eyebrow = svgDoc.getElementById('eyebrow');
 
-    // ✅ 필터 정의 추가
+    // ✅ 필터 정의
     const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
 
     const makeGlowFilter = (id, color, stdDev = 3) => {
@@ -64,15 +64,11 @@
       return filter;
     };
 
-    defs.appendChild(makeGlowFilter("glow-white", "white"));
-    defs.appendChild(makeGlowFilter("glow-red", "red"));
-    defs.appendChild(makeGlowFilter("glow-yellow", "yellow"));
+    defs.appendChild(makeGlowFilter("glow-red", "red", 4));
+    defs.appendChild(makeGlowFilter("glow-yellow", "yellow", 3));
+    svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
-    if (!svgDoc.querySelector('defs')) {
-      svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
-    }
-
-    // ✅ whole 처리 (검정 페이드인 + 흰색 stroke)
+    // ✅ whole: 페이드인 (흰색 fill)
     if (whole) {
       const paths = whole.querySelectorAll('*');
       let t = 0;
@@ -83,23 +79,16 @@
         else requestAnimationFrame(animateFadeInOnce);
 
         const alpha = t;
-        const color = `rgba(0, 0, 0, ${alpha})`;
+        const color = `rgba(255, 255, 255, ${alpha})`;
 
-        paths.forEach(el => {
-          el.setAttribute('fill', color);
-          el.setAttribute('stroke', 'white');
-          el.setAttribute('stroke-width', '0.5');
-        });
-
+        paths.forEach(el => el.setAttribute('fill', color));
         whole.setAttribute('fill', color);
-        whole.setAttribute('stroke', 'white');
-        whole.setAttribute('stroke-width', '0.5');
       }
 
       animateFadeInOnce();
     }
 
-    // ✅ eyebrow 위아래 애니메이션
+    // ✅ eyebrow: 위아래 애니메이션
     if (eyebrow) {
       const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
       animate.setAttribute("attributeName", "transform");
@@ -110,20 +99,38 @@
       eyebrow.appendChild(animate);
     }
 
-    // ✅ glow 요소들 필터 적용
-    const redGlow = svgDoc.getElementById('glow');
-    if (redGlow) redGlow.setAttribute('filter', 'url(#glow-red)');
+    // ✅ glow: 빨간 글로우 + fade-in glow 애니메이션
+    const glow = svgDoc.getElementById('glow');
+    if (glow) {
+      glow.setAttribute('filter', 'url(#glow-red)');
+      let glowT = 0;
+      function animateGlow() {
+        glowT += 0.015;
+        if (glowT > 1) glowT = 1;
+        else requestAnimationFrame(animateGlow);
 
-    // ✅ keys 요소들
+        const blur = 1 + glowT * 5;
+        const shadow = defs.querySelector('#glow-red feDropShadow');
+        if (shadow) shadow.setAttribute('stdDeviation', blur.toFixed(2));
+      }
+      animateGlow();
+    }
+
+    // ✅ keys_1~4: 노란 글로우
     for (let i = 1; i <= 4; i++) {
-      const key = svgDoc.getElementById(`keys_${i}`);
-      if (key) key.setAttribute('filter', 'url(#glow-yellow)');
+      const el = svgDoc.getElementById(`keys_${i}`);
+      if (el) el.setAttribute('filter', 'url(#glow-yellow)');
     }
 
-    // ✅ atelier 요소들
-    for (let i = 1; i <= 7; i++) {
-      const at = svgDoc.getElementById(`atelier_${i}`);
-      if (at) at.setAttribute('filter', 'url(#glow-white)');
-    }
+    // ✅ sonic_1~5, atelier_1~7: 글로우 없이 흰색
+    const applyWhiteFill = (prefix, count) => {
+      for (let i = 1; i <= count; i++) {
+        const el = svgDoc.getElementById(`${prefix}_${i}`);
+        if (el) el.setAttribute('fill', 'white');
+      }
+    };
+    applyWhiteFill('sonic', 5);
+    applyWhiteFill('atelier', 7);
   });
 </script>
+
