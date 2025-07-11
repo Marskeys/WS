@@ -25,45 +25,40 @@
 <!-- JavaScript -->
 <script>
   const obj = document.getElementById('logo');
-  obj.addEventListener('load', () => {
-    const svgDoc = obj.contentDocument;
+obj.addEventListener('load', () => {
+  const svgDoc = obj.contentDocument;
+  const whole = svgDoc.getElementById('whole');
+  const eyebrow = svgDoc.getElementById('eyebrow');
 
-    const whole = svgDoc.getElementById('whole');
-    const eyebrow = svgDoc.getElementById('eyebrow');
-    if (whole) {
-  const paths = whole.querySelectorAll('*');
+  if (whole) {
+    const paths = whole.querySelectorAll('*');
+    let t = 0;
 
-  let t = 0;
+    function animateFadeInOnce() {
+      t += 0.02; // 속도 조절: 0.01은 느림, 0.05는 빠름
+      if (t >= 1) t = 1;
+      else requestAnimationFrame(animateFadeInOnce);
 
-  function animateFadeInOnce() {
-    t += 0.01; // 페이드인 속도 (빠르게 하고 싶으면 0.02)
+      const alpha = t;
+      const color = `rgba(0, 0, 0, ${alpha})`; // 검정색으로 점점 나타나기
 
-    if (t >= 1) {
-      t = 1;
-    } else {
-      requestAnimationFrame(animateFadeInOnce); // 아직 1이 아니면 계속
+      paths.forEach(el => el.setAttribute('fill', color));
+      whole.setAttribute('fill', color);
     }
 
-    const v = Math.floor(t * 0);
-    const color = `rgb(${v}, ${v}, ${v})`;
-
-    paths.forEach(el => el.setAttribute('fill', color));
-    whole.setAttribute('fill', color);
+    animateFadeInOnce();
   }
 
-  animateFadeInOnce(); // 시작
-    }
-
-    // ✅ 애니메이션 추가
-    if (eyebrow) {
-      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-      animate.setAttribute("attributeName", "transform");
-      animate.setAttribute("type", "translate");
-      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
-      animate.setAttribute("dur", "1s");
-      animate.setAttribute("repeatCount", "indefinite");
-      eyebrow.appendChild(animate);
-    }
-  });
+  // 눈썹 애니메이션은 그대로 유지
+  if (eyebrow) {
+    const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+    animate.setAttribute("attributeName", "transform");
+    animate.setAttribute("type", "translate");
+    animate.setAttribute("values", "0,-2; 0,2; 0,-2");
+    animate.setAttribute("dur", "1s");
+    animate.setAttribute("repeatCount", "indefinite");
+    eyebrow.appendChild(animate);
+  }
+});
 </script>
 
