@@ -144,3 +144,27 @@
   });
 </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainHeader = document.querySelector('.mk-header');
+    const stickyHeader = document.querySelector('.sticky-header');
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // 메인 헤더가 보이면 스티키 숨기기
+          stickyHeader.classList.remove('show');
+        } else {
+          // 메인 헤더가 화면에서 사라지면 스티키 보이기
+          stickyHeader.classList.add('show');
+        }
+      },
+      {
+        root: null,
+        threshold: 0,
+      }
+    );
+
+    if (mainHeader) observer.observe(mainHeader);
+  });
+</script>
