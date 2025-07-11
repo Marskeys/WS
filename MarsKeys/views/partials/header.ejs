@@ -27,43 +27,43 @@
   const obj = document.getElementById('logo');
   obj.addEventListener('load', () => {
     const svgDoc = obj.contentDocument;
-
     const whole = svgDoc.getElementById('whole');
     const eyebrow = svgDoc.getElementById('eyebrow');
+
     if (whole) {
-  const paths = whole.querySelectorAll('*');
+      const paths = whole.querySelectorAll('*');
+      let t = 0;
+      const colorStart = [200, 200, 200]; // 실버 느낌
+      const colorEnd = [230, 200, 150];   // 은은한 골드 느낌
 
-  let t = 0;
+      function animateFadeInOnce() {
+        t += 0.01;
+        const easedT = t < 1 ? 1 - Math.pow(1 - t, 3) : 1;
 
-  function animateFadeInOnce() {
-    t += 0.01; // 페이드인 속도 (빠르게 하고 싶으면 0.02)
+        if (t < 1) requestAnimationFrame(animateFadeInOnce);
 
-    if (t >= 1) {
-      t = 1;
-    } else {
-      requestAnimationFrame(animateFadeInOnce); // 아직 1이 아니면 계속
+        const r = Math.floor(colorStart[0] + (colorEnd[0] - colorStart[0]) * easedT);
+        const g = Math.floor(colorStart[1] + (colorEnd[1] - colorStart[1]) * easedT);
+        const b = Math.floor(colorStart[2] + (colorEnd[2] - colorStart[2]) * easedT);
+        const color = `rgb(${r}, ${g}, ${b})`;
+
+        paths.forEach(el => el.setAttribute('fill', color));
+        whole.setAttribute('fill', color);
+      }
+
+      animateFadeInOnce();
     }
 
-    const v = Math.floor(t * 255);
-    const color = `rgb(${v}, ${v}, ${v})`;
-
-    paths.forEach(el => el.setAttribute('fill', color));
-    whole.setAttribute('fill', color);
-  }
-
-  animateFadeInOnce(); // 시작
-    }
-
-    // ✅ 애니메이션 추가
     if (eyebrow) {
       const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
       animate.setAttribute("attributeName", "transform");
       animate.setAttribute("type", "translate");
-      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
-      animate.setAttribute("dur", "1s");
+      animate.setAttribute("values", "0,-1.5; 0,1.5; 0,-1.5");
+      animate.setAttribute("dur", "1.4s");
       animate.setAttribute("repeatCount", "indefinite");
       eyebrow.appendChild(animate);
     }
   });
 </script>
+
 
