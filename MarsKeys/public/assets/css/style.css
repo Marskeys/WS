@@ -138,3 +138,31 @@
     padding: 0rem 0.3rem;
   }
 }
+
+.auth-buttons {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+.auth-button {
+  padding: 8px 16px;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.auth-button:hover {
+  background-color: white;
+  color: black;
+}
