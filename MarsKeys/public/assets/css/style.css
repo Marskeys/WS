@@ -145,51 +145,31 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative; 
+  padding: 1rem;
 }
 
 .left-group {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 1.5rem;
 }
 
+/* 버튼 정렬 */
 .auth-buttons {
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  transform: translateX(50%) translateY(-50%);
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .auth-button {
-  will-change: background-color, color;
-  padding: 8px 10px;
-  border: 1px solid white;
-  background-color: transparent;
   color: white;
-  text-align: center;
   text-decoration: none;
-  font-size: 14px;
-  border-radius: 6px;
-  transition: background-color 0.1s, color 0.1s;
-  white-space: nowrap;        /* 👉 줄바꿈 방지 */
-  display: inline-block;      /* 👉 너비 정상 계산 */
+  background: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background 0.2s;
 }
 
 .auth-button:hover {
-  background-color: white;
-  color: black;
-}
-
-@media (max-width: 768px) {
-  .auth-buttons {
-  display:none;
-  }
+  background: #555;
 }
