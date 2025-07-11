@@ -100,210 +100,207 @@
     </main>
 
     <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-      const players = {};
-    
-      function onYouTubeIframeAPIReady() {
-        document.querySelectorAll('.video-wrapper').forEach(wrapper => {
-          const videoId = wrapper.dataset.videoId;
-          const playerId = wrapper.dataset.playerId;
-    
-          players[playerId] = new YT.Player(playerId, {
-            videoId: videoId,
-            playerVars: {
-              autoplay: 0,
-              rel: 0,
-              playsinline: 1
-            },
-            events: {
-              'onReady': () => {
-                const button = wrapper.querySelector('.play-button');
-                button.addEventListener('click', () => {
-                  wrapper.querySelector('.video-thumbnail').remove();
-                  players[playerId].playVideo();
-                });
-              }
-            }
-          });
-        });
-      }
-    
-      const items = document.querySelectorAll('.grid-item');
-      const ballContainer = document.getElementById('orbit-balls');
-    
-      const colors = ['#00ffff', '#ff00ff',  '#ffff00', '#ffffff', '#ffff00', '#00ff00', '#ff6600'];
-      const balls = [];
-    
-      colors.forEach((color, i) => {
-        const ball = document.createElement('div');
-        ball.className = 'orbit-ball';
-        ball.style.background = color;
-        ball.style.opacity = '1';
-        ball.style.transition = 'opacity 0.2s ease-in-out';
-        ball.style.zIndex = 1000 + i;
-    
-        ball.style.setProperty('--glow-color', color);
-        ball.style.boxShadow = `0 0 8px ${color}, 0 0 15px ${color}`;
-    
-        const after = document.createElement('style');
-        document.head.appendChild(after);
-        after.sheet.insertRule(`
-          .orbit-ball:nth-child(${i + 1})::after {
-            background: ${color};
+<script>
+  const players = {};
+
+  function onYouTubeIframeAPIReady() {
+    document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+      const videoId = wrapper.dataset.videoId;
+      const playerId = wrapper.dataset.playerId;
+
+      players[playerId] = new YT.Player(playerId, {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 0,
+          rel: 0,
+          playsinline: 1
+        },
+        events: {
+          'onReady': () => {
+            const button = wrapper.querySelector('.play-button');
+            button.addEventListener('click', () => {
+              wrapper.querySelector('.video-thumbnail').remove();
+              players[playerId].playVideo();
+            });
           }
-        `);
-    
-        ballContainer.appendChild(ball);
-        balls.push(ball);
+        }
       });
-    
-      function getBoxPath(box) {
-        const rect = box.getBoundingClientRect();
-        const basePadding = 4;
-        const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
-        const radiusFix = box.classList.contains('marskeys-intro') ? 0.5 : 3;
-    
-        let x0 = rect.left + window.scrollX - basePadding + hologramFix;
-        let y0 = rect.top + window.scrollY - basePadding + hologramFix;
-        const w = rect.width + basePadding * 2 - hologramFix * 2;
-        const h = rect.height + basePadding * 2 - hologramFix * 2;
-    
-          // ✅ marskeys-intro일 경우만 전체 위치를 왼쪽·아래로 옮기기
-  if (box.classList.contains('marskeys-intro')) {
-    x0 -= 2; // ← 왼쪽으로 4px 이동
-    y0 += -2; // ↓ 아래로 3px 이동
+    });
   }
 
-        return [
-          [x0, y0],
-          [x0 + w - radiusFix * 2, y0],
-          [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
-          [x0, y0 + h - radiusFix * 2],
-          [x0, y0]
-        ];
-      }
-    
-      function moveBall(ball, path, next) {
-        let i = 0;
-        const steps = 120;
-    
-        function moveSegment() {
-          if (i >= path.length - 1) {
-            ball.style.opacity = '1'; // 목적지에서 다시 보이게
-            return next();
-          }
-    
-          const [x1, y1] = path[i];
-          const [x2, y2] = path[i + 1];
-          const dx = (x2 - x1) / steps;
-          const dy = (y2 - y1) / steps;
-          let step = 0;
-    
-          function stepMove() {
-            if (step <= steps) {
-              if (step === 0 && i === 0) {
-                // 시작 시 잠깐 사라졌다가 나타나게
-                ball.style.opacity = '0';
-                setTimeout(() => ball.style.opacity = '1', 100);
-              }
-    
-              ball.style.left = (x1 + dx * step) + 'px';
-              ball.style.top = (y1 + dy * step) + 'px';
-              createTrail(x1 + dx * step, y1 + dy * step, ball.style.background);
-              step++;
-              requestAnimationFrame(stepMove);
-            } else {
-              i++;
-              moveSegment();
-            }
-          }
-    
-          stepMove();
-        }
-    
-        moveSegment();
-      }
-    
-      function startLoop(ball, offset = 0) {
-        let current = offset % items.length;
-    
-        function loop() {
-          const box = items[current];
-          const path = getBoxPath(box);
-          moveBall(ball, path, () => {
-            current = (current + 1) % items.length;
-            setTimeout(loop, 300);
-          });
-        }
-    
-        loop();
-      }
-    
+  const items = document.querySelectorAll('.grid-item');
+  const ballContainer = document.getElementById('orbit-balls');
 
-window.addEventListener('load', () => {
-  balls.forEach((ball, i) => {
-    const targetBox = items[Math.floor(Math.random() * items.length)];
-    const rect = targetBox.getBoundingClientRect();
-    const x = rect.left + window.scrollX + Math.random() * rect.width;
-    const y = rect.top + window.scrollY + Math.random() * rect.height;
-    ball.style.position = 'absolute';
-    ball.style.left = `${x}px`;
-    ball.style.top = `${y}px`;
+  const colors = ['#00ffff', '#ff00ff', '#ffff00', '#ffffff', '#ffff00', '#00ff00', '#ff6600'];
+  const balls = [];
 
-    setTimeout(() => startLoop(ball, i), i * 1200);
+  colors.forEach((color, i) => {
+    const ball = document.createElement('div');
+    ball.className = 'orbit-ball';
+    ball.style.background = color;
+    ball.style.opacity = '1';
+    ball.style.transition = 'opacity 0.2s ease-in-out';
+    ball.style.zIndex = 1000 + i;
+
+    ball.style.setProperty('--glow-color', color);
+    ball.style.boxShadow = `0 0 8px ${color}, 0 0 15px ${color}`;
+
+    const after = document.createElement('style');
+    document.head.appendChild(after);
+    after.sheet.insertRule(`
+      .orbit-ball:nth-child(${i + 1})::after {
+        background: ${color};
+      }
+    `);
+
+    ballContainer.appendChild(ball);
+    balls.push(ball);
   });
-});
 
-const header = document.querySelector('.sticky-header');
+  function getBoxPath(box) {
+    const rect = box.getBoundingClientRect();
+    const basePadding = 4;
+    const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
+    const radiusFix = box.classList.contains('marskeys-intro') ? 0.5 : 3;
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    balls.forEach(ball => {
-      if (entry.isIntersecting) {
-        // 헤더에 닿았으면 투명하게
-        ball.style.opacity = '0';
-      } else {
-        // 벗어나면 다시 보이게
+    let x0 = rect.left + window.scrollX - basePadding + hologramFix;
+    let y0 = rect.top + window.scrollY - basePadding + hologramFix;
+    const w = rect.width + basePadding * 2 - hologramFix * 2;
+    const h = rect.height + basePadding * 2 - hologramFix * 2;
+
+    if (box.classList.contains('marskeys-intro')) {
+      x0 -= 2;
+      y0 += -2;
+    }
+
+    return [
+      [x0, y0],
+      [x0 + w - radiusFix * 2, y0],
+      [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
+      [x0, y0 + h - radiusFix * 2],
+      [x0, y0]
+    ];
+  }
+
+  // ✅ 공이 헤더에 닿았는지 충돌 체크
+  function checkCollisionWithHeader(ball) {
+    const header = document.getElementById('stickyHeader');
+    if (!header) return;
+    const headerRect = header.getBoundingClientRect();
+    const ballRect = ball.getBoundingClientRect();
+
+    const collided = !(
+      ballRect.bottom < headerRect.top ||
+      ballRect.top > headerRect.bottom ||
+      ballRect.right < headerRect.left ||
+      ballRect.left > headerRect.right
+    );
+
+    ball.style.opacity = collided ? '0' : '1';
+  }
+
+  function moveBall(ball, path, next) {
+    let i = 0;
+    const steps = 120;
+
+    function moveSegment() {
+      if (i >= path.length - 1) {
         ball.style.opacity = '1';
+        return next();
       }
+
+      const [x1, y1] = path[i];
+      const [x2, y2] = path[i + 1];
+      const dx = (x2 - x1) / steps;
+      const dy = (y2 - y1) / steps;
+      let step = 0;
+
+      function stepMove() {
+        if (step <= steps) {
+          if (step === 0 && i === 0) {
+            ball.style.opacity = '0';
+            setTimeout(() => ball.style.opacity = '1', 100);
+          }
+
+          ball.style.left = (x1 + dx * step) + 'px';
+          ball.style.top = (y1 + dy * step) + 'px';
+
+          // ✅ 여기서 헤더 충돌 여부 확인
+          checkCollisionWithHeader(ball);
+
+          createTrail(x1 + dx * step, y1 + dy * step, ball.style.background);
+          step++;
+          requestAnimationFrame(stepMove);
+        } else {
+          i++;
+          moveSegment();
+        }
+      }
+
+      stepMove();
+    }
+
+    moveSegment();
+  }
+
+  function startLoop(ball, offset = 0) {
+    let current = offset % items.length;
+
+    function loop() {
+      const box = items[current];
+      const path = getBoxPath(box);
+      moveBall(ball, path, () => {
+        current = (current + 1) % items.length;
+        setTimeout(loop, 300);
+      });
+    }
+
+    loop();
+  }
+
+  window.addEventListener('load', () => {
+    balls.forEach((ball, i) => {
+      const targetBox = items[Math.floor(Math.random() * items.length)];
+      const rect = targetBox.getBoundingClientRect();
+      const x = rect.left + window.scrollX + Math.random() * rect.width;
+      const y = rect.top + window.scrollY + Math.random() * rect.height;
+      ball.style.position = 'absolute';
+      ball.style.left = `${x}px`;
+      ball.style.top = `${y}px`;
+
+      setTimeout(() => startLoop(ball, i), i * 1200);
     });
   });
-}, {
-  root: null, // viewport 기준
-  threshold: 0, // 겹치기 시작할 때 반응
-});
 
-observer.observe(header);
+  function createTrail(x, y, color) {
+    const radius = 3;
 
-    
-      function createTrail(x, y, color) {
-        const radius = 3;
-    
-        const trail = document.createElement('div');
-        trail.style.position = 'absolute';
-        trail.style.left = `${x + radius}px`;
-        trail.style.top = `${y + radius}px`;
-        trail.style.width = '2px';
-        trail.style.height = '2px';
-        trail.style.borderRadius = '50%';
-        trail.style.background = color;
-        trail.style.opacity = '0.6';
-        trail.style.pointerEvents = 'none';
-        trail.style.zIndex = '1';
-        trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    
-        document.body.appendChild(trail);
-    
-        requestAnimationFrame(() => {
-          trail.style.opacity = '0';
-          trail.style.transform = 'scale(0.2)';
-        });
-    
-        setTimeout(() => {
-          trail.remove();
-        }, 600);
-      }
-    </script>
+    const trail = document.createElement('div');
+    trail.style.position = 'absolute';
+    trail.style.left = `${x + radius}px`;
+    trail.style.top = `${y + radius}px`;
+    trail.style.width = '2px';
+    trail.style.height = '2px';
+    trail.style.borderRadius = '50%';
+    trail.style.background = color;
+    trail.style.opacity = '0.6';
+    trail.style.pointerEvents = 'none';
+    trail.style.zIndex = '1';
+    trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+
+    document.body.appendChild(trail);
+
+    requestAnimationFrame(() => {
+      trail.style.opacity = '0';
+      trail.style.transform = 'scale(0.2)';
+    });
+
+    setTimeout(() => {
+      trail.remove();
+    }, 600);
+  }
+</script>
+
 
 
 
