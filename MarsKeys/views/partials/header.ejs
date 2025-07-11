@@ -96,6 +96,7 @@ if (eyebrow) {
   fadeIn([eyebrow], 1000, [255, 255, 255]);
 
   const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+  move.setAttribute('begin', '0.1s');
   move.setAttribute('attributeName', 'transform');
   move.setAttribute('type', 'translate');
   move.setAttribute('dur', '2s');
