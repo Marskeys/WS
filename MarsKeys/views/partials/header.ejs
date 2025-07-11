@@ -49,151 +49,108 @@
   obj.addEventListener('load', () => {
     const svgDoc = obj.contentDocument;
 
-    const whole = svgDoc.getElementById('whole');
-    const eyebrow = svgDoc.getElementById('eyebrow');
-    const glow = svgDoc.getElementById('glow');
+    const getAll = (prefix, count) =>
+      Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}_${i + 1}`)).filter(Boolean);
 
+    const fadeIn = (elements, duration = 1000, targetColor = 'white') => {
+      let t = 0;
+      const step = 16 / duration;
+
+      const animate = () => {
+        t += step;
+        if (t > 1) t = 1;
+
+        const color = `rgba(255,255,255,${t})`;
+        elements.forEach(el => el.setAttribute('fill', targetColor.startsWith('rgba') ? targetColor : color));
+
+        if (t < 1) requestAnimationFrame(animate);
+      };
+      animate();
+    };
+
+    // ✅ 필터 정의
     const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
 
-    // ✅ 고급 블루 글로우 필터
-    const glowFilter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-    glowFilter.setAttribute("id", "glow-gradient-blue");
-    glowFilter.innerHTML = `
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
-      <feFlood flood-color="deepskyblue" flood-opacity="1" result="flood"/>
-      <feComposite in="flood" in2="blur" operator="in" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    // glow 파란 글로우
+    const glowBlue = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowBlue.setAttribute("id", "glow-blue");
+    glowBlue.innerHTML = `
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="deepskyblue" flood-opacity="1"/>
     `;
-    defs.appendChild(glowFilter);
+    defs.appendChild(glowBlue);
 
-    // ✅ keys용 푸른 글로우 필터
-    const makeGlowFilter = (id, color, stdDev = 3) => {
-      const filter = svgDoc.createElementNS("http://www.w3.org/2000/svg", "filter");
-      filter.setAttribute("id", id);
-      filter.innerHTML = `
-        <feDropShadow dx="0" dy="0" stdDeviation="${stdDev}" flood-color="${color}" flood-opacity="1"/>
-      `;
-      return filter;
-    };
-    defs.appendChild(makeGlowFilter("glow-blue-static", "deepskyblue", 3));
+    // keys용 보라 글로우
+    const glowPurple = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowPurple.setAttribute("id", "glow-purple");
+    glowPurple.innerHTML = `
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a066ff" flood-opacity="1"/>
+    `;
+    defs.appendChild(glowPurple);
 
     svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
-    // ✅ keys 제외 목록
-    const excludedKeys = ['keys_1', 'keys_2', 'keys_3', 'keys_4'];
+    // ✅ human_1~5 + eyebrow 페이드인
+    const humans = getAll('human', 5);
+    const eyebrow = svgDoc.getElementById('eyebrow');
+    fadeIn([...humans, eyebrow]);
 
-    // ✅ whole 전체를 페이드인 (keys는 제외)
-    let wholeVisible = false;
-    if (whole) {
-      const paths = whole.querySelectorAll('*');
+    // ✅ eyebrow 위아래 움직임
+    if (eyebrow) {
+      const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+      move.setAttribute('attributeName', 'transform');
+      move.setAttribute('type', 'translate');
+      move.setAttribute('values', '0,-2; 0,2; 0,-2');
+      move.setAttribute('dur', '1s');
+      move.setAttribute('repeatCount', 'indefinite');
+      eyebrow.appendChild(move);
+    }
+
+    // ✅ glow 페이드인 후 점멸 반복
+    const glow = svgDoc.getElementById('glow');
+    if (glow) {
+      glow.setAttribute('filter', 'url(#glow-blue)');
       let t = 0;
+      let increasing = true;
 
-      // 모두 투명하게 시작 (keys 제외)
-      paths.forEach(el => {
-        if (!excludedKeys.includes(el.id)) {
-          el.setAttribute('fill', 'rgba(255,255,255,0)');
-        }
-      });
-
-      if (glow) {
-        const glowPaths = glow.querySelectorAll('*');
-        glowPaths.forEach(el => el.setAttribute('fill', 'rgba(255,255,255,0)'));
-      }
-
-      function animateFadeInOnce() {
-        t += 0.015;
+      function glowLoop() {
+        t += increasing ? 0.01 : -0.01;
         if (t >= 1) {
           t = 1;
-          wholeVisible = true;
-        } else {
-          requestAnimationFrame(animateFadeInOnce);
-        }
-
-        const alpha = t;
-        const fillColor = `rgba(255, 255, 255, ${alpha})`;
-
-        paths.forEach(el => {
-          if (!excludedKeys.includes(el.id)) {
-            el.setAttribute('fill', fillColor);
-          }
-        });
-
-        if (glow) {
-          const glowPaths = glow.querySelectorAll('*');
-          glowPaths.forEach(el => el.setAttribute('fill', fillColor));
-        }
-      }
-
-      animateFadeInOnce();
-    }
-
-    // ✅ eyebrow 위아래 애니메이션
-    if (eyebrow) {
-      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-      animate.setAttribute("attributeName", "transform");
-      animate.setAttribute("type", "translate");
-      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
-      animate.setAttribute("dur", "1s");
-      animate.setAttribute("repeatCount", "indefinite");
-      eyebrow.appendChild(animate);
-    }
-
-    // ✅ glow 애니메이션 (fill → 푸르게 점멸)
-    if (glow) {
-      glow.setAttribute('filter', 'url(#glow-gradient-blue)');
-      let increasing = true;
-      let glowT = 0;
-
-      function animateGlowPulse() {
-        if (!wholeVisible) {
-          requestAnimationFrame(animateGlowPulse);
-          return;
-        }
-
-        glowT += increasing ? 0.004 : -0.004;
-        if (glowT >= 1) {
-          glowT = 1;
           increasing = false;
-        } else if (glowT <= 0) {
-          glowT = 0;
+          glow.removeAttribute('filter');
+        } else if (t <= 0) {
+          t = 0;
           increasing = true;
+          glow.setAttribute('filter', 'url(#glow-blue)');
         }
 
-        const r = Math.floor(200 - glowT * 20); // 200 → 180
-        const g = Math.floor(230 - glowT * 10); // 230 → 220
+        const r = Math.floor(200 - t * 20);
+        const g = Math.floor(230 - t * 10);
         const b = 255;
-        const fillColor = `rgb(${r}, ${g}, ${b})`;
+        const fill = `rgb(${r}, ${g}, ${b})`;
+        const children = glow.querySelectorAll('*');
+        children.forEach(el => el.setAttribute('fill', fill));
+        glow.setAttribute('fill', fill);
 
-        const glowPaths = glow.querySelectorAll('*');
-        glowPaths.forEach(el => el.setAttribute('fill', fillColor));
+        requestAnimationFrame(glowLoop);
       }
 
-      animateGlowPulse();
+      fadeIn([glow], 1000, 'rgb(200,230,255)');
+      setTimeout(glowLoop, 1200);
     }
 
-    // ✅ keys_1~4: 항상 푸른 글로우 + 연보라 fill
-    for (let i = 1; i <= 4; i++) {
-  const el = svgDoc.getElementById(`keys_${i}`);
-  if (el) {
-    el.setAttribute('filter', 'url(#glow-blue-static)');
-    el.setAttribute('fill', '#bca3ff'); // ← 연보라 → 보라 강조
-  }
-}
+    // ✅ keys_1~4 연보라 + 보라 글로우로 페이드인
+    const keys = getAll('keys', 4);
+    keys.forEach(el => {
+      el.setAttribute('filter', 'url(#glow-purple)');
+      el.setAttribute('fill', '#e3d1ff'); // 연보라
+    });
 
-    // ✅ sonic, atelier: 흰색
-    const applyWhiteFill = (prefix, count) => {
-      for (let i = 1; i <= count; i++) {
-        const el = svgDoc.getElementById(`${prefix}_${i}`);
-        if (el) el.setAttribute('fill', 'white');
-      }
-    };
-    applyWhiteFill('sonic', 5);
-    applyWhiteFill('atelier', 7);
+    // ✅ sonic_1~5, atelier_1~7 흰색으로 페이드인
+    fadeIn([...getAll('sonic', 5), ...getAll('atelier', 7)]);
   });
 </script>
+
 
 
 
