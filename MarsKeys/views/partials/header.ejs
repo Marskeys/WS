@@ -1,5 +1,5 @@
 <header class="mk-header ">
-  <div class="logo-wrapper">
+  <div class="logo-wrapper" id="logoWrapper">
       <object id="logo" type="image/svg+xml" data="/assets/images/logo.svg"></object>
   </div>
 
@@ -62,3 +62,14 @@ obj.addEventListener('load', () => {
 });
 </script>
 
+<script>
+  const header = document.getElementById("mainHeader");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 100) {
+      header.classList.add("shrink");
+    } else {
+      header.classList.remove("shrink");
+    }
+  });
+</script>
