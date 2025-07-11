@@ -57,15 +57,22 @@ obj.addEventListener('load', () => {
     let t = 0;
 
     function animateFadeInOnce() {
-      t += 0.02; // 속도 조절: 0.01은 느림, 0.05는 빠름
+      t += 0.02;
       if (t >= 1) t = 1;
       else requestAnimationFrame(animateFadeInOnce);
 
       const alpha = t;
-      const color = `rgba(0, 0, 0, ${alpha})`; // 검정색으로 점점 나타나기
+      const color = `rgba(0, 0, 0, ${alpha})`;
 
-      paths.forEach(el => el.setAttribute('fill', color));
+      paths.forEach(el => {
+        el.setAttribute('fill', color);
+        el.setAttribute('stroke', 'white');
+        el.setAttribute('stroke-width', '0.5');
+      });
+
       whole.setAttribute('fill', color);
+      whole.setAttribute('stroke', 'white');
+      whole.setAttribute('stroke-width', '0.5');
     }
 
     animateFadeInOnce();
