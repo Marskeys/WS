@@ -103,46 +103,65 @@
       eyebrow.appendChild(move);
     }
 
-// ✅ glow: 페이드인 후 홀로그램 효과
+// ✅ glow: 페이드인 후 랜덤 홀로그램 or 회색 반복
 const glow = svgDoc.getElementById('glow');
 if (glow) {
   const children = glow.querySelectorAll('*');
 
-  // 초기 상태: 투명한 하얀색
-  children.forEach(el => el.setAttribute('fill', 'rgba(255,255,255,0)'));
-  glow.setAttribute('fill', 'rgba(255,255,255,0)');
+  // 초기 상태: 투명한 짙은 회색
+  const darkColor = 'rgba(34,34,34,0)';
+  children.forEach(el => el.setAttribute('fill', darkColor));
+  glow.setAttribute('fill', darkColor);
 
-  // ⏳ 페이드인
+  // ⏳ 페이드인 (짙은 회색으로)
   let t = 0;
   const duration = 1000;
   const step = 16 / duration;
   const fadeIn = () => {
     t += step;
     if (t > 1) t = 1;
-
-    const color = `rgba(255,255,255,${t})`;
+    const color = `rgba(34,34,34,${t})`;
     children.forEach(el => el.setAttribute('fill', color));
     glow.setAttribute('fill', color);
-
     if (t < 1) {
       requestAnimationFrame(fadeIn);
     } else {
-      startHologram();
+      startRandomBlink();
     }
   };
   fadeIn();
 
-  // 🌈 홀로그램 색상 루프
-  const startHologram = () => {
-    let hue = 0;
-    const loop = () => {
-      hue = (hue + 0.8) % 360;
-      const color = `hsl(${hue}, 100%, 85%)`;
+  // 🌈 랜덤 홀로그램 깜빡임
+  const hologramColors = [
+    'hsl(180, 100%, 85%)',
+    'hsl(220, 100%, 85%)',
+    'hsl(280, 100%, 85%)',
+    'hsl(320, 100%, 85%)',
+    '#222' // 어두운 원래색
+  ];
+
+  const startRandomBlink = () => {
+    const updateColor = () => {
+      // 무작위 색상 선택
+      const color = hologramColors[Math.floor(Math.random() * hologramColors.length)];
+
+      // 글로우 적용은 밝은 색상일 때만
+      const isGlow = color !== '#222';
+      if (isGlow) {
+        glow.setAttribute('filter', 'url(#glow-blue)');
+      } else {
+        glow.removeAttribute('filter');
+      }
+
       children.forEach(el => el.setAttribute('fill', color));
       glow.setAttribute('fill', color);
-      requestAnimationFrame(loop);
+
+      // 다음 색상 변경 시간 설정 (1~5초 사이)
+      const delay = 1000 + Math.random() * 4000;
+      setTimeout(updateColor, delay);
     };
-    loop();
+
+    updateColor();
   };
 }
 
