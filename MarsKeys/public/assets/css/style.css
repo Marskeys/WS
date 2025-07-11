@@ -2,6 +2,7 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 1rem;
+  padding-top: 2rem; /* 버튼 공간 확보 */
   background: radial-gradient(
     circle,
     rgba(25, 0, 187, 0.2) 5%,
@@ -155,20 +156,25 @@
 }
 
 /* 버튼 정렬 */
+/* ✅ 오른쪽 상단 버튼 */
 .auth-buttons {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
   display: flex;
   gap: 0.5rem;
+  z-index: 999;
 }
 
 .auth-button {
   color: white;
   text-decoration: none;
   background: #333;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
   font-size: 0.9rem;
-  transition: background 0.2s;
 }
+
 
 .auth-button:hover {
   background: #555;
