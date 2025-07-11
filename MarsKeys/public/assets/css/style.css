@@ -82,7 +82,7 @@
 
 /* 얇은 스티키 헤더 기본 상태: 숨김 */
 .sticky-header {
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 999;
   background: rgba(255, 255, 255, 0.95);
