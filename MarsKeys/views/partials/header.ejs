@@ -64,8 +64,8 @@
       return filter;
     };
 
-    defs.appendChild(makeGlowFilter("glow-red", "red", 4));
-    defs.appendChild(makeGlowFilter("glow-blue", "deepskyblue", 3)); // keys용 푸른 글로우
+    defs.appendChild(makeGlowFilter("glow-blue", "deepskyblue", 4));
+    defs.appendChild(makeGlowFilter("glow-blue-static", "deepskyblue", 3)); // keys용 고정
     svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
     // ✅ whole: 페이드인 (흰색 fill)
@@ -99,30 +99,31 @@
       eyebrow.appendChild(animate);
     }
 
-    // ✅ glow: 빨간 글로우 + 내부 빨간 fill 함께 천천히 켜졌다 꺼졌다
+    // ✅ glow: 부드러운 푸른 글로우 + 안쪽 밝은 하양 → 원래 하양으로 되돌아감
     const glow = svgDoc.getElementById('glow');
     if (glow) {
-      glow.setAttribute('filter', 'url(#glow-red)');
+      glow.setAttribute('filter', 'url(#glow-blue)');
       let increasing = true;
       let glowT = 0;
 
       function animateGlowPulse() {
-        glowT += increasing ? 0.01 : -0.01;
+        glowT += increasing ? 0.005 : -0.005;
         if (glowT >= 1) {
           glowT = 1;
           increasing = false;
-        } else if (glowT <= 0.2) {
-          glowT = 0.2;
+        } else if (glowT <= 0) {
+          glowT = 0;
           increasing = true;
         }
 
         const blur = 2 + glowT * 6;
-        const fillColor = `rgba(255, 0, 0, ${glowT.toFixed(2)})`;
+        const baseColor = 255;
+        const blueTint = Math.floor(255 - (1 - glowT) * 80); // 점점 파랗게 → 다시 하얗게
+        const fillColor = `rgb(${baseColor}, ${baseColor}, ${blueTint})`;
 
-        const shadow = defs.querySelector('#glow-red feDropShadow');
+        const shadow = defs.querySelector('#glow-blue feDropShadow');
         if (shadow) shadow.setAttribute('stdDeviation', blur.toFixed(2));
 
-        // 내부 색상도 점점 강하게
         const glowPaths = glow.querySelectorAll('*');
         glowPaths.forEach(el => el.setAttribute('fill', fillColor));
         glow.setAttribute('fill', fillColor);
@@ -136,7 +137,7 @@
     // ✅ keys_1~4: 푸른 글로우 (항상 켜짐)
     for (let i = 1; i <= 4; i++) {
       const el = svgDoc.getElementById(`keys_${i}`);
-      if (el) el.setAttribute('filter', 'url(#glow-blue)');
+      if (el) el.setAttribute('filter', 'url(#glow-blue-static)');
     }
 
     // ✅ sonic_1~5, atelier_1~7: 글로우 없이 흰색 fill
@@ -150,6 +151,7 @@
     applyWhiteFill('atelier', 7);
   });
 </script>
+
 
 
 <script>
