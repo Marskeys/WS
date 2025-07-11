@@ -2,38 +2,15 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 1rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgb(255, 255, 255, 0.95);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   top: 0;
   z-index: 100;
-  box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.6);
-  flex-direction: column;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.logo-wrapper {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  transition: all 0.3s ease;
-  opacity: 1;
-  height: auto;
-}
-
-.mk-header.shrink {
-  padding: 0.3rem 1rem;
-  flex-direction: row;
-  align-items: center;
-}
-
-.mk-header.shrink .logo-wrapper {
-  opacity: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
-  padding: 0;
+    /* ✨ 아래쪽만 부드럽게 떠 있는 느낌의 그림자 */
+    box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.6);
+    flex-direction: column; /* 모바일: 세로 배치 */
+    align-items: center;
 }
 
 .mk-logo a {
@@ -61,7 +38,12 @@
 }
 
 
-
+/* ✅ 로고 이미지 스타일 */
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.5rem;
+}
 
 .site-logo {
   height: 20px; /* 로고 크기 조절 */
