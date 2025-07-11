@@ -92,16 +92,38 @@
 
     // ✅ eyebrow 페이드인 + 애니메이션 루프
     const eyebrow = svgDoc.getElementById('eyebrow');
-    if (eyebrow) {
-      fadeIn([eyebrow], 1000, [255, 255, 255]);
-      const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-      move.setAttribute('attributeName', 'transform');
-      move.setAttribute('type', 'translate');
-      move.setAttribute('values', '0,-2; 0,2; 0,-2');
-      move.setAttribute('dur', '1s');
-      move.setAttribute('repeatCount', 'indefinite');
-      eyebrow.appendChild(move);
-    }
+if (eyebrow) {
+  fadeIn([eyebrow], 1000, [255, 255, 255]);
+
+  const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+  move.setAttribute('attributeName', 'transform');
+  move.setAttribute('type', 'translate');
+  move.setAttribute('dur', '1.5s');
+  move.setAttribute('repeatCount', 'indefinite');
+
+  // 👇 2번 들썩 (4단계) + 정지 구간 (1단계)
+  move.setAttribute('values', `
+    0,-2;
+    0,2;
+    0,-2;
+    0,2;
+    0,0
+  `.trim().replace(/\s+/g, ''));
+
+  // 👇 각 keyframe에 대한 시간 비율 (총 5단계)
+  move.setAttribute('keyTimes', '0;0.2;0.4;0.6;1');
+
+  // 👇 부드러운 타이밍 조절 (optional, 없애도 됨)
+  move.setAttribute('calcMode', 'spline');
+  move.setAttribute('keySplines', `
+    0.4 0 0.6 1;
+    0.4 0 0.6 1;
+    0.4 0 0.6 1;
+    0.4 0 0.6 1
+  `.trim().replace(/\s+/g, ''));
+
+  eyebrow.appendChild(move);
+}
 
 // ✅ glow: 페이드인 후 랜덤 홀로그램 or 회색 반복
 const glow = svgDoc.getElementById('glow');
