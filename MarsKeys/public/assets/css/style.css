@@ -2,11 +2,8 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 1rem;
-  background: radial-gradient(
-    circle 20% at center,
-    rgba(149, 170, 212, 0.6) 0%,
-    rgba(0, 0, 0, 0.85) 100%
-  );
+  background: radial-gradient(circle, rgb(0, 20, 60) 0%, rgb(0, 0, 0) 100%);
+
   backdrop-filter: blur(5px) brightness(2); /* 배경 흐림 + 밝기 강화 */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
