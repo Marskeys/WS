@@ -103,6 +103,15 @@
       eyebrow.appendChild(move);
     }
 
+// ✅ glow: 페이드인 후 홀로그램 효과
+const glow = svgDoc.getElementById('glow');
+if (glow) {
+  const children = glow.querySelectorAll('*');
+
+  // 초기 상태: 투명한 하얀색
+  children.forEach(el => el.setAttribute('fill', 'rgba(255,255,255,0)'));
+  glow.setAttribute('fill', 'rgba(255,255,255,0)');
+
   // ⏳ 페이드인
   let t = 0;
   const duration = 1000;
@@ -118,16 +127,16 @@
     if (t < 1) {
       requestAnimationFrame(fadeIn);
     } else {
-      startHologram(t);  // 현재 밝기 그대로 넘김
+      startHologram();
     }
   };
   fadeIn();
 
   // 🌈 홀로그램 색상 루프
-  const startHologram = (initialOpacity = 1) => {
-    let hue = 60; // 노란~흰톤부터 시작
+  const startHologram = () => {
+    let hue = 0;
     const loop = () => {
-      hue = (hue + 1.8) % 360;
+      hue = (hue + 0.8) % 360;
       const color = `hsl(${hue}, 100%, 85%)`;
       children.forEach(el => el.setAttribute('fill', color));
       glow.setAttribute('fill', color);
@@ -135,6 +144,7 @@
     };
     loop();
   };
+}
 
     // ✅ keys: 연보라 fill + 보라 glow + 페이드인
     const keys = getAll('keys', 4);
