@@ -132,12 +132,10 @@ if (glow) {
   fadeIn();
 
   const hologramColors = [
-  '#222', '#222', '#222', '#222', // 어두운 원래색 더 자주 등장
+  '#222', '#222', // 어두운 원래색 더 자주 등장
 
   'hsl(50, 100%, 85%)',      // 노란빛
   'rgba(255,255,255,1)',     // 하얀빛
-  'hsl(100, 100%, 85%)',     // 연두빛
-  'hsl(210, 100%, 85%)',     // 더 푸른 파란빛
   'hsl(280, 100%, 85%)',     // 보라빛
   'hsl(340, 100%, 85%)'      // 더 붉은 붉은빛
 ];
@@ -159,7 +157,7 @@ if (glow) {
       glow.setAttribute('fill', color);
 
       // 다음 색상 변경 시간 설정 (1~5초 사이)
-      const delay = 1000 + Math.random() * 4000;
+      const delay = 600 + Math.random() * 2000;
       setTimeout(updateColor, delay);
     };
 
