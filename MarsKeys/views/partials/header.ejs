@@ -51,10 +51,12 @@
 
     const whole = svgDoc.getElementById('whole');
     const eyebrow = svgDoc.getElementById('eyebrow');
+    const glow = svgDoc.getElementById('glow');
 
-    // ✅ 고급 그라데이션 블루 글로우 필터 정의
+    // ✅ 필터 정의
     const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
 
+    // 🔵 부드러운 파란 그라데이션 glow
     const glowFilter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
     glowFilter.setAttribute("id", "glow-gradient-blue");
     glowFilter.innerHTML = `
@@ -68,7 +70,7 @@
     `;
     defs.appendChild(glowFilter);
 
-    // keys용 고정 블루 필터도 추가
+    // keys용 고정 블루 필터
     const makeGlowFilter = (id, color, stdDev = 3) => {
       const filter = svgDoc.createElementNS("http://www.w3.org/2000/svg", "filter");
       filter.setAttribute("id", id);
@@ -81,36 +83,39 @@
 
     svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
-    // ✅ whole: 페이드인
+    // ✅ whole + glow 함께 페이드인
     if (whole) {
-      const paths = whole.querySelectorAll('*');
+      const allWholePaths = whole.querySelectorAll('*');
+      const glowPaths = glow ? glow.querySelectorAll('*') : [];
+
       let t = 0;
+      let glowAnimationStarted = false;
+
       function animateFadeInOnce() {
-        t += 0.02;
+        t += 0.015;
         if (t >= 1) t = 1;
         else requestAnimationFrame(animateFadeInOnce);
-        const color = `rgba(255, 255, 255, ${t})`;
-        paths.forEach(el => el.setAttribute('fill', color));
-        whole.setAttribute('fill', color);
+
+        const baseColor = 255;
+        const blueOffset = Math.floor((1 - t) * 30); // 아주 살짝 푸른기 → 점점 하얗게
+        const fillColor = `rgb(${baseColor - blueOffset}, ${baseColor - blueOffset}, ${baseColor})`;
+
+        allWholePaths.forEach(el => el.setAttribute('fill', fillColor));
+        whole.setAttribute('fill', fillColor);
+
+        // glow도 whole이 충분히 들어온 뒤에 등장 시작
+        if (glow && t >= 0.5 && !glowAnimationStarted) {
+          glow.setAttribute('filter', 'url(#glow-gradient-blue)');
+          startGlowPulse();
+          glowAnimationStarted = true;
+        }
       }
+
       animateFadeInOnce();
     }
 
-    // ✅ eyebrow: 위아래 애니메이션
-    if (eyebrow) {
-      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-      animate.setAttribute("attributeName", "transform");
-      animate.setAttribute("type", "translate");
-      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
-      animate.setAttribute("dur", "1s");
-      animate.setAttribute("repeatCount", "indefinite");
-      eyebrow.appendChild(animate);
-    }
-
-    // ✅ glow: 밝은 하양-푸른색 fill + 그라데이션 블루 글로우 → 흰색 복귀 반복
-    const glow = svgDoc.getElementById('glow');
-    if (glow) {
-      glow.setAttribute('filter', 'url(#glow-gradient-blue)');
+    // ✅ glow 푸른 점멸 효과 (중앙 밝고, 바깥 진함 → 다시 흰색 복귀 반복)
+    function startGlowPulse() {
       let increasing = true;
       let glowT = 0;
 
@@ -124,9 +129,9 @@
           increasing = true;
         }
 
-        const r = 255;
-        const g = 255;
-        const b = Math.floor(255 - (1 - glowT) * 150); // 점점 더 푸르게 → 다시 하양
+        const r = Math.floor(255 - glowT * 60); // 푸른기 더 뚜렷하게!
+        const g = Math.floor(255 - glowT * 60);
+        const b = 255;
         const fillColor = `rgb(${r}, ${g}, ${b})`;
 
         const glowPaths = glow.querySelectorAll('*');
@@ -137,6 +142,17 @@
       }
 
       animateGlowPulse();
+    }
+
+    // ✅ eyebrow: 위아래 애니메이션
+    if (eyebrow) {
+      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+      animate.setAttribute("attributeName", "transform");
+      animate.setAttribute("type", "translate");
+      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
+      animate.setAttribute("dur", "1s");
+      animate.setAttribute("repeatCount", "indefinite");
+      eyebrow.appendChild(animate);
     }
 
     // ✅ keys_1~4: 푸른 글로우 (항상 켜짐)
@@ -156,6 +172,7 @@
     applyWhiteFill('atelier', 7);
   });
 </script>
+
 
 
 
