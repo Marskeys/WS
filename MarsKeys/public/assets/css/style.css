@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 1rem;
-  padding-top: 2rem; /* 버튼 공간 확보 */
+  padding-top: 3rem; /* 버튼 공간 확보 */
   background: radial-gradient(
     circle,
     rgba(25, 0, 187, 0.2) 5%,
@@ -176,3 +176,10 @@
 .auth-button:hover {
   background: #555;
 }
+
+@media (max-width: 768px) {
+  .auth-button {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.5rem;
+  }
+  }
