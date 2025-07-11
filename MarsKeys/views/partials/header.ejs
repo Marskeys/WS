@@ -52,20 +52,16 @@
     const getAll = (prefix, count) =>
       Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}_${i + 1}`)).filter(Boolean);
 
-    // ✅ 페이드인: 원하는 RGB 색으로 투명도 조절
     const fadeIn = (elements, duration = 1000, baseColor = [255, 255, 255]) => {
       elements.forEach(el => el.setAttribute('fill', `rgba(${baseColor[0]},${baseColor[1]},${baseColor[2]},0)`));
-
       let t = 0;
       const step = 16 / duration;
       const animate = () => {
         t += step;
         if (t > 1) t = 1;
-
         const [r, g, b] = baseColor;
         const color = `rgba(${r},${g},${b},${t})`;
         elements.forEach(el => el.setAttribute('fill', color));
-
         if (t < 1) requestAnimationFrame(animate);
       };
       animate();
@@ -90,15 +86,14 @@
 
     svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
 
-    // ✅ human 페이드인
+    // ✅ human 계열 페이드인
     const humans = getAll('human', 5);
     fadeIn(humans, 1000, [255, 255, 255]);
 
-    // ✅ eyebrow: 페이드인 + 움직임
+    // ✅ eyebrow 페이드인 + 애니메이션 루프
     const eyebrow = svgDoc.getElementById('eyebrow');
     if (eyebrow) {
       fadeIn([eyebrow], 1000, [255, 255, 255]);
-
       const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
       move.setAttribute('attributeName', 'transform');
       move.setAttribute('type', 'translate');
@@ -108,34 +103,32 @@
       eyebrow.appendChild(move);
     }
 
-    // ✅ glow: 페이드인 + 점멸
+    // ✅ glow: 블루 테두리 + 밝은 블루 fill → 점멸
     const glow = svgDoc.getElementById('glow');
     if (glow) {
       const children = glow.querySelectorAll('*');
       children.forEach(el => el.setAttribute('fill', 'rgba(200,230,255,0)'));
       glow.setAttribute('filter', 'url(#glow-blue)');
 
-      // 페이드인
-      fadeIn([glow, ...children], 1200, [200, 230, 255]);
+      fadeIn([glow, ...children], 1000, [200, 230, 255]);
 
-      // 점멸
       let t = 0;
-      let increasing = true;
+      let increasing = false;
       setTimeout(() => {
         const loop = () => {
-          t += increasing ? 0.01 : -0.01;
-          if (t >= 1) {
-            t = 1;
-            increasing = false;
-            glow.removeAttribute('filter');
-          } else if (t <= 0) {
+          t += increasing ? 0.02 : -0.02;
+          if (t <= 0) {
             t = 0;
             increasing = true;
             glow.setAttribute('filter', 'url(#glow-blue)');
+          } else if (t >= 1) {
+            t = 1;
+            increasing = false;
+            glow.removeAttribute('filter');
           }
 
-          const r = Math.floor(200 - t * 20);
-          const g = Math.floor(230 - t * 10);
+          const r = Math.floor(200 + (255 - 200) * t);
+          const g = Math.floor(230 + (255 - 230) * t);
           const b = 255;
           const color = `rgb(${r},${g},${b})`;
 
@@ -153,9 +146,9 @@
     keys.forEach(el => {
       el.setAttribute('filter', 'url(#glow-purple)');
     });
-    fadeIn(keys, 1000, [226, 210, 255]); // 살짝 진한 연보라
+    fadeIn(keys, 1000, [226, 210, 255]);
 
-    // ✅ sonic, atelier: 흰색으로 페이드인
+    // ✅ sonic + atelier: 흰색 페이드인, 글로우 없음
     fadeIn([...getAll('sonic', 5), ...getAll('atelier', 7)], 1000, [255, 255, 255]);
   });
 </script>
