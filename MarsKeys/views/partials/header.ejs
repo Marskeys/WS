@@ -103,43 +103,28 @@
       eyebrow.appendChild(move);
     }
 
-    // ✅ glow: 파란 glow → 밝은 파란 fill → 하얀 fill 반복
-    const glow = svgDoc.getElementById('glow');
-    if (glow) {
-      const children = glow.querySelectorAll('*');
-      children.forEach(el => el.setAttribute('fill', 'rgba(200,230,255,0)'));
-      glow.setAttribute('filter', 'url(#glow-blue)');
+    // ✅ glow: 무지갯빛 홀로그램 효과
+const glow = svgDoc.getElementById('glow');
+if (glow) {
+  const children = glow.querySelectorAll('*');
 
-      fadeIn([glow, ...children], 1000, [200, 230, 255]);
+  // 초기 색상은 밝은 무채색
+  children.forEach(el => el.setAttribute('fill', 'hsl(0, 100%, 85%)'));
+  glow.setAttribute('fill', 'hsl(0, 100%, 85%)');
 
-      let t = 0;
-      let increasing = false;
-      setTimeout(() => {
-        const loop = () => {
-          t += increasing ? 0.02 : -0.02;
-          if (t <= 0) {
-            t = 0;
-            increasing = true;
-            glow.setAttribute('filter', 'url(#glow-blue)');
-          } else if (t >= 1) {
-            t = 1;
-            increasing = false;
-            glow.removeAttribute('filter');
-          }
+  // HSL 색조를 계속 순환시키는 루프
+  let hue = 0;
+  const loop = () => {
+    hue = (hue + 0.5) % 360; // 색조 회전
 
-          const r = Math.floor(200 + (255 - 200) * t);
-          const g = Math.floor(230 + (255 - 230) * t);
-          const b = 255;
-          const color = `rgb(${r},${g},${b})`;
+    const color = `hsl(${hue}, 100%, 85%)`;
+    children.forEach(el => el.setAttribute('fill', color));
+    glow.setAttribute('fill', color);
 
-          children.forEach(el => el.setAttribute('fill', color));
-          glow.setAttribute('fill', color);
-
-          requestAnimationFrame(loop);
-        };
-        loop();
-      }, 1300);
-    }
+    requestAnimationFrame(loop);
+  };
+  loop();
+}
 
     // ✅ keys: 연보라 fill + 보라 glow + 페이드인
     const keys = getAll('keys', 4);
