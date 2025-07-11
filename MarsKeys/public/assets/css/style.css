@@ -94,3 +94,22 @@
   padding-right: 0;
   margin-top: 0;
 }
+
+/* 얇은 스티키 헤더 기본 상태: 숨김 */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 1rem;
+  display: none; /* 처음엔 숨겨짐 */
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px -3px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.sticky-header.show {
+  display: flex;
+}

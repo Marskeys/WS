@@ -22,6 +22,12 @@
   </nav>
 </header>
 
+<header class="sticky-header" id="stickyHeader">
+  <nav class="mk-nav">
+    <!-- 메뉴들만 다시 -->
+  </nav>
+</header>
+
 <!-- JavaScript -->
 <script>
   const obj = document.getElementById('logo');
@@ -70,6 +76,19 @@ obj.addEventListener('load', () => {
       header.classList.add("shrink");
     } else {
       header.classList.remove("shrink");
+    }
+  });
+</script>
+
+<script>
+  const mainHeader = document.getElementById("mainHeader");
+  const stickyHeader = document.getElementById("stickyHeader");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > mainHeader.offsetHeight + 30) {
+      stickyHeader.classList.add("show");
+    } else {
+      stickyHeader.classList.remove("show");
     }
   });
 </script>
