@@ -44,63 +44,66 @@
 
 
 
-<!-- JavaScript -->
 <script>
   const obj = document.getElementById('logo');
-obj.addEventListener('load', () => {
-  const svgDoc = obj.contentDocument;
-  const whole = svgDoc.getElementById('whole');
-  const eyebrow = svgDoc.getElementById('eyebrow');
+  obj.addEventListener('load', () => {
+    const svgDoc = obj.contentDocument;
+    const whole = svgDoc.getElementById('whole');
+    const eyebrow = svgDoc.getElementById('eyebrow');
 
-  if (whole) {
-    const paths = whole.querySelectorAll('*');
-    let t = 0;
-
-    function animateFadeInOnce() {
-      t += 0.02;
-      if (t >= 1) t = 1;
-      else requestAnimationFrame(animateFadeInOnce);
-
-      const alpha = t;
-      const color = `rgba(0, 0, 0, ${alpha})`;
-
-      paths.forEach(el => {
-        el.setAttribute('fill', color);
-        el.setAttribute('stroke', 'white');
-        el.setAttribute('stroke-width', '0.5');
-      });
-
-      whole.setAttribute('fill', color);
-      whole.setAttribute('stroke', 'white');
-      whole.setAttribute('stroke-width', '0.5');
+    // ✅ 글로우 필터 추가
+    const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
+    const glowFilter = svgDoc.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowFilter.setAttribute("id", "glow");
+    glowFilter.innerHTML = `
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    `;
+    defs.appendChild(glowFilter);
+    if (!svgDoc.querySelector('defs')) {
+      svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
     }
 
-    animateFadeInOnce();
-  }
+    if (whole) {
+      const paths = whole.querySelectorAll('*');
+      let t = 0;
 
-  // 눈썹 애니메이션은 그대로 유지
-  if (eyebrow) {
-    const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-    animate.setAttribute("attributeName", "transform");
-    animate.setAttribute("type", "translate");
-    animate.setAttribute("values", "0,-2; 0,2; 0,-2");
-    animate.setAttribute("dur", "1s");
-    animate.setAttribute("repeatCount", "indefinite");
-    eyebrow.appendChild(animate);
-  }
-});
-</script>
+      function animateFadeInOnce() {
+        t += 0.02;
+        if (t >= 1) t = 1;
+        else requestAnimationFrame(animateFadeInOnce);
 
+        const alpha = t;
+        const color = `rgba(0, 0, 0, ${alpha})`;
 
-<script>
-  const mainHeader = document.getElementById("mainHeader");
-  const stickyHeader = document.getElementById("stickyHeader");
+        paths.forEach(el => {
+          el.setAttribute('fill', color);
+          el.setAttribute('stroke', 'white');
+          el.setAttribute('stroke-width', '0.5');
+          el.setAttribute('filter', 'url(#glow)');
+        });
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > mainHeader.offsetHeight + 30) {
-      stickyHeader.classList.add("show");
-    } else {
-      stickyHeader.classList.remove("show");
+        whole.setAttribute('fill', color);
+        whole.setAttribute('stroke', 'white');
+        whole.setAttribute('stroke-width', '0.5');
+        whole.setAttribute('filter', 'url(#glow)');
+      }
+
+      animateFadeInOnce();
+    }
+
+    // 눈썹 애니메이션 유지
+    if (eyebrow) {
+      const animate = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+      animate.setAttribute("attributeName", "transform");
+      animate.setAttribute("type", "translate");
+      animate.setAttribute("values", "0,-2; 0,2; 0,-2");
+      animate.setAttribute("dur", "1s");
+      animate.setAttribute("repeatCount", "indefinite");
+      eyebrow.appendChild(animate);
     }
   });
 </script>
