@@ -103,7 +103,7 @@
       eyebrow.appendChild(move);
     }
 
-/const glow = svgDoc.getElementById('glow');
+const glow = svgDoc.getElementById('glow');
 if (glow) {
   const children = glow.querySelectorAll('*');
 
@@ -133,7 +133,7 @@ if (glow) {
   // 루프: 색상만 계속 돌림
   const startHologram = () => {
     const loop = () => {
-      hue = (hue + 0.9) % 360;
+      hue = (hue + 1.5) % 360;
       const color = `hsl(${hue}, 100%, 85%)`;
       children.forEach(el => el.setAttribute('fill', color));
       glow.setAttribute('fill', color);
