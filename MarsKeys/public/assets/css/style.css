@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 1rem;
-  background: rgb(255, 255, 255, 0.8);
+  background: rgb(255, 255, 255, 0.95);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   top: 0;
@@ -28,7 +28,7 @@
 }
 
 .nav-icon {
-  color: white;
+  color: rgb(18, 1, 1);
   font-size: 1.3rem;
   transition: color 0.2s ease;
 }
