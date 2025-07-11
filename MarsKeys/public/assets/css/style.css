@@ -162,14 +162,14 @@
   left: 100%;
   transform: translateX(50%) translateY(-50%);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 12px;
 }
 
 .auth-button {
-  padding: 8px 16px;
+  padding: 8px 10px;
   border: 1px solid white;
   background-color: transparent;
   color: white;
@@ -191,7 +191,7 @@
   .auth-buttons {
     position: static;
     transform: none;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
     margin-top: 1rem;
   }
