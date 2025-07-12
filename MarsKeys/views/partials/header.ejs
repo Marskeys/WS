@@ -21,8 +21,13 @@
 <header class="mk-header" id="mainHeader">
   <!-- ✅ 오른쪽 상단 버튼 -->
   <div class="auth-buttons">
-    <a href="/signup" class="auth-button">회원가입</a>
-    <a href="/login" class="auth-button" id="login">로그인</a>
+    <% if (user) { %>
+      <span><strong><%= user.nickname %></strong>님, 안녕하세요!</span>
+      <a href="/logout" class="auth-button">로그아웃</a>
+    <% } else { %>
+      <a href="/signup" class="auth-button">회원가입</a>
+      <a href="/login" class="auth-button" id="login">로그인</a>
+    <% } %>
   </div>
 
   <div id="loginBox" style="display:none; position:absolute; z-index:9999;" class="hologram-border">
