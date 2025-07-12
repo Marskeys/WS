@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = formData.get("id");
     const password = formData.get("password");
 
+    console.log("🧪 로그인 시도:", id, password); // ✅ 이 줄을 JS 코드 안에 넣어야 해
+    
     try {
       const res = await fetch("/login", {
         method: "POST",
@@ -95,12 +97,3 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-loginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const formData = new FormData(loginForm);
-  const id = formData.get("id");
-  const password = formData.get("password");
-
-  console.log("🧪 로그인 시도:", id, password); // ✅ 이 줄을 JS 코드 안에 넣어야 해
-  ...
-});
