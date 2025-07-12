@@ -185,3 +185,17 @@
   right: 0;
   background: linear-gradient(to left, rgb(0, 0, 0), transparent);
 }
+
+.write-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #222;
+  color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+.write-button:hover {
+  background-color: #444;
+}
