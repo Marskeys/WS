@@ -82,6 +82,11 @@ body {
     text-decoration: none;
   }
 
+  .extra a:hover {
+    color: #ff823a;
+    text-decoration: underline;
+  }
+
   .error-msg {
     color: red;
     font-size: 0.9rem;
