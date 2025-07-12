@@ -554,12 +554,26 @@ body::-webkit-scrollbar {
 
 
 
+.timeline-section {
+  background-color: #f9f9f9;
+  padding: 3rem 1rem;
+  max-width: 700px;
+  margin: auto;
+}
+
+.timeline-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  color: #333;
+  font-weight: 600;
+}
+
 .timeline {
   position: relative;
-  margin: 3rem auto;
-  padding-left: 40px;
-  border-left: 3px solid rgba(255, 255, 255, 0.3);
-  max-width: 600px;
+  margin-left: 20px;
+  padding-left: 30px;
+  border-left: 3px solid #ccc;
 }
 
 .timeline-item {
@@ -574,13 +588,15 @@ body::-webkit-scrollbar {
   width: 20px;
   height: 20px;
   background-color: white;
-  border: 4px solid #00d1b2;
+  border: 4px solid #0077ff;
   border-radius: 50%;
 }
 
 .timeline-content {
-  color: white;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  padding-left: 10px;
+  color: #333;
+  font-size: 1.05rem;
+  background: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
