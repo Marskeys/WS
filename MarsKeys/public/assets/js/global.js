@@ -19,10 +19,8 @@ function positionMobileMenu() {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-
   positionMobileMenu();
 
-  // ✅ 로그인 관련 처리
   const loginForm = document.querySelector("#loginBox form");
   const loginBtn = document.getElementById("login");
   const loginBox = document.getElementById("loginBox");
@@ -55,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (loginBtn && loginBox) {
     loginBtn.addEventListener("click", (e) => {
-      e.preventDefault();  
+      e.preventDefault();
       e.stopPropagation();
 
       if (loginBox.style.display === "block") {
@@ -68,8 +66,22 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBox.style.left = (rect.right - loginBox.offsetWidth - 35) + window.scrollX + "px";
       }
     });
+
+    // ✅ 팝업 외부 클릭 시 닫기
+    document.addEventListener("click", (e) => {
+      const target = e.target;
+      if (
+        loginBox.style.display === "block" &&
+        !loginBox.contains(target) &&
+        target !== loginBtn
+      ) {
+        loginBox.style.display = "none";
+      }
+    });
   }
 });
+
+
 
 // ✅ 프리로더 제거
 window.addEventListener('DOMContentLoaded', () => {
