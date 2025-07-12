@@ -150,7 +150,6 @@
 }
 
 
-
 /* ✅ 오른쪽 상단 버튼 */
 .auth-buttons {
   position: absolute;
@@ -172,37 +171,60 @@
   overflow: hidden;
   z-index: 0;
   border: 2px solid black;
+  font-weight: bold;
+  transition: background 0.3s ease;
 }
 
 /* 전광판 LED 효과 */
 .auth-button::before {
   content: "";
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: 8px;
-  background-image: radial-gradient(
-    red 1.2px, transparent 1.2px
-  ), radial-gradient(
-    green 1.2px, transparent 1.2px
-  ), radial-gradient(
-    blue 1.2px, transparent 1.2px
-  ), radial-gradient(
-    yellow 1.2px, transparent 1.2px
-  );
-  background-size: 10px 10px;
-  background-position:
-    0 0, 5px 5px, 2px 7px, 7px 2px;
-  animation: ledTwinkle 1.5s linear infinite;
+  background-image:
+    radial-gradient(red 1px, transparent 1px),
+    radial-gradient(lime 1px, transparent 1px),
+    radial-gradient(deepskyblue 1px, transparent 1px),
+    radial-gradient(yellow 1px, transparent 1px);
+  background-size: 6px 6px;
+  background-position: 
+    0 0, 3px 3px, 1px 4px, 4px 1px;
+  animation: ledMove 2s linear infinite, hueShift 4s linear infinite;
   z-index: -1;
+  pointer-events: none;
 }
 
-/* LED 반짝임 */
-@keyframes ledTwinkle {
-  0%, 100% {
-    filter: brightness(1);
+/* LED 테두리 이동 느낌 */
+@keyframes ledMove {
+  0% {
+    background-position: 0 0, 3px 3px, 1px 4px, 4px 1px;
   }
-  50% {
-    filter: brightness(2);
+  100% {
+    background-position: 6px 6px, 9px 9px, 7px 10px, 10px 7px;
+  }
+}
+
+/* 색감 변화 */
+@keyframes hueShift {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+.auth-button:hover {
+  background: #222;
+  color: #fff700;
+  text-shadow: 0 0 5px yellow;
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .auth-button {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
   }
 }
 
