@@ -567,8 +567,14 @@ body::-webkit-scrollbar {
   transform: scale(1);
 }
 
-.about-me:hover {
+.about-me.hovered {
   transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
+
+.about-me.expanded,
+.about-me.expanded.hovered {
+  transform: none !important;
 }
 
 /* 커진 박스는 호버 무시 */
