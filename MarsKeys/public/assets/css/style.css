@@ -226,12 +226,11 @@
   left: 0;
   z-index: 9999;
   display: none;
-  background-color: #fff;
+  background-color: black;
   border: 1px solid #ddd;
   padding: 16px;
   width: 220px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
   font-family: sans-serif;
 }
 
