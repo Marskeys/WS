@@ -205,12 +205,12 @@
     transform: translate(0, 0); /* ✅ 오른쪽으로 이동 (안쪽으로 들어가지 않게) */
   }
   50% {
-    top: 98%;
+    top: 97%;
     left: 99%;
     transform: translate(0, 0); /* ✅ 오른쪽 아래 모서리 */
   }
   75% {
-    top: 98%;
+    top: 97%;
     left: -3px;
     transform: translate(0, 0); /* ✅ 왼쪽 아래 */
   }
