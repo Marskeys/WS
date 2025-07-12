@@ -267,3 +267,10 @@
   color: white;
   padding-right: 1rem;
 }
+
+@media (max-width: 768px) {
+  .welcome {
+    font-size: 0.7rem;
+    padding-right: 0.3rem;
+  }
+  }
