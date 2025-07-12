@@ -7,7 +7,7 @@ body {
 
 /* 컨테이너 */
 .signup-container {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(34, 26, 152, 0.6);
   border-radius: 0;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   width: 30%;
@@ -86,9 +86,9 @@ form {
   flex: 1;
   padding: 0.5rem 0.7rem;
   font-size: 0.95rem;
-  border: 1px solid #ccc;
+  border: 1px solid #323030;
   border-radius: 6px;
-  background-color: #504d4d !important;
+  background-color: #383535 !important;
   color: rgb(128, 125, 125);
 }
 
