@@ -42,6 +42,7 @@
 <body class="no-fixed-footer">
 
   <div class="signup-container hologram-border">
+    <div class="glow-ball"></div>
     <div class="logo-wrap">
       <img src="/assets/images/logo.svg" alt="BlindLove 로고" />
     </div>
@@ -90,5 +91,68 @@
       return; // 서비스 비활성화 중
     }
   </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const ball = document.querySelector(".glow-ball");
+    const container = document.querySelector(".signup-container");
+  
+    if (!ball || !container) return;
+  
+    container.style.position = 'relative';
+  
+    let t = 0;
+    const speed = 5; // 속도 조절
+    const offsetX = -6; // x축 이동량
+    const offsetY = -6; // y축 이동량
+
+    // ✅ 궤도 위치 계산 함수
+    const getPosition = (t) => {
+      const w = container.clientWidth - 2.5;
+      const h = container.clientHeight - 3;
+      const perimeter = 2 * (w + h);
+      const dist = (t * speed) % perimeter;
+
+      let x, y;
+      if (dist < w) {
+        x = dist;
+        y = 0;
+      } else if (dist < w + h) {
+        x = w;
+        y = dist - w;
+      } else if (dist < 2 * w + h) {
+        x = w - (dist - (w + h));
+        y = h;
+      } else {
+        x = 0;
+        y = h - (dist - (2 * w + h));
+      }
+
+      return { x, y };
+    };
+
+// ✅ 처음 위치 한번 미리 지정
+const { x: initX, y: initY } = getPosition(t);
+ball.style.left = `${initX + offsetX}px`;
+ball.style.top = `${initY + offsetY}px`;
+
+// 💡 다음 렌더 프레임에서 opacity 주기
+requestAnimationFrame(() => {
+  ball.style.opacity = 1; // ✅ 초기 위치 지정 후 공 나타나게
+});
+
+    // ✅ 애니메이션 시작
+    const updatePosition = () => {
+      const { x, y } = getPosition(t);
+      ball.style.left = `${x + offsetX}px`;
+      ball.style.top = `${y + offsetY}px`;
+
+      t += 1;
+      requestAnimationFrame(updatePosition);
+    };
+
+    updatePosition();
+  });
+</script>
 </body>
 </html>

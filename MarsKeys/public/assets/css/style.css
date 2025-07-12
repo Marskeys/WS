@@ -182,3 +182,40 @@
     font-size: 0.7rem;
   }
   }
+
+
+  /* 💡 공 본체 + 십자 글로우 */
+.glow-ball {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #e6ccff;
+  border-radius: 50%;
+  box-shadow:
+    0 0 8px #e6ccff,
+    0 0 15px #b388ff;
+  z-index: 2;
+  opacity: 0; /* ✅ 처음엔 안 보이게 */
+  transition: opacity 0.5s ease;
+}
+
+.glow-ball::before,
+.glow-ball::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 2px;
+  background: #e6ccff;
+  transform: translate(-50%, -50%);
+  filter: blur(6px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.glow-ball::after {
+  width: 2px;
+  height: 60px;
+}
