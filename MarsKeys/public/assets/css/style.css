@@ -196,7 +196,7 @@
 @keyframes orbit-border {
   0% {
     top: -4px;       /* 윗면 시작 */
-    left: 3px;
+    left: 4px;
     transform: translate(0, 0);
   }
   25% {
@@ -211,12 +211,12 @@
   }
   75% {
     top: 97%;
-    left: -3px;
+    left: -4px;
     transform: translate(0, 0); /* ✅ 왼쪽 아래 */
   }
   100% {
     top: -4px;
-    left: -3px;
+    left: -4px;
     transform: translate(0, 0); /* ✅ 돌아와 */
   }
 }
