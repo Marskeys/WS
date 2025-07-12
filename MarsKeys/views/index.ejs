@@ -212,6 +212,13 @@
 
   function moveSegment() {
     const latestPath = getBoxPath(targetBox);
+
+    if (!latestPath || latestPath.length < 2) {
+      // 경로가 너무 짧거나 이상하면 바로 다음으로
+      ball.dataset.busy = "false";
+      return next();
+    }
+
     if (i >= latestPath.length - 1) {
       ball.dataset.busy = "false";
       return next();
@@ -221,6 +228,11 @@
 
     function stepMove() {
       const refreshedPath = getBoxPath(targetBox);
+      if (!refreshedPath[i + 1]) {
+        ball.dataset.busy = "false";
+        return next();
+      }
+
       const [x1, y1] = refreshedPath[i];
       const [x2, y2] = refreshedPath[i + 1];
       const dx = (x2 - x1) / steps;
@@ -229,6 +241,12 @@
       if (step <= steps) {
         const x = x1 + dx * step;
         const y = y1 + dy * step;
+
+        if (!isFinite(x) || !isFinite(y)) {
+          ball.dataset.busy = "false";
+          return next();
+        }
+
         ball.style.left = x + 'px';
         ball.style.top = y + 'px';
         createTrail(x, y, ball.style.background);
