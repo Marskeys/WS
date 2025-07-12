@@ -201,16 +201,16 @@
   }
   25% {
     top: -4px;
-    left: 98%;
+    left: 97%;
     transform: translate(0, 0); /* ✅ 오른쪽으로 이동 (안쪽으로 들어가지 않게) */
   }
   50% {
-    top: 97%;
-    left: 99%;
+    top: 96%;
+    left: 97%;
     transform: translate(0, 0); /* ✅ 오른쪽 아래 모서리 */
   }
   75% {
-    top: 97%;
+    top: 96%;
     left: -4px;
     transform: translate(0, 0); /* ✅ 왼쪽 아래 */
   }
