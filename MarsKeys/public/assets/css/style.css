@@ -150,17 +150,6 @@
 }
 
 
-/* ✅ 오른쪽 상단 버튼 */
-.auth-buttons {
-  position: absolute;
-  top: 0.7rem;
-  right: 1rem;
-  display: flex;
-  gap: 0.6rem;
-  z-index: 999;
-}
-
-
 .auth-button {
   position: relative;
   display: inline-block;
@@ -174,71 +163,31 @@
   overflow: hidden;
   z-index: 0;
   cursor: pointer;
-  text-decoration: none;  /* ✅ 밑줄 제거 */
+  text-decoration: none;
 }
 
-/* LED 공 효과 + 글로우 추가 */
-.auth-button::before {
+/* ✅ 테두리를 따라 도는 노란 공 하나 */
+.auth-button::after {
   content: '';
   position: absolute;
-  top: -6px;
-  left: -6px;
-  width: calc(100% + 12px);
-  height: calc(100% + 12px);
-  border-radius: 12px;
-  background:
-    radial-gradient(circle, rgba(0, 255, 255, 1) 20%, transparent 70%) 0 0,
-    radial-gradient(circle, rgba(255, 0, 255, 1) 20%, transparent 70%) 100% 0,
-    radial-gradient(circle, rgba(0, 255, 0, 1) 20%, transparent 70%) 0 100%,
-    radial-gradient(circle, rgba(255, 255, 0, 1) 20%, transparent 70%) 100% 100%;
-  background-size: 10px 10px;
-  background-repeat: no-repeat;
-  animation: led-glow 2s linear infinite;
-  filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.7))
-          drop-shadow(0 0 6px rgba(255, 0, 255, 0.7))
-          drop-shadow(0 0 6px rgba(0, 255, 0, 0.7))
-          drop-shadow(0 0 6px rgba(255, 255, 0, 0.7));
-  z-index: -1;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: yellow;
+  box-shadow: 0 0 6px 2px rgba(255, 255, 0, 0.8);
+  animation: orbit 3s linear infinite;
+  z-index: 1;
 }
 
-/* LED 공이 테두리를 따라 움직이는 애니메이션 */
-@keyframes led-glow {
-  0% {
-    background-position:
-      0% 0%,
-      100% 0%,
-      0% 100%,
-      100% 100%;
-  }
-  25% {
-    background-position:
-      50% 0%,
-      100% 50%,
-      50% 100%,
-      0% 50%;
-  }
-  50% {
-    background-position:
-      100% 0%,
-      100% 100%,
-      0% 100%,
-      0% 0%;
-  }
-  75% {
-    background-position:
-      50% 0%,
-      0% 50%,
-      50% 100%,
-      100% 50%;
-  }
-  100% {
-    background-position:
-      0% 0%,
-      100% 0%,
-      0% 100%,
-      100% 100%;
-  }
+/* ✅ 테두리 경계를 따라 한 바퀴 도는 애니메이션 */
+@keyframes orbit {
+  0%   { top: -5px; left: -5px; }
+  25%  { top: -5px; left: 100%; transform: translateX(-100%); }
+  50%  { top: 100%; left: 100%; transform: translate(-100%, -100%); }
+  75%  { top: 100%; left: -5px; transform: translateY(-100%); }
+  100% { top: -5px; left: -5px; }
 }
+
 
 @media (max-width: 768px) {
   .auth-button {
