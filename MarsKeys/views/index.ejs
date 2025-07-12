@@ -86,7 +86,7 @@
         </iframe>
       </div>
       <div class="grid-item small hologram-border"></div>
-      <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">About Me </div>
+      <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">About </div>
 
       <div class="grid-item big hologram-border"> <%- include('partials/table') %> </div>
     
@@ -313,35 +313,6 @@
     element.classList.add('large');
   }
 }
-
-function toggleSize(el) {
-  // 모든 아이템에서 hovered 제거 (hover 잔상 제거)
-  document.querySelectorAll('.grid-item').forEach(item => {
-    item.classList.remove('hovered');
-  });
-
-  const isExpanded = el.classList.contains('expanded');
-
-  if (isExpanded) {
-    el.classList.remove('expanded');
-    el.classList.add('about-me');
-  } else {
-    el.classList.remove('about-me');
-    el.classList.add('expanded');
-  }
-
-  // scrollIntoView는 선택
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-document.querySelectorAll('.grid-item.small').forEach(el => {
-  el.addEventListener('touchstart', () => {
-    el.classList.add('hovered');
-  });
-  el.addEventListener('touchend', () => {
-    el.classList.remove('hovered');
-  });
-});
 </script>
 
 
