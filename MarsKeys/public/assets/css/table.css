@@ -50,6 +50,7 @@
       display: block;
       padding: 0rem 1rem;
       background: transparent;
+      position: relative;
     }
   
     .mobile-post-item {
@@ -163,39 +164,21 @@
     z-index: 2;
   }
 
-  .tabs-blur-left,
-.tabs-blur-right {
-  position: absolute;
-  top: 5px;
-  height: 20px;  /* ✅ 원하는 높이 설정 */
-  bottom: auto;  /* ✅ 반드시 초기화해줘야 위에 덮어씀 */
-  width: 20px;
-  pointer-events: none;
-  z-index: 1;
-}
 
-.tabs-blur-left {
-  z-index:0;
-  left: 0;
-  background: linear-gradient(to right, rgb(0, 0, 0), transparent);
-}
-
-.tabs-blur-right {
-  z-index:0;
-  right: 0;
-  background: linear-gradient(to left, rgb(0, 0, 0), transparent);
-}
-
-.write-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #222;
-  color: #fff;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-}
-.write-button:hover {
-  background-color: #444;
-}
+  .write-button {
+    position: absolute;  /* 절대 위치 설정 */
+    top: 10px;            /* 위에서 10px 떨어짐 */
+    right: 10px;          /* 오른쪽에서 10px 떨어짐 */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #222;
+    color: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  
+  .write-button:hover {
+    background-color: #444;
+  }
