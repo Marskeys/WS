@@ -96,13 +96,12 @@ form {
 input[type="text"],
 input[type="email"],
 input[type="password"] {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #504d4d !important;
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.95rem;
+  border: 1px solid #323030;
+  border-radius: 6px;
+  background-color: #383535 !important;
   color: rgb(128, 125, 125);
 }
 
