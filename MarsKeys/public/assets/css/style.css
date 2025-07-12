@@ -201,12 +201,12 @@
   }
   25% {
     top: -2px;
-    left: 100%;
+    left: 99%;
     transform: translate(0, 0); /* ✅ 오른쪽으로 이동 (안쪽으로 들어가지 않게) */
   }
   50% {
     top: 100%;
-    left: 100%;
+    left: 99%;
     transform: translate(0, 0); /* ✅ 오른쪽 아래 모서리 */
   }
   75% {
