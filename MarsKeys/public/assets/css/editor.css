@@ -396,6 +396,11 @@ body {
   margin-left: 1em;
 }
 
+.color-tool {
+  position: relative; /* ✅ 이거 추가 */
+  display: inline-block;
+}
+
 .color-tool:hover .color-palette,
 .color-palette:hover {
   display: flex;
