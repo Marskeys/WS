@@ -203,19 +203,16 @@
     ball.style.opacity = collided ? '0' : '1';
   }
 
-  function moveBall(ball, originalPath, next) {
+  function moveBall(ball, targetBox, next) {
   if (ball.dataset.busy === "true") return;
   ball.dataset.busy = "true";
 
   let i = 0;
   const steps = 120;
-  const targetBox = items.find(box => {
-    const boxPath = getBoxPath(box);
-    return JSON.stringify(boxPath) === JSON.stringify(originalPath);
-  }) || items[0]; // fallback
 
   function moveSegment() {
-    if (i >= originalPath.length - 1) {
+    const latestPath = getBoxPath(targetBox);
+    if (i >= latestPath.length - 1) {
       ball.dataset.busy = "false";
       return next();
     }
@@ -223,26 +220,17 @@
     let step = 0;
 
     function stepMove() {
+      const refreshedPath = getBoxPath(targetBox);
+      const [x1, y1] = refreshedPath[i];
+      const [x2, y2] = refreshedPath[i + 1];
+      const dx = (x2 - x1) / steps;
+      const dy = (y2 - y1) / steps;
+
       if (step <= steps) {
-        const latestPath = getBoxPath(targetBox); // 💡 올바른 box 기준으로 path 갱신
-        if (!latestPath[i + 1]) {
-          // 예외 방어
-          ball.dataset.busy = "false";
-          return;
-        }
-
-        const [x1, y1] = latestPath[i];
-        const [x2, y2] = latestPath[i + 1];
-
-        const dx = (x2 - x1) / steps;
-        const dy = (y2 - y1) / steps;
-
         const x = x1 + dx * step;
         const y = y1 + dy * step;
-
         ball.style.left = x + 'px';
         ball.style.top = y + 'px';
-
         createTrail(x, y, ball.style.background);
         step++;
         requestAnimationFrame(stepMove);
@@ -257,35 +245,20 @@
 
   moveSegment();
 }
-    }
 
-    stepMove();
+function startLoop(ball, offset = 0) {
+  let current = offset % items.length;
+
+  function loop() {
+    const box = items[current];
+    moveBall(ball, box, () => {
+      current = (current + 1) % items.length;
+      setTimeout(loop, 300);
+    });
   }
 
-  moveSegment();
+  loop();
 }
-    }
-
-    stepMove();
-  }
-
-  moveSegment();
-}
-
-  function startLoop(ball, offset = 0) {
-    let current = offset % items.length;
-
-    function loop() {
-      const box = items[current];
-      const path = getBoxPath(box);
-      moveBall(ball, path, () => {
-        current = (current + 1) % items.length;
-        setTimeout(loop, 300);
-      });
-    }
-
-    loop();
-  }
 
   window.addEventListener('load', () => {
     balls.forEach((ball, i) => {
