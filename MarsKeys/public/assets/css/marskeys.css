@@ -562,7 +562,11 @@ body::-webkit-scrollbar {
   }
 }
 
+.about-me {
+  transition: transform 0.5s ease;
+  transform: scale(1);
+}
+
 .about-me:hover {
-  scale: 1.2;
-  transition: all 0.5s ease;
+  transform: scale(1.2);
 }
