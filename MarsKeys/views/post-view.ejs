@@ -501,6 +501,131 @@ requestAnimationFrame(() => {
   });
 </script>
 
+<script>
+  const obj = document.getElementById('logo');
+  obj.addEventListener('load', () => {
+    const svgDoc = obj.contentDocument;
+
+    const getAll = (prefix, count) =>
+      Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}${i + 1}`)).filter(Boolean);
+
+    const fadeIn = (elements, duration = 1000, baseColor = [255, 255, 255]) => {
+      elements.forEach(el => el.setAttribute('fill', `rgba(${baseColor[0]},${baseColor[1]},${baseColor[2]},0)`));
+      let t = 0;
+      const step = 16 / duration;
+      const animate = () => {
+        t += step;
+        if (t > 1) t = 1;
+        const [r, g, b] = baseColor;
+        const color = `rgba(${r},${g},${b},${t})`;
+        elements.forEach(el => el.setAttribute('fill', color));
+        if (t < 1) requestAnimationFrame(animate);
+      };
+      animate();
+    };
+
+    // ✅ 필터 정의
+    const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+    const glowBlue = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowBlue.setAttribute("id", "glow-blue");
+    glowBlue.innerHTML = `
+      <feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="deepskyblue" flood-opacity="1"/>
+    `;
+    defs.appendChild(glowBlue);
+
+    const glowPurple = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowPurple.setAttribute("id", "glow-purple");
+    glowPurple.innerHTML = `
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a066ff" flood-opacity="1"/>
+    `;
+    defs.appendChild(glowPurple);
+
+    svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
+
+    // ✅ human 계열 페이드인
+    const humans = getAll('human', 5);
+    fadeIn(humans, 1000, [255, 255, 255]);
+
+    // ✅ signup1~4 페이드인 (기존 sonic + atelier 대체)
+    const signups = getAll('signup', 4);
+    fadeIn(signups, 1000, [255, 255, 255]);
+
+    // ✅ eyebrow 페이드인 + 애니메이션 루프
+    const eyebrow = svgDoc.getElementById('eyebrow');
+    if (eyebrow) {
+      fadeIn([eyebrow], 1000, [255, 255, 255]);
+
+      const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+      move.setAttribute('attributeName', 'transform');
+      move.setAttribute('type', 'translate');
+      move.setAttribute('dur', '2s');
+      move.setAttribute('repeatCount', 'indefinite');
+      move.setAttribute('values', '0,0;0,0;0,0;0,-2;0,2;0,-2;0,0;0,0');
+      move.setAttribute('keyTimes', '0;0.1;0.2;0.3;0.5;0.7;0.9;1');
+      move.setAttribute('calcMode', 'spline');
+      move.setAttribute('keySplines', '0 0 1 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1');
+      eyebrow.appendChild(move);
+    }
+
+    // ✅ glow: 페이드인 후 랜덤 홀로그램 or 회색 반복
+    const glow = svgDoc.getElementById('glow');
+    if (glow) {
+      const children = glow.querySelectorAll('*');
+      const darkColor = 'rgba(34,34,34,0)';
+      children.forEach(el => el.setAttribute('fill', darkColor));
+      glow.setAttribute('fill', darkColor);
+
+      let t = 0;
+      const duration = 1000;
+      const step = 16 / duration;
+      const fadeIn = () => {
+        t += step;
+        if (t > 1) t = 1;
+        const color = `rgba(34,34,34,${t})`;
+        children.forEach(el => el.setAttribute('fill', color));
+        glow.setAttribute('fill', color);
+        if (t < 1) {
+          requestAnimationFrame(fadeIn);
+        } else {
+          startRandomBlink();
+        }
+      };
+      fadeIn();
+
+      const hologramColors = [
+        '#222', '#222', '#222',
+        'hsl(45, 100%, 65%)',
+        'rgba(255,255,255,1)',
+        'hsl(100, 100%, 85%)',
+        'hsl(210, 100%, 85%)',
+        'hsl(280, 100%, 85%)',
+        'hsl(340, 100%, 85%)'
+      ];
+
+      const startRandomBlink = () => {
+        const updateColor = () => {
+          const color = hologramColors[Math.floor(Math.random() * hologramColors.length)];
+          const isGlow = color !== '#222';
+          if (isGlow) {
+            glow.setAttribute('filter', 'url(#glow-blue)');
+          } else {
+            glow.removeAttribute('filter');
+          }
+
+          children.forEach(el => el.setAttribute('fill', color));
+          glow.setAttribute('fill', color);
+
+          const delay = 600 + Math.random() * 2000;
+          setTimeout(updateColor, delay);
+        };
+
+        updateColor();
+      };
+    }
+  });
+</script>
+
 
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
