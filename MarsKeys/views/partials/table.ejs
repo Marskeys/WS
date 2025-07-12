@@ -39,7 +39,7 @@
             <% } %>
             <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
           </a>
-          <% if (user && (user.id === post.user_id || user.role === 'admin')) { %>
+          <% if (user && (user.id === post.user_id || user.is_admin)) { %>
             <div class="action-icons">
               <a href="/edit/<%= post.id %>" class="icon-btn"><i class="fas fa-pen"></i></a>
               <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
