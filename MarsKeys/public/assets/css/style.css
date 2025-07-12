@@ -175,29 +175,52 @@
 }
 
 /* 별 반짝임 효과 */
-.auth-button::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: 
-    radial-gradient(white 1px, transparent 1px),
-    radial-gradient(white 1px, transparent 1px);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
-  animation: sparkle 10s linear infinite;
-  opacity: 0.3;
-  z-index: -1;
+.auth-button {
+  position: relative;
+  color: white;
+  text-decoration: none;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  overflow: hidden;
+  z-index: 0;
 }
 
-@keyframes sparkle {
-  0% {
-    transform: translate(0, 0);
+/* 별 컨테이너 */
+.auth-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 여러 개의 반짝이는 별 */
+.auth-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px),
+    radial-gradient(white 1px, transparent 1px);
+  background-size: 100% 100%;
+  animation: twinkle 2s infinite ease-in-out;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.6;
   }
-  100% {
-    transform: translate(30px, 30px);
+  50% {
+    opacity: 0.1;
   }
 }
 
