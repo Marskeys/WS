@@ -155,8 +155,8 @@
 /* ✅ 오른쪽 상단 버튼 */
 .auth-buttons {
   position: absolute;
-  top: 0.7rem;
-  right: 1rem;
+  top: 1rem;
+  right: 1.3rem;
   display: flex;
   gap: 0.6rem;
   z-index: 999;
