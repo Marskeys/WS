@@ -176,23 +176,27 @@
   cursor: pointer;
 }
 
-/* LED 공 효과 */
+/* LED 공 효과 + 글로우 추가 */
 .auth-button::before {
   content: '';
   position: absolute;
-  top: -5px;
-  left: -5px;
-  width: calc(100% + 10px);
-  height: calc(100% + 10px);
+  top: -6px;
+  left: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  border-radius: 12px;
   background:
-    radial-gradient(circle, #00faff, transparent 40%) 0 0,
-    radial-gradient(circle, #ff00ff, transparent 40%) 100% 0,
-    radial-gradient(circle, #00ff00, transparent 40%) 0 100%,
-    radial-gradient(circle, #ffff00, transparent 40%) 100% 100%;
-  background-size: 20% 20%;
+    radial-gradient(circle, rgba(0, 255, 255, 1) 20%, transparent 70%) 0 0,
+    radial-gradient(circle, rgba(255, 0, 255, 1) 20%, transparent 70%) 100% 0,
+    radial-gradient(circle, rgba(0, 255, 0, 1) 20%, transparent 70%) 0 100%,
+    radial-gradient(circle, rgba(255, 255, 0, 1) 20%, transparent 70%) 100% 100%;
+  background-size: 20px 20px;
   background-repeat: no-repeat;
   animation: led-glow 2s linear infinite;
-  border-radius: 12px;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 255, 0.7))
+          drop-shadow(0 0 6px rgba(255, 0, 255, 0.7))
+          drop-shadow(0 0 6px rgba(0, 255, 0, 0.7))
+          drop-shadow(0 0 6px rgba(255, 255, 0, 0.7));
   z-index: -1;
 }
 
