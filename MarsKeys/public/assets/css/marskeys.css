@@ -569,9 +569,11 @@ body::-webkit-scrollbar {
 
 .about-me:hover {
   transform: scale(1.2);
+  z-index:9999;
 }
 
 /* 커진 박스는 호버 무시 */
 .grid-item.large:hover {
   transform: none;
+  z-index: 9999;
 }
