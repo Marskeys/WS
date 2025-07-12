@@ -59,7 +59,6 @@ body::-webkit-scrollbar {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
     overflow: hidden;
-    transition: all 0.3s ease-in-out;
   }
   
   /* ✅ 크기 다양화 */
@@ -561,4 +560,8 @@ body::-webkit-scrollbar {
     grid-column: span 2 !important;
     grid-row: span 2 !important;
   }
+}
+
+.about-me:hover {
+  scale: 1.8;
 }
