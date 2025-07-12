@@ -310,9 +310,11 @@
     el.classList.add('large');
   }
 
-  // ✅ 여기서 브라우저가 layout 갱신할 수 있도록 한 프레임 기다려줌
+  // ✅ 두 번 감싸서 브라우저가 layout 확실히 반영할 시간 확보
   requestAnimationFrame(() => {
-    updateAllBallPaths(); // 전체 박스 궤적 다시 반영
+    requestAnimationFrame(() => {
+      updateAllBallPaths();
+    });
   });
 
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
