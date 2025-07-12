@@ -43,8 +43,8 @@
 
   <div class="signup-container hologram-border">
     <div class="glow-ball"></div>
-    <div class="logo-wrap">
-      <img src="/assets/images/signup.svg" alt="MarsKeys 로고" />
+    <div class="logo-wrap" id="logoWrap">
+      <object id="logo" type="image/svg+xml" data="/assets/images/signup.svg"></object>
     </div>
 
     <div class="notice-wrap">
@@ -156,7 +156,7 @@ requestAnimationFrame(() => {
 </script>
 
 <script>
-  const obj = document.getElementById('logo');
+  const obj = document.getElementById('');
   obj.addEventListener('load', () => {
     const svgDoc = obj.contentDocument;
 
