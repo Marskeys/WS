@@ -305,8 +305,13 @@
   }
 
   function toggleSize(element) {
-  element.classList.toggle('small');
-  element.classList.toggle('large');
+  if (element.classList.contains('large')) {
+    element.classList.remove('large');
+    element.classList.add('small');
+  } else {
+    element.classList.remove('small');
+    element.classList.add('large');
+  }
 }
 </script>
 
