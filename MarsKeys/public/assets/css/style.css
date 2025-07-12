@@ -245,13 +245,11 @@
 #loginBox input[type="password"] {
   padding: 8px;
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
 #loginBox button {
   padding: 8px;
-  background-color: #007bff;
+  background-color: rgba(164, 7, 7, 0.8);
   color: white;
   font-weight: bold;
   border: none;
