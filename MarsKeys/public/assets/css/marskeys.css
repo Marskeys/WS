@@ -41,6 +41,7 @@ body::-webkit-scrollbar {
     width: 100%;
     margin: 0 auto;
     padding: 1rem;
+    transition: all 0.3s ease-in-out;
     /* padding: 1rem; */
   /*  grid-auto-flow: dense; ✅ 가능한 공간에 끼워넣기 허용 */
   }
