@@ -167,14 +167,15 @@
 
   .write-button {
     position: absolute;  /* 절대 위치 설정 */
-    top: 10px;            /* 위에서 10px 떨어짐 */
+    top: 15px;            /* 위에서 10px 떨어짐 */
     right: 10px;          /* 오른쪽에서 10px 떨어짐 */
     display: inline-block;
-    padding: 10px 20px;
+    padding: 7px 10px;
     background-color: #222;
     color: #fff;
     border-radius: 6px;
     text-decoration: none;
+    font-size: 0.7rem;
     font-weight: bold;
     transition: background-color 0.2s ease;
   }
