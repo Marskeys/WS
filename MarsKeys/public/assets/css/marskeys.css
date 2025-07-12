@@ -565,6 +565,7 @@ body::-webkit-scrollbar {
 .about-me {
   transition: transform 0.5s ease;
   transform: scale(1);
+  position: relative;
 }
 
 .about-me:hover {
