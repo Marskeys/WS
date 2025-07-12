@@ -204,7 +204,7 @@
   }
 
   function moveBall(ball, path, next) {
-  if (ball.dataset.busy === "true") return; // 이미 이동 중이면 무시
+  if (ball.dataset.busy === "true") return;
   ball.dataset.busy = "true";
 
   let i = 0;
@@ -216,24 +216,38 @@
       return next();
     }
 
-    const [x1, y1] = path[i];
-    const [x2, y2] = path[i + 1];
-    const dx = (x2 - x1) / steps;
-    const dy = (y2 - y1) / steps;
     let step = 0;
 
     function stepMove() {
       if (step <= steps) {
-        ball.style.left = (x1 + dx * step) + 'px';
-        ball.style.top = (y1 + dy * step) + 'px';
+        // 매 스텝마다 최신 경로 다시 계산
+        const latestPath = getBoxPath(items[i % items.length]);
+        const [x1, y1] = latestPath[i];
+        const [x2, y2] = latestPath[i + 1];
 
-        createTrail(x1 + dx * step, y1 + dy * step, ball.style.background);
+        const dx = (x2 - x1) / steps;
+        const dy = (y2 - y1) / steps;
+
+        const x = x1 + dx * step;
+        const y = y1 + dy * step;
+
+        ball.style.left = x + 'px';
+        ball.style.top = y + 'px';
+
+        createTrail(x, y, ball.style.background);
         step++;
         requestAnimationFrame(stepMove);
       } else {
         i++;
         moveSegment();
       }
+    }
+
+    stepMove();
+  }
+
+  moveSegment();
+}
     }
 
     stepMove();
