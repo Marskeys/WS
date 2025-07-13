@@ -59,6 +59,7 @@ body::-webkit-scrollbar {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
     overflow: hidden;
+    grid-auto-rows: auto;
   }
   
   /* ✅ 크기 다양화 */
