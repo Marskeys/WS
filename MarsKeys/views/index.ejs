@@ -329,6 +329,10 @@ function startLoop(ball, offset = 0) {
   function toggleSize(el) {
   const isLarge = el.classList.contains('large');
   el.classList.toggle("expanded");
+  const image = el.querySelector(".about-image");
+if (image) {
+  image.classList.toggle("hidden");
+}
   if (isLarge) {
     el.classList.remove('large');
     el.classList.add('about-me', 'small');
