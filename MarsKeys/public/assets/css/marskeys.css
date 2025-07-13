@@ -597,11 +597,7 @@ body::-webkit-scrollbar {
 }
 
 @media (max-width: 767px) {
-  .about-image {
-    padding-left: 5px;
-    padding-right: 5px;
-    width: 100%;   /* ← 너비 조절 */
-  }
+
   }
 
 
@@ -611,4 +607,11 @@ body::-webkit-scrollbar {
 
 .grid-item.large {
   background-color: rgba(10, 20, 60, 0.8); /* 짙은 남색 + 80% 불투명 */
+}
+
+.about-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
