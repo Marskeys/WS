@@ -584,3 +584,11 @@ body::-webkit-scrollbar {
   margin-top: 10px;
 }
 
+.about-image {
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 80%;   /* ← 너비 조절 */
+  height: auto;
+  display: block;
+  margin: 0 auto; /* 가운데 정렬 */
+}
