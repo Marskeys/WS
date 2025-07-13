@@ -370,6 +370,36 @@ function updateAllBallPaths() {
     });
   });
 }
+
+const grid = document.querySelector('.grid-container');
+const items = document.querySelectorAll('.grid-item');
+
+items.forEach(item => {
+  item.addEventListener('click', () => {
+    item.classList.toggle('large');
+
+    if (item.classList.contains('large')) {
+      const img = item.querySelector('img');
+      if (img.complete) {
+        adjustRowSpan(item, img);
+      } else {
+        img.onload = () => adjustRowSpan(item, img);
+      }
+    } else {
+      item.style.gridRow = ''; // 원래대로
+    }
+  });
+});
+
+function adjustRowSpan(item, img) {
+  const rowHeight = parseInt(getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+  const rowGap = parseInt(getComputedStyle(grid).getPropertyValue('gap'));
+  const imgHeight = img.getBoundingClientRect().height;
+
+  const rowSpan = Math.ceil((imgHeight + rowGap) / (rowHeight + rowGap));
+  item.style.gridRow = `span ${rowSpan}`;
+}
+
 </script>
 
 
