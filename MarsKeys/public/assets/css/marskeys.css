@@ -588,8 +588,7 @@ body::-webkit-scrollbar {
 }
 
 .about-image {
-  padding-left: 20px;
-  padding-right: 20px;
+padding: 0 20px;
   width: 80%;   /* ← 너비 조절 */
   height: auto;
   display: block;
