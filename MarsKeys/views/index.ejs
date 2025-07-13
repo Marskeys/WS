@@ -410,26 +410,7 @@ function adjustRowSpan(item, img) {
   item.style.gridRow = `span ${span}`;
 }
 
-setInterval(() => {
-  const now = Date.now();
 
-  for (let i = balls.length - 1; i >= 0; i--) {
-    const ball = balls[i];
-    const lastMoved = parseInt(ball.dataset.lastMoved || '0', 10);
-
-    if (now - lastMoved > 10000) {
-      // 👇 연결된 꼬리들 제거
-      const ballId = ball.dataset.id;
-      document.querySelectorAll(`.trail[data-ball-id="${ballId}"]`).forEach(trail => {
-        trail.remove();
-      });
-
-      // 공 삭제
-      ball.remove();
-      balls.splice(i, 1);
-    }
-  }
-}, 1000);
 
 </script>
 
