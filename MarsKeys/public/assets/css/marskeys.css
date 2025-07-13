@@ -44,6 +44,13 @@ body::-webkit-scrollbar {
     /* padding: 1rem; */
   /*  grid-auto-flow: dense; ✅ 가능한 공간에 끼워넣기 허용 */
   }
+
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 160px; /* 그대로 유지 */
+    }
+  }
   
   /* ✅ 박스 공통 */
   .grid-item {
