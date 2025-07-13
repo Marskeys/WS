@@ -604,14 +604,7 @@ body::-webkit-scrollbar {
   margin-top: 10px;
 }
 
-.about-image {
-  padding-left: 20px;
-  padding-right: 20px;
-  width: 80%;   /* ← 너비 조절 */
-  height: auto;
-  display: block;
-  margin: 0 auto; /* 가운데 정렬 */
-}
+
 
 .grid-item.large {
   background-color: rgba(10, 20, 60, 0.8); /* 짙은 남색 + 80% 불투명 */
