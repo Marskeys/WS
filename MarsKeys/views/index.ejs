@@ -252,6 +252,10 @@
 
         ball.style.left = x + 'px';
         ball.style.top = y + 'px';
+
+          // ✅ 여기서 헤더 충돌 검사 호출!
+      checkCollisionWithHeader(ball);
+      
         createTrail(x, y, ball.style.background);
         step++;
         requestAnimationFrame(stepMove);
