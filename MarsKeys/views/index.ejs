@@ -303,7 +303,8 @@ function startLoop(ball, offset = 0) {
     });
   });
 
-  function createTrail(x, y, color, ball) {
+  // 🔁 trail 만들 때 ball ID로 연결
+function createTrail(x, y, color, ball) {
   const radius = 3;
 
   const trail = document.createElement('div');
@@ -320,7 +321,12 @@ function startLoop(ball, offset = 0) {
   trail.style.zIndex = '1';
   trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
 
-  ball.appendChild(trail); // 💡 여기서 ball에 붙이기!
+  // ✅ 이 공의 고유 ID 지정
+  const ballId = ball.dataset.id || crypto.randomUUID();
+  ball.dataset.id = ballId;
+  trail.dataset.ballId = ballId;
+
+  document.body.appendChild(trail);
 
   requestAnimationFrame(() => {
     trail.style.opacity = '0';
@@ -401,19 +407,27 @@ function adjustRowSpan(item, img) {
   item.style.gridRow = `span ${span}`;
 }
 
-setInterval(() => {
+ssetInterval(() => {
   const now = Date.now();
 
   for (let i = balls.length - 1; i >= 0; i--) {
     const ball = balls[i];
     const lastMoved = parseInt(ball.dataset.lastMoved || '0', 10);
 
-    if (now - lastMoved > 10000) { // 10초 이상 멈췄다면
-      ball.remove();              // DOM에서 제거
-      balls.splice(i, 1);         // 배열에서도 안전하게 제거 (역순!)
+    if (now - lastMoved > 10000) {
+      // 👇 연결된 꼬리들 제거
+      const ballId = ball.dataset.id;
+      document.querySelectorAll(`.trail[data-ball-id="${ballId}"]`).forEach(trail => {
+        trail.remove();
+      });
+
+      // 공 삭제
+      ball.remove();
+      balls.splice(i, 1);
     }
   }
-}, 5000); // 5초마다 검사
+}, 5000);
+
 </script>
 
 
