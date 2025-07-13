@@ -265,6 +265,9 @@
 }
 
 function startLoop(ball, offset = 0) {
+  // 👉 움직이기 시작할 때 페이드인
+  ball.style.opacity = '1';
+
   let current = offset % items.length;
 
   function loop() {
