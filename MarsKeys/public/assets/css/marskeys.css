@@ -575,6 +575,13 @@ body::-webkit-scrollbar {
   transform: scale(1.2);
 }
 
+/* 모바일 (터치 디바이스)에서는 hover 비활성화 */
+@media (hover: none) and (pointer: coarse) {
+  .about-me:hover {
+    transform: none;
+  }
+}
+
 /* 커진 박스는 호버 무시 */
 .grid-item.large:hover {
   transform: none;
