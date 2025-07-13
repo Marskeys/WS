@@ -579,7 +579,7 @@ body::-webkit-scrollbar {
 
 /* 📌 이미지 숨기기 */
 .about-image.hidden {
-  display: none;
+  display: none !important;
   width: 100%;
   margin-top: 10px;
 }
