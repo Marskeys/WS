@@ -417,7 +417,7 @@ setInterval(() => {
     const ball = balls[i];
     const lastMoved = parseInt(ball.dataset.lastMoved || '0', 10);
 
-    if (now - lastMoved > 10000) {
+    if (now - lastMoved > 1000) {
       // 👇 연결된 꼬리들 제거
       const ballId = ball.dataset.id;
       document.querySelectorAll(`.trail[data-ball-id="${ballId}"]`).forEach(trail => {
@@ -429,7 +429,7 @@ setInterval(() => {
       balls.splice(i, 1);
     }
   }
-}, 5000);
+}, 500);
 
 </script>
 
