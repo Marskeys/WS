@@ -327,13 +327,19 @@ function startLoop(ball, offset = 0) {
   }
 
   function toggleSize(el) {
-  const isLarge = el.classList.contains('large');
+  const isExpanded = el.classList.contains('expanded');
+
+  // expanded 상태를 먼저 토글
   el.classList.toggle("expanded");
+
+  // 이미지 토글 처리
   const image = el.querySelector(".about-image");
-if (image) {
-  image.classList.toggle("hidden");
-}
-  if (isLarge) {
+  if (image) {
+    image.classList.toggle("hidden");
+  }
+
+  // 사이즈 클래스 처리
+  if (isExpanded) {
     el.classList.remove('large');
     el.classList.add('about-me', 'small');
   } else {
@@ -341,7 +347,7 @@ if (image) {
     el.classList.add('large');
   }
 
-  // ✅ 두 번 감싸서 브라우저가 layout 확실히 반영할 시간 확보
+  // 레이아웃 업데이트
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       updateAllBallPaths();
