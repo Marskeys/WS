@@ -329,49 +329,6 @@ function startLoop(ball, offset = 0) {
   function toggleSize(el) {
   const isExpanded = el.classList.contains('expanded');
 
-  // expanded 상태를 먼저 토글
-  el.classList.toggle("expanded");
-
-  // 이미지 토글 처리
-  const image = el.querySelector(".about-image");
-if (image) {
-  image.classList.toggle("hidden");
-  image.style.display = ''; // 혹시 이전에 인라인으로 display 조작된 적 있으면 제거
-}
-
-  // 사이즈 클래스 처리
-  if (isExpanded) {
-    el.classList.remove('large');
-    el.classList.add('about-me', 'small');
-  } else {
-    el.classList.remove('small', 'about-me');
-    el.classList.add('large');
-  }
-
-  // 레이아웃 업데이트
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      updateAllBallPaths();
-    });
-  });
-
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-function updateAllBallPaths() {
-  const items = document.querySelectorAll('.grid-item');
-
-  balls.forEach(ball => {
-    const targetBox = items[Math.floor(Math.random() * items.length)];
-    const path = getBoxPath(targetBox);
-
-    moveBall(ball, path, () => {
-      startLoop(ball, Math.floor(Math.random() * items.length));
-    });
-  });
-
-  function toggleSize(el) {
-  const isExpanded = el.classList.contains('expanded');
   el.classList.toggle("expanded");
 
   const image = el.querySelector(".about-image");
@@ -406,6 +363,18 @@ function updateAllBallPaths() {
 
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+function updateAllBallPaths() {
+  const items = document.querySelectorAll('.grid-item');
+
+  balls.forEach(ball => {
+    const targetBox = items[Math.floor(Math.random() * items.length)];
+    const path = getBoxPath(targetBox);
+
+    moveBall(ball, path, () => {
+      startLoop(ball, Math.floor(Math.random() * items.length));
+    });
+  });
 }
 
 
