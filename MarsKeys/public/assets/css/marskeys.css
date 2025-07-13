@@ -576,3 +576,15 @@ body::-webkit-scrollbar {
 .grid-item.large:hover {
   transform: none;
 }
+
+/* 기본 상태에서 이미지 숨기기 */
+.about-image.hidden {
+  display: none;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* 확장된 상태에서 이미지 보이기 */
+.grid-item.expanded .about-image {
+  display: block;
+}

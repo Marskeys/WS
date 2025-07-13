@@ -86,7 +86,10 @@
         </iframe>
       </div>
       <div class="grid-item small hologram-border"></div>
-      <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">About </div>
+      <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">
+        <span class="about-text">About Me</span>
+        <img src="/assets/images/about-me.png" alt="About Me" class="about-image hidden">
+      </div>
 
       <div class="grid-item big hologram-border"> <%- include('partials/table') %> </div>
     
@@ -325,7 +328,7 @@ function startLoop(ball, offset = 0) {
 
   function toggleSize(el) {
   const isLarge = el.classList.contains('large');
-
+  element.classList.toggle("expanded");
   if (isLarge) {
     el.classList.remove('large');
     el.classList.add('about-me', 'small');
