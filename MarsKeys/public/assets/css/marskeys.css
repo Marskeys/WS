@@ -560,7 +560,7 @@ body::-webkit-scrollbar {
 @media (max-width: 767px) {
   .grid-item.large {
     grid-column: 1 / -1 !important;
-    grid-row: span 5 !important;
+    grid-row: span 6 !important;
     height: auto !important;
   }
 }
@@ -589,14 +589,17 @@ body::-webkit-scrollbar {
 
 .about-image {
 padding: 0 20px;
-  width: 100%;   /* ← 너비 조절 */
+  width: 80%;   /* ← 너비 조절 */
   height: auto;
   display: block;
   margin: 0 auto; /* 가운데 정렬 */
 }
 
 @media (max-width: 767px) {
-
+  .about-image {
+    padding: 0 10px;
+      width: 100%;   /* ← 너비 조절 */
+    }
   }
 
 
