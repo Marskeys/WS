@@ -334,9 +334,10 @@ function startLoop(ball, offset = 0) {
 
   // 이미지 토글 처리
   const image = el.querySelector(".about-image");
-  if (image) {
-    image.classList.toggle("hidden");
-  }
+if (image) {
+  image.classList.toggle("hidden");
+  image.style.display = ''; // 혹시 이전에 인라인으로 display 조작된 적 있으면 제거
+}
 
   // 사이즈 클래스 처리
   if (isExpanded) {
