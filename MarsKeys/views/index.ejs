@@ -369,36 +369,46 @@ function updateAllBallPaths() {
       startLoop(ball, Math.floor(Math.random() * items.length));
     });
   });
-}
 
-const grid = document.querySelector('.grid-container');
-const items = document.querySelectorAll('.grid-item');
+  function toggleSize(el) {
+  const isExpanded = el.classList.contains('expanded');
+  el.classList.toggle("expanded");
 
-items.forEach(item => {
-  item.addEventListener('click', () => {
-    item.classList.toggle('large');
+  const image = el.querySelector(".about-image");
+  if (image) {
+    image.classList.toggle("hidden");
+    image.style.display = '';
+  }
 
-    if (item.classList.contains('large')) {
-      const img = item.querySelector('img');
+  if (isExpanded) {
+    el.classList.remove('large');
+    el.classList.add('about-me', 'small');
+    el.style.gridRow = '';
+  } else {
+    el.classList.remove('small', 'about-me');
+    el.classList.add('large');
+
+    const img = el.querySelector('img');
+    if (img) {
       if (img.complete) {
-        adjustRowSpan(item, img);
+        adjustRowSpan(el, img);
       } else {
-        img.onload = () => adjustRowSpan(item, img);
+        img.onload = () => adjustRowSpan(el, img);
       }
-    } else {
-      item.style.gridRow = ''; // 원래대로
     }
+  }
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      updateAllBallPaths();
+    });
   });
-});
 
-function adjustRowSpan(item, img) {
-  const rowHeight = parseInt(getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
-  const rowGap = parseInt(getComputedStyle(grid).getPropertyValue('gap'));
-  const imgHeight = img.getBoundingClientRect().height;
-
-  const rowSpan = Math.ceil((imgHeight + rowGap) / (rowHeight + rowGap));
-  item.style.gridRow = `span ${rowSpan}`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+}
+
+
 
 </script>
 
