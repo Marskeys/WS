@@ -64,7 +64,7 @@ body::-webkit-scrollbar {
   /* ✅ 크기 다양화 */
   .grid-item.small { grid-column: span 1; grid-row: span 1; }
   .grid-item.tall  { grid-column: span 1; grid-row: span 2; }
-  .grid-item.large  { grid-column: span 3; grid-row: auto; height: auto; }
+  .grid-item.large  { grid-column: span 5; grid-row: auto; height: auto; }
   .grid-item.wide  { grid-column: span 3; grid-row: span 3; }
   .grid-item.ultrawide {grid-column: 1 / -1; grid-row: span 3;}
   .grid-item.big   { grid-column: span 2; grid-row: span 2; }
