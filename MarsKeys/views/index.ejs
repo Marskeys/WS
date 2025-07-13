@@ -409,7 +409,17 @@ function updateAllBallPaths() {
 }
 
 
+function adjustRowSpan(item, img) {
+  const grid = document.querySelector('.grid'); // ← grid-container가 아니라 .grid!
+  const rowHeight = parseInt(getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+  const rowGap = parseInt(getComputedStyle(grid).getPropertyValue('gap') || 0);
+  const imgHeight = img.getBoundingClientRect().height;
 
+  const total = imgHeight + rowGap;
+  const span = Math.ceil(total / (rowHeight + rowGap));
+
+  item.style.gridRow = `span ${span}`;
+}
 </script>
 
 
