@@ -88,7 +88,10 @@
       <div class="grid-item small hologram-border"> <span class="invisible-text">Placeholder</span></div>
       <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">
         <span class="about-text">About Me</span>
-        <img src="/assets/images/about-me.png" alt="About Me" class="about-image hidden">
+        <picture class="about-image hidden">
+          <source srcset="/assets/images/about-me-mobile.svg" media="(max-width: 768px)">
+          <img src="/assets/images/about-me.svg" alt="About Me">
+        </picture>
       </div>
 
       <div class="grid-item big hologram-border"> <%- include('partials/table') %> </div>
