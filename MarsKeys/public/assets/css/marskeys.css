@@ -577,14 +577,20 @@ body::-webkit-scrollbar {
   transform: none;
 }
 
-/* 기본 상태에서 이미지 숨기기 */
+/* 📌 이미지 숨기기 */
 .about-image.hidden {
   display: none;
   width: 100%;
   margin-top: 10px;
 }
 
-/* 확장된 상태에서 이미지 보이기 */
+/* 📌 이미지 보이기: .expanded 있을 때만 보이게 */
 .grid-item.expanded .about-image {
   display: block;
+}
+
+/* 📌 확대될 때 크기 변화도 정의해줘야 화면상 변화가 보임 */
+.grid-item.large {
+  grid-column: span 2; /* 필요시 3까지 가능 */
+  grid-row: span 2;
 }
