@@ -403,16 +403,16 @@ function adjustRowSpan(item, img) {
 setInterval(() => {
   const now = Date.now();
 
-  balls.forEach((ball, index) => {
+  for (let i = balls.length - 1; i >= 0; i--) {
+    const ball = balls[i];
     const lastMoved = parseInt(ball.dataset.lastMoved || '0', 10);
 
-    if (now - lastMoved > 1000) { // 10초 동안 멈춘 공
+    if (now - lastMoved > 10000) { // 10초 이상 멈췄다면
       ball.remove();              // DOM에서 제거
-      balls.splice(index, 1);     // 배열에서도 제거
+      balls.splice(i, 1);         // 배열에서도 안전하게 제거 (역순!)
     }
-  });
-}, 2000); // 5초마다 체크
-
+  }
+}, 5000); // 5초마다 검사
 </script>
 
 
