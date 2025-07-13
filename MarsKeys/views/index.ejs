@@ -257,7 +257,7 @@
           // ✅ 여기서 헤더 충돌 검사 호출!
       checkCollisionWithHeader(ball);
 
-        createTrail(x, y, ball.style.background);
+      createTrail(x, y, ball.style.background, ball);
         step++;
         requestAnimationFrame(stepMove);
       } else {
@@ -303,33 +303,34 @@ function startLoop(ball, offset = 0) {
     });
   });
 
-  function createTrail(x, y, color) {
-    const radius = 3;
+  function createTrail(x, y, color, ball) {
+  const radius = 3;
 
-    const trail = document.createElement('div');
-    trail.style.position = 'absolute';
-    trail.style.left = `${x + radius}px`;
-    trail.style.top = `${y + radius}px`;
-    trail.style.width = '2px';
-    trail.style.height = '2px';
-    trail.style.borderRadius = '50%';
-    trail.style.background = color;
-    trail.style.opacity = '0.6';
-    trail.style.pointerEvents = 'none';
-    trail.style.zIndex = '1';
-    trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+  const trail = document.createElement('div');
+  trail.className = 'trail';
+  trail.style.position = 'absolute';
+  trail.style.left = `${x + radius}px`;
+  trail.style.top = `${y + radius}px`;
+  trail.style.width = '2px';
+  trail.style.height = '2px';
+  trail.style.borderRadius = '50%';
+  trail.style.background = color;
+  trail.style.opacity = '0.6';
+  trail.style.pointerEvents = 'none';
+  trail.style.zIndex = '1';
+  trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
 
-    document.body.appendChild(trail);
+  ball.appendChild(trail); // 💡 여기서 ball에 붙이기!
 
-    requestAnimationFrame(() => {
-      trail.style.opacity = '0';
-      trail.style.transform = 'scale(0.2)';
-    });
+  requestAnimationFrame(() => {
+    trail.style.opacity = '0';
+    trail.style.transform = 'scale(0.2)';
+  });
 
-    setTimeout(() => {
-      trail.remove();
-    }, 600);
-  }
+  setTimeout(() => {
+    trail.remove();
+  }, 600);
+}
 
   function toggleSize(el) {
   const isExpanded = el.classList.contains('expanded');
