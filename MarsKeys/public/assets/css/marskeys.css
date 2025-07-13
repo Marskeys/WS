@@ -593,6 +593,10 @@ body::-webkit-scrollbar {
   margin: 0 auto; /* 가운데 정렬 */
 }
 
+.about-text.hidden {
+  display: none !important;
+}
+
 .grid-item.large {
   background-color: rgba(10, 20, 60, 0.8); /* 짙은 남색 + 80% 불투명 */
 }

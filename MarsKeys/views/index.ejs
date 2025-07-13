@@ -337,6 +337,11 @@ function startLoop(ball, offset = 0) {
     image.style.display = '';
   }
 
+  const text = el.querySelector(".about-text");
+if (text) {
+  text.classList.toggle("hidden");
+}
+
   if (isExpanded) {
     el.classList.remove('large');
     el.classList.add('about-me', 'small');
