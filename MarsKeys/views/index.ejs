@@ -252,10 +252,11 @@
 
         ball.style.left = x + 'px';
         ball.style.top = y + 'px';
+        ball.dataset.lastMoved = Date.now().toString();
 
           // ✅ 여기서 헤더 충돌 검사 호출!
       checkCollisionWithHeader(ball);
-      
+
         createTrail(x, y, ball.style.background);
         step++;
         requestAnimationFrame(stepMove);
@@ -398,6 +399,20 @@ function adjustRowSpan(item, img) {
 
   item.style.gridRow = `span ${span}`;
 }
+
+setInterval(() => {
+  const now = Date.now();
+
+  balls.forEach((ball, index) => {
+    const lastMoved = parseInt(ball.dataset.lastMoved || '0', 10);
+
+    if (now - lastMoved > 1000) { // 10초 동안 멈춘 공
+      ball.remove();              // DOM에서 제거
+      balls.splice(index, 1);     // 배열에서도 제거
+    }
+  });
+}, 2000); // 5초마다 체크
+
 </script>
 
 
