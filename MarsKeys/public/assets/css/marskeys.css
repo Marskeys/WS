@@ -568,6 +568,26 @@ body::-webkit-scrollbar {
   position: relative;
 }
 
+.about-me {
+  display: flex;
+  flex-direction: column; /* ← 세로 정렬 */
+  align-items: center;     /* 가운데 정렬 (선택 사항) */
+  justify-content: center;
+  text-align: center;
+}
+
+.about-text {
+  margin-bottom: 10px; /* 이미지와 간격 */
+  font-weight: bold;
+}
+
+.about-image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  display: block;
+}
+
 .about-me:hover {
   transform: scale(1.2);
 }
