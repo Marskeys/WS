@@ -328,7 +328,7 @@ function startLoop(ball, offset = 0) {
 
   function toggleSize(el) {
   const isLarge = el.classList.contains('large');
-  element.classList.toggle("expanded");
+  el.classList.toggle("expanded");
   if (isLarge) {
     el.classList.remove('large');
     el.classList.add('about-me', 'small');
