@@ -560,7 +560,7 @@ body::-webkit-scrollbar {
 @media (max-width: 767px) {
   .grid-item.large {
     grid-column: 1 / -1 !important;
-    grid-row: span 3 !important;
+    grid-row: span 5 !important;
     height: auto !important;
   }
 }
