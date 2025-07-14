@@ -665,3 +665,33 @@ padding: 0 20px;
   text-decoration: none;
   font-weight: 1000;
 }
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 10;
+  bottom: 110%; /* 상단에 위치 */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
