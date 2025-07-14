@@ -662,18 +662,33 @@ padding: 0 20px;
 
 
 .naver-icon-box {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   background-color: #1ec800;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 24px;
   font-family: Arial, sans-serif;
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  background-color: #1ec800;
-  background-image: linear-gradient(white, white); /* white text shape */
+  font-weight: bold;
+  font-size: 26px;
+  position: relative;
+  text-transform: uppercase;
+  -webkit-mask-image: none;
+  mask-image: none;
+  overflow: hidden;
+}
+
+.naver-icon-box::before {
+  content: 'N';
+  font-size: 26px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  color: black;
+  mix-blend-mode: destination-out;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
