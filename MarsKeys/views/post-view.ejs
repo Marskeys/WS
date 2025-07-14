@@ -245,7 +245,7 @@
   <a href="/" class="home-button" aria-label="홈으로 이동">
     <i class="fas fa-house"></i>
   </a>
-  
+
              <!-- head 끝나기 직전이나 body 맨 위에 -->
 <div class="bg-preload" aria-hidden="true"></div>
 
@@ -263,6 +263,18 @@
       <span>작성자: <%= post.author %></span><br>
       <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <p class="footer-text">© 2025 MarsKeys. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="/"><i class="fas fa-house"></i> Home</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/cookies">Cookie Policy</a>
+        </div>
+      </div>
+    </footer>
 
     <!-- 📢 광고 삽입 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
