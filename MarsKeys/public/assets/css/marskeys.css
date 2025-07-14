@@ -664,3 +664,20 @@ padding: 0 20px;
 .nav-icon {
   text-decoration: none;
 } 
+
+.naver-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  font-family: Arial, sans-serif;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-color: #1ec800;
+  background-image: linear-gradient(white, white); /* white text shape */
+}
