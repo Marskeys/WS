@@ -184,53 +184,33 @@
     background-color: #444;
   }
 
-  .label-icon {
-    display: inline-block;
-    height: 20px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    vertical-align: middle;
-    animation: wiggle-float 0.9s ease-in-out infinite;
-  }
-  
-  .new-icon {
-    width: 38px;
-    background-image: url("data:image/svg+xml;utf8,
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'>
-        <defs>
-          <linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='0%'>
-            <stop offset='0%' stop-color='%23f7971e'/>
-            <stop offset='100%' stop-color='%23ffd200'/>
-          </linearGradient>
-        </defs>
-        <text x='0' y='15' font-size='14' font-weight='bold'
-              font-family='Arial Black' fill='url(%23grad)'
-              stroke='white' stroke-width='0.6'>NEW!</text>
-      </svg>");
-  }
-  
-  .edited-icon {
-    width: 58px;
-    background-image: url("data:image/svg+xml;utf8,
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 20'>
-        <defs>
-          <linearGradient id='grad-edited' x1='0%' y1='0%' x2='100%' y2='0%'>
-            <stop offset='0%' stop-color='%2300c6ff'/>
-            <stop offset='100%' stop-color='%230072ff'/>
-          </linearGradient>
-        </defs>
-        <text x='0' y='15' font-size='14' font-weight='bold'
-              font-family='Arial Black' fill='url(%23grad-edited)'
-              stroke='white' stroke-width='0.6'>EDITED</text>
-      </svg>");
-  }
-  
-  
+  /* 🟡 공통 라벨 아이콘 기본 스타일 + 애니메이션 */
+.label-icon {
+  display: inline-block;
+  height: 20px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  vertical-align: middle;
+  animation: wiggle-float 0.9s ease-in-out infinite;
+}
 
-  @keyframes wiggle-float {
-    0%   { transform: translateY(0) rotate(0deg); }
-    25%  { transform: translateY(-1px) rotate(-2deg); }
-    60%  { transform: translateY(0px) rotate(1deg); }
-    80%  { transform: translateY(1px) rotate(-1deg); }
-    100% { transform: translateY(0) rotate(0deg); }
-  }
+/* 🆕 NEW 라벨 스타일 (그라데이션 + 흰색 테두리) */
+.new-icon {
+  width: 38px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23f7971e'/><stop offset='100%' stop-color='%23ffd200'/></linearGradient></defs><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='url(%23grad)' stroke='white' stroke-width='0.6'>NEW!</text></svg>");
+}
+
+/* ✏️ EDITED 라벨 스타일 (블루 그라데이션 + 흰색 테두리) */
+.edited-icon {
+  width: 58px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 20'><defs><linearGradient id='grad-edited' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%2300c6ff'/><stop offset='100%' stop-color='%230072ff'/></linearGradient></defs><text x='0' y='15' font-size='14' font-weight='bold' font-family='Arial Black' fill='url(%23grad-edited)' stroke='white' stroke-width='0.6'>EDITED</text></svg>");
+}
+
+/* 💫 떠다니는 애니메이션 */
+@keyframes wiggle-float {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-1px) rotate(-2deg); }
+  60%  { transform: translateY(0) rotate(1deg); }
+  80%  { transform: translateY(1px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
