@@ -78,6 +78,10 @@ body::-webkit-scrollbar {
     grid-column: span 1;
     grid-row: span 1;
   }
+
+  .grid-item.small {
+    background: linear-gradient(to bottom, #000000, #000080); /* black to navy */
+  }
   
   .youtube-carousel {
     grid-column: 1 / -1;
@@ -92,6 +96,7 @@ body::-webkit-scrollbar {
     background: black;
     border: 1px solid rgba(255, 255, 255, 0.4);
   }
+  
   
 
   .carousel-track {
