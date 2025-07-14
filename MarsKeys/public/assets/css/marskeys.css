@@ -13,6 +13,10 @@
     background-image: url('/assets/images/glow-circuit-bg.webp');
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   /* ✅ 기본 설정 */
 html, body {
   overflow: auto; /* ← 스크롤은 유지 */
