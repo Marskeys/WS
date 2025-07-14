@@ -695,7 +695,9 @@ padding: 0 20px;
   font-size: 12px;
 }
 
-.tooltip:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
 }
