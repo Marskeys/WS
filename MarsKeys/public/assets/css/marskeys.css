@@ -68,7 +68,7 @@ body::-webkit-scrollbar {
   }
   
   /* 손가락 대신 기본 커서로 변경 */
-#YouTube {
+.marskeys-intro, .youtube-carousel {
   cursor: default !important;
 }
 
