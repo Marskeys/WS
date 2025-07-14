@@ -353,13 +353,17 @@ body::-webkit-scrollbar {
 
   
   .grid-item.small {
-    background: linear-gradient(to bottom, #000000, #000080); /* black to navy */
+    background: black;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
     overflow: hidden;
     box-shadow:none !important;
+  }
+
+  .grid-item.small.about-me {
+    background: linear-gradient(to bottom, #000000, #000080); /* black to navy */
   }
   
   .grid-item.small img {
