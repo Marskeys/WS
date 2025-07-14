@@ -183,3 +183,23 @@
   .write-button:hover {
     background-color: #444;
   }
+
+  .label-icon {
+    display: inline-block;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    vertical-align: middle;
+    animation: wiggle-float 0.9s ease-in-out infinite;
+  }
+  
+  .new-icon {
+    width: 38px;
+    background-image: url("...NEW.svg...");
+  }
+  
+  .edited-icon {
+    width: 58px;
+    background-image: url("...EDITED.svg...");
+  }
+  
