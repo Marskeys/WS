@@ -1,6 +1,5 @@
 function filterBoard(category) {
   const allTabs = document.querySelectorAll(".tab");
-  const allDesktopRows = document.querySelectorAll(".board-table tbody tr");
   const allMobilePosts = document.querySelectorAll(".mobile-post-item");
 
   // 탭 active 클래스 처리
@@ -14,239 +13,305 @@ function filterBoard(category) {
     }
   });
 
-  // 데스크탑 테이블 필터링
-  allDesktopRows.forEach((row) => {
-    const rowCategory = row.getAttribute("data-category");
-    const rowCategories = rowCategory.split(',').map(c => c.trim());
-    row.style.display =
-      category === "all" || rowCategories.includes(category) ? "" : "none";
-  });
 
-  allMobilePosts.forEach((post) => {
-    const postCategory = post.getAttribute("data-category");
-    const postCategories = postCategory.split(',').map(c => c.trim());
-    post.style.display =
-      category === "all" || postCategories.includes(category) ? "" : "none";
-  });
-}
+  const players = {};
 
-let isPetalPaused = false;
-let isCharPaused = false;
+  function onYouTubeIframeAPIReady() {
+    document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+      const videoId = wrapper.dataset.videoId;
+      const playerId = wrapper.dataset.playerId;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.getElementById("hamburger-btn");
-  const mobileMenu = document.getElementById("mobile-menu");
-  const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
-  const headerTop = document.querySelector(".header-top");
-  const canvas = document.getElementById("cherry-canvas");
-  const ctx = canvas?.getContext("2d");
-  const characterObject = document.getElementById("character-svg");
-  const form = document.getElementById("search-form");
-  const input = document.querySelector(".search-box");
-  const boardBody = document.getElementById("board-content");
-  const tabContainer = document.querySelector(".tabs");
-  const mobileResults = document.getElementById("mobile-search-results");
-  const rightPanel = document.querySelector(".right-panel-only");
-
-  // ✅ 처음엔 항상 헤더에 햄버거 버튼 붙이기
-  if (hamburger && headerTop && !hamburger.classList.contains("is-in-menu")) {
-    headerTop.prepend(hamburger);
-  }
-
-  // 🍔 햄버거 메뉴 열고 닫기
-  hamburger?.addEventListener("click", () => {
-
-    
-    if (!mobileMenu.classList.contains("open")) {
-      mobileMenuHeader?.appendChild(hamburger);
-      hamburger.classList.add("is-in-menu");
-    } else {
-      headerTop?.prepend(hamburger);
-      hamburger.classList.remove("is-in-menu");
-    }
-
-    mobileMenu.classList.toggle("open");
-    hamburger.classList.toggle("open");
-    document.body.classList.toggle("menu-open");
-
-    const isOpen = mobileMenu.classList.contains("open");
-    if (isOpen) {
-      setTimeout(() => {
-        isPetalPaused = true;
-        isCharPaused = true;
-      }, 200); // 0.4초 후에 멈춤
-    } else {
-      isPetalPaused = false;
-      isCharPaused = false;
-      drawPetals();
-      const svgDoc = characterObject?.contentDocument;
-      if (svgDoc) animateChar2(svgDoc);
-    }
-  });
-
-  // 🌸 벚꽃 애니메이션
-  if (canvas && ctx) {
-    function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const petals = [];
-    const petalCount = 55;
-    for (let i = 0; i < petalCount; i++) {
-      petals.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: 4 + Math.random() * 2,
-        speedY: 0.4 + Math.random() * 0.7,
-        speedX: 0.1 + Math.random() * 0.4,
-        angle: Math.random() * 360,
-        rotateSpeed: Math.random() * 1.5 - 0.6,
+      players[playerId] = new YT.Player(playerId, {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 0,
+          rel: 0,
+          playsinline: 1
+        },
+        events: {
+          'onReady': () => {
+            const button = wrapper.querySelector('.play-button');
+            button.addEventListener('click', () => {
+              wrapper.querySelector('.video-thumbnail').remove();
+              players[playerId].playVideo();
+            });
+          }
+        }
       });
-    }
-
-    function drawPetals() {
-      if (isPetalPaused) return;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let p of petals) {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.angle * Math.PI) / 180);
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(-p.size / 2, -p.size / 2, -p.size, p.size / 2, 0, p.size);
-        ctx.bezierCurveTo(p.size, p.size / 2, p.size / 2, -p.size / 2, 0, 0);
-        ctx.fillStyle = "#fddde6";
-        ctx.fill();
-        ctx.restore();
-
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.angle += p.rotateSpeed;
-
-        if (p.y > canvas.height || p.x > canvas.width + 20) {
-          p.y = -10;
-          p.x = Math.random() * canvas.width;
-        }
-      }
-      requestAnimationFrame(drawPetals);
-    }
-
-    drawPetals();
-  }
-
-  // 👩‍🦽 캐릭터 애니메이션
-  function positionCharacterToSearchBox() { /* TODO */ }
-
-  // 🔥 전역 변수
-let charX = 0;
-let charDirection = 1;
-let charPaused = false;
-
-function animateChar2(svgDoc) {
-  const group = svgDoc.getElementById("char-2");
-  if (!group) return;
-
-  group.setAttribute("style", "transform-box: fill-box; transform-origin: center;");
-  const step = 2.5, speed = 12, maxX = 500, minX = 0;
-
-  function frame() {
-    if (charPaused || isCharPaused) return;
-
-    const flip = charDirection === -1 ? -1 : 1;
-    const waveY = Math.sin(charX * 0.05) * 3;
-    const bump = Math.random() * 1.2 - 0.6;
-    const y = waveY + bump;
-
-    group.setAttribute("transform", `translate(${charX}, ${y}) scale(${flip},1)`);
-    charX += step * charDirection;
-
-    if ((charDirection === 1 && charX >= maxX) || (charDirection === -1 && charX <= minX)) {
-      charPaused = true;
-      setTimeout(() => {
-        charDirection *= -1;
-        charPaused = false;
-        frame();
-      }, 500);
-    } else {
-      setTimeout(frame, speed);
-    }
-  }
-
-  frame();
-}
-
-  if (characterObject) {
-    characterObject.addEventListener("load", () => {
-      const tryStart = setInterval(() => {
-        const svgDoc = characterObject.contentDocument;
-        const char2 = svgDoc?.getElementById("char-2");
-        if (char2) {
-          clearInterval(tryStart);
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              positionCharacterToSearchBox();
-              animateChar2(svgDoc);
-            }, 0);
-          });
-        }
-      }, 200);
     });
   }
 
-  // 👀 캐릭터 위치 반응
-  window.addEventListener("resize", positionCharacterToSearchBox);
-  window.addEventListener("scroll", positionCharacterToSearchBox);
+  const items = document.querySelectorAll('.grid-item');
+  const ballContainer = document.getElementById('orbit-balls');
 
-  // 🔍 검색 AJAX
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const keyword = input.value.trim();
-    if (!keyword) return;
+  const colors = ['#00ffff', '#ff00ff', '#ffff00', '#ffffff', '#ffff00', '#00ff00', '#ff6600'];
+  const balls = [];
 
-    const isMobile = window.innerWidth <= 768;
+  colors.forEach((color, i) => {
+    const ball = document.createElement('div');
+    ball.className = 'orbit-ball';
+    ball.style.background = color;
+    ball.style.opacity = '0';
+    ball.style.transition = 'opacity 0.2s ease-in-out';
+    ball.style.zIndex = 1000 + i;
 
-    if (isMobile) {
-      rightPanel?.classList.remove("visible");
-      mobileResults?.classList.add("visible");
-      document.querySelector(".search-container").style.position = "fixed";
-    }
+    ball.style.setProperty('--glow-color', color);
+    ball.style.boxShadow = `0 0 8px ${color}, 0 0 15px ${color}`;
 
-    const res = await fetch(`/api/search?q=${encodeURIComponent(keyword)}`);
-    const data = await res.json();
+    const after = document.createElement('style');
+    document.head.appendChild(after);
+    after.sheet.insertRule(`
+      .orbit-ball:nth-child(${i + 1})::after {
+        background: ${color};
+      }
+    `);
 
-    boardBody.innerHTML = '';
-    if (data.posts.length === 0) {
-      boardBody.innerHTML = '<tr><td colspan="4">검색 결과가 없습니다.</td></tr>';
-    } else {
-      data.posts.forEach(post => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td><a href="/post/${post.id}">${post.title}</a></td>
-          <td>${post.author}</td>
-          <td>${post.categories}</td>
-          <td>${post.created_at.slice(0, 10)}</td>
-        `;
-        boardBody.appendChild(row);
-      });
-    }
-
-    document.getElementById("search-tab")?.remove();
-    const searchTab = document.createElement("button");
-    searchTab.className = "tab active";
-    searchTab.id = "search-tab";
-    searchTab.textContent = "검색결과";
-    tabContainer.appendChild(searchTab);
-
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    searchTab.classList.add("active");
+    ballContainer.appendChild(ball);
+    balls.push(ball);
   });
-});
 
-window.filterBoard = filterBoard;
+  function getBoxPath(box) {
+    const rect = box.getBoundingClientRect();
+    const basePadding = 4;
+    const hologramFix = box.classList.contains('hologram-border') ? 6 : 0;
+    const radiusFix = box.classList.contains('marskeys-intro') ? 0.5 : 3;
+
+    let x0 = rect.left + window.scrollX - basePadding + hologramFix;
+    let y0 = rect.top + window.scrollY - basePadding + hologramFix;
+    const w = rect.width + basePadding * 2 - hologramFix * 2;
+    const h = rect.height + basePadding * 2 - hologramFix * 2;
+
+    if (box.classList.contains('marskeys-intro')) {
+      x0 -= 2;
+      y0 += -2;
+    }
+
+    return [
+      [x0, y0],
+      [x0 + w - radiusFix * 2, y0],
+      [x0 + w - radiusFix * 2, y0 + h - radiusFix * 2],
+      [x0, y0 + h - radiusFix * 2],
+      [x0, y0]
+    ];
+  }
+
+  // ✅ 공이 헤더에 닿았는지 충돌 체크
+  function checkCollisionWithHeader(ball) {
+    const header = document.getElementById('stickyHeader');
+    if (!header) return;
+    const headerRect = header.getBoundingClientRect();
+    const ballRect = ball.getBoundingClientRect();
+
+    const collided = !(
+      ballRect.bottom < headerRect.top ||
+      ballRect.top > headerRect.bottom ||
+      ballRect.right < headerRect.left ||
+      ballRect.left > headerRect.right
+    );
+
+    ball.style.opacity = collided ? '0' : '1';
+  }
+
+  function moveBall(ball, targetBox, next) {
+  if (ball.dataset.busy === "true") return;
+  ball.dataset.busy = "true";
+
+  let i = 0;
+  const steps = 120;
+
+  function moveSegment() {
+    const latestPath = getBoxPath(targetBox);
+
+    if (!latestPath || latestPath.length < 2) {
+      // 경로가 너무 짧거나 이상하면 바로 다음으로
+      ball.dataset.busy = "false";
+      return next();
+    }
+
+    if (i >= latestPath.length - 1) {
+      ball.dataset.busy = "false";
+      return next();
+    }
+
+    let step = 0;
+
+    function stepMove() {
+      const refreshedPath = getBoxPath(targetBox);
+      if (!refreshedPath[i + 1]) {
+        ball.dataset.busy = "false";
+        return next();
+      }
+
+      const [x1, y1] = refreshedPath[i];
+      const [x2, y2] = refreshedPath[i + 1];
+      const dx = (x2 - x1) / steps;
+      const dy = (y2 - y1) / steps;
+
+      if (step <= steps) {
+        const x = x1 + dx * step;
+        const y = y1 + dy * step;
+
+        if (!isFinite(x) || !isFinite(y)) {
+          ball.dataset.busy = "false";
+          return next();
+        }
+
+        ball.style.left = x + 'px';
+        ball.style.top = y + 'px';
+        ball.dataset.lastMoved = Date.now().toString();
+
+          // ✅ 여기서 헤더 충돌 검사 호출!
+      checkCollisionWithHeader(ball);
+
+      createTrail(x, y, ball.style.background, ball);
+        step++;
+        requestAnimationFrame(stepMove);
+      } else {
+        i++;
+        moveSegment();
+      }
+    }
+
+    stepMove();
+  }
+
+  moveSegment();
+}
+
+function startLoop(ball, offset = 0) {
+  // 👉 움직이기 시작할 때 페이드인
+  ball.style.opacity = '1';
+
+  let current = offset % items.length;
+
+  function loop() {
+    const box = items[current];
+    moveBall(ball, box, () => {
+      current = (current + 1) % items.length;
+      setTimeout(loop, 300);
+    });
+  }
+
+  loop();
+}
+
+  window.addEventListener('load', () => {
+    balls.forEach((ball, i) => {
+      const targetBox = items[Math.floor(Math.random() * items.length)];
+      const rect = targetBox.getBoundingClientRect();
+      const x = rect.left + window.scrollX + Math.random() * rect.width;
+      const y = rect.top + window.scrollY + Math.random() * rect.height;
+      ball.style.position = 'absolute';
+      ball.style.left = `${x}px`;
+      ball.style.top = `${y}px`;
+
+      setTimeout(() => startLoop(ball, i), i * 1200);
+    });
+  });
+
+  // 🔁 trail 만들 때 ball ID로 연결
+function createTrail(x, y, color, ball) {
+  const radius = 3;
+
+  const trail = document.createElement('div');
+  trail.className = 'trail';
+  trail.style.position = 'absolute';
+  trail.style.left = `${x + radius}px`;
+  trail.style.top = `${y + radius}px`;
+  trail.style.width = '2px';
+  trail.style.height = '2px';
+  trail.style.borderRadius = '50%';
+  trail.style.background = color;
+  trail.style.opacity = '0.6';
+  trail.style.pointerEvents = 'none';
+  trail.style.zIndex = '1';
+  trail.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+
+  // ✅ 이 공의 고유 ID 지정
+  const ballId = ball.dataset.id || crypto.randomUUID();
+  ball.dataset.id = ballId;
+  trail.dataset.ballId = ballId;
+
+  document.body.appendChild(trail);
+
+  requestAnimationFrame(() => {
+    trail.style.opacity = '0';
+    trail.style.transform = 'scale(0.2)';
+  });
+
+  setTimeout(() => {
+    trail.remove();
+  }, 600);
+}
+
+  function toggleSize(el) {
+  const isExpanded = el.classList.contains('expanded');
+
+  el.classList.toggle("expanded");
+
+  const image = el.querySelector(".about-image");
+  if (image) {
+    image.classList.toggle("hidden");
+    image.style.display = '';
+  }
+
+  const text = el.querySelector(".about-text");
+if (text) {
+  text.classList.toggle("hidden");
+}
+
+  if (isExpanded) {
+    el.classList.remove('large');
+    el.classList.add('about-me', 'small');
+    el.style.gridRow = '';
+  } else {
+    el.classList.remove('small', 'about-me');
+    el.classList.add('large');
+
+    const img = el.querySelector('img');
+    if (img) {
+      if (img.complete) {
+        adjustRowSpan(el, img);
+      } else {
+        img.onload = () => adjustRowSpan(el, img);
+      }
+    }
+  }
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      updateAllBallPaths();
+    });
+  });
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function updateAllBallPaths() {
+  const items = document.querySelectorAll('.grid-item');
+
+  balls.forEach(ball => {
+    const targetBox = items[Math.floor(Math.random() * items.length)];
+    const path = getBoxPath(targetBox);
+
+    moveBall(ball, path, () => {
+      startLoop(ball, Math.floor(Math.random() * items.length));
+    });
+  });
+}
+
+
+function adjustRowSpan(item, img) {
+  const grid = document.querySelector('.grid'); // ← grid-container가 아니라 .grid!
+  const rowHeight = parseInt(getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+  const rowGap = parseInt(getComputedStyle(grid).getPropertyValue('gap') || 0);
+  const imgHeight = img.getBoundingClientRect().height;
+
+  const total = imgHeight + rowGap;
+  const span = Math.ceil(total / (rowHeight + rowGap));
+
+  item.style.gridRow = `span ${span}`;
+}
 
 
 
