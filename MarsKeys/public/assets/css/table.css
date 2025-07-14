@@ -205,8 +205,8 @@
 
 /* ✏️ EDITED 라벨 스타일 (블루 그라데이션 + 흰색 테두리) */
 .edited-icon {
-  width: 36px;
-  height: 18px;
+  width: 34px;
+  height: 17px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 20'><defs><linearGradient id='grad-edited' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0%' stop-color='%23ccffcc'/><stop offset='100%' stop-color='%2388cc88'/></linearGradient><filter id='glow' x='-50%' y='-50%' width='200%' height='200%'><feGaussianBlur stdDeviation='1.2' result='blur'/><feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><text x='2' y='15' font-size='13' font-weight='600' font-family='Arial Black' fill='url(%23grad-edited)' stroke='white' stroke-width='0.4' filter='url(%23glow)'>EDITED</text></svg>");
 }
 
