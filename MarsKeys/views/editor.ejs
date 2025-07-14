@@ -226,17 +226,7 @@
       </div>
    
   
-      <footer class="site-footer">
-        <div class="footer-content">
-          <p class="footer-text">© 2025 MarsKeys. All rights reserved.</p>
-          <div class="footer-links">
-            <a href="/"><i class="fas fa-house"></i> Home</a>
-            <a href="/terms">Terms of Service</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/cookies">Cookie Policy</a>
-          </div>
-        </div>
-      </footer>
+ 
     <%
   const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
   const postUrl = (isEdit && post) ? `/edit/${post.id}` : '/savePost';
@@ -805,7 +795,7 @@ function switchToDesignMode() {
 }
 
     </script>
-      
+      <%- include('partials/footer') %>
       <%- include('partials/scripts') %>
     </body>
     </html>
