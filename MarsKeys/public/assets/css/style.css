@@ -42,8 +42,10 @@
   transition: color 0.2s ease;
 }
 
-.nav-icon:hover {
-  color: #ff4d4d;
+@media (hover: hover) and (pointer: fine) {
+  .nav-icon:hover {
+    color: #ff4d4d;
+  }
 }
 
 
