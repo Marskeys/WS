@@ -624,3 +624,38 @@ padding: 0 20px;
   object-fit: contain;
   display: block;
 }
+
+.site-footer {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem 1rem;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #aaa;
+}
+
+.site-footer .footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: #999;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  color: #ffccff; /* 💫 은은한 네온 계열 */
+}
