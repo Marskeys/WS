@@ -12,6 +12,7 @@ function filterBoard(category) {
       tab.classList.add("active");
     }
   });
+}
 
 
   const players = {};
