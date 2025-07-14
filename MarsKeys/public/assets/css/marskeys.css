@@ -79,9 +79,7 @@ body::-webkit-scrollbar {
     grid-row: span 1;
   }
 
-  .grid-item.small {
-    background: linear-gradient(to bottom, #000000, #000080); /* black to navy */
-  }
+
   
   .youtube-carousel {
     grid-column: 1 / -1;
@@ -355,7 +353,7 @@ body::-webkit-scrollbar {
 
   
   .grid-item.small {
-    background: black; /* 배경 투명 */
+    background: linear-gradient(to bottom, #000000, #000080); /* black to navy */
     display: flex;
     align-items: center;
     justify-content: center;
