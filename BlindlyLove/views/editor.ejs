@@ -246,7 +246,21 @@ html.dark .auto-toc a {
         
         <div id="editorWrapper">
           <div id="editor" contenteditable="true" class="editor" spellcheck="false">
-            <%- post && post.content ? post.content : '<p><br></p>' %>
+            <%
+              let initialContent = post && post.content ? post.content : '<p><br></p>';
+              // 현재 내용이 이미 bl-content로 감싸져 있는지 확인 (불필요한 중복 방지)
+              const isWrapped = initialContent.startsWith('<div class="bl-content"');
+        
+              // 만약 감싸져 있지 않다면 감싸줌 (새 글 작성 또는 기존 글이 아직 래퍼 없이 저장된 경우 대비)
+              if (!isWrapped) {
+                initialContent = `
+                  <div class="bl-content" style="font-family: &quot;맑은 고딕&quot;; font-size: 11pt; line-height: 1.2;">
+                    ${initialContent}
+                  </div>
+                `;
+              }
+            %>
+            <%- initialContent %>
           </div>
           <textarea id="htmlEditor" class="editor" style="display: none;"></textarea>
         </div>
@@ -823,7 +837,17 @@ function switchToHtmlMode() {
   const editor = document.getElementById("editor");
   const htmlEditor = document.getElementById("htmlEditor");
 
-  htmlEditor.value = editor.innerHTML.trim();
+  // editor.innerHTML에는 이미 bl-content div가 포함되어 있으므로 그대로 사용
+  let currentHtml = editor.innerHTML;
+
+  // js-beautify를 사용하여 HTML을 예쁘게 포맷팅
+  const formattedHtml = html_beautify(currentHtml.trim(), {
+    indent_size: 2, // 들여쓰기를 공백 2칸으로 설정
+    wrap_attributes: 'auto', // 속성이 길면 자동으로 줄바꿈
+    indent_with_tabs: false // 탭 대신 스페이스로 들여쓰기
+  });
+
+  htmlEditor.value = formattedHtml;
   editor.style.display = "none";
   htmlEditor.style.display = "block";
 }
@@ -832,7 +856,10 @@ function switchToDesignMode() {
   const editor = document.getElementById("editor");
   const htmlEditor = document.getElementById("htmlEditor");
 
+  // htmlEditor.value에 있는 (사용자가 수정했을 수 있는) HTML 코드를 그대로 editor에 할당
+  // bl-content div는 HTML 코드 자체에 포함되어 있으므로, 별도로 제거할 필요 없음
   editor.innerHTML = htmlEditor.value;
+
   htmlEditor.style.display = "none";
   editor.style.display = "block";
 }
