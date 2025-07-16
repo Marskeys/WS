@@ -199,8 +199,8 @@ app.post('/delete/:id', async (req, res) => {
       return res.status(403).send('글 작성자 또는 관리자만 삭제할 수 있습니다.');
     }
 
-    // 3️⃣ 삭제 수행
-   // 3️⃣ 삭제 전 백업
+
+// 3️⃣ 삭제 전 백업
 const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
 const post = postData[0];
 
@@ -280,11 +280,8 @@ app.post('/edit/:id', async (req, res) => {
     const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
 
 
-    // 글 정보 DB 업데이트
-  // 🔁 수정 전 백업
-const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-const post = postData[0];
-
+// 글 정보 DB 업데이트
+// 🔁 수정 전 백업
 await db.query(`
   INSERT INTO post_backups 
     (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
