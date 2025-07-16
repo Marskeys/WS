@@ -128,13 +128,18 @@ html.dark .auto-toc a {
       margin-top: 0 !important;
     }
 
-    .toolbar {
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 100;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ccc;
+    #editorWrapper {
+  height: 500px; /* 원하는 높이로 고정 */
+  overflow: hidden; /* 전체 레이아웃이 넘치지 않도록 */
+  position: relative;
+}
+
+#editor {
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
   </style>
 </head>
