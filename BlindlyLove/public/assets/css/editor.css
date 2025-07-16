@@ -2,7 +2,7 @@
 
 /* 리셋 스타일링 - 모든 요소에 border-box 적용 */
 * {
-  box-sizing: border-box;
+  box-sizing: content-box;
 }
 
 
@@ -653,7 +653,4 @@ html.dark body .mode-toggle button:hover {
 
 
 
-/* 모든 auth-btn (<a> 태그)의 공통 기본 스타일 */
-.header-top {
-  box-sizing: content-box; /* ✅ 이 버튼들만 content-box로 되돌림 */
-}
+
