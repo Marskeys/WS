@@ -1,3 +1,19 @@
+/* /assets/css/editor.css */
+
+/* 리셋 스타일링 - 모든 요소에 border-box 적용 */
+* {
+  box-sizing: border-box;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 100;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  padding: 0.3rem 0.5rem; 
+}
 
 /* <body> 태그 기본 스타일 - 패딩 문제 해결을 위해 0으로 설정 */
 body {
