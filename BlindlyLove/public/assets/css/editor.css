@@ -13,10 +13,6 @@ body {
   font-family: 'Nanum Gothic', sans-serif;
 }
 
-/* 헤더 상단 마진 (header.ejs에서 가져옴) - body 패딩 0과 함께 사용 */
-.header-top {
-  margin-top: 0 !important;
-}
 
 /* -------------------- 에디터 관련 주요 스타일 -------------------- */
 
