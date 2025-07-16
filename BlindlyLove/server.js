@@ -202,22 +202,22 @@ app.post('/delete/:id', async (req, res) => {
 
 // 3️⃣ 삭제 전 백업
 const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-const post = postData[0];
+const backupPost = postData[0];
 
 await db.query(`
   INSERT INTO post_backups 
     (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'delete')
 `, [
-  post.id,
-  post.title,
-  post.content,
-  post.categories,
-  post.author,
-  post.user_id,
-  post.is_private,
-  post.is_pinned,
-  post.views
+  backupPost.id,
+  backupPost.title,
+  backupPost.content,
+  backupPost.categories,
+  backupPost.author,
+  backupPost.user_id,
+  backupPost.is_private,
+  backupPost.is_pinned,
+  backupPost.views
 ]);
 
 // 4️⃣ 삭제 수행
@@ -271,7 +271,7 @@ app.post('/edit/:id', async (req, res) => {
     const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
-    const post = rows[0];
+    const backupPost = rows[0];
     // 권한 확인: 글 작성자이거나 관리자인 경우에만 수정 가능
     if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
       return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
@@ -287,15 +287,15 @@ await db.query(`
     (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'edit')
 `, [
-  post.id,
-  post.title,
-  post.content,
-  post.categories,
-  post.author,
-  post.user_id,
-  post.is_private,
-  post.is_pinned,
-  post.views
+  backupPost.id,
+  backupPost.title,
+  backupPost.content,
+  backupPost.categories,
+  backupPost.author,
+  backupPost.user_id,
+  backupPost.is_private,
+  backupPost.is_pinned,
+  backupPost.views
 ]);
 
 // 🔧 수정 수행
