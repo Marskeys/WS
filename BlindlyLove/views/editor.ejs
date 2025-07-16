@@ -792,9 +792,7 @@ function openHtmlPopup() {
 
     const li = document.createElement("li");
     li.className = `toc-item toc-${tag}`;
-    li.style.margin = "0.2em 0";
-    li.style.lineHeight = "1.2";
-    if (tag === "h2") li.style.marginLeft = "1.2rem";
+
 
     const a = document.createElement("a");
     a.href = `#${id}`;
@@ -803,8 +801,7 @@ function openHtmlPopup() {
       e.preventDefault();
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     };
-    a.style.color = "#0366d6";
-    a.style.textDecoration = "none";
+   
 
     li.appendChild(a);
     tocList.appendChild(li);
