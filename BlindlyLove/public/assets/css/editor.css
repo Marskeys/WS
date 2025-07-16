@@ -639,3 +639,22 @@ html.dark .auto-toc a {
   color: #6fb7ff;
 }
 
+.mode-toggle button {
+  margin-left: 0.3rem;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: linear-gradient(to bottom right, #fdfdfd, #f1f1f1);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.mode-toggle button:hover {
+  background: linear-gradient(to bottom right, #eaeaea, #dcdcdc);
+  color: #000;
+  transform: scale(1.03);
+}
