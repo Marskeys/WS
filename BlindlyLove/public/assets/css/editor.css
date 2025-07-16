@@ -631,25 +631,3 @@ html.dark .auto-toc a {
   color: #6fb7ff;
 }
 
-/* -------------------- 헤더 auth-buttons 스타일 재정의 (패딩 문제 해결) -------------------- */
-/* 이 부분을 /assets/css/editor.css 파일의 맨 아래에 추가합니다. */
-.header-top .auth-buttons .auth-btn {
-    /* 이 패딩 값은 다른 페이지에서 auth-btn이 가져야 하는 원래 패딩 값으로 설정하세요! */
-    padding: 8px 12px; /* 예시 값. 실제 값으로 변경 필요. */
-    
-    /* 기존 auth-btn에 있던 다른 스타일도 여기에 모두 복사하여 넣어주세요. */
-    display: inline-block; 
-    text-decoration: none; 
-    white-space: nowrap;   
-    vertical-align: middle;
-    line-height: normal; 
-    
-    border: 1px solid #ccc; /* 예시 */
-    border-radius: 5px; /* 예시 */
-    background-color: #f0f0f0; /* 예시 */
-    color: #333; /* 예시 */
-    font-size: 14px; /* 예시 */
-    cursor: pointer;
-    box-sizing: border-box; /* 명시적으로 포함 */
-}
-
