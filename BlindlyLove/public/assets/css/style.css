@@ -180,7 +180,7 @@ html, body {
   color: #333;
   font-weight: 500;
   font-size: 0.85rem;
-  padding: 4px 10px;
+  padding: 4px 10px !important;
   border: 1px solid #ccc;
   border-radius: 4px; /* 너무 둥글지 않게 */
   display: inline-flex;
