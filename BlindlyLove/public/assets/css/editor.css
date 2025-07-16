@@ -1,0 +1,734 @@
+/* /assets/css/editor.css */
+
+/* 리셋 스타일링 - 모든 요소에 border-box 적용 */
+* {
+  box-sizing: border-box;
+}
+
+/* <body> 태그 기본 스타일 - 패딩 문제 해결을 위해 0으로 설정 */
+body {
+  margin: 0;
+  padding: 0; /* 이전에 editor.ejs의 인라인 스타일에서 body에 padding:0 이 있었습니다. */
+  background: linear-gradient(135deg, #fff7f0, #ffe4e1);
+  font-family: 'Nanum Gothic', sans-serif;
+}
+
+/* 헤더 상단 마진 (header.ejs에서 가져옴) - body 패딩 0과 함께 사용 */
+.header-top {
+  margin-top: 0 !important;
+}
+
+/* -------------------- 에디터 관련 주요 스타일 -------------------- */
+
+.save-btn {
+  margin-top: 20px;
+  background: #62a4eb; /* 연하늘 파랑 */
+  color: #333;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.save-btn:hover {
+  background: #b8d6fb;
+}
+
+.editor-container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  margin: 60px auto; /* 60px auto는 에디터 상하 마진을 줍니다. */
+}
+
+.logo-wrap {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-wrap img {
+  height: 50px;
+  object-fit: contain;
+  background: transparent !important;
+}
+
+.title-wrap {
+  margin-bottom: 16px;
+}
+
+.title-wrap input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 20px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  outline: none;
+  background: #fffefc;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.title-wrap input:focus {
+  border-color: #ff9990;
+  background: #fff7f5;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.toolbar button,
+.toolbar input[type="color"] {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.toolbar button[data-tooltip]::after,
+.toolbar input[type="color"][data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.toolbar button[data-tooltip]:hover::after,
+.toolbar input[type="color"][data-tooltip]:hover::after {
+  opacity: 1;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 50px; /* 폭 지정 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  background: #2c2c2c;
+  color: white;
+  border-radius: 4px;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  min-width: 160px; /* 메뉴도 넉넉하게 */
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-menu div {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.dropdown-menu div:hover {
+  background: #444;
+}
+
+.dropdown-menu .h1 { font-size: 24px; font-weight: bold; background: #555; }
+.dropdown-menu .h2 { font-size: 20px; font-weight: bold; background: #444; }
+.dropdown-menu .h3 { font-size: 18px; font-weight: bold; background: #333; }
+.dropdown-menu .red { color: red; font-weight: bold; }
+.dropdown-menu .p { font-size: 16px; }
+.dropdown-menu .desc { font-size: 13px; color: #aaa; font-style: italic; }
+.dropdown-menu .meta { font-size: 12px; color: #bbb; font-style: italic; }
+.dropdown-menu .label { font-size: 12px; background: #888; border-radius: 4px; padding: 2px 6px; display: inline-block; }
+.dropdown-menu .label-bold { font-weight: bold; }
+
+/* 에디터 본문 영역 */
+#editor { /* #editor 아이디를 가진 요소에만 적용 */
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid #ddd; /* 원래 .editor의 border로 통합 */
+  border-radius: 12px; /* 원래 .editor의 border-radius로 통합 */
+  min-height: 300px; /* 원래 .editor의 min-height로 통합 */
+  font-size: 16px; /* 원래 .editor의 font-size로 통합 */
+  line-height: 1.6; /* 원래 .editor의 line-height로 통합 */
+  background: #fffefc; /* 원래 .editor의 background로 통합 */
+}
+
+#htmlEditor {
+  width: 100%;
+  height: 400px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+/* 에디터 내부의 HTML 요소 스타일 */
+.editor h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin: 16px 0;
+}
+
+.editor h2 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #444;
+  margin: 14px 0;
+}
+
+.editor h3 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #555;
+  margin: 12px 0;
+}
+
+.editor h4 {
+  font-size: 20px;
+  font-weight: bold;
+  color: red;
+  margin: 10px 0;
+}
+
+.editor p {
+  font-size: 16px;
+  margin: 8px 0;
+  color: #222;
+}
+
+.editor small {
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}
+
+.editor footer {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+}
+
+.editor span.label {
+  font-size: 14px;
+  background: #eee;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.editor strong {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.category-box {
+  margin-top: 30px;
+}
+
+.category-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.category-item {
+  position: relative;
+  background: #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.category-item.selected {
+  background: #ffd2cc;
+  font-weight: bold;
+}
+
+.category-item:hover {
+  background: #ffe4e1;
+}
+
+.category-item .remove-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff6961;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: none;
+  cursor: pointer;
+}
+
+.category-item:hover .remove-btn {
+  display: inline-block;
+}
+
+.add-category-btn {
+  margin-top: 12px;
+  background: #d0e7ff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-category-btn:hover {
+  background: #b8d6fb;
+}
+
+.post-btn {
+  margin-top: 20px;
+  background: #6cc48f;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.post-btn:hover {
+  background: #4fb476;
+}
+
+/* 컬러 피커 툴바 관련 스타일 */
+.color-palette {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.color-palette button {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0; /* 패딩 0으로 설정 */
+}
+
+.toolbar button {
+  position: relative;
+}
+
+.toolbar button .color-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+#foreColorBtn i {
+  color: #000; /* 기본값 검정 */
+}
+
+#bgColorBtn {
+  background-color: #fff; /* 기본값 흰색 */
+}
+
+.color-palette .none-icon {
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.color-palette .none-icon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 2px;
+  background: red;
+  transform: rotate(45deg);
+  transform-origin: top left;
+}
+
+.color-palette .custom-color {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-left: 6px;
+  cursor: pointer;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 0 6px;
+  background: white;
+}
+
+.color-palette .custom-color input[type="color"] {
+  border: none;
+  background: transparent;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.color-tool {
+  position: relative;
+  display: inline-block;
+}
+
+.color-palette {
+  position: absolute;
+  top: calc(90% + 2px);
+  left: 0;
+  display: none;
+  background: white;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+.color-tool:hover .color-palette,
+.color-palette:hover {
+  display: flex;
+}
+
+.color-tool button {
+  cursor: pointer;
+}
+
+#foreColorBtn i {
+  color: black;
+}
+
+#bgColorBtn {
+  background-color: white;
+}
+
+/* -------------------- 모드 토글 버튼 스타일 -------------------- */
+.mode-toggle {
+  margin-top: 1rem; 
+  margin-bottom: 0.5rem;
+  text-align: right;
+}
+
+.mode-toggle button {
+  margin-left: 0.3rem;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: linear-gradient(to bottom right, #fdfdfd, #f1f1f1);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.mode-toggle button:hover {
+  background: linear-gradient(to bottom right, #eaeaea, #dcdcdc);
+  color: #000;
+  transform: scale(1.03);
+}
+
+/* -------------------- 목차 박스 스타일 -------------------- */
+.auto-toc {
+  background: #f7f9fa;
+  border: 1px solid #d0d7de;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.auto-toc .toc-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.auto-toc .toc-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.auto-toc .toc-item {
+  margin-bottom: 0.3rem;
+}
+
+.auto-toc .toc-h1 a {
+  color: #0366d6;
+  font-weight: 600;
+}
+
+.auto-toc .toc-h2 {
+  margin-left: 1em;
+}
+
+.auto-toc .toc-h2 a {
+  color: #0366d6;
+  font-weight: 400;
+  font-size: 0.94em;
+}
+
+.auto-toc .toc-item {
+  display: block; /* 무조건 줄바꿈되게 (에디터 인라인 스타일에서 가져옴) */
+}
+
+/* -------------------- 다크모드 스타일 -------------------- */
+html.dark body {
+    background-color: #1a1a1a;
+    color: #ddd;
+  }
+
+  html.dark body .editor-container {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 23px rgba(197, 215, 255, 0.5); /* 부드러운 파란 글로우 */
+    border-radius: 12px; /* 원한다면 모서리 둥글게 */
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* ✍️ 제목 입력창 */
+  html.dark body #postTitle {
+    background-color: #2a2a2a;
+    color: #eee;
+    border: 1px solid #444;
+  }
+
+  /* 🧰 툴바 버튼 */
+  html.dark body .toolbar button,
+  html.dark body .dropdown-toggle {
+    background-color: #333;
+    color: #ddd;
+    border: 1px solid #444;
+  }
+
+  html.dark body .toolbar button:hover,
+  html.dark body .dropdown-toggle:hover {
+    background-color: #555;
+  }
+
+  /* 🎨 드롭다운 메뉴 */
+  html.dark body .dropdown-menu {
+    background-color: #2a2a2a;
+    color: #ddd;
+    border: 1px solid #444;
+  }
+
+  html.dark body .dropdown-menu > div:hover {
+    background-color: #444;
+  }
+
+  /* ✏️ 에디터 영역 */
+  html.dark body .editor { /* #editor 아이디에도 적용될 것임 */
+    background-color: #1e1e1e;
+    color: #ddd !important;
+    border: 1px solid #444;
+  }
+
+  html.dark body .editor p,
+html.dark body .editor h1,
+html.dark body .editor h2,
+html.dark body .editor h3,
+html.dark body .editor h4,
+html.dark body .editor small,
+html.dark body .editor footer {
+  color: #ddd !important;
+}
+
+  /* 🏷 카테고리 */
+  html.dark body .category-item {
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+  }
+
+  html.dark body .category-item.selected {
+    background-color: #555;
+    color: #fff;
+  }
+
+  /* 💾 저장/포스트 버튼 */
+  html.dark body .post-btn,
+  html.dark body .save-btn {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #666;
+  }
+
+  html.dark body .post-btn:hover,
+  html.dark body .save-btn:hover {
+    background-color: #666;
+  }
+
+  /* 🧾 라벨들 */
+  html.dark body label {
+    color: #ccc;
+  }
+
+/* 🌙 다크모드 목차 스타일 */
+html.dark .auto-toc {
+  background: #1f1f2b;
+  border: 1px solid #444;
+  color: #ddd;
+}
+
+html.dark .auto-toc a {
+  color: #6fb7ff;
+}
+
+/* -------------------- 헤더 auth-buttons 스타일 재정의 (패딩 문제 해결) -------------------- */
+/* 이 부분을 /assets/css/editor.css 파일의 맨 아래에 추가합니다. */
+.header-top .auth-buttons .auth-btn {
+    /* 이 패딩 값은 다른 페이지에서 auth-btn이 가져야 하는 원래 패딩 값으로 설정하세요! */
+    padding: 8px 12px; /* 예시 값. 실제 값으로 변경 필요. */
+    
+    /* 기존 auth-btn에 있던 다른 스타일도 여기에 모두 복사하여 넣어주세요. */
+    display: inline-block; 
+    text-decoration: none; 
+    white-space: nowrap;   
+    vertical-align: middle;
+    line-height: normal; 
+    
+    border: 1px solid #ccc; /* 예시 */
+    border-radius: 5px; /* 예시 */
+    background-color: #f0f0f0; /* 예시 */
+    color: #333; /* 예시 */
+    font-size: 14px; /* 예시 */
+    cursor: pointer;
+    box-sizing: border-box; /* 명시적으로 포함 */
+}
+
+/* 특정 버튼 (글쓰기, 로그아웃, 회원가입, 로그인) 색상 재정의 */
+.header-top .auth-buttons .auth-btn.write-post {
+    background-color: #4CAF50;
+    color: white;
+}
+.header-top .auth-buttons .auth-btn.logout {
+    background-color: #f44336;
+    color: white;
+}
+.header-top .auth-buttons .auth-btn.signup {
+    background-color: #008CBA;
+    color: white;
+}
+.header-top .auth-buttons .auth-btn.login {
+    background-color: #e7e7e7;
+    color: black;
+}
+
+/* welcome-text 스타일 재정의 */
+.header-top .welcome-text {
+  font-size: 0.85rem;
+  white-space: nowrap;
+  color: #666;
+  margin-right: 10px;
+  position: static; /* 기본 위치로 설정하여 레이아웃 문제 방지 */
+  top: auto; bottom: auto; right: auto; margin: 0; /* 기존 header.ejs의 @media 쿼리 안의 position:absolute 관련 속성 초기화 */
+}
+
+/* 🌙 다크모드 대응 - auth-buttons */
+html.dark body .header-top .auth-buttons .auth-btn {
+    background-color: #555;
+    color: #eee;
+    border-color: #777;
+}
+html.dark body .header-top .auth-buttons .auth-btn.write-post {
+    background-color: #388E3C;
+}
+html.dark body .header-top .auth-buttons .auth-btn.logout {
+    background-color: #D32F2F;
+}
+html.dark body .header-top .auth-buttons .auth-btn.signup {
+    background-color: #0277BD;
+}
+html.dark body .header-top .auth-buttons .auth-btn.login {
+    background-color: #444;
+    color: #eee;
+}
+html.dark body .header-top .welcome-text {
+    color: #bbb;
+}
+
+/* -------------------- 기타 세부 스타일 조정 -------------------- */
+#editorWrapper {
+  height: 500px; /* 원하는 높이로 고정 */
+  overflow: hidden; /* 전체 레이아웃이 넘치지 않도록 */
+  position: relative;
+}
+
+/* 모바일 미디어 쿼리 (header.ejs에서 가져옴) */
+@media (max-width: 640px) {
+  .header-top .auth-buttons { /* 헤더의 모바일 버튼 컨테이너 */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative; /* welcome-text absolute 위치 기준점 */
+  }
+
+  .header-top .welcome-text { /* 모바일에서 welcome-text 위치 재조정 */
+    position: absolute;
+    bottom: -1.2rem;
+    top: 2.5rem;
+    right: -1rem;
+    margin-right: -3rem; /* 기존 margin-right 0으로 인해 텍스트 잘릴 수 있으므로 음수 마진 */
+    font-size: 0.75rem;
+    white-space: nowrap;
+    color: #666;
+    pointer-events: none;
+  }
+}
