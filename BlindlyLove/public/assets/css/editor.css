@@ -38,7 +38,7 @@ body {
 }
 
 .editor-container {
-  background: rgb(0, 0, 0);
+  background: white;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -535,7 +535,7 @@ html.dark body {
     color: #ddd;
   }
 
-  html.dark body .editor-container {
+  html.dark body #editor-container {
     background-color: #1a1a1a;
     box-shadow: 0 0 23px rgba(197, 215, 255, 0.5); /* 부드러운 파란 글로우 */
     border-radius: 12px; /* 원한다면 모서리 둥글게 */
