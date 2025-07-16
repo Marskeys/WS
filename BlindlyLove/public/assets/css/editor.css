@@ -1,4 +1,11 @@
 
+/* <body> 태그 기본 스타일 - 패딩 문제 해결을 위해 0으로 설정 */
+body {
+  margin: 0;
+  padding: 0; /* 이전에 editor.ejs의 인라인 스타일에서 body에 padding:0 이 있었습니다. */
+  background: linear-gradient(135deg, #fff7f0, #ffe4e1);
+  font-family: 'Nanum Gothic', sans-serif;
+}
 
 
 /* -------------------- 에디터 관련 주요 스타일 -------------------- */
