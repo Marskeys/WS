@@ -200,7 +200,28 @@ app.post('/delete/:id', async (req, res) => {
     }
 
     // 3️⃣ 삭제 수행
-    await db.query('DELETE FROM posts WHERE id = ?', [postId]);
+   // 3️⃣ 삭제 전 백업
+const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+const post = postData[0];
+
+await db.query(`
+  INSERT INTO post_backups 
+    (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'delete')
+`, [
+  post.id,
+  post.title,
+  post.content,
+  post.categories,
+  post.author,
+  post.user_id,
+  post.is_private,
+  post.is_pinned,
+  post.views
+]);
+
+// 4️⃣ 삭제 수행
+await db.query('DELETE FROM posts WHERE id = ?', [postId]);
     res.redirect('/'); // 삭제 후 메인 페이지로 리디렉션
   } catch (err) {
     console.error('삭제 오류:', err);
@@ -260,10 +281,31 @@ app.post('/edit/:id', async (req, res) => {
 
 
     // 글 정보 DB 업데이트
-    await db.query(
-      'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [title, content, categories.join(','), isPrivate, pinnedValue, postId]
-    );
+  // 🔁 수정 전 백업
+const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+const post = postData[0];
+
+await db.query(`
+  INSERT INTO post_backups 
+    (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'edit')
+`, [
+  post.id,
+  post.title,
+  post.content,
+  post.categories,
+  post.author,
+  post.user_id,
+  post.is_private,
+  post.is_pinned,
+  post.views
+]);
+
+// 🔧 수정 수행
+await db.query(
+  'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+  [title, content, categories.join(','), isPrivate, pinnedValue, postId]
+);
 
     res.json({ success: true, redirect: `/post/${postId}` }); // 수정 후 해당 글 페이지로 리디렉션
   } catch (err) {
