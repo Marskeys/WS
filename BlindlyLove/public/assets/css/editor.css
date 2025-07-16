@@ -639,22 +639,16 @@ html.dark .auto-toc a {
   color: #6fb7ff;
 }
 
-.mode-toggle button {
-  margin-left: 0.3rem;
-  padding: 3px 9px;
-  font-size: 0.7rem;
-  font-weight: 500;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: linear-gradient(to bottom right, #fdfdfd, #f1f1f1);
-  color: #333;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+/* 🌙 다크 모드 대응 */
+html.dark body .mode-toggle button {
+  background: linear-gradient(to bottom right, #2c2f35, #3a3d45); /* 어두운 그라데이션 배경 */
+  color: #eee; /* 밝은 글자색 */
+  border: 1px solid #555; /* 어두운 테두리 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5); /* 어두운 그림자 */
 }
 
-.mode-toggle button:hover {
-  background: linear-gradient(to bottom right, #eaeaea, #dcdcdc);
-  color: #000;
-  transform: scale(1.03);
+html.dark body .mode-toggle button:hover {
+  background: linear-gradient(to bottom right, #3a3d45, #4b4e57); /* 호버 시 조금 더 밝은 어두운 배경 */
+  color: #fff; /* 호버 시 흰색 글자 */
+  transform: scale(1.03); /* 기존 효과 유지 */
 }
