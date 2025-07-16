@@ -768,7 +768,16 @@ function openHtmlPopup() {
 
       function insertTOC() {
   const editor = document.getElementById("editor");
-  const headings = editor.querySelectorAll("h1, h2");
+  // ✅ bl-content div를 찾습니다. 이제 모든 실제 내용은 이 안에 있습니다.
+  const blContentDiv = editor.querySelector('.bl-content'); 
+
+  // bl-content div가 없거나 비어있으면 목차를 만들 수 없습니다.
+  if (!blContentDiv) {
+    showCustomMessage("에디터 내용이 올바른 형식에 없습니다. 다시 시도해주세요.");
+    return;
+  }
+
+  const headings = blContentDiv.querySelectorAll("h1, h2"); // ✅ bl-content 내부에서 헤딩 찾기
 
   if (!headings.length) {
     showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
@@ -776,12 +785,12 @@ function openHtmlPopup() {
   }
 
   // 기존 목차 제거
-  const oldTOC = editor.querySelector(".auto-toc");
+  const oldTOC = blContentDiv.querySelector(".auto-toc"); // ✅ bl-content 내부에서 기존 목차 찾기
   if (oldTOC) oldTOC.remove();
 
   const tocWrapper = document.createElement("div");
   tocWrapper.className = "auto-toc";
-  tocWrapper.contentEditable = "false";
+  tocWrapper.contentEditable = "false"; // 에디터에서 목차 자체는 수정 불가능하게
 
   const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
   const tocList = document.createElement("ul");
@@ -806,20 +815,19 @@ function openHtmlPopup() {
     }
 
     const id = `toc-${number.replace(/\./g, "-")}`;
-    el.id = id;
+    el.id = id; // 헤딩 요소에 ID 부여
 
     const li = document.createElement("li");
     li.className = `toc-item toc-${tag}`;
-
 
     const a = document.createElement("a");
     a.href = `#${id}`;
     a.textContent = `${number} ${el.textContent.trim()}`;
     a.onclick = function (e) {
       e.preventDefault();
+      // ✅ 클릭 시 스크롤 이동은 여전히 document에서 ID를 찾아야 합니다.
       document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     };
-   
 
     li.appendChild(a);
     tocList.appendChild(li);
@@ -828,9 +836,9 @@ function openHtmlPopup() {
   tocWrapper.innerHTML = tocTitle;
   tocWrapper.appendChild(tocList);
 
-  // h1 앞에 제대로 삽입
-  const firstHeading = [...headings][0];
-  editor.insertBefore(tocWrapper, firstHeading);
+  // ✅ 목차를 bl-content div의 첫 번째 자식 앞에 삽입
+  // 즉, 글 내용의 가장 상단에 목차가 오도록 합니다.
+  blContentDiv.prepend(tocWrapper); // 또는 blContentDiv.insertBefore(tocWrapper, blContentDiv.firstChild);
 }
 
 function switchToHtmlMode() {
