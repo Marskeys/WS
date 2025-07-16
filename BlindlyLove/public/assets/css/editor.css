@@ -535,7 +535,14 @@ html.dark body {
     color: #ddd;
   }
 
-  html.dark body #editor-container {
+  html.dark body .editor-container {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 23px rgba(197, 215, 255, 0.5); /* 부드러운 파란 글로우 */
+    border-radius: 12px; /* 원한다면 모서리 둥글게 */
+    transition: box-shadow 0.3s ease;
+  }
+
+  html.dark body #editor {
     background-color: #1a1a1a;
     box-shadow: 0 0 23px rgba(197, 215, 255, 0.5); /* 부드러운 파란 글로우 */
     border-radius: 12px; /* 원한다면 모서리 둥글게 */
