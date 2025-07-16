@@ -38,7 +38,7 @@ body {
 }
 
 .editor-container {
-  background: white;
+  background: rgb(0, 0, 0);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -575,7 +575,7 @@ html.dark body {
 
   /* ✏️ 에디터 영역 */
   html.dark body .editor { /* #editor 아이디에도 적용될 것임 */
-    background-color: #ff7a7a;
+    background-color: #1e1e1e;
     color: #ddd !important;
     border: 1px solid #444;
   }
