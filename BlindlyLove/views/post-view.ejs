@@ -3,6 +3,7 @@
 <head>
   <title><%= post.title %> | BlindLove</title>
   <link rel="stylesheet" href="/assets/css/signup.css" />
+  <link rel="stylesheet" href="/assets/css/post-view.css" />
   <%- include('partials/head') %>
   <style>
     /* 📑 목차 박스 디자인 */
@@ -379,8 +380,65 @@
     window.addEventListener('resize', sendHeightToParent);
   </script>
  
+<!-- 떠다니는 목차 영역 (데스크탑) -->
+<div class="floating-toc" id="floatingToc"></div>
+
+<!-- 모바일 목차 버튼 -->
+<div class="mobile-toc-button" id="mobileTocBtn">📑</div>
+
+<!-- 모바일 목차 모달 -->
+<div class="mobile-toc-modal" id="mobileTocModal">
+  <div class="mobile-toc-content" id="mobileTocContent"></div>
+</div>
+
 
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toc = document.querySelector(".auto-toc");
+      const floatingToc = document.getElementById("floatingToc");
+      const mobileBtn = document.getElementById("mobileTocBtn");
+      const mobileModal = document.getElementById("mobileTocModal");
+      const mobileContent = document.getElementById("mobileTocContent");
+    
+      if (!toc) return;
+    
+      // 💻 데스크탑용 떠다니는 목차 생성
+      floatingToc.innerHTML = toc.innerHTML;
+    
+      // 📱 모바일용 목차 팝업 생성
+      mobileContent.innerHTML = toc.innerHTML;
+    
+      // 📱 모달 열기
+      mobileBtn.addEventListener("click", () => {
+        mobileModal.style.display = "flex";
+      });
+    
+      // 📱 모달 바깥 클릭 시 닫기
+      mobileModal.addEventListener("click", (e) => {
+        if (e.target === mobileModal) {
+          mobileModal.style.display = "none";
+        }
+      });
+    
+      // 💻 스크롤 이벤트로 목차 떠오르기
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry.isIntersecting) {
+            floatingToc.style.display = "block";
+          } else {
+            floatingToc.style.display = "none";
+          }
+        },
+        { threshold: 0 }
+      );
+    
+      observer.observe(toc);
+    });
+    </script>
+    
 </body>
 </html>

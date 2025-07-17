@@ -1,0 +1,80 @@
+/* 떠다니는 목차 (데스크탑) */
+.floating-toc {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    background: #f7f9fa;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 250px;
+    z-index: 999;
+    display: none;
+  }
+  
+  html.dark .floating-toc {
+    background: #1f1f2b;
+    border-color: #444;
+    color: #ddd;
+  }
+  
+  @media (max-width: 768px) {
+    .floating-toc {
+      display: none !important; /* 모바일에서는 아예 숨김 */
+    }
+  }
+
+  /* 모바일 전용 목차 버튼 */
+.mobile-toc-button {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background-color: #0077cc;
+    color: white;
+    font-size: 24px;
+    border-radius: 50%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .mobile-toc-button {
+      display: flex;
+    }
+  }
+  
+  /* 모바일 토글 목차 */
+  .mobile-toc-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .mobile-toc-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+  
+  html.dark .mobile-toc-content {
+    background: #1f1f2b;
+    color: white;
+  }
+
+  
