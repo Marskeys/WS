@@ -687,6 +687,7 @@ html.dark body .search-result-msg {
   gap: 0.4rem;
   padding: 1.2rem 0;
   font-size: 0.85rem;
+  z-index: 9999;
 }
 
 .page-link {
