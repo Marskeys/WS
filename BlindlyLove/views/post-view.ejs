@@ -461,7 +461,40 @@
       window.addEventListener("resize", checkFloatingToc);
       checkFloatingToc(); // 처음 로드 시 확인
     });
+
+    (function enableFloatingTocDrag() {
+  const toc = document.getElementById('floatingToc');
+  if (!toc) return;
+
+  let isDragging = false;
+  let startX, startY;
+  let startLeft, startTop;
+
+  toc.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(window.getComputedStyle(toc).left, 10);
+    startTop = parseInt(window.getComputedStyle(toc).top, 10);
+    toc.style.transition = 'none'; // 드래그할 때 부드럽게 안 밀리게
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    toc.style.left = `${startLeft + dx}px`;
+    toc.style.top = `${startTop + dy}px`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+})();
+
     </script>
+    
     
     
 </body>
