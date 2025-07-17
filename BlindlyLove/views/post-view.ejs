@@ -394,7 +394,7 @@
   <%- include('partials/scripts') %>
 
   <script>
-   document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
   const toc = document.querySelector(".auto-toc");
   const floatingToc = document.getElementById("floatingToc");
   const mobileBtn = document.getElementById("mobileTocBtn");
@@ -403,11 +403,11 @@
 
   if (!toc) return;
 
-  // 복제
+  // 내용 복사
   floatingToc.innerHTML = toc.innerHTML;
   mobileContent.innerHTML = toc.innerHTML;
 
-  // 모바일 팝업 닫기
+  // 모바일 팝업
   mobileBtn.addEventListener("click", () => {
     mobileModal.style.display = "flex";
   });
@@ -430,49 +430,49 @@
     }
   });
 
-  // ✅ 상태 추적 변수
-  let hasSeenToc = false;
+  // ✅ 감시 기준 요소 2개
+  const topSentinel = document.createElement("div");
+  topSentinel.style.height = "1px";
+  topSentinel.id = "toc-top-sentinel";
+  toc.before(topSentinel);
 
-  // ✅ 목차 본 여부 추적
-  const appearObserver = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting) {
-        hasSeenToc = true; // 사용자가 목차를 스크롤로 실제로 봤음
-      }
-    },
-    { threshold: 0.4 } // 40% 이상 보여야 "봤다" 판단
-  );
-  appearObserver.observe(toc);
+  const bottomSentinel = document.createElement("div");
+  bottomSentinel.style.height = "1px";
+  bottomSentinel.id = "toc-bottom-sentinel";
+  toc.after(bottomSentinel);
 
-  // ✅ toc 바로 뒤에 감지용 sentinel 삽입
-  const sentinel = document.createElement("div");
-  sentinel.style.height = "1px";
-  toc.after(sentinel);
+  let isAbove = false;
+  let isBelow = false;
 
-  const visibilityObserver = new IntersectionObserver(
-    (entries) => {
-      const entry = entries[0];
-      if (hasSeenToc) {
-        if (entry.isIntersecting) {
-          floatingToc.style.display = "none";
-          mobileBtn.classList.remove("show");
-        } else {
-          floatingToc.style.display = "block";
-          mobileBtn.classList.add("show");
-        }
-      } else {
-        // 아직 목차를 본 적 없으면 무조건 숨김
-        floatingToc.style.display = "none";
-        mobileBtn.classList.remove("show");
-      }
-    },
-    {
-      rootMargin: "0px 0px -80% 0px", // 약간 아래로 내려가야 "지남"으로 감지됨
-      threshold: 0,
+  const checkFloatingToc = () => {
+    if (!isAbove && isBelow) {
+      floatingToc.style.display = "block";
+      mobileBtn.classList.add("show");
+    } else {
+      floatingToc.style.display = "none";
+      mobileBtn.classList.remove("show");
     }
+  };
+
+  // 감시자 설정
+  const observerTop = new IntersectionObserver(
+    ([entry]) => {
+      isAbove = !entry.isIntersecting; // top sentinel이 화면 밖이면 위로 스크롤함
+      checkFloatingToc();
+    },
+    { threshold: 0 }
   );
 
-  visibilityObserver.observe(sentinel);
+  const observerBottom = new IntersectionObserver(
+    ([entry]) => {
+      isBelow = !entry.isIntersecting; // bottom sentinel이 화면 밖이면 아래로 내려간 것
+      checkFloatingToc();
+    },
+    { threshold: 0 }
+  );
+
+  observerTop.observe(document.getElementById("toc-top-sentinel"));
+  observerBottom.observe(document.getElementById("toc-bottom-sentinel"));
 });
     </script>
     
