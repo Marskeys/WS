@@ -14,9 +14,11 @@
   }
   
   .floating-toc .toc-title {
-    margin-bottom: 2rem !important;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 1rem;
   }
-
+  
   html.dark .floating-toc {
     background: #1f1f2b;
     border-color: #444;
