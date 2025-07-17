@@ -394,77 +394,86 @@
   <%- include('partials/scripts') %>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toc = document.querySelector(".auto-toc");
-      const floatingToc = document.getElementById("floatingToc");
-      const mobileBtn = document.getElementById("mobileTocBtn");
-      const mobileModal = document.getElementById("mobileTocModal");
-      const mobileContent = document.getElementById("mobileTocContent");
-    
-      // 📱 모바일 목차에서 항목 클릭하면 모달 닫기 + 이동
-mobileContent.addEventListener("click", (e) => {
-  if (e.target.tagName === "A") {
-    e.preventDefault();
-    const targetId = e.target.getAttribute("href").replace("#", "");
-    const el = document.getElementById(targetId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-      mobileModal.style.display = "none"; // ✅ 팝업 닫기
+   document.addEventListener("DOMContentLoaded", () => {
+  const toc = document.querySelector(".auto-toc");
+  const floatingToc = document.getElementById("floatingToc");
+  const mobileBtn = document.getElementById("mobileTocBtn");
+  const mobileModal = document.getElementById("mobileTocModal");
+  const mobileContent = document.getElementById("mobileTocContent");
+
+  if (!toc) return;
+
+  // 복제
+  floatingToc.innerHTML = toc.innerHTML;
+  mobileContent.innerHTML = toc.innerHTML;
+
+  // 모바일 팝업 닫기
+  mobileBtn.addEventListener("click", () => {
+    mobileModal.style.display = "flex";
+  });
+
+  mobileModal.addEventListener("click", (e) => {
+    if (e.target === mobileModal) {
+      mobileModal.style.display = "none";
     }
-  }
-});
+  });
 
-      if (!toc) return;
-    
-      // 💻 데스크탑용 떠다니는 목차 생성
-      floatingToc.innerHTML = toc.innerHTML;
-    
-      // 📱 모바일용 목차 팝업 생성
-      mobileContent.innerHTML = toc.innerHTML;
-    
-      // 📱 모달 열기
-      mobileBtn.addEventListener("click", () => {
-        mobileModal.style.display = "flex";
-      });
-    
-      // 📱 모달 바깥 클릭 시 닫기
-      mobileModal.addEventListener("click", (e) => {
-        if (e.target === mobileModal) {
-          mobileModal.style.display = "none";
+  mobileContent.addEventListener("click", (e) => {
+    if (e.target.tagName === "A") {
+      e.preventDefault();
+      const targetId = e.target.getAttribute("href").replace("#", "");
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        mobileModal.style.display = "none";
+      }
+    }
+  });
+
+  // ✅ 상태 추적 변수
+  let hasSeenToc = false;
+
+  // ✅ 목차 본 여부 추적
+  const appearObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        hasSeenToc = true; // 사용자가 목차를 스크롤로 실제로 봤음
+      }
+    },
+    { threshold: 0.4 } // 40% 이상 보여야 "봤다" 판단
+  );
+  appearObserver.observe(toc);
+
+  // ✅ toc 바로 뒤에 감지용 sentinel 삽입
+  const sentinel = document.createElement("div");
+  sentinel.style.height = "1px";
+  toc.after(sentinel);
+
+  const visibilityObserver = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+      if (hasSeenToc) {
+        if (entry.isIntersecting) {
+          floatingToc.style.display = "none";
+          mobileBtn.classList.remove("show");
+        } else {
+          floatingToc.style.display = "block";
+          mobileBtn.classList.add("show");
         }
-      });
-    
-    
+      } else {
+        // 아직 목차를 본 적 없으면 무조건 숨김
+        floatingToc.style.display = "none";
+        mobileBtn.classList.remove("show");
+      }
+    },
+    {
+      rootMargin: "0px 0px -80% 0px", // 약간 아래로 내려가야 "지남"으로 감지됨
+      threshold: 0,
+    }
+  );
 
-
-     // 1. 감시 기준 요소 삽입 (.auto-toc 바로 뒤에 삽입)
-const sentinel = document.createElement("div");
-sentinel.id = "toc-sentinel-anchor";
-sentinel.style.height = "1px";
-toc.after(sentinel);
-
-// 2. 플로팅 목차 표시/숨김 판단 로직
-const visibilityObserver = new IntersectionObserver((entries) => {
-  const entry = entries[0];
-
-  if (entry.isIntersecting) {
-    // sentinel이 화면 안에 있음 → 목차 안 보인 상태 아님
-    floatingToc.style.display = "none";
-    mobileBtn.classList.remove("show");
-  } else {
-    // sentinel이 화면 밖으로 나감 → 목차 위로 지나침
-    floatingToc.style.display = "block";
-    mobileBtn.classList.add("show");
-  }
-}, {
-  root: null,
-  threshold: 0,
-  rootMargin: '0px'
+  visibilityObserver.observe(sentinel);
 });
-
-visibilityObserver.observe(document.getElementById("toc-sentinel-anchor"));
-
-    });
     </script>
     
 </body>
