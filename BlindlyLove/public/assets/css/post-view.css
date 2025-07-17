@@ -87,4 +87,8 @@
     opacity: 1;
     pointer-events: auto;
   }
-  
+
+  .floating-toc,
+.mobile-toc-button {
+  display: none !important;
+}

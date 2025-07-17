@@ -447,19 +447,18 @@ toc.after(sentinel);
 const visibilityObserver = new IntersectionObserver((entries) => {
   const entry = entries[0];
   if (entry.isIntersecting) {
-    // 아직 목차 아래 안 내려감 → 숨김
     floatingToc.style.display = "none";
     mobileBtn.style.display = "none";
   } else {
-    // 목차 아래로 스크롤함 → 표시
     floatingToc.style.display = "block";
     mobileBtn.style.display = "flex";
   }
 }, {
-  rootMargin: '0px 0px -80% 0px'  // 스크롤 약간 내려가야 감지됨
+  rootMargin: '0px',
+  threshold: 0.2 // ✅ 20%만 보여도 '보이는 중'으로 처리
 });
 
-visibilityObserver.observe(document.getElementById("toc-bottom-sentinel"));
+visibilityObserver.observe(toc); // ✅ 감시 대상 변경
 
     });
     </script>
