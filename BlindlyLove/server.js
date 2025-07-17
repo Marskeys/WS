@@ -268,7 +268,7 @@ app.post('/edit/:id', async (req, res) => {
 
   try {
     // 글의 작성자 ID 확인
-    const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
+    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
 
     const post = rows[0];
