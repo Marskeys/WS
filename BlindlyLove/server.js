@@ -10,6 +10,47 @@ const db = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const [posts] = await db.query(`
+      SELECT id, updated_at 
+      FROM posts 
+      WHERE is_private = 0 
+      ORDER BY updated_at DESC
+    `);
+
+    const postUrls = posts.map(post => `
+      <url>
+        <loc>https://blindly.love/post/${post.id}</loc>
+        <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+        <priority>0.80</priority>
+      </url>
+    `).join('');
+
+    const staticUrls = [
+      `<url><loc>https://blindly.love/</loc><priority>1.00</priority></url>`,
+      `<url><loc>https://blindly.love/signup</loc><priority>0.80</priority></url>`
+    ].join('');
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+      <urlset 
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        ${staticUrls}
+        ${postUrls}
+      </urlset>
+    `;
+
+    res.header('Content-Type', 'application/xml');
+    res.send(sitemap.trim());
+  } catch (err) {
+    console.error('🚨 sitemap.xml 생성 오류:', err);
+    res.status(500).send('Sitemap 생성 실패');
+  }
+});
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
@@ -520,46 +561,7 @@ app.get('/', async (req, res) => {
   }
 });
 
-app.get('/sitemap.xml', async (req, res) => {
-  try {
-    const [posts] = await db.query(`
-      SELECT id, updated_at 
-      FROM posts 
-      WHERE is_private = 0 
-      ORDER BY updated_at DESC
-    `);
 
-    const postUrls = posts.map(post => `
-      <url>
-        <loc>https://blindly.love/post/${post.id}</loc>
-        <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
-        <priority>0.80</priority>
-      </url>
-    `).join('');
-
-    const staticUrls = [
-      `<url><loc>https://blindly.love/</loc><priority>1.00</priority></url>`,
-      `<url><loc>https://blindly.love/signup</loc><priority>0.80</priority></url>`
-    ].join('');
-
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset 
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-        ${staticUrls}
-        ${postUrls}
-      </urlset>
-    `;
-
-    res.header('Content-Type', 'application/xml');
-    res.send(sitemap.trim());
-  } catch (err) {
-    console.error('🚨 sitemap.xml 생성 오류:', err);
-    res.status(500).send('Sitemap 생성 실패');
-  }
-});
 
 // ✅ 카테고리 전체 가져오기 API
 app.get('/api/categories', async (req, res) => {
