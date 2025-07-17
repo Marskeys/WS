@@ -1,8 +1,8 @@
 /* 떠다니는 목차 (데스크탑) */
 .floating-toc {
     position: fixed;
-    top: 80px;
-    left: 90px;
+  top: 80px;
+  left: calc(50% - 640px / 2 - 280px); /* 본문 왼쪽 기준으로 살짝 더 왼쪽 */
     background: #f7f9fa;
     border: 1px solid #ccc;
     padding: 1rem;
