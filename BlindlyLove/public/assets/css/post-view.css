@@ -100,3 +100,7 @@ body.modal-open {
     touch-action: none; /* 터치 스크롤도 차단 */
     height: 100%; /* 모바일 크롬 대응 */
   }
+
+  .floating-toc .toc-title {
+    margin-bottom: 0.8rem; /* 원하는 여백 크기로 조절 */
+  }
