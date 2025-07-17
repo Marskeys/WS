@@ -13,6 +13,10 @@
     display: none;
   }
   
+  .floating-toc .toc-title {
+    margin-bottom: 2rem;
+  }
+  
   html.dark .floating-toc {
     background: #1f1f2b;
     border-color: #444;
@@ -101,6 +105,4 @@ body.modal-open {
     height: 100%; /* 모바일 크롬 대응 */
   }
 
-  .floating-toc .toc-title {
-    margin-bottom: 2rem; /* 원하는 여백 크기로 조절 */
-  }
+ 
