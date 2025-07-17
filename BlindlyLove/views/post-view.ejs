@@ -394,87 +394,75 @@
   <%- include('partials/scripts') %>
 
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  const toc = document.querySelector(".auto-toc");
-  const floatingToc = document.getElementById("floatingToc");
-  const mobileBtn = document.getElementById("mobileTocBtn");
-  const mobileModal = document.getElementById("mobileTocModal");
-  const mobileContent = document.getElementById("mobileTocContent");
-
-  if (!toc) return;
-
-  // 내용 복사
-  floatingToc.innerHTML = toc.innerHTML;
-  mobileContent.innerHTML = toc.innerHTML;
-
-  // 모바일 팝업
-  mobileBtn.addEventListener("click", () => {
-    mobileModal.style.display = "flex";
-  });
-
-  mobileModal.addEventListener("click", (e) => {
-    if (e.target === mobileModal) {
-      mobileModal.style.display = "none";
-    }
-  });
-
-  mobileContent.addEventListener("click", (e) => {
-    if (e.target.tagName === "A") {
-      e.preventDefault();
-      const targetId = e.target.getAttribute("href").replace("#", "");
-      const el = document.getElementById(targetId);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-        mobileModal.style.display = "none";
-      }
-    }
-  });
-
-  // ✅ 감시 기준 요소 2개
-  const topSentinel = document.createElement("div");
-  topSentinel.style.height = "1px";
-  topSentinel.id = "toc-top-sentinel";
-  toc.before(topSentinel);
-
-  const bottomSentinel = document.createElement("div");
-  bottomSentinel.style.height = "1px";
-  bottomSentinel.id = "toc-bottom-sentinel";
-  toc.after(bottomSentinel);
-
-  let isAbove = false;
-  let isBelow = false;
-
-  const checkFloatingToc = () => {
-    if (!isAbove && isBelow) {
-      floatingToc.style.display = "block";
-      mobileBtn.classList.add("show");
-    } else {
-      floatingToc.style.display = "none";
-      mobileBtn.classList.remove("show");
-    }
-  };
-
-  // 감시자 설정
-  const observerTop = new IntersectionObserver(
-    ([entry]) => {
-      isAbove = !entry.isIntersecting; // top sentinel이 화면 밖이면 위로 스크롤함
-      checkFloatingToc();
-    },
-    { threshold: 0 }
-  );
-
-  const observerBottom = new IntersectionObserver(
-    ([entry]) => {
-      isBelow = !entry.isIntersecting; // bottom sentinel이 화면 밖이면 아래로 내려간 것
-      checkFloatingToc();
-    },
-    { threshold: 0 }
-  );
-
-  observerTop.observe(document.getElementById("toc-top-sentinel"));
-  observerBottom.observe(document.getElementById("toc-bottom-sentinel"));
-});
+    document.addEventListener("DOMContentLoaded", () => {
+      const toc = document.querySelector(".auto-toc");
+      const floatingToc = document.getElementById("floatingToc");
+      const mobileBtn = document.getElementById("mobileTocBtn");
+      const mobileModal = document.getElementById("mobileTocModal");
+      const mobileContent = document.getElementById("mobileTocContent");
+    
+      if (!toc) return;
+    
+      // 내용 복사
+      floatingToc.innerHTML = toc.innerHTML;
+      mobileContent.innerHTML = toc.innerHTML;
+    
+      // 모바일 팝업
+      mobileBtn.addEventListener("click", () => {
+        mobileModal.style.display = "flex";
+      });
+    
+      mobileModal.addEventListener("click", (e) => {
+        if (e.target === mobileModal) {
+          mobileModal.style.display = "none";
+        }
+      });
+    
+      mobileContent.addEventListener("click", (e) => {
+        if (e.target.tagName === "A") {
+          e.preventDefault();
+          const targetId = e.target.getAttribute("href").replace("#", "");
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+            mobileModal.style.display = "none";
+          }
+        }
+      });
+    
+      // 센티넬 추가
+      const topSentinel = document.createElement("div");
+      topSentinel.style.height = "1px";
+      toc.before(topSentinel);
+    
+      const bottomSentinel = document.createElement("div");
+      bottomSentinel.style.height = "1px";
+      toc.after(bottomSentinel);
+    
+      // 실시간 위치 확인 함수
+      const checkFloatingToc = () => {
+        const top = topSentinel.getBoundingClientRect().top;
+        const bottom = bottomSentinel.getBoundingClientRect().top;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+    
+        const isTocFullyPassed = top < 0 && bottom < 0; // 목차 전체가 위로 지나감
+    
+        if (isTocFullyPassed) {
+          floatingToc.style.display = "block";
+          mobileBtn.classList.add("show");
+        } else {
+          floatingToc.style.display = "none";
+          mobileBtn.classList.remove("show");
+        }
+      };
+    
+      // 스크롤, 리사이즈 시 확인
+      window.addEventListener("scroll", checkFloatingToc);
+      window.addEventListener("resize", checkFloatingToc);
+      checkFloatingToc(); // 처음 로드 시 확인
+    });
     </script>
+    
     
 </body>
 </html>
