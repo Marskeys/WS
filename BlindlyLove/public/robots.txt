@@ -1,4 +1,6 @@
 User-agent: *
-Disallow:
+Disallow: /write
+Disallow: /edit
+Disallow: /delete
 
 Sitemap: https://blindly.love/sitemap.xml
