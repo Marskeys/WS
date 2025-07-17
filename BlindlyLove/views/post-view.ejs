@@ -410,11 +410,13 @@
       // 모바일 팝업
       mobileBtn.addEventListener("click", () => {
         mobileModal.style.display = "flex";
+        document.body.classList.add("modal-open"); // 💡 스크롤 막기
       });
     
       mobileModal.addEventListener("click", (e) => {
         if (e.target === mobileModal) {
           mobileModal.style.display = "none";
+          document.body.classList.remove("modal-open"); // 💡 다시 스크롤 허용
         }
       });
     

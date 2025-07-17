@@ -88,4 +88,7 @@
     pointer-events: auto;
   }
 
- 
+  body.modal-open {
+    overflow: hidden;
+    touch-action: none; /* 터치 스크롤도 차단 */
+  }
