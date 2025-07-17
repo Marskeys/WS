@@ -375,8 +375,6 @@
     });
   
     window.addEventListener('load', sendHeightToParent);
-    const observer = new MutationObserver(sendHeightToParent);
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
     window.addEventListener('resize', sendHeightToParent);
   </script>
  
@@ -403,6 +401,19 @@
       const mobileModal = document.getElementById("mobileTocModal");
       const mobileContent = document.getElementById("mobileTocContent");
     
+      // 📱 모바일 목차에서 항목 클릭하면 모달 닫기 + 이동
+mobileContent.addEventListener("click", (e) => {
+  if (e.target.tagName === "A") {
+    e.preventDefault();
+    const targetId = e.target.getAttribute("href").replace("#", "");
+    const el = document.getElementById(targetId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      mobileModal.style.display = "none"; // ✅ 팝업 닫기
+    }
+  }
+});
+
       if (!toc) return;
     
       // 💻 데스크탑용 떠다니는 목차 생성
@@ -423,20 +434,33 @@
         }
       });
     
-      // 💻 스크롤 이벤트로 목차 떠오르기
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const entry = entries[0];
-          if (!entry.isIntersecting) {
-            floatingToc.style.display = "block";
-          } else {
-            floatingToc.style.display = "none";
-          }
-        },
-        { threshold: 0 }
-      );
     
-      observer.observe(toc);
+
+
+      // ✅ 감지 기준이 되는 요소를 목차 바로 뒤에 추가
+const sentinel = document.createElement("div");
+sentinel.id = "toc-bottom-sentinel";
+sentinel.style.height = "1px";
+toc.after(sentinel);
+
+// 기존 observer 대신 새 observer로 대체
+const visibilityObserver = new IntersectionObserver((entries) => {
+  const entry = entries[0];
+  if (entry.isIntersecting) {
+    // 아직 목차 아래 안 내려감 → 숨김
+    floatingToc.style.display = "none";
+    mobileBtn.style.display = "none";
+  } else {
+    // 목차 아래로 스크롤함 → 표시
+    floatingToc.style.display = "block";
+    mobileBtn.style.display = "flex";
+  }
+}, {
+  rootMargin: '0px 0px -80% 0px'  // 스크롤 약간 내려가야 감지됨
+});
+
+visibilityObserver.observe(document.getElementById("toc-bottom-sentinel"));
+
     });
     </script>
     

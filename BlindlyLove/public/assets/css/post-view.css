@@ -77,4 +77,14 @@
     color: white;
   }
 
+  .mobile-toc-button {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .mobile-toc-button.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
   
