@@ -437,28 +437,32 @@ mobileContent.addEventListener("click", (e) => {
     
 
 
-      // ✅ 감지 기준이 되는 요소를 목차 바로 뒤에 추가
+     // 1. 감시 기준 요소 삽입 (.auto-toc 바로 뒤에 삽입)
 const sentinel = document.createElement("div");
-sentinel.id = "toc-bottom-sentinel";
+sentinel.id = "toc-sentinel-anchor";
 sentinel.style.height = "1px";
 toc.after(sentinel);
 
-// 기존 observer 대신 새 observer로 대체
+// 2. 플로팅 목차 표시/숨김 판단 로직
 const visibilityObserver = new IntersectionObserver((entries) => {
   const entry = entries[0];
+
   if (entry.isIntersecting) {
+    // sentinel이 화면 안에 있음 → 목차 안 보인 상태 아님
     floatingToc.style.display = "none";
-    mobileBtn.style.display = "none";
+    mobileBtn.classList.remove("show");
   } else {
+    // sentinel이 화면 밖으로 나감 → 목차 위로 지나침
     floatingToc.style.display = "block";
-    mobileBtn.style.display = "flex";
+    mobileBtn.classList.add("show");
   }
 }, {
-  rootMargin: '0px',
-  threshold: 0.2 // ✅ 20%만 보여도 '보이는 중'으로 처리
+  root: null,
+  threshold: 0,
+  rootMargin: '0px'
 });
 
-visibilityObserver.observe(toc); // ✅ 감시 대상 변경
+visibilityObserver.observe(document.getElementById("toc-sentinel-anchor"));
 
     });
     </script>
