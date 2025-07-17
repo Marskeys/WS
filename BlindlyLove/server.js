@@ -1,3 +1,6 @@
+// 사이트맵 업데이트 자동화
+const { format } = require('date-fns'); 
+
 const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
@@ -282,6 +285,8 @@ app.post('/edit/:id', async (req, res) => {
     const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
 
 
+
+
 // 글 정보 DB 업데이트
 // 🔁 수정 전 백업
 await db.query(`
@@ -515,6 +520,46 @@ app.get('/', async (req, res) => {
   }
 });
 
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const [posts] = await db.query(`
+      SELECT id, updated_at 
+      FROM posts 
+      WHERE is_private = 0 
+      ORDER BY updated_at DESC
+    `);
+
+    const postUrls = posts.map(post => `
+      <url>
+        <loc>https://blindly.love/post/${post.id}</loc>
+        <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+        <priority>0.80</priority>
+      </url>
+    `).join('');
+
+    const staticUrls = [
+      `<url><loc>https://blindly.love/</loc><priority>1.00</priority></url>`,
+      `<url><loc>https://blindly.love/signup</loc><priority>0.80</priority></url>`
+    ].join('');
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+      <urlset 
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        ${staticUrls}
+        ${postUrls}
+      </urlset>
+    `;
+
+    res.header('Content-Type', 'application/xml');
+    res.send(sitemap.trim());
+  } catch (err) {
+    console.error('🚨 sitemap.xml 생성 오류:', err);
+    res.status(500).send('Sitemap 생성 실패');
+  }
+});
 
 // ✅ 카테고리 전체 가져오기 API
 app.get('/api/categories', async (req, res) => {
