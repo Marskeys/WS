@@ -389,7 +389,12 @@ app.get('/post/:id', async (req, res) => {
     }
 
     // ✅ 렌더링
-    res.render('post-view', { post, user: req.session.user });
+    const canonicalUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    res.render('post-view', {
+      post,
+      user: req.session.user,
+      canonicalUrl // 추가
+    });
 
   } catch (err) {
     console.error('글 보기 오류:', err);

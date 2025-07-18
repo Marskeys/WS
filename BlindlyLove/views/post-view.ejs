@@ -5,6 +5,10 @@
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <link rel="stylesheet" href="/assets/css/post-view.css" />
   <%- include('partials/head') %>
+
+  <!-- ✅ canonical 태그 동적 삽입 -->
+  <link rel="canonical" href="<%= canonicalUrl %>" />
+  
   <style>
     /* 📑 목차 박스 디자인 */
     .toc-list {
