@@ -438,17 +438,30 @@ app.get('/search', async (req, res) => {
     const totalPages = Math.ceil(total / limit);
     const paginationRange = generatePagination(page, totalPages);
 
-    const paginatedPosts = filteredAll.slice(offset, offset + limit);
+    // 🔁 전체 글에서 모든 카테고리와 가장 최근 글 작성일 기준 정렬
+const [categoryRows] = await db.query(`
+  SELECT 
+    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(categories, ',', numbers.n), ',', -1)) AS category,
+    MAX(created_at) AS latest
+  FROM posts
+  JOIN (
+    SELECT a.N + b.N * 10 + 1 AS n
+    FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+         (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+  ) numbers
+  ON CHAR_LENGTH(categories) - CHAR_LENGTH(REPLACE(categories, ',', '')) >= numbers.n - 1
+  GROUP BY category
+  ORDER BY latest DESC
+`);
+const allCategories = categoryRows.map(row => row.category);
+const paginatedPosts = filteredAll.slice(offset, offset + limit);
 
-    const categorySet = new Set();
-    filteredAll.forEach(post => {
-      post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
-    });
-    const categories = Array.from(categorySet);
 
     res.render('index', {
       posts: paginatedPosts,
-      categories,
+      categories: allCategories, 
       isSearch: true,
       searchKeyword: keyword,
       currentPath: req.path,
@@ -541,15 +554,30 @@ app.get('/', async (req, res) => {
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
 
-    // 카테고리 목록 만들기
-    const categorySet = new Set();
-    filteredPosts.forEach(post => {
-      post.categories?.split(',').map(c => c.trim()).forEach(c => c && categorySet.add(c));
-    });
+ 
+
+    // 🔁 전체 글에서 모든 카테고리와 최신 글 작성일 기준 정렬
+const [categoryRows] = await db.query(`
+  SELECT 
+    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(categories, ',', numbers.n), ',', -1)) AS category,
+    MAX(created_at) AS latest
+  FROM posts
+  JOIN (
+    SELECT a.N + b.N * 10 + 1 AS n
+    FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+         (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+  ) numbers
+  ON CHAR_LENGTH(categories) - CHAR_LENGTH(REPLACE(categories, ',', '')) >= numbers.n - 1
+  GROUP BY category
+  ORDER BY latest DESC
+`);
+const allCategories = categoryRows.map(row => row.category);
 
     res.render('index', {
       posts: filteredPosts,
-      categories: Array.from(categorySet),
+      categories: allCategories,
       isSearch: false,
       searchKeyword: '',
       currentPath: req.path,
