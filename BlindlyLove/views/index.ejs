@@ -73,13 +73,21 @@
             <div class="tabs-blur-left"></div>
             <div class="tabs-blur-right"></div>
           <div class="tabs-wrapper">
-          <div class="tabs">
-               <div class="tab-spacer"></div> <!-- 💡 왼쪽 여백 -->
-            <a href="/?category=all" class="tab <%= !selectedCategory || selectedCategory === 'all' ? 'active' : '' %>">전체글</a>
-            <% categories.forEach(category => { %>
-              <a href="/?category=<%= category %>" class="tab <%= selectedCategory === category ? 'active' : '' %>"><%= category %></a>
-            <% }) %>
-          </div>
+            <div class="tabs">
+              <div class="tab-spacer"></div> <!-- 💡 왼쪽 여백 -->
+            
+              <a href="/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">전체글</a>
+            
+              <% if (isSearch) { %>
+                <div class="tab active">검색 결과</div>
+              <% } %>
+            
+              <% categories.forEach(category => { %>
+                <a href="/?category=<%= category %>" class="tab <%= selectedCategory === category ? 'active' : '' %>">
+                  <%= category %>
+                </a>
+              <% }) %>
+            </div>
           </div>
           </div>
 
