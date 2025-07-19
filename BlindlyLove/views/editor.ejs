@@ -141,8 +141,8 @@
     
         <% if (user && Number(user.is_admin) === 1) { %>
         <div class="mode-toggle">
-          <button onclick="switchToDesignMode('<%= code %>')">디자인 모드</button>
-          <button onclick="switchToHtmlMode('<%= code %>')">HTML 모드</button>
+          <button onclick="switchToDesignMode()">디자인 모드</button>
+          <button onclick="switchToHtmlMode()">HTML 모드</button>
         </div>
         <% } %>
         
@@ -206,8 +206,8 @@
     let categories = [];
     let savedRange = null;
 
-    let currentActiveEditor = null;
-    let currentActiveHtmlEditor = null;
+    let currentActiveEditor = null; // 현재 활성 디자인 모드 에디터 div 엘리먼트
+    let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea 엘리먼트
 
     const langList = [
         { code: 'ko', label: '한국어' },
@@ -219,7 +219,6 @@
     
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
-    // 현재 페이지의 언어를 EJS 변수로 가져옴
     const CURRENT_PAGE_LANG = '<%= lang %>';
 
     function renderCategories() {
@@ -318,12 +317,15 @@
               }
 
               let contentToSave = '';
-              if (htmlEditorDiv.style.display === 'block') {
+              if (htmlEditorDiv.style.display === 'block') { // HTML 모드인 경우
                   contentToSave = htmlEditorDiv.value.trim();
-              } else {
-                  contentToSave = editorDiv.innerHTML.trim();
+              } else { // 디자인 모드인 경우
+                  // 디자인 모드에서 내용을 가져올 때, bl-content 내부의 내용만 가져오도록 합니다.
+                  const blContent = editorDiv.querySelector('.bl-content');
+                  contentToSave = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
               }
 
+              // 내용이 비어있거나 기본 플레이스홀더 내용인 경우 '<p><br></p>'로 통일
               if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
                   contentToSave = '<p><br></p>';
               }
@@ -648,7 +650,6 @@
 
       window.onload = () => {
           // 카테고리 불러오기 및 렌더링
-          // API 호출 시 현재 언어(CURRENT_PAGE_LANG)를 쿼리 파라미터로 전달
           fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
             .then(res => res.json())
             .then(data => {
@@ -674,7 +675,7 @@
               currentActiveHtmlEditor = initialHtmlEditor;
               initialEditor.focus();
               detectStyle(); 
-          } else { // 기본 언어 에디터가 없는 경우 첫 번째 에디터를 기본으로 설정 (폴백)
+          } else { 
               currentActiveEditor = document.querySelector('.language-editor');
               if (currentActiveEditor) {
                 currentActiveHtmlEditor = document.getElementById(`htmlEditor_${currentActiveEditor.dataset.langEditor}`);
@@ -693,16 +694,13 @@
               editor.addEventListener('keyup', saveSelection);
               editor.addEventListener('focus', () => {
                   const langCode = editor.dataset.langEditor;
-                  // 현재 언어 선택 드롭다운도 업데이트
                   document.getElementById('langSelector').value = langCode;
 
-                  // 모든 lang-meta-block 숨기고 현재 블록만 표시
                   document.querySelectorAll('.lang-meta-block').forEach(block => {
                       if (block.dataset.lang === langCode) {
                           block.style.display = '';
                       } else {
                           block.style.display = 'none';
-                          // 숨겨지는 에디터의 HTML/디자인 모드도 숨김
                           const otherEditorDiv = document.getElementById(`editor_${block.dataset.lang}`);
                           const otherHtmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
                           if (otherEditorDiv) otherEditorDiv.style.display = 'none';
@@ -713,10 +711,9 @@
                   currentActiveEditor = editor;
                   currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
                   
+                  // 포커스 시 HTML 모드였다면 디자인 모드로 자동 전환
                   if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
-                      currentActiveEditor.innerHTML = currentActiveHtmlEditor.value;
-                      currentActiveHtmlEditor.style.display = 'none';
-                      currentActiveEditor.style.display = 'block';
+                      switchToDesignMode(); // code 파라미터 없이 호출
                   }
                   detectStyle();
               });
@@ -793,33 +790,48 @@
         }
       }
 
-      function switchToHtmlMode(code) {
-  const editorDiv = document.getElementById(`editor_${code}`);
-  const htmlEditor = document.getElementById(`htmlEditor_${code}`);
-  if (editorDiv && htmlEditor) {
-    const blContent = editorDiv.querySelector('.bl-content');
-    const html = blContent ? blContent.innerHTML : editorDiv.innerHTML;
+      // 수정된 switchToHtmlMode 함수: 현재 활성 에디터를 사용하도록 변경
+      function switchToHtmlMode() {
+        const editorDiv = currentActiveEditor;
+        const htmlEditor = currentActiveHtmlEditor;
 
-    htmlEditor.value = html_beautify(html.trim(), { indent_size: 2 }); // <-- 여기가 핵심
-    editorDiv.style.display = 'none';
-    htmlEditor.style.display = 'block';
-  }
-}
+        if (!editorDiv || !htmlEditor) {
+          console.error("HTML 모드 전환을 위한 활성 에디터를 찾을 수 없습니다.");
+          return;
+        }
 
-function switchToDesignMode(code) {
-  const editorDiv = document.getElementById(`editor_${code}`);
-  const htmlEditor = document.getElementById(`htmlEditor_${code}`);
-  if (editorDiv && htmlEditor) {
-    const rawHtml = htmlEditor.value.trim();
-    editorDiv.innerHTML = `
-      <div class="bl-content" style="white-space:normal; line-height: 1.7;">
-        ${rawHtml}
-      </div>
-    `;
-    htmlEditor.style.display = 'none';
-    editorDiv.style.display = 'block';
-  }
-}
+        const blContent = editorDiv.querySelector('.bl-content');
+        const htmlContent = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
+
+        htmlEditor.value = html_beautify(htmlContent, { indent_size: 2, wrap_attributes: 'auto', indent_with_tabs: false });
+        editorDiv.style.display = 'none';
+        htmlEditor.style.display = 'block';
+      }
+
+      // 수정된 switchToDesignMode 함수: 현재 활성 에디터를 사용하도록 변경
+      function switchToDesignMode() {
+        const editorDiv = currentActiveEditor;
+        const htmlEditor = currentActiveHtmlEditor;
+
+        if (!editorDiv || !htmlEditor) {
+          console.error("디자인 모드 전환을 위한 활성 에디터를 찾을 수 없습니다.");
+          return;
+        }
+
+        const rawHtml = htmlEditor.value.trim();
+        let contentToLoad = rawHtml;
+        
+        // HTML 모드에서 bl-content 래퍼가 제거되었을 가능성을 대비하여 다시 감쌉니다.
+        if (!rawHtml.startsWith('<div class="bl-content"')) {
+          contentToLoad = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
+        }
+
+        editorDiv.innerHTML = contentToLoad;
+        htmlEditor.style.display = 'none';
+        editorDiv.style.display = 'block';
+        editorDiv.focus();
+        detectStyle();
+      }
 
       // 언어 선택 드롭다운 변경 이벤트
       document.getElementById('langSelector').addEventListener('change', function() {
@@ -840,6 +852,7 @@ function switchToDesignMode(code) {
                   block.style.display = 'none';
                   const editorDiv = document.getElementById(`editor_${block.dataset.lang}`);
                   const htmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
+                  // 다른 언어 블록의 에디터와 HTML 에디터를 숨김
                   if (editorDiv) editorDiv.style.display = 'none';
                   if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
               }
