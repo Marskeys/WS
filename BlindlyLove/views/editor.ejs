@@ -362,12 +362,15 @@
           .then(data => {
             if (data.success) {
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-                <% if (isEdit && post) { %>
-                  window.location.href = "/post/<%= post.id %>";
-                <% } else { %>
+                const isEditPage = <%= isEdit %>; 
+                const postId = <%= post ? post.id : 'null' %>; 
+
+                if (isEditPage && postId) { 
+                  window.location.href = "/post/" + postId;
+                } else {
                   window.location.href = "/";
-                <% } %>
-              });
+                }
+              }); 
             } else {
               showCustomMessage("저장 실패: " + data.error);
             }
