@@ -34,7 +34,21 @@
               <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
             </a>
 
-        
+            <!-- 🟡 검색창 & 캐릭터 같이 감싸는 박스 -->
+            <div class="search-wrapper">
+              <div class="search-position-anchor">
+                <div class="character-stand">
+                  <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
+                </div>
+                <form method="get" action="/search" class="search-form">
+                  <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
+                  <button type="submit" class="icon-submit-btn">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
 
           <!-- 🟡 검색 결과 표시할 때 한국어 조사 선택 방법 -->
           <%
