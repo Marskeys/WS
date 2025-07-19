@@ -85,9 +85,7 @@ app.get('/sitemap.xml', async (req, res) => {
   }
 });
 
-// ---
-## Authentication & User Management
----
+
 
 // ✅ 로그인 상태 확인 API
 app.get('/session', (req, res) => {
