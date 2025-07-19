@@ -11,9 +11,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/editor.css" />
-  <%- include('partials/head') %>
 </head>
 <body>
+  <%- include('partials/head') %>
   <%- include('partials/header') %>
   <% const isEdit = typeof post !== 'undefined' && post !== null; %>
   <% if (user) { %>
@@ -838,5 +838,7 @@
           });
       });
   </script>
+
+
 </body>
 </html>
