@@ -288,7 +288,100 @@
         });
       }
     
-    
+      function postContent() {
+          const postData = {
+              categories: selectedCategories,
+              // is_private와 is_pinned는 각 언어별로 저장하지 않고 공통으로 관리한다고 가정
+              is_private: document.getElementById('isPrivateCheckbox_ko')?.checked ? 1 : 0, // 한국어 체크박스 기준으로 대표값 가져옴
+              is_pinned: document.getElementById('isPinnedCheckbox_ko')?.checked ? 1 : 0, // 한국어 체크박스 기준으로 대표값 가져옴
+              lang_content: {}
+          };
+
+          let hasContentForDefaultLang = false;
+
+          langList.forEach(({ code }) => {
+              const titleInput = document.querySelector(`input[name="title_${code}"]`);
+              const editorDiv = document.getElementById(`editor_${code}`);
+              const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`); // HTML 에디터 내용 가져오기
+              // ✅ categoryTranslateBlock 관련 변수 선언 및 사용 제거됨
+              // const categoryTranslateBlock = document.querySelector(`.category-translate-block[data-lang="${code}"]`);
+
+              if (!titleInput || !editorDiv || !htmlEditorDiv) {
+                  console.warn(`언어 코드 ${code} 에 대한 입력 필드 또는 에디터 DIV를 찾을 수 없습니다.`);
+                  return;
+              }
+
+              let contentToSave = '';
+              // HTML 모드일 경우 textarea의 값, 디자인 모드일 경우 contenteditable div의 값
+              if (htmlEditorDiv.style.display === 'block') {
+                  contentToSave = htmlEditorDiv.value.trim();
+              } else {
+                  contentToSave = editorDiv.innerHTML.trim();
+              }
+
+              // 빈 내용을 <p><br></p>로 표준화 (bl-content 래퍼는 서버에서 다시 처리될 수 있도록)
+              if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
+                  contentToSave = '<p><br></p>';
+              }
+
+              // ✅ translatedCategories 관련 로직 및 필드 제거됨
+              // const translatedCategories = {};
+              // if (categoryTranslateBlock) {
+              //     categoryTranslateBlock.querySelectorAll('.translated-category input').forEach(input => {
+              //         const catName = input.name.split('[')[2].replace(']', '');
+              //         translatedCategories[catName] = input.value.trim();
+              //     });
+              // }
+
+              postData.lang_content[code] = {
+                  title: titleInput.value.trim(),
+                  content: contentToSave
+                  // ✅ translated_categories 필드 제거됨
+                  // translated_categories: translatedCategories
+              };
+
+              if (code === 'ko' && (postData.lang_content[code].title || postData.lang_content[code].content !== '<p><br></p>')) {
+                  hasContentForDefaultLang = true;
+              }
+          });
+
+          if (!postData.categories || postData.categories.length === 0) {
+              return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
+          }
+
+          if (!hasContentForDefaultLang) {
+            return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
+          }
+      
+          fetch("<%= postUrl %>", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(postData)
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              showCustomMessage("성공적으로 저장되었습니다!", false, () => {
+                // 이 두 줄이 수정된 부분입니다.
+                const isEditPage = <%= JSON.stringify(isEdit) %>;
+                const postId = <%= (post ? JSON.stringify(post.id) : 'null') %>;
+
+                if (isEditPage && postId) {
+                  window.location.href = "/post/" + postId;
+                } else {
+                  window.location.href = "/";
+                }
+              });
+            } else {
+              showCustomMessage("저장 실패: " + data.error);
+            }
+          })
+          .catch(err => {
+            console.error("저장 중 오류:", err);
+            showCustomMessage("저장 중 오류가 발생했습니다.");
+          });
+        }
+      
       function format(command, value = null) {
           if (!currentActiveEditor) return;
           currentActiveEditor.focus();

@@ -472,7 +472,7 @@ app.get('/post/:id', async (req, res) => {
 
     // 2. `post_translations` 테이블에서 해당 언어의 번역된 콘텐츠 가져오기
     let [translations] = await db.query(
-      'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?', // translated_categories 제거
+      'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
       [postId, safeLang]
     );
 
@@ -482,7 +482,7 @@ app.get('/post/:id', async (req, res) => {
     if (!translation && safeLang !== 'ko') {
       console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
       [translations] = await db.query(
-        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"', // translated_categories 제거
+        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
         [postId]
       );
       translation = translations[0];
@@ -500,14 +500,16 @@ app.get('/post/:id', async (req, res) => {
     const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
     const translatedCategories = [];
     if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        // IN 절에 사용할 플레이스홀더를 동적으로 생성
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-            `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
-            originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
+      const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+      const placeholders = originalCategories.map(() => '?').join(','); // IN 절에 사용될 ? 플레이스홀더 생성
+
+      // 🚨 이 부분이 수정되었습니다.
+      // categories 테이블에서 원본 카테고리 이름(c.name)에 해당하는 번역된 카테고리 이름(COALESCE)을 가져옵니다.
+      const [categoryNameRows] = await db.query(
+        `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
+        originalCategories // originalCategories 배열을 파라미터로 전달
+      );
+      translatedCategories.push(...categoryNameRows.map(row => row.name));
     }
 
 
@@ -541,9 +543,11 @@ app.get('/api/categories', async (req, res) => {
   const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
   const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
 
-  const column = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+  // COALESCE(컬럼명, '')를 사용하여 NULL이면 빈 문자열로 반환
+  const column = (safeLang === 'ko') ? 'name' : `COALESCE(name_${safeLang}, '')`;
 
   try {
+    // 쿼리에서 'name' 컬럼을 가져올 때, NULL이면 빈 문자열로 대체되도록 변경
     const [rows] = await db.query(`SELECT id, ${column} AS name FROM categories ORDER BY id ASC`);
     const names = rows.map(r => r.name);
     res.json({ categories: names });
@@ -600,7 +604,7 @@ app.get('/search', async (req, res) => {
   const isAdmin = req.session.user?.is_admin === 1;
   const lang = req.query.lang || 'ko'; // 검색 시에도 언어 파라미터 활용
   const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-  const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
+  const safeLang = supportedLugs.includes(lang) ? lang : 'ko'; // 🚨 여기 오타 `supportedLugs` -> `supportedLangs`
 
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -608,7 +612,7 @@ app.get('/search', async (req, res) => {
 
   try {
     // posts 테이블과 post_translations 테이블을 조인하여 검색
-    // 검색은 모든 언어의 제목/내용/카тего리에 대해 이루어져야 함
+    // 검색은 모든 언어의 제목/내용/카테고리에 대해 이루어져야 함
     const [allPosts] = await db.query(`
       SELECT
           p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
@@ -836,7 +840,7 @@ app.get('/', async (req, res) => {
             const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
             const placeholders = originalCategories.map(() => '?').join(',');
             const [categoryNames] = await db.query(
-                `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
+                `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`, // 여기도 COALESCE 추가 및 쿼리 단순화
                 originalCategories
             );
             translatedCategories.push(...categoryNames.map(row => row.name));
@@ -856,7 +860,7 @@ app.get('/', async (req, res) => {
       SELECT
         TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
         MAX(p.created_at) AS latest,
-        c.${categoryColumnForDisplay} AS translated_category_name
+        COALESCE(c.${categoryColumnForDisplay}, c.name) AS translated_category_name -- 여기가 중요!
       FROM posts p
       JOIN (
         SELECT a.N + b.N * 10 + 1 AS n
