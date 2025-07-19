@@ -51,10 +51,18 @@
     </div>
 
     <!-- ✅ 언어 전환 버튼 -->
-    <div class="language-switcher" style="display: flex; gap: 0.5rem;">
-      <a href="?lang=ko" class="fi fi-kr" style="width: 2rem; height: 1.4rem;"></a>
-      <a href="?lang=en" class="fi fi-gb" style="width: 2rem; height: 1.4rem;"></a>
-    </div>
+  <!-- 🌍 언어 선택 드롭다운 -->
+<div class="language-dropdown" style="position: relative;">
+  <button id="langToggle" class="lang-btn" style="background: none; border: none; cursor: pointer; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+    <span class="fi fi-<%= lang || 'kr' %>" style="width: 1.5rem; height: 1.2rem;"></span>
+    <i class="fas fa-caret-down"></i>
+  </button>
+  <ul id="langMenu" class="lang-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); z-index: 999; min-width: 100px; padding: 0.3rem 0;">
+    <li><a href="?lang=ko" class="lang-option" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem;"><span class="fi fi-kr" style="width: 1.2rem;"></span>한국어</a></li>
+    <li><a href="?lang=en" class="lang-option" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem;"><span class="fi fi-gb" style="width: 1.2rem;"></span>English</a></li>
+    <li><a href="?lang=fr" class="lang-option" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem;"><span class="fi fi-fr" style="width: 1.2rem;"></span>Français</a></li>
+  </ul>
+</div>
 
   </div>
 
@@ -116,4 +124,22 @@
       }, 100);
     }
   </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('langToggle');
+    const menu = document.getElementById('langMenu');
+
+    toggle.addEventListener('click', () => {
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+  });
+</script>
+  
 </div>
