@@ -28,7 +28,40 @@
         </div>
       <% } %>
 
-    
+      <div class="language-dropdown">
+        <button id="langToggle" class="lang-btn">
+          <%
+            let flagCode = lang; // 'lang' 대신 'lang' 사용
+            switch(lang) { // 'lang' 대신 'lang' 사용
+              case 'ko': flagCode = 'kr'; break;
+              case 'en': flagCode = 'gb'; break; /* 또는 'us' (미국 국기) */
+              case 'zh': flagCode = 'cn'; break;
+              case 'ja': flagCode = 'jp'; break;
+              case 'fr': flagCode = 'fr'; break; // 프랑스어 추가
+              default: flagCode = 'kr'; // 기본값 설정
+            }
+          %>
+          <span class="fi fi-<%= flagCode %>"></span>
+          <i class="fas fa-caret-down"></i>
+        </button>
+        <ul id="langMenu" class="lang-menu">
+          <%
+            const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+            // 현재 URL 경로에서 언어 접두사(/ko, /en 등)를 제거합니다.
+            // 예를 들어, /ko/post/12 -> /post/12, /signup -> /signup
+            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          %>
+          <% supportedLangs.forEach(langCode => { %>
+            <li>
+              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                 class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
+                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+              </a>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
 
       <div class="light-switch"
            role="switch"
