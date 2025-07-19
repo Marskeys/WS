@@ -131,15 +131,13 @@
   display: flex;
   width: 100%;
   align-items: center;
-  max-width: calc(100vw - 430px);
+  max-width: calc(100vw - 530px);
 }
 
 .side-panel {
   flex: 1;
-  display: block; /* 기본값 */
-  min-width: 0; /* 불필요하게 공간을 차지하지 않도록 */
-  width: 0; /* 기본 너비를 0으로 설정하여 공간을 차지하지 않게 합니다. */
-  flex-shrink: 0; /* 절대 줄어들지 않도록 */
+  max-width: 200px;
+  min-width: 200px;
   background-color: transparent;
   border-radius: 0;
   min-height: 100vh;
