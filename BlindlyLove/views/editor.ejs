@@ -194,7 +194,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
   <script>
     // ✅ selectedCategories 초기화 방식 변경
-    let selectedCategories = <%- post && post.categories ? JSON.stringify(post.categories.split(',')) : '[]' %>;
+    // 🚨🚨🚨 이 부분이 수정되었습니다. 🚨🚨🚨
+    let selectedCategories = []; // 기본값으로 빈 배열 선언
+    <% if (post && post.categories) { %>
+      // post.categories가 있을 경우에만 JSON.stringify를 사용하여 할당
+      selectedCategories = <%- JSON.stringify(post.categories.split(',')) %>;
+    <% } %>
+
     let categories = [];
     let savedRange = null;
 
@@ -210,6 +216,10 @@
         { code: 'ja', label: '日本語' }
     ];
     
+    // 🚨🚨🚨 이 부분도 수정되었는지 다시 확인하세요. (이전 app.js 수정 제안과 동일) 🚨🚨🚨
+    const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
+    const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
+
     function renderCategories() {
         const list = document.getElementById('categoryList');
         list.innerHTML = '';
@@ -362,9 +372,10 @@
           .then(data => {
             if (data.success) {
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-                // 이 두 줄이 수정된 부분입니다.
-                const isEditPage = <%= JSON.stringify(isEdit) %>;
-                const postId = <%= (post ? JSON.stringify(post.id) : 'null') %>;
+                // 이 두 줄은 EJS 템플릿에서 직접 사용하기 때문에 수정된 부분입니다.
+                // 🚨🚨🚨 이 부분도 확인하세요.
+                const isEditPage = <%- isEdit ? 'true' : 'false' %>;
+                const postId = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
 
                 if (isEditPage && postId) {
                   window.location.href = "/post/" + postId;
