@@ -362,15 +362,16 @@
           .then(data => {
             if (data.success) {
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-                const isEditPage = <%= isEdit %>; 
-                const postId = <%= post ? post.id : 'null' %>; 
+                // 이 두 줄이 수정된 부분입니다.
+                const isEditPage = <%= JSON.stringify(isEdit) %>;
+                const postId = <%= post ? JSON.stringify(post.id) : 'null' %>;
 
-                if (isEditPage && postId) { 
+                if (isEditPage && postId) {
                   window.location.href = "/post/" + postId;
                 } else {
                   window.location.href = "/";
                 }
-              }); 
+              });
             } else {
               showCustomMessage("저장 실패: " + data.error);
             }
@@ -635,6 +636,7 @@
               if (onInput) onInput(inputValue);
           };
           document.getElementById('inputCancelBtn').onclick = () => {
+              const inputValue = document.getElementById('customInput').value;
               modal.style.display = 'none';
               if (onInput) onInput(null);
           };
