@@ -130,6 +130,19 @@
                         data-post-user-id="<%= post.user_id %>">
                         <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                       </a>
+
+                      <% if (user && user.id === post.user_id) { %>
+                        <div class="action-icons">
+                          <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                            <i class="fas fa-pen"></i>
+                          </a>
+                          <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                            <button type="submit" class="icon-btn delete-btn" title="삭제">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
+                        </div>
+                      <% } %>
                     </div>
                   </td>
                   <td><%= post.author %></td>
@@ -184,6 +197,19 @@
                     data-post-user-id="<%= post.user_id %>">
                     <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                   </a>
+
+                  <% if (user && user.id === post.user_id) { %>
+                    <div class="action-icons">
+                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                        <i class="fas fa-pen"></i>
+                      </a>
+                      <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                        <button type="submit" class="icon-btn delete-btn" title="삭제">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </form>
+                    </div>
+                  <% } %>
                 </div>
                 <div class="post-info">
                   <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.translated_categories_display.join(', ') %>
