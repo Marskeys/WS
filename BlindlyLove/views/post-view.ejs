@@ -8,7 +8,7 @@
 
   <!-- ✅ canonical 태그 동적 삽입 -->
   <link rel="canonical" href="<%= canonicalUrl %>" />
-  
+
   <style>
     /* 📑 목차 박스 디자인 */
     .toc-list {
@@ -224,7 +224,7 @@
       <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
     </div>
 
-    <div class="post-title"><%= post.title %></div>
+    <div class="post-title"><%= translation.title %></div>
 
     <div class="post-meta">
       <span>카테고리: <%= post.categories %></span><br>
@@ -244,9 +244,9 @@
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
     <!-- 📜 게시글 내용 -->
-    <div class="post-content">
-      <%- post.content %>
-    </div>
+ <div class="post-content">
+  <%- translation.content %>
+</div>
 
     <!-- ✏️ 수정 / 삭제 버튼 -->
     <% if (user && post.user_id == user.id) { %>

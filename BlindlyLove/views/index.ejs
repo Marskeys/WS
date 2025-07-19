@@ -62,15 +62,16 @@
             <div class="tabs-blur-right"></div>
             <div class="tabs-wrapper">
               <div class="tabs">
-                <div class="tab-spacer"></div> <a href="/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">전체글</a>
-
+                <div class="tab-spacer"></div>
+                <a href="/?category=all&lang=<%= currentLang %>" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">전체글</a>
+          
                 <% if (isSearch) { %>
                   <div class="tab active">검색 결과</div>
                 <% } %>
-
+          
                 <% categories.forEach(category => { %>
-                  <a href="/?category=<%= category %>" class="tab <%= selectedCategory === category ? 'active' : '' %>">
-                    <%= category %>
+                  <a href="/?category=<%= category.original %>&lang=<%= currentLang %>" class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
+                    <%= category.translated %>
                   </a>
                 <% }) %>
               </div>
@@ -122,45 +123,17 @@
                   <td><%= post.id %></td>
                   <td>
                     <div class="post-title-and-actions">
-                      <a href="/post/<%= post.id %>"
+                      <a href="/post/<%= post.id %>?lang=<%= currentLang %>"
                         class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                         data-post-id="<%= post.id %>"
                         data-is-private="<%= post.is_private ? '1' : '0' %>"
                         data-post-user-id="<%= post.user_id %>">
-
-                        <%
-                          const now = new Date();
-                          const createdAt = new Date(post.created_at);
-                          const updatedAt = new Date(post.updated_at);
-                          const isNew = (now - createdAt) < 1000 * 60 * 60 * 24;
-                          const isEdited = updatedAt > createdAt && (now - updatedAt) < 1000 * 60 * 60 * 24;
-                        %>
-
-                        <% if (isEdited) { %>
-                          <span class="label-icon edited-icon"></span>
-                        <% } else if (isNew) { %>
-                          <span class="label-icon new-icon"></span>
-                        <% } %>
-
-                        <% if (post.is_pinned) { %><span>📌</span><% } %>
                         <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                       </a>
-                      <% if (user && user.id === post.user_id) { %>
-                        <div class="action-icons">
-                          <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                            <i class="fas fa-pen"></i>
-                          </a>
-                          <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                            <button type="submit" class="icon-btn delete-btn" title="삭제">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          </form>
-                        </div>
-                      <% } %>
-                    </div>
+                      </div>
                   </td>
                   <td><%= post.author %></td>
-                  <td style="text-align: center;"><%= post.categories %></td>
+                  <td style="text-align: center;"><%= post.translated_categories_display.join(', ') %></td>
                   <td><%= post.created_at.toISOString().slice(0, 10) %></td>
                   <td style="text-align: center;"><%= post.views %></td>
                 </tr>
@@ -199,48 +172,18 @@
 
           <div class="mobile-board-list">
             <% posts.forEach(post => { %>
-              <div class="mobile-post-item" data-category="<%= post.categories %>">
+              <div class="mobile-post-item">
                 <div class="post-title-and-actions">
-                  <span class="post-id" style="font-size: 0.85rem; color: #aaa; margin-right: 0.5rem;">#<%= post.id %></span> <% if (post.is_pinned) { %>
-                    <span class="pinned-icon" title="상단 고정" style="margin-right: 0.3rem;">📌</span>
-                  <% } %>
-                  <a href="/post/<%= post.id %>"
+                  <a href="/post/<%= post.id %>?lang=<%= currentLang %>"
                     class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                     data-post-id="<%= post.id %>"
                     data-is-private="<%= post.is_private ? '1' : '0' %>"
                     data-post-user-id="<%= post.user_id %>">
-
-                    <%
-                      const now = new Date();
-                      const createdAt = new Date(post.created_at);
-                      const updatedAt = new Date(post.updated_at);
-                      const isNew = (now - createdAt) < 1000 * 60 * 60 * 24;
-                      const isEdited = updatedAt > createdAt && (now - updatedAt) < 1000 * 60 * 60 * 24;
-                    %>
-
-                    <% if (isEdited) { %>
-                      <span class="label-icon edited-icon"></span>
-                    <% } else if (isNew) { %>
-                      <span class="label-icon new-icon"></span>
-                    <% } %>
-
                     <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                   </a>
-                  <% if (user && user.id === post.user_id) { %>
-                    <div class="action-icons">
-                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                        <i class="fas fa-pen"></i>
-                      </a>
-                      <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                        <button type="submit" class="icon-btn delete-btn" title="삭제">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </form>
-                    </div>
-                  <% } %>
-                </div>
+                  </div>
                 <div class="post-info">
-                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.categories %>
+                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.translated_categories_display.join(', ') %>
                 </div>
               </div>
             <% }) %>
