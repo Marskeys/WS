@@ -109,6 +109,7 @@
 .full-layout {
   display: flex;
   justify-content: space-between;
+  flex-wrap: nowrap;
   align-items: flex-start;
   width: 100%;
   max-width: 1500px;
@@ -131,7 +132,7 @@
   display: flex;
   width: 100%;
   align-items: center;
-  max-width: calc(100vw - 930px);
+  max-width: calc(100vw - 530px);
 }
 
 .side-panel {
