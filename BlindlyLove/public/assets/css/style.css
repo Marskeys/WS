@@ -867,3 +867,7 @@ html.dark .lang-option {
 html.dark .lang-option:hover {
   background-color: #333;
 }
+
+html.dark .lang-btn i {
+  color: #ffffff; /* 원하는 색상으로 변경 */
+}
