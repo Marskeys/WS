@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>BlindLove 에디터</title>
-
+  <%- include('partials/head') %>
   <% if (user) { %>
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="/assets/css/editor.css" />
 </head>
 <body>
-  <%- include('partials/head') %>
   <%- include('partials/header') %>
   <% const isEdit = typeof post !== 'undefined' && post !== null; %>
   <% if (user) { %>
