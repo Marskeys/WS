@@ -45,20 +45,20 @@
       <% } %>
 
         <!-- 🌍 언어 선택 드롭다운 -->
-  <div class="language-dropdown">
-    <button id="langToggle" class="lang-btn">
-      <span class="fi fi-<%= lang || 'kr' %>"></span>
-      <i class="fas fa-caret-down"></i>
-    </button>
-    <ul id="langMenu" class="lang-menu">
-      <li><a href="?lang=ko" class="lang-option"><span class="fi fi-kr"></span>한국어</a></li>
-      <li><a href="?lang=en" class="lang-option"><span class="fi fi-gb"></span>English</a></li>
-      <li><a href="?lang=fr" class="lang-option"><span class="fi fi-fr"></span>Français</a></li>
-      <li><a href="?lang=zh" class="lang-option"><span class="fi fi-cn"></span>简体中文</a></li>
-      <li><a href="?lang=ja" class="lang-option"><span class="fi fi-jp"></span>日本語</a></li>
-    </ul>
-  </div>
-  
+        <div class="language-dropdown">
+          <button id="langToggle" class="lang-btn">
+            <span class="fi fi-<%= (lang === 'ko' ? 'kr' : lang) || 'kr' %>"></span>
+            <i class="fas fa-caret-down"></i>
+          </button>
+          <ul id="langMenu" class="lang-menu">
+            <li><a href="?lang=ko" class="lang-option"><span class="fi fi-kr"></span>한국어</a></li>
+            <li><a href="?lang=en" class="lang-option"><span class="fi fi-gb"></span>English</a></li>
+            <li><a href="?lang=fr" class="lang-option"><span class="fi fi-fr"></span>Français</a></li>
+            <li><a href="?lang=zh" class="lang-option"><span class="fi fi-cn"></span>简体中文</a></li>
+            <li><a href="?lang=ja" class="lang-option"><span class="fi fi-jp"></span>日本語</a></li>
+          </ul>
+        </div>
+
       <div class="light-switch"
            role="switch"
            aria-checked="false"
