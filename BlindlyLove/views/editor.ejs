@@ -806,15 +806,20 @@
   }
 }
 
-      function switchToDesignMode(code) {
-          const editorDiv = document.getElementById(`editor_${code}`);
-          const htmlEditor = document.getElementById(`htmlEditor_${code}`);
-          if (editorDiv && htmlEditor) {
-              editorDiv.style.display = 'block';
-              htmlEditor.style.display = 'none';
-              editorDiv.innerHTML = htmlEditor.value;
-          }
-      }
+function switchToDesignMode(code) {
+  const editorDiv = document.getElementById(`editor_${code}`);
+  const htmlEditor = document.getElementById(`htmlEditor_${code}`);
+  if (editorDiv && htmlEditor) {
+    const rawHtml = htmlEditor.value.trim();
+    editorDiv.innerHTML = `
+      <div class="bl-content" style="white-space:normal; line-height: 1.7;">
+        ${rawHtml}
+      </div>
+    `;
+    htmlEditor.style.display = 'none';
+    editorDiv.style.display = 'block';
+  }
+}
 
       // 언어 선택 드롭다운 변경 이벤트
       document.getElementById('langSelector').addEventListener('change', function() {
