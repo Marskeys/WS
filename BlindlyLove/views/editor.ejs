@@ -364,7 +364,7 @@
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
                 // 이 두 줄이 수정된 부분입니다.
                 const isEditPage = <%= JSON.stringify(isEdit) %>;
-                const postId = <%= post ? JSON.stringify(post.id) : 'null' %>;
+                const postId = <%= (post ? JSON.stringify(post.id) : 'null') %>;
 
                 if (isEditPage && postId) {
                   window.location.href = "/post/" + postId;
