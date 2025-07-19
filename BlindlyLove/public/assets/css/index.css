@@ -22,7 +22,17 @@
 /* ============================
    🔍 검색창 + 캐릭터 위치
 ============================ */
-
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding-top: 3rem;
+  width: 100%;
+  max-width: 0px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
 
 .search-top-box {
   position: relative;
