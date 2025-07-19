@@ -47,7 +47,17 @@
         <!-- 🌍 언어 선택 드롭다운 -->
         <div class="language-dropdown">
           <button id="langToggle" class="lang-btn">
-            <span class="fi fi-<%= (lang === 'ko' ? 'kr' : lang) || 'kr' %>"></span>
+            <%
+              let flagCode = lang;
+              switch(lang) {
+                case 'ko': flagCode = 'kr'; break;
+                case 'en': flagCode = 'gb'; break; /* 또는 'us' (미국 국기) */
+                case 'zh': flagCode = 'cn'; break;
+                case 'ja': flagCode = 'jp'; break;
+                default: flagCode = 'kr'; // 기본값 설정 (예: 알 수 없는 언어 코드일 경우)
+              }
+            %>
+            <span class="fi fi-<%= flagCode %>"></span>
             <i class="fas fa-caret-down"></i>
           </button>
           <ul id="langMenu" class="lang-menu">
