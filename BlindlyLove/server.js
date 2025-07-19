@@ -1,4 +1,14 @@
+// 사이트맵 업데이트 자동화
+const { format } = require('date-fns'); 
 
+const express = require('express');
+const path = require('path');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const db = require('./config/db');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 
 app.get('/sitemap.xml', async (req, res) => {
