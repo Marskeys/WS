@@ -804,3 +804,65 @@ body.menu-open {
 .spacer {
   height: 10rem;
 }
+
+
+.language-dropdown {
+  position: relative;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lang-btn .fi {
+  width: 1.5rem;
+  height: 1.2rem;
+}
+
+.lang-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  min-width: 100px;
+  padding: 0.3rem 0;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.lang-option:hover {
+  background-color: #f2f2f2;
+}
+
+/* 🌙 다크 모드 지원 */
+html.dark .lang-menu {
+  background: #222;
+  border-color: #444;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+}
+
+html.dark .lang-option {
+  color: #eee;
+}
+
+html.dark .lang-option:hover {
+  background-color: #333;
+}
