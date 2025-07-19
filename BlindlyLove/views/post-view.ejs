@@ -6,7 +6,6 @@
   <link rel="stylesheet" href="/assets/css/post-view.css" />
   <%- include('partials/head') %>
 
-  <!-- ✅ canonical 태그 동적 삽입 -->
   <link rel="canonical" href="<%= canonicalUrl %>" />
 
   <style>
@@ -224,15 +223,14 @@
       <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
     </div>
 
-    <div class="post-title"><%= translation.title %></div>
+    <div class="post-title"><%= post.title %></div>
 
     <div class="post-meta">
-      <span>카테고리: <%= post.categories %></span><br>
+      <span>카테고리: <%= post.categories.join(', ') %></span><br>
       <span>작성자: <%= post.author %></span><br>
       <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
 
-    <!-- 📢 광고 삽입 -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
      crossorigin="anonymous"></script>
     <ins class="adsbygoogle"
@@ -243,12 +241,10 @@
          data-ad-slot="3406391330"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
-    <!-- 📜 게시글 내용 -->
- <div class="post-content">
-  <%- translation.content %>
+    <div class="post-content">
+  <%- post.content %>
 </div>
 
-    <!-- ✏️ 수정 / 삭제 버튼 -->
     <% if (user && post.user_id == user.id) { %>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
         <a href="/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
@@ -382,13 +378,10 @@
     window.addEventListener('resize', sendHeightToParent);
   </script>
  
-<!-- 떠다니는 목차 영역 (데스크탑) -->
 <div class="floating-toc" id="floatingToc"></div>
 
-<!-- 모바일 목차 버튼 -->
 <div class="mobile-toc-button" id="mobileTocBtn">📑 목차</div>
 
-<!-- 모바일 목차 모달 -->
 <div class="mobile-toc-modal" id="mobileTocModal">
   <div class="mobile-toc-content" id="mobileTocContent"></div>
 </div>
