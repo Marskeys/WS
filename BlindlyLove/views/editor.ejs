@@ -794,14 +794,17 @@
       }
 
       function switchToHtmlMode(code) {
-          const editorDiv = document.getElementById(`editor_${code}`);
-          const htmlEditor = document.getElementById(`htmlEditor_${code}`);
-          if (editorDiv && htmlEditor) {
-              editorDiv.style.display = 'none';
-              htmlEditor.style.display = 'block';
-              htmlEditor.value = js_beautify.html_beautify(editorDiv.innerHTML, { indent_size: 2 });
-          }
-      }
+  const editorDiv = document.getElementById(`editor_${code}`);
+  const htmlEditor = document.getElementById(`htmlEditor_${code}`);
+  if (editorDiv && htmlEditor) {
+    const blContent = editorDiv.querySelector('.bl-content');
+    const html = blContent ? blContent.innerHTML : editorDiv.innerHTML;
+
+    htmlEditor.value = html_beautify(html.trim(), { indent_size: 2 }); // <-- 여기가 핵심
+    editorDiv.style.display = 'none';
+    htmlEditor.style.display = 'block';
+  }
+}
 
       function switchToDesignMode(code) {
           const editorDiv = document.getElementById(`editor_${code}`);
