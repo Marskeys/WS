@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="<%= currentLang %>">
+<html class="dark" lang="<%= lang %>">
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
 
@@ -22,7 +22,7 @@
           </div>
 
           <div class="search-container">
-            <a href="/<%= currentLang %>/">
+            <a href="/<%= lang %>/">
               <img src="/assets/images/logo.png" alt="blindly.love 로고" class="site-logo" />
             </a>
 
@@ -30,7 +30,7 @@
               <div class="character-stand">
                 <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
               </div>
-              <form method="get" action="/<%= currentLang %>/search" class="search-form">
+              <form method="get" action="/<%= lang %>/search" class="search-form">
                 <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
                 <button type="submit" class="icon-submit-btn">
                   <i class="fas fa-search"></i>
@@ -61,14 +61,14 @@
             <div class="tabs-wrapper">
               <div class="tabs">
                 <div class="tab-spacer"></div>
-                <a href="/<%= currentLang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">전체글</a>
+                <a href="/<%= lang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">전체글</a>
           
                 <% if (isSearch) { %>
                   <div class="tab active">검색 결과</div>
                 <% } %>
           
                 <% categories.forEach(category => { %>
-                  <a href="/<%= currentLang %>/?category=<%= category.original %>" class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
+                  <a href="/<%= lang %>/?category=<%= category.original %>" class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
                     <%= category.translated %>
                   </a>
                 <% }) %>
@@ -79,7 +79,7 @@
           <% if (pagination.total > 1) { %>
             <div class="pagination pagination-top desktop-only">
               <%
-                const paginationBaseUrl = isSearch ? `/${currentLang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${currentLang}/?category=${selectedCategory || 'all'}`;
+                const paginationBaseUrl = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
               %>
               <% if (pagination.current > 1) { %>
                 <a href="<%= paginationBaseUrl %>&page=1" class="page-link" aria-label="First">«</a>
@@ -124,7 +124,7 @@
                   <td><%= post.id %></td>
                   <td>
                     <div class="post-title-and-actions">
-                      <a href="/<%= currentLang %>/post/<%= post.id %>"
+                      <a href="/<%= lang %>/post/<%= post.id %>"
                         class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                         data-post-id="<%= post.id %>"
                         data-is-private="<%= post.is_private ? '1' : '0' %>"
@@ -145,7 +145,7 @@
           <% if (pagination.total > 1) { %>
             <div class="pagination pagination-bottom desktop-only">
               <%
-                const paginationBaseUrlBottom = isSearch ? `/${currentLang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${currentLang}/?category=${selectedCategory || 'all'}`;
+                const paginationBaseUrlBottom = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
               %>
               <% if (pagination.current > 1) { %>
                 <a href="<%= paginationBaseUrlBottom %>&page=1" class="page-link" aria-label="First">«</a>
@@ -178,7 +178,7 @@
             <% posts.forEach(post => { %>
               <div class="mobile-post-item">
                 <div class="post-title-and-actions">
-                  <a href="/<%= currentLang %>/post/<%= post.id %>"
+                  <a href="/<%= lang %>/post/<%= post.id %>"
                     class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
                     data-post-id="<%= post.id %>"
                     data-is-private="<%= post.is_private ? '1' : '0' %>"
@@ -195,7 +195,7 @@
           <% if (pagination.total > 1) { %>
             <div class="pagination pagination-mobile mobile-only">
               <%
-                const paginationBaseUrlMobile = isSearch ? `/${currentLang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${currentLang}/?category=${selectedCategory || 'all'}`;
+                const paginationBaseUrlMobile = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
               %>
               <% if (pagination.current > 1) { %>
                 <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
@@ -308,7 +308,7 @@
         });
 
         // 현재 페이지의 언어를 가져옵니다. (EJS 템플릿 변수를 사용)
-        const currentLanguage = '<%= currentLang %>'; 
+        const currentLanguage = '<%= lang %>'; 
         // delete-post-form은 현재 이 파일에 없으므로, 해당 부분은 post-view.ejs에서 확인해야 합니다.
       });
     </script>

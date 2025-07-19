@@ -536,7 +536,7 @@ app.get('/post/:id', async (req, res) => {
       post: postForView,
       user: req.session.user,
       canonicalUrl,
-      currentLang: safeLang // 현재 로드된 언어를 템플릿에 전달
+      lang: safeLang // 현재 로드된 언어를 템플릿에 전달
     });
 
   } catch (err) {
@@ -902,7 +902,7 @@ res.render('index', {
     total: totalPages,
     range: paginationRange
   },
-  currentLang: safeLang // 현재 언어 정보를 EJS로 넘겨줍니다.
+  lang: safeLang // 현재 언어 정보를 EJS로 넘겨줍니다.
 });
   } catch (err) {
     console.error('메인 페이지 로드 오류:', err);
