@@ -697,6 +697,7 @@ html.dark #langSelector {
 }
 
 /* 공통 버튼 스타일 */
+/* 공통 버튼 스타일 */
 .bl-button {
   font-family: 'Nanum Gothic', sans-serif;
   font-size: 1rem;
@@ -708,55 +709,50 @@ html.dark #langSelector {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  display: inline-block;
 }
 
-/* 추가 버튼 (작고 강조된 스타일) */
+/* ➕ 추가 버튼: 파란색 단색 */
 .bl-button.add {
   font-size: 0.9rem;
   padding: 0.4rem 1rem;
-  background: linear-gradient(to right, #3f87a6, #ebf8e1);
-  color: #003344;
-  border: 1px solid #3f87a6;
+  background-color: #1976d2; /* 선명한 파란색 */
+  color: white;
 }
 
 .bl-button.add:hover {
-  background: linear-gradient(to right, #4ea3ba, #defadc);
-  color: #002f3b;
+  background-color: #1565c0; /* 살짝 더 진하게 */
 }
 
-/* 저장 버튼: 밝은 초록-파랑 계열 */
+/* 💾 저장 버튼: 밝은 초록 단색 */
 .bl-button.save {
-  background: linear-gradient(to right, #00c9a7, #4d9fef);
+  background-color: #2ecc71; /* 밝은 초록색 */
   color: white;
   font-size: 1.05rem;
   padding: 0.7rem 1.5rem;
 }
 
 .bl-button.save:hover {
-  background: linear-gradient(to right, #00b8a0, #3b8ee8);
-  transform: translateY(-2px);
+  background-color: #27ae60; /* 살짝 더 진하게 */
 }
 
-/* 다크모드 */
+/* 다크 모드: 대비 강화 */
 html.dark .bl-button.add {
-  background: #2b4f63;
-  color: #d4f4ff;
-  border-color: #3c7a8f;
+  background-color: #64b5f6;
+  color: #000;
 }
 
 html.dark .bl-button.add:hover {
-  background: #376274;
-  color: #ffffff;
+  background-color: #42a5f5;
+  color: #000;
 }
 
 html.dark .bl-button.save {
-  background: linear-gradient(to right, #219d88, #3a80c1);
-  color: #fff;
+  background-color: #58d68d;
+  color: #000;
 }
 
 html.dark .bl-button.save:hover {
-  background: linear-gradient(to right, #1c8875, #316aa7);
+  background-color: #45c37b;
+  color: #000;
 }
-
-
-
