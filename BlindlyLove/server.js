@@ -608,7 +608,7 @@ app.get('/search', async (req, res) => {
 
   try {
     // posts 테이블과 post_translations 테이블을 조인하여 검색
-    // 검색은 모든 언어의 제목/내용/카테고리에 대해 이루어져야 함
+    // 검색은 모든 언어의 제목/내용/카тего리에 대해 이루어져야 함
     const [allPosts] = await db.query(`
       SELECT
           p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
@@ -856,7 +856,7 @@ app.get('/', async (req, res) => {
       SELECT
         TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
         MAX(p.created_at) AS latest,
-        c.${categoryColumnForDisplay} AS translated_category_name
+        c.${categoryColumnForDisplay} AS translated_category_name // 선택된 언어의 카테고리 이름
       FROM posts p
       JOIN (
         SELECT a.N + b.N * 10 + 1 AS n
@@ -867,29 +867,9 @@ app.get('/', async (req, res) => {
       ) numbers
       ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
       JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-      GROUP BY original_category, translated_category_name
+      GROUP BY original_category, translated_category_name // 그룹 바이에 translated_category_name도 포함
       ORDER BY latest DESC
     `);
-// 🔁 전체 글에서 모든 카테고리와 최신 글 작성일 기준 정렬 (언어별 카테고리 이름으로 가져오도록 수정)
-const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-const [categoryRows] = await db.query(`
-  SELECT
-    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
-    MAX(p.created_at) AS latest,
-    c.${categoryColumnForDisplay} AS translated_category_name // 선택된 언어의 카테고리 이름
-  FROM posts p
-  JOIN (
-    SELECT a.N + b.N * 10 + 1 AS n
-    FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-         (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
-  ) numbers
-  ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
-  JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-  GROUP BY original_category, translated_category_name // 그룹 바이에 translated_category_name도 포함
-  ORDER BY latest DESC
-`);
 
 // 모든 카테고리를 원본 이름과 번역된 이름 객체 배열로 구성
 const allCategories = categoryRows.map(row => ({
@@ -920,30 +900,6 @@ res.render('index', {
   },
   currentLang: safeLang // 현재 언어 정보를 EJS로 넘겨줍니다.
 });
-
-    // 현재 선택된 카테고리를 번역된 이름으로 변환하여 selectedCategory에 전달
-    let translatedSelectedCategory = null;
-    if (category !== 'all') {
-        const foundCategory = allCategories.find(cat => cat.original === category);
-        if (foundCategory) {
-            translatedSelectedCategory = foundCategory.translated;
-        }
-    }
-
-
-    res.render('index', {
-      posts: filteredPosts,
-      categories: allCategories, // 원본 & 번역된 카테고리 객체 배열
-      isSearch: false,
-      searchKeyword: '',
-      currentPath: req.path,
-      selectedCategory: translatedSelectedCategory, // 번역된 선택 카테고리 이름
-      pagination: {
-        current: page,
-        total: totalPages,
-        range: paginationRange
-      }
-    });
   } catch (err) {
     console.error('메인 페이지 로드 오류:', err);
     res.status(500).send('메인 페이지 로드 중 오류 발생');
