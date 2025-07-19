@@ -710,7 +710,6 @@ html.dark #langSelector {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
   display: inline-block;
-  color:white;
 }
 
 /* ➕ 추가 버튼: 파란색 단색 */
@@ -740,20 +739,16 @@ html.dark #langSelector {
 /* 다크 모드: 대비 강화 */
 html.dark .bl-button.add {
   background-color: #64b5f6;
-  color: #000;
 }
 
 html.dark .bl-button.add:hover {
   background-color: #42a5f5;
-  color: #000;
 }
 
 html.dark .bl-button.save {
   background-color: #58d68d;
-  color: #000;
 }
 
 html.dark .bl-button.save:hover {
   background-color: #45c37b;
-  color: #000;
 }
