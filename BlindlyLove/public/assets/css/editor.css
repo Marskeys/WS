@@ -665,6 +665,78 @@ html.dark body .mode-toggle button:hover {
 }
 
 
+/* 공통 버튼 스타일 */
+#langSelector,
+button[type="button"],
+button[onclick*="addCategory"] {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 호버 효과 */
+#langSelector:hover,
+button[type="button"]:hover,
+button[onclick*="addCategory"]:hover {
+  background-color: #e0e0e0;
+  border-color: #aaa;
+}
+
+/* 강조 버튼: 저장, 추가 */
+button[type="button"],
+button[onclick*="addCategory"] {
+  font-weight: bold;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: white;
+  border: none;
+}
+
+button[type="button"]:hover,
+button[onclick*="addCategory"]:hover {
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
+/* 다크모드 스타일 */
+html.dark #langSelector,
+html.dark button[type="button"],
+html.dark button[onclick*="addCategory"] {
+  background: #333;
+  color: #eee;
+  border: 1px solid #555;
+  box-shadow: 0 2px 5px rgba(255,255,255,0.05);
+}
+
+html.dark #langSelector:hover,
+html.dark button[type="button"]:hover,
+html.dark button[onclick*="addCategory"]:hover {
+  background: #444;
+  color: white;
+  border-color: #777;
+}
+
+/* 저장 버튼만 구분되는 색상 */
+button[type="button"] {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+button[type="button"]:hover {
+  background: linear-gradient(to right, #5f0fbf, #1e63e9);
+}
+
+html.dark button[type="button"] {
+  background: linear-gradient(to right, #1e1e2f, #2c3e50);
+}
+
+html.dark button[type="button"]:hover {
+  background: linear-gradient(to right, #2c2c3e, #3e5a7d);
+}
 
 
 
