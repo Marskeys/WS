@@ -1,3 +1,17 @@
+.editor {
+  width: 100% !important;
+  min-height: 400px;
+  box-sizing: border-box;
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
+
+.editor-area-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 /* /assets/css/editor.css */
 
 /* 리셋 스타일링 - 모든 요소에 border-box 적용 */
