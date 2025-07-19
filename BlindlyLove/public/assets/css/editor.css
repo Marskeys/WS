@@ -665,64 +665,96 @@ html.dark body .mode-toggle button:hover {
 }
 
 
-/* 공통 버튼 스타일 */
-.bl-button {
-  font-family: 'Nanum Gothic', sans-serif;
-  font-size: 1rem;
-  padding: 0.6rem 1.4rem;
-  margin: 1rem 0.5rem;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(to right, #4facfe, #00f2fe);
-  color: white;
+/* 언어 선택: 레이블과 드롭다운 나란히 */
+.lang-selector-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.lang-selector-wrap label {
   font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  display: inline-block;
+  font-size: 1rem;
 }
 
-/* 호버 효과 */
-.bl-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
-}
-
-/* 저장 버튼은 진한 보라색 */
-.bl-button.save {
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-}
-
-/* 다크 모드 스타일 */
-html.dark .bl-button {
-  background: linear-gradient(to right, #1f1f2f, #2e3c50);
-  color: #f1f1f1;
-  box-shadow: 0 4px 10px rgba(255,255,255,0.05);
-}
-
-html.dark .bl-button:hover {
-  background: linear-gradient(to right, #2c2c3e, #3e5a7d);
-  transform: translateY(-2px);
-}
-
-/* 언어 선택 select */
 #langSelector {
   font-family: 'Nanum Gothic', sans-serif;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.8rem;
   border-radius: 8px;
-  margin: 1rem auto;
-  display: block;
   border: 1px solid #ccc;
   background: #f5f5f5;
   color: #333;
 }
 
-/* 언어 선택 다크 모드 */
 html.dark #langSelector {
   background: #333;
   color: #eee;
-  border: 1px solid #555;
+  border-color: #555;
+}
+
+/* 공통 버튼 스타일 */
+.bl-button {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  margin: 1.2rem 0.6rem;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+/* 추가 버튼 (작고 강조된 스타일) */
+.bl-button.add {
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  background: linear-gradient(to right, #3f87a6, #ebf8e1);
+  color: #003344;
+  border: 1px solid #3f87a6;
+}
+
+.bl-button.add:hover {
+  background: linear-gradient(to right, #4ea3ba, #defadc);
+  color: #002f3b;
+}
+
+/* 저장 버튼: 밝은 초록-파랑 계열 */
+.bl-button.save {
+  background: linear-gradient(to right, #00c9a7, #4d9fef);
+  color: white;
+  font-size: 1.05rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.bl-button.save:hover {
+  background: linear-gradient(to right, #00b8a0, #3b8ee8);
+  transform: translateY(-2px);
+}
+
+/* 다크모드 */
+html.dark .bl-button.add {
+  background: #2b4f63;
+  color: #d4f4ff;
+  border-color: #3c7a8f;
+}
+
+html.dark .bl-button.add:hover {
+  background: #376274;
+  color: #ffffff;
+}
+
+html.dark .bl-button.save {
+  background: linear-gradient(to right, #219d88, #3a80c1);
+  color: #fff;
+}
+
+html.dark .bl-button.save:hover {
+  background: linear-gradient(to right, #1c8875, #316aa7);
 }
 
 
