@@ -727,69 +727,82 @@
       };
 
       function insertTOC() {
-        if (!currentActiveEditor) return showCustomMessage("에디터가 활성화되지 않았습니다.");
-        const blContentDiv = currentActiveEditor.querySelector('.bl-content'); 
+  if (!currentActiveEditor) {
+    showCustomMessage("에디터가 활성화되지 않았습니다.");
+    return;
+  }
 
-        if (!blContentDiv) {
-          showCustomMessage("에디터 내용이 올바른 형식에 없습니다. 다시 시도해주세요.");
-          return;
-        }
+  const blContentDiv = currentActiveEditor.querySelector('.bl-content');
 
-        const headings = blContentDiv.querySelectorAll("h1, h2");
+  if (!blContentDiv) {
+    showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
+    return;
+  }
 
-        if (!headings.length) {
-          showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
-          return;
-        }
+  const headings = blContentDiv.querySelectorAll("h1, h2");
+  if (!headings.length) {
+    showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
+    return;
+  }
 
-        const oldTOC = blContentDiv.querySelector(".auto-toc");
-        if (oldTOC) oldTOC.remove();
+  // 기존 목차 제거
+  const oldTOC = blContentDiv.querySelector(".auto-toc");
+  if (oldTOC) oldTOC.remove();
 
-        const tocWrapper = document.createElement("div");
-        tocWrapper.className = "auto-toc";
-        tocWrapper.contentEditable = "false";
+  const tocWrapper = document.createElement("div");
+  tocWrapper.className = "auto-toc";
+  tocWrapper.contentEditable = "false";
 
-        const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
-        const tocList = document.createElement("ul");
-        tocList.className = "toc-list";
-        tocList.style.margin = "0";
-        tocList.style.padding = "0";
+  const tocTitle = document.createElement("strong");
+  tocTitle.className = "toc-title";
+  tocTitle.textContent = "📑 목차";
 
-        let h1Count = 0;
-        let h2Count = 0;
+  const tocList = document.createElement("ul");
+  tocList.className = "toc-list";
+  tocList.style.margin = "0";
+  tocList.style.padding = "0";
 
-        headings.forEach((el) => {
-          const tag = el.tagName.toLowerCase();
-          let number = "";
+  let h1Count = 0;
+  let h2Count = 0;
 
-          if (tag === "h1") {
-            h1Count++;
-            h2Count = 0;
-            number = `${h1Count}.`;
-          } else if (tag === "h2") {
-            h2Count++;
-            number = `${h1Count}.${h2Count}.`;
-          }
+  headings.forEach(el => {
+    const tag = el.tagName.toLowerCase();
+    let number = "";
 
-          const listItem = document.createElement("li");
-          listItem.innerHTML = `<a href="#${el.id || el.innerText.replace(/\s+/g, '-')}" style="text-decoration:none; color:inherit;">${number} ${el.innerText}</a>`;
-          tocList.appendChild(listItem);
+    if (tag === "h1") {
+      h1Count++;
+      h2Count = 0;
+      number = `${h1Count}.`;
+    } else if (tag === "h2") {
+      h2Count++;
+      number = `${h1Count}.${h2Count}`;
+    }
 
-          if (!el.id) {
-            el.id = el.innerText.replace(/\s+/g, '-') + '-' + Math.random().toString(36).substring(2, 8); // 고유 ID 부여
-          }
-        });
+    // ID 부여 (기존 ID 무시하고 항상 재생성)
+    const id = `toc-${number.replace(/\./g, "-")}`;
+    el.id = id;
 
-        tocWrapper.innerHTML = tocTitle;
-        tocWrapper.appendChild(tocList);
+    const li = document.createElement("li");
+    li.className = `toc-item toc-${tag}`;
 
-        if (headings.length > 0) {
-            headings[0].parentNode.insertBefore(tocWrapper, headings[0]);
-        } else {
-            blContentDiv.prepend(tocWrapper);
-        }
-      }
+    const a = document.createElement("a");
+    a.href = `#${id}`;
+    a.textContent = `${number} ${el.textContent.trim()}`;
+    a.onclick = function(e) {
+      e.preventDefault();
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    };
 
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+
+  tocWrapper.appendChild(tocTitle);
+  tocWrapper.appendChild(tocList);
+
+  // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
+  blContentDiv.prepend(tocWrapper);
+}
       // 수정된 switchToHtmlMode 함수: 현재 활성 에디터를 사용하도록 변경
       function switchToHtmlMode() {
   const editorDiv = currentActiveEditor;
