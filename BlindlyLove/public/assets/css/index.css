@@ -23,7 +23,7 @@
    🔍 검색창 + 캐릭터 위치
 ============================ */
 .search-container {
-  display: none;
+  display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
@@ -37,7 +37,7 @@
 .search-top-box {
   position: relative;
   width: 100%;
-  display: flex;
+  display: none;
   justify-content: center;
   margin-bottom: -1.5rem;
 }
