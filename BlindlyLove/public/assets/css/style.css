@@ -847,6 +847,7 @@ body.menu-open {
   padding: 0.4rem 1rem;
   text-decoration: none;
   color: #333;
+  white-space: nowrap;  
 }
 
 .lang-option:hover {
