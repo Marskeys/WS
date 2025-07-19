@@ -189,9 +189,6 @@ app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
-// ---
-## Post Management
----
 
 // ✅ 글쓰기 페이지
 app.get('/write', (req, res) => {
@@ -415,9 +412,6 @@ app.get('/post/:id', async (req, res) => {
   }
 });
 
-// ---
-## Category Management
----
 
 // ✅ 카테고리 전체 가져오기 API
 app.get('/api/categories', async (req, res) => {
@@ -461,9 +455,6 @@ app.delete('/api/categories/:name', async (req, res) => {
   }
 });
 
-// ---
-## Search Functionality
----
 
 // ✅ 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용)
 app.get('/search', async (req, res) => {
@@ -576,9 +567,6 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// ---
-## Main Page & Pagination
----
 
 function generatePagination(current, total) {
   const delta = 2;
@@ -692,16 +680,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-// ---
-## Game
----
-app.get('/game', (req, res) => {
-    res.render('game'); // views/game.ejs 렌더링
-});
-
-// ---
-## Server Initialization
----
 
 // ✅ DB 연결 확인
 db.query('SELECT NOW()')
