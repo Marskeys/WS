@@ -37,10 +37,13 @@ app.use((req, res, next) => {
 
 // 언어 쿼리 파라미터 또는 기본값 설정 (EJS 템플릿에 'lang' 변수로 전달)
 app.use((req, res, next) => {
-  // 클라이언트가 넘겨주는 lang 쿼리 파라미터는 'ko', 'en', 'fr' 등 그대로 사용
-  const requestedLang = req.query.lang || 'ko';
-  const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-  res.locals.lang = supportedLangs.includes(requestedLang) ? requestedLang : 'ko';
+  const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja)(\/|$)/);
+  if (langMatch) {
+    res.locals.lang = langMatch[1]; // 'en' 등
+    req.url = req.url.replace(`/${res.locals.lang}`, ''); // 라우터에서 인식하게 경로 정리
+  } else {
+    res.locals.lang = 'ko'; // 기본 언어
+  }
   next();
 });
 
@@ -54,17 +57,26 @@ app.get('/sitemap.xml', async (req, res) => {
       ORDER BY updated_at DESC
     `);
 
-    const postUrls = posts.map(post => `
-      <url>
-        <loc>https://blindly.love/post/${post.id}</loc>
-        <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
-        <priority>0.80</priority>
-      </url>
-    `).join('');
+    const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja']; // 지원하는 언어 목록
+
+    let postUrls = [];
+    posts.forEach(post => {
+      supportedLangs.forEach(lang => {
+        postUrls.push(`
+          <url>
+            <loc>https://blindly.love/${lang}/post/${post.id}</loc>
+            <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+            <priority>0.80</priority>
+          </url>
+        `);
+      });
+    });
+    postUrls = postUrls.join('');
 
     const staticUrls = [
-      `<url><loc>https://blindly.love/</loc><priority>1.00</priority></url>`,
-      `<url><loc>https://blindly.love/signup</loc><priority>0.80</priority></url>`
+      // 정적 페이지도 각 언어별로 추가
+      ...supportedLangs.map(lang => `<url><loc>https://blindly.love/${lang}/</loc><priority>1.00</priority></url>`),
+      ...supportedLangs.map(lang => `<url><loc>https://blindly.love/${lang}/signup</loc><priority>0.80</priority></url>`)
     ].join('');
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -133,7 +145,7 @@ app.post('/login', async (req, res) => {
 // 로그아웃 처리
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
-    res.redirect('/');
+    res.redirect(`/${res.locals.lang}/`);
   });
 });
 
@@ -296,7 +308,7 @@ app.post('/delete/:id', async (req, res) => {
 
     // 4️⃣ 삭제 수행 (CASCADE 설정으로 post_translations도 함께 삭제됨)
     await db.query('DELETE FROM posts WHERE id = ?', [postId]);
-    res.redirect('/'); // 삭제 후 메인 페이지로 리디렉션
+    res.redirect(`/${res.locals.lang}/`); // 삭제 후 메인 페이지로 리디렉션
   } catch (err) {
     console.error('삭제 오류:', err);
     res.status(500).send('서버 오류로 삭제할 수 없습니다.');
@@ -429,7 +441,7 @@ app.post('/edit/:id', async (req, res) => {
       );
     }
 
-    res.json({ success: true, redirect: `/post/${postId}` });
+    res.json({ success: true, redirect: `/${res.locals.lang}/post/${postId}` });
   } catch (err) {
     console.error('수정 처리 오류:', err);
     res.status(500).json({ success: false, error: '서버 오류로 글을 수정할 수 없습니다.' });
@@ -440,9 +452,8 @@ app.post('/edit/:id', async (req, res) => {
 app.get('/post/:id', async (req, res) => {
   try {
     const postId = req.params.id;
-    const lang = req.query.lang || 'ko';
+    const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
     const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-    const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
 
     // 조회수 중복 방지용 세션 초기화
     if (!req.session.viewedPosts) {
@@ -503,8 +514,6 @@ app.get('/post/:id', async (req, res) => {
       const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
       const placeholders = originalCategories.map(() => '?').join(','); // IN 절에 사용될 ? 플레이스홀더 생성
 
-      // 🚨 이 부분이 수정되었습니다.
-      // categories 테이블에서 원본 카테고리 이름(c.name)에 해당하는 번역된 카테고리 이름(COALESCE)을 가져옵니다.
       const [categoryNameRows] = await db.query(
         `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
         originalCategories // originalCategories 배열을 파라미터로 전달
@@ -522,7 +531,7 @@ app.get('/post/:id', async (req, res) => {
         originalCategories: originalCategories // (선택 사항) 필요하다면 원본 카테고리도 전달
     };
 
-    const canonicalUrl = `${req.protocol}://${req.get('host')}/post/${postId}`;
+    const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`; // 다국어 URL 포함
     res.render('post-view', {
       post: postForView,
       user: req.session.user,
@@ -539,11 +548,7 @@ app.get('/post/:id', async (req, res) => {
 
 // 카테고리 전체 가져오기 API (기존과 동일하지만, DB 쿼리에서 lang을 사용)
 app.get('/api/categories', async (req, res) => {
-  const lang = req.query.lang || 'ko';
-  const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-  const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
-
-  // COALESCE(컬럼명, '')를 사용하여 NULL이면 빈 문자열로 반환
+  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
   const column = (safeLang === 'ko') ? 'name' : `COALESCE(name_${safeLang}, '')`;
 
   try {
@@ -598,13 +603,12 @@ app.delete('/api/categories/:name', async (req, res) => {
 // 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
-  if (!keyword) return res.redirect('/');
+  if (!keyword) return res.redirect(`/${res.locals.lang}/`); // 언어 경로 포함 리디렉션
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const lang = req.query.lang || 'ko'; // 검색 시에도 언어 파라미터 활용
   const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-  const safeLang = supportedLugs.includes(lang) ? lang : 'ko'; // 🚨 여기 오타 `supportedLugs` -> `supportedLangs`
+  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용 및 오타 수정
 
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -697,9 +701,7 @@ app.get('/api/search', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const lang = req.query.lang || 'ko'; // 검색 시에도 언어 파라미터 활용
-  const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-  const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
+  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
 
   try {
     // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
@@ -789,9 +791,7 @@ app.get('/', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const lang = req.query.lang || 'ko'; // 현재 선택된 언어 가져오기
-  const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-  const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
+  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
 
   try {
     let baseQuery = `

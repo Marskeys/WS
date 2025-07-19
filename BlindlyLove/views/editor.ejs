@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="<%= currentLang %>">
 <head>
   <meta charset="UTF-8" />
   <title>BlindLove 에디터</title>
@@ -15,7 +15,7 @@
 </head>
 <body>
   <%- include('partials/header') %>
-  <% const isEdit = typeof post !== 'undefined'; %>
+  <% const isEdit = typeof post !== 'undefined' && post !== null; %>
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold; margin-top:3rem;">
       <%= user.nickname %>님, 에디터에 오신 걸 환영합니다!
@@ -24,17 +24,29 @@
 
   <div class="editor-container">
     <div class="logo-wrap">
-      <img src="/assets/images/logo.png" alt="BlindLove 로고" />
+      <a href="/<%= currentLang %>/">
+        <img src="/assets/images/logo.png" alt="BlindLove 로고" />
+      </a>
     </div>
 
     <div style="text-align: center; margin-top: 1rem;">
       <label for="langSelector">🗺️ 언어 선택: </label>
       <select id="langSelector">
-        <option value="ko">한국어</option>
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-        <option value="zh">中文</option>
-        <option value="ja">日本語</option>
+        <%
+          const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+          const langLabels = {
+              'ko': '한국어',
+              'en': 'English',
+              'fr': 'Français',
+              'zh': '中文',
+              'ja': '日本語'
+          };
+          supportedLangs.forEach(langCode => {
+        %>
+          <option value="<%= langCode %>" <%= currentLang === langCode ? 'selected' : '' %>><%= langLabels[langCode] %></option>
+        <%
+          });
+        %>
       </select>
     </div>
 
@@ -46,11 +58,10 @@
         { code: 'zh', label: '简体中文' },
         { code: 'ja', label: '日本語' }
       ];
-      // `selectedCategories`는 이제 JavaScript에서 초기화됩니다.
     %>
 
     <% langList.forEach(({ code, label }) => { %>
-      <div class="lang-meta-block" data-lang="<%= code %>" style="<%= code === 'ko' ? '' : 'display:none;' %>">
+      <div class="lang-meta-block" data-lang="<%= code %>" style="<%= code === currentLang ? '' : 'display:none;' %>">
         <div class="title-wrap">
           <input
             type="text"
@@ -123,7 +134,6 @@
               </label>
             </div>
           </div>
-          <!-- HTML 삽입 버튼 추가 !-->
           <button onclick="openHtmlPopup()" data-tooltip="HTML 삽입"><i class="fas fa-code"></i></button> 
           <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
           <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
@@ -142,7 +152,7 @@
                class="editor language-editor"
                spellcheck="false"
                data-lang-editor="<%= code %>"
-               style="<%= code === 'ko' ? '' : 'display:none;' %>"
+               style="<%= code === currentLang ? '' : 'display:none;' %>"
           >
             <%
               let initialContent = post?.[code]?.content || '<p><br></p>';
@@ -172,7 +182,6 @@
           </label>
         <% } %>
 
-       
       </div>
     <% }) %> 
 
@@ -186,16 +195,8 @@
 
   </div> 
   
-  <%
-    // `categoryList` 상수는 이제 JavaScript에서 초기화되므로 필요 없어졌습니다.
-    const postUrl = (isEdit && post) ? `/edit/${post.id}` : '/savePost';
-    const redirectUrl = (isEdit && post) ? `/post/${post.id}` : '/';
-  %>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
   <script>
-    // ✅ selectedCategories 초기화 방식 변경
-    // 🚨🚨🚨 이 부분이 수정되었습니다. 🚨🚨🚨
     let selectedCategories = []; // 기본값으로 빈 배열 선언
     <% if (post && post.categories) { %>
       // post.categories가 있을 경우에만 JSON.stringify를 사용하여 할당
@@ -205,9 +206,8 @@
     let categories = [];
     let savedRange = null;
 
-    // 현재 활성화된 에디터 엘리먼트를 추적하는 변수 추가
     let currentActiveEditor = null;
-    let currentActiveHtmlEditor = null; // HTML 모드 textarea도 추적
+    let currentActiveHtmlEditor = null;
 
     const langList = [
         { code: 'ko', label: '한국어' },
@@ -217,9 +217,10 @@
         { code: 'ja', label: '日本語' }
     ];
     
-    // 🚨🚨🚨 이 부분도 수정되었는지 다시 확인하세요. (이전 app.js 수정 제안과 동일) 🚨🚨🚨
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
+    // 현재 페이지의 언어를 EJS 변수로 가져옴
+    const CURRENT_PAGE_LANG = '<%= currentLang %>';
 
     function renderCategories() {
         const list = document.getElementById('categoryList');
@@ -235,7 +236,6 @@
             if (i === -1) selectedCategories.push(cat);
             else selectedCategories.splice(i, 1);
             renderCategories();
-            // ✅ updateTranslationFields() 호출 제거됨
           };
     
           const removeBtn = document.createElement('button');
@@ -253,7 +253,6 @@
                   categories.splice(index, 1);
                   selectedCategories = selectedCategories.filter(c => c !== cat);
                   renderCategories();
-                  // ✅ updateTranslationFields() 호출 제거됨
                   showCustomMessage("카테고리가 성공적으로 삭제되었습니다.");
                 } else {
                   showCustomMessage("삭제 실패: " + data.error);
@@ -286,7 +285,6 @@
             if (data.success) {
               categories.push(newCat);
               renderCategories();
-              // ✅ updateTranslationFields() 호출 제거됨
               showCustomMessage("카테고리가 성공적으로 추가되었습니다.");
             } else {
               showCustomMessage("추가 실패: " + data.error);
@@ -302,9 +300,8 @@
       function postContent() {
           const postData = {
               categories: selectedCategories,
-              // is_private와 is_pinned는 각 언어별로 저장하지 않고 공통으로 관리한다고 가정
-              is_private: document.getElementById('isPrivateCheckbox_ko')?.checked ? 1 : 0, // 한국어 체크박스 기준으로 대표값 가져옴
-              is_pinned: document.getElementById('isPinnedCheckbox_ko')?.checked ? 1 : 0, // 한국어 체크박스 기준으로 대표값 가져옴
+              is_private: document.getElementById('isPrivateCheckbox_ko')?.checked ? 1 : 0, 
+              is_pinned: document.getElementById('isPinnedCheckbox_ko')?.checked ? 1 : 0, 
               lang_content: {}
           };
 
@@ -313,9 +310,7 @@
           langList.forEach(({ code }) => {
               const titleInput = document.querySelector(`input[name="title_${code}"]`);
               const editorDiv = document.getElementById(`editor_${code}`);
-              const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`); // HTML 에디터 내용 가져오기
-              // ✅ categoryTranslateBlock 관련 변수 선언 및 사용 제거됨
-              // const categoryTranslateBlock = document.querySelector(`.category-translate-block[data-lang="${code}"]`);
+              const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`);
 
               if (!titleInput || !editorDiv || !htmlEditorDiv) {
                   console.warn(`언어 코드 ${code} 에 대한 입력 필드 또는 에디터 DIV를 찾을 수 없습니다.`);
@@ -323,32 +318,19 @@
               }
 
               let contentToSave = '';
-              // HTML 모드일 경우 textarea의 값, 디자인 모드일 경우 contenteditable div의 값
               if (htmlEditorDiv.style.display === 'block') {
                   contentToSave = htmlEditorDiv.value.trim();
               } else {
                   contentToSave = editorDiv.innerHTML.trim();
               }
 
-              // 빈 내용을 <p><br></p>로 표준화 (bl-content 래퍼는 서버에서 다시 처리될 수 있도록)
               if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
                   contentToSave = '<p><br></p>';
               }
 
-              // ✅ translatedCategories 관련 로직 및 필드 제거됨
-              // const translatedCategories = {};
-              // if (categoryTranslateBlock) {
-              //     categoryTranslateBlock.querySelectorAll('.translated-category input').forEach(input => {
-              //         const catName = input.name.split('[')[2].replace(']', '');
-              //         translatedCategories[catName] = input.value.trim();
-              //     });
-              // }
-
               postData.lang_content[code] = {
                   title: titleInput.value.trim(),
                   content: contentToSave
-                  // ✅ translated_categories 필드 제거됨
-                  // translated_categories: translatedCategories
               };
 
               if (code === 'ko' && (postData.lang_content[code].title || postData.lang_content[code].content !== '<p><br></p>')) {
@@ -364,7 +346,10 @@
             return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
           }
       
-          fetch("<%= postUrl %>", {
+          // 폼 제출 URL을 현재 언어 경로를 포함하도록 수정
+          const submitUrl = IS_EDIT_PAGE && POST_ID ? `/${CURRENT_PAGE_LANG}/edit/${POST_ID}` : `/${CURRENT_PAGE_LANG}/savePost`;
+
+          fetch(submitUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(postData)
@@ -373,16 +358,13 @@
           .then(data => {
             if (data.success) {
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-                // 이 두 줄은 EJS 템플릿에서 직접 사용하기 때문에 수정된 부분입니다.
-                // 🚨🚨🚨 이 부분도 확인하세요.
-            
-  const isEditPage = <%= isEdit ? 'true' : 'false' %>;
-  const postId = <%= (post && post.id) ? JSON.stringify(post.id) : 'null' %>;
-
-                if (isEditPage && postId) {
-                  window.location.href = "/post/" + postId;
+                // 저장 후 리디렉션 URL에도 현재 언어 경로를 포함
+                if (IS_EDIT_PAGE && POST_ID) {
+                  window.location.href = `/${CURRENT_PAGE_LANG}/post/${POST_ID}`;
+                } else if (data.postId) { // 새로 생성된 글의 경우 ID가 있을 수 있음
+                  window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
                 } else {
-                  window.location.href = "/";
+                  window.location.href = `/${CURRENT_PAGE_LANG}/`; // 글 ID가 없는 경우 메인 페이지로
                 }
               });
             } else {
@@ -417,7 +399,7 @@
         } else {
           const sel = window.getSelection();
           if (!sel.rangeCount || sel.isCollapsed) return;
-          if (!currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) return; // 현재 에디터 범위 확인
+          if (!currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) return;
 
           const range = sel.getRangeAt(0);
           const tempElement = document.createElement(tag);
@@ -453,7 +435,6 @@
       }
 
       function toggleDropdown() {
-          // 현재 활성 에디터의 드롭다운을 토글
           const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
           if (styleDropdown) {
               styleDropdown.classList.toggle('show');
@@ -473,7 +454,6 @@
               strong: "진한 레이블"
           };
           const label = labelMap[tagName.toLowerCase()] || tagName;
-          // 현재 활성 에디터의 스타일 토글 버튼 텍스트 업데이트
           const currentStyleToggle = currentActiveEditor.closest('.lang-meta-block').querySelector('.dropdown-toggle');
           if (currentStyleToggle) {
               currentStyleToggle.innerText = `${label} ▼`;
@@ -484,7 +464,7 @@
         if (!currentActiveEditor) return;
         const sel = window.getSelection();
         if (!sel.rangeCount || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-            updateCurrentStyle('p'); // 선택 영역이 에디터 밖에 있으면 기본값으로 설정
+            updateCurrentStyle('p');
             return;
         }
         let node = sel.getRangeAt(0).startContainer;
@@ -575,7 +555,6 @@
         return 'p';
       }
 
-      // 커스텀 메시지 박스 및 입력 박스 구현 (alert, prompt 대체)
       function createMessageBox(message, isConfirm = false, onConfirm = null) {
           let modal = document.getElementById('customMessageModal');
           if (!modal) {
@@ -657,7 +636,6 @@
       }
 
       window.onclick = function(e) {
-          // 드롭다운 메뉴가 열려있을 때, 드롭다운 토글이나 메뉴 밖을 클릭하면 닫기
           if (!e.target.matches('.dropdown-toggle')) {
               const dropdowns = document.getElementsByClassName('dropdown-menu');
               for (let d of dropdowns) {
@@ -670,20 +648,41 @@
 
       window.onload = () => {
           // 카테고리 불러오기 및 렌더링
-          // ✅ fetch('/api/categories')를 fetch('/api/categories?lang=ko')로 변경
-          fetch('/api/categories?lang=ko')
+          // API 호출 시 현재 언어(CURRENT_PAGE_LANG)를 쿼리 파라미터로 전달
+          fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
             .then(res => res.json())
             .then(data => {
               categories = data.categories || [];
               renderCategories();
-              // ✅ updateTranslationFields() 호출 제거됨
             })
             .catch(err => {
               console.error("카테고리 불러오기 오류:", err);
               categories = ['일상', '기록', '리뷰']; // 대체 카테고리
               renderCategories();
-              // ✅ updateTranslationFields() 호출 제거됨
             });
+
+          // 언어 선택 드롭다운 초기값 설정 (currentLang에 따라)
+          document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
+
+          // 페이지 로드 시 현재 언어 (currentLang) 에디터를 활성화
+          const initialEditor = document.getElementById(`editor_${CURRENT_PAGE_LANG}`);
+          const initialHtmlEditor = document.getElementById(`htmlEditor_${CURRENT_PAGE_LANG}`);
+          
+          if (initialEditor) {
+              initialEditor.style.display = 'block'; 
+              currentActiveEditor = initialEditor; 
+              currentActiveHtmlEditor = initialHtmlEditor;
+              initialEditor.focus();
+              detectStyle(); 
+          } else { // 기본 언어 에디터가 없는 경우 첫 번째 에디터를 기본으로 설정 (폴백)
+              currentActiveEditor = document.querySelector('.language-editor');
+              if (currentActiveEditor) {
+                currentActiveHtmlEditor = document.getElementById(`htmlEditor_${currentActiveEditor.dataset.langEditor}`);
+                currentActiveEditor.style.display = 'block';
+                currentActiveEditor.focus();
+                detectStyle();
+              }
+          }
 
           // 모든 언어 에디터에 이벤트 리스너 추가
           const languageEditors = document.querySelectorAll('.language-editor');
@@ -692,17 +691,34 @@
               editor.addEventListener('mouseup', detectStyle);
               editor.addEventListener('mouseup', saveSelection);
               editor.addEventListener('keyup', saveSelection);
-              // 에디터가 포커스를 얻을 때 currentActiveEditor 업데이트
               editor.addEventListener('focus', () => {
+                  const langCode = editor.dataset.langEditor;
+                  // 현재 언어 선택 드롭다운도 업데이트
+                  document.getElementById('langSelector').value = langCode;
+
+                  // 모든 lang-meta-block 숨기고 현재 블록만 표시
+                  document.querySelectorAll('.lang-meta-block').forEach(block => {
+                      if (block.dataset.lang === langCode) {
+                          block.style.display = '';
+                      } else {
+                          block.style.display = 'none';
+                          // 숨겨지는 에디터의 HTML/디자인 모드도 숨김
+                          const otherEditorDiv = document.getElementById(`editor_${block.dataset.lang}`);
+                          const otherHtmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
+                          if (otherEditorDiv) otherEditorDiv.style.display = 'none';
+                          if (otherHtmlEditorDiv) otherHtmlEditorDiv.style.display = 'none';
+                      }
+                  });
+
                   currentActiveEditor = editor;
-                  currentActiveHtmlEditor = document.getElementById(`htmlEditor_${editor.dataset.langEditor}`);
-                  // HTML 모드에서 디자인 모드로 전환될 때 현재 에디터 내용 동기화
+                  currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
+                  
                   if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
                       currentActiveEditor.innerHTML = currentActiveHtmlEditor.value;
                       currentActiveHtmlEditor.style.display = 'none';
                       currentActiveEditor.style.display = 'block';
                   }
-                  detectStyle(); // 포커스 시 스타일 감지
+                  detectStyle();
               });
           });
 
@@ -711,24 +727,7 @@
           toolbarButtons.forEach(button => {
               button.addEventListener('mousedown', saveSelection);
           });
-
-          // 페이지 로드 시 기본 언어 (한국어) 에디터를 활성화
-          currentActiveEditor = document.getElementById('editor_ko');
-          currentActiveHtmlEditor = document.getElementById('htmlEditor_ko');
-          
-          if (!currentActiveEditor) { // 'ko' 에디터가 없는 경우 첫 번째 에디터를 기본으로 설정
-              currentActiveEditor = document.querySelector('.language-editor');
-              currentActiveHtmlEditor = document.getElementById(`htmlEditor_${currentActiveEditor.dataset.langEditor}`);
-          }
-          if (currentActiveEditor) {
-              currentActiveEditor.style.display = 'block'; // 기본 에디터만 보이게
-              currentActiveEditor.focus();
-              detectStyle(); // 초기 스타일 감지
-          }
       };
-
-      // ✅ updateTranslationFields() 함수 전체 삭제됨
-      // function updateTranslationFields() { /* ... */ }
 
       function insertTOC() {
         if (!currentActiveEditor) return showCustomMessage("에디터가 활성화되지 않았습니다.");
@@ -768,7 +767,7 @@
 
           if (tag === "h1") {
             h1Count++;
-            h2Count = 0; // H1이 나오면 H2 카운트 리셋
+            h2Count = 0;
             number = `${h1Count}.`;
           } else if (tag === "h2") {
             h2Count++;
@@ -787,11 +786,9 @@
         tocWrapper.innerHTML = tocTitle;
         tocWrapper.appendChild(tocList);
 
-        // 첫 번째 h1 또는 h2 요소 바로 앞에 목차 삽입
         if (headings.length > 0) {
             headings[0].parentNode.insertBefore(tocWrapper, headings[0]);
         } else {
-            // 제목이 없을 경우 bl-content의 맨 위에 추가
             blContentDiv.prepend(tocWrapper);
         }
       }
@@ -821,20 +818,18 @@
           const selectedLang = this.value;
           document.querySelectorAll('.lang-meta-block').forEach(block => {
               if (block.dataset.lang === selectedLang) {
-                  block.style.display = ''; // 선택된 언어 블록 표시
-                  // 에디터도 활성화
+                  block.style.display = ''; 
                   const editorDiv = document.getElementById(`editor_${selectedLang}`);
                   const htmlEditorDiv = document.getElementById(`htmlEditor_${selectedLang}`);
                   if (editorDiv) {
                       editorDiv.style.display = 'block';
-                      currentActiveEditor = editorDiv; // 현재 활성 에디터 업데이트
+                      currentActiveEditor = editorDiv;
                       currentActiveHtmlEditor = htmlEditorDiv;
                       editorDiv.focus();
                       detectStyle();
                   }
               } else {
-                  block.style.display = 'none'; // 다른 언어 블록 숨김
-                  // 숨겨지는 에디터도 함께 숨김
+                  block.style.display = 'none';
                   const editorDiv = document.getElementById(`editor_${block.dataset.lang}`);
                   const htmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
                   if (editorDiv) editorDiv.style.display = 'none';

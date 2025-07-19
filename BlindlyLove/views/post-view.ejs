@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="<%= currentLang %>">
 <head>
   <title><%= post.title %> | BlindLove</title>
   <link rel="stylesheet" href="/assets/css/signup.css" />
@@ -220,7 +220,9 @@
 
   <div class="signup-container">
     <div class="logo-wrap">
-      <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
+      <a href="/<%= currentLang %>/">
+        <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
+      </a>
     </div>
 
     <div class="post-title"><%= post.title %></div>
@@ -247,15 +249,15 @@
 
     <% if (user && post.user_id == user.id) { %>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
-        <a href="/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
-        <form action="/delete/<%= post.id %>" method="POST" style="display: inline;">
+        <a href="/<%= currentLang %>/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
+        <form action="/<%= currentLang %>/delete/<%= post.id %>" method="POST" style="display: inline;">
           <button type="submit" onclick="return confirm('정말 삭제하시겠어요?');">🗑 삭제하기</button>
         </form>
       </div>
     <% } %>
 
     <div class="extra" style="margin-top: 2rem; text-align: center;">
-      <a href="/" class="back-home-link">← 홈으로 돌아가기</a>
+      <a href="/<%= currentLang %>/" class="back-home-link">← 홈으로 돌아가기</a>
     </div>
   </div>
 

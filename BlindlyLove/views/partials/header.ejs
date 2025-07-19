@@ -1,28 +1,12 @@
 <div class="header-top">
-
-
-  <!-- <% if (currentPath === '/' || currentPath === '/index') { %>
-  <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-  <% } %> !-->
-
-
   <div class="top-controls">
-
-   
-
-
     <div class="left-controls">
       <% if (
         ['/signup', '/editor', '/login', '/write'].includes(currentPath) ||
         currentPath.startsWith('/post') ||
         currentPath.startsWith('/edit')
       ) { %>
-        <!-- 로고 출력 -->
-        <a href="/" class="logo-link">
+        <a href="/<%= currentLang %>/" class="logo-link">
           <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
         </a>
       <% } %>
@@ -34,40 +18,50 @@
           <% if (user) { %>
             <% if (Number(user.is_admin) === 1) { %>
               <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-              <a href="/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
+              <a href="/<%= currentLang %>/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
             <% } %>
-            <a href="/logout" class="auth-btn logout">로그아웃</a>
+            <a href="/<%= currentLang %>/logout" class="auth-btn logout">로그아웃</a>
           <% } else { %>
-            <a class="auth-btn signup" onclick="delayNavigation(event, '/signup')">회원가입</a>
+            <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= currentLang %>/signup')">회원가입</a>
             <button class="auth-btn login" id="login" type="button">로그인</button>
           <% } %>
         </div>
       <% } %>
 
-        <!-- 🌍 언어 선택 드롭다운 -->
-        <div class="language-dropdown">
-          <button id="langToggle" class="lang-btn">
-            <%
-              let flagCode = lang;
-              switch(lang) {
-                case 'ko': flagCode = 'kr'; break;
-                case 'en': flagCode = 'gb'; break; /* 또는 'us' (미국 국기) */
-                case 'zh': flagCode = 'cn'; break;
-                case 'ja': flagCode = 'jp'; break;
-                default: flagCode = 'kr'; // 기본값 설정 (예: 알 수 없는 언어 코드일 경우)
-              }
-            %>
-            <span class="fi fi-<%= flagCode %>"></span>
-            <i class="fas fa-caret-down"></i>
-          </button>
-          <ul id="langMenu" class="lang-menu">
-            <li><a href="?lang=ko" class="lang-option"><span class="fi fi-kr"></span>한국어</a></li>
-            <li><a href="?lang=en" class="lang-option"><span class="fi fi-gb"></span>English</a></li>
-            <li><a href="?lang=fr" class="lang-option"><span class="fi fi-fr"></span>Français</a></li>
-            <li><a href="?lang=zh" class="lang-option"><span class="fi fi-cn"></span>简体中文</a></li>
-            <li><a href="?lang=ja" class="lang-option"><span class="fi fi-jp"></span>日本語</a></li>
-          </ul>
-        </div>
+      <div class="language-dropdown">
+        <button id="langToggle" class="lang-btn">
+          <%
+            let flagCode = currentLang; // 'lang' 대신 'currentLang' 사용
+            switch(currentLang) { // 'lang' 대신 'currentLang' 사용
+              case 'ko': flagCode = 'kr'; break;
+              case 'en': flagCode = 'gb'; break; /* 또는 'us' (미국 국기) */
+              case 'zh': flagCode = 'cn'; break;
+              case 'ja': flagCode = 'jp'; break;
+              case 'fr': flagCode = 'fr'; break; // 프랑스어 추가
+              default: flagCode = 'kr'; // 기본값 설정
+            }
+          %>
+          <span class="fi fi-<%= flagCode %>"></span>
+          <i class="fas fa-caret-down"></i>
+        </button>
+        <ul id="langMenu" class="lang-menu">
+          <%
+            const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+            // 현재 URL 경로에서 언어 접두사(/ko, /en 등)를 제거합니다.
+            // 예를 들어, /ko/post/12 -> /post/12, /signup -> /signup
+            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          %>
+          <% supportedLangs.forEach(langCode => { %>
+            <li>
+              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                 class="lang-option <%= langCode === currentLang ? 'active-lang' : '' %>">
+                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+              </a>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
 
       <div class="light-switch"
            role="switch"
@@ -78,16 +72,10 @@
         <span class="switch-label"><span class="switch-handle"></span></span>
       </div>
     </div>
-
-   
-
   </div>
 
-
   <nav class="mobile-menu" id="mobile-menu">
- 
   </nav>
- 
 
   <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
     <form action="/login" method="POST" class="pop-up-form">
@@ -97,14 +85,13 @@
 
       <div class="login-footer-links">
         <small>
-          아직 회원이 아니세요? <a href="/signup">회원가입</a> <br>
-          비밀번호가 기억나지 않으신다면? <a href="/reset-password">비밀번호 찾기</a>
+          아직 회원이 아니세요? <a href="/<%= currentLang %>/signup">회원가입</a> <br>
+          비밀번호가 기억나지 않으신다면? <a href="/<%= currentLang %>/reset-password">비밀번호 찾기</a>
         </small>
       </div>
     </form>
   </div>
 
-  <!-- ✅ 스타일 -->
   <style>
     @media (max-width: 640px) {
       .desktop-menu {
@@ -129,11 +116,17 @@
         color: #666;
         pointer-events: none;
       }
+      /* 언어 선택 드롭다운 활성 언어 스타일 */
+      .lang-option.active-lang {
+        font-weight: bold;
+        color: var(--highlight-color); /* 테마에 맞는 강조 색상으로 변경 */
+        /* background-color: var(--hover-bg-color); */ /* 선택 사항 */
+      }
     }
   </style>
 
-  <!-- ✅ 스크립트 -->
   <script>
+    // 이 함수는 'url' 인자를 그대로 받아서 사용하므로, 호출하는 곳에서 언어 경로를 넣어줘야 합니다.
     function delayNavigation(e, url) {
       e.preventDefault();
       setTimeout(() => {
