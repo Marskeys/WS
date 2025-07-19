@@ -130,7 +130,7 @@
   flex-direction: column;
   padding: 0 0.5rem;
   display: flex;
-  width: 50%;
+  width: 100%;
   align-items: center;
   max-width: calc(100vw - 530px);
 }
@@ -149,11 +149,7 @@
   z-index: 8000;
 }
 
-.side-panel.right-panel-only {
-  flex-shrink: 0;
-  width: 300px;
-  background-color: red;
-}
+
 
 /* ============================
    🧾 탭 + 게시판 (데스크탑)
