@@ -149,7 +149,11 @@
   z-index: 8000;
 }
 
-
+.side-panel.right-panel-only {
+  flex-shrink: 0;
+  width: 300px;
+  background-color: red;
+}
 
 /* ============================
    🧾 탭 + 게시판 (데스크탑)
