@@ -108,7 +108,7 @@
 ============================ */
 .full-layout {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
   width: 100%;
   max-width: 1500px;
@@ -135,7 +135,7 @@
 }
 
 .side-panel {
-  flex: 0 0 200px;
+  flex: 1;
   max-width: 200px;
   min-width: 200px;
   background-color: transparent;
@@ -149,8 +149,8 @@
 }
 
 .side-panel.right-panel-only {
-  flex: 0 0 200px;
-  width: 200px;
+  flex-shrink: 0;
+  width: 300px;
 }
 
 /* ============================
