@@ -792,46 +792,64 @@
 
       // 수정된 switchToHtmlMode 함수: 현재 활성 에디터를 사용하도록 변경
       function switchToHtmlMode() {
-        const editorDiv = currentActiveEditor;
-        const htmlEditor = currentActiveHtmlEditor;
+  const editorDiv = currentActiveEditor;
+  const htmlEditor = currentActiveHtmlEditor;
 
-        if (!editorDiv || !htmlEditor) {
-          console.error("HTML 모드 전환을 위한 활성 에디터를 찾을 수 없습니다.");
-          return;
-        }
+  if (!editorDiv || !htmlEditor) {
+    console.error("HTML 모드 전환 실패: 활성 에디터 없음");
+    return;
+  }
 
-        const blContent = editorDiv.querySelector('.bl-content');
-        const htmlContent = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
+  let currentContent = editorDiv.innerHTML.trim();
 
-        htmlEditor.value = html_beautify(htmlContent, { indent_size: 2, wrap_attributes: 'auto', indent_with_tabs: false });
-        editorDiv.style.display = 'none';
-        htmlEditor.style.display = 'block';
-      }
+  // ✅ bl-content로 감싸져 있는지 확인
+  const isWrapped = currentContent.startsWith('<div class="bl-content"');
+
+  if (!isWrapped) {
+    // 빈 상태도 감싸기
+    if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
+      currentContent = '<p><br></p>';
+    }
+
+    currentContent = `
+<div class="bl-content" style="white-space:normal; line-height: 1.7;">
+  ${currentContent}
+</div>`.trim();
+  }
+
+  htmlEditor.value = html_beautify(currentContent, {
+    indent_size: 2,
+    wrap_attributes: 'auto',
+    indent_with_tabs: false
+  });
+
+  editorDiv.style.display = 'none';
+  htmlEditor.style.display = 'block';
+}
 
       // 수정된 switchToDesignMode 함수: 현재 활성 에디터를 사용하도록 변경
       function switchToDesignMode() {
-        const editorDiv = currentActiveEditor;
-        const htmlEditor = currentActiveHtmlEditor;
+  const editorDiv = currentActiveEditor;
+  const htmlEditor = currentActiveHtmlEditor;
 
-        if (!editorDiv || !htmlEditor) {
-          console.error("디자인 모드 전환을 위한 활성 에디터를 찾을 수 없습니다.");
-          return;
-        }
+  if (!editorDiv || !htmlEditor) {
+    console.error("디자인 모드 전환 실패: 활성 에디터 없음");
+    return;
+  }
 
-        const rawHtml = htmlEditor.value.trim();
-        let contentToLoad = rawHtml;
-        
-        // HTML 모드에서 bl-content 래퍼가 제거되었을 가능성을 대비하여 다시 감쌉니다.
-        if (!rawHtml.startsWith('<div class="bl-content"')) {
-          contentToLoad = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
-        }
+  let rawHtml = htmlEditor.value.trim();
 
-        editorDiv.innerHTML = contentToLoad;
-        htmlEditor.style.display = 'none';
-        editorDiv.style.display = 'block';
-        editorDiv.focus();
-        detectStyle();
-      }
+  // ✅ bl-content 감싸기 누락 시 자동 추가
+  if (!rawHtml.startsWith('<div class="bl-content"')) {
+    rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
+  }
+
+  editorDiv.innerHTML = rawHtml;
+  htmlEditor.style.display = 'none';
+  editorDiv.style.display = 'block';
+  editorDiv.focus();
+  detectStyle();
+}
 
       // 언어 선택 드롭다운 변경 이벤트
       document.getElementById('langSelector').addEventListener('change', function() {
