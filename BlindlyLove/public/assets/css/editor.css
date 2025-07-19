@@ -752,3 +752,9 @@ html.dark .bl-button.save {
 html.dark .bl-button.save:hover {
   background-color: #45c37b;
 }
+
+.save-button-wrap {
+  text-align: right;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
