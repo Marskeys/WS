@@ -43,9 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ---
-## Sitemap
----
+
 app.get('/sitemap.xml', async (req, res) => {
   try {
     const [posts] = await db.query(`
