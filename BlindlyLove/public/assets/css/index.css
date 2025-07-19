@@ -132,7 +132,7 @@
   display: flex;
   width: 100%;
   align-items: center;
-  max-width: unset;
+  max-width: calc(100vw - 530px);
 }
 
 .side-panel {
