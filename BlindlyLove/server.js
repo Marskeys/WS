@@ -1,14 +1,4 @@
-// 사이트맵 업데이트 자동화
-const { format } = require('date-fns'); 
 
-const express = require('express');
-const path = require('path');
-const bcrypt = require('bcrypt');
-const session = require('express-session');
-const db = require('./config/db');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
 
 
 app.get('/sitemap.xml', async (req, res) => {
@@ -74,7 +64,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// 사이트맵 업데이트 자동화
+const { format } = require('date-fns'); 
 
+const express = require('express');
+const path = require('path');
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const db = require('./config/db');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // 언어 쿼리 파라미터 또는 기본값 설정
 app.use((req, res, next) => {
