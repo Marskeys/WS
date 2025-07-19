@@ -374,9 +374,10 @@
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
                 // 이 두 줄은 EJS 템플릿에서 직접 사용하기 때문에 수정된 부분입니다.
                 // 🚨🚨🚨 이 부분도 확인하세요.
-                const isEditPage = <%= isEdit ? 'true' : 'false' %>;
-const postId = <%= (post && post.id) ? JSON.stringify(post.id) : 'null' %>;
-
+                <script>
+  const isEditPage = <%= isEdit ? 'true' : 'false' %>;
+  const postId = <%= (post && post.id) ? JSON.stringify(post.id) : 'null' %>;
+</script>
                 if (isEditPage && postId) {
                   window.location.href = "/post/" + postId;
                 } else {
