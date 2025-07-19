@@ -856,7 +856,7 @@ app.get('/', async (req, res) => {
       SELECT
         TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
         MAX(p.created_at) AS latest,
-        c.${categoryColumnForDisplay} AS translated_category_name // 선택된 언어의 카테고리 이름
+        c.${categoryColumnForDisplay} AS translated_category_name
       FROM posts p
       JOIN (
         SELECT a.N + b.N * 10 + 1 AS n
@@ -867,7 +867,7 @@ app.get('/', async (req, res) => {
       ) numbers
       ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
       JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-      GROUP BY original_category, translated_category_name // 그룹 바이에 translated_category_name도 포함
+      GROUP BY original_category, translated_category_name 
       ORDER BY latest DESC
     `);
 
