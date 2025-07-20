@@ -206,7 +206,6 @@
           <div class="mobile-board-list">
             <% posts.forEach(post => { %>
               <div class="mobile-post-item">
-                <%= post.id %>
                 <div class="post-title-and-actions">
                   <a href="/<%= lang %>/post/<%= post.id %>"
                     class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
@@ -220,7 +219,7 @@
                     const isNew = (now - createdAt) < 1000 * 60 * 60 * 24;
                     const isEdited = updatedAt > createdAt && (now - updatedAt) < 1000 * 60 * 60 * 24;
                   %>
-        
+                  <%= post.id %>
                   <% if (isEdited) { %>
                     <span class="label-icon edited-icon"></span>
                   <% } else if (isNew) { %>
