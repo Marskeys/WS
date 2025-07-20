@@ -30,7 +30,8 @@
                 <object id="character-svg" type="image/svg+xml" data="/assets/images/characters.svg"></object>
               </div>
               <form method="get" action="/<%= lang %>/search" class="search-form">
-                <input type="text" name="q" class="search-box" placeholder="필요한 정보를 입력하세요..." />
+                <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
+
                 <button type="submit" class="icon-submit-btn">
                   <i class="fas fa-search"></i>
                 </button>
