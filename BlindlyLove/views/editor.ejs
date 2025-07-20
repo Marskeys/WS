@@ -171,24 +171,18 @@
 
         <div class="global-options" style="margin-top: 2rem;">
           <label style="margin-right: 2rem;">
-            <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.ko?.is_private ? 'checked' : '' %> />
+            <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.is_private ? 'checked' : '' %> />
             🔒 비공개 글로 설정
           </label>
         
           <% if (user && Number(user.is_admin) === 1) { %>
             <label>
-              <input type="checkbox" id="isPinnedCheckbox" name="is_pinned" value="1" <%= post?.ko?.is_pinned ? 'checked' : '' %> />
+              <input type="checkbox" id="isPinnedCheckbox" name="is_pinned" value="1" <%= post?.is_pinned ? 'checked' : '' %> />
               📌 상단에 고정하기
             </label>
           <% } %>
         </div>
 
-        <% if (user && Number(user.is_admin) === 1) { %>
-          <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
-            <input type="checkbox" id="isPinnedCheckbox_<%= code %>" name="is_pinned_<%= code %>" value="1" <%= post?.[code]?.is_pinned ? 'checked' : '' %> />
-            상단에 고정하기 📌
-          </label>
-        <% } %>
 
       </div>
     <% }) %> 
