@@ -1,15 +1,18 @@
 <div class="header-top">
   <div class="top-controls">
     <div class="left-controls">
-      <% if (
-        ['/signup', '/editor', '/login', '/write'].includes(currentPath) ||
-        currentPath.startsWith('/post') ||
-        currentPath.startsWith('/edit')
-      ) { %>
-        <a href="/<%= lang %>/" class="logo-link">
-          <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
-        </a>
-      <% } %>
+      <%
+      const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+      const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+                       pathWithoutLang.startsWith('/post') ||
+                       pathWithoutLang.startsWith('/edit');
+    %>
+    
+    <% if (showLogo) { %>
+      <a href="/<%= lang %>/" class="logo-link">
+        <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
+      </a>
+    <% } %>
     </div>
 
     <div class="right-controls">
