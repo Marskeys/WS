@@ -169,10 +169,19 @@
           <textarea id="htmlEditor_<%= code %>" class="editor html-editor" style="display: none;"></textarea>
         </div>
 
-        <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
-          <input type="checkbox" id="isPrivateCheckbox_<%= code %>" name="is_private_<%= code %>" value="1" <%= post?.[code]?.is_private ? 'checked' : '' %> />
-          비공개 글로 설정
-        </label>
+        <div class="global-options" style="margin-top: 2rem;">
+          <label style="margin-right: 2rem;">
+            <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.ko?.is_private ? 'checked' : '' %> />
+            🔒 비공개 글로 설정
+          </label>
+        
+          <% if (user && Number(user.is_admin) === 1) { %>
+            <label>
+              <input type="checkbox" id="isPinnedCheckbox" name="is_pinned" value="1" <%= post?.ko?.is_pinned ? 'checked' : '' %> />
+              📌 상단에 고정하기
+            </label>
+          <% } %>
+        </div>
 
         <% if (user && Number(user.is_admin) === 1) { %>
           <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
@@ -300,8 +309,8 @@
       function postContent() {
           const postData = {
               categories: selectedCategories,
-              is_private: document.getElementById('isPrivateCheckbox_ko')?.checked ? 1 : 0, 
-              is_pinned: document.getElementById('isPinnedCheckbox_ko')?.checked ? 1 : 0, 
+              is_private: document.getElementById('isPrivateCheckbox')?.checked ? 1 : 0,
+              is_pinned: document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0,
               lang_content: {}
           };
 
