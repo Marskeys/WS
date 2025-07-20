@@ -50,7 +50,11 @@
 
           <% if (isSearch && searchKeyword) { %>
             <p class="search-result-msg">
-              ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
+              <% if (lang === 'ko') { %>
+                ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
+              <% } else { %>
+                <%= locale.search.resultsFor.replace('<%= keyword %>', `'${searchKeyword}'`) %>
+              <% } %>
             </p>
           <% } %>
 

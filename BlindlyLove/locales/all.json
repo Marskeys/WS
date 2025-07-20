@@ -11,6 +11,9 @@
       "tabs": {
         "allPosts": "전체글",
         "searchResults": "검색 결과"
+      },
+      "search": {
+        "resultsFor": "'<%= keyword %>(으)로 검색결과입니다'"
       }
     },
     "en": {
@@ -25,6 +28,9 @@
       "tabs": {
         "allPosts": "All Posts",
         "searchResults": "Search Results"
+      },
+      "search": {
+        "resultsFor": "Search results for '<%= keyword %>'"
       }
     },
     "fr": {
@@ -39,6 +45,9 @@
       "tabs": {
         "allPosts": "Tous les articles",
         "searchResults": "Résultats de recherche"
+      },
+      "search": {
+        "resultsFor": "Résultats de recherche pour « <%= keyword %> »"
       }
     },
     "zh": {
@@ -53,6 +62,9 @@
       "tabs": {
         "allPosts": "全部文章",
         "searchResults": "搜索结果"
+      },
+      "search": {
+        "resultsFor": "“<%= keyword %>”的搜索结果"
       }
     },
     "ja": {
@@ -67,6 +79,9 @@
       "tabs": {
         "allPosts": "すべての投稿",
         "searchResults": "検索結果"
+      },
+      "search": {
+        "resultsFor": "「<%= keyword %>」の検索結果"
       }
     }
   }
