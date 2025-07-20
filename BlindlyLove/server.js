@@ -678,7 +678,10 @@ app.get('/search', async (req, res) => {
       ORDER BY latest DESC
     `);
     // 고유한 번역된 카테고리 이름만 추출 (예: '기술', 'Technology')
-    const allCategories = [...new Set(categoryRows.map(row => row.translated_category_name))];
+    const allCategories = categoryRows.map(row => ({
+      original: row.original_category,
+      translated: row.translated_category_name
+    }));
     
     for (const post of filteredAll) {
       const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
