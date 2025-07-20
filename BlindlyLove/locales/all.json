@@ -13,7 +13,7 @@
         "searchResults": "검색 결과"
       },
       "search": {
-        "resultsFor": "'<%= keyword %>(으)로 검색결과입니다'"
+        "resultsFor": "'%s'(으)로 검색결과입니다"
       }
     },
     "en": {
@@ -30,7 +30,7 @@
         "searchResults": "Search Results"
       },
       "search": {
-        "resultsFor": "Search results for '<%= keyword %>'"
+        "resultsFor": "Search results for '%s'"
       }
     },
     "fr": {
@@ -47,7 +47,7 @@
         "searchResults": "Résultats de recherche"
       },
       "search": {
-        "resultsFor": "Résultats de recherche pour « <%= keyword %> »"
+        "resultsFor": "Résultats de recherche pour « %s »"
       }
     },
     "zh": {
@@ -64,7 +64,7 @@
         "searchResults": "搜索结果"
       },
       "search": {
-        "resultsFor": "“<%= keyword %>”的搜索结果"
+        "resultsFor": "“%s”的搜索结果"
       }
     },
     "ja": {
@@ -81,7 +81,7 @@
         "searchResults": "検索結果"
       },
       "search": {
-        "resultsFor": "「<%= keyword %>」の検索結果"
+        "resultsFor": "「%s」の検索結果"
       }
     }
   }
