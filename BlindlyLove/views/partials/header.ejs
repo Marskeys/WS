@@ -46,7 +46,6 @@
         </button>
         <ul id="langMenu" class="lang-menu">
           <%
-            const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
             // 현재 URL 경로에서 언어 접두사(/ko, /en 등)를 제거합니다.
             // 예를 들어, /ko/post/12 -> /post/12, /signup -> /signup
             const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
