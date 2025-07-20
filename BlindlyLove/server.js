@@ -19,11 +19,11 @@ app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' })); 
 
 // 세션 설정
 app.use(session({
-  secret: '너만의_비밀문자열', // 이 값을 실제 운영 환경에서는 더 복잡하게 설정하세요.
+  secret: 'wowthats_amazing', // 이 값을 실제 운영 환경에서는 더 복잡하게 설정하세요.
   resave: false,
   saveUninitialized: true,
 }));
