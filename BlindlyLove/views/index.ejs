@@ -38,12 +38,14 @@
             </div>
           </div>
 
-          <% 
-  const searchWord = lang === 'ko' ? `'${searchKeyword}'${choosePostposition(searchKeyword)}` : `'${searchKeyword}'`;
-  const resultLine = locale.search.resultsFor.replace('%s', searchWord);
-%>
-<p class="search-result-msg"><%= resultLine %></p>
-
+          <%
+          const searchWord = lang === 'ko'
+            ? `'${searchKeyword}'${choosePostposition(searchKeyword)}`
+            : `'${searchKeyword}'`;
+          const resultLine = locale.search.resultsFor.replace('%s', searchWord);
+        %>
+        
+        <p class="search-result-msg"><%= resultLine %></p>
 
           <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
             <div class="tabs-blur-left"></div>
