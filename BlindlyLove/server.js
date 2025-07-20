@@ -712,7 +712,9 @@ app.get('/search', async (req, res) => {
         range: paginationRange
       },
       selectedCategory: null,
-      user: req.session.user
+      user: req.session.user,
+      lang: safeLang,
+      locale: res.locals.locale
     });
   } catch (err) {
     console.error('검색 오류:', err);
