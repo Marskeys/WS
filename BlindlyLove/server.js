@@ -532,10 +532,17 @@ app.get('/post/:id', async (req, res) => {
     };
 
     const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`; // 다국어 URL 포함
+    const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+    const alternateLinks = supportedLangs.map(lang => ({
+      lang,
+      href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
+    }));
+
     res.render('post-view', {
       post: postForView,
       user: req.session.user,
       canonicalUrl,
+      alternateLinks, 
       lang: safeLang // 현재 로드된 언어를 템플릿에 전달
     });
 

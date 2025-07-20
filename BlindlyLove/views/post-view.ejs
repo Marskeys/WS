@@ -6,8 +6,16 @@
   <link rel="stylesheet" href="/assets/css/post-view.css" />
   <%- include('partials/head') %>
 
-  <link rel="canonical" href="<%= canonicalUrl %>" />
+  <% if (canonicalUrl) { %>
+    <link rel="canonical" href="<%= canonicalUrl %>">
+  <% } %>
 
+  <% if (alternateLinks && alternateLinks.length > 0) { %>
+    <% alternateLinks.forEach(link => { %>
+      <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
+    <% }); %>
+    <link rel="alternate" hreflang="x-default" href="https://blindly.love/<%= lang %>/post/<%= post.id %>">
+  <% } %>
   <style>
     /* 📑 목차 박스 디자인 */
     .toc-list {
