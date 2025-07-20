@@ -44,6 +44,7 @@ app.use((req, res, next) => {
   } else {
     res.locals.lang = 'ko'; // 기본 언어
   }
+  res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
   next();
 });
 
