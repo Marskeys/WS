@@ -144,7 +144,7 @@
                       <% } %>
             
                       <% if (post.is_pinned) { %><span>📌</span><% } %>
-                      
+
                         <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                       </a>
 
@@ -212,6 +212,21 @@
                     data-post-id="<%= post.id %>"
                     data-is-private="<%= post.is_private ? '1' : '0' %>"
                     data-post-user-id="<%= post.user_id %>">
+                    <% 
+                    const now = new Date();
+                    const createdAt = new Date(post.created_at);
+                    const updatedAt = new Date(post.updated_at);
+                    const isNew = (now - createdAt) < 1000 * 60 * 60 * 24;
+                    const isEdited = updatedAt > createdAt && (now - updatedAt) < 1000 * 60 * 60 * 24;
+                  %>
+        
+                  <% if (isEdited) { %>
+                    <span class="label-icon edited-icon"></span>
+                  <% } else if (isNew) { %>
+                    <span class="label-icon new-icon"></span>
+                  <% } %>
+        
+                  <% if (post.is_pinned) { %><span>📌</span><% } %>
                     <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                   </a>
 
