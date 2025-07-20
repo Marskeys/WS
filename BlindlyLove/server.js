@@ -7,6 +7,8 @@ const db = require('./config/db'); // DB 연결 설정 파일
 const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 const app = express();
 const PORT = process.env.PORT || 3000;
+const allLocales = require('./locales/all.json');
+
 
 // EJS 템플릿 엔진 설정
 app.set('view engine', 'ejs');
@@ -35,15 +37,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// 언어 쿼리 파라미터 또는 기본값 설정 (EJS 템플릿에 'lang' 변수로 전달)
+// ✅ 다국어 locale JSON에서 현재 언어에 맞는 텍스트를 res.locals.locale에 넣어줌
 app.use((req, res, next) => {
   const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja)(\/|$)/);
   if (langMatch) {
-    res.locals.lang = langMatch[1]; // 'en' 등
-    req.url = req.url.replace(`/${res.locals.lang}`, ''); // 라우터에서 인식하게 경로 정리
+    res.locals.lang = langMatch[1]; // 'en', 'ko', ...
+    req.url = req.url.replace(`/${res.locals.lang}`, ''); // URL 정리
   } else {
     res.locals.lang = 'ko'; // 기본 언어
   }
+
+  res.locals.locale = allLocales[res.locals.lang] || allLocales['ko'];
+
   res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
   next();
 });

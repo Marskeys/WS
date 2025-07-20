@@ -54,13 +54,16 @@
             </p>
           <% } %>
 
-          <div class="tabs-container">
+          <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
             <div class="tabs-blur-left"></div>
             <div class="tabs-blur-right"></div>
             <div class="tabs-wrapper">
               <div class="tabs">
                 <div class="tab-spacer"></div>
-                <a href="/<%= lang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">전체글</a>
+                <a href="/<%= lang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">
+                  <%= locale.tabs.allPosts %>
+                </a>
+                
           
                 <% if (isSearch) { %>
                   <div class="tab active">검색 결과</div>
@@ -109,12 +112,12 @@
           <table class="board-table">
             <thead>
               <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>카테고리</th>
-                <th>날짜</th>
-                <th>조회수</th>
+                <th><%= locale.tableHeaders.number %></th>
+                <th><%= locale.tableHeaders.title %></th>
+                <th><%= locale.tableHeaders.author %></th>
+                <th><%= locale.tableHeaders.category %></th>
+                <th><%= locale.tableHeaders.date %></th>
+                <th><%= locale.tableHeaders.views %></th>
               </tr>
             </thead>
             <tbody id="board-content">
@@ -244,7 +247,10 @@
                   <% } %>
                 </div>
                 <div class="post-info">
-                  <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | 조회수 <%= post.views %> | <%= post.translated_categories_display.join(', ') %>
+                  <%= post.author %> |
+                  <%= post.created_at.toISOString().slice(0, 10) %> |
+                  <%= locale.tableHeaders.views %> <%= post.views %> |
+                  <%= post.translated_categories_display.join(', ') %>
                 </div>
               </div>
             <% }) %>

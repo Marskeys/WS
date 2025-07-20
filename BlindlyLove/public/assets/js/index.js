@@ -4,11 +4,15 @@ function filterBoard(category) {
   const allMobilePosts = document.querySelectorAll(".mobile-post-item");
 
   // 탭 active 클래스 처리
+  const tabContainer = document.getElementById("tab-container");
+  const allPostsText = tabContainer.dataset.allposts;
+  
   allTabs.forEach((tab) => {
     tab.classList.remove("active");
+  
     if (
       tab.textContent === category ||
-      (category === "all" && tab.textContent === "전체글")
+      (category === "all" && tab.textContent === allPostsText)
     ) {
       tab.classList.add("active");
     }
