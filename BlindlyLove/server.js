@@ -57,8 +57,6 @@ app.get('/sitemap.xml', async (req, res) => {
       ORDER BY updated_at DESC
     `);
 
-    const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja']; // 지원하는 언어 목록
-
     let postUrls = [];
     posts.forEach(post => {
       supportedLangs.forEach(lang => {
