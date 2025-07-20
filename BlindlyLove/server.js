@@ -680,6 +680,21 @@ app.get('/search', async (req, res) => {
     // 고유한 번역된 카테고리 이름만 추출 (예: '기술', 'Technology')
     const allCategories = [...new Set(categoryRows.map(row => row.translated_category_name))];
     
+    for (const post of filteredAll) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.translated_categories_display = translatedCategories;
+    }
+    
     const paginatedPosts = filteredAll.slice(offset, offset + limit);
 
     res.render('index', {
