@@ -38,25 +38,8 @@
             </div>
           </div>
 
-          <%
-            function choosePostposition(word) {
-              if (!word || word.length === 0) return '';
-              const lastChar = word[word.length - 1];
-              const lastCode = lastChar.charCodeAt(0);
-              const hasBatchim = (lastCode - 44032) % 28 !== 0;
-              return hasBatchim ? '으로' : '로';
-            }
-          %>
+          <%= locale.search.resultsFor.replace('<%= keyword %>', ...) %>
 
-          <% if (isSearch && searchKeyword) { %>
-            <p class="search-result-msg">
-              <% if (lang === 'ko') { %>
-                ‘<%= searchKeyword %>’<%= choosePostposition(searchKeyword) %> 검색 결과입니다.
-              <% } else { %>
-                <%= locale.search.resultsFor.replace('<%= keyword %>', `'${searchKeyword}'`) %>
-              <% } %>
-            </p>
-          <% } %>
 
           <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
             <div class="tabs-blur-left"></div>
