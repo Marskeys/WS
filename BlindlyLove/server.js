@@ -4,7 +4,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const db = require('./config/db'); // DB 연결 설정 파일
-
+const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -451,7 +451,6 @@ app.get('/post/:id', async (req, res) => {
   try {
     const postId = req.params.id;
     const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-    const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 
     // 조회수 중복 방지용 세션 초기화
     if (!req.session.viewedPosts) {
@@ -530,7 +529,6 @@ app.get('/post/:id', async (req, res) => {
     };
 
     const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`; // 다국어 URL 포함
-    const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
     const alternateLinks = supportedLangs.map(lang => ({
       lang,
       href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
@@ -612,7 +610,6 @@ app.get('/search', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용 및 오타 수정
 
   const page = parseInt(req.query.page) || 1;
