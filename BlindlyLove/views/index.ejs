@@ -40,7 +40,7 @@
 
           <% if (isSearch && searchKeyword) { %>
             <%
-              const searchWord = `'${searchKeyword}'`;
+              const searchWord = `${searchKeyword}`;
               const resultLine = locale.search.resultsFor.replace('%s', searchWord);
             %>
             <p class="search-result-msg"><%= resultLine %></p>
