@@ -1,14 +1,16 @@
 /* 떠다니는 목차 (데스크탑) */
 .floating-toc {
     position: fixed;
-  top: 80px;
-  left: calc(50% - 640px / 2 - 280px); /* 본문 왼쪽 기준으로 살짝 더 왼쪽 */
+    top: 80px;
+    left: calc(50% - 640px / 2 - 280px);
     background: #f7f9fa;
     border: 1px solid #ccc;
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     max-width: 250px;
+    max-height: 80vh; /* 화면 높이의 80%까지만 */
+    overflow-y: auto;  /* 세로 스크롤 허용 */
     z-index: 999;
     display: none;
   }
@@ -18,7 +20,7 @@
     font-weight: bold;
     margin-bottom: 1rem;
   }
-  
+
   html.dark .floating-toc {
     background: #1f1f2b;
     border-color: #444;
