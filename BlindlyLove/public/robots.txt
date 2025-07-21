@@ -3,6 +3,7 @@ User-agent: *
 Disallow: /write
 Disallow: /edit
 Disallow: /delete
+Disallow: /signup
 Allow: /
 
 # 네이버 검색 로봇(Yeti) 전용 규칙 (모든 경로 허용)
