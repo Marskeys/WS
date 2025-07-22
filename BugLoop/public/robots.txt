@@ -1,0 +1,14 @@
+# 모든 크롤러에 대한 기본 규칙 (구글 등)
+User-agent: *
+Disallow: /write
+Disallow: /edit
+Disallow: /delete
+Disallow: /signup
+Allow: /
+
+# 네이버 검색 로봇(Yeti) 전용 규칙 (모든 경로 허용)
+User-agent: Yeti
+Disallow:  # 또는 Allow: / 도 가능
+
+# 사이트맵 명시 (모든 봇 참고 가능)
+Sitemap: https://blindly.love/sitemap.xml

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>회원가입 | BlindLove</title>
+  <link rel="stylesheet" href="/assets/css/signup.css" />
+  <%- include('partials/head') %> 
+  <style>
+    .notice-text {
+      text-align: center;
+      color: #c00;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+
+    .notice-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.notice-text {
+  color: #c00;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.back-home-link {
+  font-size: 0.9rem;
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.back-home-link:hover {
+  text-decoration: underline;
+}
+  </style>
+</head>
+<body class="no-fixed-footer">
+  <%- include('partials/header') %>
+
+  <div class="signup-container">
+    <div class="logo-wrap">
+      <img src="/assets/images/signup.svg" alt="BlindLove 로고" />
+    </div>
+
+    <div class="notice-wrap">
+      <h2 class="notice-text">아직 서비스 시작 전입니다</h2>
+      <a href="/" class="back-home-link">홈페이지로 돌아가기</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="error-msg"><%= error %></div>
+    <% } %>
+
+    <form action="/signup" method="POST" onsubmit="return false;">
+        <div class="input-with-button">
+          <input type="text" name="username" placeholder="닉네임" required disabled />
+          <button type="button" class="check-btn" disabled>중복확인</button>
+        </div>
+        <div id="nickname-msg" class="check-msg"></div>
+      
+        <div class="input-with-button">
+          <input type="text" name="user_id" placeholder="아이디" required disabled />
+          <button type="button" class="check-btn" disabled>중복확인</button>
+        </div>
+        <div id="id-msg" class="check-msg"></div>
+      
+        <input type="email" name="email" placeholder="이메일 (선택사항)" disabled />
+        <input type="password" name="password" placeholder="비밀번호" required disabled />
+        <button type="submit" class="signup-btn" disabled>가입하기</button>
+    </form>
+
+    <div class="extra">
+      이미 계정이 있으신가요? <a href="/login">로그인</a>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+  <%- include('partials/scripts') %>
+
+  <script>
+    function checkId() {
+      return; // 서비스 비활성화 중
+    }
+
+    function checkNickname() {
+      return; // 서비스 비활성화 중
+    }
+  </script>
+</body>
+</html>

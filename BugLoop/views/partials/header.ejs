@@ -1,0 +1,157 @@
+<div class="header-top">
+  <div class="top-controls">
+    <div class="left-controls">
+      <%
+      const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+      const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+                       pathWithoutLang.startsWith('/post') ||
+                       pathWithoutLang.startsWith('/edit');
+    %>
+    
+    <% if (showLogo) { %>
+      <a href="/<%= lang %>/" class="logo-link">
+        <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
+      </a>
+    <% } %>
+    </div>
+
+    <div class="right-controls">
+      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+        <div class="auth-buttons">
+          <% if (user) { %>
+            <% if (Number(user.is_admin) === 1) { %>
+              <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+              <a href="/<%= lang %>/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
+            <% } %>
+            <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
+          <% } else { %>
+            <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')">회원가입</a>
+            <button class="auth-btn login" id="login" type="button">로그인</button>
+          <% } %>
+        </div>
+      <% } %>
+
+      <div class="language-dropdown">
+        <button id="langToggle" class="lang-btn">
+          <%
+            let flagCode = lang; // 'lang' 대신 'lang' 사용
+            switch(lang) { // 'lang' 대신 'lang' 사용
+              case 'ko': flagCode = 'kr'; break;
+              case 'en': flagCode = 'gb'; break; /* 또는 'us' (미국 국기) */
+              case 'zh': flagCode = 'cn'; break;
+              case 'ja': flagCode = 'jp'; break;
+              case 'fr': flagCode = 'fr'; break; // 프랑스어 추가
+              default: flagCode = 'kr'; // 기본값 설정
+            }
+          %>
+          <span class="fi fi-<%= flagCode %>"></span>
+          <i class="fas fa-caret-down"></i>
+        </button>
+        <ul id="langMenu" class="lang-menu">
+          <%
+            // 현재 URL 경로에서 언어 접두사(/ko, /en 등)를 제거합니다.
+            // 예를 들어, /ko/post/12 -> /post/12, /signup -> /signup
+            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          %>
+          <% supportedLangs.forEach(langCode => { %>
+            <li>
+              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                 class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
+                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+              </a>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <div class="light-switch"
+           role="switch"
+           aria-checked="false"
+           aria-label="다크 모드 전환"
+           tabindex="0"
+           id="mode-toggle-accessible">
+        <span class="switch-label"><span class="switch-handle"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mobile-menu" id="mobile-menu">
+  </nav>
+
+  <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
+    <form action="/login" method="POST" class="pop-up-form">
+      <input type="text" name="id" placeholder="아이디" required>
+      <input type="password" name="password" placeholder="비밀번호" required>
+      <button type="submit">로그인</button>
+
+      <div class="login-footer-links">
+        <small>
+          아직 회원이 아니세요? <a href="/<%= lang %>/signup">회원가입</a> <br>
+          비밀번호가 기억나지 않으신다면? <a href="/<%= lang %>/reset-password">비밀번호 찾기</a>
+        </small>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    @media (max-width: 640px) {
+      .desktop-menu {
+        display: none;
+      }
+
+      .auth-buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        position: relative;
+      }
+
+      .welcome-text {
+        position: absolute;
+        bottom: -1.2rem;
+        top: 2.5rem;
+        right: -1rem;
+        margin-right: -3rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        color: #666;
+        pointer-events: none;
+      }
+      /* 언어 선택 드롭다운 활성 언어 스타일 */
+      .lang-option.active-lang {
+        font-weight: bold;
+        color: var(--highlight-color); /* 테마에 맞는 강조 색상으로 변경 */
+        /* background-color: var(--hover-bg-color); */ /* 선택 사항 */
+      }
+    }
+  </style>
+
+  <script>
+    // 이 함수는 'url' 인자를 그대로 받아서 사용하므로, 호출하는 곳에서 언어 경로를 넣어줘야 합니다.
+    function delayNavigation(e, url) {
+      e.preventDefault();
+      setTimeout(() => {
+        window.location.href = url;
+      }, 100);
+    }
+  </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('langToggle');
+    const menu = document.getElementById('langMenu');
+
+    toggle.addEventListener('click', () => {
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+</div>
