@@ -6,7 +6,7 @@ const session = require('express-session');
 const db = require('./config/db'); // DB 연결 설정 파일
 const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 const allLocales = require('./locales/all.json');
 
 
