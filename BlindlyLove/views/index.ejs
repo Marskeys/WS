@@ -130,9 +130,10 @@
                         const now = new Date();
                         const createdAt = new Date(post.created_at);
                         const updatedAt = new Date(post.updated_at);
-                        const isWithin1Day = (Math.abs(updatedAt - createdAt) < 1000 * 60 * 60 * 24);
-                        const isNew = isWithin1Day;
-                        const isEdited = updatedAt > createdAt && !isWithin1Day;
+                      
+                        const oneDay = 1000 * 60 * 60 * 24;
+                        const isNew = (now - createdAt) < oneDay;
+                        const isEdited = !isNew && (updatedAt > createdAt);
                       %>
                       
                       <% if (isNew) { %>
@@ -214,9 +215,10 @@
                     const now = new Date();
                     const createdAt = new Date(post.created_at);
                     const updatedAt = new Date(post.updated_at);
-                    const isWithin1Day = (Math.abs(updatedAt - createdAt) < 1000 * 60 * 60 * 24);
-                    const isNew = isWithin1Day;
-                    const isEdited = updatedAt > createdAt && !isWithin1Day;
+                  
+                    const oneDay = 1000 * 60 * 60 * 24;
+                    const isNew = (now - createdAt) < oneDay;
+                    const isEdited = !isNew && (updatedAt > createdAt);
                   %>
                   
                   <% if (isNew) { %>
