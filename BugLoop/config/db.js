@@ -13,7 +13,7 @@ const pool = mysql.createPool({
 });
 
 pool.getConnection()
-  .then(() => console.log('✅ MySQL 연결 성공!'))
+  .then(() => console.log('✅ MySQL 연결 성공!!'))
   .catch(err => console.error('❌ MySQL 연결 실패:', err));
 
 module.exports = pool;
