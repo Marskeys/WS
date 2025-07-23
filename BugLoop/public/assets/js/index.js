@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const isDark = document.documentElement.classList.contains("dark");
 
       // 💡 색상 설정
-      const textColor = isDark ? "#00ff66" : "#007acc"; // 다크: 녹색 / 라이트: 파랑
+      const textColor = isDark ? "#00ff66" : "rgba(97, 104, 109, 0.58)";
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
