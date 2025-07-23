@@ -40,12 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
       fallingTerms.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        speedY: 1 + Math.random() * 2,
-        speedX: Math.random() * 0.6 - 0.3,
+        speedY: 0.8 + Math.random() * 1.2,
+        speedX: Math.random() * 0.4 - 0.2,
         angle: Math.random() * 360,
-        rotateSpeed: Math.random() * 1 - 0.5,
+        rotateSpeed: Math.random() * 0.8 - 0.4,
         text: webTerms[Math.floor(Math.random() * webTerms.length)],
-        fontSize: 12 + Math.random() * 10,
+        fontSize: 8 + Math.random() * 4, // 🌟 작게 조정됨: 8 ~ 12px 사이
       });
     }
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.save();
         ctx.translate(t.x, t.y);
         ctx.rotate((t.angle * Math.PI) / 180);
-        ctx.font = `bold ${t.fontSize}px monospace`;
+        ctx.font = `${t.fontSize}px monospace`;
         ctx.fillStyle = "#00ff66";
         ctx.fillText(t.text, 0, 0);
         ctx.restore();
