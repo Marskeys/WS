@@ -153,4 +153,144 @@
     margin: 0;
     color: #666;
   }
+
+    
+  /* ======================
+     🔹 auth 버튼들 
+  ====================== */
+  
+  .auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 100;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    padding: 0.3rem 0.5rem;
+  }
+
+  
+  @media (max-width: 640px) {
+    .auth-buttons {
+      gap: 4px; /* 버튼 사이 좁게 */
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      width: 100%;
+    }
+  
+    .auth-btn.write-post,
+    .auth-btn.logout {
+      margin-left: 0 !important;
+    }
+  
+    .auth-btn.logout {
+      margin-right: 1px !important;
+    }
+  }
+
+  
+  .auth-btn.login {
+    cursor: pointer;
+    text-decoration: none;
+    padding: 5px 10px 3px;
+    background-color: white;
+    color: #641df1;
+    border: 1px solid #621dec;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.5px;
+    margin-bottom: 1px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  .auth-btn.login:hover {
+    background-color: #4c16b9;
+    color: white;
+    box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
+  }
+
+  .auth-btn.signup {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 0.9rem;
+    padding: 6px 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .auth-btn.signup:hover {
+    color: #007bff;
+  }
+
+  
+  .auth-btn.write-post {
+    margin-left: 10px;
+    background-color: #ffffff;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 4px 10px !important;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    transition: background-color 0.1s ease, border-color 0.1s ease;
+  }
+  .auth-btn.write-post:hover {
+    background-color: #ffffff;
+    border-color: #999;
+    color: #000;
+  }
+
+  
+  .auth-btn.logout {
+    cursor: pointer;
+    text-decoration: none;
+    padding: 5px 10px;
+    background-color: white;
+    color: #641df1;
+    border: 1px solid #621dec;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 1.5px 10px 1px 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  .auth-btn.logout:hover {
+    background-color: #4c16b9;
+    color: white;
+    box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
+  }
+
+  
+  .light-switch {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #333;
+    margin-top: 10px;
+    cursor: pointer;
+    color: white;
+  }
+  
+  @media (max-width: 640px) {
+    .light-switch {
+      width: 60px;
+      height: 30px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 2px;
+      transform: scale(0.85);
+    }
+  }
+
   
