@@ -205,10 +205,6 @@ html.dark body .header-top {
   z-index: 9000;
   background-color: transparent!important;
   border-bottom: none !important;
-  box-shadow:
-    0 3px 4px rgba(255, 215, 0, 0.1),
-    0 6px 6px rgba(255, 215, 0, 0.15),
-    0 10px 10px rgba(255, 200, 0, 0.2) !important;
 }
 
 html.dark body .login-box {
