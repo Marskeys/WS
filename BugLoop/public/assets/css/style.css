@@ -3,7 +3,7 @@
   align-items: center;
   padding: 15px;
   border-top: 1px solid #ddd;
-  margin-top: 30px;
+  margin-top: 0px;
 }
 
 .profile-gif {
@@ -16,11 +16,6 @@
 
 .author-description {
   max-width: 600px;
-}
-
-.author-description h4 {
-  margin: 0 0 5px 0;
-  font-size: 1.2em;
 }
 
 .author-description p {
