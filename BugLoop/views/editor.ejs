@@ -211,7 +211,6 @@
 
     let categories = [];
     let savedRange = null;
-
     let currentActiveEditor = null; // 현재 활성 디자인 모드 에디터 div 엘리먼트
     let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea 엘리먼트
     let currentActiveToolbar = null; // 현재 활성 툴바 div 엘리먼트 (새로 추가)
@@ -955,11 +954,7 @@ ${currentContent}
         detectStyle();
       }
 
-      // 언어 선택 드롭다운 변경 이벤트
-      document.getElementById('langSelector').addEventListener('change', function() {
-          const selectedLang = this.value;
-          activateEditor(selectedLang);
-      });
+  
   </script>
 
 <%- include('partials/footer') %>
