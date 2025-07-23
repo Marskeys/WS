@@ -1,15 +1,19 @@
 .sidebar-icon {
+    display: block;
+    padding: 12px 0;
     color: white;
     text-align: center;
-    padding: 10px;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
+    border: none;
+    background: none;
+    outline: none;
+    margin: 0;
+    transition: color 0.2s ease;
   }
-
+  
+  .sidebar-icon:hover,
   .sidebar-icon.active {
-    background-color: #444;
-    color: var(--highlight-color, #00adb5);
+    color: var(--highlight-color, #00adb5); /* 원하는 강조 색 */
+    background: none; /* 배경 없애기 */
   }
 
   .tab-content {
