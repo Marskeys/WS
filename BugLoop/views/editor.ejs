@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body class="edit-body">
-  <%- include('partials/header') %>
+
   <% const isEdit = typeof post !== 'undefined' && post !== null; %>
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold; margin-top:3rem;">
@@ -694,21 +694,7 @@
 
 
       window.addEventListener('DOMContentLoaded', () => { // DOMContentLoaded로 변경하여 DOM이 완전히 로드된 후 스크립트 실행 보장
-        const langSelector = document.getElementById('langSelector');
-  if (langSelector) {
-    langSelector.addEventListener('change', function () {
-      const selectedLang = this.value;
-      activateEditor(selectedLang);
-    });
-
-    // 초기값도 설정
-    langSelector.value = CURRENT_PAGE_LANG;
-  } else {
-    console.warn("langSelector not found in DOM!");
-  }
-});
-  
-        // 카테고리 불러오기 및 렌더링
+          // 카테고리 불러오기 및 렌더링
           fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
             .then(res => res.json())
             .then(data => {
@@ -720,12 +706,6 @@
               categories = ['일상', '기록', '리뷰']; // 대체 카테고리
               renderCategories();
             });
-
-               // 언어 선택 드롭다운 변경 이벤트
-      document.getElementById('langSelector').addEventListener('change', function() {
-          const selectedLang = this.value;
-          activateEditor(selectedLang);
-      });
 
           // 언어 선택 드롭다운 초기값 설정
           document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
