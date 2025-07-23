@@ -330,3 +330,54 @@
     }
   }
   
+  .bottom-switch-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  
+  /* 다크모드 스위치 */
+  .light-switch {
+    width: 60px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  /* 언어 버튼 */
+  .lang-btn {
+    background: none;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  /* 언어 드롭다운 메뉴 */
+  .lang-menu {
+    display: none;
+    background: #444;
+    border: none;
+    padding: 5px 0;
+    position: static;
+  }
+  
+  .lang-menu li a {
+    display: block;
+    padding: 5px 10px;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .lang-option.active-lang {
+    font-weight: bold;
+    color: var(--highlight-color, #00adb5);
+  }
+  
