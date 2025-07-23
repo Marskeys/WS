@@ -1,91 +1,27 @@
+/* ✅ 전체 사이드 패널 묶음 (고정된 위치에 붙음) */
 .side-panel.main-panel-only {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-  background-color: #1e1e1e;
-}
-
-/* 기존 아이콘 바 */
-.vscode-sidebar {
-  width: 50px;
-  background-color: #1e1e1e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 10px;
-}
-
-/* 확장된 패널 */
-.sidebar-extension-panel {
-  width: 180px;
-  background-color: #2c2f33;
-  color: white;
-  padding: 10px;
-  border-left: 1px solid #444;
-  display: flex;
-  flex-direction: column;
-  z-index: 9500;
-}
-
-.sidebar-wrapper {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-}
-
-.vscode-sidebar {
-  width: 50px;
-  background-color: #1e1e1e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 10px;
-}
-
-.sidebar-icon {
-  color: white;
-  margin: 10px 0;
-  font-size: 18px;
-}
-
-.sidebar-extension-panel {
-  width: 180px;
-  background-color: #2c2f33;
-  color: white;
-  padding: 10px;
-  border-left: 1px solid #444;
-}
-
-.sidebar-extension-panel h3 {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.sidebar-extension-panel ul {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar-extension-panel li {
-  margin: 5px 0;
-}
-
-
-.vscode-sidebar {
-  display: flex;
-  position: fixed;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 0;
-  background-color: #1e1e1e; /* VSCode 느낌 */
-  height: 100vh;
-  width: 50px;
   position: fixed;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  z-index: 9500; /* 헤더보다 낮게 설정 */
+}
+
+/* ✅ 아이콘 사이드바 */
+.vscode-sidebar {
+  width: 50px;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  height: 100vh;
   z-index: 9990;
 }
 
+/* ✅ 아이콘 하나하나 */
 .sidebar-icon {
   display: flex;
   justify-content: center;
@@ -96,12 +32,61 @@
   text-decoration: none;
   font-size: 18px;
   transition: background 0.2s, color 0.2s;
+  margin: 10px 0;
 }
 
 .sidebar-icon:hover {
   background-color: #333;
   color: #fff;
 }
+
+/* ✅ 확장된 패널 (아이콘바 옆에 붙음) */
+.sidebar-extension-panel {
+  width: 180px;
+  background-color: #2c2f33;
+  color: white;
+  padding: 10px;
+  border-left: 1px solid #444;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100vh;
+  z-index: 9490;
+}
+
+/* ✅ 확장 패널 안의 제목/목록 */
+.sidebar-extension-panel h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.sidebar-extension-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-extension-panel li {
+  margin: 5px 0;
+}
+
+.sidebar-extension-panel a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.sidebar-extension-panel a:hover {
+  text-decoration: underline;
+}
+
+/* ✅ 중복 정의 제거 + 구조 안정화 */
+.sidebar-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
 
 .author-box {
   display: flex;
