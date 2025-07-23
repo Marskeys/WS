@@ -1,0 +1,29 @@
+.sidebar-icon {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .sidebar-icon.active {
+    background-color: #444;
+    color: var(--highlight-color, #00adb5);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content[style*="display: block"] {
+    display: block !important;
+  }
+
+  @media (max-width: 640px) {
+    .desktop-menu { display: none; }
+    .lang-option.active-lang {
+      font-weight: bold;
+      color: var(--highlight-color);
+    }
+  }
