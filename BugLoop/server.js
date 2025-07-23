@@ -119,7 +119,20 @@ app.get('/session', (req, res) => {
 
 // 회원가입 페이지
 app.get('/signup', (req, res) => {
-  res.render('signup', { error: null });
+  res.render('signup', {
+    error: null,
+    selectedCategory: null,
+    isSearch: false,
+    searchKeyword: '',
+    locale: res.locals.locale,
+    lang: res.locals.lang,
+    pagination: {
+      current: 1,
+      total: 1,
+      range: [1]
+    },
+    categories: []
+  });
 });
 
 // 로그인 처리
@@ -145,6 +158,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ success: false, error: '서버 오류입니다.' });
   }
 });
+
 
 // 로그아웃 처리
 app.get('/logout', (req, res) => {
