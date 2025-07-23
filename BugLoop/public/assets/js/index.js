@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     const fallingTerms = [];
-    const termCount = 40; // 🌟 줄였음
+    const termCount = 40;
 
     for (let i = 0; i < termCount; i++) {
       fallingTerms.push({
@@ -34,18 +34,23 @@ document.addEventListener("DOMContentLoaded", () => {
         rotateSpeed: Math.random() * 0.6 - 0.3,
         text: webTerms[Math.floor(Math.random() * webTerms.length)],
         fontSize: 8 + Math.random() * 4,
-        opacity: 0, // 🌟 처음엔 투명
-        fadeInSpeed: 0.02 + Math.random() * 0.01 // 각자 페이드인 속도 다르게
+        opacity: 0,
+        fadeInSpeed: 0.02 + Math.random() * 0.01
       });
     }
 
     function drawTerms() {
       if (isCharRainPaused) return;
 
+      // 💡 현재 다크모드인지 확인
+      const isDark = document.documentElement.classList.contains("dark");
+
+      // 💡 색상 설정
+      const textColor = isDark ? "#00ff66" : "#007acc"; // 다크: 녹색 / 라이트: 파랑
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let t of fallingTerms) {
-        // 🌟 페이드인
         if (t.opacity < 1) {
           t.opacity += t.fadeInSpeed;
           if (t.opacity > 1) t.opacity = 1;
@@ -54,9 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.save();
         ctx.translate(t.x, t.y);
         ctx.rotate((t.angle * Math.PI) / 180);
-        ctx.globalAlpha = t.opacity; // ✨ 여기서 투명도 적용
+        ctx.globalAlpha = t.opacity;
         ctx.font = `${t.fontSize}px monospace`;
-        ctx.fillStyle = "#00ff66";
+        ctx.fillStyle = textColor; // 💚 모드에 따른 글자색 적용
         ctx.fillText(t.text, 0, 0);
         ctx.restore();
 
@@ -68,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
           t.y = -10;
           t.x = Math.random() * canvas.width;
           t.text = webTerms[Math.floor(Math.random() * webTerms.length)];
-          t.opacity = 0; // 🌟 다시 떨어질 땐 처음부터 페이드인
+          t.opacity = 0;
         }
       }
 
