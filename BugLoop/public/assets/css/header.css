@@ -1,7 +1,11 @@
+/* ======================
+   🔹 공통 아이콘 스타일
+====================== */
 .sidebar-icon {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
     padding: 12px 0;
     color: white;
     text-align: center;
@@ -18,26 +22,132 @@
     background: transparent;
   }
   
-  /* 👇 아이콘 내부 <i> 태그도 배경 제거해야 함 */
   .sidebar-icon i {
     background: none !important;
     outline: none;
     box-shadow: none;
   }
   
-
+  /* ======================
+     🔹 탭 컨텐츠 전환
+  ====================== */
   .tab-content {
     display: none;
   }
-
+  
   .tab-content[style*="display: block"] {
     display: block !important;
   }
-
+  
+  /* ======================
+     🔹 반응형 (모바일)
+  ====================== */
   @media (max-width: 640px) {
-    .desktop-menu { display: none; }
+    .desktop-menu {
+      display: none;
+    }
+  
     .lang-option.active-lang {
       font-weight: bold;
       color: var(--highlight-color);
     }
   }
+  
+  /* ======================
+     🔹 사이드 패널 레이아웃
+  ====================== */
+  .side-panel.main-panel-only {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    z-index: 9500;
+  }
+  
+  .sidebar-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+  }
+  
+  .vscode-sidebar {
+    width: 50px;
+    background-color: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    height: 100vh;
+    z-index: 9990;
+  }
+  
+  /* ======================
+     🔹 확장 패널 (우측)
+  ====================== */
+  .sidebar-extension-panel {
+    width: 20vw;
+    background-color: #2c2f33;
+    color: white;
+    padding: 10px;
+    border-left: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100vh;
+    z-index: 9490;
+  }
+  
+  .sidebar-extension-panel h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .sidebar-extension-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-extension-panel li {
+    margin: 5px 0;
+  }
+  
+  .sidebar-extension-panel a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .sidebar-extension-panel a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ======================
+     🔹 작성자 정보 박스
+  ====================== */
+  .author-box {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-top: 0;
+  }
+  
+  .profile-gif {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+  
+  .author-description {
+    max-width: 600px;
+  }
+  
+  .author-description p {
+    margin: 0;
+    color: #666;
+  }
+  
