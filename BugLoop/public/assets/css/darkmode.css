@@ -81,74 +81,6 @@ html.dark body .light-img {
 
 
 
-/* 로그인 버튼 (기본) */
-html.dark body .auth-btn.login {
-  background-color: transparent;
-  color: white;
-  border: 1px solid white;
-  font-weight: 600;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
-  transition: all 0.1s ease;
-  z-index: 9999;
-}
-
-/* 로그인 버튼 (hover - 노란빛 glow) */
-html.dark body .auth-btn.login:hover {
-  background-color: rgba(255, 255, 200, 0.05);
-  color: white;
-  border-color: rgba(255, 255, 180, 0.8);
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-}
-
-/* 로그아웃 버튼 (기본) */
-html.dark body .auth-btn.logout {
-  background-color: transparent;
-  color: white;
-  border: 1px solid white;
-  font-weight: 600;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
-  transition: all 0.1s ease;
-}
-
-html.dark body .auth-btn.logout:hover {
-  background-color: rgba(255, 255, 200, 0.05);
-  color: white;
-  border-color: rgba(255, 255, 180, 0.8);
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-}
-
-/* 회원가입 텍스트 (기본) */
-html.dark body .auth-btn.signup {
-  color: white;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  transition: all 0.1s ease;
-}
-
-/* 회원가입 텍스트 (hover - 노란빛 glow) */
-html.dark body .auth-btn.signup:hover {
-  color: lightblue;
-  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-}
-
-/* 글쓰기 (기본) */
-html.dark body .auth-btn.write-post {
-  color: white;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  transition: all 0.1s ease;
-  background-color: black;
-}
-
-/* 글쓰기 (hover - 노란빛 glow) */
-html.dark body .auth-btn.write-post:hover {
-  color: lightblue;
-  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-}
-
-/* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
-html.dark body .hamburger span {
-  background-color: #fff;
-}
-
 
 /* 다크모드에서 전체 배경 뚫기 */
 html.dark body .main-column,
@@ -162,24 +94,6 @@ html.dark body .header-top {
   background-color: transparent!important;
   border-bottom: none !important;
 }
-
-html.dark body .login-box {
-  background: linear-gradient(135deg, #202020, #2a2a2a);
-  color: #eeeeee;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-}
-
-html.dark body .pop-up-form {
-  color: #fff;
-  border-radius: 12px;
-}
-html.dark body .pop-up-form input {
-  background: #222;
-  color: #eee;
-  border: 1px solid #555;
-}
-
 
 html.dark body .welcome-text {
   color: #ffffff;
