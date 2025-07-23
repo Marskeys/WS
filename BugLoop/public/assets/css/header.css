@@ -65,7 +65,7 @@
     flex-direction: row;
     height: 100vh;
     width: 100vw;           /* ✅ 이거 필수: 자식이 커지려면 부모가 커야 함 */
-    z-index: 9500;
+    z-index: 30;
   }
   
   .sidebar-wrapper {
@@ -336,7 +336,7 @@ html.dark body .auth-btn.login {
   html.dark body .hamburger span {
     background-color: #fff;
   }
-  
+
 
 /* ✅ 다크모드 토글 컨테이너 */
 .light-switch {
