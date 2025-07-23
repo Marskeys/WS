@@ -1,4 +1,4 @@
-<script>
+
   // 탭 전환
   document.addEventListener('DOMContentLoaded', () => {
     const icons = document.querySelectorAll('.sidebar-icon');
@@ -45,4 +45,4 @@
       window.location.href = url;
     }, 100);
   }
-</script>
+
