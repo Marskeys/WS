@@ -26,6 +26,82 @@
   flex-direction: column;
 }
 
+.sidebar-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.vscode-sidebar {
+  width: 50px;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.sidebar-icon {
+  color: white;
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.sidebar-extension-panel {
+  width: 180px;
+  background-color: #2c2f33;
+  color: white;
+  padding: 10px;
+  border-left: 1px solid #444;
+}
+
+.sidebar-extension-panel h3 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.sidebar-extension-panel ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-extension-panel li {
+  margin: 5px 0;
+}
+
+
+.vscode-sidebar {
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #1e1e1e; /* VSCode 느낌 */
+  height: 100vh;
+  width: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9990;
+}
+
+.sidebar-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ccc;
+  padding: 15px 0;
+  width: 100%;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-icon:hover {
+  background-color: #333;
+  color: #fff;
+}
+
 .author-box {
   display: flex;
   align-items: center;
@@ -906,4 +982,30 @@ html.dark .lang-option:hover {
 
 html.dark .lang-btn i {
   color: #ffffff; /* 원하는 색상으로 변경 */
+.side-panel.main-panel-only {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background-color: #1e1e1e;
 }
+
+/* 기존 아이콘 바 */
+.vscode-sidebar {
+  width: 50px;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+
+/* 확장된 패널 */
+.sidebar-extension-panel {
+  width: 180px;
+  background-color: #2c2f33;
+  color: white;
+  padding: 10px;
+  border-left: 1px solid #444;
+  display: flex;
+  flex-direction: column;
+}}
