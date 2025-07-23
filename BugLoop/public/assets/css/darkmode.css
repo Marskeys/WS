@@ -75,50 +75,6 @@ html.dark body .light-img {
   display: none;
 }
 
-/* 다크모드 스위치 */
-html.dark body .switch-label {
-  background-color: #666;
-}
-html.dark body .switch-handle {
-  background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-}
-
-/* 기본 스위치 스타일 */
-
-.light-switch {
-  z-index: 999;
-  width: 60px;
-  height: 34px;
-}
-.switch-label {
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-  background-color: #b9fbc0;
-  border-radius: 20px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-}
-.switch-handle {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 28px;
-  height: 28px;
-  background: linear-gradient(to bottom, #ffffff, #cccccc);
-  border-radius: 50%;
-  transition: left 0.3s ease, background 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-.light-switch[aria-checked="true"] .switch-label {
-  background-color: #666;
-}
-.light-switch[aria-checked="true"] .switch-handle {
-  left: 29px;
-  background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-}
 
 
 
