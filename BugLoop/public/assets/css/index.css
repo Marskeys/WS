@@ -348,6 +348,63 @@ form button:hover {
 .mobile-board-list {
 }
 
+.mobile-board-list {
+  display: block;
+  padding: 0rem 0.1rem;
+  margin-top: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 3;
+}
+
+.mobile-post-item {
+  box-sizing: border-box;
+  padding-left: 0rem;
+  padding-right: 0rem;
+  width: 100%;
+  position: relative;
+  padding: 0.3rem 0;
+}
+
+.mobile-post-item::after {
+  content: '';
+  position: absolute;
+  left: 0rem;
+  right: 0rem;
+  bottom: 0;
+  height: 0.5px;
+  background-color: #870000;
+}
+
+html.dark .mobile-post-item::after{
+  background-color: #ddd;
+}
+
+.mobile-post-item .post-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.1rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-post-item .post-title:hover {
+  color: #a26bff;
+  text-decoration: underline;
+}
+
+.mobile-post-item .post-info {
+  font-size: 0.7rem;
+  color: #777;
+}
+
 @media (max-width: 640px) {
 
   .full-layout {
@@ -382,62 +439,7 @@ form button:hover {
     display: none;
   }
 
-  .mobile-board-list {
-    display: block;
-    padding: 0rem 0.1rem;
-    margin-top: 1rem;
-    box-sizing: border-box;
-    width: 100%;
-    overflow-x: hidden;
-    position: relative;
-    z-index: 3;
-  }
-
-  .mobile-post-item {
-    box-sizing: border-box;
-    padding-left: 0rem;
-    padding-right: 0rem;
-    width: 100%;
-    position: relative;
-    padding: 0.3rem 0;
-  }
-
-  .mobile-post-item::after {
-    content: '';
-    position: absolute;
-    left: 0rem;
-    right: 0rem;
-    bottom: 0;
-    height: 0.5px;
-    background-color: #870000;
-  }
-
-  html.dark .mobile-post-item::after{
-    background-color: #ddd;
-  }
-
-  .mobile-post-item .post-title {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #333;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 0.1rem;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .mobile-post-item .post-title:hover {
-    color: #a26bff;
-    text-decoration: underline;
-  }
-
-  .mobile-post-item .post-info {
-    font-size: 0.7rem;
-    color: #777;
-  }
+ 
 }
 
 /* ============================
