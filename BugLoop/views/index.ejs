@@ -27,12 +27,6 @@
         </nav>
       </aside>
 
-      <div class="vscode-tab-panels">
-        <div class="tab-panel" id="panel-explorer">📁 탐색기 내용</div>
-        <div class="tab-panel" id="panel-search">🔍 검색 내용</div>
-        <div class="tab-panel" id="panel-git">🧬 깃 관련 내용</div>
-      </div>
-
       <div class="main-layout">
         <div class="main-panel">
           <div class="cherry-container">
@@ -395,32 +389,7 @@
       });
     </script>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const sidebarIcons = document.querySelectorAll(".sidebar-icon");
-    const panels = document.querySelectorAll(".tab-panel");
-    const tabPanelContainer = document.querySelector(".vscode-tab-panels");
-
-    sidebarIcons.forEach(icon => {
-      icon.addEventListener("click", e => {
-        e.preventDefault();
-        const panelName = icon.dataset.panel;
-
-        // 모든 패널 숨김
-        panels.forEach(p => p.classList.remove("active"));
-        sidebarIcons.forEach(i => i.classList.remove("active"));
-
-        // 현재 선택된 패널 표시
-        const targetPanel = document.getElementById(`panel-${panelName}`);
-        if (targetPanel) {
-          targetPanel.classList.add("active");
-          icon.classList.add("active");
-          tabPanelContainer.style.display = "flex";
-        }
-      });
-    });
-  });
-</script>
+    
 
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
