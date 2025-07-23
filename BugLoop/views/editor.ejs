@@ -72,78 +72,78 @@
           />
         </div>
 
-        <div class="toolbar">
+        <div class="toolbar" data-lang-toolbar="<%= code %>">
           <div class="dropdown">
-            <div class="dropdown-toggle" id="currentStyle_<%= code %>" onclick="toggleDropdown()">본문 ▼</div>
-            <div class="dropdown-menu" id="styleDropdown">
-              <div class="h1" onclick="applyStyle('h1')">제목</div>
-              <div class="h2" onclick="applyStyle('h2')">부제목</div>
-              <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
-              <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
-              <div class="p" onclick="applyStyle('p')">본문</div>
-              <div class="desc" onclick="applyStyle('small')">설명</div>
-              <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
-              <div class="label" onclick="applyStyle('span')">레이블</div>
-              <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
+            <div class="dropdown-toggle" data-style-toggle="<%= code %>">본문 ▼</div>
+            <div class="dropdown-menu" data-style-dropdown="<%= code %>">
+              <div class="h1" data-style-command="h1">제목</div>
+              <div class="h2" data-style-command="h2">부제목</div>
+              <div class="h3" data-style-command="h3">머리말 1</div>
+              <div class="red" data-style-command="h4">빨간 머리말</div>
+              <div class="p" data-style-command="p">본문</div>
+              <div class="desc" data-style-command="small">설명</div>
+              <div class="meta" data-style-command="footer">머리말 및 꼬리말</div>
+              <div class="label" data-style-command="span">레이블</div>
+              <div class="label label-bold" data-style-command="strong">진한 레이블</div>
             </div>
           </div>
-          <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
-          <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
-          <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
-          <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
-          <button onclick="format('strikeThrough')" data-tooltip="취소선"><s>S</s></button>
-          <button onclick="format('justifyLeft')" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
-          <button onclick="format('justifyCenter')" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
-          <button onclick="format('justifyRight')" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
-          <button onclick="format('insertOrderedList')" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
-          <button onclick="format('insertUnorderedList')" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
-          <button onclick="format('outdent')" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
-          <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
-          <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
-          <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
+          <button data-command="insertTOC" data-tooltip="목차 삽입">📑 목차</button>
+          <button data-command="bold" data-tooltip="굵게"><b>B</b></button>
+          <button data-command="italic" data-tooltip="기울이기"><i>I</i></button>
+          <button data-command="underline" data-tooltip="밑줄"><u>U</u></button>
+          <button data-command="strikeThrough" data-tooltip="취소선"><s>S</s></button>
+          <button data-command="justifyLeft" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
+          <button data-command="justifyCenter" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
+          <button data-command="justifyRight" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
+          <button data-command="insertOrderedList" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
+          <button data-command="insertUnorderedList" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
+          <button data-command="outdent" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
+          <button data-command="indent" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
+          <button data-command="createLink" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
+          <button data-command="unlink" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
           
-          <div class="color-tool" id="foreTool">
-            <button id="foreColorBtn" data-tooltip="글자 색상" onmousedown="saveSelection()">
-              <i class="fas fa-pencil-alt" id="foreIcon"></i>
+          <div class="color-tool" data-color-tool="foreColor">
+            <button data-color-btn="foreColor" data-tooltip="글자 색상">
+              <i class="fas fa-pencil-alt"></i>
             </button>
-            <div class="color-palette" id="forePalette">
-              <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
-              <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
-              <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
-              <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
-              <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
-              <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
+            <div class="color-palette" data-color-palette="foreColor">
+              <button style="background:black" data-color-value="black"></button>
+              <button style="background:red" data-color-value="red"></button>
+              <button style="background:orange" data-color-value="orange"></button>
+              <button style="background:green" data-color-value="green"></button>
+              <button style="background:blue" data-color-value="blue"></button>
+              <button class="none-icon" data-color-value="__clear__" title="색 없음"></button>
               <label class="custom-color">
-                🎨<input type="color" onchange="setColor('foreColor', this.value)" />
+                🎨<input type="color" data-color-input="foreColor" />
               </label>
             </div>
           </div>
           
-          <div class="color-tool" id="bgTool">
-            <button id="bgColorBtn" data-tooltip="배경 색상" onmousedown="saveSelection()">
-              <i class="fas fa-fill-drip" id="bgIcon"></i>
+          <div class="color-tool" data-color-tool="hiliteColor">
+            <button data-color-btn="hiliteColor" data-tooltip="배경 색상">
+              <i class="fas fa-fill-drip"></i>
             </button>
-            <div class="color-palette" id="bgPalette">
-              <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
-              <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
-              <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
-              <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
-              <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
-              <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
+            <div class="color-palette" data-color-palette="hiliteColor">
+              <button style="background:yellow" data-color-value="yellow"></button>
+              <button style="background:lightblue" data-color-value="lightblue"></button>
+              <button style="background:lightgreen" data-color-value="lightgreen"></button>
+              <button style="background:pink" data-color-value="pink"></button>
+              <button style="background:#ccc" data-color-value="#ccc"></button>
+              <button class="none-icon" data-color-value="__clear__" title="색 없음"></button>
               <label class="custom-color">
-                🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
+                🎨<input type="color" data-color-input="hiliteColor" />
               </label>
             </div>
           </div>
-          <button onclick="openHtmlPopup()" data-tooltip="HTML 삽입"><i class="fas fa-code"></i></button> 
-          <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-          <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
+          <button data-command="openHtmlPopup" data-tooltip="HTML 삽입"><i class="fas fa-code"></i></button> 
+          <button data-command="insertImage" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
+          <button data-command="removeFormat" data-tooltip="형식 제거">지우기</button>
         </div>
     
         <% if (user && Number(user.is_admin) === 1) { %>
         <div class="mode-toggle">
-          <button onclick="switchToDesignMode()">디자인 모드</button>
-          <button onclick="switchToHtmlMode()">HTML 모드</button>
+          <button data-mode-toggle="design">디자인 모드</button>
+          <button data-mode-toggle="html">HTML 모드</button>
         </div>
         <% } %>
         
@@ -214,6 +214,7 @@
 
     let currentActiveEditor = null; // 현재 활성 디자인 모드 에디터 div 엘리먼트
     let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea 엘리먼트
+    let currentActiveToolbar = null; // 현재 활성 툴바 div 엘리먼트 (새로 추가)
 
     const langList = [
         { code: 'ko', label: '한국어' },
@@ -386,7 +387,7 @@
         }
       
       function format(command, value = null) {
-          if (!currentActiveEditor) return;
+          if (!currentActiveEditor) return; // 활성 에디터가 없으면 반환
           currentActiveEditor.focus();
           document.execCommand("styleWithCSS", false, false);
           document.execCommand(command, false, value);
@@ -394,7 +395,7 @@
       }
 
       function applyStyle(tag) {
-        if (!currentActiveEditor) return;
+        if (!currentActiveEditor) return; // 활성 에디터가 없으면 반환
         const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
 
         restoreSelection();
@@ -443,13 +444,15 @@
       }
 
       function toggleDropdown() {
-          const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
-          if (styleDropdown) {
-              styleDropdown.classList.toggle('show');
-          }
+        if (!currentActiveToolbar) return;
+        const styleDropdown = currentActiveToolbar.querySelector('.dropdown-menu');
+        if (styleDropdown) {
+            styleDropdown.classList.toggle('show');
+        }
       }
 
       function updateCurrentStyle(tagName) {
+          if (!currentActiveToolbar) return;
           const labelMap = {
               h1: "제목",
               h2: "부제목",
@@ -462,7 +465,7 @@
               strong: "진한 레이블"
           };
           const label = labelMap[tagName.toLowerCase()] || tagName;
-          const currentStyleToggle = currentActiveEditor.closest('.lang-meta-block').querySelector('.dropdown-toggle');
+          const currentStyleToggle = currentActiveToolbar.querySelector('.dropdown-toggle');
           if (currentStyleToggle) {
               currentStyleToggle.innerText = `${label} ▼`;
           }
@@ -492,10 +495,11 @@
 
       function saveSelection() {
           const sel = window.getSelection();
+          // 현재 활성 에디터 내에서만 Selection을 저장
           if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
               savedRange = sel.getRangeAt(0).cloneRange();
           } else {
-              savedRange = null;
+              savedRange = null; // 현재 활성 에디터 밖의 Selection은 무시
           }
       }
 
@@ -515,16 +519,25 @@
         const range = sel.getRangeAt(0);
 
         if (color === "__clear__") {
-          const contents = range.cloneContents();
-          const spans = contents.querySelectorAll("span");
-
+          // 선택 영역 내에서 특정 스타일 제거 (span 태그를 찾아 style 속성 제거)
+          const tempDiv = document.createElement('div');
+          tempDiv.appendChild(range.extractContents());
+          
+          const spans = tempDiv.querySelectorAll("span");
           spans.forEach(span => {
-            if (command === 'foreColor') span.style.color = '';
-            else if (command === 'hiliteColor') span.style.backgroundColor = '';
+            if (command === 'foreColor') {
+              span.style.color = '';
+              if (!span.style.backgroundColor && !span.style.color && !span.classList.length) { // 다른 스타일이 없으면 span 제거
+                span.outerHTML = span.innerHTML;
+              }
+            } else if (command === 'hiliteColor') {
+              span.style.backgroundColor = '';
+              if (!span.style.backgroundColor && !span.style.color && !span.classList.length) { // 다른 스타일이 없으면 span 제거
+                span.outerHTML = span.innerHTML;
+              }
+            }
           });
-
-          range.deleteContents();
-          range.insertNode(contents);
+          range.insertNode(tempDiv.firstChild); // 첫 번째 자식을 다시 삽입
           return;
         }
 
@@ -636,7 +649,6 @@
               if (onInput) onInput(inputValue);
           };
           document.getElementById('inputCancelBtn').onclick = () => {
-              const inputValue = document.getElementById('customInput').value;
               modal.style.display = 'none';
               if (onInput) onInput(null);
           };
@@ -644,17 +656,45 @@
       }
 
       window.onclick = function(e) {
-          if (!e.target.matches('.dropdown-toggle')) {
-              const dropdowns = document.getElementsByClassName('dropdown-menu');
-              for (let d of dropdowns) {
-                  if (d.classList.contains('show')) {
-                      d.classList.remove('show');
-                  }
+          // 모든 드롭다운 메뉴를 닫음 (툴바에 관계없이)
+          const dropdowns = document.querySelectorAll('.dropdown-menu');
+          dropdowns.forEach(d => {
+              if (d.classList.contains('show') && !e.target.closest('.dropdown')) {
+                  d.classList.remove('show');
               }
-          }
+          });
       };
 
-      window.onload = () => {
+      function activateEditor(langCode) {
+          // 모든 언어 블록 숨기기
+          document.querySelectorAll('.lang-meta-block').forEach(block => {
+              block.style.display = 'none';
+          });
+
+          // 선택된 언어 블록 보이기
+          const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
+          if (activeLangBlock) {
+              activeLangBlock.style.display = '';
+
+              const editorDiv = document.getElementById(`editor_${langCode}`);
+              const htmlEditorDiv = document.getElementById(`htmlEditor_${langCode}`);
+              const toolbarDiv = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+
+              currentActiveEditor = editorDiv;
+              currentActiveHtmlEditor = htmlEditorDiv;
+              currentActiveToolbar = toolbarDiv; // 활성 툴바 설정
+
+              if (editorDiv) {
+                  editorDiv.style.display = 'block'; // 디자인 모드 기본 활성화
+                  htmlEditorDiv.style.display = 'none'; // HTML 모드 비활성화
+                  editorDiv.focus();
+                  detectStyle();
+              }
+          }
+      }
+
+
+      window.addEventListener('DOMContentLoaded', () => { // DOMContentLoaded로 변경하여 DOM이 완전히 로드된 후 스크립트 실행 보장
           // 카테고리 불러오기 및 렌더링
           fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
             .then(res => res.json())
@@ -668,28 +708,11 @@
               renderCategories();
             });
 
-          // 언어 선택 드롭다운 초기값 설정 (currentLang에 따라)
+          // 언어 선택 드롭다운 초기값 설정
           document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
 
           // 페이지 로드 시 현재 언어 (lang) 에디터를 활성화
-          const initialEditor = document.getElementById(`editor_${CURRENT_PAGE_LANG}`);
-          const initialHtmlEditor = document.getElementById(`htmlEditor_${CURRENT_PAGE_LANG}`);
-          
-          if (initialEditor) {
-              initialEditor.style.display = 'block'; 
-              currentActiveEditor = initialEditor; 
-              currentActiveHtmlEditor = initialHtmlEditor;
-              initialEditor.focus();
-              detectStyle(); 
-          } else { 
-              currentActiveEditor = document.querySelector('.language-editor');
-              if (currentActiveEditor) {
-                currentActiveHtmlEditor = document.getElementById(`htmlEditor_${currentActiveEditor.dataset.langEditor}`);
-                currentActiveEditor.style.display = 'block';
-                currentActiveEditor.focus();
-                detectStyle();
-              }
-          }
+          activateEditor(CURRENT_PAGE_LANG);
 
           // 모든 언어 에디터에 이벤트 리스너 추가
           const languageEditors = document.querySelectorAll('.language-editor');
@@ -700,200 +723,242 @@
               editor.addEventListener('keyup', saveSelection);
               editor.addEventListener('focus', () => {
                   const langCode = editor.dataset.langEditor;
-                  document.getElementById('langSelector').value = langCode;
-
-                  document.querySelectorAll('.lang-meta-block').forEach(block => {
-                      if (block.dataset.lang === langCode) {
-                          block.style.display = '';
-                      } else {
-                          block.style.display = 'none';
-                          const otherEditorDiv = document.getElementById(`editor_${block.dataset.lang}`);
-                          const otherHtmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
-                          if (otherEditorDiv) otherEditorDiv.style.display = 'none';
-                          if (otherHtmlEditorDiv) otherHtmlEditorDiv.style.display = 'none';
-                      }
-                  });
-
+                  // 현재 활성화된 에디터와 툴바를 업데이트합니다.
                   currentActiveEditor = editor;
                   currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
+                  currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
                   
-                  // 포커스 시 HTML 모드였다면 디자인 모드로 자동 전환
+                  // 포커스 시 HTML 모드였다면 디자인 모드로 자동 전환 (현재 언어 블록만 해당)
                   if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
-                      switchToDesignMode(); // code 파라미터 없이 호출
+                      switchToDesignMode(); 
                   }
                   detectStyle();
               });
           });
 
-          // 툴바 버튼 이벤트 리스너 추가 (선택 영역 저장)
-          const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
-          toolbarButtons.forEach(button => {
-              button.addEventListener('mousedown', saveSelection);
+          // 툴바 버튼 이벤트 리스너 동적 할당
+          document.querySelectorAll('.toolbar').forEach(toolbar => {
+            toolbar.addEventListener('click', (event) => {
+              const button = event.target.closest('button[data-command], .dropdown-toggle');
+              if (!button) return;
+
+              saveSelection(); // 명령 실행 전에 현재 선택 영역 저장
+
+              const command = button.dataset.command;
+              const styleCommand = button.dataset.styleCommand;
+
+              if (command) {
+                switch (command) {
+                  case 'insertTOC':
+                    insertTOC();
+                    break;
+                  case 'createLink':
+                    showCustomInput("링크 URL을 입력하세요:", (url) => {
+                      if (url) format('createLink', url);
+                    });
+                    break;
+                  case 'insertImage':
+                    insertImage();
+                    break;
+                  case 'openHtmlPopup':
+                    // openHtmlPopup 함수는 별도로 구현 필요 (현재 코드에 없음)
+                    // 필요하다면 여기서 구현하거나 showCustomInput 등을 활용
+                    showCustomMessage("HTML 삽입 기능은 현재 구현되지 않았습니다.");
+                    break;
+                  case 'removeFormat':
+                    format('removeFormat');
+                    break;
+                  default:
+                    format(command);
+                    break;
+                }
+              } else if (styleCommand) {
+                applyStyle(styleCommand);
+              } else if (button.classList.contains('dropdown-toggle')) {
+                toggleDropdown();
+              }
+            });
+
+            // 색상 선택 버튼 및 팔레트 이벤트 리스너
+            toolbar.querySelectorAll('[data-color-btn]').forEach(btn => {
+                btn.addEventListener('mousedown', saveSelection); // mousedown 이벤트에서 selection 저장
+                btn.addEventListener('click', (e) => {
+                    const colorPalette = btn.closest('[data-color-tool]').querySelector('[data-color-palette]');
+                    if (colorPalette) {
+                        colorPalette.classList.toggle('show');
+                    }
+                    e.stopPropagation(); // 버튼 클릭 시 드롭다운 닫히지 않도록
+                });
+            });
+
+            toolbar.querySelectorAll('[data-color-palette] button').forEach(colorBtn => {
+                colorBtn.addEventListener('click', (e) => {
+                    const command = colorBtn.closest('[data-color-tool]').dataset.colorTool;
+                    const value = colorBtn.dataset.colorValue;
+                    setColor(command, value);
+                    e.target.closest('[data-color-palette]').classList.remove('show'); // 색 선택 후 팔레트 닫기
+                });
+            });
+
+            toolbar.querySelectorAll('[data-color-input]').forEach(colorInput => {
+                colorInput.addEventListener('change', (e) => {
+                    const command = colorInput.closest('[data-color-tool]').dataset.colorTool;
+                    setColor(command, e.target.value);
+                    e.target.closest('[data-color-palette]').classList.remove('show'); // 색 선택 후 팔레트 닫기
+                });
+            });
           });
-      };
+
+          // HTML/디자인 모드 토글 버튼 이벤트 리스너
+          document.querySelectorAll('[data-mode-toggle]').forEach(button => {
+            button.addEventListener('click', (event) => {
+              const mode = event.target.dataset.modeToggle;
+              if (mode === 'design') {
+                switchToDesignMode();
+              } else if (mode === 'html') {
+                switchToHtmlMode();
+              }
+            });
+          });
+      });
 
       function insertTOC() {
-  if (!currentActiveEditor) {
-    showCustomMessage("에디터가 활성화되지 않았습니다.");
-    return;
-  }
+        if (!currentActiveEditor) {
+            showCustomMessage("에디터가 활성화되지 않았습니다.");
+            return;
+        }
 
-  const blContentDiv = currentActiveEditor.querySelector('.bl-content');
+        const blContentDiv = currentActiveEditor.querySelector('.bl-content');
 
-  if (!blContentDiv) {
-    showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
-    return;
-  }
+        if (!blContentDiv) {
+            showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
+            return;
+        }
 
-  const headings = blContentDiv.querySelectorAll("h1, h2");
-  if (!headings.length) {
-    showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
-    return;
-  }
+        const headings = blContentDiv.querySelectorAll("h1, h2");
+        if (!headings.length) {
+            showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
+            return;
+        }
 
-  // 기존 목차 제거
-  const oldTOC = blContentDiv.querySelector(".auto-toc");
-  if (oldTOC) oldTOC.remove();
+        // 기존 목차 제거
+        const oldTOC = blContentDiv.querySelector(".auto-toc");
+        if (oldTOC) oldTOC.remove();
 
-  const tocWrapper = document.createElement("div");
-  tocWrapper.className = "auto-toc";
-  tocWrapper.contentEditable = "false";
+        const tocWrapper = document.createElement("div");
+        tocWrapper.className = "auto-toc";
+        tocWrapper.contentEditable = "false";
 
-  const tocTitle = document.createElement("strong");
-  tocTitle.className = "toc-title";
-  tocTitle.textContent = "📑 목차";
+        const tocTitle = document.createElement("strong");
+        tocTitle.className = "toc-title";
+        tocTitle.textContent = "📑 목차";
 
-  const tocList = document.createElement("ul");
-  tocList.className = "toc-list";
-  tocList.style.margin = "0";
-  tocList.style.padding = "0";
+        const tocList = document.createElement("ul");
+        tocList.className = "toc-list";
+        tocList.style.margin = "0";
+        tocList.style.padding = "0";
 
-  let h1Count = 0;
-  let h2Count = 0;
+        let h1Count = 0;
+        let h2Count = 0;
 
-  headings.forEach(el => {
-    const tag = el.tagName.toLowerCase();
-    let number = "";
+        headings.forEach(el => {
+            const tag = el.tagName.toLowerCase();
+            let number = "";
 
-    if (tag === "h1") {
-      h1Count++;
-      h2Count = 0;
-      number = `${h1Count}.`;
-    } else if (tag === "h2") {
-      h2Count++;
-      number = `${h1Count}.${h2Count}`;
-    }
+            if (tag === "h1") {
+            h1Count++;
+            h2Count = 0;
+            number = `${h1Count}.`;
+            } else if (tag === "h2") {
+            h2Count++;
+            number = `${h1Count}.${h2Count}`;
+            }
 
-    // ID 부여 (기존 ID 무시하고 항상 재생성)
-    const id = `toc-${number.replace(/\./g, "-")}`;
-    el.id = id;
+            // ID 부여 (기존 ID 무시하고 항상 재생성)
+            const id = `toc-${number.replace(/\./g, "-")}`;
+            el.id = id;
 
-    const li = document.createElement("li");
-    li.className = `toc-item toc-${tag}`;
+            const li = document.createElement("li");
+            li.className = `toc-item toc-${tag}`;
 
-    const a = document.createElement("a");
-    a.href = `#${id}`;
-    a.textContent = `${number} ${el.textContent.trim()}`;
-    a.onclick = function(e) {
-      e.preventDefault();
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    };
+            const a = document.createElement("a");
+            a.href = `#${id}`;
+            a.textContent = `${number} ${el.textContent.trim()}`;
+            a.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+            };
 
-    li.appendChild(a);
-    tocList.appendChild(li);
-  });
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
 
-  tocWrapper.appendChild(tocTitle);
-  tocWrapper.appendChild(tocList);
+        tocWrapper.appendChild(tocTitle);
+        tocWrapper.appendChild(tocList);
 
-  // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
-  blContentDiv.prepend(tocWrapper);
-}
-      // 수정된 switchToHtmlMode 함수: 현재 활성 에디터를 사용하도록 변경
+        // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
+        blContentDiv.prepend(tocWrapper);
+      }
+
       function switchToHtmlMode() {
-  const editorDiv = currentActiveEditor;
-  const htmlEditor = currentActiveHtmlEditor;
+        if (!currentActiveEditor || !currentActiveHtmlEditor || !currentActiveToolbar) {
+            console.error("HTML 모드 전환 실패: 활성 에디터 또는 툴바 없음");
+            return;
+        }
 
-  if (!editorDiv || !htmlEditor) {
-    console.error("HTML 모드 전환 실패: 활성 에디터 없음");
-    return;
-  }
+        let currentContent = currentActiveEditor.innerHTML.trim();
 
-  let currentContent = editorDiv.innerHTML.trim();
+        // ✅ bl-content로 감싸져 있는지 확인
+        const isWrapped = currentContent.startsWith('<div class="bl-content"');
 
-  // ✅ bl-content로 감싸져 있는지 확인
-  const isWrapped = currentContent.startsWith('<div class="bl-content"');
+        if (!isWrapped) {
+            // 빈 상태도 감싸기
+            if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
+                currentContent = '<p><br></p>';
+            }
 
-  if (!isWrapped) {
-    // 빈 상태도 감싸기
-    if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
-      currentContent = '<p><br></p>';
-    }
-
-    currentContent = `
+            currentContent = `
 <div class="bl-content" style="white-space:normal; line-height: 1.7;">
-  ${currentContent}
+${currentContent}
 </div>`.trim();
-  }
+        }
 
-  htmlEditor.value = html_beautify(currentContent, {
-    indent_size: 2,
-    wrap_attributes: 'auto',
-    indent_with_tabs: false
-  });
+        currentActiveHtmlEditor.value = html_beautify(currentContent, {
+            indent_size: 2,
+            wrap_attributes: 'auto',
+            indent_with_tabs: false
+        });
 
-  editorDiv.style.display = 'none';
-  htmlEditor.style.display = 'block';
-}
+        currentActiveEditor.style.display = 'none';
+        currentActiveHtmlEditor.style.display = 'block';
+        currentActiveToolbar.style.display = 'none'; // HTML 모드 시 툴바 숨기기 (선택 사항)
+      }
 
-      // 수정된 switchToDesignMode 함수: 현재 활성 에디터를 사용하도록 변경
       function switchToDesignMode() {
-  const editorDiv = currentActiveEditor;
-  const htmlEditor = currentActiveHtmlEditor;
+        if (!currentActiveEditor || !currentActiveHtmlEditor || !currentActiveToolbar) {
+            console.error("디자인 모드 전환 실패: 활성 에디터 또는 툴바 없음");
+            return;
+        }
 
-  if (!editorDiv || !htmlEditor) {
-    console.error("디자인 모드 전환 실패: 활성 에디터 없음");
-    return;
-  }
+        let rawHtml = currentActiveHtmlEditor.value.trim();
 
-  let rawHtml = htmlEditor.value.trim();
+        // ✅ bl-content 감싸기 누락 시 자동 추가
+        if (!rawHtml.startsWith('<div class="bl-content"')) {
+            rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
+        }
 
-  // ✅ bl-content 감싸기 누락 시 자동 추가
-  if (!rawHtml.startsWith('<div class="bl-content"')) {
-    rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
-  }
-
-  editorDiv.innerHTML = rawHtml;
-  htmlEditor.style.display = 'none';
-  editorDiv.style.display = 'block';
-  editorDiv.focus();
-  detectStyle();
-}
+        currentActiveEditor.innerHTML = rawHtml;
+        currentActiveHtmlEditor.style.display = 'none';
+        currentActiveEditor.style.display = 'block';
+        currentActiveToolbar.style.display = 'flex'; // 디자인 모드 시 툴바 보이기 (선택 사항)
+        currentActiveEditor.focus();
+        detectStyle();
+      }
 
       // 언어 선택 드롭다운 변경 이벤트
       document.getElementById('langSelector').addEventListener('change', function() {
           const selectedLang = this.value;
-          document.querySelectorAll('.lang-meta-block').forEach(block => {
-              if (block.dataset.lang === selectedLang) {
-                  block.style.display = ''; 
-                  const editorDiv = document.getElementById(`editor_${selectedLang}`);
-                  const htmlEditorDiv = document.getElementById(`htmlEditor_${selectedLang}`);
-                  if (editorDiv) {
-                      editorDiv.style.display = 'block';
-                      currentActiveEditor = editorDiv;
-                      currentActiveHtmlEditor = htmlEditorDiv;
-                      editorDiv.focus();
-                      detectStyle();
-                  }
-              } else {
-                  block.style.display = 'none';
-                  const editorDiv = document.getElementById(`editor_${block.dataset.lang}`);
-                  const htmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
-                  // 다른 언어 블록의 에디터와 HTML 에디터를 숨김
-                  if (editorDiv) editorDiv.style.display = 'none';
-                  if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
-              }
-          });
+          activateEditor(selectedLang);
       });
   </script>
 
