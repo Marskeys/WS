@@ -58,57 +58,7 @@
           </div>
 
           <div class="tab-content" data-tab="board" style="display: none;">
-            <div class="mobile-board-list">
-              <% posts.forEach(post => { %>
-                <div class="mobile-post-item">
-                  <div class="post-title-and-actions">
-                    <a href="/<%= lang %>/post/<%= post.id %>"
-                      class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
-                      data-post-id="<%= post.id %>"
-                      data-is-private="<%= post.is_private ? '1' : '0' %>"
-                      data-post-user-id="<%= post.user_id %>">
-                      <%
-                      const now = new Date();
-                      const createdAt = new Date(post.created_at);
-                      const updatedAt = new Date(post.updated_at);
-                    
-                      const oneDay = 1000 * 60 * 60 * 24;
-                      const isNew = (now - createdAt) < oneDay;
-                      const isEdited = !isNew && (updatedAt > createdAt);
-                    %>
-                    
-                    <% if (isNew) { %>
-                      <span class="label-icon new-icon"></span>
-                    <% } else if (isEdited) { %>
-                      <span class="label-icon edited-icon"></span>
-                    <% } %>
-          
-                    <% if (post.is_pinned) { %><span>📌</span><% } %>
-                      <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
-                    </a>
-  
-                    <% if (user && user.id === post.user_id) { %>
-                      <div class="action-icons">
-                        <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                          <i class="fas fa-pen"></i>
-                        </a>
-                        <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                          <button type="submit" class="icon-btn delete-btn" title="삭제">
-                            <i class="fas fa-trash"></i>
-                          </button>
-                        </form>
-                      </div>
-                    <% } %>
-                  </div>
-                  <div class="post-info">
-                    <%= post.author %> |
-                    <%= post.created_at.toISOString().slice(0, 10) %> |
-                    <%= locale.tableHeaders.views %> <%= post.views %> |
-                    <%= post.translated_categories_display.join(', ') %>
-                  </div>
-                </div>
-              <% }) %>
-            </div>
+            <%- include('partials/table') %>
           </div>
 
           <div class="tab-content" data-tab="search" style="display: none;">
