@@ -1,5 +1,7 @@
 .sidebar-icon {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 12px 0;
     color: white;
     text-align: center;
@@ -12,9 +14,17 @@
   
   .sidebar-icon:hover,
   .sidebar-icon.active {
-    color: var(--highlight-color, #00adb5); /* 원하는 강조 색 */
-    background: none; /* 배경 없애기 */
+    color: var(--highlight-color, #00adb5);
+    background: transparent;
   }
+  
+  /* 👇 아이콘 내부 <i> 태그도 배경 제거해야 함 */
+  .sidebar-icon i {
+    background: none !important;
+    outline: none;
+    box-shadow: none;
+  }
+  
 
   .tab-content {
     display: none;
