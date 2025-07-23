@@ -12,40 +12,30 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // ✨ 다양한 웹개발 용어 모음
     const webTerms = [
-      // HTML
-      "<!DOCTYPE html>", "<html>", "<head>", "<body>", "<div>", "<span>", "<a>", "<img>", "<form>", "<input>", "<button>", "<ul>", "<li>", "<table>", "<thead>", "<tbody>", "<tr>", "<td>", "<script>", "<link>", "<meta>", "</html>",
-
-      // CSS
-      "display: flex;", "justify-content: center;", "align-items: center;", "position: absolute;", "color: #fff;", "background-color: #000;", "margin: 0 auto;", "padding: 1rem;", "font-size: 16px;", "z-index: 1000;", "border-radius: 10px;",
-
-      // JS
-      "function()", "=>", "const", "let", "var", "if()", "else", "for()", "while()", "try{}", "catch()", "return", "async", "await", "fetch()", "setTimeout()", "document.querySelector()", "addEventListener()", "JSON.parse()", "localStorage.getItem()",
-
-      // SQL
-      "SELECT * FROM users;", "INSERT INTO table VALUES(...);", "UPDATE posts SET title='...';", "DELETE FROM comments;", "WHERE id = 1", "INNER JOIN", "LEFT JOIN", "CREATE TABLE users (...);", "DROP DATABASE;", "ALTER TABLE add column;",
-
-      // 서버 / 기타
-      "npm install", "node server.js", "express()", "res.send()", "req.params", "POST /login", "GET /api/users", "status(200)", "MongoDB", "Redis", "const app = express();", "require('fs')",
-
-      // 기타 키워드
-      "403 Forbidden", "404 Not Found", "200 OK", "500 Internal Server Error", "CORS policy", "OAuth 2.0", "JWT", "REST API", "GraphQL", "WebSocket", "CDN", "SEO", "DevTools"
+      "<html>", "<body>", "<a>", "<div>", "<script>", "<form>", "<input>", "<button>",
+      "display: flex;", "justify-content: center;", "background-color:", "font-size:",
+      "function()", "let", "const", "await fetch()", "JSON.parse()", "addEventListener()",
+      "SELECT * FROM users;", "INSERT INTO table;", "UPDATE posts", "DELETE FROM table;",
+      "POST /login", "GET /api", "express()", "res.send()", "status(200)",
+      "403 Forbidden", "404 Not Found", "JWT", "GraphQL", "WebSocket", "SEO"
     ];
 
     const fallingTerms = [];
-    const termCount = 90;
+    const termCount = 40; // 🌟 줄였음
 
     for (let i = 0; i < termCount; i++) {
       fallingTerms.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        speedY: 0.8 + Math.random() * 1.2,
+        speedY: 0.5 + Math.random() * 1.2,
         speedX: Math.random() * 0.4 - 0.2,
         angle: Math.random() * 360,
-        rotateSpeed: Math.random() * 0.8 - 0.4,
+        rotateSpeed: Math.random() * 0.6 - 0.3,
         text: webTerms[Math.floor(Math.random() * webTerms.length)],
-        fontSize: 8 + Math.random() * 4, // 🌟 작게 조정됨: 8 ~ 12px 사이
+        fontSize: 8 + Math.random() * 4,
+        opacity: 0, // 🌟 처음엔 투명
+        fadeInSpeed: 0.02 + Math.random() * 0.01 // 각자 페이드인 속도 다르게
       });
     }
 
@@ -55,9 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (let t of fallingTerms) {
+        // 🌟 페이드인
+        if (t.opacity < 1) {
+          t.opacity += t.fadeInSpeed;
+          if (t.opacity > 1) t.opacity = 1;
+        }
+
         ctx.save();
         ctx.translate(t.x, t.y);
         ctx.rotate((t.angle * Math.PI) / 180);
+        ctx.globalAlpha = t.opacity; // ✨ 여기서 투명도 적용
         ctx.font = `${t.fontSize}px monospace`;
         ctx.fillStyle = "#00ff66";
         ctx.fillText(t.text, 0, 0);
@@ -71,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
           t.y = -10;
           t.x = Math.random() * canvas.width;
           t.text = webTerms[Math.floor(Math.random() * webTerms.length)];
+          t.opacity = 0; // 🌟 다시 떨어질 땐 처음부터 페이드인
         }
       }
 
@@ -79,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawTerms();
 
-    // 🍔 햄버거 메뉴에서 일시 정지 & 재개
+    // 🍔 햄버거 메뉴 제어
     const hamburger = document.getElementById("hamburger-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
