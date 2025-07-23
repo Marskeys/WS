@@ -1,7 +1,7 @@
 /* ============================
-   🌸 체리 애니메이션
+   배경 애니메이션
 ============================ */
-.cherry-container {
+.matrix-container {
   position: fixed;
   width: 100%;
   height: calc(100vh - 100px);
@@ -9,7 +9,7 @@
   overflow: hidden;
 }
 
-#cherry-canvas {
+#matrix-canvas {
   position: absolute; /* ✅ fixed → absolute */
   top: 10px;          /* ✅ header 아래부터 시작 */
   left: 0;
@@ -68,13 +68,6 @@
 }
 
 
-
-
-/* ============================
-   🌬️ 캐릭터 애니메이션
-============================ */
-
-
 /* ============================
    🧱 전체 레이아웃
 ============================ */
@@ -104,6 +97,7 @@
 
 .main-panel {
   background-color: transparent;
+  left: 20vw;
   min-height: 100vh;
   flex-direction: column;
   padding: 0 0.5rem;
@@ -113,24 +107,6 @@
   max-width: calc(100vw - 400px);
 }
 
-.side-panel {
-  flex: 1;
-  max-width: 200px;
-  min-width: 200px;
-  background-color: transparent;
-  border-radius: 0;
-  min-height: 100vh;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
-  opacity: 0.95;
-  overflow: hidden;
-  padding: 0 0.5rem;
-  z-index: 8000;
-}
-
-.side-panel.right-panel-only {
-  flex-shrink: 0;
-  width: 200px;
-}
 
 /* ============================
    🧾 탭 + 게시판 (데스크탑)

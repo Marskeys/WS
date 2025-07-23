@@ -1,7 +1,7 @@
 let isCharRainPaused = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("cherry-canvas");
+  const canvas = document.getElementById("matrix-canvas");
   const ctx = canvas?.getContext("2d");
 
   if (canvas && ctx) {
