@@ -1,4 +1,23 @@
+/* ============================
+   🌸 체리 애니메이션
+============================ */
+.cherry-container {
+  position: fixed;
+  width: 100%;
+  height: calc(100vh - 100px);
+  margin-bottom: -100px; /* 검색창에 가까이 */
+  overflow: hidden;
+}
 
+#cherry-canvas {
+  position: absolute; /* ✅ fixed → absolute */
+  top: 10px;          /* ✅ header 아래부터 시작 */
+  left: 0;
+  width: 100vw;
+  height: 80vh;
+  z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
+  pointer-events: none;
+}
 
 /* ============================
    🔍 검색창 + 캐릭터 위치
