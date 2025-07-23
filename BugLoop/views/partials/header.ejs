@@ -16,62 +16,7 @@
     </div>
 
     <div class="right-controls">
-      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-        <div class="auth-buttons">
-          <% if (user) { %>
-            <% if (Number(user.is_admin) === 1) { %>
-              <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-              <a href="/<%= lang %>/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
-            <% } %>
-            <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
-          <% } else { %>
-            <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')">회원가입</a>
-            <button class="auth-btn login" id="login" type="button">로그인</button>
-          <% } %>
-        </div>
-      <% } %>
-
-      <div class="language-dropdown">
-        <button id="langToggle" class="lang-btn">
-          <%
-            let flagCode = lang;
-            switch(lang) {
-              case 'ko': flagCode = 'kr'; break;
-              case 'en': flagCode = 'gb'; break;
-              case 'zh': flagCode = 'cn'; break;
-              case 'ja': flagCode = 'jp'; break;
-              case 'fr': flagCode = 'fr'; break;
-              default: flagCode = 'kr';
-            }
-          %>
-          <span class="fi fi-<%= flagCode %>"></span>
-          <i class="fas fa-caret-down"></i>
-        </button>
-        <ul id="langMenu" class="lang-menu">
-          <%
-            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-          %>
-          <% supportedLangs.forEach(langCode => { %>
-            <li>
-              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                 class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
-                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-              </a>
-            </li>
-          <% }); %>
-        </ul>
       </div>
-
-      <div class="light-switch"
-           role="switch"
-           aria-checked="false"
-           aria-label="다크 모드 전환"
-           tabindex="0"
-           id="mode-toggle-accessible">
-        <span class="switch-label"><span class="switch-handle"></span></span>
-      </div>
-    </div>
   </div>
 
   <nav class="mobile-menu" id="mobile-menu">
@@ -98,14 +43,17 @@
         display: none;
       }
 
-      .auth-buttons {
+      /* auth-buttons는 이제 header-top에 없으므로 이 스타일은 필요 없거나,
+         새로운 위치에 맞게 조정해야 합니다. */
+      /* .auth-buttons {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         position: relative;
-      }
+      } */
 
-      .welcome-text {
+      /* welcome-text도 마찬가지로 조정 필요 */
+      /* .welcome-text {
         position: absolute;
         bottom: -1.2rem;
         top: 2.5rem;
@@ -115,7 +63,7 @@
         white-space: nowrap;
         color: #666;
         pointer-events: none;
-      }
+      } */
       /* 언어 선택 드롭다운 활성 언어 스타일 */
       .lang-option.active-lang {
         font-weight: bold;
@@ -152,24 +100,80 @@
 </script>
 
 </div> <aside class="side-panel main-panel-only">
-<div class="sidebar-wrapper">
-  <nav class="vscode-sidebar">
-    <a href="#" class="sidebar-icon" title="홈"><i class="fas fa-home"></i></a>
-    <a href="#" class="sidebar-icon" title="검색"><i class="fas fa-search"></i></a>
-    <a href="#" class="sidebar-icon" title="글쓰기"><i class="fas fa-pen"></i></a>
-    <a href="#" class="sidebar-icon" title="설정"><i class="fas fa-cog"></i></a>
-  </nav>
+  <div class="sidebar-wrapper">
+    <nav class="vscode-sidebar">
+      <a href="#" class="sidebar-icon" title="홈"><i class="fas fa-home"></i></a>
+      <a href="#" class="sidebar-icon" title="검색"><i class="fas fa-search"></i></a>
+      <a href="#" class="sidebar-icon" title="글쓰기"><i class="fas fa-pen"></i></a>
+      <a href="#" class="sidebar-icon" title="설정"><i class="fas fa-cog"></i></a>
+    </nav>
 
-  <div class="sidebar-extension-panel">
-    <h3>확장 패널</h3>
-    <ul>
-      <li><a href="#">도구1</a></li>
-      <li><a href="#">도구2</a></li>
-    </ul>
+    <div class="sidebar-extension-panel">
+      <h3>확장 패널</h3>
+      <ul>
+        <li><a href="#">도구1</a></li>
+        <li><a href="#">도구2</a></li>
+      </ul>
+
+      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+        <div class="auth-buttons" style="display: flex; flex-direction: column; gap: 10px; padding: 10px;">
+          <% if (user) { %>
+            <% if (Number(user.is_admin) === 1) { %>
+              <span class="welcome-text" style="font-size: 0.85rem; color: #aaa; text-align: center;"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+              <a href="/<%= lang %>/write" class="auth-btn write-post" style="width: 100%; text-align: center;"> <i class="fas fa-pen"></i> 글쓰기</a>
+            <% } %>
+            <a href="/<%= lang %>/logout" class="auth-btn logout" style="width: 100%; text-align: center;">로그아웃</a>
+          <% } else { %>
+            <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')" style="width: 100%; text-align: center;">회원가입</a>
+            <button class="auth-btn login" id="login" type="button" style="width: 100%; text-align: center;">로그인</button>
+          <% } %>
+        </div>
+      <% } %>
+
+      <div class="language-dropdown" style="padding: 10px; border-top: 1px solid #333; margin-top: 10px;">
+        <button id="langToggle" class="lang-btn" style="width: 100%; justify-content: space-between; display: flex; align-items: center; background: none; border: none; color: white; cursor: pointer; padding: 5px 0;">
+          <%
+            let flagCode = lang;
+            switch(lang) {
+              case 'ko': flagCode = 'kr'; break;
+              case 'en': flagCode = 'gb'; break;
+              case 'zh': flagCode = 'cn'; break;
+              case 'ja': flagCode = 'jp'; break;
+              case 'fr': flagCode = 'fr'; break;
+              default: flagCode = 'kr';
+            }
+          %>
+          <span class="fi fi-<%= flagCode %>"></span>
+          <i class="fas fa-caret-down"></i>
+        </button>
+        <ul id="langMenu" class="lang-menu" style="position: static; display: none; background: #444; border: none; box-shadow: none; padding: 5px 0;">
+          <%
+            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          %>
+          <% supportedLangs.forEach(langCode => { %>
+            <li>
+              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                 class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
+                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+              </a>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <div class="light-switch"
+           role="switch"
+           aria-checked="false"
+           aria-label="다크 모드 전환"
+           tabindex="0"
+           id="mode-toggle-accessible"
+           style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-top: 1px solid #333; margin-top: 10px; cursor: pointer; color: white;">
+        <span>다크 모드</span>
+        <span class="switch-label"><span class="switch-handle"></span></span>
+      </div>
+    </div>
   </div>
-</div>
 </aside>
 
-</div> ```
-
-위 코드로 다시 시도해보시고, 그래도 문제가 발생하면 다시 알려주세요. 오류 메시지와 함께 `header.ejs` 파일의 **현재 내용 전체**를 다시 공유해주시면 더 정확한 진단이 가능합니다.
+</div> 
