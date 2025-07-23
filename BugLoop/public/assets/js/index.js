@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas?.getContext("2d");
 
   if (canvas && ctx) {
-    // 캔버스 사이즈 초기화 및 반응형
     function resizeCanvas() {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -13,55 +12,74 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // 캐릭터들 초기화
-    const fallingChars = [];
-    const charCount = 80;
-    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    // ✨ 다양한 웹개발 용어 모음
+    const webTerms = [
+      // HTML
+      "<!DOCTYPE html>", "<html>", "<head>", "<body>", "<div>", "<span>", "<a>", "<img>", "<form>", "<input>", "<button>", "<ul>", "<li>", "<table>", "<thead>", "<tbody>", "<tr>", "<td>", "<script>", "<link>", "<meta>", "</html>",
 
-    for (let i = 0; i < charCount; i++) {
-      fallingChars.push({
+      // CSS
+      "display: flex;", "justify-content: center;", "align-items: center;", "position: absolute;", "color: #fff;", "background-color: #000;", "margin: 0 auto;", "padding: 1rem;", "font-size: 16px;", "z-index: 1000;", "border-radius: 10px;",
+
+      // JS
+      "function()", "=>", "const", "let", "var", "if()", "else", "for()", "while()", "try{}", "catch()", "return", "async", "await", "fetch()", "setTimeout()", "document.querySelector()", "addEventListener()", "JSON.parse()", "localStorage.getItem()",
+
+      // SQL
+      "SELECT * FROM users;", "INSERT INTO table VALUES(...);", "UPDATE posts SET title='...';", "DELETE FROM comments;", "WHERE id = 1", "INNER JOIN", "LEFT JOIN", "CREATE TABLE users (...);", "DROP DATABASE;", "ALTER TABLE add column;",
+
+      // 서버 / 기타
+      "npm install", "node server.js", "express()", "res.send()", "req.params", "POST /login", "GET /api/users", "status(200)", "MongoDB", "Redis", "const app = express();", "require('fs')",
+
+      // 기타 키워드
+      "403 Forbidden", "404 Not Found", "200 OK", "500 Internal Server Error", "CORS policy", "OAuth 2.0", "JWT", "REST API", "GraphQL", "WebSocket", "CDN", "SEO", "DevTools"
+    ];
+
+    const fallingTerms = [];
+    const termCount = 90;
+
+    for (let i = 0; i < termCount; i++) {
+      fallingTerms.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         speedY: 1 + Math.random() * 2,
-        speedX: Math.random() * 0.5 - 0.25,
+        speedX: Math.random() * 0.6 - 0.3,
         angle: Math.random() * 360,
         rotateSpeed: Math.random() * 1 - 0.5,
-        char: charset[Math.floor(Math.random() * charset.length)],
-        fontSize: 16 + Math.random() * 8,
+        text: webTerms[Math.floor(Math.random() * webTerms.length)],
+        fontSize: 12 + Math.random() * 10,
       });
     }
 
-    function drawCharacters() {
+    function drawTerms() {
       if (isCharRainPaused) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (let c of fallingChars) {
+      for (let t of fallingTerms) {
         ctx.save();
-        ctx.translate(c.x, c.y);
-        ctx.rotate((c.angle * Math.PI) / 180);
-        ctx.font = `bold ${c.fontSize}px monospace`;
-        ctx.fillStyle = "#00FF00"; // 매트릭스 느낌 초록색
-        ctx.fillText(c.char, 0, 0);
+        ctx.translate(t.x, t.y);
+        ctx.rotate((t.angle * Math.PI) / 180);
+        ctx.font = `bold ${t.fontSize}px monospace`;
+        ctx.fillStyle = "#00ff66";
+        ctx.fillText(t.text, 0, 0);
         ctx.restore();
 
-        c.y += c.speedY;
-        c.x += c.speedX;
-        c.angle += c.rotateSpeed;
+        t.y += t.speedY;
+        t.x += t.speedX;
+        t.angle += t.rotateSpeed;
 
-        if (c.y > canvas.height || c.x < -20 || c.x > canvas.width + 20) {
-          c.y = -10;
-          c.x = Math.random() * canvas.width;
-          c.char = charset[Math.floor(Math.random() * charset.length)];
+        if (t.y > canvas.height || t.x < -300 || t.x > canvas.width + 300) {
+          t.y = -10;
+          t.x = Math.random() * canvas.width;
+          t.text = webTerms[Math.floor(Math.random() * webTerms.length)];
         }
       }
 
-      requestAnimationFrame(drawCharacters);
+      requestAnimationFrame(drawTerms);
     }
 
-    drawCharacters();
+    drawTerms();
 
-    // 메뉴 열릴 때 멈추고, 닫히면 다시 시작
+    // 🍔 햄버거 메뉴에서 일시 정지 & 재개
     const hamburger = document.getElementById("hamburger-btn");
     const mobileMenu = document.getElementById("mobile-menu");
     const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
@@ -87,10 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 200);
       } else {
         isCharRainPaused = false;
-        drawCharacters();
+        drawTerms();
       }
     });
   }
-
-  // 기존 캐릭터 애니메이션 및 기타 코드 유지...
 });
