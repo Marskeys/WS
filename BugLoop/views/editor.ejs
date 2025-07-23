@@ -707,6 +707,12 @@
               renderCategories();
             });
 
+               // 언어 선택 드롭다운 변경 이벤트
+      document.getElementById('langSelector').addEventListener('change', function() {
+          const selectedLang = this.value;
+          activateEditor(selectedLang);
+      });
+      
           // 언어 선택 드롭다운 초기값 설정
           document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
 
@@ -954,7 +960,7 @@ ${currentContent}
         detectStyle();
       }
 
-  
+   
   </script>
 
 <%- include('partials/footer') %>
