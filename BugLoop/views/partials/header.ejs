@@ -1,179 +1,211 @@
-<div class="full-header-container"> <div class="header-top">
-  <div class="top-controls">
-    <div class="left-controls">
-      <%
-      const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-      const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
-                       pathWithoutLang.startsWith('/post') ||
-                       pathWithoutLang.startsWith('/edit');
-    %>
+<div class="full-header-container">
+  <div class="header-top">
+    <div class="top-controls">
+      <div class="left-controls">
+        <%
+        const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+        const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+                        pathWithoutLang.startsWith('/post') ||
+                        pathWithoutLang.startsWith('/edit');
+        %>
 
-    <% if (showLogo) { %>
-      <a href="/<%= lang %>/" class="logo-link">
-        <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
-      </a>
-    <% } %>
+        <% if (showLogo) { %>
+          <a href="/<%= lang %>/" class="logo-link">
+            <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
+          </a>
+        <% } %>
+      </div>
+
+      <div class="right-controls"></div>
     </div>
 
-    <div class="right-controls">
-      </div>
+    <nav class="mobile-menu" id="mobile-menu"></nav>
+
+    <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
+      <form action="/login" method="POST" class="pop-up-form">
+        <input type="text" name="id" placeholder="아이디" required>
+        <input type="password" name="password" placeholder="비밀번호" required>
+        <button type="submit">로그인</button>
+
+        <div class="login-footer-links">
+          <small>
+            아직 회원이 아니세요? <a href="/<%= lang %>/signup">회원가입</a> <br>
+            비밀번호가 기억나지 않으신다면? <a href="/<%= lang %>/reset-password">비밀번호 찾기</a>
+          </small>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <nav class="mobile-menu" id="mobile-menu">
-  </nav>
+  <aside class="side-panel main-panel-only">
+    <div class="sidebar-wrapper">
+      <!-- 사이드바 아이콘 -->
+      <nav class="vscode-sidebar">
+        <a href="#" class="sidebar-icon active" data-tab="home" title="홈"><i class="fas fa-home"></i></a>
+        <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
+        <a href="#" class="sidebar-icon" data-tab="write" title="글쓰기"><i class="fas fa-pen"></i></a>
+        <a href="#" class="sidebar-icon" data-tab="settings" title="설정"><i class="fas fa-cog"></i></a>
+      </nav>
 
-  <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
-    <form action="/login" method="POST" class="pop-up-form">
-      <input type="text" name="id" placeholder="아이디" required>
-      <input type="password" name="password" placeholder="비밀번호" required>
-      <button type="submit">로그인</button>
+      <!-- 확장 패널 (탭 콘텐츠) -->
+      <div class="sidebar-extension-panel">
+        <div class="tab-content" data-tab="home">
+          <h3>홈 패널</h3>
+          <p>홈 관련 내용입니다.</p>
+        </div>
 
-      <div class="login-footer-links">
-        <small>
-          아직 회원이 아니세요? <a href="/<%= lang %>/signup">회원가입</a> <br>
-          비밀번호가 기억나지 않으신다면? <a href="/<%= lang %>/reset-password">비밀번호 찾기</a>
-        </small>
+        <div class="tab-content" data-tab="search" style="display: none;">
+          <h3>검색</h3>
+          <input type="text" placeholder="검색어를 입력하세요" style="width: 100%; padding: 5px;">
+        </div>
+
+        <div class="tab-content" data-tab="write" style="display: none;">
+          <h3>글쓰기</h3>
+          <button style="width: 100%;">새 글 작성</button>
+        </div>
+
+        <div class="tab-content" data-tab="settings" style="display: none;">
+          <h3>설정</h3>
+          <label><input type="checkbox"> 다크 모드</label>
+        </div>
+
+        <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+          <div class="auth-buttons" style="display: flex; flex-direction: column; gap: 10px; padding: 10px;">
+            <% if (user) { %>
+              <% if (Number(user.is_admin) === 1) { %>
+                <span class="welcome-text" style="font-size: 0.85rem; color: #aaa; text-align: center;"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+                <a href="/<%= lang %>/write" class="auth-btn write-post" style="width: 100%; text-align: center;"> <i class="fas fa-pen"></i> 글쓰기</a>
+              <% } %>
+              <a href="/<%= lang %>/logout" class="auth-btn logout" style="width: 100%; text-align: center;">로그아웃</a>
+            <% } else { %>
+              <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')" style="width: 100%; text-align: center;">회원가입</a>
+              <button class="auth-btn login" id="login" type="button" style="width: 100%; text-align: center;">로그인</button>
+            <% } %>
+          </div>
+        <% } %>
+
+        <!-- 언어 선택 -->
+        <div class="language-dropdown" style="padding: 10px; border-top: 1px solid #333; margin-top: 10px;">
+          <button id="langToggle" class="lang-btn" style="width: 100%; justify-content: space-between; display: flex; align-items: center; background: none; border: none; color: white; cursor: pointer; padding: 5px 0;">
+            <%
+              let flagCode = lang;
+              switch(lang) {
+                case 'ko': flagCode = 'kr'; break;
+                case 'en': flagCode = 'gb'; break;
+                case 'zh': flagCode = 'cn'; break;
+                case 'ja': flagCode = 'jp'; break;
+                case 'fr': flagCode = 'fr'; break;
+                default: flagCode = 'kr';
+              }
+            %>
+            <span class="fi fi-<%= flagCode %>"></span>
+            <i class="fas fa-caret-down"></i>
+          </button>
+          <ul id="langMenu" class="lang-menu" style="position: static; display: none; background: #444; border: none; box-shadow: none; padding: 5px 0;">
+            <%
+              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+            %>
+            <% supportedLangs.forEach(langCode => { %>
+              <li>
+                <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                   class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
+                  <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                </a>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+
+        <!-- 다크모드 스위치 -->
+        <div class="light-switch"
+             role="switch"
+             aria-checked="false"
+             aria-label="다크 모드 전환"
+             tabindex="0"
+             id="mode-toggle-accessible"
+             style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-top: 1px solid #333; margin-top: 10px; cursor: pointer; color: white;">
+          <span>다크 모드</span>
+          <span class="switch-label"><span class="switch-handle"></span></span>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </aside>
+</div>
 
-  <style>
-    @media (max-width: 640px) {
-      .desktop-menu {
-        display: none;
-      }
+<!-- 스타일 -->
+<style>
+  .sidebar-icon {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 
-      /* auth-buttons는 이제 header-top에 없으므로 이 스타일은 필요 없거나,
-         새로운 위치에 맞게 조정해야 합니다. */
-      /* .auth-buttons {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        position: relative;
-      } */
+  .sidebar-icon.active {
+    background-color: #444;
+    color: var(--highlight-color, #00adb5);
+  }
 
-      /* welcome-text도 마찬가지로 조정 필요 */
-      /* .welcome-text {
-        position: absolute;
-        bottom: -1.2rem;
-        top: 2.5rem;
-        right: -1rem;
-        margin-right: -3rem;
-        font-size: 0.75rem;
-        white-space: nowrap;
-        color: #666;
-        pointer-events: none;
-      } */
-      /* 언어 선택 드롭다운 활성 언어 스타일 */
-      .lang-option.active-lang {
-        font-weight: bold;
-        color: var(--highlight-color);
-      }
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content[style*="display: block"] {
+    display: block !important;
+  }
+
+  @media (max-width: 640px) {
+    .desktop-menu { display: none; }
+    .lang-option.active-lang {
+      font-weight: bold;
+      color: var(--highlight-color);
     }
-  </style>
+  }
+</style>
 
-  <script>
-    // 이 함수는 'url' 인자를 그대로 받아서 사용하므로, 호출하는 곳에서 언어 경로를 넣어줘야 합니다.
-    function delayNavigation(e, url) {
-      e.preventDefault();
-      setTimeout(() => {
-        window.location.href = url;
-      }, 100);
-    }
-  </script>
-
+<!-- 스크립트 -->
 <script>
+  // 탭 전환
   document.addEventListener('DOMContentLoaded', () => {
+    const icons = document.querySelectorAll('.sidebar-icon');
+    const contents = document.querySelectorAll('.tab-content');
+
+    icons.forEach(icon => {
+      icon.addEventListener('click', (e) => {
+        e.preventDefault();
+        const selectedTab = icon.dataset.tab;
+
+        contents.forEach(content => {
+          content.style.display = content.dataset.tab === selectedTab ? 'block' : 'none';
+        });
+
+        icons.forEach(i => i.classList.remove('active'));
+        icon.classList.add('active');
+      });
+    });
+
+    // 언어 선택 드롭다운
     const toggle = document.getElementById('langToggle');
     const menu = document.getElementById('langMenu');
 
-    toggle.addEventListener('click', () => {
+    toggle?.addEventListener('click', () => {
       menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     });
 
     document.addEventListener('click', (e) => {
-      if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+      if (!toggle?.contains(e.target) && !menu?.contains(e.target)) {
         menu.style.display = 'none';
       }
     });
   });
+
+  function delayNavigation(e, url) {
+    e.preventDefault();
+    setTimeout(() => {
+      window.location.href = url;
+    }, 100);
+  }
 </script>
-
-</div> <aside class="side-panel main-panel-only">
-  <div class="sidebar-wrapper">
-    <nav class="vscode-sidebar">
-      <a href="#" class="sidebar-icon" title="홈"><i class="fas fa-home"></i></a>
-      <a href="#" class="sidebar-icon" title="검색"><i class="fas fa-search"></i></a>
-      <a href="#" class="sidebar-icon" title="글쓰기"><i class="fas fa-pen"></i></a>
-      <a href="#" class="sidebar-icon" title="설정"><i class="fas fa-cog"></i></a>
-    </nav>
-
-    <div class="sidebar-extension-panel">
-      <h3>확장 패널</h3>
-      <ul>
-        <li><a href="#">도구1</a></li>
-        <li><a href="#">도구2</a></li>
-      </ul>
-
-      <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-        <div class="auth-buttons" style="display: flex; flex-direction: column; gap: 10px; padding: 10px;">
-          <% if (user) { %>
-            <% if (Number(user.is_admin) === 1) { %>
-              <span class="welcome-text" style="font-size: 0.85rem; color: #aaa; text-align: center;"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-              <a href="/<%= lang %>/write" class="auth-btn write-post" style="width: 100%; text-align: center;"> <i class="fas fa-pen"></i> 글쓰기</a>
-            <% } %>
-            <a href="/<%= lang %>/logout" class="auth-btn logout" style="width: 100%; text-align: center;">로그아웃</a>
-          <% } else { %>
-            <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')" style="width: 100%; text-align: center;">회원가입</a>
-            <button class="auth-btn login" id="login" type="button" style="width: 100%; text-align: center;">로그인</button>
-          <% } %>
-        </div>
-      <% } %>
-
-      <div class="language-dropdown" style="padding: 10px; border-top: 1px solid #333; margin-top: 10px;">
-        <button id="langToggle" class="lang-btn" style="width: 100%; justify-content: space-between; display: flex; align-items: center; background: none; border: none; color: white; cursor: pointer; padding: 5px 0;">
-          <%
-            let flagCode = lang;
-            switch(lang) {
-              case 'ko': flagCode = 'kr'; break;
-              case 'en': flagCode = 'gb'; break;
-              case 'zh': flagCode = 'cn'; break;
-              case 'ja': flagCode = 'jp'; break;
-              case 'fr': flagCode = 'fr'; break;
-              default: flagCode = 'kr';
-            }
-          %>
-          <span class="fi fi-<%= flagCode %>"></span>
-          <i class="fas fa-caret-down"></i>
-        </button>
-        <ul id="langMenu" class="lang-menu" style="position: static; display: none; background: #444; border: none; box-shadow: none; padding: 5px 0;">
-          <%
-            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-          %>
-          <% supportedLangs.forEach(langCode => { %>
-            <li>
-              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                 class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
-                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-              </a>
-            </li>
-          <% }); %>
-        </ul>
-      </div>
-
-      <div class="light-switch"
-           role="switch"
-           aria-checked="false"
-           aria-label="다크 모드 전환"
-           tabindex="0"
-           id="mode-toggle-accessible"
-           style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-top: 1px solid #333; margin-top: 10px; cursor: pointer; color: white;">
-        <span>다크 모드</span>
-        <span class="switch-label"><span class="switch-handle"></span></span>
-      </div>
-    </div>
-  </div>
-</aside>
-
-</div> 
