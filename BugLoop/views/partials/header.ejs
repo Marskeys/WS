@@ -66,38 +66,7 @@
             <label><input type="checkbox"> 다크 모드</label>
           </div>
 
-          <!-- 언어 선택 -->
-          <div class="language-dropdown" style="padding: 10px; border-top: 1px solid #333; margin-top: 10px;">
-            <button id="langToggle" class="lang-btn" style="width: 100%; justify-content: space-between; display: flex; align-items: center; background: none; border: none; color: white; cursor: pointer; padding: 5px 0;">
-              <%
-                let flagCode = lang;
-                switch(lang) {
-                  case 'ko': flagCode = 'kr'; break;
-                  case 'en': flagCode = 'gb'; break;
-                  case 'zh': flagCode = 'cn'; break;
-                  case 'ja': flagCode = 'jp'; break;
-                  case 'fr': flagCode = 'fr'; break;
-                  default: flagCode = 'kr';
-                }
-              %>
-              <span class="fi fi-<%= flagCode %>"></span>
-              <i class="fas fa-caret-down"></i>
-            </button>
-            <ul id="langMenu" class="lang-menu" style="position: static; display: none; background: #444; border: none; box-shadow: none; padding: 5px 0;">
-              <%
-                const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-              %>
-              <% supportedLangs.forEach(langCode => { %>
-                <li>
-                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                    class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
-                    <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                    <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-                  </a>
-                </li>
-              <% }); %>
-            </ul>
-          </div>
+       
         </div>
 
       <!-- 하단 고정 영역 -->
