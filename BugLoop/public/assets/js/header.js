@@ -1,13 +1,19 @@
- // 탭 전환
- document.addEventListener('DOMContentLoaded', () => {
+<script>
+  // 탭 전환
+  document.addEventListener('DOMContentLoaded', () => {
     const icons = document.querySelectorAll('.sidebar-icon');
     const contents = document.querySelectorAll('.tab-content');
 
     icons.forEach(icon => {
       icon.addEventListener('click', (e) => {
-        e.preventDefault();
         const selectedTab = icon.dataset.tab;
 
+        // "글쓰기" 버튼은 기본 동작 허용 (링크로 이동)
+        if (selectedTab === 'write') return;
+
+        e.preventDefault();
+
+        // 탭 전환 로직
         contents.forEach(content => {
           content.style.display = content.dataset.tab === selectedTab ? 'block' : 'none';
         });
@@ -32,9 +38,11 @@
     });
   });
 
+  // 딜레이 네비게이션 (회원가입 버튼용)
   function delayNavigation(e, url) {
     e.preventDefault();
     setTimeout(() => {
       window.location.href = url;
     }, 100);
   }
+</script>
