@@ -266,43 +266,40 @@
     box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
   }
 
-  /* ✅ 다크모드 토글 컨테이너 */
+/* ✅ 다크모드 토글 컨테이너 */
 .light-switch {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-end;
     padding: 10px;
     border-top: 1px solid #333;
     margin-top: 10px;
     cursor: pointer;
     color: white;
-    width: 60px;
-    height: 34px;
-    z-index: 999;
   }
   
   /* ✅ 스위치 트랙 */
   .switch-label {
-    width: 50px;
-    height: 24px;
+    width: 60px;
+    height: 30px;
     background-color: #888;
     border-radius: 999px;
     position: relative;
-    display: inline-block;
     transition: background-color 0.3s ease;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
   }
   
   /* ✅ 스위치 핸들 */
   .switch-handle {
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    border-radius: 50%;
     position: absolute;
-    top: 2px;
-    left: 2px;
-    transform: translateX(0);
-    transition: transform 0.3s ease;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(to bottom, #ffffff, #cccccc);
+    border-radius: 50%;
+    transition: left 0.3s ease, background 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   }
   
   /* ✅ 체크 상태일 때 */
@@ -311,11 +308,11 @@
   }
   
   .light-switch[aria-checked="true"] .switch-handle {
-    left: 29px;
+    left: 33px; /* 정확하게 이동 */
     background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
   }
   
-  /* ✅ 다크모드 적용 시 (선택사항) */
+  /* ✅ 다크모드 적용 시 */
   html.dark body .switch-label {
     background-color: #666;
   }
