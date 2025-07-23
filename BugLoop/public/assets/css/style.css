@@ -1,3 +1,34 @@
+.vscode-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #1e1e1e; /* VSCode 느낌 */
+  height: 100vh;
+  width: 50px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.sidebar-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ccc;
+  padding: 15px 0;
+  width: 100%;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-icon:hover {
+  background-color: #333;
+  color: #fff;
+}
+
 .author-box {
   display: flex;
   align-items: center;
