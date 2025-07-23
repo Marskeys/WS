@@ -120,14 +120,7 @@ html.dark body .switch-handle {
   background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
 }
 
-/* 캐릭터 SVG glow */
-html.dark body object#character-svg {
-  filter: brightness(1.0) contrast(1.0) drop-shadow(0 0 1px #a26eff);
-  transition: filter 0.1s ease;
-}
-#character-svg {
-  filter: saturate(0.95);
-}
+
 
 
 
@@ -210,7 +203,7 @@ html.dark body .main-panel {
 
 html.dark body .header-top {
   z-index: 9000;
-  background-color: #141433 !important;
+  background-color: transparent!important;
   border-bottom: none !important;
   box-shadow:
     0 3px 4px rgba(255, 215, 0, 0.1),
