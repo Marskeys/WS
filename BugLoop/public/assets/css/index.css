@@ -95,6 +95,11 @@
   margin: 0;
   flex-wrap: nowrap;
   min-width: 0;
+  margin-left: calc(var(--sidebar-width) + var(--extension-width));
+  width: calc(100% - (var(--sidebar-width) + var(--extension-width)));
+  box-sizing: border-box;
+  z-index: 1;
+  position: relative;
 }
 
 .main-panel {
