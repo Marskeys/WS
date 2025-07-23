@@ -140,11 +140,15 @@ app.post('/login', async (req, res) => {
   const { id, password } = req.body;
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
-    if (rows.length === 0) return res.status(401).json({ success: false, error: '존재하지 않는 아이디입니다.' });
+    if (rows.length === 0) {
+      return res.redirect('/login-fail'); // 실패 페이지 또는 에러 메시지 표시
+    }
 
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ success: false, error: '비밀번호가 일치하지 않습니다.' });
+    if (!match) {
+      return res.redirect('/login-fail'); // 비밀번호 틀림
+    }
 
     req.session.user = {
       id: user.user_id,
@@ -152,10 +156,10 @@ app.post('/login', async (req, res) => {
       is_admin: user.is_admin
     };
 
-    res.json({ success: true });
+    res.redirect(`/${req.body.lang || 'ko'}/`); // 로그인 성공 시 홈으로
   } catch (err) {
     console.error('로그인 오류:', err);
-    res.status(500).json({ success: false, error: '서버 오류입니다.' });
+    res.redirect('/login-fail'); // 서버 오류
   }
 });
 
