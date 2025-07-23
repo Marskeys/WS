@@ -44,9 +44,7 @@
         <a href="#" class="sidebar-icon" data-tab="settings" title="설정"><i class="fas fa-cog"></i></a>
       </nav>
 
-      <!-- 패널 전체 구성: 내용 + 하단 고정 -->
       <div class="sidebar-extension-panel">
-        <!-- 상단 콘텐츠 스크롤 영역 -->
         <div style="flex-grow: 1; overflow-y: auto;">
           <div class="tab-content" data-tab="home">
             <h3>홈 패널</h3>
@@ -57,9 +55,11 @@
             <h3>프로필</h3>
           </div>
 
-          <div class="tab-content" data-tab="board" style="display: none;">
-            <%- include('table') %>
-          </div>
+          <% if (typeof posts !== 'undefined') { %>
+            <div class="tab-content" data-tab="board" style="display: none;">
+              <%- include('table') %>
+            </div>
+          <% } %>
 
           <div class="tab-content" data-tab="search" style="display: none;">
             <h3>검색</h3>
@@ -75,77 +75,62 @@
             <h3>설정</h3>
             <label><input type="checkbox"> 다크 모드</label>
           </div>
-
-       
         </div>
 
-      <!-- 하단 고정 영역 -->
-<div style="border-top: 1px solid #444; padding: 10px;">
-  <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-    <div class="auth-buttons" style="display: flex; flex-direction: column; gap: 10px;">
-      <% if (user) { %>
-        <% if (Number(user.is_admin) === 1) { %>
-          <span class="welcome-text" style="font-size: 0.85rem; color: #aaa; text-align: center;"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-          <a href="/<%= lang %>/write" class="auth-btn write-post" style="width: 100%; text-align: center;"> <i class="fas fa-pen"></i> 글쓰기</a>
-        <% } %>
-        <a href="/<%= lang %>/logout" class="auth-btn logout" style="width: 100%; text-align: center;">로그아웃</a>
-      <% } else { %>
-        <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')" style="width: 100%; text-align: center;">회원가입</a>
-        <button class="auth-btn login" id="login" type="button" style="width: 100%; text-align: center;">로그인</button>
-      <% } %>
-    </div>
-  <% } %>
+        <div style="border-top: 1px solid #444; padding: 10px;">
+          <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+            <div class="auth-buttons" style="display: flex; flex-direction: column; gap: 10px;">
+              <% if (user) { %>
+                <% if (Number(user.is_admin) === 1) { %>
+                  <span class="welcome-text" style="font-size: 0.85rem; color: #aaa; text-align: center;"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
+                  <a href="/<%= lang %>/write" class="auth-btn write-post" style="width: 100%; text-align: center;"> <i class="fas fa-pen"></i> 글쓰기</a>
+                <% } %>
+                <a href="/<%= lang %>/logout" class="auth-btn logout" style="width: 100%; text-align: center;">로그아웃</a>
+              <% } else { %>
+                <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')" style="width: 100%; text-align: center;">회원가입</a>
+                <button class="auth-btn login" id="login" type="button" style="width: 100%; text-align: center;">로그인</button>
+              <% } %>
+            </div>
+          <% } %>
 
-  <!-- ✅ 언어 + 다크모드 한 줄에 -->
-  <div class="bottom-switch-row">
-     
-         <!-- 언어 선택 -->
-         <div class="language-dropdown">
-          <button id="langToggle" class="lang-btn">
-            <%
-              let flagCode = lang;
-              switch(lang) {
-                case 'ko': flagCode = 'kr'; break;
-                case 'en': flagCode = 'gb'; break;
-                case 'zh': flagCode = 'cn'; break;
-                case 'ja': flagCode = 'jp'; break;
-                case 'fr': flagCode = 'fr'; break;
-                default: flagCode = 'kr';
-              }
-            %>
-            <span class="fi fi-<%= flagCode %>"></span>
-            <i class="fas fa-caret-down"></i>
-          </button>
-          <ul id="langMenu" class="lang-menu">
-            <%
-              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-            %>
-            <% supportedLangs.forEach(langCode => { %>
-              <li>
-                <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
-                  <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-                </a>
-              </li>
-            <% }); %>
-          </ul>
+          <div class="bottom-switch-row">
+            <div class="language-dropdown">
+              <button id="langToggle" class="lang-btn">
+                <%
+                  let flagCode = lang;
+                  switch(lang) {
+                    case 'ko': flagCode = 'kr'; break;
+                    case 'en': flagCode = 'gb'; break;
+                    case 'zh': flagCode = 'cn'; break;
+                    case 'ja': flagCode = 'jp'; break;
+                    case 'fr': flagCode = 'fr'; break;
+                    default: flagCode = 'kr';
+                  }
+                %>
+                <span class="fi fi-<%= flagCode %>"></span>
+                <i class="fas fa-caret-down"></i>
+              </button>
+              <ul id="langMenu" class="lang-menu">
+                <%
+                  const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+                %>
+                <% supportedLangs.forEach(langCode => { %>
+                  <li>
+                    <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                      class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
+                      <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                      <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                    </a>
+                  </li>
+                <% }); %>
+              </ul>
+            </div>
+
+            <div class="light-switch" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0" id="mode-toggle-accessible">
+              <span class="switch-label"><span class="switch-handle"></span></span>
+            </div>
+          </div>
         </div>
-
-        <div class="light-switch"
-        role="switch"
-        aria-checked="false"
-        aria-label="다크 모드 전환"
-        tabindex="0"
-        id="mode-toggle-accessible">
-        <span class="switch-label"><span class="switch-handle"></span></span>
-      </div>
-
-    </div>
-
-  
-  </div>
-</div>
       </div>
     </div>
   </aside>
