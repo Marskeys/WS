@@ -88,56 +88,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🌸 벚꽃 애니메이션
-  if (canvas && ctx) {
-    function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
 
-    const petals = [];
-    const petalCount = 55;
-    for (let i = 0; i < petalCount; i++) {
-      petals.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: 4 + Math.random() * 2,
-        speedY: 0.4 + Math.random() * 0.7,
-        speedX: 0.1 + Math.random() * 0.4,
-        angle: Math.random() * 360,
-        rotateSpeed: Math.random() * 1.5 - 0.6,
-      });
-    }
-
-    function drawPetals() {
-      if (isPetalPaused) return;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let p of petals) {
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.angle * Math.PI) / 180);
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.bezierCurveTo(-p.size / 2, -p.size / 2, -p.size, p.size / 2, 0, p.size);
-        ctx.bezierCurveTo(p.size, p.size / 2, p.size / 2, -p.size / 2, 0, 0);
-        ctx.fillStyle = "#fddde6";
-        ctx.fill();
-        ctx.restore();
-
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.angle += p.rotateSpeed;
-
-        if (p.y > canvas.height || p.x > canvas.width + 20) {
-          p.y = -10;
-          p.x = Math.random() * canvas.width;
-        }
+  function drawPetals() {
+    if (isPetalPaused) return;
+  
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillStyle = "#fefefe";
+  
+    for (let p of petals) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.angle * Math.PI) / 180);
+      
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const randomChar = chars[Math.floor(Math.random() * chars.length)];
+      
+      ctx.fillText(randomChar, 0, 0);
+      ctx.restore();
+  
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.angle += p.rotateSpeed;
+  
+      if (p.y > canvas.height || p.x > canvas.width + 20) {
+        p.y = -10;
+        p.x = Math.random() * canvas.width;
       }
-      requestAnimationFrame(drawPetals);
     }
+  
+    requestAnimationFrame(drawPetals);
+  }
 
     drawPetals();
   }
