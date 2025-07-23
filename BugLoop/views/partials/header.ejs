@@ -40,6 +40,39 @@
         <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
         <a href="#" class="sidebar-icon" data-tab="write" title="글쓰기"><i class="fas fa-pen"></i></a>
         <a href="#" class="sidebar-icon" data-tab="settings" title="설정"><i class="fas fa-cog"></i></a>
+
+           <!-- 언어 선택 -->
+           <div class="language-dropdown">
+            <button id="langToggle" class="lang-btn">
+              <%
+                let flagCode = lang;
+                switch(lang) {
+                  case 'ko': flagCode = 'kr'; break;
+                  case 'en': flagCode = 'gb'; break;
+                  case 'zh': flagCode = 'cn'; break;
+                  case 'ja': flagCode = 'jp'; break;
+                  case 'fr': flagCode = 'fr'; break;
+                  default: flagCode = 'kr';
+                }
+              %>
+              <span class="fi fi-<%= flagCode %>"></span>
+              <i class="fas fa-caret-down"></i>
+            </button>
+            <ul id="langMenu" class="lang-menu">
+              <%
+                const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+              %>
+              <% supportedLangs.forEach(langCode => { %>
+                <li>
+                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                    class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
+                    <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                    <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                  </a>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
       </nav>
 
       <!-- 패널 전체 구성: 내용 + 하단 고정 -->
@@ -89,38 +122,7 @@
   <!-- ✅ 언어 + 다크모드 한 줄에 -->
   <div class="bottom-switch-row">
      
-         <!-- 언어 선택 -->
-         <div class="language-dropdown">
-          <button id="langToggle" class="lang-btn">
-            <%
-              let flagCode = lang;
-              switch(lang) {
-                case 'ko': flagCode = 'kr'; break;
-                case 'en': flagCode = 'gb'; break;
-                case 'zh': flagCode = 'cn'; break;
-                case 'ja': flagCode = 'jp'; break;
-                case 'fr': flagCode = 'fr'; break;
-                default: flagCode = 'kr';
-              }
-            %>
-            <span class="fi fi-<%= flagCode %>"></span>
-            <i class="fas fa-caret-down"></i>
-          </button>
-          <ul id="langMenu" class="lang-menu">
-            <%
-              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-            %>
-            <% supportedLangs.forEach(langCode => { %>
-              <li>
-                <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
-                  <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-                </a>
-              </li>
-            <% }); %>
-          </ul>
-        </div>
+      
 
     </div>
 
