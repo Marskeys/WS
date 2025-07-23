@@ -16,20 +16,6 @@
       </div>
       <div class="right-controls"></div>
     </div>
-
-    <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
-      <form action="/login" method="POST" class="pop-up-form">
-        <input type="text" name="id" placeholder="아이디" required>
-        <input type="password" name="password" placeholder="비밀번호" required>
-        <button type="submit">로그인</button>
-        <div class="login-footer-links">
-          <small>
-            아직 회원이 아니세요? <a href="/<%= lang %>/signup">회원가입</a> <br>
-            비밀번호가 기억나지 않으신다면? <a href="/<%= lang %>/reset-password">비밀번호 찾기</a>
-          </small>
-        </div>
-      </form>
-    </div>
   </div>
 
   <aside class="side-panel main-panel-only">
