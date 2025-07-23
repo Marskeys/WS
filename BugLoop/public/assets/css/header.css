@@ -17,8 +17,6 @@
     text-decoration: none; /* ✅ 밑줄 제거 */
   }
   
-
-
   .sidebar-icon:hover,
   .sidebar-icon.active {
     color: var(--highlight-color, #00adb5);
@@ -76,7 +74,7 @@
   }
   
   .vscode-sidebar {
-    width: 50px;
+    width: 500px;
     background-color: #1e1e1e;
     display: flex;
     flex-direction: column;
