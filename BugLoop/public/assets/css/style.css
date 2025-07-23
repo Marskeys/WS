@@ -1,3 +1,25 @@
+.custom-side-panel {
+  width: 200px;
+  background-color: #2c2f33;
+  color: white;
+  padding: 16px;
+  border-left: 1px solid #444;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+.custom-side-panel .panel-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.custom-side-panel .panel-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.custom-side-panel .panel-content li {
+  margin: 6px 0;
+}
 
 .vscode-sidebar {
   display: flex;
