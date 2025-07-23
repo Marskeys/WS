@@ -5,7 +5,15 @@
   box-sizing: border-box;
 } */
 
+.edit-body {
+  margin: 0;
+  padding: 0;
+}
 
+.editor-container {
+  margin-left: 80px; /* 사이드바 너비만큼 */
+  padding: 2rem;
+}
 /* <body> 태그 기본 스타일 - 패딩 문제 해결을 위해 0으로 설정 */
 body {
   margin: 0;
