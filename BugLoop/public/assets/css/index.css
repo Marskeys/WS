@@ -1,23 +1,4 @@
-/* ============================
-   🌸 체리 애니메이션
-============================ */
-.cherry-container {
-  position: fixed;
-  width: 100%;
-  height: calc(100vh - 100px);
-  margin-bottom: -100px; /* 검색창에 가까이 */
-  overflow: hidden;
-}
 
-#cherry-canvas {
-  position: absolute; /* ✅ fixed → absolute */
-  top: 10px;          /* ✅ header 아래부터 시작 */
-  left: 0;
-  width: 100vw;
-  height: 80vh;
-  z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
-  pointer-events: none;
-}
 
 /* ============================
    🔍 검색창 + 캐릭터 위치
@@ -67,36 +48,13 @@
   box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
 }
 
-.character-stand {
-  position: absolute;
-  bottom: 100%;
-  left: 20px;
-  transform: translateY(7px);
-  pointer-events: none;
-  z-index: 1000;
-}
 
-#character-svg {
-  width: 240px;
-  height: auto;
-}
 
-@media (max-width: 640px) {
-  #character-svg {
-    width: 80%;
-    min-width: 150px;
-    max-width: 240px;
-    height: auto;
-  }
-}
 
 /* ============================
    🌬️ 캐릭터 애니메이션
 ============================ */
-.character-anim {
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
+
 
 /* ============================
    🧱 전체 레이아웃
