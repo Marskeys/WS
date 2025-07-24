@@ -18,6 +18,10 @@
     z-index:9999;
 }
 
+.sidebar-icon.toggle-extension {
+    color: white;
+}
+
 .sidebar-icon:hover,
 .sidebar-icon.active {
     color: var(--highlight-color, #ffffff);
