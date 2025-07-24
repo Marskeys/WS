@@ -393,51 +393,7 @@ html.dark body .auth-btn.write-post:hover {
   to { transform: rotate(360deg); }
 }
 
-/* ======================
-   ✅ 다크모드 토글 스위치 (헤더용)
-====================== */
-.light-switch {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px; /* 크기 줄임 */
-    height: 25px; /* 크기 줄임 */
-    cursor: pointer;
-    border-top: none;
-    margin-top: 0;
-    padding: 0;
-    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않게 */
-}
 
-/* ✅ 스위치 트랙 (헤더용) */
-.light-switch .switch-label {
-    width: 45px; /* 크기 줄임 */
-    height: 25px; /* 크기 줄임 */
-    background-color: #888;
-    border-radius: 999px;
-    position: relative;
-    transition: background-color 0.3s ease;
-    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-}
-
-/* ✅ 스위치 핸들 (헤더용) */
-.light-switch .switch-handle {
-    position: absolute;
-    top: 2px; /* 위치 조정 */
-    left: 2px; /* 위치 조정 */
-    width: 21px; /* 크기 줄임 */
-    height: 21px; /* 크기 줄임 */
-    background: linear-gradient(to bottom, #ffffff, #cccccc);
-    border-radius: 50%;
-    transition: left 0.3s ease, background 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* 그림자 조정 */
-}
-
-/* ✅ 체크 상태일 때 (헤더용) */
-.light-switch[aria-checked="true"] .switch-handle {
-    left: calc(100% - 2px - 21px); /* 👈 핸들 크기에 맞게 이동 거리 조정 (45px - 2px - 21px = 22px) */
-    background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-}
 
 /* ======================
    🔸 언어 드롭다운 (헤더용)
