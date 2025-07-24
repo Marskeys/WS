@@ -91,7 +91,7 @@
 .sidebar-extension-panel {
     position: fixed; /* 고정 위치로 변경 */
     top: 0;
-    left: 0;          /* 왼쪽에 고정 */
+    left: 50px;       /* 👈 여기를 50px로 변경하여 vscode-sidebar 옆에 위치 */
     width: 20vw;
     min-width: 200px;
     max-width: 500px;
@@ -115,7 +115,7 @@
 
 /* 패널이 열릴 때 */
 .sidebar-extension-panel.open {
-    transform: translateX(0); /* 제자리 (left:0)로 이동하여 보임 */
+    transform: translateX(0); /* 제자리 (left:50px)로 이동하여 보임 */
     opacity: 1;
     pointer-events: auto;
 }
@@ -123,8 +123,9 @@
 /* 모바일 대응 - 초기엔 왼쪽으로 완전히 숨김 */
 @media (max-width: 768px) {
     .sidebar-extension-panel {
-        width: 100vw; /* 모바일에서는 전체 너비를 사용하도록 */
-        transform: translateX(-100vw); /* 모바일에서는 화면 너비만큼 왼쪽으로 밀어냄 */
+        width: calc(100vw - 50px); /* 👈 모바일에서도 vscode-sidebar 너비만큼 제외 */
+        left: 50px;                /* 👈 모바일에서도 50px에서 시작 */
+        transform: translateX(-100%); /* 모바일에서는 현재 너비만큼 왼쪽으로 밀어냄 */
     }
 
     .sidebar-extension-panel.open {
