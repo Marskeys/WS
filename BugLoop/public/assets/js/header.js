@@ -10,6 +10,7 @@
 
         // "글쓰기" 버튼은 기본 동작 허용 (링크로 이동)
         if (selectedTab === 'write') return;
+        else if (selectedTab === 'home') return;
 
         e.preventDefault();
 
