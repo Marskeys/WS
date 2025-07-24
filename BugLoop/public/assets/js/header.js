@@ -94,3 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100);
   }
   
+  document.getElementById('login')?.addEventListener('click', function () {
+    const form = document.getElementById('login-form-container');
+    form.classList.toggle('open'); // 슬라이드 열고 닫기
+  });

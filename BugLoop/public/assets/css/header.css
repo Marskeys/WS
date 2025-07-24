@@ -539,3 +539,21 @@ html.dark .lang-btn {
     background: none !important;
     color: inherit !important;
   }
+
+  .panel-footer {
+    flex-shrink: 0;
+    padding: 10px;
+    border-top: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .real-footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 10px;
+    border-top: 1px solid #333;
+    padding-top: 8px;
+  }
