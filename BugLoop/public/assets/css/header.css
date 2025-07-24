@@ -14,12 +14,25 @@
     outline: none;
     margin: 0;
     transition: color 0.2s ease;
-    text-decoration: none; /* ✅ 밑줄 제거 */
-    z-index:9999;
+    text-decoration: none;
+    z-index: 9999;
 }
 
 .sidebar-icon.toggle-extension {
+    background: none !important;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.sidebar-icon.toggle-extension:hover {
+    background: #333;
     color: white;
+}
+
+.sidebar-icon.toggle-extension.active,
+.sidebar-icon.toggle-extension:focus {
+    background: none !important;
+    color: inherit !important;
 }
 
 .sidebar-icon:hover,
@@ -51,6 +64,7 @@
 @media (max-width: 640px) {
     .desktop-menu {
         display: none;
+    }
 }
 
 /* ======================
@@ -63,7 +77,7 @@
     display: flex;
     flex-direction: row;
     height: 100vh;
-    width: 100vw; /* ✅ 이거 필수: 자식이 커지려면 부모가 커야 함 */
+    width: 100vw;
     z-index: 30;
 }
 
@@ -85,51 +99,45 @@
 }
 
 /* ======================
-   🔹 확장 패널 (왼쪽에서 나타남)
+   🔹 확장 패널
 ====================== */
 .sidebar-extension-panel {
-    position: fixed; /* 고정 위치로 변경 */
+    position: fixed;
     top: 0;
-    left: 50px;       /* 👈 여기를 50px로 변경하여 vscode-sidebar 옆에 위치 */
+    left: 50px;
     width: 20vw;
     min-width: 200px;
     max-width: 500px;
     background-color: #2c2f33;
     color: white;
     padding: 10px;
-    border-right: 1px solid #444; /* 왼쪽에서 나오므로 border-right가 더 자연스러움 */
+    border-right: 1px solid #444;
     height: 100vh;
     overflow-y: auto;
     z-index: 9490;
     display: flex;
     flex-direction: column;
-    
-
-    /* ✨ 슬라이드 트랜지션용 */
-    /* 초기 상태: 왼쪽으로 완전히 숨김 (패널 너비만큼 왼쪽으로 이동) */
     transform: translateX(-100%);
     opacity: 0;
     pointer-events: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* 패널이 열릴 때 */
 .sidebar-extension-panel.open {
-    transform: translateX(0); /* 제자리 (left:50px)로 이동하여 보임 */
+    transform: translateX(0);
     opacity: 1;
     pointer-events: auto;
 }
 
-/* 모바일 대응 - 초기엔 왼쪽으로 완전히 숨김 */
 @media (max-width: 768px) {
     .sidebar-extension-panel {
-        width: calc(100vw - 50px); /* 👈 모바일에서도 vscode-sidebar 너비만큼 제외 */
-        left: 50px;                /* 👈 모바일에서도 50px에서 시작 */
-        transform: translateX(-100%); /* 모바일에서는 현재 너비만큼 왼쪽으로 밀어냄 */
+        width: calc(100vw - 50px);
+        left: 50px;
+        transform: translateX(-100%);
     }
 
     .sidebar-extension-panel.open {
-        transform: translateX(0); /* 제자리로 이동 */
+        transform: translateX(0);
     }
 }
 
@@ -156,6 +164,28 @@
 
 .sidebar-extension-panel a:hover {
     text-decoration: underline;
+}
+
+/* ======================
+   🔹 panel-footer 하단 고정
+====================== */
+.panel-footer {
+    margin-top: auto; /* 🧡 푸터를 항상 맨 아래로 */
+    flex-shrink: 0;
+    padding: 10px;
+    border-top: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.real-footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 10px;
+    border-top: 1px solid #333;
+    padding-top: 8px;
 }
 
 /* ======================
@@ -200,7 +230,7 @@
 
 @media (max-width: 640px) {
     .auth-buttons {
-        gap: 4px; /* 버튼 사이 좁게 */
+        gap: 4px;
         flex-wrap: wrap;
         justify-content: flex-end;
         width: 100%;
@@ -296,24 +326,10 @@
     box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
 }
 
-/* 다크 모드 스타일 */
-html.dark body .auth-btn.login {
-    background-color: transparent;
-    color: white;
-    border: 1px solid white;
-    font-weight: 600;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
-    transition: all 0.1s ease;
-    z-index: 9999;
-}
-
-html.dark body .auth-btn.login:hover {
-    background-color: rgba(255, 255, 200, 0.05);
-    color: white;
-    border-color: rgba(255, 255, 180, 0.8);
-    box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-}
-
+/* ======================
+   🔹 다크모드 auth 버튼
+====================== */
+html.dark body .auth-btn.login,
 html.dark body .auth-btn.logout {
     background-color: transparent;
     color: white;
@@ -323,6 +339,7 @@ html.dark body .auth-btn.logout {
     transition: all 0.1s ease;
 }
 
+html.dark body .auth-btn.login:hover,
 html.dark body .auth-btn.logout:hover {
     background-color: rgba(255, 255, 200, 0.05);
     color: white;
@@ -333,7 +350,6 @@ html.dark body .auth-btn.logout:hover {
 html.dark body .auth-btn.signup {
     color: white;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-    transition: all 0.1s ease;
 }
 
 html.dark body .auth-btn.signup:hover {
@@ -343,9 +359,8 @@ html.dark body .auth-btn.signup:hover {
 
 html.dark body .auth-btn.write-post {
     color: white;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-    transition: all 0.1s ease;
     background-color: black;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
 }
 
 html.dark body .auth-btn.write-post:hover {
@@ -353,62 +368,52 @@ html.dark body .auth-btn.write-post:hover {
     text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
 }
 
-/* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
-html.dark body .hamburger span {
-    background-color: #fff;
-}
-
 /* ======================
-   🔹 헤더 상단 컨트롤 (언어/다크모드 버튼 배치)
+   🔹 헤더 & 언어 선택
 ====================== */
 .header-top {
     width: 100%;
-    padding: 10px 20px; /* 적절한 패딩 */
+    padding: 10px 20px;
     box-sizing: border-box;
-    display: flex; /* Flexbox 활성화 */
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    position: fixed; /* 화면 상단에 고정 */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: 9999; /* 다른 요소 위에 오도록 z-index 설정 */
-    background-color: transparent; /* 필요에 따라 배경색 조절 */
+    z-index: 9999;
+    background-color: transparent;
 }
 
 .top-controls {
     display: flex;
-    justify-content: space-between; /* 양쪽 끝 정렬 */
+    justify-content: space-between;
     align-items: center;
-    width: 100%; /* 너비 100% 사용 */
+    width: 100%;
 }
 
 .right-controls {
-    display: flex; /* 버튼들을 가로로 배열 */
+    display: flex;
     align-items: center;
-    gap: 15px; /* 버튼 사이 간격 */
+    gap: 15px;
 }
 
-/* ======================
-   ✅ 다크모드 토글 스위치 (헤더용)
-====================== */
 .light-switch {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px; /* 크기 줄임 */
-    height: 25px; /* 크기 줄임 */
+    width: 45px;
+    height: 25px;
     cursor: pointer;
-    /* 사이드바 내부에 있을 때 적용되던 스타일 제거 */
     border-top: none;
     margin-top: 0;
     padding: 0;
-    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않게 */
+    flex-shrink: 0;
 }
 
-/* ✅ 스위치 트랙 (헤더용) */
 .light-switch .switch-label {
-    width: 45px; /* 크기 줄임 */
-    height: 25px; /* 크기 줄임 */
+    width: 45px;
+    height: 25px;
     background-color: #888;
     border-radius: 999px;
     position: relative;
@@ -416,38 +421,32 @@ html.dark body .hamburger span {
     box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
-/* ✅ 스위치 핸들 (헤더용) */
 .light-switch .switch-handle {
     position: absolute;
-    top: 2px; /* 위치 조정 */
-    left: 2px; /* 위치 조정 */
-    width: 21px; /* 크기 줄임 */
-    height: 21px; /* 크기 줄임 */
+    top: 2px;
+    left: 2px;
+    width: 21px;
+    height: 21px;
     background: linear-gradient(to bottom, #ffffff, #cccccc);
     border-radius: 50%;
     transition: left 0.3s ease, background 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* 그림자 조정 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* ✅ 체크 상태일 때 (헤더용) */
 .light-switch[aria-checked="true"] .switch-handle {
-    left: calc(100% - 2px - 21px); /* 👈 핸들 크기에 맞게 이동 거리 조정 (45px - 2px - 21px = 22px) */
+    left: calc(100% - 2px - 21px);
     background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
 }
 
-/* ======================
-   🔸 언어 드롭다운 (헤더용)
-====================== */
 .language-dropdown {
     position: relative;
     display: inline-block;
 }
 
-/* 🔸 언어 토글 버튼 (헤더용) */
 .lang-btn {
     background: none;
     border: none;
-    color: black; /* 👈 기본은 검정색 */
+    color: black;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -456,52 +455,45 @@ html.dark body .hamburger span {
     padding: 5px 10px;
 }
 
-/* 🔸 플래그 아이콘 (헤더용) */
 .lang-btn .fi {
     width: 1.5rem;
     height: 1.2rem;
 }
 
-/* 🔸 드롭다운 메뉴 (헤더용) */
 .lang-menu {
     display: none;
     position: absolute;
-    top: calc(100% + 5px); /* 버튼 아래 약간 간격 */
-    right: 0; /* 오른쪽 정렬 */
-    left: auto; /* left 속성 제거 */
+    top: calc(100% + 5px);
+    right: 0;
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10000; /* 헤더보다 높게 설정 */
+    z-index: 10000;
     min-width: 120px;
     padding: 5px 0;
     list-style: none;
 }
 
-/* 🔸 메뉴 항목 (헤더용) */
 .lang-option {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 8px 12px;
-    color: #333; /* 👈 기본적으로 어두운 색상 (라이트 모드에서 보임) */
+    color: #333;
     text-decoration: none;
     white-space: nowrap;
 }
 
-/* 🔸 호버 효과 (헤더용) */
 .lang-option:hover {
     background-color: #f5f5f5;
 }
 
-/* 🔸 활성 언어 (헤더용) */
 .lang-option.active-lang {
     font-weight: bold;
     color: var(--highlight-color, #00adb5);
 }
 
-/* 🌙 다크모드 지원 for lang-menu (변경 없음, 참고용) */
 html.dark .lang-menu {
     background: #222;
     border-color: #444;
@@ -509,51 +501,13 @@ html.dark .lang-menu {
 }
 
 html.dark .lang-option {
-    color: #eee; /* 👈 다크모드일 때만 흰색으로 변경 */
+    color: #eee;
 }
 
 html.dark .lang-option:hover {
     background-color: #333;
 }
 
-/* 🌙 다크모드 시 언어 버튼 아이콘 색상 흰색 */
 html.dark .lang-btn {
-    color: #fff; /* 👈 다크모드 시 흰색 */
+    color: #fff;
 }
-
-/* 공통 스타일은 유지하면서 */
-.sidebar-icon.toggle-extension {
-    background: none !important;   /* 파란 배경 제거 */
-    color: #ccc;                   /* 회색 느낌으로 */
-    cursor: pointer;
-  }
-  
-  .sidebar-icon.toggle-extension:hover {
-    background: #333;              /* 살짝 hover만 줘도 좋음 */
-    color: white;
-  }
-  
-  /* active 스타일 방지 */
-  .sidebar-icon.toggle-extension.active,
-  .sidebar-icon.toggle-extension:focus {
-    background: none !important;
-    color: inherit !important;
-  }
-
-  .panel-footer {
-    flex-shrink: 0;
-    padding: 10px;
-    border-top: 1px solid #444;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .real-footer {
-    text-align: center;
-    font-size: 0.75rem;
-    color: #888;
-    margin-top: 10px;
-    border-top: 1px solid #333;
-    padding-top: 8px;
-  }

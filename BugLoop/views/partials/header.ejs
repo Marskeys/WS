@@ -99,9 +99,6 @@
           <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
             <div class="auth-buttons">
               <% if (user) { %>
-                <% if (Number(user.is_admin) === 1) { %>
-                  <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-                <% } %>
                 <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
               <% } else { %>
                 <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')">회원가입</a>
@@ -109,21 +106,21 @@
               <% } %>
             </div>
           <% } %>
-        
-          <div id="login-form-container" class="login-form-container">
+      
+          <!-- 로그인 폼: 로그인 버튼 누르면 보임 -->
+          <div id="login-form-container" class="login-form-container hidden">
             <form id="login-form" method="POST" action="/login">
               <input type="text" name="id" placeholder="아이디" required />
               <input type="password" name="password" placeholder="비밀번호" required />
               <button type="submit">로그인</button>
             </form>
           </div>
-        
-          <!-- ✅ 추가된 실제 푸터 -->
+      
+          <!-- 진짜 푸터 -->
           <div class="real-footer">
             <small>© 2025 Bug Loop</small>
           </div>
         </div>
-           <div class="spacer"></div>
       </div>
     </div>
   </aside>
