@@ -13,7 +13,12 @@
             }
     
             e.preventDefault();
-    
+
+               // ✅ toggle-extension이면 아무 것도 안 하고 바로 return
+                if (icon.classList.contains('toggle-extension')) {
+                   return;
+                 }
+      
             // 탭 컨텐츠 표시/숨김
             contents.forEach(content => {
             content.style.display = content.dataset.tab === selectedTab ? 'block' : 'none';
