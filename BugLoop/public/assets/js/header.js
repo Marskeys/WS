@@ -42,22 +42,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     // 사이드바 확장 패널 토글 로직
-    const toggleExtensionBtn = document.querySelector('.toggle-extension');
+    const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension'); // Ensure this selector is correct
     const extensionPanel = document.querySelector('.sidebar-extension-panel');
-    const toggleIcon = toggleExtensionBtn?.querySelector('i'); // Optional chaining 추가
+    const toggleIcon = toggleExtensionBtn?.querySelector('i');
   
-    toggleExtensionBtn?.addEventListener('click', (e) => { // Optional chaining 추가
+    // Initial icon state (assuming panel starts closed and should expand right)
+    if (toggleIcon && !extensionPanel.classList.contains('open')) {
+      toggleIcon.classList.remove('fa-chevron-left');
+      toggleIcon.classList.add('fa-chevron-right'); // Panel closed, icon points right to open
+    }
+  
+    toggleExtensionBtn?.addEventListener('click', (e) => {
       e.preventDefault();
   
-      // 'open' 클래스 토글 (CSS 트랜지션 활용)
+      // Toggle the 'open' class (leveraging CSS transitions)
       extensionPanel.classList.toggle('open');
   
-      // 아이콘 변경
-      if (toggleIcon) { // toggleIcon이 null이 아닐 때만 실행
+      // Change icon based on panel state
+      if (toggleIcon) {
         if (extensionPanel.classList.contains('open')) {
+          // Panel is now open, icon should point left to close it
           toggleIcon.classList.remove('fa-chevron-right');
           toggleIcon.classList.add('fa-chevron-left');
         } else {
+          // Panel is now closed, icon should point right to open it
           toggleIcon.classList.remove('fa-chevron-left');
           toggleIcon.classList.add('fa-chevron-right');
         }
@@ -65,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
-  // 딜레이 네비게이션 함수 (회원가입 버튼용)
+  // Delay navigation function (for signup button)
   function delayNavigation(e, url) {
     e.preventDefault();
     setTimeout(() => {
