@@ -501,11 +501,12 @@ html.dark body .auth-btn.login {
     color: #fff;
   }
   
-  .side-panel.collapsed {
-    transform: translateX(-100%);
+  .sidebar-extension-panel {
+    width: 240px;
+    transition: all 0.3s ease;
   }
 
-  .toggle-panel {
-    margin-top: auto; /* 맨 아래로 */
+  .sidebar-extension-panel.hidden {
+    width: 0;
+    overflow: hidden;
   }
-  
