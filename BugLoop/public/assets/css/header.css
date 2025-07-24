@@ -502,11 +502,11 @@ html.dark body .auth-btn.login {
   }
   
   .sidebar-extension-panel {
-    width: 240px;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
   }
-
+  
   .sidebar-extension-panel.hidden {
-    width: 0;
-    overflow: hidden;
+    display: none;
   }
