@@ -3,11 +3,13 @@ body {
   }
 
   .signup-container {
-    margin-top: 80px;
-    margin-right: auto;
-    margin-bottom: 80px;
-    margin-left: auto;
-    /* 기존 스타일 유지 */
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    padding: 2rem;
+    margin-left: 1000px
   }
 
   .logo-wrap {
