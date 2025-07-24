@@ -442,7 +442,6 @@ html.dark body .hamburger span {
 .language-dropdown {
     position: relative;
     display: inline-block;
-    /* flexbox 자식으로 정렬되므로 top, left 등 제거 */
 }
 
 /* 🔸 언어 토글 버튼 (헤더용) */
@@ -487,7 +486,7 @@ html.dark body .hamburger span {
     align-items: center;
     gap: 0.5rem;
     padding: 8px 12px;
-    color: #333;
+    color: #333; /* 👈 기본적으로 어두운 색상 (라이트 모드에서 보임) */
     text-decoration: none;
     white-space: nowrap;
 }
@@ -511,7 +510,7 @@ html.dark .lang-menu {
 }
 
 html.dark .lang-option {
-    color: #eee;
+    color: #eee; /* 👈 다크모드일 때만 흰색으로 변경 */
 }
 
 html.dark .lang-option:hover {
@@ -522,12 +521,3 @@ html.dark .lang-option:hover {
 html.dark .lang-btn {
     color: #fff; /* 👈 다크모드 시 흰색 */
 }
-
-/* 이전에 side-panel 내부에 있던 .bottom-switch-row는 제거합니다. */
-/* .bottom-switch-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-} */
