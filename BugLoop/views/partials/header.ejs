@@ -38,7 +38,7 @@
             <% supportedLangs.forEach(langCode => { %>
               <li>
                 <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" style="color: white; padding: 5px 10px; display: block; text-decoration: none;">
+                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
                   <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
                   <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
                 </a>
