@@ -1,3 +1,8 @@
+body.panel-open {
+  padding-left: 260px; /* 확장 패널 너비만큼 */
+  transition: padding 0.3s ease;
+}
+
 /* ======================
    ✅ 기본 설정
 ====================== */
