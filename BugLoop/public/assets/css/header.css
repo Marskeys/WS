@@ -103,6 +103,7 @@
 ====================== */
 .sidebar-extension-panel {
     position: fixed;
+    box-sizing: border-box; 
     top: 0;
     left: 50px;
     width: 20vw;
