@@ -27,7 +27,7 @@
     padding: 0 12px;         /* ✅ 좌우 여백 줘서 버튼 붙는 거 방지 */
     box-sizing: border-box; /* ✅ padding 포함 */
   }
-  
+
   .search-box {
     flex: 1;
     border: none;
@@ -132,41 +132,43 @@
     background: linear-gradient(to left, rgba(44, 47, 51, 1), rgba(44, 47, 51, 0.6), rgba(44, 47, 51, 0.2), rgba(44, 47, 51, 0));
   }
   
-  .tabs {
-    display: inline-flex;
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    gap: 0.5rem;
-    padding: 1rem 0;
-  }
-  
-  .tab {
-    margin-top: 2rem;
-    padding: 0.2rem 0.5rem;
-    border: 1px solid #d0cce6;
-    background: #f9eded;
-    cursor: pointer;
-    border-radius: 999px;
-    font-size: 0.7rem !important;
-    font-weight: 500;
-    color: #2a2a2a;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
-    transition: all 0.2s ease-in-out;
-    text-decoration: none !important;
-  }
-  
-  .tab:hover {
-    color: #d14da8;
-    background-color: rgba(247, 243, 255, 0.3);
-    border-color: #c4b2ff;
-    text-decoration: none;
-  }
-  
-  .tab.active {
-    background: #ffe4e1;
-    border-color: #ff9999;
-    font-weight: bold;
-  }
+.tabs {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.tab {
+  margin-top: 2rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #d0cce6;
+  background: #000000;
+  cursor: pointer;
+  border-radius: 999px;
+  font-size: 0.7rem !important;
+  font-weight: 500;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none !important;
+}
+
+.tab:hover {
+  color: white;
+  background-color: rgba(247, 243, 255, 0.3);
+  border-color: #c4b2ff;
+  text-decoration: none;
+}
+
+.tab.active {
+  background: #f6f6f6;
+  color: black;
+  border-color: #ff9999;
+  font-weight: bold;
+}
+
   
   .tabs::-webkit-scrollbar {
     display: none;

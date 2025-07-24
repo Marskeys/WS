@@ -114,28 +114,6 @@ html.dark body .board-table th {
   color: #ffffff;
 }
 
-html.dark body .tab {
-  margin-top: 2rem;
-  border: 1px solid #d0cce6;
-  background: #000000;
-  font-weight: 500;
-  color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease-in-out;
-}
-
-html.dark body .tab:hover {
-  color: white;
-  background-color: rgba(247, 243, 255, 0.3);
-  border-color: #c4b2ff;
-}
-
-html.dark body .tab.active {
-  background: #f6f6f6;
-  color: black;
-  border-color: #ff9999;
-  font-weight: bold;
-}
 
 
 html.dark body .mobile-post-item .post-title {
