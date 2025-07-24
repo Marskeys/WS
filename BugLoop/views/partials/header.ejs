@@ -69,7 +69,6 @@
               <% if (user) { %>
                 <% if (Number(user.is_admin) === 1) { %>
                   <span class="welcome-text" style="font-size: 0.85rem; color: #aaa; text-align: center;"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-                  <a href="/<%= lang %>/write" class="auth-btn write-post" style="width: 100%; text-align: center;"> <i class="fas fa-pen"></i> 글쓰기</a>
                 <% } %>
                 <a href="/<%= lang %>/logout" class="auth-btn logout" style="width: 100%; text-align: center;">로그아웃</a>
               <% } else { %>
