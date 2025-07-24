@@ -47,3 +47,14 @@
     }, 100);
   }
 
+  const sidePanel = document.querySelector('.side-panel');
+  const toggleBtn = document.querySelector('.toggle-panel');
+  const toggleIcon = toggleBtn.querySelector('i');
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    sidePanel.classList.toggle('collapsed');
+    toggleIcon.classList.toggle('fa-chevron-left');
+    toggleIcon.classList.toggle('fa-chevron-right');
+  });
+  
