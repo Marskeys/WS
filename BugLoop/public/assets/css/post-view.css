@@ -254,37 +254,29 @@ html.dark .toc-list a:hover {
 
 /* ✍️ 타이틀/메타/로고 */
 
+.postview-container.post-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+}
 
-
-.post-meta {
+.postview-container.post-meta {
   text-align: center;
   font-size: 0.9rem;
   color: #777;
   margin-bottom: 2rem;
 }
 
-.logo-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo-wrap img {
-  max-width: 150px;
-  height: auto;
-  display: block;
-  margin-bottom: 1rem;
-}
-
 /* ✏️ 수정/삭제 버튼 */
 
-.post-actions {
+.postview-container.post-actions {
   text-align: center;
   margin-top: 2rem;
 }
 
-.post-actions a.edit-btn,
-.post-actions form button {
+.postview-container.post-actions a.edit-btn,
+.postview-container.post-actions form button {
   display: inline-block;
   padding: 4px 10px;
   margin: 0 4px;
@@ -296,24 +288,24 @@ html.dark .toc-list a:hover {
   transition: background 0.2s ease, color 0.2s ease;
 }
 
-.post-actions a.edit-btn {
+.postview-container.post-actions a.edit-btn {
   background-color: #f0f8ff;
   color: #0077cc;
   text-decoration: none;
 }
 
-.post-actions a.edit-btn:hover {
+.postview-container.post-actions a.edit-btn:hover {
   background-color: #d8edff;
   color: #005fa3;
 }
 
-.post-actions form button {
+.postview-container.post-actions form button {
   background-color: #fff0f0;
   color: #cc0000;
   border: 1px solid #cc0000;
 }
 
-.post-actions form button:hover {
+.postview-container.post-actions form button:hover {
   background-color: #ffe5e5;
   color: #a30000;
 }
