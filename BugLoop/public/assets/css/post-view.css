@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* 떠다니는 목차 (데스크탑) */
 .floating-toc {
     position: fixed;
