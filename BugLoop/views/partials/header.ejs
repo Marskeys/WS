@@ -132,6 +132,6 @@
 <script>
   document.getElementById('login').addEventListener('click', function () {
     const form = document.getElementById('login-form-container');
-    form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+    form.classList.toggle('hidden'); // 👈 CSS 클래스 기반 토글
   });
 </script>
