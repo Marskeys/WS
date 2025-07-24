@@ -21,6 +21,13 @@
     overflow: hidden; /* ✅ 넘침 방지 */
   }
   
+  .search-wrapper {
+    width: 100%;
+    max-width: 100%;         /* ✅ 모바일에서 꽉 채우되 넘치지 않게 */
+    padding: 0 12px;         /* ✅ 좌우 여백 줘서 버튼 붙는 거 방지 */
+    box-sizing: border-box; /* ✅ padding 포함 */
+  }
+  
   .search-box {
     flex: 1;
     border: none;
