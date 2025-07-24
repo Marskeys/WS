@@ -202,8 +202,8 @@ html, body {
 }
 
 /* 회원가입 페이지에서는 푸터 고정 안함 - 기존 유지 */
-body.no-fixed-footer footer {
-  position: static;
+body.no-fixed-footer {
+  margin-left: 500px;
 }
 
 
