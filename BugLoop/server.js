@@ -566,13 +566,16 @@ app.get('/post/:id', async (req, res) => {
     `);
 
     res.render('post-view', {
-      isSearch: false,
-      posts: recentPosts,
       post: postForView,
+      posts: recentPosts,
       user: req.session.user,
       canonicalUrl,
-      alternateLinks, 
-      lang: safeLang // 현재 로드된 언어를 템플릿에 전달
+      alternateLinks,
+      lang: safeLang,
+      isSearch: false,              
+      searchKeyword: '',            
+      selectedCategory: null,      
+      locale: res.locals.locale    
     });
 
   } catch (err) {
