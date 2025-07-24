@@ -2,7 +2,6 @@
 <html lang="<%= lang %>">
 <head>
   <title><%= post.title %> | BlindLove</title>
-  <link rel="stylesheet" href="/assets/css/signup.css" />
   <link rel="stylesheet" href="/assets/css/post-view.css" />
   <%- include('partials/head') %>
 
@@ -21,13 +20,7 @@
 <body class="no-fixed-footer">
   <%- include('partials/header') %>
 
-  <div class="signup-container">
-    <div class="logo-wrap">
-      <a href="/<%= lang %>/">
-        <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
-      </a>
-    </div>
-
+  <div class="postview-container">
     <div class="post-title"><%= post.title %></div>
 
     <div class="post-meta">
