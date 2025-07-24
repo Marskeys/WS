@@ -5,58 +5,33 @@
 /* ============================
    🔍 검색창 + 캐릭터 위치
 ============================ */
-/* 🔍 검색 컴포넌트 전체 레이아웃 */
-.search-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* ✅ 정중앙 정렬 */
-    padding-top: 3rem;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  /* 중앙에 고정된 박스 느낌 */
-  .search-wrapper {
-    width: 100%;
-    max-width: 500px;
-    padding: 0 1rem;
-    box-sizing: border-box;
-  }
-  
-  /* 검색창 스타일 */
-  .search-form {
+.search-form {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     height: 40px;
-    padding: 0 1rem;
+    padding: 0 0.75rem; /* ✅ 좌우 패딩 줄임 */
     border: 2px solid #c28383;
     border-radius: 999px;
     background-color: white;
     box-sizing: border-box;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* ✅ 넘침 방지 */
   }
   
-  .search-form:focus-within {
-    border-color: #9d6bff;
-    box-shadow: 0 0 8px rgba(157, 107, 255, 0.4);
-  }
-  
-  /* 검색 input */
   .search-box {
     flex: 1;
     border: none;
     outline: none;
     font-size: 0.95rem;
-    padding: 0.5rem;
+    padding: 0.4rem 0.5rem;
     background: transparent;
     color: #333;
+    min-width: 0; /* ✅ flex 안에서 overflow 방지 */
   }
   
-/* ✅ 돋보기 버튼: form 내부 오른쪽 정렬 */
-.icon-submit-btn {
+  .icon-submit-btn {
     background: none;
     border: none;
     font-size: 1.2rem;
@@ -65,11 +40,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
-    margin-left: 0.5rem; /* 약간 여유 */
+    padding: 0.4rem;
+    flex-shrink: 0;  /* ✅ 크기 고정 */
   }
   
   .icon-submit-btn i {
+    pointer-events: none;
+    transform: none;
+    font-size: 1.2rem;
     transition: transform 0.2s ease, color 0.2s ease;
   }
   
@@ -77,6 +55,7 @@
     color: #caa8ff;
     transform: scale(1.15);
   }
+  
   
   /* 모바일 대응 */
   @media (max-width: 640px) {
