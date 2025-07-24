@@ -500,7 +500,7 @@ html.dark body .auth-btn.login {
   html.dark .lang-btn i {
     color: #fff;
   }
-  
+
   .sidebar-extension-panel {
     transition: all 0.3s ease;
     display: flex;
@@ -509,4 +509,14 @@ html.dark body .auth-btn.login {
   
   .sidebar-extension-panel.hidden {
     display: none;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar-extension-panel {
+      display: none;
+    }
+  
+    .sidebar-extension-panel.hidden {
+      display: none; /* 그대로 유지 */
+    }
   }
