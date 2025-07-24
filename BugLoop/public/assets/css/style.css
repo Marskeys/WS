@@ -15,37 +15,6 @@ html, body {
 }
 
 /* ======================
-   🔹 공통 아이콘 스타일
-====================== */
-.sidebar-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 12px 0;
-    color: white;
-    text-align: center;
-    border: none;
-    background: none;
-    outline: none;
-    margin: 0;
-    transition: color 0.2s ease;
-    text-decoration: none; /* ✅ 밑줄 제거 */
-}
-
-.sidebar-icon:hover,
-.sidebar-icon.active {
-    color: var(--highlight-color, #00adb5);
-    background: transparent;
-}
-
-.sidebar-icon i {
-    background: none !important;
-    outline: none;
-    box-shadow: none;
-}
-
-/* ======================
    🔹 탭 컨텐츠 전환
 ====================== */
 .tab-content {
