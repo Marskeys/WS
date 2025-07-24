@@ -46,51 +46,25 @@
       window.location.href = url;
     }, 100);
   }
+
   const toggleExtensionBtn = document.querySelector('.toggle-extension');
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
   const toggleIcon = toggleExtensionBtn.querySelector('i');
-  const postContainer = document.querySelector('.signup-container');
   
-  // ✅ 초기 상태 설정
-  function initializePanelState() {
-    const isMobile = window.innerWidth <= 768;
-    const isHidden = window.getComputedStyle(extensionPanel).display === 'none';
-  
-    if (isMobile && isHidden) {
-      toggleIcon.classList.remove('fa-chevron-left');
-      toggleIcon.classList.add('fa-chevron-right');
-      postContainer.classList.remove('panel-open');
-    } else {
-      toggleIcon.classList.remove('fa-chevron-right');
-      toggleIcon.classList.add('fa-chevron-left');
-      postContainer.classList.add('panel-open');
-    }
-  }
-  
-  // ✅ 토글 버튼 클릭 시 처리
   toggleExtensionBtn.addEventListener('click', (e) => {
     e.preventDefault();
   
-    const isHidden = extensionPanel.style.display === 'none' || window.getComputedStyle(extensionPanel).display === 'none';
+    const isHidden = extensionPanel.classList.contains('hidden');
   
     if (isHidden) {
-      // 열기
       extensionPanel.classList.remove('hidden');
-      extensionPanel.style.display = 'flex';
+      extensionPanel.style.display = 'flex'; // 👈 모바일용으로 명시
       toggleIcon.classList.remove('fa-chevron-right');
       toggleIcon.classList.add('fa-chevron-left');
-      postContainer.classList.add('panel-open');
     } else {
-      // 닫기
       extensionPanel.classList.add('hidden');
-      extensionPanel.style.display = 'none';
+      extensionPanel.style.display = 'none'; // 👈 수동으로 닫기
       toggleIcon.classList.remove('fa-chevron-left');
       toggleIcon.classList.add('fa-chevron-right');
-      postContainer.classList.remove('panel-open');
     }
   });
-  
-  // ✅ 초기 상태 실행 + 리사이즈 반영
-  initializePanelState();
-  window.addEventListener('resize', initializePanelState);
-  
