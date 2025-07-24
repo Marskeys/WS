@@ -102,7 +102,7 @@
                 <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
               <% } else { %>
                 <a class="auth-btn signup" onclick="delayNavigation(event, '/<%= lang %>/signup')">회원가입</a>
-                <button class="auth-btn login" id="login" type="button">로그인</button>
+                <button class="auth-btn login" id="login" type="button" onclick="document.getElementById('login-form-container').classList.toggle('hidden')">로그인</button>
               <% } %>
             </div>
           <% } %>
@@ -129,9 +129,3 @@
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
 
-<script>
-  document.getElementById('login').addEventListener('click', function () {
-    const form = document.getElementById('login-form-container');
-    form.classList.toggle('hidden'); // 👈 CSS 클래스 기반 토글
-  });
-</script>
