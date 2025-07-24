@@ -148,11 +148,11 @@
 }
 
 html.dark .tabs-blur-left {
-  background: linear-gradient(to right, rgba(11, 11, 26, 1), rgba(11, 11, 26, 0.6), rgba(11, 11, 26, 0.2), rgba(11, 11, 26, 0));
+  background: linear-gradient(to right, rgba(44, 47, 51, 1), rgba(44, 47, 51, 0.6), rgba(44, 47, 51, 0.2), rgba(44, 47, 51, 0));
 }
 
 html.dark .tabs-blur-right {
-  background: linear-gradient(to left, rgba(11, 11, 26, 1), rgba(11, 11, 26, 0.6), rgba(11, 11, 26, 0.2), rgba(11, 11, 26, 0));
+  background: linear-gradient(to left, rgba(44, 47, 51, 1), rgba(44, 47, 51, 0.6), rgba(44, 47, 51, 0.2), rgba(44, 47, 51, 0));
 }
 
 .tabs {
