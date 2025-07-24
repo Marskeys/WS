@@ -55,17 +55,18 @@
     color: #333;
   }
   
-  /* 돋보기 버튼 */
-  .icon-submit-btn {
+/* ✅ 돋보기 버튼: form 내부 오른쪽 정렬 */
+.icon-submit-btn {
     background: none;
     border: none;
-    color: #9d6bff;
     font-size: 1.2rem;
+    color: #9d6bff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 6px;
+    margin-left: 0.5rem; /* 약간 여유 */
   }
   
   .icon-submit-btn i {
