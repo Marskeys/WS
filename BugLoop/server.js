@@ -559,6 +559,7 @@ app.get('/post/:id', async (req, res) => {
     }));
 
     res.render('post-view', {
+      posts: filteredPosts,
       post: postForView,
       user: req.session.user,
       canonicalUrl,
