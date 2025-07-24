@@ -50,10 +50,21 @@
   const toggleExtensionBtn = document.querySelector('.toggle-extension');
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
   const toggleIcon = toggleExtensionBtn.querySelector('i');
-
+  
   toggleExtensionBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    extensionPanel.classList.toggle('hidden');
-    toggleIcon.classList.toggle('fa-chevron-left');
-    toggleIcon.classList.toggle('fa-chevron-right');
+  
+    const isHidden = extensionPanel.classList.contains('hidden');
+  
+    if (isHidden) {
+      extensionPanel.classList.remove('hidden');
+      extensionPanel.style.display = 'flex'; // 👈 모바일용으로 명시
+      toggleIcon.classList.remove('fa-chevron-right');
+      toggleIcon.classList.add('fa-chevron-left');
+    } else {
+      extensionPanel.classList.add('hidden');
+      extensionPanel.style.display = 'none'; // 👈 수동으로 닫기
+      toggleIcon.classList.remove('fa-chevron-left');
+      toggleIcon.classList.add('fa-chevron-right');
+    }
   });
