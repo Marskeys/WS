@@ -558,25 +558,34 @@ app.get('/post/:id', async (req, res) => {
       href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
     }));
 
-    const [recentPosts] = await db.query(`
-      SELECT id, title, is_private, user_id FROM posts
-      WHERE is_private = 0
-      ORDER BY created_at DESC
-      LIMIT 10
-    `);
+   // ✅ 최근 글 불러오기 (예시)
+const [recentPosts] = await db.query(`
+  SELECT id, title, is_private, user_id FROM posts
+  WHERE is_private = 0
+  ORDER BY created_at DESC
+  LIMIT 10
+`);
 
-    res.render('post-view', {
-      post: postForView,
-      posts: recentPosts,
-      user: req.session.user,
-      canonicalUrl,
-      alternateLinks,
-      lang: safeLang,
-      isSearch: false,              
-      searchKeyword: '',            
-      selectedCategory: null,      
-      locale: res.locals.locale    
-    });
+// ✅ 카테고리도 불러와야 함 (언어별 번역 포함)
+const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+const [categoryRows] = await db.query(`
+  SELECT name AS original, COALESCE(${categoryColumn}, name) AS translated
+  FROM categories
+`);
+
+res.render('post-view', {
+  post: postForView,
+  posts: recentPosts,
+  user: req.session.user,
+  canonicalUrl,
+  alternateLinks,
+  lang: safeLang,
+  isSearch: false,
+  searchKeyword: '',
+  selectedCategory: null,
+  locale: res.locals.locale,
+  categories: categoryRows // ✅ 드디어 이거 넣음!
+});
 
   } catch (err) {
     console.error('🌐 다국어 글 보기 오류:', err);
