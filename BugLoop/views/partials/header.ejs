@@ -132,6 +132,8 @@
 <script>
   document.getElementById('login').addEventListener('click', function () {
     const form = document.getElementById('login-form-container');
-    form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+    const currentDisplay = window.getComputedStyle(form).display;
+
+    form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
   });
 </script>
