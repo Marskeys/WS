@@ -43,7 +43,7 @@
     border-color: #9d6bff;
     box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
   }
-  
+
 /* ============================
    🧾 탭 + 게시판 (데스크탑)
 ============================ */
@@ -233,3 +233,9 @@
     }
   }
   
+  .sidebar-extension-panel .search-form {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
