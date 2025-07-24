@@ -48,7 +48,12 @@
         <div style="flex-grow: 1; overflow-y: auto;">
 
           <div class="tab-content" data-tab="profile" style="display: none;">
-            <h3>프로필</h3>
+            <div class="author-box">
+              <img src="/assets/images/profile.gif" alt="내 GIF" class="profile-gif" />
+              <div class="author-description">
+                <p>웹 개발자 </p>
+              </div>
+            </div>
           </div>
 
           <% if (typeof posts !== 'undefined') { %>
@@ -57,12 +62,7 @@
             </div>
           <% } %>
 
-      
-
-          <div class="tab-content" data-tab="settings" style="display: none;">
-            <h3>설정</h3>
-            <label><input type="checkbox"> 다크 모드</label>
-          </div>
+    
         </div>
 
         <div style="border-top: 1px solid #444; padding: 10px;">
