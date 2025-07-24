@@ -566,6 +566,7 @@ app.get('/post/:id', async (req, res) => {
     `);
 
     res.render('post-view', {
+      isSearch: false,
       posts: recentPosts,
       post: postForView,
       user: req.session.user,
