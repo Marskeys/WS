@@ -15,49 +15,49 @@
     margin: 0;
     transition: color 0.2s ease;
     text-decoration: none; /* ✅ 밑줄 제거 */
-  }
-  
-  .sidebar-icon:hover,
-  .sidebar-icon.active {
+}
+
+.sidebar-icon:hover,
+.sidebar-icon.active {
     color: var(--highlight-color, #00adb5);
     background: transparent;
-  }
-  
-  .sidebar-icon i {
+}
+
+.sidebar-icon i {
     background: none !important;
     outline: none;
     box-shadow: none;
-  }
-  
-  /* ======================
-     🔹 탭 컨텐츠 전환
-  ====================== */
-  .tab-content {
+}
+
+/* ======================
+   🔹 탭 컨텐츠 전환
+====================== */
+.tab-content {
     display: none;
-  }
-  
-  .tab-content[style*="display: block"] {
+}
+
+.tab-content[style*="display: block"] {
     display: block !important;
-  }
-  
-  /* ======================
-     🔹 반응형 (모바일)
-  ====================== */
-  @media (max-width: 640px) {
+}
+
+/* ======================
+   🔹 반응형 (모바일)
+====================== */
+@media (max-width: 640px) {
     .desktop-menu {
-      display: none;
+        display: none;
     }
-  
+
     .lang-option.active-lang {
-      font-weight: bold;
-      color: var(--highlight-color);
+        font-weight: bold;
+        color: var(--highlight-color);
     }
-  }
-  
-  /* ======================
-     🔹 사이드 패널 레이아웃
-  ====================== */
-  .side-panel.main-panel-only {
+}
+
+/* ======================
+   🔹 사이드 패널 레이아웃
+====================== */
+.side-panel.main-panel-only {
     position: fixed;
     top: 0;
     left: 0;
@@ -66,15 +66,15 @@
     height: 100vh;
     width: 100vw; /* ✅ 이거 필수: 자식이 커지려면 부모가 커야 함 */
     z-index: 30;
-  }
-  
-  .sidebar-wrapper {
+}
+
+.sidebar-wrapper {
     display: flex;
     flex-direction: row;
     height: 100%;
-  }
-  
-  .vscode-sidebar {
+}
+
+.vscode-sidebar {
     width: 50px;
     background-color: #1e1e1e;
     display: flex;
@@ -83,107 +83,111 @@
     padding-top: 10px;
     height: 100vh;
     z-index: 9990;
-  }
-  
-  /* ======================
-     🔹 확장 패널 (우측)
-  ====================== */
-  .sidebar-extension-panel {
-    position: relative;
+}
+
+/* ======================
+   🔹 확장 패널 (왼쪽에서 나타남)
+====================== */
+.sidebar-extension-panel {
+    position: fixed; /* 고정 위치로 변경 */
+    top: 0;
+    left: 0;          /* 왼쪽에 고정 */
     width: 20vw;
     min-width: 200px;
     max-width: 500px;
     background-color: #2c2f33;
     color: white;
     padding: 10px;
-    border-left: 1px solid #444;
+    border-right: 1px solid #444; /* 왼쪽에서 나오므로 border-right가 더 자연스러움 */
     height: 100vh;
     overflow-y: auto;
     z-index: 9490;
     display: flex;
     flex-direction: column;
-  
+
     /* ✨ 슬라이드 트랜지션용 */
-    transform: translateX(100%);
+    /* 초기 상태: 왼쪽으로 완전히 숨김 (패널 너비만큼 왼쪽으로 이동) */
+    transform: translateX(-100%);
     opacity: 0;
     pointer-events: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-  
-  /* 패널이 열릴 때 */
-  .sidebar-extension-panel.open {
-    transform: translateX(0);
+}
+
+/* 패널이 열릴 때 */
+.sidebar-extension-panel.open {
+    transform: translateX(0); /* 제자리 (left:0)로 이동하여 보임 */
     opacity: 1;
     pointer-events: auto;
-  }
-  
-  /* 모바일 대응 - 처음엔 숨김 */
-  @media (max-width: 768px) {
+}
+
+/* 모바일 대응 - 초기엔 왼쪽으로 완전히 숨김 */
+@media (max-width: 768px) {
     .sidebar-extension-panel {
-      transform: translateX(100vw); /* 모바일에서는 더 멀리 밀어냄 */
+        width: 100vw; /* 모바일에서는 전체 너비를 사용하도록 */
+        transform: translateX(-100vw); /* 모바일에서는 화면 너비만큼 왼쪽으로 밀어냄 */
     }
-  
+
     .sidebar-extension-panel.open {
-      transform: translateX(0);
+        transform: translateX(0); /* 제자리로 이동 */
     }
-  }
-  
-  .sidebar-extension-panel h3 {
+}
+
+.sidebar-extension-panel h3 {
     font-size: 14px;
     margin-bottom: 10px;
-  }
-  
-  .sidebar-extension-panel ul {
+}
+
+.sidebar-extension-panel ul {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  
-  .sidebar-extension-panel li {
+}
+
+.sidebar-extension-panel li {
     margin: 5px 0;
-  }
-  
-  .sidebar-extension-panel a {
+}
+
+.sidebar-extension-panel a {
     color: white;
     text-decoration: none;
     font-size: 14px;
-  }
-  
-  .sidebar-extension-panel a:hover {
+}
+
+.sidebar-extension-panel a:hover {
     text-decoration: underline;
-  }
-  
-  /* ======================
-     🔹 작성자 정보 박스
-  ====================== */
-  .author-box {
+}
+
+/* ======================
+   🔹 작성자 정보 박스
+====================== */
+.author-box {
     display: flex;
     align-items: center;
     padding: 15px;
     margin-top: 0;
-  }
-  
-  .profile-gif {
+}
+
+.profile-gif {
     width: 80px;
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 15px;
-  }
-  
-  .author-description {
+}
+
+.author-description {
     max-width: 600px;
-  }
-  
-  .author-description p {
+}
+
+.author-description p {
     margin: 0;
     color: #666;
-  }
-  
-  /* ======================
-     🔹 auth 버튼들
-  ====================== */
-  .auth-buttons {
+}
+
+/* ======================
+   🔹 auth 버튼들
+====================== */
+.auth-buttons {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -191,27 +195,27 @@
     letter-spacing: -0.5px;
     white-space: nowrap;
     padding: 0.3rem 0.5rem;
-  }
-  
-  @media (max-width: 640px) {
+}
+
+@media (max-width: 640px) {
     .auth-buttons {
-      gap: 4px; /* 버튼 사이 좁게 */
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      width: 100%;
+        gap: 4px; /* 버튼 사이 좁게 */
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        width: 100%;
     }
-  
+
     .auth-btn.write-post,
     .auth-btn.logout {
-      margin-left: 0 !important;
+        margin-left: 0 !important;
     }
-  
+
     .auth-btn.logout {
-      margin-right: 1px !important;
+        margin-right: 1px !important;
     }
-  }
-  
-  .auth-btn.login {
+}
+
+.auth-btn.login {
     cursor: pointer;
     text-decoration: none;
     padding: 5px 10px 3px;
@@ -225,15 +229,15 @@
     margin-bottom: 1px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
-  }
-  
-  .auth-btn.login:hover {
+}
+
+.auth-btn.login:hover {
     background-color: #4c16b9;
     color: white;
     box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
-  }
-  
-  .auth-btn.signup {
+}
+
+.auth-btn.signup {
     background: none;
     border: none;
     color: #555;
@@ -242,13 +246,13 @@
     cursor: pointer;
     text-decoration: none;
     transition: color 0.2s ease;
-  }
-  
-  .auth-btn.signup:hover {
+}
+
+.auth-btn.signup:hover {
     color: #007bff;
-  }
-  
-  .auth-btn.write-post {
+}
+
+.auth-btn.write-post {
     margin-left: 10px;
     background-color: #ffffff;
     color: #333;
@@ -262,15 +266,15 @@
     gap: 5px;
     text-decoration: none;
     transition: background-color 0.1s ease, border-color 0.1s ease;
-  }
-  
-  .auth-btn.write-post:hover {
+}
+
+.auth-btn.write-post:hover {
     background-color: #ffffff;
     border-color: #999;
     color: #000;
-  }
-  
-  .auth-btn.logout {
+}
+
+.auth-btn.logout {
     cursor: pointer;
     text-decoration: none;
     padding: 5px 10px;
@@ -283,16 +287,16 @@
     margin: 1.5px 10px 1px 10px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
-  }
-  
-  .auth-btn.logout:hover {
+}
+
+.auth-btn.logout:hover {
     background-color: #4c16b9;
     color: white;
     box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
-  }
-  
-  /* 다크 모드 스타일 */
-  html.dark body .auth-btn.login {
+}
+
+/* 다크 모드 스타일 */
+html.dark body .auth-btn.login {
     background-color: transparent;
     color: white;
     border: 1px solid white;
@@ -300,63 +304,63 @@
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
     transition: all 0.1s ease;
     z-index: 9999;
-  }
-  
-  html.dark body .auth-btn.login:hover {
+}
+
+html.dark body .auth-btn.login:hover {
     background-color: rgba(255, 255, 200, 0.05);
     color: white;
     border-color: rgba(255, 255, 180, 0.8);
     box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-  }
-  
-  html.dark body .auth-btn.logout {
+}
+
+html.dark body .auth-btn.logout {
     background-color: transparent;
     color: white;
     border: 1px solid white;
     font-weight: 600;
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
     transition: all 0.1s ease;
-  }
-  
-  html.dark body .auth-btn.logout:hover {
+}
+
+html.dark body .auth-btn.logout:hover {
     background-color: rgba(255, 255, 200, 0.05);
     color: white;
     border-color: rgba(255, 255, 180, 0.8);
     box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-  }
-  
-  html.dark body .auth-btn.signup {
+}
+
+html.dark body .auth-btn.signup {
     color: white;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
     transition: all 0.1s ease;
-  }
-  
-  html.dark body .auth-btn.signup:hover {
+}
+
+html.dark body .auth-btn.signup:hover {
     color: lightblue;
     text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-  }
-  
-  html.dark body .auth-btn.write-post {
+}
+
+html.dark body .auth-btn.write-post {
     color: white;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
     transition: all 0.1s ease;
     background-color: black;
-  }
-  
-  html.dark body .auth-btn.write-post:hover {
+}
+
+html.dark body .auth-btn.write-post:hover {
     color: lightblue;
     text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-  }
-  
-  /* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
-  html.dark body .hamburger span {
+}
+
+/* 다크모드일 때 햄버거 아이콘 색상 흰색으로 */
+html.dark body .hamburger span {
     background-color: #fff;
-  }
-  
-  /* ======================
-     ✅ 다크모드 토글 스위치
-  ====================== */
-  .light-switch {
+}
+
+/* ======================
+   ✅ 다크모드 토글 스위치
+====================== */
+.light-switch {
     display: flex;
     align-items: center;
     justify-content: flex-end; /* 기본값은 flex-end로 통일 */
@@ -368,10 +372,10 @@
     width: 60px; /* 고정 너비 적용 */
     height: 30px; /* 고정 높이 적용 */
     justify-content: center; /* 스위치 중앙 정렬 */
-  }
-  
-  /* ✅ 스위치 트랙 */
-  .switch-label {
+}
+
+/* ✅ 스위치 트랙 */
+.switch-label {
     width: 60px;
     height: 30px;
     background-color: #888;
@@ -379,10 +383,10 @@
     position: relative;
     transition: background-color 0.3s ease;
     box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* ✅ 스위치 핸들 */
-  .switch-handle {
+}
+
+/* ✅ 스위치 핸들 */
+.switch-handle {
     position: absolute;
     top: 3px;
     left: 3px;
@@ -392,54 +396,54 @@
     border-radius: 50%;
     transition: left 0.3s ease, background 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* ✅ 체크 상태일 때 */
-  .light-switch[aria-checked="true"] .switch-label {
+}
+
+/* ✅ 체크 상태일 때 */
+.light-switch[aria-checked="true"] .switch-label {
     background-color: #666;
-  }
-  
-  .light-switch[aria-checked="true"] .switch-handle {
+}
+
+.light-switch[aria-checked="true"] .switch-handle {
     left: 33px; /* 정확하게 이동 */
     background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-  }
-  
-  /* ✅ 다크모드 적용 시 */
-  html.dark body .switch-label {
+}
+
+/* ✅ 다크모드 적용 시 */
+html.dark body .switch-label {
     background-color: #666;
-  }
-  
-  html.dark body .switch-handle {
+}
+
+html.dark body .switch-handle {
     background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-  }
-  
-  /* ✅ 모바일 대응 */
-  @media (max-width: 640px) {
+}
+
+/* ✅ 모바일 대응 */
+@media (max-width: 640px) {
     .light-switch {
-      transform: scale(0.85);
-      margin-left: 2px;
-      flex-shrink: 0;
+        transform: scale(0.85);
+        margin-left: 2px;
+        flex-shrink: 0;
     }
-  }
-  
-  .bottom-switch-row {
+}
+
+.bottom-switch-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
     margin-top: 12px;
-  }
-  
-  /* ======================
-     🔸 언어 드롭다운
-  ====================== */
-  .language-dropdown {
+}
+
+/* ======================
+   🔸 언어 드롭다운
+====================== */
+.language-dropdown {
     position: relative;
     display: inline-block;
-  }
-  
-  /* 🔸 언어 토글 버튼 */
-  .lang-btn {
+}
+
+/* 🔸 언어 토글 버튼 */
+.lang-btn {
     background: none;
     border: none;
     color: white;
@@ -449,16 +453,16 @@
     font-size: 0.9rem;
     cursor: pointer;
     padding: 5px 10px;
-  }
-  
-  /* 🔸 플래그 아이콘 */
-  .lang-btn .fi {
+}
+
+/* 🔸 플래그 아이콘 */
+.lang-btn .fi {
     width: 1.5rem;
     height: 1.2rem;
-  }
-  
-  /* 🔸 드롭다운 메뉴 */
-  .lang-menu {
+}
+
+/* 🔸 드롭다운 메뉴 */
+.lang-menu {
     display: none;
     position: absolute;
     top: calc(100% + 5px); /* 버튼 아래 약간 간격 */
@@ -471,10 +475,10 @@
     min-width: 120px;
     padding: 5px 0;
     list-style: none;
-  }
-  
-  /* 🔸 메뉴 항목 */
-  .lang-option {
+}
+
+/* 🔸 메뉴 항목 */
+.lang-option {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -482,34 +486,34 @@
     color: #333;
     text-decoration: none;
     white-space: nowrap;
-  }
-  
-  /* 🔸 호버 효과 */
-  .lang-option:hover {
+}
+
+/* 🔸 호버 효과 */
+.lang-option:hover {
     background-color: #f5f5f5;
-  }
-  
-  /* 🔸 활성 언어 */
-  .lang-option.active-lang {
+}
+
+/* 🔸 활성 언어 */
+.lang-option.active-lang {
     font-weight: bold;
     color: var(--highlight-color, #00adb5);
-  }
-  
-  /* 🌙 다크모드 지원 */
-  html.dark .lang-menu {
+}
+
+/* 🌙 다크모드 지원 */
+html.dark .lang-menu {
     background: #222;
     border-color: #444;
     box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
-  }
-  
-  html.dark .lang-option {
+}
+
+html.dark .lang-option {
     color: #eee;
-  }
-  
-  html.dark .lang-option:hover {
+}
+
+html.dark .lang-option:hover {
     background-color: #333;
-  }
-  
-  html.dark .lang-btn i {
+}
+
+html.dark .lang-btn i {
     color: #fff;
-  }
+}
