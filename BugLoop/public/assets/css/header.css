@@ -523,3 +523,23 @@ html.dark .lang-option:hover {
 html.dark .lang-btn {
     color: #fff; /* 👈 다크모드 시 흰색 */
 }
+
+/* 공통 스타일은 유지하면서 */
+.sidebar-icon.toggle-extension {
+    background: none !important;   /* 파란 배경 제거 */
+    color: #ccc;                   /* 회색 느낌으로 */
+    cursor: pointer;
+  }
+  
+  .sidebar-icon.toggle-extension:hover {
+    background: #333;              /* 살짝 hover만 줘도 좋음 */
+    color: white;
+  }
+  
+  /* active 스타일 방지 */
+  .sidebar-icon.toggle-extension.active,
+  .sidebar-icon.toggle-extension:focus {
+    background: none !important;
+    color: inherit !important;
+  }
+  
