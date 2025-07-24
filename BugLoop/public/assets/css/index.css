@@ -195,6 +195,14 @@ html.dark .tabs-blur-right {
   display: none;
 }
 
+.tab-spacer {
+  display: inline-block;
+  width: 1rem; /* 원하는 만큼 */
+  height: 1px; /* 높이는 최소 */
+  background: transparent; /* 안 보이게 */
+  flex-shrink: 0; /* 줄어들지 않도록 */
+}
+
 @media (max-width: 640px) {
   .tabs-wrapper {
     max-width: 95vw;
