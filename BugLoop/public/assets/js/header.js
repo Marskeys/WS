@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 탭 전환 로직
     const icons = document.querySelectorAll('.sidebar-icon');
     const contents = document.querySelectorAll('.tab-content');
+    const extensionPanel = document.querySelector('.sidebar-extension-panel');
+    const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
+    const toggleIcon = toggleExtensionBtn?.querySelector('i');
+    const isMobile = window.innerWidth <= 768;
   
     icons.forEach(icon => {
       icon.addEventListener('click', (e) => {
@@ -17,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // ✅ toggle-extension은 탭 아님, 아무것도 안 함
         if (icon.classList.contains('toggle-extension')) {
           return;
+        }
+  
+        // ✅ 패널이 닫혀 있으면 자동으로 열기
+        if (extensionPanel && !extensionPanel.classList.contains('open')) {
+          extensionPanel.classList.add('open');
+          if (toggleIcon) {
+            toggleIcon.classList.remove('fa-chevron-right');
+            toggleIcon.classList.add('fa-chevron-left');
+          }
         }
   
         // 탭 컨텐츠 표시/숨김
@@ -43,13 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         langMenu.style.display = 'none';
       }
     });
-  
-    // 사이드바 확장 패널 토글 로직
-    const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
-    const extensionPanel = document.querySelector('.sidebar-extension-panel');
-    const toggleIcon = toggleExtensionBtn?.querySelector('i');
-  
-    const isMobile = window.innerWidth <= 768;
   
     // ✅ 초기 상태: 데스크탑이면 열림, 모바일이면 닫힘
     if (extensionPanel) {
