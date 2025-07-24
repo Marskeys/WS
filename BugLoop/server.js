@@ -558,8 +558,15 @@ app.get('/post/:id', async (req, res) => {
       href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
     }));
 
+    const [recentPosts] = await db.query(`
+      SELECT id, title, is_private, user_id FROM posts
+      WHERE is_private = 0
+      ORDER BY created_at DESC
+      LIMIT 10
+    `);
+
     res.render('post-view', {
-      posts: filteredPosts,
+      posts: recentPosts,
       post: postForView,
       user: req.session.user,
       canonicalUrl,
