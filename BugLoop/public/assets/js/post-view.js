@@ -59,17 +59,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener('load', sendHeightToParent);
   window.addEventListener('resize', sendHeightToParent);
-</script>
 
-<div class="floating-toc" id="floatingToc"></div>
-<div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
-<div class="mobile-toc-modal" id="mobileTocModal">
-  <div class="mobile-toc-content" id="mobileTocContent"></div>
-</div>
 
-<%- include('partials/scripts') %>
 
-<script>
+
+
+
   document.addEventListener("DOMContentLoaded", () => {
     const toc = document.querySelector(".auto-toc");
     if (!toc) return;
