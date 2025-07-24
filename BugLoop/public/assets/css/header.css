@@ -134,6 +134,7 @@
         width: calc(100vw - 50px);
         left: 50px;
         transform: translateX(-100%);
+        min-width: 0px;
     }
 
     .sidebar-extension-panel.open {
