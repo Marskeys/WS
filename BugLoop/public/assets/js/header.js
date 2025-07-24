@@ -47,14 +47,13 @@
     }, 100);
   }
 
-  const sidePanel = document.querySelector('.side-panel');
-  const toggleBtn = document.querySelector('.toggle-panel');
-  const toggleIcon = toggleBtn.querySelector('i');
+  const toggleExtensionBtn = document.querySelector('.toggle-extension');
+  const extensionPanel = document.querySelector('.sidebar-extension-panel');
+  const toggleIcon = toggleExtensionBtn.querySelector('i');
 
-  toggleBtn.addEventListener('click', (e) => {
+  toggleExtensionBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    sidePanel.classList.toggle('collapsed');
+    extensionPanel.classList.toggle('hidden');
     toggleIcon.classList.toggle('fa-chevron-left');
     toggleIcon.classList.toggle('fa-chevron-right');
   });
-  
