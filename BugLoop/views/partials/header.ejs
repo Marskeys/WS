@@ -23,7 +23,6 @@
       <nav class="vscode-sidebar">
         <a href="#" class="sidebar-icon active" data-tab="home" title="홈"><i class="fas fa-home"></i></a>
         <a href="#" class="sidebar-icon" data-tab="profile" title="프로필"><i class="fas fa-user"></i></a>
-        <a href="#" class="sidebar-icon" data-tab="board" title="게시판"><i class="fas fa-th-list"></i></a>
         <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
       
         <% if (user) { %>
@@ -51,15 +50,12 @@
           </div>
 
           <% if (typeof posts !== 'undefined') { %>
-            <div class="tab-content" data-tab="board" style="display: none;">
+            <div class="tab-content" data-tab="search" style="display: none;">
               <%- include('table') %>
             </div>
           <% } %>
 
-          <div class="tab-content" data-tab="search" style="display: none;">
-            <h3>검색</h3>
-            <input type="text" placeholder="검색어를 입력하세요" style="width: 100%; padding: 5px;">
-          </div>
+      
 
           <div class="tab-content" data-tab="settings" style="display: none;">
             <h3>설정</h3>
