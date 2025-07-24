@@ -307,7 +307,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const postDetailLinks = document.querySelectorAll('.post-detail-link');
-      const currentUser = <%- JSON.stringify(user) %>;
+      const currentUser = <%- JSON.stringify(user || null) %>;
       const currentUserId = currentUser ? currentUser.id : null;
       const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
 
