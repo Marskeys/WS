@@ -584,7 +584,12 @@ res.render('post-view', {
   searchKeyword: '',
   selectedCategory: null,
   locale: res.locals.locale,
-  categories: categoryRows // ✅ 드디어 이거 넣음!
+  categories: categoryRows, 
+  pagination: {
+    current: 1,
+    total: 1,
+    range: [1]
+  }
 });
 
   } catch (err) {
