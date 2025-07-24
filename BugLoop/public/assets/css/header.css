@@ -48,10 +48,11 @@
         display: none;
     }
 
-    .lang-option.active-lang {
+    /* 언어 드롭다운이 헤더로 이동했으므로 이 스타일은 더 이상 필요 없을 수 있습니다. */
+    /* .lang-option.active-lang {
         font-weight: bold;
         color: var(--highlight-color);
-    }
+    } */
 }
 
 /* ======================
@@ -359,26 +360,56 @@ html.dark body .hamburger span {
 }
 
 /* ======================
-   ✅ 다크모드 토글 스위치
+   🔹 헤더 상단 컨트롤 (언어/다크모드 버튼 배치)
+====================== */
+.header-top {
+    width: 100%;
+    padding: 10px 20px; /* 적절한 패딩 */
+    box-sizing: border-box;
+    display: flex; /* Flexbox 활성화 */
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    position: fixed; /* 화면 상단에 고정 */
+    top: 0;
+    left: 0;
+    z-index: 9999; /* 다른 요소 위에 오도록 z-index 설정 */
+    background-color: transparent; /* 필요에 따라 배경색 조절 */
+}
+
+.top-controls {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝 정렬 */
+    align-items: center;
+    width: 100%; /* 너비 100% 사용 */
+}
+
+.right-controls {
+    display: flex; /* 버튼들을 가로로 배열 */
+    align-items: center;
+    gap: 15px; /* 버튼 사이 간격 */
+}
+
+/* ======================
+   ✅ 다크모드 토글 스위치 (헤더용)
 ====================== */
 .light-switch {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* 기본값은 flex-end로 통일 */
-    padding: 10px;
-    border-top: 1px solid #333;
-    margin-top: 10px;
+    justify-content: center;
+    width: 45px; /* 크기 줄임 */
+    height: 25px; /* 크기 줄임 */
     cursor: pointer;
-    color: white;
-    width: 60px; /* 고정 너비 적용 */
-    height: 30px; /* 고정 높이 적용 */
-    justify-content: center; /* 스위치 중앙 정렬 */
+    /* 사이드바 내부에 있을 때 적용되던 스타일 제거 */
+    border-top: none;
+    margin-top: 0;
+    padding: 0;
+    flex-shrink: 0; /* 공간이 부족해도 줄어들지 않게 */
 }
 
-/* ✅ 스위치 트랙 */
-.switch-label {
-    width: 60px;
-    height: 30px;
+/* ✅ 스위치 트랙 (헤더용) */
+.light-switch .switch-label {
+    width: 45px; /* 크기 줄임 */
+    height: 25px; /* 크기 줄임 */
     background-color: #888;
     border-radius: 999px;
     position: relative;
@@ -386,68 +417,39 @@ html.dark body .hamburger span {
     box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
-/* ✅ 스위치 핸들 */
-.switch-handle {
+/* ✅ 스위치 핸들 (헤더용) */
+.light-switch .switch-handle {
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 24px;
-    height: 24px;
+    top: 2px; /* 위치 조정 */
+    left: 2px; /* 위치 조정 */
+    width: 21px; /* 크기 줄임 */
+    height: 21px; /* 크기 줄임 */
     background: linear-gradient(to bottom, #ffffff, #cccccc);
     border-radius: 50%;
     transition: left 0.3s ease, background 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); /* 그림자 조정 */
 }
 
-/* ✅ 체크 상태일 때 */
-.light-switch[aria-checked="true"] .switch-label {
-    background-color: #666;
-}
-
+/* ✅ 체크 상태일 때 (헤더용) */
 .light-switch[aria-checked="true"] .switch-handle {
-    left: 33px; /* 정확하게 이동 */
+    left: calc(100% - 2px - 21px); /* 👈 핸들 크기에 맞게 이동 거리 조정 (45px - 2px - 21px = 22px) */
     background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-}
-
-/* ✅ 다크모드 적용 시 */
-html.dark body .switch-label {
-    background-color: #666;
-}
-
-html.dark body .switch-handle {
-    background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
-}
-
-/* ✅ 모바일 대응 */
-@media (max-width: 640px) {
-    .light-switch {
-        transform: scale(0.85);
-        margin-left: 2px;
-        flex-shrink: 0;
-    }
-}
-
-.bottom-switch-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-top: 12px;
 }
 
 /* ======================
-   🔸 언어 드롭다운
+   🔸 언어 드롭다운 (헤더용)
 ====================== */
 .language-dropdown {
     position: relative;
     display: inline-block;
+    /* flexbox 자식으로 정렬되므로 top, left 등 제거 */
 }
 
-/* 🔸 언어 토글 버튼 */
+/* 🔸 언어 토글 버튼 (헤더용) */
 .lang-btn {
     background: none;
     border: none;
-    color: white;
+    color: black; /* 👈 기본은 검정색 */
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -456,29 +458,30 @@ html.dark body .switch-handle {
     padding: 5px 10px;
 }
 
-/* 🔸 플래그 아이콘 */
+/* 🔸 플래그 아이콘 (헤더용) */
 .lang-btn .fi {
     width: 1.5rem;
     height: 1.2rem;
 }
 
-/* 🔸 드롭다운 메뉴 */
+/* 🔸 드롭다운 메뉴 (헤더용) */
 .lang-menu {
     display: none;
     position: absolute;
     top: calc(100% + 5px); /* 버튼 아래 약간 간격 */
-    left: 0;
+    right: 0; /* 오른쪽 정렬 */
+    left: auto; /* left 속성 제거 */
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
+    z-index: 10000; /* 헤더보다 높게 설정 */
     min-width: 120px;
     padding: 5px 0;
     list-style: none;
 }
 
-/* 🔸 메뉴 항목 */
+/* 🔸 메뉴 항목 (헤더용) */
 .lang-option {
     display: flex;
     align-items: center;
@@ -489,18 +492,18 @@ html.dark body .switch-handle {
     white-space: nowrap;
 }
 
-/* 🔸 호버 효과 */
+/* 🔸 호버 효과 (헤더용) */
 .lang-option:hover {
     background-color: #f5f5f5;
 }
 
-/* 🔸 활성 언어 */
+/* 🔸 활성 언어 (헤더용) */
 .lang-option.active-lang {
     font-weight: bold;
     color: var(--highlight-color, #00adb5);
 }
 
-/* 🌙 다크모드 지원 */
+/* 🌙 다크모드 지원 for lang-menu (변경 없음, 참고용) */
 html.dark .lang-menu {
     background: #222;
     border-color: #444;
@@ -515,6 +518,16 @@ html.dark .lang-option:hover {
     background-color: #333;
 }
 
-html.dark .lang-btn i {
-    color: #fff;
+/* 🌙 다크모드 시 언어 버튼 아이콘 색상 흰색 */
+html.dark .lang-btn {
+    color: #fff; /* 👈 다크모드 시 흰색 */
 }
+
+/* 이전에 side-panel 내부에 있던 .bottom-switch-row는 제거합니다. */
+/* .bottom-switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+} */
