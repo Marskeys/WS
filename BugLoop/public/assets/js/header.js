@@ -46,10 +46,10 @@
       window.location.href = url;
     }, 100);
   }
-
   const toggleExtensionBtn = document.querySelector('.toggle-extension');
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
   const toggleIcon = toggleExtensionBtn.querySelector('i');
+  const postContainer = document.querySelector('.signup-container');
   
   // ✅ 초기 상태 설정
   function initializePanelState() {
@@ -59,33 +59,38 @@
     if (isMobile && isHidden) {
       toggleIcon.classList.remove('fa-chevron-left');
       toggleIcon.classList.add('fa-chevron-right');
+      postContainer.classList.remove('panel-open');
     } else {
       toggleIcon.classList.remove('fa-chevron-right');
       toggleIcon.classList.add('fa-chevron-left');
+      postContainer.classList.add('panel-open');
     }
   }
   
-  // ✅ 패널 토글 기능
+  // ✅ 토글 버튼 클릭 시 처리
   toggleExtensionBtn.addEventListener('click', (e) => {
     e.preventDefault();
   
     const isHidden = extensionPanel.style.display === 'none' || window.getComputedStyle(extensionPanel).display === 'none';
   
     if (isHidden) {
+      // 열기
       extensionPanel.classList.remove('hidden');
       extensionPanel.style.display = 'flex';
       toggleIcon.classList.remove('fa-chevron-right');
       toggleIcon.classList.add('fa-chevron-left');
+      postContainer.classList.add('panel-open');
     } else {
+      // 닫기
       extensionPanel.classList.add('hidden');
       extensionPanel.style.display = 'none';
       toggleIcon.classList.remove('fa-chevron-left');
       toggleIcon.classList.add('fa-chevron-right');
+      postContainer.classList.remove('panel-open');
     }
   });
   
-  // ✅ 초기 상태 실행
+  // ✅ 초기 상태 실행 + 리사이즈 반영
   initializePanelState();
-  
-  // 선택 사항: 창 크기 바뀌면 다시 적용
   window.addEventListener('resize', initializePanelState);
+  

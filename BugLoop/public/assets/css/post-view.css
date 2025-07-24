@@ -110,3 +110,17 @@ body.modal-open {
   }
 
  
+  .signup-container {
+    transition: margin-left 0.3s ease;
+  }
+  
+  .signup-container.panel-open {
+    margin-left: 240px; /* 확장 패널 너비와 맞춰줘! */
+  }
+  
+  @media (max-width: 768px) {
+    .signup-container.panel-open {
+      margin-left: 0; /* 모바일에서는 겹치게! */
+    }
+  }
+  
