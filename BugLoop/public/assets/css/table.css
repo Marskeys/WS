@@ -1,3 +1,7 @@
+  
+  
+
+  
 /* ============================
    🔍 검색창 + 캐릭터 위치
 ============================ */
@@ -43,6 +47,39 @@
     border-color: #9d6bff;
     box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
   }
+
+    /* ✅ 검색 버튼 */
+    .icon-submit-btn {
+        position: absolute;
+        right: 1.5vw;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        color: #9d6bff;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+      }
+      .icon-submit-btn i {
+        color: #9d6bff;
+        font-size: 1.5rem;
+        transition: transform 0.2s ease, color 0.3s ease;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #9d6bff;
+      }
+      .icon-submit-btn:hover i {
+        color: #caa8ff;
+        transform: translateY(-50%) scale(1.15);
+      }
 
 /* ============================
    🧾 탭 + 게시판 (데스크탑)
