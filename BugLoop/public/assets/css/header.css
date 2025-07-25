@@ -95,7 +95,7 @@
     align-items: center;
     padding-top: 10px;
     height: 100vh;
-    z-index: 1;
+    z-index: 9990;
 }
 
 /* ======================
@@ -127,7 +127,7 @@
 .sidebar-extension-panel.open {
     transform: translateX(0);
     opacity: 1;
-    pointer-events: auto;
+    pointer-events: none;
 }
 
 @media (max-width: 768px) {
