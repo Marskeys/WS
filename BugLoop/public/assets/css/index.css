@@ -49,10 +49,10 @@
 }
 
 .main-panel {
-  background-color: red;
+  background-color: transparent;
   min-height: 100vh;
   padding: 0 0.5rem;
-  padding-left: 50px !important;
+  padding-left: 100px !important;
   display: flex;
   flex-direction: column;
   align-items: center;

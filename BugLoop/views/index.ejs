@@ -57,11 +57,15 @@ document.body.style.transform = 'scale(1.02)';
     <%- include('partials/scripts') %>
 
     <style>
-      .code-preview-wrapper {
-        padding: 50px 20px;
-        background: #1e1e1e;
-        color: white;
-      }
+    .code-preview-wrapper {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  background: #1e1e1e;
+  color: white;
+  box-sizing: border-box;
+}
 
       .code-preview-title {
         font-size: 1.8rem;

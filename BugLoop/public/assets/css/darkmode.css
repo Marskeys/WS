@@ -76,7 +76,7 @@ html.dark body .light-img {
 /* 다크모드에서 전체 배경 뚫기 */
 html.dark body .main-column,
 html.dark body .main-panel {
-  background: red !important;
+  background: transparent !important;
   box-shadow: none !important;
 }
 
