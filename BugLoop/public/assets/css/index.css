@@ -22,7 +22,6 @@
 }
 
 
-
 /* ============================
    🧱 전체 레이아웃
 ============================ */
@@ -34,7 +33,8 @@
   width: 100%;
   max-width: 1500px;
   margin: 50px auto;
-  z-index:999;
+  z-index: 999;
+  box-sizing: border-box;
 }
 
 .main-layout {
@@ -58,5 +58,45 @@
   align-items: center;
   width: 100%;
   max-width: calc(100vw - 400px);
+  box-sizing: border-box;
+  position: relative;
+  z-index: auto; /* 헤더보다 위로 안 올라가게 */
 }
 
+
+/* ============================
+   📱 반응형 모바일 대응
+============================ */
+@media (max-width: 768px) {
+  .full-layout {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0 auto;
+    max-width: 100vw;
+  }
+
+  .main-layout {
+    margin-left: 0;
+    width: 100vw;
+  }
+
+  .main-panel {
+    padding-left: 20px !important;
+    padding-right: 20px;
+    max-width: 100vw;
+    align-items: stretch;
+  }
+
+  .matrix-container {
+    height: 100vh;
+  }
+
+  #matrix-canvas {
+    height: 100vh;
+  }
+
+  .sidebar-extension-panel,
+  .vscode-sidebar {
+    display: none !important;
+  }
+}
