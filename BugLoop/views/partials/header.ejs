@@ -150,36 +150,30 @@
 <script src="/assets/js/global.js"></script>
 
 <script>
-  document.getElementById('login').addEventListener('click', function () {
+  // 로그인 버튼 누르면 로그인 폼 토글
+  document.getElementById('login')?.addEventListener('click', function () {
     const form = document.getElementById('login-form-container');
     const currentDisplay = window.getComputedStyle(form).display;
-
     form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
   });
 
+  // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
   document.addEventListener("DOMContentLoaded", () => {
-  const isDesktop = window.innerWidth >= 768;
+    const isDesktop = window.innerWidth >= 768;
+    const isHome =
+      location.pathname === "/" ||
+      /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
 
-  // 현재 URL이 홈이고 데스크탑이면
-  const isHome =
-    location.pathname === "/" ||
-    /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
-
-  if (isDesktop && isHome) {
-    // "profile" 탭 열기
-    const icons = document.querySelectorAll(".sidebar-icon");
-    const contents = document.querySelectorAll(".tab-content");
-
-    // 탭 열기
-    contents.forEach(content => {
-      content.style.display =
-        content.dataset.tab === "profile" ? "block" : "none";
-    });
-
-    // 아이콘 클래스 토글
-    icons.forEach(i => {
-      i.classList.toggle("active", i.dataset.tab === "profile");
-    });
-  }
-});
+    if (isDesktop && isHome) {
+      const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
+      if (profileIcon) {
+        // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            profileIcon.click();
+          }, 0);
+        });
+      }
+    }
+  });
 </script>
