@@ -229,110 +229,110 @@
    🔹 auth 버튼들 (기본 다크모드용 최종)
 ====================== */
 .auth-buttons {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 100;
-    letter-spacing: -0.5px;
-    white-space: nowrap;
-    padding: 0.3rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 100;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  padding: 0.3rem 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .auth-buttons {
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
   }
-  
-  @media (max-width: 640px) {
-    .auth-buttons {
-      gap: 4px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      width: 100%;
-    }
-  
-    .auth-btn.write-post,
-    .auth-btn.logout {
-      margin-left: 0 !important;
-    }
-  
-    .auth-btn.logout {
-      margin-right: 1px !important;
-    }
-  }
-  
-  /* 공통 */
-  .auth-btn {
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 600;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
-    background-color: transparent;
-    color: white;
-    border: 1px solid white;
-  }
-  
-  /* 로그인 */
-  .auth-btn.login {
-    padding: 5px 10px 3px;
-    border-radius: 999px;
-    font-size: 1rem;
-    margin-top: 1.5px;
-    margin-bottom: 1px;
-  }
-  
-  .auth-btn.login:hover {
-    background-color: rgba(255, 255, 200, 0.05);
-    color: white;
-    border-color: rgba(255, 255, 180, 0.8);
-    box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-  }
-  
-  /* 회원가입 */
-  .auth-btn.signup {
-    border: none;
-    color: white;
-    font-size: 0.9rem;
-    padding: 6px 4px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  }
-  
-  .auth-btn.signup:hover {
-    color: lightblue;
-    text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-  }
-  
-  /* 글쓰기 */
-  .auth-btn.write-post {
-    margin-left: 10px;
-    font-size: 0.85rem;
-    padding: 4px 10px !important;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-    background-color: black;
-  }
-  
-  .auth-btn.write-post:hover {
-    color: lightblue;
-    text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-    background-color: rgba(255, 255, 200, 0.05);
-    border-color: rgba(255, 255, 180, 0.8);
-  }
-  
-  /* 로그아웃 */
+
+  .auth-btn.write-post,
   .auth-btn.logout {
-    padding: 5px 10px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    margin: 1.5px 10px 1px 10px;
+    margin-left: 0 !important;
   }
-  
-  .auth-btn.logout:hover {
-    background-color: rgba(255, 255, 200, 0.05);
-    color: white;
-    border-color: rgba(255, 255, 180, 0.8);
-    box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+
+  .auth-btn.logout {
+    margin-right: 1px !important;
   }
-  
+}
+
+/* 공통 */
+.auth-btn {
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+}
+
+/* 로그인 */
+.auth-btn.login {
+  padding: 5px 10px 3px;
+  border-radius: 999px;
+  font-size: 1rem;
+  margin-top: 1.5px;
+  margin-bottom: 1px;
+}
+
+.auth-btn.login:hover {
+  background-color: rgba(255, 255, 200, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+}
+
+/* 회원가입 */
+.auth-btn.signup {
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  padding: 6px 4px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+}
+
+.auth-btn.signup:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+}
+
+/* 글쓰기 */
+.auth-btn.write-post {
+  margin-left: 10px;
+  font-size: 0.85rem;
+  padding: 4px 10px !important;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+  background-color: black;
+}
+
+.auth-btn.write-post:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+  background-color: rgba(255, 255, 200, 0.05);
+  border-color: rgba(255, 255, 180, 0.8);
+}
+
+/* 로그아웃 */
+.auth-btn.logout {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  margin: 1.5px 10px 1px 10px;
+}
+
+.auth-btn.logout:hover {
+  background-color: rgba(255, 255, 200, 0.05);
+  color: white;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+}
+
 
 /* ======================
    🔹 로그인 폼 (버튼 클릭 시 등장)
