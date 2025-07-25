@@ -60,10 +60,13 @@ document.body.style.transform = 'scale(1.02)';
     <%- include('partials/scripts') %>
 
     <style>
-    .code-preview-wrapper {
-  flex: 1;
-  width: 100%;
-  height: 100%;
+   .code-preview-wrapper {
+  position: absolute;
+  top: 100px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
   padding: 40px 20px;
   background: #1e1e1e;
   color: white;
