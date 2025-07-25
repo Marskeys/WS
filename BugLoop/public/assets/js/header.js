@@ -91,6 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     setTimeout(() => {
       window.location.href = url;
-    }, 100);
+    }, 300);
   }
   
