@@ -115,6 +115,9 @@
         </div>
 
         <div class="panel-footer">
+          <% if (user) { %>
+            <div class="greeting"><%= user.nickname %>님, 안녕하세요!</div>
+          <% } %>
           <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
             <div class="auth-buttons">
               <% if (user) { %>
