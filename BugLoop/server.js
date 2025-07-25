@@ -797,6 +797,7 @@ app.get('/search', async (req, res) => {
       posts: paginatedPosts,
       categories: allCategories,
       isSearch: true,
+      recentPosts: recentPosts || [],
       searchKeyword: keyword,
       currentPath: req.path,
       pagination: {
@@ -1014,6 +1015,7 @@ if (category !== 'all') {
 res.render('index', {
   posts: filteredPosts,
   categories: allCategories, // 원본 & 번역된 카테고리 객체 배열
+  recentPosts: recentPosts || [],
   isSearch: false,
   searchKeyword: '',
   currentPath: req.path,
