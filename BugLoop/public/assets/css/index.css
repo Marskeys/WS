@@ -86,7 +86,7 @@
     max-width: 100vw;
     align-items: stretch;
     position: relative;
-    z-index: auto;
+    z-index: 0;
   }
 
   .matrix-container {
