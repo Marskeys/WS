@@ -1,88 +1,32 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>안전한 JS 미리보기</title>
-  <style>
-    body {
-      font-family: 'Pretendard', sans-serif;
-      background: #1e1e1e;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
+<html class="dark" lang="<%= lang %>">
+  <%- include('partials/head') %>
+  <link rel="stylesheet" href="/assets/css/index.css" />
 
-    .tabs {
-      display: flex;
-      background: #333;
-      border-bottom: 1px solid #444;
-    }
+  <body class="light">
+    <%- include('partials/header') %>
 
-    .tab {
-      flex: 1;
-      padding: 12px;
-      text-align: center;
-      cursor: pointer;
-      background: #333;
-      border: none;
-      color: #ccc;
-      font-weight: 500;
-    }
+    <div class="full-layout">
+      <div class="main-layout">
+        <div class="main-panel">
 
-    .tab.active {
-      background: #222;
-      color: #00f5d4;
-    }
+          <section class="code-preview-wrapper">
+            <h1 class="code-preview-title">🧪 안전한 HTML/CSS/JS 미리보기</h1>
+            <div class="code-preview-tabs">
+              <button class="code-preview-tab active" data-tab="html">HTML</button>
+              <button class="code-preview-tab" data-tab="css">CSS</button>
+              <button class="code-preview-tab" data-tab="js">JS</button>
+            </div>
 
-    .editor {
-      display: none;
-      width: 100%;
-      height: 200px;
-    }
-
-    .editor.active {
-      display: block;
-    }
-
-    textarea {
-      width: 100%;
-      height: 100%;
-      background: #111;
-      color: #0ff;
-      border: none;
-      padding: 12px;
-      font-family: monospace;
-      font-size: 14px;
-      resize: none;
-      outline: none;
-    }
-
-    iframe {
-      width: 100%;
-      height: 400px;
-      border: none;
-      margin-top: 10px;
-      background: white;
-      border-radius: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="tabs">
-    <button class="tab active" data-tab="html">HTML</button>
-    <button class="tab" data-tab="css">CSS</button>
-    <button class="tab" data-tab="js">JS</button>
-  </div>
-
-  <div id="html" class="editor active">
-    <textarea id="html-code">
+            <div class="code-preview-editors">
+              <div id="code-preview-html" class="code-preview-editor active">
+                <textarea id="code-preview-html-code">
 <h1>Hello World!</h1>
-<p>자바스크립트는 iframe 안에서만 실행돼요!</p>
-    </textarea>
-  </div>
-
-  <div id="css" class="editor">
-    <textarea id="css-code">
+<p>iframe 안에서 안전하게 실행돼요 🛡️</p>
+                </textarea>
+              </div>
+              <div id="code-preview-css" class="code-preview-editor">
+                <textarea id="code-preview-css-code">
 body {
   background: #fff;
   color: #222;
@@ -93,47 +37,129 @@ body {
 h1 {
   color: #00f5d4;
 }
-    </textarea>
-  </div>
-
-  <div id="js" class="editor">
-    <textarea id="js-code">
-// 이 코드는 iframe 안에서만 실행됩니다.
+                </textarea>
+              </div>
+              <div id="code-preview-js" class="code-preview-editor">
+                <textarea id="code-preview-js-code">
+// iframe 안에서만 실행됩니다.
 document.body.style.transform = 'scale(1.02)';
-    </textarea>
-  </div>
+                </textarea>
+              </div>
+            </div>
 
-  <iframe id="preview" sandbox="allow-scripts"></iframe>
+            <iframe id="code-preview-frame" sandbox="allow-scripts"></iframe>
+          </section>
 
-  <script>
-    const tabs = document.querySelectorAll('.tab');
-    const editors = document.querySelectorAll('.editor');
-    const htmlInput = document.getElementById('html-code');
-    const cssInput = document.getElementById('css-code');
-    const jsInput = document.getElementById('js-code');
-    const preview = document.getElementById('preview');
+        </div>
+      </div>
+    </div>
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        editors.forEach(e => e.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
+    <%- include('partials/scripts') %>
+
+    <style>
+      .code-preview-wrapper {
+        padding: 50px 20px;
+        background: #1e1e1e;
+        color: white;
+      }
+
+      .code-preview-title {
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .code-preview-tabs {
+        display: flex;
+        justify-content: center;
+        background: #333;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px;
+      }
+
+      .code-preview-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        background: #333;
+        color: #ccc;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .code-preview-tab.active {
+        background: #222;
+        color: #00f5d4;
+      }
+
+      .code-preview-editors {
+        width: 100%;
+      }
+
+      .code-preview-editor {
+        display: none;
+      }
+
+      .code-preview-editor.active {
+        display: block;
+      }
+
+      textarea {
+        width: 100%;
+        height: 220px;
+        background: #111;
+        color: #0ff;
+        border: none;
+        padding: 12px;
+        font-family: monospace;
+        font-size: 14px;
+        resize: vertical;
+        border-radius: 10px;
+        outline: none;
+      }
+
+      #code-preview-frame {
+        width: 100%;
+        height: 400px;
+        margin-top: 20px;
+        border: 1px solid #444;
+        background: white;
+        border-radius: 10px;
+      }
+    </style>
+
+    <script>
+      const codeTabs = document.querySelectorAll('.code-preview-tab');
+      const codeEditors = document.querySelectorAll('.code-preview-editor');
+      const htmlInput = document.getElementById('code-preview-html-code');
+      const cssInput = document.getElementById('code-preview-css-code');
+      const jsInput = document.getElementById('code-preview-js-code');
+      const preview = document.getElementById('code-preview-frame');
+
+      codeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          codeTabs.forEach(t => t.classList.remove('active'));
+          codeEditors.forEach(e => e.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById(`code-preview-${tab.dataset.tab}`).classList.add('active');
+        });
       });
-    });
 
-    function updatePreview() {
-      const html = htmlInput.value;
-      const css = `<style>${cssInput.value}</style>`;
-      const js = `<script>${jsInput.value}<\/script>`;
-      const fullDoc = `${html}\n${css}\n${js}`;
-      preview.srcdoc = fullDoc;
-    }
+      function updatePreview() {
+        const html = htmlInput.value;
+        const css = `<style>${cssInput.value}</style>`;
+        const js = `<script>${jsInput.value}<\/script>`;
+        const fullDoc = `${html}\n${css}\n${js}`;
+        preview.srcdoc = fullDoc;
+      }
 
-    htmlInput.addEventListener('input', updatePreview);
-    cssInput.addEventListener('input', updatePreview);
-    jsInput.addEventListener('input', updatePreview);
-    window.addEventListener('DOMContentLoaded', updatePreview);
-  </script>
-</body>
+      htmlInput.addEventListener('input', updatePreview);
+      cssInput.addEventListener('input', updatePreview);
+      jsInput.addEventListener('input', updatePreview);
+      window.addEventListener('DOMContentLoaded', updatePreview);
+    </script>
+  </body>
 </html>
