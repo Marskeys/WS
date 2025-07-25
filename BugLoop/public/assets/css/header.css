@@ -335,8 +335,8 @@
 /* ======================
    🔹 다크모드 스타일
 ====================== */
-html.dark body .auth-btn.login,
-html.dark body .auth-btn.logout {
+.auth-btn.login,
+.auth-btn.logout {
     background-color: transparent;
     color: white;
     border: 1px solid white;
@@ -345,20 +345,20 @@ html.dark body .auth-btn.logout {
     transition: all 0.1s ease;
 }
 
-html.dark body .auth-btn.login:hover,
-html.dark body .auth-btn.logout:hover {
+.auth-btn.login:hover,
+.auth-btn.logout:hover {
     background-color: rgba(255, 255, 200, 0.05);
     color: white;
     border-color: rgba(255, 255, 180, 0.8);
     box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
-html.dark body .auth-btn.signup {
+.auth-btn.signup {
     color: white;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
 }
 
-html.dark body .auth-btn.signup:hover {
+.auth-btn.signup:hover {
     color: lightblue;
     text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
 }
