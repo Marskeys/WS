@@ -38,7 +38,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: calc(var(--sidebar-width) + var(--extension-width)) !important;
+  margin-left: calc(var(--sidebar-width) + var(--extension-width)+20px) !important;
   width: calc(100% - (var(--sidebar-width) + var(--extension-width)));
   box-sizing: border-box;
   z-index: 1;
