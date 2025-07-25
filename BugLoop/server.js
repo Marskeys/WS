@@ -797,7 +797,6 @@ app.get('/search', async (req, res) => {
       posts: paginatedPosts,
       categories: allCategories,
       isSearch: true,
-      recentPosts: recentPosts || [],
       searchKeyword: keyword,
       currentPath: req.path,
       pagination: {
@@ -1015,7 +1014,6 @@ if (category !== 'all') {
 res.render('index', {
   posts: filteredPosts,
   categories: allCategories, // 원본 & 번역된 카테고리 객체 배열
-  recentPosts: recentPosts || [],
   isSearch: false,
   searchKeyword: '',
   currentPath: req.path,
@@ -1033,29 +1031,6 @@ res.render('index', {
   }
 });
 
-app.get('/:lang/', async (req, res) => {
-  const lang = req.params.lang;
-
-  try {
-    const [posts] = await db.query(`
-      SELECT id, title, content, author, created_at
-      FROM posts
-      WHERE is_private = 0
-      ORDER BY created_at DESC
-      LIMIT 6
-    `);
-
-    res.render('index', {
-      lang,
-      user: req.session.user || null,
-      recentPosts: posts
-    });
-
-  } catch (err) {
-    console.error('인덱스 페이지 오류:', err);
-    res.status(500).send('서버 오류');
-  }
-});
 
 // DB 연결 확인
 db.query('SELECT NOW()')
