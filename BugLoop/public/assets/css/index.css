@@ -7,6 +7,8 @@
   height: calc(100vh - 100px);
   margin-bottom: -100px;
   overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
 }
 
 #matrix-canvas {
@@ -15,7 +17,7 @@
   left: 0;
   width: 100vw;
   height: 80vh;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
 }
 
