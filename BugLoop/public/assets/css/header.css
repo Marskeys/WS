@@ -507,3 +507,61 @@ html.dark .lang-option:hover {
 html.dark .lang-btn {
     color: #fff;
 }
+
+.profile-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ccc;
+    margin-bottom: 15px;
+  }
+  
+  .profile-info {
+    max-width: 260px;
+  }
+  
+  .profile-name {
+    font-size: 1.4em;
+    margin: 5px 0;
+  }
+  
+  .profile-bio {
+    font-size: 0.95em;
+    color: #888;
+    margin: 10px 0;
+  }
+  
+  .profile-social a {
+    color: inherit;
+    margin: 0 8px;
+    font-size: 1.4em;
+    transition: color 0.2s ease;
+  }
+  
+  .profile-social a:hover {
+    color: var(--highlight-color, #ff4081);
+  }
+  
+  .profile-tags {
+    margin-top: 15px;
+  }
+  
+  .profile-tags span {
+    display: inline-block;
+    background-color: #eee;
+    color: #333;
+    padding: 4px 10px;
+    margin: 3px;
+    border-radius: 20px;
+    font-size: 0.8em;
+  }
+  
