@@ -40,17 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   
-    // 언어 선택 드롭다운
-    const langToggle = document.getElementById('langToggle');
-    const langMenu = document.getElementById('langMenu');
-  
-    langToggle?.addEventListener('click', () => {
-      langMenu.style.display = langMenu.style.display === 'block' ? 'none' : 'block';
-    });
-  
-    document.addEventListener('click', (e) => {
-    
-  
+ 
     // ✅ 초기 상태: 데스크탑이면 열림 + 여백 적용
     if (extensionPanel) {
       if (isMobile) {
