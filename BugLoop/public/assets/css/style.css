@@ -1,6 +1,5 @@
 body.panel-open {
   padding-left: 400px; /* 확장 패널 너비만큼 */
-  padding-right: 50px !important;
   transition: padding 0.3s ease;
 }
 
