@@ -1,4 +1,4 @@
-body.panel-open {
+body.panel-open .full-layout {
   padding-left: var(--sidebar-width);
   transition: padding 0.3s ease;
 }
