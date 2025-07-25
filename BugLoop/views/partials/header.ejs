@@ -105,16 +105,39 @@
             </div>
           </div>
 
-          <% if (typeof posts !== 'undefined') { %>
-            <div class="tab-content" data-tab="search" style="display: none;">
-              <%- include('table') %>
+
+        <div class="panel-footer">
+          <% if (user) { %>
+            <div class="greeting" style="text-align: center; margin-top: 10px; font-weight: bold;">
+              <%= user.nickname %>님, 안녕하세요!
             </div>
           <% } %>
+          <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+            <div class="auth-buttons">
+              <% if (user) { %>
+                <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
+              <% } else { %>
+                <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
 
-
+                <button class="auth-btn login" id="login" type="button">로그인</button>
+              <% } %>
+            </div>
+          <% } %>
+      
+          <!-- 로그인 폼: 로그인 버튼 누르면 보임 -->
+          <div id="login-form-container" class="login-form-container hidden">
+            <form id="login-form" method="POST" action="/login">
+              <input type="text" name="id" placeholder="아이디" required />
+              <input type="password" name="password" placeholder="비밀번호" required />
+              <button type="submit">로그인</button>
+            </form>
+          </div>
+      
+          <!-- 진짜 푸터 -->
+          <div class="real-footer">
+            <small>© 2025 Bug Loop</small>
+          </div>
         </div>
-
-       
       </div>
     </div>
   </aside>
