@@ -41,12 +41,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: calc(var(--sidebar-width) + var(--extension-width)) + 100px !important;
+  margin-left: calc(var(--sidebar-width) + var(--extension-width));
   width: calc(100% - (var(--sidebar-width) + var(--extension-width)));
   box-sizing: border-box;
   z-index: 1;
   position: relative;
-  background-color: red;
 }
 
 .main-panel {
@@ -59,5 +58,6 @@
   align-items: center;
   width: 100%;
   max-width: calc(100vw - 400px);
+  background-color:red;
 }
 
