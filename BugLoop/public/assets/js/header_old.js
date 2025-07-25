@@ -49,10 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     document.addEventListener('click', (e) => {
-      if (!langToggle?.contains(e.target) && !langMenu?.contains(e.target)) {
-        langMenu.style.display = 'none';
-      }
-    });
+    
   
     // ✅ 초기 상태: 데스크탑이면 열림 + 여백 적용
     if (extensionPanel) {
