@@ -1,62 +1,29 @@
 <div class="full-header-container">
-  <div class="header-top">
-    <div class="top-controls">
-      <div class="left-controls">
-        <%
-        const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-        const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
-                        pathWithoutLang.startsWith('/post') ||
-                        pathWithoutLang.startsWith('/edit');
-        %>
-        <% if (showLogo) { %>
-          <a href="/<%= lang %>/" class="logo-link">
 
-          </a>
-        <% } %>
-      </div>
-      <div class="right-controls">
-        <div class="language-dropdown">
-          <button id="langToggle" class="lang-btn">
-            <%
-              let flagCode = lang;
-              switch(lang) {
-                case 'ko': flagCode = 'kr'; break;
-                case 'en': flagCode = 'gb'; break;
-                case 'zh': flagCode = 'cn'; break;
-                case 'ja': flagCode = 'jp'; break;
-                case 'fr': flagCode = 'fr'; break;
-                default: flagCode = 'kr';
-              }
-            %>
-            <span class="fi fi-<%= flagCode %>"></span>
-            <i class="fas fa-caret-down"></i>
-          </button>
-          <ul id="langMenu" class="lang-menu">
-            <%
-              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-            %>
-            <% supportedLangs.forEach(langCode => { %>
-              <li>
-                <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
-                  <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-                </a>
-              </li>
-            <% }); %>
-          </ul>
-        </div>
-
-        <div class="light-switch" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0" id="mode-toggle-accessible">
-          <span class="switch-label"><span class="switch-handle"></span></span>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <aside class="side-panel main-panel-only">
     <div class="sidebar-wrapper">
+      <nav class="vscode-sidebar">
+            <a href="#" class="sidebar-icon toggle-extension" title="패널 열기/닫기">
+          <i class="fas fa-chevron-left"></i>
+        </a>
 
+        <a href="https://www.bugloop.dev" class="sidebar-icon active" data-tab="home" title="홈"><i class="fas fa-home"></i></a>
+
+        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필"><i class="fas fa-user"></i></a>
+        <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
+
+        <% if (user) { %>
+          <% if (Number(user.is_admin) === 1) { %>
+            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기">
+              <i class="fas fa-pen"></i>
+            </a>
+          <% } %>
+          <a href="#" class="sidebar-icon" data-tab="settings" title="설정">
+            <i class="fas fa-cog"></i>
+          </a>
+        <% } %>
+      </nav>
 
 
       <div class="sidebar-extension-panel">
