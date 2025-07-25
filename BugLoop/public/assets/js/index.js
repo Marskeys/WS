@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const isDark = document.documentElement.classList.contains("dark");
 
       // 💡 색상 설정
-      const textColor = isDark ? "#00ff66" : "rgba(97, 104, 109, 0.58)";
+      const textColor = "rgba(97, 104, 109, 0.58)";
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -82,34 +82,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawTerms();
 
-    // 🍔 햄버거 메뉴 제어
-    const hamburger = document.getElementById("hamburger-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const mobileMenuHeader = mobileMenu?.querySelector(".mobile-menu-header");
-    const headerTop = document.querySelector(".header-top");
-
-    hamburger?.addEventListener("click", () => {
-      if (!mobileMenu.classList.contains("open")) {
-        mobileMenuHeader?.appendChild(hamburger);
-        hamburger.classList.add("is-in-menu");
-      } else {
-        headerTop?.prepend(hamburger);
-        hamburger.classList.remove("is-in-menu");
-      }
-
-      mobileMenu.classList.toggle("open");
-      hamburger.classList.toggle("open");
-      document.body.classList.toggle("menu-open");
-
-      const isOpen = mobileMenu.classList.contains("open");
-      if (isOpen) {
-        setTimeout(() => {
-          isCharRainPaused = true;
-        }, 200);
-      } else {
-        isCharRainPaused = false;
-        drawTerms();
-      }
-    });
   }
 });
