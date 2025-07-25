@@ -127,7 +127,7 @@
 .sidebar-extension-panel.open {
     transform: translateX(0);
     opacity: 1;
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
 @media (max-width: 768px) {
