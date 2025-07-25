@@ -50,7 +50,7 @@ html, body {
     align-items: center;
     padding-top: 10px;
     height: 100vh;
-    z-index: 9990; /* 헤더보다 낮은 z-index */
+    z-index: 1; /* 헤더보다 낮은 z-index */
 }
 
 
