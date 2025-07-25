@@ -76,8 +76,8 @@
   }
 
   .main-layout {
-    margin-left: 0;
-    width: 100vw;
+    margin-left: 50px; /* ✅ 사이드바 여백 유지 */
+    width: calc(100vw - 50px);
   }
 
   .main-panel {
