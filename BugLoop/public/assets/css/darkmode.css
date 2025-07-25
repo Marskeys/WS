@@ -21,7 +21,7 @@ html.dark body .main-layout {
 
 /* 왼쪽 패널 */
 html.dark body .main-panel {
-  background: linear-gradient(to bottom, #1e1e2f 0%, #2a2a4d 70%, #3d3d6b 100%);
+  background: red;
   box-shadow: inset -5px 0 5px -5px rgba(0,0,0,0.5);
   height: auto !important;
 }
