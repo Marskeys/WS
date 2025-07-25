@@ -12,25 +12,26 @@
     <div class="full-layout">
       <div class="main-layout">
         <div class="main-panel">
-
-          <!-- 매트릭스 캔버스 효과 -->
+          <!-- 매트릭스 배경 -->
           <div class="matrix-container">
             <canvas id="matrix-canvas"></canvas>
           </div>
 
-          <!-- 🔹 블로그 환영 문구 -->
+          <!-- 🔹 환영 문구 -->
           <section class="welcome-section">
             <h1 class="welcome-title">당신의 곁에, 아주 사적인 복지 가이드</h1>
             <p class="welcome-subtitle">사회, 일상, 마음을 기록하는 공간.  
               필요한 것만 조용히 찾아볼 수 있어요.</p>
           </section>
 
-          <!-- 🔹 최근 글 카드 -->
+          <!-- 🔹 최근 글 카드 (recentPosts 또는 posts 중 존재하는 걸로 렌더링) -->
+          <% const cards = typeof recentPosts !== 'undefined' ? recentPosts : posts || [] %>
+
           <section class="recent-posts">
             <h2>📌 최근 올라온 글</h2>
-            <% if (recentPosts && recentPosts.length > 0) { %>
+            <% if (cards.length > 0) { %>
               <div class="card-grid">
-                <% recentPosts.forEach(post => { %>
+                <% cards.forEach(post => { %>
                   <div class="post-card">
                     <a href="/<%= lang %>/post/<%= post.id %>" class="card-link">
                       <h3 class="card-title"><%= post.title %></h3>
