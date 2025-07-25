@@ -122,6 +122,7 @@
     opacity: 0;
     pointer-events: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
+    padding-left: 50px;
 }
 
 .sidebar-extension-panel.open {
