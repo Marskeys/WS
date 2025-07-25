@@ -12,19 +12,116 @@
     <div class="full-layout">
       <div class="main-layout">
         <div class="main-panel">
+
+          <!-- 매트릭스 캔버스 효과 -->
           <div class="matrix-container">
             <canvas id="matrix-canvas"></canvas>
           </div>
 
-         
+          <!-- 🔹 블로그 환영 문구 -->
+          <section class="welcome-section">
+            <h1 class="welcome-title">당신의 곁에, 아주 사적인 복지 가이드</h1>
+            <p class="welcome-subtitle">사회, 일상, 마음을 기록하는 공간.  
+              필요한 것만 조용히 찾아볼 수 있어요.</p>
+          </section>
+
+          <!-- 🔹 최근 글 카드 -->
+          <section class="recent-posts">
+            <h2>📌 최근 올라온 글</h2>
+            <% if (recentPosts && recentPosts.length > 0) { %>
+              <div class="card-grid">
+                <% recentPosts.forEach(post => { %>
+                  <div class="post-card">
+                    <a href="/<%= lang %>/post/<%= post.id %>" class="card-link">
+                      <h3 class="card-title"><%= post.title %></h3>
+                      <p class="card-snippet">
+                        <%= post.content.replace(/<[^>]+>/g, '').slice(0, 100) %>...
+                      </p>
+                      <div class="card-meta">
+                        <span><%= post.author %></span>
+                        <span><%= new Date(post.created_at).toISOString().slice(0, 10) %></span>
+                      </div>
+                    </a>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p>아직 게시된 글이 없습니다.</p>
+            <% } %>
+          </section>
 
           <div class="spacer"></div>
         </div>
       </div>
-
-      
     </div>
-    
+
     <%- include('partials/scripts') %>
+
+    <style>
+      .welcome-section {
+        padding: 60px 20px 40px;
+        text-align: center;
+      }
+
+      .welcome-title {
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+      }
+
+      .welcome-subtitle {
+        font-size: 1.1rem;
+        color: #777;
+      }
+
+      .recent-posts {
+        padding: 40px 20px;
+      }
+
+      .recent-posts h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 20px;
+      }
+
+      .post-card {
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: transform 0.2s ease;
+      }
+
+      .post-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+      }
+
+      .card-snippet {
+        font-size: 0.95rem;
+        color: #bbb;
+        margin-bottom: 15px;
+      }
+
+      .card-meta {
+        font-size: 0.8rem;
+        color: #888;
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
   </body>
 </html>
