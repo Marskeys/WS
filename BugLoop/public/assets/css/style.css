@@ -19,45 +19,6 @@ html, body {
   background: white;
 }
 
-/* ✅ 공통 스타일 */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-  font-weight: 600;
-  color: #222;
-  line-height: 1.4;
-  letter-spacing: -0.03em;
-  margin: 2.2rem 0 1rem;
-}
-
-/* ✅ 각 크기별로 자연스럽게 */
-h1 {
-  font-size: 2.2rem;   /* 약 35px */
-  font-weight: 700;
-}
-
-h2 {
-  font-size: 1.8rem;   /* 약 29px */
-}
-
-h3 {
-  font-size: 1.5rem;   /* 약 24px */
-}
-
-h4 {
-  font-size: 1.25rem;  /* 약 20px */
-  font-weight: 500;
-}
-
-h5 {
-  font-size: 1.1rem;   /* 약 17.6px */
-  font-weight: 500;
-}
-
-h6 {
-  font-size: 1rem;     /* 약 16px */
-  font-weight: 500;
-  color: #666;
-}
 
 
 /* ======================
