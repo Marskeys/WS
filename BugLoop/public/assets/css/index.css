@@ -31,8 +31,8 @@
   align-items: flex-start;
   width: 100%;
   max-width: 1500px;
-  margin-left: 800px;
-  z-index: 1; /* 낮은 z-index */
+  margin: 50px auto;
+  z-index: 9999; /* 낮은 z-index */
   position: relative;
 }
 
