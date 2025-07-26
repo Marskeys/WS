@@ -1,133 +1,36 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const icons = document.querySelectorAll('.sidebar-icon');
-  const contents = document.querySelectorAll('.tab-content');
-  const extensionPanel = document.querySelector('.sidebar-extension-panel');
-  const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
-  const isMobile = window.innerWidth <= 768;
+const icons = document.querySelectorAll('.sidebar-icon[data-tab]');
+const extensionPanel = document.querySelector('.sidebar-extension-panel');
+const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
+const toggleIcon = toggleExtensionBtn?.querySelector('i');
+const container = document.querySelector('.tab-container'); // 여기에 넣을 거야
 
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      const toggleIcon = toggleExtensionBtn?.querySelector('i');
-      if (!toggleIcon) return;
+icons.forEach(icon => {
+  icon.addEventListener('click', (e) => {
+    const selectedTab = icon.dataset.tab;
+    if (selectedTab === 'write' || selectedTab === 'home') return;
+    if (icon.classList.contains('toggle-extension')) return;
 
-      // ✅ 아이콘 반짝반짝 (항상 켜짐)
-      toggleIcon.classList.add('blink-highlight');
+    e.preventDefault();
 
-      icons.forEach(icon => {
-        icon.addEventListener('click', (e) => {
-          const selectedTab = icon.dataset.tab;
-          if (selectedTab === 'write' || selectedTab === 'home') return;
-          if (icon.classList.contains('toggle-extension')) return;
-      
-          e.preventDefault();
-      
-          if (!extensionPanel.classList.contains('open')) {
-            extensionPanel.classList.add('open');
-            document.body.classList.add('panel-open');
-            toggleIcon.classList.replace('fa-chevron-right', 'fa-chevron-left');
-          }
-      
-          // 🔥 제일 확실한 방식: 모든 탭 display: none, 해당 탭만 block
-          contents.forEach(content => {
-            content.style.display = 'none';
-          });
-      
-          const targetTab = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
-          if (targetTab) {
-            targetTab.style.display = 'block';
-          }
-      
-          icons.forEach(i => i.classList.remove('active'));
-          icon.classList.add('active');
-        });
-      });
-
-      // ✅ 확장 패널 토글 버튼 동작
-      toggleExtensionBtn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const isNowOpen = extensionPanel.classList.toggle('open');
-
-        toggleIcon.classList.toggle('fa-chevron-left');
-        toggleIcon.classList.toggle('fa-chevron-right');
-
-        if (isNowOpen) {
-          document.body.classList.add('panel-open');
-        } else {
-          document.body.classList.remove('panel-open');
-        }
-
-         // ✅ 깜빡임 제거
-  toggleIcon.classList.remove('blink-highlight');
-      });
-
-      // ✅ 초기 패널 상태 설정
-      if (extensionPanel) {
-        if (isMobile) {
-          extensionPanel.classList.remove('open');
-          document.body.classList.remove('panel-open');
-          toggleIcon.classList.replace('fa-chevron-left', 'fa-chevron-right');
-        } else {
-          extensionPanel.classList.add('open');
-          document.body.classList.add('panel-open');
-          toggleIcon.classList.replace('fa-chevron-right', 'fa-chevron-left');
-        }
-      }
-    }, 0);
-  });
-
-  // ✅ 언어 드롭다운
-  const langToggle = document.getElementById('langToggle');
-  const langMenu = document.getElementById('langMenu');
-
-  langToggle?.addEventListener('click', () => {
-    langMenu.style.display = langMenu.style.display === 'block' ? 'none' : 'block';
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!langToggle?.contains(e.target) && !langMenu?.contains(e.target)) {
-      langMenu.style.display = 'none';
+    if (!extensionPanel.classList.contains('open')) {
+      extensionPanel.classList.add('open');
+      document.body.classList.add('panel-open');
+      toggleIcon.classList.replace('fa-chevron-right', 'fa-chevron-left');
     }
+
+    // 1. 기존 콘텐츠 모두 제거
+    container.innerHTML = '';
+
+    // 2. 선택한 탭 콘텐츠 찾아서 클론 후 삽입
+    const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
+    if (original) {
+      const clone = original.cloneNode(true);
+      clone.style.display = 'block';
+      container.appendChild(clone);
+    }
+
+    // 3. 아이콘 상태 갱신
+    icons.forEach(i => i.classList.remove('active'));
+    icon.classList.add('active');
   });
 });
-
-    // 로그인 버튼 누르면 로그인 폼 토글
-    document.getElementById('login')?.addEventListener('click', function () {
-      const form = document.getElementById('login-form-container');
-      const currentDisplay = window.getComputedStyle(form).display;
-      form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
-    });
-
-    // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
-    document.addEventListener("DOMContentLoaded", () => {
-      const path = location.pathname;
-      const isDesktop = window.innerWidth >= 768;
-      const isHome =
-        location.pathname === "/" ||
-        /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
-        const isWrite =
-      path === "/write" || /^\/(ko|en|fr|zh|ja)\/write$/.test(path);
-
-  
-      if (isHome) {
-        const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
-        if (profileIcon) {
-          // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              profileIcon.click();
-            }, 0);
-          });
-        }
-      }
-
-      if (isWrite) {
-      const searchIcon = document.querySelector('.sidebar-icon[data-tab="search"]');
-      if (searchIcon) {
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            searchIcon.click();
-          }, 0);
-        });
-      }
-    }
-    });
