@@ -183,13 +183,3 @@
     });
   </script>
 
-<script>
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      const icon = document.querySelector('.sidebar-icon.toggle-extension i');
-      if (icon && !localStorage.getItem('sidebarToggleInteracted')) {
-        icon.classList.add('blink-highlight');
-      }
-    }, 0); // 또는 100 넣어도 되고
-  });
-</script>

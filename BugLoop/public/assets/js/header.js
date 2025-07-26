@@ -38,11 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
           icons.forEach(i => i.classList.remove('active'));
           icon.classList.add('active');
 
-          // ✅ 깜빡임 멈춤
-          if (!localStorage.getItem(interactedKey)) {
-            toggleIcon.classList.remove('blink-highlight');
-            localStorage.setItem(interactedKey, 'true');
-          }
+       
         });
       });
 
