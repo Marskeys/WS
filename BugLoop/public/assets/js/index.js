@@ -96,7 +96,7 @@ sidebar?.addEventListener('scroll', () => {
   const ratio = maxScroll === 0 ? 0 : scrollTop / maxScroll;
 
   // 어두워지는 정도 (0 ~ 0.5까지 예시)
-  const darkness = Math.min(ratio * 0.5, 0.5);
+  const darkness = Math.min(ratio * 0.95, 0.95);
 
   // 오버레이에 반영
   overlay.style.backgroundColor = `rgba(0, 0, 0, ${darkness})`;
