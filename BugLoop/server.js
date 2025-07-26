@@ -232,11 +232,24 @@ app.get('/write', (req, res) => {
   }
   res.render('editor', {
     user: req.session.user,
-    post: null,      // 새 글 작성 시에는 post가 null
-    isEdit: false    // 새 글 작성 모드임을 나타냄
+    post: null,
+    isEdit: false,
+
+    // ✅ 헤더 내 테이블을 위해 추가:
+    lang: 'ko', // 또는 safeLang
+    locale: res.locals.locale,
+    posts: [],
+    categories: [],
+    selectedCategory: null,
+    isSearch: false,
+    searchKeyword: '',
+    pagination: {
+      current: 1,
+      total: 1,
+      range: [1]
+    }
   });
 });
-
 
 app.post('/savePost', async (req, res) => {
   const { categories, is_private, is_pinned, lang_content } = req.body;
@@ -382,7 +395,21 @@ app.get('/edit/:id', async (req, res) => {
     res.render('editor', {
       user: req.session.user,
       post: postForEjs,
-      isEdit: true
+      isEdit: true,
+    
+      // ✅ 헤더 내 테이블을 위해 추가:
+      lang: 'ko', // 또는 safeLang
+      locale: res.locals.locale,
+      posts: [],
+      categories: [],
+      selectedCategory: null,
+      isSearch: false,
+      searchKeyword: '',
+      pagination: {
+        current: 1,
+        total: 1,
+        range: [1]
+      }
     });
   } catch (err) {
     console.error('수정 페이지 오류:', err);
