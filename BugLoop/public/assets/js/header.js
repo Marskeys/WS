@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleIcon?.classList.toggle('fa-chevron-left');
     toggleIcon?.classList.toggle('fa-chevron-right');
 
+     // ✅ 최초 1회 클릭 시 blink-highlight 제거
+     if (!blinkRemoved) {
+      toggleExtensionBtn.classList.remove('blink-highlight');
+      blinkRemoved = true;
+    }
+    
     if (isNowOpen) {
       document.body.classList.add('panel-open');
     } else {
@@ -86,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     langMenu?.classList.toggle('show'); // 또는 'open' 등 CSS에 맞게
   });
 
-  // 바깥 누르면 닫히게 하려면 이것도 가능 테스트
+  // 바깥 누르면 닫히게 하려면 이것도 가능 
   document.addEventListener('click', (e) => {
     if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
       langMenu?.classList.remove('show');
