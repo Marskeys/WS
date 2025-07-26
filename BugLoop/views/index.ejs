@@ -148,72 +148,58 @@ document.body.style.transform = 'scale(1.02)';
     <%- include('partials/scripts') %>
 
     <style>
-
       .code-preview-title {
         font-weight: 300;
-      }
-   .code-preview-wrapper {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow: auto;
-  padding: 40px 20px;
-  background: rgba(30, 30, 30, 0.6);
-  color: white;
-  box-sizing: border-box;
-}
-
-      .code-preview-title {
         font-size: 1.8rem;
         text-align: center;
         margin-bottom: 20px;
       }
-
+    
+      .code-preview-wrapper {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
+        padding: 40px 20px;
+        box-sizing: border-box;
+        transition: background 0.3s, color 0.3s;
+      }
+    
       .code-preview-tabs {
         display: flex;
         justify-content: center;
-        background: #333;
         border-radius: 8px;
         overflow: hidden;
         margin-bottom: 15px;
       }
-
+    
       .code-preview-tab {
         flex: 1;
         padding: 12px;
         text-align: center;
-        background: #333;
-        color: #ccc;
         font-weight: 500;
         border: none;
         cursor: pointer;
         transition: 0.2s ease;
       }
-
-      .code-preview-tab.active {
-        background: #222;
-        color: #00f5d4;
-      }
-
+    
       .code-preview-editors {
         width: 100%;
       }
-
+    
       .code-preview-editor {
         display: none;
       }
-
+    
       .code-preview-editor.active {
         display: block;
       }
-
+    
       textarea {
         width: 100%;
         height: 220px;
-        background: #111;
-        color: #0ff;
         border: none;
         padding: 12px;
         font-family: monospace;
@@ -221,17 +207,79 @@ document.body.style.transform = 'scale(1.02)';
         resize: vertical;
         border-radius: 10px;
         outline: none;
+        transition: background 0.3s, color 0.3s;
       }
-
+    
       #code-preview-frame {
         width: 100%;
         height: 400px;
         margin-top: 20px;
-        border: 1px solid #444;
-        background: white;
         border-radius: 10px;
+        border: 1px solid;
+        transition: background 0.3s, border-color 0.3s;
+      }
+    
+      /* 🌞 Light Mode */
+      html:not(.dark) .code-preview-wrapper {
+        background: rgba(255, 255, 255, 0.9);
+        color: #222;
+      }
+    
+      html:not(.dark) .code-preview-tabs {
+        background: #e0e0e0;
+      }
+    
+      html:not(.dark) .code-preview-tab {
+        background: #e0e0e0;
+        color: #333;
+      }
+    
+      html:not(.dark) .code-preview-tab.active {
+        background: #ccc;
+        color: #3366cc;
+      }
+    
+      html:not(.dark) textarea {
+        background: #f9f9f9;
+        color: #222;
+      }
+    
+      html:not(.dark) #code-preview-frame {
+        background: #fff;
+        border-color: #ccc;
+      }
+    
+      /* 🌚 Dark Mode */
+      html.dark .code-preview-wrapper {
+        background: rgba(30, 30, 30, 0.6);
+        color: white;
+      }
+    
+      html.dark .code-preview-tabs {
+        background: #333;
+      }
+    
+      html.dark .code-preview-tab {
+        background: #333;
+        color: #ccc;
+      }
+    
+      html.dark .code-preview-tab.active {
+        background: #222;
+        color: #00f5d4;
+      }
+    
+      html.dark textarea {
+        background: #111;
+        color: #0ff;
+      }
+    
+      html.dark #code-preview-frame {
+        background: #1e1e1e;
+        border-color: #444;
       }
     </style>
+    
 
     <script>
       const codeTabs = document.querySelectorAll('.code-preview-tab');
