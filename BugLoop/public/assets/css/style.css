@@ -27,10 +27,11 @@ html, body {
   background-color: white; 
 }
 
-html.dark body {
-  background-color: black;
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #1e1e1e; /* 다크모드 사용자에겐 어두운 배경으로 초기 깜빡임 방지 */
+  }
 }
-
 
 
 /* ======================
