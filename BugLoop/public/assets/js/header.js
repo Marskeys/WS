@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedIcon?.classList.add('active');
   }
 
-  // ✅ 탭 클릭 이벤트
+  // ✅ 탭 클릭 이벤트 체크 
   icons.forEach(icon => {
     icon.addEventListener('click', (e) => {
       const selectedTab = icon.dataset.tab;
