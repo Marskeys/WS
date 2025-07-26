@@ -576,3 +576,16 @@ html.dark .lang-btn {
     font-size: 0.8em;
   }
   
+  @keyframes glow-blink {
+    0%, 100% {
+      box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.9);
+    }
+    50% {
+      box-shadow: 0 0 20px 6px rgba(255, 255, 255, 0.4);
+    }
+  }
+  
+  .blink-highlight {
+    animation: glow-blink 1s ease-in-out infinite;
+    border-radius: 8px;
+  }
