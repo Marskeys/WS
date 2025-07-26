@@ -106,7 +106,7 @@
     box-sizing: border-box; 
     top: 0;
     left: 50px;
-    width: 20vw;
+    width: var(--extension-width);
     min-width: 200px;
     max-width: 500px;
     background-color: rgba(44, 47, 51, 0.8);
@@ -124,6 +124,8 @@
     transition: transform 0.3s ease, opacity 0.3s ease;
     padding-left: 50px;
 }
+
+
 
 .sidebar-extension-panel.open {
     transform: translateX(0);
