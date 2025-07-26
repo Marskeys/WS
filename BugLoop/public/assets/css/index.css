@@ -68,31 +68,27 @@
 
 @media (max-width: 768px) {
   .full-layout {
-    width: 80% !important;
-    margin: 0 !important;
+    width: 80vw;
     padding: 0 10px;
+    margin: 0 auto;
     box-sizing: border-box;
-    overflow-x: hidden;
   }
 
-  .main-panel {
-    max-width: 100% !important;
-  }
-
+  .main-layout,
+  .main-panel,
   .code-preview-wrapper {
-    position: relative !important; /* absolute 지양 */
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  textarea,
+  iframe {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
-.main-layout,
-.main-panel,
-.code-preview-wrapper,
-.code-preview-editor,
-textarea,
-iframe {
-  max-width: 100%;
-  overflow-x: auto;
-}
 
 /* ============================
    확장 사이드 패널
