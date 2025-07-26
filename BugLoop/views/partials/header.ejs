@@ -169,7 +169,7 @@
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
 
   
-      if (isDesktop && isHome) {
+      if (isHome) {
         const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
         if (profileIcon) {
           // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
