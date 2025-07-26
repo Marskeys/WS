@@ -110,8 +110,8 @@
     max-width: 500px;
     background-color: rgba(0, 0, 0, 0.95);
     color: white;
-    padding: 10px; /* 상하 10px, 좌우 16px */
-    padding-left: 100px !important;
+    padding: 10px 16px; /* 상하 10px, 좌우 16px */
+    padding-left: 70px !important;
     border-right: 1px solid #444;
     height: 100vh;
     overflow-y: auto;
@@ -122,7 +122,6 @@
     opacity: 0;
     pointer-events: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
-    padding-left: 50px;
 }
 
 
