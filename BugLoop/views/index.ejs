@@ -8,6 +8,37 @@
       <div class="spinner"></div>
     </div>
     <%- include('partials/header') %>
-  
+
+
+    <script>
+      const codeTabs = document.querySelectorAll('.code-preview-tab');
+      const codeEditors = document.querySelectorAll('.code-preview-editor');
+      const htmlInput = document.getElementById('code-preview-html-code');
+      const cssInput = document.getElementById('code-preview-css-code');
+      const jsInput = document.getElementById('code-preview-js-code');
+      const preview = document.getElementById('code-preview-frame');
+
+      codeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          codeTabs.forEach(t => t.classList.remove('active'));
+          codeEditors.forEach(e => e.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById(`code-preview-${tab.dataset.tab}`).classList.add('active');
+        });
+      });
+
+      function updatePreview() {
+        const html = htmlInput.value;
+        const css = `<style>${cssInput.value}</style>`;
+        const js = `<script>${jsInput.value}<\/script>`;
+        const fullDoc = `${html}\n${css}\n${js}`;
+        preview.srcdoc = fullDoc;
+      }
+
+      htmlInput.addEventListener('input', updatePreview);
+      cssInput.addEventListener('input', updatePreview);
+      jsInput.addEventListener('input', updatePreview);
+      window.addEventListener('DOMContentLoaded', updatePreview);
+    </script>
   </body>
 </html>
