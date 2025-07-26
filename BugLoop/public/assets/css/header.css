@@ -134,7 +134,6 @@
 @media (max-width: 768px) {
     .sidebar-extension-panel {
         width: calc(100vw - 50px);
-        left: 50px;
         transform: translateX(-100%);
         min-width: 0px;
     }
@@ -196,32 +195,7 @@
     display: none;
   }
 
-/* ======================
-   🔹 작성자 정보 박스
-====================== */
-.author-box {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    margin-top: 0;
-}
 
-.profile-gif {
-    width: 85px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
-}
-
-.author-description {
-    max-width: 600px;
-}
-
-.author-description p {
-    margin: 0;
-    color: #666;
-}
 
 /* ======================
    🔹 auth 버튼들 (수정완료)
