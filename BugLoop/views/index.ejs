@@ -24,112 +24,94 @@
             <div class="code-preview-editors">
               <div id="code-preview-html" class="code-preview-editor active">
                 <textarea id="code-preview-html-code">
-                  <header>
-                    <h1>나의 첫 번째 웹페이지</h1>
-                    <nav>
-                      <ul>
-                        <li>홈</a></li>
-                        <li>소개</a></li>
-                        <li>연락처</a></li>
-                      </ul>
-                    </nav>
-                  </header>
-                
-                  <main>
-                    <section>
-                      <h2>환영합니다!</h2>
-                      <p>이곳은 아주 기초적인 HTML 예시입니다.</p>
-                    </section>
-                
-                    <section>
-                      <h2>내가 좋아하는 것들</h2>
-                      <ul>
-                        <li>고양이</li>
-                        <li>코딩</li>
-                        <li>자기랑 놀기 💕</li>
-                      </ul>
-                    </section>
-                  </main>
-                
-                  <footer>
-                    <p>&copy; 2025 마씨의 블로그</p>
-                  </footer>
+<header>
+  <h1>나의 첫 번째 웹페이지</h1>
+  <nav>
+    <ul>
+      <li>홈</li>
+      <li>소개</li>
+      <li>연락처</li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section>
+    <h2>환영합니다!</h2>
+    <p>이곳은 아주 기초적인 HTML 예시입니다.</p>
+  </section>
+
+  <section>
+    <h2>내가 좋아하는 것들</h2>
+    <ul>
+      <li>고양이</li>
+      <li>코딩</li>
+      <li>자기랑 놀기 💕</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 마씨의 블로그</p>
+</footer>
                 </textarea>
               </div>
-              
               <div id="code-preview-css" class="code-preview-editor">
                 <textarea id="code-preview-css-code">
-                  body {
-                    background: #fff;
-                    color: #222;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    text-align: center;
-                    margin: 0;
-                    padding: 0;
-                  }
-                  
-                  header {
-                    background-color: #f0f4ff;
-                    padding: 20px 0;
-                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-                  }
-                  
-                  header h1 {
-                    margin: 0;
-                    color: #3366cc;
-                  }
-                  
-                  nav ul {
-                    list-style: none;
-                    padding: 0;
-                    margin: 10px 0 0;
-                    display: flex;
-                    justify-content: center;
-                    gap: 20px;
-                  }
-                  
-                  nav a {
-                    text-decoration: none;
-                    color: #444;
-                    font-weight: bold;
-                    transition: color 0.3s ease;
-                  }
-                  
-                  nav a:hover {
-                    color: #3366cc;
-                  }
-                  
-                  main {
-                    padding: 40px 20px;
-                  }
-                  
-                  section {
-                    margin-bottom: 40px;
-                  }
-                  
-                  h2 {
-                    color: #444;
-                    margin-bottom: 10px;
-                  }
-                  
-                  ul {
-                    list-style: none;
-                    padding: 0;
-                  }
-                  
-                  ul li {
-                    margin: 5px 0;
-                    font-size: 1.1rem;
-                  }
-                  
-                  footer {
-                    background: #f9f9f9;
-                    padding: 20px 0;
-                    font-size: 0.9rem;
-                    color: #888;
-                    border-top: 1px solid #eee;
-                  }
-                  
+body {
+  background: #fff;
+  color: #222;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background-color: #f0f4ff;
+  padding: 20px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+header h1 {
+  margin: 0;
+  color: #3366cc;
+}
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+nav li {
+  font-weight: bold;
+  color: #444;
+}
+main {
+  padding: 40px 20px;
+}
+section {
+  margin-bottom: 40px;
+}
+h2 {
+  color: #444;
+  margin-bottom: 10px;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+ul li {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+footer {
+  background: #f9f9f9;
+  padding: 20px 0;
+  font-size: 0.9rem;
+  color: #888;
+  border-top: 1px solid #eee;
+}
                 </textarea>
               </div>
               <div id="code-preview-js" class="code-preview-editor">
@@ -138,11 +120,22 @@ document.body.style.transform = 'scale(1.02)';
                 </textarea>
               </div>
             </div>
+
             <p style="text-align:center; font-weight:bold; margin-top:30px;">실시간 미리보기 (Live Preview)</p>
 
-            <iframe id="code-preview-frame" sandbox="allow-scripts"></iframe>
-          </section>
+            <div class="fake-browser">
+              <div class="fake-browser-header">
+                <div class="fake-browser-dots">
+                  <span class="dot red"></span>
+                  <span class="dot yellow"></span>
+                  <span class="dot green"></span>
+                </div>
+                <div class="fake-browser-address">https://preview.local</div>
+              </div>
+              <iframe id="code-preview-frame" sandbox="allow-scripts"></iframe>
+            </div>
 
+          </section>
         </div>
       </div>
     </div>
@@ -156,7 +149,7 @@ document.body.style.transform = 'scale(1.02)';
         text-align: center;
         margin-bottom: 20px;
       }
-    
+
       .code-preview-wrapper {
         position: absolute;
         top: 0;
@@ -168,7 +161,7 @@ document.body.style.transform = 'scale(1.02)';
         box-sizing: border-box;
         transition: background 0.3s, color 0.3s;
       }
-    
+
       .code-preview-tabs {
         display: flex;
         justify-content: center;
@@ -176,7 +169,7 @@ document.body.style.transform = 'scale(1.02)';
         overflow: hidden;
         margin-bottom: 15px;
       }
-    
+
       .code-preview-tab {
         flex: 1;
         padding: 12px;
@@ -186,19 +179,19 @@ document.body.style.transform = 'scale(1.02)';
         cursor: pointer;
         transition: 0.2s ease;
       }
-    
+
       .code-preview-editors {
         width: 100%;
       }
-    
+
       .code-preview-editor {
         display: none;
       }
-    
+
       .code-preview-editor.active {
         display: block;
       }
-    
+
       textarea {
         width: 100%;
         height: 220px;
@@ -211,77 +204,149 @@ document.body.style.transform = 'scale(1.02)';
         outline: none;
         transition: background 0.3s, color 0.3s;
       }
-    
+
+      /* Fake Browser Style */
+      .fake-browser {
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        border: 1px solid #ccc;
+        overflow: hidden;
+        margin-top: 20px;
+        background: white;
+      }
+
+      .fake-browser-header {
+        display: flex;
+        align-items: center;
+        background: #f5f5f7;
+        padding: 8px 12px;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+        font-family: 'Gowun Dodum', sans-serif;
+      }
+
+      .fake-browser-dots {
+        display: flex;
+        gap: 6px;
+        margin-right: 12px;
+      }
+
+      .fake-browser-dots .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .fake-browser-dots .red { background: #ff5f57; }
+      .fake-browser-dots .yellow { background: #ffbd2e; }
+      .fake-browser-dots .green { background: #28c840; }
+
+      .fake-browser-address {
+        flex: 1;
+        background: #fff;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        color: #666;
+        font-size: 12px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
       #code-preview-frame {
         width: 100%;
         height: 400px;
-        margin-top: 20px;
-        border-radius: 10px;
-        border: 1px solid;
-        transition: background 0.3s, border-color 0.3s;
+        border: none;
       }
-    
-      /* 🌞 Light Mode */
+
+      /* Light Mode */
       html:not(.dark) .code-preview-wrapper {
         background: rgba(255, 255, 255, 0.9);
         color: #222;
       }
-    
+
       html:not(.dark) .code-preview-tabs {
         background: #e0e0e0;
       }
-    
+
       html:not(.dark) .code-preview-tab {
         background: #e0e0e0;
         color: #333;
       }
-    
+
       html:not(.dark) .code-preview-tab.active {
         background: #ccc;
         color: #3366cc;
       }
-    
+
       html:not(.dark) textarea {
         background: #f9f9f9;
         color: #222;
       }
-    
-      html:not(.dark) #code-preview-frame {
+
+      html:not(.dark) .fake-browser {
         background: #fff;
         border-color: #ccc;
       }
-    
-      /* 🌚 Dark Mode */
+
+      html:not(.dark) .fake-browser-header {
+        background: #f5f5f7;
+        border-bottom: 1px solid #ddd;
+      }
+
+      html:not(.dark) .fake-browser-address {
+        background: #fff;
+        border: 1px solid #ccc;
+        color: #666;
+      }
+
+      /* Dark Mode */
       html.dark .code-preview-wrapper {
         background: rgba(30, 30, 30, 0.6);
         color: white;
       }
-    
+
       html.dark .code-preview-tabs {
         background: #333;
       }
-    
+
       html.dark .code-preview-tab {
         background: #333;
         color: #ccc;
       }
-    
+
       html.dark .code-preview-tab.active {
         background: #222;
         color: #00f5d4;
       }
-    
+
       html.dark textarea {
         background: #111;
         color: #0ff;
       }
-    
-      html.dark #code-preview-frame {
+
+      html.dark .fake-browser {
         background: #1e1e1e;
         border-color: #444;
       }
+
+      html.dark .fake-browser-header {
+        background: #2c2c2c;
+        border-bottom: 1px solid #444;
+      }
+
+      html.dark .fake-browser-address {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: #bbb;
+      }
+
+      html.dark #code-preview-frame {
+        background: #1e1e1e;
+      }
     </style>
-    
 
     <script>
       const codeTabs = document.querySelectorAll('.code-preview-tab');
