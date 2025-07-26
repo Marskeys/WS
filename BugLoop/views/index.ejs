@@ -8,7 +8,380 @@
       <div class="spinner"></div>
     </div>
     <%- include('partials/header') %>
+    <div class="full-layout">
+      <div class="main-layout">
+        <div class="main-panel">
+          <div class="matrix-container">
+            <canvas id="matrix-canvas"></canvas>
+          </div>
+        
+          <section class="code-preview-wrapper">
+            <h1 class="code-preview-title"><%= locale.editor["editor-title"] %></h1>
 
+            <div class="code-preview-body">
+              <div class="code-preview-left">
+                <div class="code-preview-tabs">
+                  <button class="code-preview-tab active" data-tab="html">HTML</button>
+                  <button class="code-preview-tab" data-tab="css">CSS</button>
+                  <button class="code-preview-tab" data-tab="js">JS</button>
+                </div>
+
+                <div class="code-preview-editors">
+                  <div id="code-preview-html" class="code-preview-editor active">
+                    <textarea id="code-preview-html-code">
+<header>
+  <h1>나의 첫 번째 웹페이지</h1>
+  <nav>
+    <ul>
+      <li>홈</li>
+      <li>소개</li>
+      <li>연락처</li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section>
+    <h2>환영합니다!</h2>
+    <p>이곳은 아주 기초적인 HTML 예시입니다.</p>
+  </section>
+
+  <section>
+    <h2>내가 좋아하는 것들</h2>
+    <ul>
+      <li>고양이</li>
+      <li>코딩</li>
+      <li>자기랑 놀기 💕</li> <!-- 자기 = sleeping -->
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 마씨의 블로그</p>
+</footer>
+                    </textarea>
+                  </div>
+
+                  <div id="code-preview-css" class="code-preview-editor">
+                    <textarea id="code-preview-css-code">
+body {
+  background: #fff;
+  color: #222;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+header {
+  background-color: #f0f4ff;
+  padding: 20px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+header h1 {
+  margin: 0;
+  color: #3366cc;
+}
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+nav li {
+  font-weight: bold;
+  color: #444;
+}
+main {
+  padding: 40px 20px;
+}
+section {
+  margin-bottom: 40px;
+}
+h2 {
+  color: #444;
+  margin-bottom: 10px;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+ul li {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+footer {
+  background: #f9f9f9;
+  padding: 20px 0;
+  font-size: 0.9rem;
+  color: #888;
+  border-top: 1px solid #eee;
+}
+                    </textarea>
+                  </div>
+
+                  <div id="code-preview-js" class="code-preview-editor">
+                    <textarea id="code-preview-js-code">
+document.body.style.transform = 'scale(1.02)';
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="code-preview-right">
+                <p class="preview-label">실시간 미리보기 (Live Preview)</p>
+                <div class="fake-browser">
+                  <div class="fake-browser-header">
+                    <div class="fake-browser-dots">
+                      <span class="dot red"></span>
+                      <span class="dot yellow"></span>
+                      <span class="dot green"></span>
+                    </div>
+                    <div class="fake-browser-address">https://preview.local</div>
+                  </div>
+                  <iframe id="code-preview-frame" sandbox="allow-scripts"></iframe>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/scripts') %>
+
+    <style>
+    .code-preview-title {
+  font-weight: 300;
+  font-size: 1.8rem;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+      .code-preview-tabs {
+        display: flex;
+        justify-content: center;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px;
+      }
+
+      .code-preview-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .code-preview-editors {
+        width: 100%;
+      }
+
+      .code-preview-editor {
+        display: none;
+      }
+
+      .code-preview-editor.active {
+        display: block;
+      }
+
+      textarea {
+        width: 100%;
+        height: 220px;
+        border: none;
+        padding: 12px;
+        font-family: monospace;
+        font-size: 14px;
+        resize: vertical;
+        border-radius: 10px;
+        outline: none;
+        transition: background 0.3s, color 0.3s;
+      }
+
+      @media screen and (min-width: 1024px) {
+  textarea {
+    height: 700px;
+  }
+}
+
+      .fake-browser {
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        border: 1px solid #ccc;
+        overflow: hidden;
+        background: white;
+      }
+
+      .fake-browser-header {
+        display: flex;
+        align-items: center;
+        background: #f5f5f7;
+        padding: 8px 12px;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+        font-family: 'Gowun Dodum', sans-serif;
+      }
+
+      .fake-browser-dots {
+        display: flex;
+        gap: 6px;
+        margin-right: 12px;
+      }
+
+      .fake-browser-dots .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .dot.red { background: #ff5f57; }
+      .dot.yellow { background: #ffbd2e; }
+      .dot.green { background: #28c840; }
+
+      .fake-browser-address {
+        flex: 1;
+        background: #fff;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        color: #666;
+        font-size: 12px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      #code-preview-frame {
+        width: 100%;
+        height: 400px;
+        border: none;
+      }
+
+      .preview-label {
+        text-align: center;
+        font-weight: bold;
+        margin: 20px 0 10px;
+      }
+
+      /* Layout for desktop only */
+      @media screen and (min-width: 1024px) {
+        .code-preview-body {
+          display: flex;
+          gap: 30px;
+          align-items: centor;
+        }
+
+        .code-preview-left {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .code-preview-right {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .code-preview-tabs {
+          justify-content: flex-start;
+        }
+
+        .preview-label {
+          margin-top: 0;
+        }
+
+        .fake-browser {
+          margin-top: 0;
+        }
+
+      }
+
+      /* Light/Dark Theme Styles 유지 */
+      html:not(.dark) .code-preview-wrapper {
+        background: rgba(255, 255, 255, 0.9);
+        color: #222;
+      }
+
+      html:not(.dark) .code-preview-tabs {
+        background: #e0e0e0;
+      }
+
+      html:not(.dark) .code-preview-tab {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      html:not(.dark) .code-preview-tab.active {
+        background: #ccc;
+        color: #3366cc;
+      }
+
+      html:not(.dark) textarea {
+        background: #f9f9f9;
+        color: #222;
+      }
+
+      html:not(.dark) .fake-browser {
+        background: #fff;
+        border-color: #ccc;
+      }
+
+      html.dark .code-preview-wrapper {
+        background: rgba(30, 30, 30, 0.6);
+        color: white;
+      }
+
+      html.dark .code-preview-tabs {
+        background: #333;
+      }
+
+      html.dark .code-preview-tab {
+        background: #333;
+        color: #ccc;
+      }
+
+      html.dark .code-preview-tab.active {
+        background: #222;
+        color: #00f5d4;
+      }
+
+      html.dark textarea {
+        background: #111;
+        color: #0ff;
+      }
+
+      html.dark .fake-browser {
+        background: #1e1e1e;
+        border-color: #444;
+      }
+
+      html.dark .fake-browser-header {
+        background: #2c2c2c;
+        border-bottom: 1px solid #444;
+      }
+
+      html.dark .fake-browser-address {
+        background: #1a1a1a;
+        border: 1px solid #444;
+        color: #bbb;
+      }
+
+      html.dark #code-preview-frame {
+        background: #1e1e1e;
+      }
+
+      .code-preview-wrapper {
+  width: 100%;
+  height: 100%;
+  margin-top: 50px;
+  padding: 40px;
+  box-sizing: border-box;
+}
+    </style>
 
     <script>
       const codeTabs = document.querySelectorAll('.code-preview-tab');
