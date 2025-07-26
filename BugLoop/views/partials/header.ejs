@@ -182,26 +182,3 @@
       }
     });
   </script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const toggleBtn = document.querySelector('.toggle-extension');
-    const allSidebarIcons = document.querySelectorAll('.sidebar-icon');
-    const hasInteractedKey = 'sidebarToggleInteracted';
-  
-    // 처음 방문자라면 깜빡이기 추가
-    if (!localStorage.getItem(hasInteractedKey)) {
-      toggleBtn?.classList.add('blink-highlight');
-    }
-  
-    // 모든 사이드바 버튼에 클릭 리스너 붙이기
-    allSidebarIcons.forEach(icon => {
-      icon.addEventListener('click', () => {
-        if (!localStorage.getItem(hasInteractedKey)) {
-          toggleBtn?.classList.remove('blink-highlight');
-          localStorage.setItem(hasInteractedKey, 'true');
-        }
-      });
-    });
-  });
-  </script>
