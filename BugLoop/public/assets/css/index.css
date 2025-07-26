@@ -38,7 +38,7 @@
   margin: 50px 50px;
   z-index: 9999;
   position: relative;
-  background-color: green;
+  background-color: transparent;
 }
 
 .main-layout {
@@ -50,11 +50,11 @@
   box-sizing: border-box;
   position: relative;
   z-index: 10;
-  background-color: blue;
+  background-color: transparent;
 }
 
 .main-panel {
-  background-color: rgb(251, 43, 43);
+  background-color: transparent;
   min-height: 150vh;
   padding: 0 0.5rem;
   display: flex;
