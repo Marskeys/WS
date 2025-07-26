@@ -1,20 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      const toggleIcon = document.querySelector('.sidebar-icon.toggle-extension i');
-      if (toggleIcon) {
-        console.log('🟢 아이콘 찾음:', toggleIcon);
-        if (!localStorage.getItem('sidebarToggleInteracted')) {
-          toggleIcon.classList.add('blink-highlight');
-        }
-      } else {
-        console.warn('⚠️ toggleIcon이 아직 없음');
-      }
-    }, 0); // 또는 100ms 줘도 좋아
-  });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
   const icons = document.querySelectorAll('.sidebar-icon');
   const contents = document.querySelectorAll('.tab-content');
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
@@ -22,10 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const isMobile = window.innerWidth <= 768;
   const interactedKey = 'sidebarToggleInteracted';
 
-  // 🪄 아이콘 관련 처리는 렌더가 끝난 다음 안전하게 실행
   requestAnimationFrame(() => {
     setTimeout(() => {
-      const toggleIcon = toggleExtensionBtn?.querySelector('i'); // 아이콘만 추출
+      const toggleIcon = toggleExtensionBtn?.querySelector('i');
       if (!toggleIcon) return;
 
       // ✅ 처음 방문 시 아이콘 반짝반짝
@@ -96,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
           toggleIcon.classList.replace('fa-chevron-right', 'fa-chevron-left');
         }
       }
-    }, 0); // setTimeout inside requestAnimationFrame
+    }, 0);
   });
 
   // ✅ 언어 드롭다운
