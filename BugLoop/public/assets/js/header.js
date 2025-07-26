@@ -34,3 +34,18 @@ icons.forEach(icon => {
     icon.classList.add('active');
   });
 });
+
+toggleExtensionBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const isNowOpen = extensionPanel.classList.toggle('open');
+
+  toggleIcon.classList.toggle('fa-chevron-left');
+  toggleIcon.classList.toggle('fa-chevron-right');
+
+  if (isNowOpen) {
+    document.body.classList.add('panel-open');
+  } else {
+    document.body.classList.remove('panel-open');
+  }
+});
