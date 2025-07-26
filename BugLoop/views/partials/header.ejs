@@ -162,6 +162,7 @@
 
     // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
     document.addEventListener("DOMContentLoaded", () => {
+      const path = location.pathname;
       const isDesktop = window.innerWidth >= 768;
       const isHome =
         location.pathname === "/" ||
