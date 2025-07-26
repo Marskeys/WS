@@ -84,15 +84,17 @@
               <div class="profile-tab">
                 <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
                 
+                <div class="profile-social">
+                  <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
+                  <a href="" target="_blank"><i class="fab fa-github"></i></a>
+                  <a href=""><i class="fas fa-envelope"></i></a>
+                </div>
+                
                 <div class="profile-info">
                   <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
                   <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
                   
-                  <div class="profile-social">
-                    <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href=""><i class="fas fa-envelope"></i></a>
-                  </div>
+             
                 
                   <div class="profile-tags">
                     <% locale.profile["profile-tags"].forEach(tag => { %>
