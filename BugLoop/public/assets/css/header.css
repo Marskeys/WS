@@ -509,7 +509,7 @@ html.dark .lang-btn {
     object-fit: cover;
     margin-bottom: 5px;
     opacity:0;
-    transition: opacity 0.5s ease; /* 원하는 속도로 조절 가능 */
+    transition: opacity 1s ease; /* 원하는 속도로 조절 가능 */
   }
   
   .profile-avatar.loaded {
