@@ -155,24 +155,25 @@
   <script src="/assets/js/global.js"></script>
 
   <script>
-    // 로그인 버튼 누르면 로그인 폼 토글
+    let initialMobileTab = null; // ✅ 전역에 선언
+  
     document.getElementById('login')?.addEventListener('click', function () {
       const form = document.getElementById('login-form-container');
       const currentDisplay = window.getComputedStyle(form).display;
       form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
     });
-
-    // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
+  
     document.addEventListener("DOMContentLoaded", () => {
       const isDesktop = window.innerWidth >= 768;
+      const isMobile = window.innerWidth < 768; // ✅ 새로 선언
       const isHome =
         location.pathname === "/" ||
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
-
+  
+      // ✅ 데스크탑 홈 → 자동 클릭
       if (isDesktop && isHome) {
         const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
         if (profileIcon) {
-          // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
           requestAnimationFrame(() => {
             setTimeout(() => {
               profileIcon.click();
@@ -180,5 +181,32 @@
           });
         }
       }
+  
+      // ✅ 모바일 홈 → 프로필 아이콘 기억만 해둠
+      if (isMobile && isHome) {
+        initialMobileTab = document.querySelector('.sidebar-icon[data-tab="profile"]');
+      }
+  
+      // ✅ 확장패널 토글 클릭 → 기억된 탭 자동 클릭
+      const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
+      const extensionPanel = document.querySelector('.sidebar-extension-panel');
+  
+      toggleExtensionBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isNowOpen = extensionPanel.classList.toggle('open');
+        const toggleIcon = toggleExtensionBtn.querySelector('i');
+  
+        toggleIcon?.classList.toggle('fa-chevron-left');
+        toggleIcon?.classList.toggle('fa-chevron-right');
+  
+        document.body.classList.toggle('panel-open', isNowOpen);
+  
+        // ✅ 자동 포커스 적용
+        if (isNowOpen && initialMobileTab && !document.querySelector('.sidebar-icon.active')) {
+          initialMobileTab.click();
+          initialMobileTab = null; // 재클릭 방지
+        }
+      });
     });
   </script>
+  
