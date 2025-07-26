@@ -53,6 +53,7 @@
 .tab-content {
     display: none;
   position: absolute;
+  left:50px;
 }
 
 .tab-content[style*="display: block"] {
