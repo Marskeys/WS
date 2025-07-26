@@ -13,15 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
     }
 
-    // 기존 콘텐츠 제거
-    container.innerHTML = '';
-
-    // 새로운 콘텐츠 클론 후 삽입
     const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
     if (original) {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
-      container.appendChild(clone);
+      container.replaceChildren(clone); // ✅ 깜빡임 방지
     }
 
     // 아이콘 상태 갱신
