@@ -95,3 +95,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 100);
   }
   
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.querySelector('.sidebar-icon.toggle-extension');
+  const sidebarIcons = document.querySelectorAll('.sidebar-icon');
+  const interactedKey = 'sidebarToggleInteracted';
+
+  // console로 확인
+  if (!toggleBtn) {
+    console.warn('🔺 toggle-extension 버튼이 안 잡혔어!');
+    return;
+  }
+
+  // 로컬스토리지 기준으로 처음이면 깜빡이기 시작
+  if (!localStorage.getItem(interactedKey)) {
+    toggleBtn.classList.add('blink-highlight');
+  }
+
+  // 모든 사이드바 버튼에 클릭 리스너
+  sidebarIcons.forEach(icon => {
+    icon.addEventListener('click', () => {
+      if (!localStorage.getItem(interactedKey)) {
+        toggleBtn.classList.remove('blink-highlight');
+        localStorage.setItem(interactedKey, 'true');
+      }
+    });
+  });
+});
+</script>
