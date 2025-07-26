@@ -14,10 +14,6 @@ html.dark body .site-subtitle {
   color: #bbb;
 }
 
-/* 메인 레이아웃 세로 정렬 강제 */
-html.dark body .main-layout {
-  align-items: flex-start !important;
-}
 
 /* 왼쪽 패널 */
 html.dark body .main-panel {
