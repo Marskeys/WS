@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     langMenu?.classList.toggle('show'); // 또는 'open' 등 CSS에 맞게
   });
 
-  // 바깥 누르면 닫히게 하려면 이것도 가능
+  // 바깥 누르면 닫히게 하려면 이것도 가능 테스트
   document.addEventListener('click', (e) => {
     if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
       langMenu?.classList.remove('show');
