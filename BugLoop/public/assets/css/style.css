@@ -29,16 +29,6 @@ html, body {
 
 
 
-/* ======================
-   🔹 탭 컨텐츠 전환
-====================== */
-.tab-content {
-    display: none;
-}
-
-.tab-content[style*="display: block"] {
-    display: block !important;
-}
 
 /* ======================
    🔹 반응형 (모바일)
