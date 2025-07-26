@@ -66,6 +66,12 @@
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .main-panel {
+    max-width: calc(100vw - 50px);
+  }
+}
+
 /* ============================
    확장 사이드 패널
 ============================ */
