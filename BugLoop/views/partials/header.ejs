@@ -169,10 +169,6 @@
         location.pathname === "/" ||
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
 
-          // ✅ 모바일 + 홈이면 기본 포커스 탭 기억해둠 (아직 클릭 X)
-  if (isMobile && isHome) {
-    initialMobileTab = document.querySelector('.sidebar-icon[data-tab="profile"]');
-  }
   
       if (isDesktop && isHome) {
         const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
