@@ -1,4 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const toggleIcon = document.querySelector('.sidebar-icon.toggle-extension i');
+      if (toggleIcon) {
+        console.log('🟢 아이콘 찾음:', toggleIcon);
+        if (!localStorage.getItem('sidebarToggleInteracted')) {
+          toggleIcon.classList.add('blink-highlight');
+        }
+      } else {
+        console.warn('⚠️ toggleIcon이 아직 없음');
+      }
+    }, 0); // 또는 100ms 줘도 좋아
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
   const icons = document.querySelectorAll('.sidebar-icon');
   const contents = document.querySelectorAll('.tab-content');
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
