@@ -1,7 +1,7 @@
 body.panel-open {
  padding-left: 322px;
   transition: padding 0.3s ease;
-  width: calc(100% - 5px);
+  width: calc(100%);
 }
 
 @media (max-width: 768px) {
