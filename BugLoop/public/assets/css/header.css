@@ -106,7 +106,6 @@
     box-sizing: border-box; 
     top: 0;
     left: 50px;
-    width: var(--extension-width);
     min-width: 200px;
     max-width: 500px;
     background-color: rgba(44, 47, 51, 0.8);
@@ -125,12 +124,6 @@
     padding-left: 50px;
 }
 
-/* ============================
-   확장 사이드 패널
-============================ */
-.sidebar-extension-panel {
-    width: var(--extension-width);
-}
 
 .sidebar-extension-panel.open {
     transform: translateX(0);
