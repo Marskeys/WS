@@ -84,3 +84,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+    // 로그인 버튼 누르면 로그인 폼 토글
+    document.getElementById('login')?.addEventListener('click', function () {
+      const form = document.getElementById('login-form-container');
+      const currentDisplay = window.getComputedStyle(form).display;
+      form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+    });
+
+    // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
+    document.addEventListener("DOMContentLoaded", () => {
+      const path = location.pathname;
+      const isDesktop = window.innerWidth >= 768;
+      const isHome =
+        location.pathname === "/" ||
+        /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
+        const isWrite =
+      path === "/write" || /^\/(ko|en|fr|zh|ja)\/write$/.test(path);
+
+  
+      if (isHome) {
+        const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
+        if (profileIcon) {
+          // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              profileIcon.click();
+            }, 0);
+          });
+        }
+      }
+
+      if (isWrite) {
+      const searchIcon = document.querySelector('.sidebar-icon[data-tab="search"]');
+      if (searchIcon) {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            searchIcon.click();
+          }, 0);
+        });
+      }
+    }
+    });
