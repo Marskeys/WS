@@ -84,6 +84,16 @@
   }
 }
 
+.main-layout,
+.main-panel,
+.code-preview-wrapper,
+.code-preview-editor,
+textarea,
+iframe {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 /* ============================
    확장 사이드 패널
 ============================ */
