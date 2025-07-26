@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body class="edit-body">
-
+  <%- include('partials/header') %>
   <% const isEdit = typeof post !== 'undefined' && post !== null; %>
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold; margin-top:3rem;">
