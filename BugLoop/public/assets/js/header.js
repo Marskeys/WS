@@ -20,14 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.replaceChildren(clone); // ✅ 깜빡임 방지
     }
 
-    // .gif 요소의 src를 강제로 다시 할당해서 재생 시작하게 만듦
-const gifs = clone.querySelectorAll('img[src$=".gif"]');
-gifs.forEach(gif => {
-  const src = gif.src;
-  gif.src = ''; // 강제 초기화
-  gif.src = src; // 다시 할당 → 즉시 재생됨
-});
-
+    
     // 아이콘 상태 갱신
     icons.forEach(i => i.classList.remove('active'));
     const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
