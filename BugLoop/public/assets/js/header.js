@@ -4,17 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
   const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
   const isMobile = window.innerWidth <= 768;
-  const interactedKey = 'sidebarToggleInteracted';
 
   requestAnimationFrame(() => {
     setTimeout(() => {
       const toggleIcon = toggleExtensionBtn?.querySelector('i');
       if (!toggleIcon) return;
 
-      // ✅ 처음 방문 시 아이콘 반짝반짝
-      if (!localStorage.getItem(interactedKey)) {
-        toggleIcon.classList.add('blink-highlight');
-      }
+      // ✅ 아이콘 반짝반짝 (항상 켜짐)
+      toggleIcon.classList.add('blink-highlight');
 
       // ✅ 사이드바 아이콘 클릭 시
       icons.forEach(icon => {
@@ -37,12 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
           icons.forEach(i => i.classList.remove('active'));
           icon.classList.add('active');
-
-          // ✅ 깜빡임 멈춤
-          if (!localStorage.getItem(interactedKey)) {
-            toggleIcon.classList.remove('blink-highlight');
-            localStorage.setItem(interactedKey, 'true');
-          }
         });
       });
 
@@ -58,12 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
           document.body.classList.add('panel-open');
         } else {
           document.body.classList.remove('panel-open');
-        }
-
-        // ✅ 깜빡임 멈춤
-        if (!localStorage.getItem(interactedKey)) {
-       
-          localStorage.setItem(interactedKey, 'true');
         }
       });
 
