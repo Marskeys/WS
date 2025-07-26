@@ -76,3 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+document.querySelectorAll('.profile-avatar').forEach(img => {
+  if (img.complete) {
+    // 이미지 이미 캐시되어 있음
+    img.classList.add('loaded');
+  } else {
+    img.addEventListener('load', () => {
+      img.classList.add('loaded');
+    });
+  }
+});

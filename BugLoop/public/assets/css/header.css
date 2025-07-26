@@ -508,8 +508,12 @@ html.dark .lang-btn {
     height: 200px;
     object-fit: cover;
     margin-bottom: 5px;
+    opacity:0;
   }
   
+  .profile-avatar.loaded {
+    opacity: 1;
+  }
   .profile-info {
     max-width: 260px;
   }
