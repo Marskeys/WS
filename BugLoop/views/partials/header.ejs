@@ -155,22 +155,15 @@
   <script src="/assets/js/global.js"></script>
 
   <script>
-    let initialMobileTab = null; // ✅ 전역에 선언
-  
-    document.getElementById('login')?.addEventListener('click', function () {
-      const form = document.getElementById('login-form-container');
-      const currentDisplay = window.getComputedStyle(form).display;
-      form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
-    });
+    let initialMobileTab = null;
   
     document.addEventListener("DOMContentLoaded", () => {
       const isDesktop = window.innerWidth >= 768;
-      const isMobile = window.innerWidth < 768; // ✅ 새로 선언
+      const isMobile = window.innerWidth < 768;
       const isHome =
         location.pathname === "/" ||
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
   
-      // ✅ 데스크탑 홈 → 자동 클릭
       if (isDesktop && isHome) {
         const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
         if (profileIcon) {
@@ -182,12 +175,11 @@
         }
       }
   
-      // ✅ 모바일 홈 → 프로필 아이콘 기억만 해둠
       if (isMobile && isHome) {
         initialMobileTab = document.querySelector('.sidebar-icon[data-tab="profile"]');
       }
   
-      // ✅ 확장패널 토글 클릭 → 기억된 탭 자동 클릭
+      // ✅ 이거 DOMContentLoaded 안에서 찾기!
       const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
       const extensionPanel = document.querySelector('.sidebar-extension-panel');
   
@@ -201,12 +193,12 @@
   
         document.body.classList.toggle('panel-open', isNowOpen);
   
-        // ✅ 자동 포커스 적용
         if (isNowOpen && initialMobileTab && !document.querySelector('.sidebar-icon.active')) {
           initialMobileTab.click();
-          initialMobileTab = null; // 재클릭 방지
+          initialMobileTab = null;
         }
       });
     });
   </script>
+  
   
