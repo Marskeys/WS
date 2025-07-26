@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           document.body.classList.remove('panel-open');
         }
+
+         // ✅ 깜빡임 제거
+  toggleIcon.classList.remove('blink-highlight');
       });
 
       // ✅ 초기 패널 상태 설정
