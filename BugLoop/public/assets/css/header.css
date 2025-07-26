@@ -109,7 +109,8 @@
     width: 20vw;
     min-width: 200px;
     max-width: 500px;
-    background-color: #2c2f33;
+    background: linear-gradient(to bottom, #ffffff 0%, #cccccc 30%, #666666 70%, #1e1e1e 100%);
+
     color: white;
     padding: 10px 16px; /* 상하 10px, 좌우 16px */
     border-right: 1px solid #444;
