@@ -161,17 +161,19 @@
       const currentDisplay = window.getComputedStyle(form).display;
       form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
     });
-  
+
+    // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
     document.addEventListener("DOMContentLoaded", () => {
       const isDesktop = window.innerWidth >= 768;
       const isHome =
         location.pathname === "/" ||
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
+
   
-      // ✅ 데스크탑에서 홈이면 자동으로 프로필 탭 클릭
       if (isDesktop && isHome) {
         const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
         if (profileIcon) {
+          // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
           requestAnimationFrame(() => {
             setTimeout(() => {
               profileIcon.click();
@@ -179,37 +181,5 @@
           });
         }
       }
-  
-      // ✅ 모바일에서 확장토글 누르면 자동으로 프로필 탭 클릭
-      const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
-      const extensionPanel = document.querySelector('.sidebar-extension-panel');
-  
-      toggleExtensionBtn?.addEventListener('click', () => {
-        const isMobile = window.innerWidth < 768;
-        const isOpen = extensionPanel.classList.contains('open');
-  
-        if (!isOpen) {
-          extensionPanel.classList.add('open');
-          document.body.classList.add('panel-open');
-  
-          // 패널 열릴 때 프로필 탭 클릭
-          if (isMobile) {
-            const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
-            if (profileIcon) {
-              requestAnimationFrame(() => {
-                setTimeout(() => {
-                  profileIcon.click();
-                }, 0);
-              });
-            }
-          }
-  
-          const width = extensionPanel.getBoundingClientRect().width;
-          document.documentElement.style.setProperty('--sidebar-width', `${width}px`);
-        } else {
-          extensionPanel.classList.remove('open');
-          document.body.classList.remove('panel-open');
-        }
-      });
     });
   </script>
