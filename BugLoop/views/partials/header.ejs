@@ -166,6 +166,8 @@
       const isHome =
         location.pathname === "/" ||
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
+        const isWrite =
+      path === "/write" || /^\/(ko|en|fr|zh|ja)\/write$/.test(path);
 
   
       if (isHome) {
@@ -179,6 +181,17 @@
           });
         }
       }
+
+      if (isWrite) {
+      const searchIcon = document.querySelector('.sidebar-icon[data-tab="search"]');
+      if (searchIcon) {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            searchIcon.click();
+          }, 0);
+        });
+      }
+    }
     });
   </script>
 
