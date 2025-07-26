@@ -13,25 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
       // ✅ 아이콘 반짝반짝 (항상 켜짐)
       toggleIcon.classList.add('blink-highlight');
 
-      // ✅ 사이드바 아이콘 클릭 시
       icons.forEach(icon => {
         icon.addEventListener('click', (e) => {
           const selectedTab = icon.dataset.tab;
           if (selectedTab === 'write' || selectedTab === 'home') return;
           if (icon.classList.contains('toggle-extension')) return;
-
+      
           e.preventDefault();
-
-          if (extensionPanel && !extensionPanel.classList.contains('open')) {
+      
+          if (!extensionPanel.classList.contains('open')) {
             extensionPanel.classList.add('open');
             document.body.classList.add('panel-open');
             toggleIcon.classList.replace('fa-chevron-right', 'fa-chevron-left');
           }
-
+      
+          // 🔥 제일 확실한 방식: 모든 탭 display: none, 해당 탭만 block
           contents.forEach(content => {
-            content.style.display = content.dataset.tab === selectedTab ? 'block' : 'none';
+            content.style.display = 'none';
           });
-
+      
+          const targetTab = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
+          if (targetTab) {
+            targetTab.style.display = 'block';
+          }
+      
           icons.forEach(i => i.classList.remove('active'));
           icon.classList.add('active');
         });
