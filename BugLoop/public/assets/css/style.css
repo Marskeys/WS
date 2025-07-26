@@ -4,6 +4,14 @@ body.panel-open {
   width: calc(100% - 5px);
 }
 
+@media (max-width: 768px) {
+  body.panel-open {
+    transition: none !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
 /* ======================
    ✅ 기본 설정
 ====================== */
