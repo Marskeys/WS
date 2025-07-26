@@ -125,7 +125,18 @@
     padding-left: 50px;
 }
 
-
+/* ============================
+   확장 사이드 패널
+============================ */
+.sidebar-extension-panel {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    width: var(--extension-width);
+    height: 100vh;
+    background: #222;
+    z-index: 12000;
+  }
 
 .sidebar-extension-panel.open {
     transform: translateX(0);
