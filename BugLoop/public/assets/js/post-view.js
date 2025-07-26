@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const decoded = new TextDecoder('utf-8').decode(
           new Uint8Array([...atob(encoded)].map(c => c.charCodeAt(0)))
-        );...
+        );
         const iframe = document.createElement('iframe');
         iframe.setAttribute('sandbox', 'allow-scripts');
         iframe.setAttribute('referrerpolicy', 'no-referrer');
