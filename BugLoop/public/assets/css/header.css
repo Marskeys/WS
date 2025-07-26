@@ -534,9 +534,12 @@ html.dark .lang-btn {
     margin: 10px 0;
   }
   
+  .profile-social {
+    margin-top: -20px;
+  }
   .profile-social a {
     color: inherit;
-    margin: -20px 8px;
+    margin: 0px 8px;
     font-size: 1.4em;
     transition: color 0.2s ease;
   }
