@@ -29,7 +29,7 @@
   justify-content: space-between;
   flex-wrap: nowrap;
   align-items: center;
-  width: calc(100%-50px);
+  width: calc(100% - 50px);
   max-width: 1500px;
   margin: 50px 50px;
   z-index: 9999; /* 낮은 z-index */
@@ -42,7 +42,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%
+  width: 100%;
   box-sizing: border-box;
   position: relative;
   z-index: 10;
@@ -60,6 +60,24 @@
   max-width: calc(100vw - 200px);
   z-index: 11;
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .full-layout {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .main-panel {
+    max-width: 100% !important;
+  }
+
+  .code-preview-wrapper {
+    position: relative !important; /* absolute 지양 */
+  }
 }
 
 /* ============================
