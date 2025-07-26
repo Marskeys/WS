@@ -77,3 +77,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const langToggle = document.getElementById('langToggle');
+  const langMenu = document.getElementById('langMenu');
+
+  langToggle?.addEventListener('click', (e) => {
+    e.preventDefault();
+    langMenu?.classList.toggle('show'); // 또는 'open' 등 CSS에 맞게
+  });
+
+  // 바깥 누르면 닫히게 하려면 이것도 가능
+  document.addEventListener('click', (e) => {
+    if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+      langMenu?.classList.remove('show');
+    }
+  });
+});
