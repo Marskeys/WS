@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // ✅ 깜빡임 멈춤
           if (!localStorage.getItem(interactedKey)) {
- 
+            toggleIcon.classList.remove('blink-highlight');
             localStorage.setItem(interactedKey, 'true');
           }
         });
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ✅ 깜빡임 멈춤
         if (!localStorage.getItem(interactedKey)) {
-          toggleIcon.classList.remove('blink-highlight');
+       
           localStorage.setItem(interactedKey, 'true');
         }
       });
