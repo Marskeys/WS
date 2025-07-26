@@ -29,13 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           contents.forEach(content => {
-            content.classList.remove('active-tab');
+            content.style.display = content.dataset.tab === selectedTab ? 'block' : 'none';
           });
-          
-          const targetTab = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
-          if (targetTab) {
-            targetTab.classList.add('active-tab');
-          }
 
           icons.forEach(i => i.classList.remove('active'));
           icon.classList.add('active');
