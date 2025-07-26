@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
   const toggleIcon = toggleExtensionBtn?.querySelector('i');
   const container = document.querySelector('.tab-container'); // 여기에 탭 내용 삽입
-
+  let blinkRemoved = false; 
   // ✅ 공통 탭 열기 함수 (클릭/자동 모두에서 사용)
   function openTab(selectedTab) {
     if (!extensionPanel.classList.contains('open')) {
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleExtensionBtn.classList.remove('blink-highlight');
       blinkRemoved = true;
     }
-    
+
     if (isNowOpen) {
       document.body.classList.add('panel-open');
     } else {
