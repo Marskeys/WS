@@ -61,20 +61,6 @@ html.dark body .light-img {
   display: none;
 }
 
-
-
-
-
-
-
-
-/* 다크모드에서 전체 배경 뚫기 */
-html.dark body .main-column,
-html.dark body .main-panel {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
 html.dark body .header-top {
   z-index: 5000;
   background-color: transparent!important;
