@@ -457,6 +457,10 @@
     list-style: none;
 }
 
+.lang-menu.show {
+    display: block;
+  }
+
 .lang-option {
     display: flex;
     align-items: center;
