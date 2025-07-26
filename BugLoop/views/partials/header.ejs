@@ -155,18 +155,29 @@
   <script src="/assets/js/global.js"></script>
 
   <script>
-    let initialMobileTab = null;
-  
+    // 로그인 버튼 누르면 로그인 폼 토글
+    document.getElementById('login')?.addEventListener('click', function () {
+      const form = document.getElementById('login-form-container');
+      const currentDisplay = window.getComputedStyle(form).display;
+      form.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+    });
+
+    // ✅ DOMContentLoaded 후 홈에서 자동으로 프로필 탭 클릭하도록 안정적 처리
     document.addEventListener("DOMContentLoaded", () => {
       const isDesktop = window.innerWidth >= 768;
-      const isMobile = window.innerWidth < 768;
       const isHome =
         location.pathname === "/" ||
         /^\/(ko|en|fr|zh|ja)\/?$/.test(location.pathname);
+
+          // ✅ 모바일 + 홈이면 기본 포커스 탭 기억해둠 (아직 클릭 X)
+  if (isMobile && isHome) {
+    initialMobileTab = document.querySelector('.sidebar-icon[data-tab="profile"]');
+  }
   
       if (isDesktop && isHome) {
         const profileIcon = document.querySelector('.sidebar-icon[data-tab="profile"]');
         if (profileIcon) {
+          // DOM 렌더 이후 이벤트 큐에서 실행되도록 요청 → 완전 안정
           requestAnimationFrame(() => {
             setTimeout(() => {
               profileIcon.click();
@@ -174,31 +185,5 @@
           });
         }
       }
-  
-      if (isMobile && isHome) {
-        initialMobileTab = document.querySelector('.sidebar-icon[data-tab="profile"]');
-      }
-  
-      // ✅ 이거 DOMContentLoaded 안에서 찾기!
-      const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
-      const extensionPanel = document.querySelector('.sidebar-extension-panel');
-  
-      toggleExtensionBtn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const isNowOpen = extensionPanel.classList.toggle('open');
-        const toggleIcon = toggleExtensionBtn.querySelector('i');
-  
-        toggleIcon?.classList.toggle('fa-chevron-left');
-        toggleIcon?.classList.toggle('fa-chevron-right');
-  
-        document.body.classList.toggle('panel-open', isNowOpen);
-  
-        if (isNowOpen && initialMobileTab && !document.querySelector('.sidebar-icon.active')) {
-          initialMobileTab.click();
-          initialMobileTab = null;
-        }
-      });
     });
   </script>
-  
-  
