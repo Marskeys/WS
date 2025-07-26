@@ -51,11 +51,11 @@
   box-sizing: border-box;
   position: relative;
   z-index: 10;
-  background-color: red;
+  background-color: transparent;
 }
 
 .main-panel {
-  background-color: transparent;
+  background-color: red;
   min-height: 150vh;
   padding: 0 0.5rem;
   display: flex;
