@@ -27,12 +27,6 @@ html, body {
   background-color: white; 
 }
 
-@media (prefers-color-scheme: dark) {
-  html, body {
-    background-color: #1e1e1e; /* 다크모드 사용자에겐 어두운 배경으로 초기 깜빡임 방지 */
-  }
-}
-
 
 /* ======================
    🔹 반응형 (모바일)
