@@ -588,5 +588,5 @@ html.dark .lang-btn {
   }
   
   .blink-highlight {
-    animation: icon-glow-blink 1s ease-in-out infinite;
+    animation: icon-glow-blink 1s ease-in-out infinite !important;
   }
