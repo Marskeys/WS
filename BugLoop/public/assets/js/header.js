@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ===== 기존 코드들 전부 모으기 =====
+  // ==== 요소 선택 ====
   const icons = document.querySelectorAll('.sidebar-icon[data-tab]');
   const extensionPanel = document.querySelector('.sidebar-extension-panel');
   const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
@@ -7,50 +7,55 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.tab-container');
   const langToggle = document.getElementById('langToggle');
   const langMenu = document.getElementById('langMenu');
-  const textStage = document.querySelector('.text-stage');
-  let blinkRemoved = false;
 
-  // ✅ 공통 탭 열기 함수
+  let blinkRemoved = false;
+  let scrollHandler = null; // ✅ 스크롤 핸들러 추적용
+
+  // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
     if (!extensionPanel.classList.contains('open')) {
       extensionPanel.classList.add('open');
       document.body.classList.add('panel-open');
       toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
     }
-  
+
     const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
     if (original) {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
-  
-      // ✅ 탭 내용 바뀐 직후 스크롤 이벤트 연결
+
+      // ✅ 텍스트 변화 요소 다시 찾아서 스크롤 이벤트 설정
       const textStage = clone.querySelector('.text-stage');
-      if (textStage) {
-        extensionPanel.addEventListener('scroll', () => {
-          const scrollY = extensionPanel.scrollTop;
-  
-          if (scrollY < 200) {
-            textStage.textContent = '';
-          } else if (scrollY < 600) {
-            textStage.textContent = 'Hello, love';
-          } else if (scrollY < 1000) {
-            textStage.textContent = 'You’re amazing';
-          } else if (scrollY < 1400) {
-            textStage.textContent = 'Keep going';
-          } else {
-            textStage.textContent = '';
-          }
-        });
-      }
+      if (scrollHandler) extensionPanel.removeEventListener('scroll', scrollHandler);
+
+      scrollHandler = () => {
+        const scrollY = extensionPanel.scrollTop;
+
+        if (!textStage) return;
+
+        if (scrollY < 200) {
+          textStage.textContent = '';
+        } else if (scrollY < 600) {
+          textStage.textContent = 'Hello, love';
+        } else if (scrollY < 1000) {
+          textStage.textContent = 'You’re amazing';
+        } else if (scrollY < 1400) {
+          textStage.textContent = 'Keep going';
+        } else {
+          textStage.textContent = '';
+        }
+      };
+
+      extensionPanel.addEventListener('scroll', scrollHandler);
     }
-  
+
     icons.forEach(i => i.classList.remove('active'));
     const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
     selectedIcon?.classList.add('active');
   }
 
-  // ✅ 아이콘 클릭
+  // ==== 탭 아이콘 클릭 ====
   icons.forEach(icon => {
     icon.addEventListener('click', (e) => {
       const selectedTab = icon.dataset.tab;
@@ -61,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ✅ 확장 패널 토글
+  // ==== 확장 패널 토글 ====
   toggleExtensionBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     const isNowOpen = extensionPanel.classList.toggle('open');
@@ -81,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ✅ 초기 탭 열기
+  // ==== 초기 자동 탭 열기 ====
   const path = location.pathname;
   const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
   const isWrite = path === '/write' || /^\/(ko|en|fr|zh|ja)\/write$/.test(path);
@@ -102,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ 언어 드롭다운
+  // ==== 언어 드롭다운 ====
   langToggle?.addEventListener('click', (e) => {
     e.preventDefault();
     langMenu?.classList.toggle('show');
@@ -111,25 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
       langMenu?.classList.remove('show');
-    }
-  });
-
-  // ✅ 스크롤에 따라 텍스트 변화
-  extensionPanel?.addEventListener('scroll', () => {
-    const scrollY = extensionPanel.scrollTop;
-
-    if (!textStage) return;
-
-    if (scrollY < 200) {
-      textStage.textContent = '';
-    } else if (scrollY < 600) {
-      textStage.textContent = 'Hello, love';
-    } else if (scrollY < 1000) {
-      textStage.textContent = 'You’re amazing';
-    } else if (scrollY < 1400) {
-      textStage.textContent = 'Keep going';
-    } else {
-      textStage.textContent = '';
     }
   });
 });
