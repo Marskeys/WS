@@ -83,6 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  if (loginBtn && loginFormContainer) {
+    console.log('✅ 로그인 버튼 활성화됨');
+    loginBtn.addEventListener('click', () => {
+      console.log('🟣 로그인 버튼 눌림');
+      loginFormContainer.classList.toggle('hidden');
+    });
+  } else {
+    console.log('❌ 로그인 요소 못 찾음');
+  }
+  
   // ==== 언어 드롭다운 ====
   langToggle?.addEventListener('click', (e) => {
     e.preventDefault();
