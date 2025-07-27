@@ -81,6 +81,10 @@
     z-index: 30;
 }
 
+.side-panel.main-panel-only:not(.open) {
+  pointer-events: none; /* ✅ 닫혔을 땐 클릭 막지 않게 */
+}
+
 .sidebar-wrapper {
     display: flex;
     flex-direction: row;
