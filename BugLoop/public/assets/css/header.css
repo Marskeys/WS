@@ -645,6 +645,10 @@ html.dark .lang-option:hover {
     .header-menu li a {
       font-size: 0.7rem;  /* 👈 모바일에서 더 작게 */
     }
+    .header-menu ul {
+      gap: 10px;
+      margin-right: 5px;
+    }
   }
 
   .header-top.scrolled .header-menu li a {
