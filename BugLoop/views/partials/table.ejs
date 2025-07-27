@@ -328,18 +328,15 @@
   </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  // 모든 삭제 폼을 가져옴
-  const deleteForms = document.querySelectorAll(".delete-post-form");
-  console.log(deleteForms);
-  
-  deleteForms.forEach((form) => {
-    form.addEventListener("submit", (e) => {
-      const confirmed = confirm("정말 삭제하시겠습니까?");
-      if (!confirmed) {
-        e.preventDefault(); // 확인 안 하면 제출 막기
+  document.addEventListener('DOMContentLoaded', () => {
+    document.body.addEventListener('submit', (e) => {
+      const form = e.target;
+      if (form.classList.contains('delete-post-form')) {
+        const confirmed = confirm('정말 삭제하시겠습니까?');
+        if (!confirmed) {
+          e.preventDefault();
+        }
       }
     });
   });
-});
-</script>
+  </script>
