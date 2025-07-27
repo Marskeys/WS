@@ -600,7 +600,15 @@ html.dark .lang-btn {
   }
   
   .text-stage {
-    transition: opacity 0.4s ease;
+    position: fixed;
+    top: 100px; /* 원하는 위치로 조정 가능 */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    z-index: 9999;
+    pointer-events: none;
   }
   
   .scroll-area {
