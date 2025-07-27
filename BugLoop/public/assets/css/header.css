@@ -641,6 +641,12 @@ html.dark .lang-option:hover {
     transition: color 0.2s ease;
   }
 
+  @media (max-width: 640px) {
+    .header-menu li a {
+      font-size: 0.7rem;  /* 👈 모바일에서 더 작게 */
+    }
+  }
+
   .header-top.scrolled .header-menu li a {
     color: white;
   }
