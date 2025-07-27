@@ -535,13 +535,13 @@ html.dark .lang-btn {
     top: 0;
     left: 0;
     width: 100%;
-    height: 160px; /* 필요한 만큼만 보이게 조절 */
+    height: 155px; /* 필요한 만큼만 보이게 조절 */
     background-image: url('/assets/images/room.png');
     background-size: cover;
     background-position: top center;
     background-repeat: no-repeat;
     z-index: 0;
-    opacity: 0.8; /* 은은하게 조절 가능 */
+    opacity: 0.5; /* 은은하게 조절 가능 */
     pointer-events: none;
   }
 
