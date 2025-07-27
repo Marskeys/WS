@@ -170,22 +170,5 @@
   <script src="/assets/js/header.js"></script>
   <script src="/assets/js/global.js"></script>
 
-  <script>
-    const panel = document.querySelector('.sidebar-extension-panel');
-    const text = document.querySelector('.background-text');
-  
-    if (panel && text) {
-      panel.addEventListener('scroll', () => {
-        const scrollY = panel.scrollTop;
-  
-        // 스크롤에 따라 폰트 크기 증가
-        const scale = 1 + scrollY / 500;
-        text.style.transform = `translate(-50%, -50%) scale(${scale})`;
-  
-        // 색상 흐려짐 (불투명 → 투명)
-        const fade = Math.min(scrollY / 400, 1);
-        text.style.color = `rgba(100, 100, 100, ${1 - fade})`;
-      });
-    }
-  </script>
+
 
