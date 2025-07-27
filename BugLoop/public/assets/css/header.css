@@ -108,11 +108,11 @@
     left: 0;
     min-width: 200px;
     max-width: 500px;
-    background-color: rgb(0, 0, 0);
-    color: rgb(239, 239, 239);
+    background-color: rgba(255, 255, 255, 1);
+    color: rgb(0, 0, 0);
     padding: 10px 16px; /* 상하 10px, 좌우 16px */
     padding-left: 66px !important;
-    border-right: 1px solid transparent;
+    border-right: 1px solid #444;
     height: 100vh;
     overflow-y: auto;
     z-index: 12090;
@@ -124,7 +124,6 @@
     transition: transform 0.3s ease, opacity 0.3s ease;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-extension-panel::-webkit-scrollbar {
@@ -205,153 +204,155 @@
 
 
 /* ======================
-   🔹 auth 버튼들 (라이트모드용)
+   🔹 auth 버튼들 (수정완료)
 ====================== */
 .auth-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-@media (max-width: 640px) {
-  .auth-buttons {
-    gap: 8px;
-    flex-direction: column;
+    display: flex;
+    flex-direction: column;     /* ✅ 세로 정렬 */
+    align-items: stretch;       /* ✅ 양옆 채움 */
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
     width: 100%;
   }
-
-  .auth-btn.write-post,
-  .auth-btn.logout {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+  
+  /* 모바일 대응 */
+  @media (max-width: 640px) {
+    .auth-buttons {
+      gap: 8px;
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .auth-btn.write-post,
+    .auth-btn.logout {
+      margin-left: 0 !important;
+    }
+  
+    .auth-btn.logout {
+      margin-right: 0 !important;
+    }
   }
-}
-
-/* 공통 버튼 스타일 */
-.auth-btn {
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 600;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 6px;
-  font-family: 'Noto Sans', sans-serif;
-}
-
-/* 로그인 버튼 */
-.auth-btn.login {
-  border-radius: 999px;
-  font-size: 1.2rem;
-}
-
-.auth-btn.login:hover {
-  background-color: #fef6dd;
-  color: #000;
-  border-color: #ffe17b;
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.4);
-}
-
-/* 회원가입 버튼 */
-.auth-btn.signup {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 0.9rem;
-  padding: 6px 4px;
-  text-shadow: none;
-  box-shadow: none;
-}
-
-.auth-btn.signup:hover {
-  color: #2c7de3;
-  text-decoration: underline;
-}
-
-/* 글쓰기 버튼 */
-.auth-btn.write-post {
-  margin-left: 10px;
-  font-size: 0.85rem;
-  padding: 6px 12px;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ccc;
-}
-
-.auth-btn.write-post:hover {
-  color: #000;
-  background-color: #ffe;
-  border-color: #ffeb99;
-  box-shadow: 0 0 10px rgba(255, 230, 120, 0.4);
-}
-
-/* 로그아웃 버튼 */
-.auth-btn.logout {
-  font-size: 0.85rem;
-  border-radius: 999px;
-  padding: 8px 10px;
-}
-
-.auth-btn.logout:hover {
-  background-color: #fef6dd;
-  color: #000;
-  border-color: #ffe17b;
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.4);
-}
-
+  
+  /* 공통 버튼 */
+  .auth-btn {
+    width: 100%;                /* ✅ 전체 가로폭 */
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 6px;
+  }
+  
+  /* 로그인 버튼 */
+  .auth-btn.login {
+    border-radius: 999px;
+    font-size: 1.2rem;
+  }
+  
+  .auth-btn.login:hover {
+    background-color: rgba(255, 255, 200, 0.05);
+    color: white;
+    border-color: rgba(255, 255, 180, 0.8);
+    box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+  }
+  
+  /* 회원가입 버튼 */
+  .auth-btn.signup {
+    background: none;
+    border: none;                      /* ✅ 테두리 완전 제거 */
+    color: white;
+    font-size: 0.9rem;
+    padding: 6px 4px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+    box-shadow: none;                 /* ✅ 그림자도 제거 */
+  }
+  
+  .auth-btn.signup:hover {
+    color: lightblue;
+    text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+  }
+  
+  /* 글쓰기 버튼 */
+  .auth-btn.write-post {
+    margin-left: 10px;
+    font-size: 0.85rem;
+    padding: 4px 10px !important;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+    background-color: black;
+  }
+  
+  .auth-btn.write-post:hover {
+    color: lightblue;
+    text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+    background-color: rgba(255, 255, 200, 0.05);
+    border-color: rgba(255, 255, 180, 0.8);
+  }
+  
+  /* 로그아웃 버튼 */
+  .auth-btn.logout {
+    font-size: 0.85rem;
+    border-radius: 999px;
+    padding: 8px 10px;
+  }
+  
+  .auth-btn.logout:hover {
+    background-color: rgba(255, 255, 200, 0.05);
+    color: white;
+    border-color: rgba(255, 255, 180, 0.8);
+    box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+  }
+  
 
 /* ======================
-   🔹 로그인 폼
+   🔹 ...로그인 폼 (버튼 클릭 시 등장)
 ====================== */
 .login-form-container {
-  margin-top: 10px;
-  padding: 10px;
-  border-top: 1px solid #ccc;
+    /*  display: none; 기본은 숨김 */
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px solid #555;
 }
 
 #login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 #login-form input {
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #bbb;
-  color: #333;
-  border-radius: 4px;
-  font-size: 0.9rem;
+    padding: 10px;
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }
 
 #login-form button {
-  padding: 10px;
-  background-color: #641df1;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    padding: 10px;
+    background-color: #641df1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
 #login-form button:hover {
-  background-color: #4c16b9;
+    background-color: #4c16b9;
 }
-
 
 
 
@@ -521,8 +522,6 @@ html.dark .lang-btn {
   margin-left: 25px;
     opacity: 0;
     animation: fadeIn 1s ease 0.1s forwards;
-    user-select: none;
-pointer-events: none;
   }
   
   @keyframes fadeIn {
@@ -562,8 +561,8 @@ pointer-events: none;
   }
   
   .profile-bio {
-    font-size: 0.8em;
-    color: #444343;
+    font-size: 0.95em;
+    color: #c7c7c7;
     margin: 10px 0;
     text-align: left;
   }
