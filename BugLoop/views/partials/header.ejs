@@ -171,17 +171,21 @@
   <script src="/assets/js/global.js"></script>
 
   <script>
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const text = document.querySelector('.background-text');
-      
-      // 스크롤에 따라 폰트 크기 증가
-      const scale = 1 + scrollY / 500;
-      text.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    const panel = document.querySelector('.sidebar-extension-panel');
+    const text = document.querySelector('.background-text');
   
-      // 색상도 점점 배경과 섞이게 (opacity 0 → 1)
-      const fade = Math.min(scrollY / 400, 1); // 0~1 사이 값
-      text.style.color = `rgba(100, 100, 100, ${1 - fade})`;
-    });
+    if (panel && text) {
+      panel.addEventListener('scroll', () => {
+        const scrollY = panel.scrollTop;
+  
+        // 스크롤에 따라 폰트 크기 증가
+        const scale = 1 + scrollY / 500;
+        text.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  
+        // 색상 흐려짐 (불투명 → 투명)
+        const fade = Math.min(scrollY / 400, 1);
+        text.style.color = `rgba(100, 100, 100, ${1 - fade})`;
+      });
+    }
   </script>
 
