@@ -116,11 +116,6 @@
   }
   
   
-
-   
-  
- 
-  
 .tabs {
   display: inline-flex;
   flex-wrap: nowrap;
@@ -131,7 +126,7 @@
 }
 
 .tabs.searching {
-margin-top: -2rem;
+margin-top: 0rem;
 }
 
 .tab {
@@ -346,4 +341,5 @@ margin-top: -2rem;
   .search-result-msg {
     margin-top: 100px;
     margin-left: 50px;
+    margin-bottom: 0;
   }
