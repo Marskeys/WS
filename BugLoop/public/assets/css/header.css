@@ -532,6 +532,11 @@ html.dark .lang-btn {
   .profile-info {
     max-width: 260px;
     margin-top: 10px;
+    padding: 16px; /* 안쪽 여백 추가 */
+    border: 1px solid #ccc; /* 경계선 색 */
+    border-radius: 12px; /* 둥근 모서리 */
+    background-color: #fff; /* 배경색 (필요하면) */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 살짝 그림자 주면 더 예뻐 */
   }
   
   .profile-name {
