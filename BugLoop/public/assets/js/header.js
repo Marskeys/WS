@@ -142,6 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('❌ 로그인 요소 못 찾음');
   }
 
-  // ✅ 최초 바인딩
+  // ✅ 최초 바인딩ㅎ
   bindLangDropdown(document);
 });
