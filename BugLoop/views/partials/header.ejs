@@ -171,22 +171,34 @@
   <script src="/assets/js/header.js"></script>
   <script src="/assets/js/global.js"></script>
 
- <script>
-  const panel = document.querySelector('.sidebar-extension-panel');
-  const text = document.querySelector('.background-text');
-
-  if (panel && text) {
-    panel.addEventListener('scroll', () => {
-      const scrollY = panel.scrollTop;
-
-      // 커짐
-      const scale = 1 + scrollY / 500;
-      text.style.transform = `translate(-50%, -50%) scale(${scale})`;
-
-      // 흐려짐
-      const fade = Math.min(scrollY / 400, 1);
-      text.style.color = `rgba(227, 227, 227, ${1 - fade})`;
-    });
-  }
-</script>
+  <script>
+    const panel = document.querySelector('.sidebar-extension-panel');
+    const text = document.querySelector('.background-text');
+  
+    function updateMaskPosition() {
+      const rect = panel.getBoundingClientRect();
+  
+      // 브라우저 기준 좌표를 CSS 변수로 설정
+      text.style.setProperty('--sidebar-top', `${rect.top}px`);
+      text.style.setProperty('--sidebar-left', `${rect.left}px`);
+      text.style.setProperty('--sidebar-width', `${rect.width}px`);
+      text.style.setProperty('--sidebar-height', `${rect.height}px`);
+    }
+  
+    window.addEventListener('resize', updateMaskPosition);
+    window.addEventListener('scroll', updateMaskPosition);
+    window.addEventListener('DOMContentLoaded', updateMaskPosition);
+    updateMaskPosition();
+  
+    // 스크롤 애니메이션
+    if (panel && text) {
+      panel.addEventListener('scroll', () => {
+        const scrollY = panel.scrollTop;
+        const scale = 1 + scrollY / 500;
+        text.style.transform = `scale(${scale})`;
+        const fade = Math.min(scrollY / 400, 1);
+        text.style.color = `rgba(227, 227, 227, ${1 - fade})`;
+      });
+    }
+  </script>
 
