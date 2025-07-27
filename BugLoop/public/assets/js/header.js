@@ -5,12 +5,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
   const toggleIcon = toggleExtensionBtn?.querySelector('i');
   const container = document.querySelector('.tab-container');
-  const langToggle = document.getElementById('langToggle');
-  const langMenu = document.getElementById('langMenu');
   const loginBtn = document.getElementById('login');
   const loginFormContainer = document.getElementById('login-form-container');
 
   let blinkRemoved = false;
+
+  // ==== 언어 드롭다운 이벤트 바인딩 함수 ====
+  function bindLangDropdown(context = document) {
+    const langToggle = context.getElementById
+      ? context.getElementById('langToggle')
+      : context.querySelector('#langToggle');
+    const langMenu = context.getElementById
+      ? context.getElementById('langMenu')
+      : context.querySelector('#langMenu');
+
+    if (langToggle && langMenu) {
+      langToggle.addEventListener('click', (e) => {
+        console.log('🟣 langToggle clicked');
+        e.preventDefault();
+        langMenu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+          langMenu.classList.remove('show');
+        }
+      });
+    }
+  }
 
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
@@ -25,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
+
+      // ✅ 새로 추가된 요소에 이벤트 다시 연결
+      bindLangDropdown(clone);
     }
 
     icons.forEach(i => i.classList.remove('active'));
@@ -68,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
   const isSearch = path.includes('/search') || searchParams.has('q');
   const isFiltered = searchParams.has('category');
-  
+
   // ✅ 1. 홈일 때만 profile 자동 오픈
   if (isHome && !isSearch && !isFiltered) {
     requestAnimationFrame(() => {
@@ -77,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 10);
     });
   }
-  
+
   // ✅ 2. 검색이거나 카테고리 필터링 중이면 search 탭 자동 오픈
   if (isSearch || isFiltered) {
     requestAnimationFrame(() => {
@@ -87,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (isWrite) {
+  if (typeof isWrite !== 'undefined' && isWrite) {
     requestAnimationFrame(() => {
       setTimeout(() => {
         openTab('search');
@@ -95,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ==== 로그인 버튼 ====
   if (loginBtn && loginFormContainer) {
     console.log('✅ 로그인 버튼 활성화됨');
     loginBtn.addEventListener('click', () => {
@@ -105,18 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('❌ 로그인 요소 못 찾음');
   }
 
-  // ==== 언어 드롭다운 ====
-  langToggle?.addEventListener('click', (e) => {
-    console.log('🟣 langToggle clicked'); // ← 이거 확인해줘
-    e.preventDefault();
-    langMenu?.classList.toggle('show');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
-      langMenu?.classList.remove('show');
-    }
-  });
-
-
+  // ✅ 최초 바인딩
+  bindLangDropdown(document);
 });
