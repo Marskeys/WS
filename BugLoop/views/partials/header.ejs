@@ -172,24 +172,28 @@
   <script src="/assets/js/global.js"></script>
 
  <script>
-  const panel = document.querySelector('.sidebar-extension-panel');
+ const panel = document.querySelector('.sidebar-extension-panel');
 const text = document.querySelector('.background-text');
 
 if (panel && text) {
   panel.addEventListener('scroll', () => {
     const scrollY = panel.scrollTop;
-
-    // 커짐
+    const fade = Math.min(scrollY / 400, 1);
     const scale = 1 + scrollY / 500;
+
     text.style.transform = `scale(${scale})`;
 
-    // 흐려짐
-    const fade = Math.min(scrollY / 400, 1);
-    text.style.color = `rgba(227, 227, 227, ${1 - fade})`;
+    // 🔥 텍스트 컬러 보간 (흰 → 검정) + 투명도 적용
+    const r = Math.round(227 * (1 - fade)); // 227 → 0
+    const g = Math.round(227 * (1 - fade));
+    const b = Math.round(227 * (1 - fade));
+    const a = 1 - fade; // 투명도도 줄어듦
 
-    // 🔥 배경색 동기화 (진한 → 투명한 회색)
-    const alpha = 1 - fade; // 1 → 0
-    panel.style.backgroundColor = `rgba(44, 47, 51, ${alpha})`; // #2c2f33
+    text.style.color = `rgba(${r}, ${g}, ${b}, ${a})`;
+
+    // 🔥 패널 배경색도 함께 흐려짐
+    const panelAlpha = 1 - fade;
+    panel.style.backgroundColor = `rgba(44, 47, 51, ${panelAlpha})`;
   });
 }
 </script>
