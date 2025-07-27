@@ -175,12 +175,12 @@
 
 
   <script>
-    let scrollTimer = null;
+    let scrollTimeout;
     
     document.addEventListener('scroll', () => {
-      if (scrollTimer) return; // 💡 스로틀링: 1프레임만 처리
+      clearTimeout(scrollTimeout); // 스크롤 이벤트 중첩 제거
     
-      scrollTimer = requestAnimationFrame(() => {
+      scrollTimeout = setTimeout(() => {
         const scrollY = window.scrollY;
         const header = document.querySelector('.header-top');
     
@@ -204,8 +204,6 @@
         } else {
           header.classList.remove('scrolled');
         }
-    
-        scrollTimer = null; // 다음 frame 허용
-      });
+      }, 120); // ✅ 0.12초 지연 적용
     });
     </script>
