@@ -17,14 +17,34 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.add('panel-open');
       toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
     }
-
+  
     const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
     if (original) {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
+  
+      // ✅ 탭 내용 바뀐 직후 스크롤 이벤트 연결
+      const textStage = clone.querySelector('.text-stage');
+      if (textStage) {
+        extensionPanel.addEventListener('scroll', () => {
+          const scrollY = extensionPanel.scrollTop;
+  
+          if (scrollY < 200) {
+            textStage.textContent = '';
+          } else if (scrollY < 600) {
+            textStage.textContent = 'Hello, love';
+          } else if (scrollY < 1000) {
+            textStage.textContent = 'You’re amazing';
+          } else if (scrollY < 1400) {
+            textStage.textContent = 'Keep going';
+          } else {
+            textStage.textContent = '';
+          }
+        });
+      }
     }
-
+  
     icons.forEach(i => i.classList.remove('active'));
     const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
     selectedIcon?.classList.add('active');
