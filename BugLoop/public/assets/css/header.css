@@ -532,24 +532,16 @@ html.dark .lang-btn {
 
   .background-text {
     position: fixed;
-    top: var(--sidebar-top, 100px);  /* fallback 필수 */
-    left: var(--sidebar-left, 0px);
-    width: var(--sidebar-width, 250px);
-    height: var(--sidebar-height, 100vh);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  
+    top: 100px; /* 사이드바 상단 기준으로 */
+    left: 70px; /* 사이드바 가로 위치 기준으로 */
+    transform: translate(0, 0) scale(1); /* translate 제거 */
     font-size: 80px;
     font-weight: 900;
     color: rgba(227, 227, 227, 0.5);
     pointer-events: none;
-    z-index: 999;
+    z-index: 99999;
     user-select: none;
     transition: transform 0.2s ease, color 0.2s ease;
-  
-    overflow: hidden;
-    clip-path: inset(0 0 0 0);
   }
 
   .profile-info {
