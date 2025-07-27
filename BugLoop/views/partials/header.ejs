@@ -84,7 +84,7 @@
             <div class="tab-content" data-tab="profile" style="display: none;">
               <div class="profile-tab">
                 <div class="background-text">Mars Keys</div>
-                
+
                 <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
                 
                 <div class="profile-social">
@@ -171,17 +171,22 @@
   <script src="/assets/js/header.js"></script>
   <script src="/assets/js/global.js"></script>
 
-  <script>
-// 스크롤 이벤트 바꿔줘야 함
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
+ <script>
+  const panel = document.querySelector('.sidebar-extension-panel');
   const text = document.querySelector('.background-text');
 
-  const scale = 1 + scrollY / 500;
-  text.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  if (panel && text) {
+    panel.addEventListener('scroll', () => {
+      const scrollY = panel.scrollTop;
 
-  const fade = Math.min(scrollY / 400, 1);
-  text.style.color = `rgba(227, 227, 227, ${1 - fade})`;
-});
-  </script>
+      // 커짐
+      const scale = 1 + scrollY / 500;
+      text.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+      // 흐려짐
+      const fade = Math.min(scrollY / 400, 1);
+      text.style.color = `rgba(227, 227, 227, ${1 - fade})`;
+    });
+  }
+</script>
 
