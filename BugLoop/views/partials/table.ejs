@@ -1,25 +1,4 @@
-<div class="search-container">
-    <a href="/<%= lang %>/">
-    </a>
 
-    <div class="search-wrapper">
-      <form method="get" action="/<%= lang %>/search" class="search-form">
-        <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
-
-        <button type="submit" class="icon-submit-btn">
-          <i class="fas fa-search"></i>
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <% if (isSearch && searchKeyword) { %>
-    <%
-      const searchWord = `${searchKeyword}`;
-      const resultLine = locale.search.resultsFor.replace('%s', searchWord);
-    %>
-    <p class="search-result-msg"><%= resultLine %></p>
-  <% } %>
   
   
   <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
