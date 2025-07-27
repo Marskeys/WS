@@ -529,6 +529,20 @@ html.dark .lang-btn {
     }
   }
   
+  .background-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    font-weight: 900;
+    color: rgba(100, 100, 100, 0.2); /* 투명 회색 */
+    pointer-events: none;
+    z-index: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+    user-select: none;
+  }
+  
   .profile-info {
     max-width: 260px;
     margin-top: 10px;
