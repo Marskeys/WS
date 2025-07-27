@@ -532,7 +532,7 @@ html.dark .lang-btn {
 
   .background-text {
     position: fixed;
-    top: 150px; /* 사이드바 상단 기준으로 */
+    top: 180px; /* 사이드바 상단 기준으로 */
     left: 100px; /* 사이드바 가로 위치 기준으로 */
     transform: translate(0, 0) scale(1); /* translate 제거 */
     font-size: 50px;
