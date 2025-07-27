@@ -529,17 +529,17 @@ html.dark .lang-btn {
       opacity: 1;
     }
   }
-  
+
   .background-text {
-    position: fixed;
-    top: 10%;
-    left: 10%;
-    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
     font-size: 80px;
     font-weight: 900;
     color: rgba(227, 227, 227, 0.5);
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
     user-select: none;
     transition: transform 0.2s ease, color 0.2s ease;
   }
