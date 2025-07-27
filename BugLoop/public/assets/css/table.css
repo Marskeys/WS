@@ -252,24 +252,25 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 2rem auto 1rem;
-    gap: 0.25rem;
+    margin: 1.5rem auto 1rem;
+    gap: 0.2rem;
     flex-wrap: wrap;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
   }
   
   .page-link {
     display: inline-block;
-    padding: 0.4rem 0.8rem;
+    padding: 0.25rem 0.5rem;
     border: 1px solid #555;
-    background: #1a1a1a; /* 어두운 회색 */
+    background: #1a1a1a;
     color: #ddd;
     text-decoration: none;
-    border-radius: 6px;
+    border-radius: 4px;
     transition: all 0.2s ease;
-    min-width: 32px;
+    min-width: 24px;
     text-align: center;
     font-weight: 500;
+    line-height: 1.2;
   }
   
   .page-link:hover {
@@ -294,30 +295,35 @@
   }
   
   .page-ellipsis {
-    padding: 0.4rem 0.8rem;
+    padding: 0.25rem 0.5rem;
     color: #aaa;
     font-weight: bold;
+    font-size: 0.75rem;
   }
   
   .page-link,
   .page-ellipsis {
-    text-decoration: none !important; /* ✅ 밑줄 제거 */
+    text-decoration: none !important;
   }
   
   @media (max-width: 640px) {
     .pagination {
-      gap: 0.2rem;
-      font-size: 0.75rem;
+      gap: 0.15rem;
+      font-size: 0.7rem;
     }
   
     .page-link {
-      padding: 0.3rem 0.6rem;
-      min-width: 26px;
-      font-size: 0.75rem;
+      padding: 0.2rem 0.45rem;
+      min-width: 22px;
+      font-size: 0.7rem;
     }
   
     .page-ellipsis {
-      padding: 0.3rem 0.6rem;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.7rem;
     }
   }
   
+  .pagination.desktop-only {
+    display: none;
+  }
