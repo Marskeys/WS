@@ -450,6 +450,8 @@
 .lang-btn .fi {
     width: 1.5rem;
     height: 1.2rem;
+      /* ✨ 텍스트 그림자 */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .lang-menu {
