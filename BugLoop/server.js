@@ -234,22 +234,23 @@ app.get('/write', (req, res) => {
     user: req.session.user,
     post: null,
     isEdit: false,
-
+    posts: filteredPosts,
     // ✅ 헤더 내 테이블을 위해 추가:
     lang: 'ko', // 또는 safeLang
     locale: res.locals.locale,
-    posts: [],
-    categories: [],
-    selectedCategory: null,
+    categories: allCategories,
+    selectedCategory: translatedSelectedCategory,
     isSearch: false,
     searchKeyword: '',
     pagination: {
-      current: 1,
-      total: 1,
-      range: [1]
+      current: page,
+      total: totalPages,
+      range: paginationRange
+    },
+    lang: safeLang
     }
   });
-});
+
 
 app.post('/savePost', async (req, res) => {
   const { categories, is_private, is_pinned, lang_content } = req.body;
