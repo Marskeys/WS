@@ -386,6 +386,15 @@ document.body.style.transform = 'scale(1.02)';
   padding: 10px;
   box-sizing: border-box;
 }
+
+@media screen and (max-width: 768px) {
+  #code-preview-frame {
+    transform: scale(0.8);       /* 80% 크기로 축소 */
+    transform-origin: top center;
+    height: 500px;               /* 필요시 높이 보정 */
+  }
+}
+
     </style>
 
     <script>
