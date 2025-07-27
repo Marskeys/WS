@@ -88,7 +88,7 @@
                 <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
                 
                 <div class="background-text">마씨의 블로그</div>
-                
+
                 <div class="profile-social">
                   <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
                   <a href="" target="_blank"><i class="fab fa-github"></i></a>
@@ -173,30 +173,5 @@
   <script src="/assets/js/header.js"></script>
   <script src="/assets/js/global.js"></script>
 
- <script>
- const panel = document.querySelector('.sidebar-extension-panel');
-const text = document.querySelector('.background-text');
 
-if (panel && text) {
-  panel.addEventListener('scroll', () => {
-    const scrollY = panel.scrollTop;
-    const fade = Math.min(scrollY / 400, 1);
-    const scale = 1 + scrollY / 500;
-
-    text.style.transform = `scale(${scale})`;
-
-    // 🔥 텍스트 컬러 보간 (흰 → 검정) + 투명도 적용
-    const r = Math.round(227 * (1 - fade)); // 227 → 0
-    const g = Math.round(227 * (1 - fade));
-    const b = Math.round(227 * (1 - fade));
-    const a = 1 - fade; // 투명도도 줄어듦
-
-    text.style.color = `rgba(${r}, ${g}, ${b}, ${a})`;
-
-    // 🔥 패널 배경색도 함께 흐려짐
-    const panelAlpha = 1 - fade;
-    panel.style.backgroundColor = `rgba(44, 47, 51, ${panelAlpha})`;
-  });
-}
-</script>
 
