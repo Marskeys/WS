@@ -539,7 +539,7 @@ html.dark .lang-btn {
     font-weight: 900;
     color: rgba(227, 227, 227, 0.5);
     pointer-events: none;
-    z-index: 10000;
+    z-index: -1;
     user-select: none;
     transition: transform 0.2s ease, color 0.2s ease;
   }
