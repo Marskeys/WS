@@ -21,6 +21,9 @@
     overflow: hidden; /* ✅ 넘침 방지 */
   }
   
+  .search-container {
+    z-index: 20000;
+  }
   .search-wrapper {
     z-index: 20000;
     width: 100%;
