@@ -387,13 +387,6 @@ document.body.style.transform = 'scale(1.02)';
   box-sizing: border-box;
 }
 
-@media screen and (max-width: 768px) {
-  #code-preview-frame {
-    transform: scale(0.8);       /* 80% 크기로 축소 */
-    transform-origin: top center;
-    height: 500px;               /* 필요시 높이 보정 */
-  }
-}
 
     </style>
 
@@ -415,12 +408,23 @@ document.body.style.transform = 'scale(1.02)';
       });
 
       function updatePreview() {
-        const html = htmlInput.value;
-        const css = `<style>${cssInput.value}</style>`;
-        const js = `<script>${jsInput.value}<\/script>`;
-        const fullDoc = `${html}\n${css}\n${js}`;
-        preview.srcdoc = fullDoc;
+  const html = htmlInput.value;
+  const cssContent = cssInput.value + `
+    @media screen and (max-width: 768px) {
+      body {
+        font-size: 80% !important;
       }
+      h1, h2, h3, h4, h5, h6, p, li, nav, footer, main, section {
+        transform: scale(0.95);
+        transform-origin: top center;
+      }
+    }
+  `;
+  const css = `<style>${cssContent}</style>`;
+  const js = `<script>${jsInput.value}<\/script>`;
+  const fullDoc = `${html}\n${css}\n${js}`;
+  preview.srcdoc = fullDoc;
+}
 
       htmlInput.addEventListener('input', updatePreview);
       cssInput.addEventListener('input', updatePreview);
