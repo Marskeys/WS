@@ -579,15 +579,15 @@ html.dark .lang-btn {
       color: #ffffff;
     }
     25% {
-      transform: scale(1.04) translateX(-0.6px);
+      transform: scale(1.5) translateX(-0.6px);
       color: #f0f0f0;
     }
     50% {
-      transform: scale(0.98) translateX(0.6px);
+      transform: scale(0.9) translateX(0.6px);
       color: #eaeaea;
     }
     75% {
-      transform: scale(1.02) translateX(-0.3px);
+      transform: scale(1.2) translateX(-0.3px);
       color: #f5f5f5;
     }
   }
