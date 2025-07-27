@@ -532,14 +532,14 @@ html.dark .lang-btn {
 
   .background-text {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1);
+    top: 100px; /* 사이드바 상단 기준으로 */
+    left: 70px; /* 사이드바 가로 위치 기준으로 */
+    transform: translate(0, 0) scale(1); /* translate 제거 */
     font-size: 80px;
     font-weight: 900;
     color: rgba(227, 227, 227, 0.5);
     pointer-events: none;
-    z-index: 0;
+    z-index: 999;
     user-select: none;
     transition: transform 0.2s ease, color 0.2s ease;
   }
