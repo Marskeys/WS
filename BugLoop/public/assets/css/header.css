@@ -582,33 +582,3 @@ html.dark .lang-btn {
     animation: icon-glow-blink 1s ease-in-out infinite !important;
   }
 
-
-  .scroll-zone {
-    height: 100vh; /* 시작은 비어 있음 */
-  }
-  
-  .fixed-text {
-    position: fixed;
-    top: 80px; /* 원하는 위치로 조정 가능 */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-    pointer-events: none;
-  }
-  
-  .text-stage {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 12px 20px;
-    border-radius: 12px;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
-  }
-  
-  .scroll-area {
-    height: 300vh; /* 스크롤용 공간 */
-    background: linear-gradient(to bottom, #111, #333);
-  }
-  
