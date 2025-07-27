@@ -433,25 +433,20 @@
 }
 
 .lang-btn {
-  background: none;
-  border: none;
-  color: black;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 5px 10px;
-
-  /* ✨ 텍스트 그림자 */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    background: none;
+    border: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 5px 10px;
 }
 
 .lang-btn .fi {
     width: 1.5rem;
     height: 1.2rem;
-      /* ✨ 텍스트 그림자 */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .lang-menu {
