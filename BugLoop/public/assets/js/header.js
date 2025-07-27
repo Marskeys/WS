@@ -99,3 +99,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+const textStage = document.querySelector('.text-stage');
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const windowHeight = window.innerHeight;
+
+  // 기준점 조절
+  const offset = scrollY - windowHeight;
+
+  // 각 구간마다 다른 텍스트 표시
+  if (offset < 200) {
+    textStage.textContent = ''; // 아직 안 나옴
+  } else if (offset < 600) {
+    textStage.textContent = 'Hello, love';
+  } else if (offset < 1000) {
+    textStage.textContent = 'You’re amazing';
+  } else if (offset < 1400) {
+    textStage.textContent = 'Keep going';
+  } else {
+    textStage.textContent = ''; // 끝나면 사라져도 되고
+  }
+});

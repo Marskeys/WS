@@ -581,3 +581,30 @@ html.dark .lang-btn {
   .blink-highlight {
     animation: icon-glow-blink 1s ease-in-out infinite !important;
   }
+
+
+  .scroll-zone {
+    height: 100vh; /* 시작은 비어 있음 */
+  }
+  
+  .fixed-text {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    pointer-events: none;
+    z-index: 999;
+  }
+  
+  .text-stage {
+    transition: opacity 0.4s ease;
+  }
+  
+  .scroll-area {
+    height: 300vh; /* 스크롤용 공간 */
+    background: linear-gradient(to bottom, #111, #333);
+  }
+  
