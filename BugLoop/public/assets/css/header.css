@@ -81,11 +81,16 @@
     z-index: 30;
 }
 
-.sidebar-extension-panel {
+.side-panel.main-panel-only {
   pointer-events: none; /* 기본은 막아둠 */
 }
-.sidebar-extension-panel.open {
+.side-panel.main-panel-only.open {
   pointer-events: auto; /* 열리면 클릭 가능 */
+}
+
+/* vscode-sidebar는 항상 허용 */
+.vscode-sidebar {
+  pointer-events: auto !important;
 }
 
 .sidebar-wrapper {
@@ -119,7 +124,7 @@
     background-color: rgb(0, 0, 0);
     color: rgb(210, 210, 210);
     padding: 10px 16px; /* 상하 10px, 좌우 16px */
-  display:none;
+  
     border-right: 1px solid #444;
     height: 100vh;
     overflow-y: auto;

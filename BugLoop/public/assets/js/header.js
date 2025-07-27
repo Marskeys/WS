@@ -7,14 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.tab-container');
   const loginBtn = document.getElementById('login');
   const loginFormContainer = document.getElementById('login-form-container');
+  const sidePanel = document.querySelector('.side-panel.main-panel-only');
 
   let blinkRemoved = false;
 
-  // ✅ 패널 초기 상태 체크 (open이라면 pointer-events 활성화)
+  // ✅ sidePanel 초기 처리 (처음부터 열려 있을 수 있으므로)
   if (extensionPanel.classList.contains('open')) {
-    extensionPanel.style.setProperty('pointer-events', 'auto');
+    sidePanel?.classList.add('open');
+    sidePanel?.style.setProperty('pointer-events', 'auto');
   } else {
-    extensionPanel.style.setProperty('pointer-events', 'none');
+    sidePanel?.classList.remove('open');
+    sidePanel?.style.setProperty('pointer-events', 'none');
   }
 
   // ==== 언어 드롭다운 이벤트 바인딩 함수 ====
@@ -45,9 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function openTab(selectedTab) {
     if (!extensionPanel.classList.contains('open')) {
       extensionPanel.classList.add('open');
-      extensionPanel.style.setProperty('pointer-events', 'auto'); // ✅ 열릴 때만 허용
       document.body.classList.add('panel-open');
       toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
+      sidePanel?.classList.add('open');
+      sidePanel?.style.setProperty('pointer-events', 'auto');
     }
 
     const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
@@ -88,14 +92,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isNowOpen) {
       document.body.classList.add('panel-open');
-      extensionPanel.style.setProperty('pointer-events', 'auto');
+      sidePanel?.classList.add('open');
+      sidePanel?.style.setProperty('pointer-events', 'auto');
     } else {
       document.body.classList.remove('panel-open');
-      extensionPanel.style.setProperty('pointer-events', 'none');
+      sidePanel?.classList.remove('open');
+      sidePanel?.style.setProperty('pointer-events', 'none');
     }
   });
 
-  // ==== 초기 URL에 따른 자동 탭 열기 ====
   const path = location.pathname;
   const searchParams = new URLSearchParams(location.search);
 
@@ -127,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ==== 로그인 버튼 ====
   if (loginBtn && loginFormContainer) {
     console.log('✅ 로그인 버튼 활성화됨');
     loginBtn.addEventListener('click', () => {
@@ -138,6 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('❌ 로그인 요소 못 찾음');
   }
 
-  // ✅ 최초 언어 드롭다운 바인딩
+  // ✅ 최초 바인딩
   bindLangDropdown(document);
 });
