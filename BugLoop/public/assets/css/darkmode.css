@@ -22,30 +22,6 @@ html.dark body .main-panel {
 }
 
 
-/* 검색창 form */
-html.dark body .search-form {
-  background-color: #454545;
-  border: 1px solid #555;
-  box-shadow: none;
-}
-
-/* 검색창 input */
-html.dark body .search-box {
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: #fff;
-}
-html.dark body .search-box::placeholder {
-  color: #bbb;
-  opacity: 1;
-}
-
-/* 검색 아이콘 */
-html.dark body .search-form i {
-  color: #ccc;
-}
-
 /* 푸터 */
 html.dark body .site-footer {
   color: #ccc;
