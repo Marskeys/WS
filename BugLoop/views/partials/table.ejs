@@ -11,17 +11,15 @@
         </a>
         
   
-    
+        <% if (isSearch) { %>
+          <div class="tab active"><%= locale.tabs.searchResults %></div>
+        <% } %>
   
         <% categories.forEach(category => { %>
           <a href="/<%= lang %>/?category=<%= category.original %>" class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
             <%= category.translated %>
           </a>
         <% }) %>
-
-        <% if (isSearch) { %>
-          <div class="tab active"><%= locale.tabs.searchResults %></div>
-        <% } %>
       </div>
     </div>
   </div>
