@@ -63,18 +63,29 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const path = location.pathname;
-const searchParams = new URLSearchParams(location.search);
-const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
-const isSearch = path.includes('/search') || searchParams.has('q');
-const isFiltered = searchParams.has('category');
-
-if (isHome && !isSearch && !isFiltered) {
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      openTab('profile');
-    }, 10);
-  });
-}
+  const searchParams = new URLSearchParams(location.search);
+  
+  const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
+  const isSearch = path.includes('/search') || searchParams.has('q');
+  const isFiltered = searchParams.has('category');
+  
+  // ✅ 1. 홈일 때만 profile 자동 오픈
+  if (isHome && !isSearch && !isFiltered) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        openTab('profile');
+      }, 10);
+    });
+  }
+  
+  // ✅ 2. 검색이거나 카테고리 필터링 중이면 search 탭 자동 오픈
+  if (isSearch || isFiltered) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        openTab('search');
+      }, 10);
+    });
+  }
 
   if (isWrite) {
     requestAnimationFrame(() => {
