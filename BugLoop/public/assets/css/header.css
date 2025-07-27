@@ -623,3 +623,23 @@ html.dark .lang-option:hover {
     animation: icon-pulse-sway 2s ease-in-out infinite !important;
   }
 
+  .header-menu ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header-menu li a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  
+  .header-menu li a:hover {
+    color: #007BFF; /* 강조 색상 */
+  }
+  
