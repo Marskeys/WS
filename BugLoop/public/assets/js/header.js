@@ -7,8 +7,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.tab-container');
   const loginBtn = document.getElementById('login');
   const loginFormContainer = document.getElementById('login-form-container');
+  const sidePanel = document.querySelector('.side-panel.main-panel-only');
 
   let blinkRemoved = false;
+
+  // ✅ sidePanel 초기 처리 (처음부터 열려 있을 수 있으므로)
+  if (extensionPanel.classList.contains('open')) {
+    sidePanel?.classList.add('open');
+    sidePanel?.style.setProperty('pointer-events', 'auto');
+  } else {
+    sidePanel?.classList.remove('open');
+    sidePanel?.style.setProperty('pointer-events', 'none');
+  }
 
   // ==== 언어 드롭다운 이벤트 바인딩 함수 ====
   function bindLangDropdown(context = document) {
@@ -40,6 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
       extensionPanel.classList.add('open');
       document.body.classList.add('panel-open');
       toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
+      sidePanel?.classList.add('open');
+      sidePanel?.style.setProperty('pointer-events', 'auto');
     }
 
     const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
@@ -47,8 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
-
-      // ✅ 새로 추가된 요소에 이벤트 다시 연결
       bindLangDropdown(clone);
     }
 
@@ -82,19 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isNowOpen) {
       document.body.classList.add('panel-open');
+      sidePanel?.classList.add('open');
+      sidePanel?.style.setProperty('pointer-events', 'auto');
     } else {
       document.body.classList.remove('panel-open');
+      sidePanel?.classList.remove('open');
+      sidePanel?.style.setProperty('pointer-events', 'none');
     }
   });
 
   const path = location.pathname;
   const searchParams = new URLSearchParams(location.search);
-  
+
   const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
   const isSearch = path.includes('/search') || searchParams.has('q');
   const isFiltered = searchParams.has('category');
 
-  // ✅ 1. 홈일 때만 profile 자동 오픈
   if (isHome && !isSearch && !isFiltered) {
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -103,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ 2. 검색이거나 카테고리 필터링 중이면 search 탭 자동 오픈
   if (isSearch || isFiltered) {
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -120,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ==== 로그인 버튼 ====
   if (loginBtn && loginFormContainer) {
     console.log('✅ 로그인 버튼 활성화됨');
     loginBtn.addEventListener('click', () => {
