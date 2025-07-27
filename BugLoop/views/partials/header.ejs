@@ -89,23 +89,27 @@
                 
    
 
-                <div class="profile-social">
-                  <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
-                  <a href="" target="_blank"><i class="fab fa-github"></i></a>
-                  <a href=""><i class="fas fa-envelope"></i></a>
-                </div>
                 
                 <div class="profile-info">
                   <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
                   <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
                   
              
+                  
                 
                   <div class="profile-tags">
                     <% locale.profile["profile-tags"].forEach(tag => { %>
                       <span><%= tag %></span>
                     <% }) %>
                   </div>
+
+
+                <div class="profile-social">
+                  <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
+                  <a href="" target="_blank"><i class="fab fa-github"></i></a>
+                  <a href=""><i class="fas fa-envelope"></i></a>
+                </div>
+                
                 </div>
               </div>
             </div>
