@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>403 - 비공개 글</title>
+  <link rel="stylesheet" href="/assets/css/error.css">
+  <style>
+    .error-page {
+  max-width: 600px;
+  margin: 100px auto;
+  padding: 40px;
+  text-align: center;
+  background: #1e1e1e;
+  color: white;
+  border-radius: 8px;
+}
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #444;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.btn:hover {
+  background: #666;
+}
+  </style>
+</head>
+<body>
+  <div class="error-page">
+    <h1>🚫 403 Forbidden</h1>
+    <p><%= message || '접근이 허용되지 않았습니다.' %></p>
+
+    <% if (!user) { %>
+      <a href="/login" class="btn">로그인하러 가기</a>
+    <% } else { %>
+      <a href="/" class="btn">홈으로 가기</a>
+    <% } %>
+  </div>
+</body>
+</html>
