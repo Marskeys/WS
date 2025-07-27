@@ -537,7 +537,7 @@ html.dark .lang-btn {
     transform: translate(0, 0) scale(1); /* translate 제거 */
     font-size: 40px;
     font-weight: 900;
-    color: rgba(227, 227, 227, 0.5);
+    color: rgb(227, 227, 227);
     pointer-events: none;
     z-index: 99999;
     user-select: none;
@@ -563,7 +563,7 @@ html.dark .lang-btn {
   }
   
   .profile-social {
-    margin-top: -20px;
+    margin-top: 0px;
   }
   .profile-social a {
     color: inherit;
