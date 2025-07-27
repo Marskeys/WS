@@ -119,3 +119,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loginBtn = document.getElementById('login');
+  const loginFormContainer = document.getElementById('login-form-container');
+
+  if (loginBtn && loginFormContainer) {
+    loginBtn.addEventListener('click', () => {
+      loginFormContainer.classList.toggle('hidden');
+    });
+  }
+});
