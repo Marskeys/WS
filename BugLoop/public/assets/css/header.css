@@ -543,7 +543,7 @@ html.dark .lang-btn {
     z-index: 0;
     opacity: 0.5; /* 은은하게 조절 가능 */
     pointer-events: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.9); /* 은은한 흰 선 */
+    border-bottom: 5px solid rgba(255, 255, 255, 0.9); /* 은은한 흰 선 */
   }
 
   .profile-info {
