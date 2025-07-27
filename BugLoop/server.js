@@ -232,22 +232,8 @@ app.get('/write', (req, res) => {
   }
   res.render('editor', {
     user: req.session.user,
-    post: null,
-    isEdit: false,
-
-    // ✅ 헤더 내 테이블을 위해 추가:
-    lang: 'ko', // 또는 safeLang
-    locale: res.locals.locale,
-    posts: [],
-    categories: [],
-    selectedCategory: null,
-    isSearch: false,
-    searchKeyword: '',
-    pagination: {
-      current: 1,
-      total: 1,
-      range: [1]
-    }
+    post: null,      // 새 글 작성 시에는 post가 null
+    isEdit: false    // 새 글 작성 모드임을 나타냄
   });
 });
 
@@ -396,21 +382,7 @@ app.get('/edit/:id', async (req, res) => {
     res.render('editor', {
       user: req.session.user,
       post: postForEjs,
-      isEdit: true,
-    
-      // ✅ 헤더 내 테이블을 위해 추가:
-      lang: 'ko', // 또는 safeLang
-      locale: res.locals.locale,
-      posts: [],
-      categories: [],
-      selectedCategory: null,
-      isSearch: false,
-      searchKeyword: '',
-      pagination: {
-        current: 1,
-        total: 1,
-        range: [1]
-      }
+      isEdit: true
     });
   } catch (err) {
     console.error('수정 페이지 오류:', err);
@@ -652,28 +624,22 @@ const allCategories = categoryRows.map(row => ({
 
 res.render('post-view', {
   post: postForView, // 단일 게시글 정보
-  posts: recentPosts, // 테이블용 최근 게시글 목록
+  posts: recentPosts, // 최근 게시글 목록 (index 페이지의 posts 변수와 동일한 역할)
   user: req.session.user,
-  canonicalUrl,        // SEO용
-  alternateLinks,      // 다국어 hreflang 링크
-  lang: safeLang,      // 현재 언어 코드 (ex: 'ko')
-  isSearch: false,     // post-view는 검색 아님
-  searchKeyword: '',   // 검색어 없음
-  selectedCategory: null, // 카테고리 선택 안함
-
-  // 로케일은 미들웨어에서 세팅된 걸 그대로 사용
-  locale: res.locals.locale, 
-  
-  categories: allCategories, // 탭 목록용 전체 카테고리
-  
-  // 테이블 및 페이징을 사용하는 공통 레이아웃을 위해 기본 구조 전달
-  pagination: {
+  canonicalUrl,
+  alternateLinks,
+  lang: safeLang,
+  isSearch: false, // post-view에서는 검색 상태가 아님
+  searchKeyword: '', // 검색 키워드 없음
+  selectedCategory: null, // 특정 카테고리 선택 상태 아님
+  locale: res.locals.locale,
+  categories: allCategories, // 모든 카테고리 목록 (index 페이지의 categories 변수와 동일한 역할)
+  pagination: { // post-view에서는 사용되지 않지만, 일관성을 위해 빈 값으로 제공
     current: 1,
     total: 1,
-    range: [1],
+    range: [1]
   }
 });
-
 
   } catch (err) {
     console.error('🌐 다국어 글 보기 오류:', err);
