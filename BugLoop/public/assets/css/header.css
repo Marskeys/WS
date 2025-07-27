@@ -544,7 +544,6 @@ html.dark .lang-btn {
     opacity: 1; /* 은은하게 조절 가능 */
     pointer-events: none;
     border-bottom: 2px solid rgba(255, 255, 255, 1); /* 은은한 흰 선 */
-    animation: fadeIn 1s ease 0.1s forwards;
   }
 
   .profile-info {
