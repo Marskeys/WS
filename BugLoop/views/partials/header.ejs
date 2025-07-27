@@ -174,32 +174,38 @@
 
 
 
-<script>
-document.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  const header = document.querySelector('.header-top');
-
-  // 배경 변화
-  const maxScroll = 300;
-  const percent = Math.min(scrollY / maxScroll, 1);
-  const start = Math.floor(80 - 80 * percent);
-  const mid = Math.floor(85 - 85 * percent);
-  const end = Math.floor(90 - 90 * percent);
-
-  header.style.background = `
-    linear-gradient(to right,
-      rgba(0,0,0,0) ${start}%,
-      rgba(0,0,0,0.3) ${mid}%,
-      rgba(0,0,0,0.6) ${end}%,
-      rgba(0,0,0,1) 100%
-    )
-  `;
-
-  // 색상 토글
-  if (percent > 0.4) {
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
-  }
-});
-</script>
+  <script>
+    let scrollTimer = null;
+    
+    document.addEventListener('scroll', () => {
+      if (scrollTimer) return; // 💡 스로틀링: 1프레임만 처리
+    
+      scrollTimer = requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const header = document.querySelector('.header-top');
+    
+        const maxScroll = 300;
+        const percent = Math.min(scrollY / maxScroll, 1);
+        const start = Math.floor(80 - 80 * percent);
+        const mid = Math.floor(85 - 85 * percent);
+        const end = Math.floor(90 - 90 * percent);
+    
+        header.style.background = `
+          linear-gradient(to right,
+            rgba(0,0,0,0) ${start}%,
+            rgba(0,0,0,0.3) ${mid}%,
+            rgba(0,0,0,0.6) ${end}%,
+            rgba(0,0,0,1) 100%
+          )
+        `;
+    
+        if (percent > 0.4) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+    
+        scrollTimer = null; // 다음 frame 허용
+      });
+    });
+    </script>
