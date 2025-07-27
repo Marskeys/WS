@@ -62,18 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ==== 자동탭 열기 ====
   const path = location.pathname;
-  const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
-  const isWrite = path === '/write' || /^\/(ko|en|fr|zh|ja)\/write$/.test(path);
+const searchParams = new URLSearchParams(location.search);
+const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
+const isSearch = path.includes('/search') || searchParams.has('q');
+const isFiltered = searchParams.has('category');
 
-  if (isHome) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        openTab('profile');
-      }, 10);
-    });
-  }
+if (isHome && !isSearch && !isFiltered) {
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      openTab('profile');
+    }, 10);
+  });
+}
 
   if (isWrite) {
     requestAnimationFrame(() => {
