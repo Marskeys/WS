@@ -21,6 +21,12 @@
     overflow: hidden; /* ✅ 넘침 방지 */
   }
   
+  .search-form:focus-within {
+    border-color: #ff8b8b; /* 테두리 색 변화 */
+    box-shadow: 0 0 0 3px rgba(255, 139, 139, 0.3); /* 부드러운 아우라 */
+    background-color: #fffdfd; /* 살짝 밝게 */
+  }
+  
   .search-container {
     position: relative;
     z-index: 20000;
