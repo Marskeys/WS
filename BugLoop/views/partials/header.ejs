@@ -174,3 +174,23 @@
 
 
 
+<script>
+  document.addEventListener('scroll', () => {
+  const scrollX = window.scrollY;
+  const maxScroll = 300; // 최대 스크롤 위치에서 완전 왼쪽까지 번짐
+  const percent = Math.min(scrollX / maxScroll, 1); // 0 ~ 1 사이 비율
+
+  const start = Math.floor(70 - 70 * percent); // 70% → 0%
+  const mid = Math.floor(80 - 80 * percent);   // 80% → 0%
+  const end = Math.floor(90 - 90 * percent);   // 90% → 0%
+
+  document.querySelector('.header-top').style.background = `
+    linear-gradient(to right,
+      rgba(0,0,0,0) ${start}%,
+      rgba(0,0,0,0.3) ${mid}%,
+      rgba(0,0,0,0.6) ${end}%,
+      rgba(0,0,0,1) 100%
+    )
+  `;
+});
+</script>
