@@ -521,6 +521,8 @@ html.dark .lang-btn {
   margin-left: 25px;
     opacity: 0;
     animation: fadeIn 1s ease 0.1s forwards;
+    .user-select: none;
+pointer-events: none;
   }
   
   @keyframes fadeIn {
