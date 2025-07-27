@@ -629,6 +629,7 @@ html.dark .lang-option:hover {
     gap: 20px;
     margin: 0;
     padding: 0;
+    white-space: nowrap; /* ✅ 줄바꿈 안 되게 */
   }
   
   .header-menu li a {
@@ -642,4 +643,3 @@ html.dark .lang-option:hover {
   .header-menu li a:hover {
     color: #007BFF; /* 강조 색상 */
   }
-  
