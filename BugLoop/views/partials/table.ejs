@@ -1,10 +1,10 @@
 
   
   
-  <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
+  <div class="tabs-container"  data-allposts="<%= locale.tabs.allPosts %>"> 
   
     <div class="tabs-wrapper">
-      <div class="tabs">
+      <div class="tabs <%= isSearch && searchKeyword ? 'searching' : '' %>">
         <div class="tab-spacer"></div>
         <a href="/<%= lang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">
           <%= locale.tabs.allPosts %>

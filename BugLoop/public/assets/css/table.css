@@ -130,6 +130,9 @@
   margin-top: 3rem;
 }
 
+.tabs.searching {
+margin-top: 0;
+}
 .tab {
   margin-top: 2rem;
   padding: 0.3rem 0.6rem;
@@ -342,5 +345,4 @@
   .search-result-msg {
     margin-top: 100px;
     margin-left: 50px;
-    position: absolute;
   }
