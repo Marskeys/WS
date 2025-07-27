@@ -260,56 +260,64 @@
   
   .page-link {
     display: inline-block;
-    padding: 0.3rem 0.7rem;
-    border: 1px solid #d0cce6;
-    background: white;
-    color: #444;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #555;
+    background: #1a1a1a; /* 어두운 회색 */
+    color: #ddd;
     text-decoration: none;
     border-radius: 6px;
     transition: all 0.2s ease;
     min-width: 32px;
     text-align: center;
+    font-weight: 500;
   }
   
   .page-link:hover {
-    background: #f2ebff;
-    color: black;
-    border-color: #a889ff;
+    background: #333;
+    color: #fff;
+    border-color: #888;
   }
   
   .page-link.active {
-    background-color: #9d6bff;
+    background-color: #ff7a7a;
     color: white;
     font-weight: bold;
-    border-color: #9d6bff;
+    border-color: #ff9999;
   }
   
   .page-link.disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.35;
+    background: #222;
+    color: #aaa;
+    border-color: #444;
   }
   
   .page-ellipsis {
-    padding: 0.3rem 0.7rem;
-    color: #999;
+    padding: 0.4rem 0.8rem;
+    color: #aaa;
     font-weight: bold;
+  }
+  
+  .page-link,
+  .page-ellipsis {
+    text-decoration: none !important; /* ✅ 밑줄 제거 */
   }
   
   @media (max-width: 640px) {
     .pagination {
       gap: 0.2rem;
       font-size: 0.75rem;
-      flex-wrap: wrap;
     }
   
     .page-link {
-      padding: 0.25rem 0.55rem;
+      padding: 0.3rem 0.6rem;
       min-width: 26px;
       font-size: 0.75rem;
     }
   
     .page-ellipsis {
-      padding: 0.25rem 0.55rem;
+      padding: 0.3rem 0.6rem;
     }
   }
   
