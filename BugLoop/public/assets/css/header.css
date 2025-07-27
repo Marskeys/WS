@@ -435,7 +435,7 @@
 .lang-btn {
     background: none;
     border: none;
-    color: black;
+    color: #fff;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -501,9 +501,7 @@ html.dark .lang-option:hover {
     background-color: #333;
 }
 
-html.dark .lang-btn {
-    color: #fff;
-}
+
 
 .profile-tab {
     display: flex;
