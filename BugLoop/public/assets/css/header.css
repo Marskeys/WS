@@ -81,10 +81,10 @@
     z-index: 30;
 }
 
-.side-panel.main-panel-only {
+.sidebar-expension-panel {
   pointer-events: none; /* 기본은 막아둠 */
 }
-.side-panel.main-panel-only.open {
+.sidebar-expension-panel.open {
   pointer-events: auto; /* 열리면 클릭 가능 */
 }
 
