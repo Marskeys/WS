@@ -47,20 +47,6 @@ html, body {
 /* ======================
    🔹 헤더 상단 컨트롤 (언어/다크모드 버튼 배치)
 ====================== */
-.header-top {
-    /* 기존 스타일 유지 */
-    width: calc(100% - 50px); /* 전체 너비에서 vscode-sidebar 너비만큼 제외 */
-    padding: 10px 20px; /* 적절한 패딩 */
-    box-sizing: border-box;
-    display: flex; /* Flexbox 활성화 */
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    position: fixed; /* 화면 상단에 고정 */
-    top: 0;
-    left: 50px; /* vscode-sidebar 바로 옆에서 시작하도록 위치 조정 */
-    z-index: 9999; /* 다른 요소 위에 오도록 z-index 설정 */
-    background-color: transparent;
-}
 
 .top-controls {
     display: flex;
