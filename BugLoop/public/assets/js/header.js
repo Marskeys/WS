@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==== 언어 드롭다운 ====
   langToggle?.addEventListener('click', (e) => {
+    console.log('🟣 langToggle clicked'); // ← 이거 확인해줘
     e.preventDefault();
     langMenu?.classList.toggle('show');
   });
