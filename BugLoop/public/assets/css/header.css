@@ -318,7 +318,7 @@
    🔹 ...로그인 폼 (버튼 클릭 시 등장)
 ====================== */
 .login-form-container {
-    display: none; /* 기본은 숨김 */
+    /*  display: none; 기본은 숨김 */
     margin-top: 10px;
     padding: 10px;
     border-top: 1px solid #555;
