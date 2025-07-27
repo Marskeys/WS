@@ -135,7 +135,10 @@ document.body.style.transform = 'scale(1.02)';
               </div>
 
               <div class="code-preview-right">
-                <p class="preview-label">실시간 미리보기 (Live Preview)</p>
+                <p class="preview-label">
+                  <span class="record-dot"></span>
+                  <%= locale.editor["preview-label"] %>
+                </p>
                 <div class="fake-browser">
                   <div class="fake-browser-header">
                     <div class="fake-browser-dots">
@@ -157,6 +160,28 @@ document.body.style.transform = 'scale(1.02)';
     <%- include('partials/scripts') %>
 
     <style>
+      .preview-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.record-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+  box-shadow: 0 0 5px red;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
     .code-preview-title {
   font-weight: 300;
   font-size: 1.8rem;
