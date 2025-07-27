@@ -124,6 +124,7 @@
     transition: transform 0.3s ease, opacity 0.3s ease;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-extension-panel::-webkit-scrollbar {
