@@ -2,10 +2,7 @@ body.panel-open {
  padding-left: 316px;
   transition: padding 0.3s ease;
   width: calc(100%);
-  overflow: hidden;
-  height: 100vh;
 }
-
 
 
 @media (max-width: 768px) {
@@ -13,6 +10,9 @@ body.panel-open {
     transition: none !important;
     padding-left: 0 !important;
     width: 100% !important;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
 }
 
