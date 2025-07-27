@@ -318,4 +318,32 @@
       }
     });
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+  // ✅ 서치폼 제출할 때 기억
+  const searchForm = document.querySelector('.search-form');
+  if (searchForm) {
+    searchForm.addEventListener('submit', () => {
+      localStorage.setItem('sidebarOpen', 'true');
+    });
+  }
+
+  // ✅ 카테고리 탭 클릭할 때 기억
+  const categoryTabs = document.querySelectorAll('.tabs a');
+  categoryTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      localStorage.setItem('sidebarOpen', 'true');
+    });
+  });
+
+  // ✅ 페이지 로드 시 기억나면 패널 열기
+  const sidebar = document.querySelector('.sidebar-extension-panel');
+  if (localStorage.getItem('sidebarOpen') === 'true') {
+    sidebar.classList.add('open');
+    document.body.classList.add('panel-open');
+    localStorage.removeItem('sidebarOpen'); // 한번 쓰고 지움
+  }
+});
   </script>
+
+  
