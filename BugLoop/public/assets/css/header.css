@@ -640,6 +640,10 @@ html.dark .lang-option:hover {
     font-weight: 500;
     transition: color 0.2s ease;
   }
+
+  .header-top.scrolled .header-menu li a {
+    color: white;
+  }
   
   .header-menu li a:hover {
     color: #007BFF; /* 강조 색상 */
