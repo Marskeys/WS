@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     console.log('❌ 로그인 요소 못 찾음');
   }
-  
+
   // ==== 언어 드롭다운 ====
   langToggle?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -105,10 +105,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ==== 로그인 폼 toggle ====
-  if (loginBtn && loginFormContainer) {
-    loginBtn.addEventListener('click', () => {
-      loginFormContainer.classList.toggle('hidden');
-    });
-  }
+
 });
