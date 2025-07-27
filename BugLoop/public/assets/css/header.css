@@ -102,7 +102,7 @@
    🔹 확장 패널
 ====================== */
 .sidebar-extension-panel {
-    position: fixed;
+    position: relative;
     box-sizing: border-box; 
     top: 0;
     left: 0;
