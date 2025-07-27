@@ -172,33 +172,39 @@
   <script src="/assets/js/global.js"></script>
 
   <script>
-    const panel = document.querySelector('.sidebar-extension-panel');
-    const text = document.querySelector('.background-text');
+    window.addEventListener('DOMContentLoaded', () => {
+      const panel = document.querySelector('.sidebar-extension-panel');
+      const text = document.querySelector('.background-text');
   
-    function updateMaskPosition() {
-      const rect = panel.getBoundingClientRect();
+      if (!panel || !text) {
+        console.error('패널이나 배경 텍스트 못 찾음');
+        return;
+      }
   
-      // 브라우저 기준 좌표를 CSS 변수로 설정
-      text.style.setProperty('--sidebar-top', `${rect.top}px`);
-      text.style.setProperty('--sidebar-left', `${rect.left}px`);
-      text.style.setProperty('--sidebar-width', `${rect.width}px`);
-      text.style.setProperty('--sidebar-height', `${rect.height}px`);
-    }
+      // 사이드패널 위치 기준으로 고정 위치 조정
+      function updateMaskPosition() {
+        const rect = panel.getBoundingClientRect();
+        text.style.setProperty('--sidebar-top', `${rect.top}px`);
+        text.style.setProperty('--sidebar-left', `${rect.left}px`);
+        text.style.setProperty('--sidebar-width', `${rect.width}px`);
+        text.style.setProperty('--sidebar-height', `${rect.height}px`);
+      }
   
-    window.addEventListener('resize', updateMaskPosition);
-    window.addEventListener('scroll', updateMaskPosition);
-    window.addEventListener('DOMContentLoaded', updateMaskPosition);
-    updateMaskPosition();
+      // 위치 업데이트 실행
+      updateMaskPosition();
   
-    // 스크롤 애니메이션
-    if (panel && text) {
+      // 윈도우 변화 대응
+      window.addEventListener('resize', updateMaskPosition);
+      window.addEventListener('scroll', updateMaskPosition);
+  
+      // 스크롤 애니메이션
       panel.addEventListener('scroll', () => {
         const scrollY = panel.scrollTop;
         const scale = 1 + scrollY / 500;
-        text.style.transform = `scale(${scale})`;
         const fade = Math.min(scrollY / 400, 1);
+        text.style.transform = `scale(${scale})`;
         text.style.color = `rgba(227, 227, 227, ${1 - fade})`;
       });
-    }
+    });
   </script>
-
+  
