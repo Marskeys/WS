@@ -122,6 +122,12 @@
     opacity: 0;
     pointer-events: none;
     transition: transform 0.3s ease, opacity 0.3s ease;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.sidebar-extension-panel::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 
