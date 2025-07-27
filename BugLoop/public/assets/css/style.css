@@ -1,3 +1,9 @@
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
 body.panel-open {
  padding-left: 316px;
   transition: padding 0.3s ease;
