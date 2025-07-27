@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginFormContainer = document.getElementById('login-form-container');
 
   let blinkRemoved = false;
-  let scrollHandler = null;
 
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
@@ -26,28 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
-
-      const textStage = clone.querySelector('.text-stage');
-      if (scrollHandler) extensionPanel.removeEventListener('scroll', scrollHandler);
-
-      scrollHandler = () => {
-        const scrollY = extensionPanel.scrollTop;
-        if (!textStage) return;
-
-        if (scrollY < 200) {
-          textStage.textContent = '';
-        } else if (scrollY < 600) {
-          textStage.textContent = 'Hello, love';
-        } else if (scrollY < 1000) {
-          textStage.textContent = 'You’re amazing';
-        } else if (scrollY < 1400) {
-          textStage.textContent = 'Keep going';
-        } else {
-          textStage.textContent = '';
-        }
-      };
-
-      extensionPanel.addEventListener('scroll', scrollHandler);
     }
 
     icons.forEach(i => i.classList.remove('active'));
