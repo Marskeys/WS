@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
-  <title><%= post.title %> | BlindLove</title>
+  <title><%= post.title %> | Bug Loop</title>
   <link rel="stylesheet" href="/assets/css/post-view.css" />
   
   <%- include('partials/head') %>
@@ -14,8 +14,13 @@
     <% alternateLinks.forEach(link => { %>
       <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
     <% }); %>
-    <link rel="alternate" hreflang="x-default" href="https://blindly.love/<%= lang %>/post/<%= post.id %>">
+    <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/<%= lang %>/post/<%= post.id %>">
   <% } %>
+
+  <% const testKeywords = ['테스트', 'test', 'テスト', '测试']; %>
+<% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
+  <meta name="robots" content="noindex">
+<% } %>
 </head>
 
 <body class="no-fixed-footer">
