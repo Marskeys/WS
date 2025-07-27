@@ -7,9 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.tab-container');
   const langToggle = document.getElementById('langToggle');
   const langMenu = document.getElementById('langMenu');
+  const loginBtn = document.getElementById('login');
+  const loginFormContainer = document.getElementById('login-form-container');
 
   let blinkRemoved = false;
-  let scrollHandler = null; // ✅ 스크롤 핸들러 추적용
+  let scrollHandler = null;
 
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
@@ -25,13 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.style.display = 'block';
       container.replaceChildren(clone);
 
-      // ✅ 텍스트 변화 요소 다시 찾아서 스크롤 이벤트 설정
       const textStage = clone.querySelector('.text-stage');
       if (scrollHandler) extensionPanel.removeEventListener('scroll', scrollHandler);
 
       scrollHandler = () => {
         const scrollY = extensionPanel.scrollTop;
-
         if (!textStage) return;
 
         if (scrollY < 200) {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedIcon?.classList.add('active');
   }
 
-  // ==== 탭 아이콘 클릭 ====
+  // ==== 탭 클릭 ====
   icons.forEach(icon => {
     icon.addEventListener('click', (e) => {
       const selectedTab = icon.dataset.tab;
@@ -66,11 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ==== 확장 패널 토글 ====
+  // ==== 패널 토글 ====
   toggleExtensionBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     const isNowOpen = extensionPanel.classList.toggle('open');
-
     toggleIcon?.classList.toggle('fa-chevron-left');
     toggleIcon?.classList.toggle('fa-chevron-right');
 
@@ -86,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ==== 초기 자동 탭 열기 ====
+  // ==== 자동탭 열기 ====
   const path = location.pathname;
   const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
   const isWrite = path === '/write' || /^\/(ko|en|fr|zh|ja)\/write$/.test(path);
@@ -118,12 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
       langMenu?.classList.remove('show');
     }
   });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-  const loginBtn = document.getElementById('login');
-  const loginFormContainer = document.getElementById('login-form-container');
-
+  // ==== 로그인 폼 toggle ====
   if (loginBtn && loginFormContainer) {
     loginBtn.addEventListener('click', () => {
       loginFormContainer.classList.toggle('hidden');
