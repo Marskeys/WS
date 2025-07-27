@@ -2,16 +2,6 @@
     <div class="header-top">
       <div class="top-controls">
         <div class="left-controls">
-
-          <nav class="header-menu">
-            <ul>
-              <li><a href="/<%= lang %>/web-tools">웹 도구</a></li>
-              <li><a href="/<%= lang %>/tutorials">튜토리얼</a></li>
-              <li><a href="/<%= lang %>/resources">자료실</a></li>
-              <li><a href="/<%= lang %>/faq">FAQ</a></li>
-            </ul>
-          </nav>
-          
           <%
           const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
           const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
@@ -24,6 +14,16 @@
             </a>
           <% } %>
         </div>
+
+        <nav class="header-menu">
+          <ul>
+            <li><a href="/<%= lang %>/web-tools">웹 도구</a></li>
+            <li><a href="/<%= lang %>/tutorials">튜토리얼</a></li>
+            <li><a href="/<%= lang %>/resources">자료실</a></li>
+            <li><a href="/<%= lang %>/faq">FAQ</a></li>
+          </ul>
+        </nav>
+        
         <div class="right-controls">
           <div class="language-dropdown">
             <button id="langToggle" class="lang-btn">
