@@ -182,9 +182,9 @@ document.addEventListener('scroll', () => {
   // 배경 변화
   const maxScroll = 300;
   const percent = Math.min(scrollY / maxScroll, 1);
-  const start = Math.floor(80 - 70 * percent);
-  const mid = Math.floor(90 - 80 * percent);
-  const end = Math.floor(95 - 90 * percent);
+  const start = Math.floor(70 - 70 * percent);
+  const mid = Math.floor(80 - 80 * percent);
+  const end = Math.floor(90 - 90 * percent);
 
   header.style.background = `
     linear-gradient(to right,
