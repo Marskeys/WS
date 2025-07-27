@@ -576,19 +576,23 @@ html.dark .lang-btn {
   @keyframes icon-pulse-sway {
     0%, 100% {
       transform: scale(1) translateX(0);
+      color: #ffffff;
     }
     25% {
-      transform: scale(1.05) translateX(-1px);
+      transform: scale(1.04) translateX(-0.6px);
+      color: #f0f0f0;
     }
     50% {
-      transform: scale(0.98) translateX(1px);
+      transform: scale(0.98) translateX(0.6px);
+      color: #eaeaea;
     }
     75% {
-      transform: scale(1.03) translateX(-0.5px);
+      transform: scale(1.02) translateX(-0.3px);
+      color: #f5f5f5;
     }
   }
   
   .blink-highlight {
-    animation: icon-pulse-sway 1s ease-in-out infinite !important;
+    animation: icon-pulse-sway 2s ease-in-out infinite !important;
   }
 
