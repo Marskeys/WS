@@ -79,8 +79,9 @@
     background: rgba(0,0,0,0.4);
     display: none;
     justify-content: center;
-    align-items: left;
+    align-items: center;
     z-index: 1000;
+    padding: 100px;
   }
   
   .mobile-toc-content {
