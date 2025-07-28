@@ -90,7 +90,7 @@
     max-height: 80%;
     overflow-y: auto;
     padding: 1rem;
-    padding-right: 20rem;
+    margin-right: 3rem !important;
   }
   
   html.dark .mobile-toc-content {
