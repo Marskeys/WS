@@ -390,8 +390,8 @@
       
       function format(command, value = null) {
           if (!currentActiveEditor) return; // 활성 에디터가 없으면 반환
-          currentActiveEditor.focus();
-          document.execCommand("styleWithCSS", false, false);
+          // document.execCommand("styleWithCSS", false, false); // 이 부분은 applyStyle에서만 처리
+          currentActiveEditor.focus(); // 명령 실행 전에 에디터에 포커스 (선택 영역 유지 시도)
           document.execCommand(command, false, value);
           setTimeout(detectStyle, 100);
       }
@@ -400,12 +400,14 @@
         if (!currentActiveEditor) return;
         const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
 
-        restoreSelection(); // 저장된 선택 영역 복원
-        currentActiveEditor.focus(); // 에디터에 포커스
+        // ⭐ 중요: 명령 실행 전 포커스를 에디터로 강제 이동 및 선택 영역 복원
+        currentActiveEditor.focus();
+        restoreSelection(); 
 
         const sel = window.getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) {
-            // 선택된 내용이 없으면 현재 블록 전체에 적용 시도 (기존 formatBlock 방식)
+        if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+            // 선택된 내용이 없거나 유효하지 않으면, 현재 커서 위치의 블록에 적용 시도
+            // 이 경우에도 브라우저의 formatBlock 동작은 완벽하지 않을 수 있습니다.
             document.execCommand("styleWithCSS", false, false);
             document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
             saveSelection();
@@ -421,48 +423,47 @@
             commonAncestor = commonAncestor.parentNode;
         }
 
-        // 현재 선택된 블록 요소를 찾습니다. (bl-content 바로 아래의 블록 요소)
+        // 선택 영역의 가장 가까운 블록 부모를 찾습니다.
         let targetBlock = commonAncestor;
         while (targetBlock && targetBlock !== currentActiveEditor && !blockTags.includes(targetBlock.tagName.toLowerCase())) {
             targetBlock = targetBlock.parentNode;
         }
 
-        // targetBlock이 bl-content 바로 아래의 유효한 블록 요소가 아니거나,
-        // 선택 영역이 여러 블록에 걸쳐있을 경우를 대비하여 더 견고한 처리를 시도합니다.
         if (targetBlock && targetBlock !== currentActiveEditor && blockTags.includes(targetBlock.tagName.toLowerCase())) {
             // 단일 블록 요소에 대한 스타일 변경 시도
             const currentTag = targetBlock.tagName.toLowerCase();
 
             // 이미 같은 태그인 경우 토글 (p 태그로 되돌리기)
             if (currentTag === tag) {
-                if (tag === 'p') { // 이미 p인데 p로 바꾸려고 하면 아무것도 안 함
-                    // 선택된 텍스트가 이미 p 태그인데 다시 p를 누르면 아무것도 안 함
-                    // 하지만 선택된 내용이 없다면 <p><br></p>로 강제 변환
-                    if (sel.isCollapsed) {
-                        document.execCommand("formatBlock", false, '<p>');
-                    }
-                    saveSelection();
-                    setTimeout(detectStyle, 100);
-                    return;
+                if (tag === 'p' && sel.isCollapsed) { // p인데 p 누르면 아무것도 안 함 (빈 줄이 아니면)
+                     // 빈 줄에서 p를 누르면 <p><br></p>로 강제 변환
+                    document.execCommand("styleWithCSS", false, false);
+                    document.execCommand("formatBlock", false, '<p>');
+                } else if (tag !== 'p') { // h1 -> h1 클릭 시 p로 토글
+                    document.execCommand("styleWithCSS", false, false);
+                    document.execCommand("formatBlock", false, '<p>');
                 }
-                document.execCommand("formatBlock", false, '<p>'); // 같은 태그면 p로 되돌림
                 saveSelection();
                 setTimeout(detectStyle, 100);
                 return;
             }
 
-            // 선택된 블록 태그를 새 태그로 변경
+            // ⭐ 개선된 formatBlock 적용: 선택 영역이 블록 요소를 온전히 포함할 때
+            document.execCommand("styleWithCSS", false, false);
             document.execCommand("formatBlock", false, `<${tag.toUpperCase()}>`);
             
         } else {
-            // 여러 블록에 걸쳐 선택되었거나, 예상치 못한 경우
-            // 선택된 내용을 추출하여 새 태그로 감싸는 방식 (더 안전)
+            // 여러 블록에 걸쳐 선택되었거나, 예상치 못한 경우 (더 안정적인 DOM 조작)
             try {
-                const fragment = range.extractContents(); // 선택된 내용 추출
-                const newBlock = document.createElement(tag); // 새 블록 요소 생성
-                newBlock.appendChild(fragment); // 추출한 내용을 새 블록에 추가
+                // 선택 영역의 HTML 내용을 추출
+                const fragment = range.extractContents(); 
+                // 새 블록 요소 생성
+                const newBlock = document.createElement(tag); 
+                // 추출한 내용을 새 블록에 추가
+                newBlock.appendChild(fragment); 
 
-                range.insertNode(newBlock); // 새 블록을 원래 위치에 삽입
+                // 새 블록을 원래 위치에 삽입
+                range.insertNode(newBlock); 
 
                 // 삽입 후 선택 영역을 새로 만든 블록으로 재설정
                 sel.removeAllRanges();
@@ -473,6 +474,7 @@
             } catch (e) {
                 console.warn("applyStyle (DOM 조작) 실패, fallback to execCommand:", e);
                 // DOM 조작 실패 시 execCommand로 대체
+                document.execCommand("styleWithCSS", false, false);
                 document.execCommand("formatBlock", false, `<${tag.toUpperCase()}>`);
             }
         }
@@ -482,14 +484,13 @@
 
         // span이나 strong과 같은 인라인 태그 처리 (기존 로직 유지)
         // 이 부분은 블록 태그가 아닌 인라인 태그 (span, strong)에 대한 로직입니다.
-        // 선택된 텍스트를 span/strong으로 감싸는 부분은 그대로 유지됩니다.
+        // 블록 태그 적용 후, 그 안에 선택된 텍스트에 다시 인라인 스타일을 적용할 수 있도록
+        // 별도로 처리합니다.
         if (!blockTags.includes(tag)) {
             const tempElement = document.createElement(tag);
             if (tag === 'span') tempElement.classList.add('label');
             if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
 
-            // 이전에 추출된 fragment를 사용할 수도 있지만, 블록 태그 처리가 되었으므로
-            // 여기서는 다시 선택 영역을 확인하고 처리합니다.
             const selAfterBlockFormat = window.getSelection();
             if (!selAfterBlockFormat.rangeCount || selAfterBlockFormat.isCollapsed) return;
             const rangeAfterBlockFormat = selAfterBlockFormat.getRangeAt(0);
@@ -737,6 +738,7 @@
           // 모든 드롭다운 메뉴를 닫음 (툴바에 관계없이)
           const dropdowns = document.querySelectorAll('.dropdown-menu');
           dropdowns.forEach(d => {
+              // 드롭다운 메뉴가 'show' 상태이고, 클릭된 요소가 드롭다운 내부가 아닐 때 닫기
               if (d.classList.contains('show') && !e.target.closest('.dropdown')) {
                   d.classList.remove('show');
               }
@@ -801,12 +803,10 @@
               editor.addEventListener('keyup', saveSelection);
               editor.addEventListener('focus', () => {
                   const langCode = editor.dataset.langEditor;
-                  // 현재 활성화된 에디터와 툴바를 업데이트합니다.
                   currentActiveEditor = editor;
                   currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
                   currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
                   
-                  // 포커스 시 HTML 모드였다면 디자인 모드로 자동 전환 (현재 언어 블록만 해당)
                   if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
                       switchToDesignMode(); 
                   }
@@ -816,27 +816,49 @@
 
           // 툴바 버튼 이벤트 리스너 동적 할당
           document.querySelectorAll('.toolbar').forEach(toolbar => {
+            // ⭐ 중요: mousedown 이벤트에서 선택 영역 저장
+            toolbar.addEventListener('mousedown', (event) => {
+                const styleDropdownToggle = event.target.closest('.dropdown-toggle');
+                const commandButton = event.target.closest('button[data-command]');
+                const styleCommandElement = event.target.closest('[data-style-command]');
+                const colorButton = event.target.closest('[data-color-btn]');
+
+                // 드롭다운 토글, 스타일 명령, 색상 버튼, 일반 명령 버튼 클릭 시
+                // 에디터의 포커스를 잃지 않도록 preventDefault() 호출
+                // 이렇게 해야 드래그가 사라지는 것을 방지할 수 있습니다.
+                if (styleDropdownToggle || styleCommandElement || commandButton || colorButton) {
+                    event.preventDefault(); 
+                    // mousedown 시 savedRange가 최신 상태인지 확인
+                    if (currentActiveEditor && !savedRange) {
+                        saveSelection(); 
+                    }
+                }
+            });
+
             toolbar.addEventListener('click', (event) => {
               const button = event.target.closest('button[data-command], .dropdown-toggle');
-              // ⭐ 추가: 드롭다운 메뉴 내의 스타일 명령 요소를 찾도록 수정
               const styleCommandElement = event.target.closest('[data-style-command]');
 
-              if (!button && !styleCommandElement) return; // 유효한 요소가 아니면 반환
+              // mousedown에서 preventDefault()를 했으므로, 여기서 다시 포커스를 에디터로
+              if (currentActiveEditor) {
+                  currentActiveEditor.focus();
+                  restoreSelection(); // 저장된 선택 영역 복원 시도
+              }
 
-              saveSelection(); // 명령 실행 전에 현재 선택 영역 저장
 
-              // ⭐ 수정된 부분: styleCommandElement가 있다면 applyStyle 실행
+              if (!button && !styleCommandElement) return;
+
+              // saveSelection(); // mousedown에서 이미 저장했거나, applyStyle 내부에서 복원할 것임
+
               if (styleCommandElement) {
                   const styleCommand = styleCommandElement.dataset.styleCommand;
                   applyStyle(styleCommand);
-                  // 스타일 적용 후 드롭다운 메뉴 닫기
                   const styleDropdown = styleCommandElement.closest('.dropdown-menu');
                   if (styleDropdown) {
                       styleDropdown.classList.remove('show');
                   }
-                  // 클릭 이벤트가 툴바 전체로 전파되지 않도록 방지
                   event.stopPropagation(); 
-              } else if (button) { // 기존 button 처리 로직
+              } else if (button) {
                 const command = button.dataset.command;
 
                 if (command) {
@@ -864,7 +886,6 @@
                   }
                 } else if (button.classList.contains('dropdown-toggle')) {
                   toggleDropdown();
-                  // 드롭다운 토글 버튼 클릭 시 이벤트 전파 방지
                   event.stopPropagation(); 
                 }
               }
@@ -872,13 +893,19 @@
 
             // 색상 선택 버튼 및 팔레트 이벤트 리스너
             toolbar.querySelectorAll('[data-color-btn]').forEach(btn => {
-                btn.addEventListener('mousedown', saveSelection); // mousedown 이벤트에서 selection 저장
+                // btn.addEventListener('mousedown', saveSelection); // mousedown에서 preventDefault()와 함께 처리
                 btn.addEventListener('click', (e) => {
+                    // ⭐ 중요: 색상 버튼 클릭 시 에디터 포커스 및 선택 영역 복원
+                    if (currentActiveEditor) {
+                        currentActiveEditor.focus();
+                        restoreSelection();
+                    }
+
                     const colorPalette = btn.closest('[data-color-tool]').querySelector('[data-color-palette]');
                     if (colorPalette) {
                         colorPalette.classList.toggle('show');
                     }
-                    e.stopPropagation(); // 버튼 클릭 시 드롭다운 닫히지 않도록
+                    e.stopPropagation(); 
                 });
             });
 
@@ -887,7 +914,7 @@
                     const command = colorBtn.closest('[data-color-tool]').dataset.colorTool;
                     const value = colorBtn.dataset.colorValue;
                     setColor(command, value);
-                    e.target.closest('[data-color-palette]').classList.remove('show'); // 색 선택 후 팔레트 닫기
+                    e.target.closest('[data-color-palette]').classList.remove('show'); 
                 });
             });
 
@@ -895,7 +922,7 @@
                 colorInput.addEventListener('change', (e) => {
                     const command = colorInput.closest('[data-color-tool]').dataset.colorTool;
                     setColor(command, e.target.value);
-                    e.target.closest('[data-color-palette]').classList.remove('show'); // 색 선택 후 팔레트 닫기
+                    e.target.closest('[data-color-palette]').classList.remove('show'); 
                 });
             });
           });
