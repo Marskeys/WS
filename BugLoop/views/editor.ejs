@@ -228,7 +228,7 @@
     
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
-    const CURRENT_PAGE_LANG = '<%= lang %>';
+    const CURRENT_PAGE_LANG = '<%= lang %>'; // 이 변수는 서버에서 초기 렌더링 시 사용
 
     function renderCategories() {
         const list = document.getElementById('categoryList');
@@ -389,9 +389,8 @@
         }
       
       function format(command, value = null) {
-          if (!currentActiveEditor) return; // 활성 에디터가 없으면 반환
-          // document.execCommand("styleWithCSS", false, false); // 이 부분은 applyStyle에서만 처리
-          currentActiveEditor.focus(); // 명령 실행 전에 에디터에 포커스 (선택 영역 유지 시도)
+          if (!currentActiveEditor) return; 
+          currentActiveEditor.focus();
           document.execCommand(command, false, value);
           setTimeout(detectStyle, 100);
       }
@@ -400,14 +399,11 @@
         if (!currentActiveEditor) return;
         const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
 
-        // ⭐ 중요: 명령 실행 전 포커스를 에디터로 강제 이동 및 선택 영역 복원
         currentActiveEditor.focus();
         restoreSelection(); 
 
         const sel = window.getSelection();
         if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-            // 선택된 내용이 없거나 유효하지 않으면, 현재 커서 위치의 블록에 적용 시도
-            // 이 경우에도 브라우저의 formatBlock 동작은 완벽하지 않을 수 있습니다.
             document.execCommand("styleWithCSS", false, false);
             document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
             saveSelection();
@@ -418,28 +414,23 @@
         const range = sel.getRangeAt(0);
         let commonAncestor = range.commonAncestorContainer;
 
-        // 텍스트 노드인 경우 부모 요소로 이동
         if (commonAncestor.nodeType === 3) {
             commonAncestor = commonAncestor.parentNode;
         }
 
-        // 선택 영역의 가장 가까운 블록 부모를 찾습니다.
         let targetBlock = commonAncestor;
         while (targetBlock && targetBlock !== currentActiveEditor && !blockTags.includes(targetBlock.tagName.toLowerCase())) {
             targetBlock = targetBlock.parentNode;
         }
 
         if (targetBlock && targetBlock !== currentActiveEditor && blockTags.includes(targetBlock.tagName.toLowerCase())) {
-            // 단일 블록 요소에 대한 스타일 변경 시도
             const currentTag = targetBlock.tagName.toLowerCase();
 
-            // 이미 같은 태그인 경우 토글 (p 태그로 되돌리기)
             if (currentTag === tag) {
-                if (tag === 'p' && sel.isCollapsed) { // p인데 p 누르면 아무것도 안 함 (빈 줄이 아니면)
-                     // 빈 줄에서 p를 누르면 <p><br></p>로 강제 변환
+                if (tag === 'p' && sel.isCollapsed) {
                     document.execCommand("styleWithCSS", false, false);
                     document.execCommand("formatBlock", false, '<p>');
-                } else if (tag !== 'p') { // h1 -> h1 클릭 시 p로 토글
+                } else if (tag !== 'p') {
                     document.execCommand("styleWithCSS", false, false);
                     document.execCommand("formatBlock", false, '<p>');
                 }
@@ -448,32 +439,24 @@
                 return;
             }
 
-            // ⭐ 개선된 formatBlock 적용: 선택 영역이 블록 요소를 온전히 포함할 때
             document.execCommand("styleWithCSS", false, false);
             document.execCommand("formatBlock", false, `<${tag.toUpperCase()}>`);
             
         } else {
-            // 여러 블록에 걸쳐 선택되었거나, 예상치 못한 경우 (더 안정적인 DOM 조작)
             try {
-                // 선택 영역의 HTML 내용을 추출
                 const fragment = range.extractContents(); 
-                // 새 블록 요소 생성
                 const newBlock = document.createElement(tag); 
-                // 추출한 내용을 새 블록에 추가
                 newBlock.appendChild(fragment); 
 
-                // 새 블록을 원래 위치에 삽입
                 range.insertNode(newBlock); 
 
-                // 삽입 후 선택 영역을 새로 만든 블록으로 재설정
                 sel.removeAllRanges();
                 const newRange = document.createRange();
-                newRange.selectNodeContents(newBlock); // 새 블록의 내용 전체를 선택
+                newRange.selectNodeContents(newBlock); 
                 sel.addRange(newRange);
                 
             } catch (e) {
                 console.warn("applyStyle (DOM 조작) 실패, fallback to execCommand:", e);
-                // DOM 조작 실패 시 execCommand로 대체
                 document.execCommand("styleWithCSS", false, false);
                 document.execCommand("formatBlock", false, `<${tag.toUpperCase()}>`);
             }
@@ -482,10 +465,6 @@
         saveSelection();
         setTimeout(detectStyle, 100);
 
-        // span이나 strong과 같은 인라인 태그 처리 (기존 로직 유지)
-        // 이 부분은 블록 태그가 아닌 인라인 태그 (span, strong)에 대한 로직입니다.
-        // 블록 태그 적용 후, 그 안에 선택된 텍스트에 다시 인라인 스타일을 적용할 수 있도록
-        // 별도로 처리합니다.
         if (!blockTags.includes(tag)) {
             const tempElement = document.createElement(tag);
             if (tag === 'span') tempElement.classList.add('label');
@@ -574,11 +553,10 @@
 
       function saveSelection() {
           const sel = window.getSelection();
-          // 현재 활성 에디터 내에서만 Selection을 저장
           if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
               savedRange = sel.getRangeAt(0).cloneRange();
           } else {
-              savedRange = null; // 현재 활성 에디터 밖의 Selection은 무시
+              savedRange = null;
           }
       }
 
@@ -598,7 +576,6 @@
         const range = sel.getRangeAt(0);
 
         if (color === "__clear__") {
-          // 선택 영역 내에서 특정 스타일 제거 (span 태그를 찾아 style 속성 제거)
           const tempDiv = document.createElement('div');
           tempDiv.appendChild(range.extractContents());
           
@@ -606,17 +583,17 @@
           spans.forEach(span => {
             if (command === 'foreColor') {
               span.style.color = '';
-              if (!span.style.backgroundColor && !span.style.color && !span.classList.length) { // 다른 스타일이 없으면 span 제거
+              if (!span.style.backgroundColor && !span.style.color && !span.classList.length) {
                 span.outerHTML = span.innerHTML;
               }
             } else if (command === 'hiliteColor') {
               span.style.backgroundColor = '';
-              if (!span.style.backgroundColor && !span.style.color && !span.classList.length) { // 다른 스타일이 없으면 span 제거
+              if (!span.style.backgroundColor && !span.style.color && !span.classList.length) {
                 span.outerHTML = span.innerHTML;
               }
             }
           });
-          range.insertNode(tempDiv.firstChild); // 첫 번째 자식을 다시 삽입
+          range.insertNode(tempDiv.firstChild);
           return;
         }
 
@@ -735,10 +712,8 @@
       }
 
       window.onclick = function(e) {
-          // 모든 드롭다운 메뉴를 닫음 (툴바에 관계없이)
           const dropdowns = document.querySelectorAll('.dropdown-menu');
           dropdowns.forEach(d => {
-              // 드롭다운 메뉴가 'show' 상태이고, 클릭된 요소가 드롭다운 내부가 아닐 때 닫기
               if (d.classList.contains('show') && !e.target.closest('.dropdown')) {
                   d.classList.remove('show');
               }
@@ -746,12 +721,10 @@
       };
 
       function activateEditor(langCode) {
-          // 모든 언어 블록 숨기기
           document.querySelectorAll('.lang-meta-block').forEach(block => {
               block.style.display = 'none';
           });
 
-          // 선택된 언어 블록 보이기
           const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
           if (activeLangBlock) {
               activeLangBlock.style.display = '';
@@ -762,11 +735,11 @@
 
               currentActiveEditor = editorDiv;
               currentActiveHtmlEditor = htmlEditorDiv;
-              currentActiveToolbar = toolbarDiv; // 활성 툴바 설정
+              currentActiveToolbar = toolbarDiv;
 
               if (editorDiv) {
-                  editorDiv.style.display = 'block'; // 디자인 모드 기본 활성화
-                  htmlEditorDiv.style.display = 'none'; // HTML 모드 비활성화
+                  editorDiv.style.display = 'block';
+                  htmlEditorDiv.style.display = 'none';
                   editorDiv.focus();
                   detectStyle();
               }
@@ -774,8 +747,7 @@
       }
 
 
-      window.addEventListener('DOMContentLoaded', () => { // DOMContentLoaded로 변경하여 DOM이 완전히 로드된 후 스크립트 실행 보장
-          // 카테고리 불러오기 및 렌더링
+      window.addEventListener('DOMContentLoaded', () => {
           fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
             .then(res => res.json())
             .then(data => {
@@ -784,17 +756,21 @@
             })
             .catch(err => {
               console.error("카테고리 불러오기 오류:", err);
-              categories = ['일상', '기록', '리뷰']; // 대체 카테고리
+              categories = ['일상', '기록', '리뷰'];
               renderCategories();
             });
 
-          // 언어 선택 드롭다운 초기값 설정
           document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
 
-          // 페이지 로드 시 현재 언어 (lang) 에디터를 활성화
           activateEditor(CURRENT_PAGE_LANG);
 
-          // 모든 언어 에디터에 이벤트 리스너 추가
+          // ⭐ 변경 사항 시작: 언어 선택 드롭다운 이벤트 리스너 추가
+          document.getElementById('langSelector').addEventListener('change', (event) => {
+              const selectedLangCode = event.target.value;
+              activateEditor(selectedLangCode);
+          });
+          // ⭐ 변경 사항 끝
+
           const languageEditors = document.querySelectorAll('.language-editor');
           languageEditors.forEach(editor => {
               editor.addEventListener('keyup', detectStyle);
@@ -814,21 +790,15 @@
               });
           });
 
-          // 툴바 버튼 이벤트 리스너 동적 할당
           document.querySelectorAll('.toolbar').forEach(toolbar => {
-            // ⭐ 중요: mousedown 이벤트에서 선택 영역 저장
             toolbar.addEventListener('mousedown', (event) => {
                 const styleDropdownToggle = event.target.closest('.dropdown-toggle');
                 const commandButton = event.target.closest('button[data-command]');
                 const styleCommandElement = event.target.closest('[data-style-command]');
                 const colorButton = event.target.closest('[data-color-btn]');
 
-                // 드롭다운 토글, 스타일 명령, 색상 버튼, 일반 명령 버튼 클릭 시
-                // 에디터의 포커스를 잃지 않도록 preventDefault() 호출
-                // 이렇게 해야 드래그가 사라지는 것을 방지할 수 있습니다.
                 if (styleDropdownToggle || styleCommandElement || commandButton || colorButton) {
                     event.preventDefault(); 
-                    // mousedown 시 savedRange가 최신 상태인지 확인
                     if (currentActiveEditor && !savedRange) {
                         saveSelection(); 
                     }
@@ -839,16 +809,12 @@
               const button = event.target.closest('button[data-command], .dropdown-toggle');
               const styleCommandElement = event.target.closest('[data-style-command]');
 
-              // mousedown에서 preventDefault()를 했으므로, 여기서 다시 포커스를 에디터로
               if (currentActiveEditor) {
                   currentActiveEditor.focus();
-                  restoreSelection(); // 저장된 선택 영역 복원 시도
+                  restoreSelection(); 
               }
 
-
               if (!button && !styleCommandElement) return;
-
-              // saveSelection(); // mousedown에서 이미 저장했거나, applyStyle 내부에서 복원할 것임
 
               if (styleCommandElement) {
                   const styleCommand = styleCommandElement.dataset.styleCommand;
@@ -891,11 +857,8 @@
               }
             });
 
-            // 색상 선택 버튼 및 팔레트 이벤트 리스너
             toolbar.querySelectorAll('[data-color-btn]').forEach(btn => {
-                // btn.addEventListener('mousedown', saveSelection); // mousedown에서 preventDefault()와 함께 처리
                 btn.addEventListener('click', (e) => {
-                    // ⭐ 중요: 색상 버튼 클릭 시 에디터 포커스 및 선택 영역 복원
                     if (currentActiveEditor) {
                         currentActiveEditor.focus();
                         restoreSelection();
@@ -927,7 +890,6 @@
             });
           });
 
-          // HTML/디자인 모드 토글 버튼 이벤트 리스너
           document.querySelectorAll('[data-mode-toggle]').forEach(button => {
             button.addEventListener('click', (event) => {
               const mode = event.target.dataset.modeToggle;
@@ -959,7 +921,6 @@
             return;
         }
 
-        // 기존 목차 제거
         const oldTOC = blContentDiv.querySelector(".auto-toc");
         if (oldTOC) oldTOC.remove();
 
@@ -992,7 +953,6 @@
             number = `${h1Count}.${h2Count}`;
             }
 
-            // ID 부여 (기존 ID 무시하고 항상 재생성)
             const id = `toc-${number.replace(/\./g, "-")}`;
             el.id = id;
 
@@ -1014,7 +974,6 @@
         tocWrapper.appendChild(tocTitle);
         tocWrapper.appendChild(tocList);
 
-        // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
         blContentDiv.prepend(tocWrapper);
       }
 
@@ -1026,11 +985,9 @@
 
         let currentContent = currentActiveEditor.innerHTML.trim();
 
-        // ✅ bl-content로 감싸져 있는지 확인
         const isWrapped = currentContent.startsWith('<div class="bl-content"');
 
         if (!isWrapped) {
-            // 빈 상태도 감싸기
             if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
                 currentContent = '<p><br></p>';
             }
@@ -1049,7 +1006,7 @@ ${currentContent}
 
         currentActiveEditor.style.display = 'none';
         currentActiveHtmlEditor.style.display = 'block';
-        currentActiveToolbar.style.display = 'none'; // HTML 모드 시 툴바 숨기기 (선택 사항)
+        currentActiveToolbar.style.display = 'none';
       }
 
       function switchToDesignMode() {
@@ -1060,7 +1017,6 @@ ${currentContent}
 
         let rawHtml = currentActiveHtmlEditor.value.trim();
 
-        // ✅ bl-content 감싸기 누락 시 자동 추가
         if (!rawHtml.startsWith('<div class="bl-content"')) {
             rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
         }
@@ -1068,12 +1024,11 @@ ${currentContent}
         currentActiveEditor.innerHTML = rawHtml;
         currentActiveHtmlEditor.style.display = 'none';
         currentActiveEditor.style.display = 'block';
-        currentActiveToolbar.style.display = 'flex'; // 디자인 모드 시 툴바 보이기 (선택 사항)
+        currentActiveToolbar.style.display = 'flex';
         currentActiveEditor.focus();
         detectStyle();
       }
 
-   
   </script>
 
 <%- include('partials/footer') %>
