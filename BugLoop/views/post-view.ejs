@@ -1,20 +1,9 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
-  <%
-// 테스트 관련 키워드들 정의
-const testKeywords = ['테스트', 'Test', 'テスト', '测试', 'Test 2', '테스트 2', 'テスト2', '测试2'];
-const hasTestCategory = post.categories.some(cat =>
-  testKeywords.some(keyword => cat.includes(keyword))
-);
-%>
-
-<% if (hasTestCategory) { %>
-  <meta name="robots" content="noindex">
-<% } %>
-  <title><%= post.title %> | BlindLove</title>
-  <link rel="stylesheet" href="/assets/css/signup.css" />
+  <title><%= post.title %> | Bug Loop</title>
   <link rel="stylesheet" href="/assets/css/post-view.css" />
+  
   <%- include('partials/head') %>
 
   <% if (canonicalUrl) { %>
@@ -25,358 +14,19 @@ const hasTestCategory = post.categories.some(cat =>
     <% alternateLinks.forEach(link => { %>
       <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
     <% }); %>
-    <link rel="alternate" hreflang="x-default" href="https://blindly.love/<%= lang %>/post/<%= post.id %>">
+    <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/<%= lang %>/post/<%= post.id %>">
   <% } %>
-  <style>
-    /* 📑 목차 박스 디자인 */
-    .toc-list {
-      font-size: 0; /* 줄바꿈 공백 제거 */
-    }
 
-    .toc-list a {
-      font-size: 14px;
-      display: block; /* 한 줄 전체 클릭 가능 */
-      line-height: 1.4;
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #0366d6;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .toc-list a:hover {
-      color: #999ff9 !important;
-      text-decoration: underline !important;
-    }
-
-    html.dark .toc-list a {
-      color: #6fb7ff !important;
-    }
-
-    html.dark .toc-list a:hover {
-      color: #a2d4ff !important;
-    }
-
-    .toc-item.toc-h2 {
-      padding-left: 1.2rem; /* ✅ 부제목 들여쓰기*/
-    }
-    .post-content ul, .post-content ol {
-      padding-left: 1em;
-      margin: 0.3rem 0;
-    }
-
-    .post-content li {
-      margin: 0;
-      padding: 0;
-    }
-
-    .post-content footer {
-      display: block;
-      font-size: 0.85rem;
-      color: #666;
-      margin: 0.3em 0;
-      line-height: 1.5;
-    }
-
-    html.dark .post-content footer {
-      color: #aaa;
-    }
-
-    .post-content .auto-toc {
-      background: #f7f9fa;
-      border: 1px solid #d0d7de;
-      padding: 1rem 1rem;
-      margin-bottom: 1rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      line-height: 1.4;
-      max-width: 280px;
-      width: 100%;
-      margin-left: 0;
-      margin-right: auto;
-    }
-    /* 모든 h1에 기본 위 여백을 줌 */
-    .post-content .auto-toc li.toc-h1 {
-      margin-top: 0.8rem;
-    }
-    .post-content .auto-toc .toc-title {
-      font-weight: bold;
-      margin-bottom: 0rem;
-      display: block;
-    }
-
-    .post-content .auto-toc ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .post-content .auto-toc li {
-      margin: 0.1em 0;
-      line-height: 1.2;
-      padding-right: 0;
-    }
-
-    html.dark .post-content .auto-toc {
-      background: #1f1f2b;
-      border: 1px solid #444;
-      color: #ddd;
-    }
-
-    /* 제목 간격 조정 */
-    .post-content h1,
-    .post-content h2 {
-      margin-top: 0.8em;
-      margin-bottom: 0.4em;
-      line-height: 1.3;
-    }
-
-   .post-content .auto-toc + h1,
-    .post-content .auto-toc + h2 {
-      margin-top: 0.5rem !important;
-    } 
-
-    .post-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-
-    .post-meta {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #777;
-      margin-bottom: 2rem;
-    } 
-
-    /* 이게 문제 */ 
-    .post-content {
-      line-height: 1.7;
-      font-size: 1rem;
-      white-space: pre-wrap; 
-      color: #333;
-      max-width: 640px;
-      margin: 0 auto;
-      padding-left: 0.5rem;
-      position: relative;
-    } 
-
-    html.dark body .post-content {
-      color: #ddd;
-    }
-
-    .post-actions a.edit-btn,
-    .post-actions form button {
-      display: inline-block;
-      padding: 4px 10px;
-      margin: 0 4px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-
-    .post-actions a.edit-btn {
-      background-color: #f0f8ff;
-      color: #0077cc;
-      text-decoration: none;
-    }
-
-    .post-actions a.edit-btn:hover {
-      background-color: #d8edff;
-      color: #005fa3;
-    }
-
-    .post-actions form button {
-      background-color: #fff0f0;
-      color: #cc0000;
-      border: 1px solid #cc0000;
-    }
-
-    .post-actions form button:hover {
-      background-color: #ffe5e5;
-      color: #a30000;
-    }
-
-    .logo-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logo-wrap img {
-      max-width: 150px;
-      height: auto;
-      display: block;
-      margin-bottom: 1rem;
-    }
-
-    /* 블럭 요소들 사이 간격 조절*/
-    .post-content p {
-      margin-bottom: 2rem;
-    }
-
-    .post-content h1 {
-      margin-top: 2rem;
-    }
-
-    .post-content h2 {
-      margin-bottom: 2rem;
-      margin-top: 2rem;
-    }
-
-    /* 추가된 목차 관련 CSS (post-view.css에 포함되어야 함)
-    JavaScript에서 'show' 클래스를 토글하여 표시/숨김
-    */
-
-    /* 플로팅 목차 (데스크톱) */
-    .floating-toc {
-      position: fixed;
-      top: 100px; /* 적절한 초기 위치 조정 */
-      right: 20px; /* 적절한 초기 위치 조정 */
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      padding: 10px;
-      border-radius: 5px;
-      max-height: 80vh;
-      overflow-y: auto;
-      z-index: 999;
-      display: none; /* 기본 숨김 */
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      cursor: grab; /* 드래그 가능함을 표시 */
-    }
-
-    .floating-toc.show {
-      opacity: 1;
-      display: block; /* opacity transition을 위해 block으로 변경 후 opacity 1 */
-    }
-
-     /* 모바일 전용 목차 버튼 */
-  .mobile-toc-button {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    padding: 0 16px;
-    height: 48px;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #0077cc;
-    color: white;
-    border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 99999;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-    .mobile-toc-button.show {
-      opacity: 1;
-      display: flex; /* opacity transition을 위해 flex로 변경 후 opacity 1 */
-    }
-
-    @media (max-width: 768px) {
-      .floating-toc {
-        display: none !important; /* 모바일에서는 플로팅 TOC 숨김 */
-      }
-      /* mobile-toc-button.show가 flex로 설정될 것이므로, 여기서는 display: none만 override */
-      .mobile-toc-button {
-        display: none; /* JS에서 .show 클래스로 제어 */
-      }
-    }
-
-    /* 모바일 TOC 모달 */
-    .mobile-toc-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
-      visibility: hidden; /* 기본 숨김 */
-      opacity: 0;
-      transition: visibility 0s, opacity 0.3s ease-in-out;
-    }
-
-    .mobile-toc-modal.show {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .mobile-toc-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 90%;
-      max-height: 90%;
-      overflow-y: auto;
-      width: 100%;
-    }
-
-    .mobile-toc-content ul {
-        list-style: none;
-        padding: 0;
-    }
-    .mobile-toc-content li {
-        margin-bottom: 8px;
-    }
-    .mobile-toc-content li a {
-        text-decoration: none;
-        color: #333;
-        font-size: 1.1em;
-        display: block;
-        padding: 5px 0;
-    }
-    .mobile-toc-content li.toc-h1 {
-        font-weight: bold;
-        margin-top: 15px;
-        font-size: 1.2em;
-    }
-    .mobile-toc-content li.toc-h2 {
-        padding-left: 25px;
-        font-size: 1em;
-    }
-
-    .mobile-toc-close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 2em;
-      cursor: pointer;
-      z-index: 1002;
-    }
-    
-    /* 모달이 열렸을 때 body 스크롤 방지 */
-    body.modal-open {
-        overflow: hidden;
-    }
-  </style>
+  <% const testKeywords = ['테스트', 'test', 'テスト', '测试']; %>
+<% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
+  <meta name="robots" content="noindex">
+<% } %>
 </head>
+
 <body class="no-fixed-footer">
   <%- include('partials/header') %>
 
-  <div class="signup-container">
-    <div class="logo-wrap">
-      <a href="/<%= lang %>/">
-        <img src="/assets/images/post-view.png" alt="BlindLove 로고" />
-      </a>
-    </div>
-
+  <div class="postview-container">
     <div class="post-title"><%= post.title %></div>
 
     <div class="post-meta">
@@ -384,16 +34,6 @@ const hasTestCategory = post.categories.some(cat =>
       <span>작성자: <%= post.author %></span><br>
       <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-      crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block; text-align:center;"
-         data-ad-layout="in-article"
-         data-ad-format="fluid"
-         data-ad-client="ca-pub-2585969189290118"
-         data-ad-slot="3406391330"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
     <div class="post-content">
       <%- post.content %>
@@ -413,283 +53,115 @@ const hasTestCategory = post.categories.some(cat =>
     </div>
   </div>
 
-  <script>
-    // ----------------------------------------------------
-    // 모든 DOM 로딩이 완료된 후 스크립트 실행
-    // ----------------------------------------------------
-    document.addEventListener("DOMContentLoaded", () => {
-  
-      // 1. HTML 위젯(iframe) 처리 로직
-      document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
-        const encoded = el.getAttribute("data-code");
-        if (!encoded) return;
-  
-        try {
-          const binaryString = atob(encoded);
-          const len = binaryString.length;
-          const bytes = new Uint8Array(len);
-          for (let i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          const decoder = new TextDecoder('utf-8');
-          const decoded = decoder.decode(bytes);
-          const iframe = document.createElement('iframe');
-          iframe.setAttribute('sandbox', 'allow-scripts');
-          iframe.setAttribute('referrerpolicy', 'no-referrer');
-          iframe.setAttribute('title', '삽입된 HTML');
-          iframe.setAttribute('name', `snippet-iframe-${index}`);
-  
-          iframe.style.width = '100%';
-          iframe.style.minHeight = '100px';
-          iframe.style.border = '1px solid #ccc';
-          iframe.style.borderRadius = '8px';
-          iframe.style.margin = '1rem 0';
-          iframe.srcdoc = decoded;
-  
-          el.innerHTML = '';
-          el.appendChild(iframe);
-        } catch (e) {
-          el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
-          console.error('디코딩 오류:', e);
-        }
-      });
-      // 2. 본문 내 광고 동적 삽입 로직
-      const adCode = `
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-2585969189290118"
-             data-ad-slot="7758400001"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-      `;
-      const postContent = document.querySelector('.post-content');
-      if (postContent) {
-        const potentialAdTargets = postContent.querySelectorAll('p, h2');
-        const adPositions = [2, 6]; // 👈 광고 위치는 여기서 조절
-  
-        adPositions.forEach(position => {
-          if (potentialAdTargets.length > position) {
-            const targetElement = potentialAdTargets[position];
-            const adContainer = document.createElement('div');
-            adContainer.innerHTML = adCode;
-            
-            targetElement.insertAdjacentElement('afterend', adContainer);
-            
-            try {
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {
-              console.error("Adsense push error: ", e);
-            }
-          }
-        });
-      }
-  
-      // 3. .post-body 안의 스크립트 실행 로직 (필요 시 사용)
-      document.querySelectorAll('.post-body script').forEach(script => {
-          const newScript = document.createElement('script');
-          if (script.src) {
-              newScript.src = script.src;
-          } else {
-              newScript.textContent = script.textContent;
-          }
-          document.body.appendChild(newScript);
-      });
-    });
-  
-    // ----------------------------------------------------
-    // iframe 높이 조절 관련 함수 및 이벤트 리스너
-    // (DOMContentLoaded 바깥에 있어도 괜찮은 부분)
-    // ----------------------------------------------------
-    function sendHeightToParent() {
-      const body = document.body;
-      const html = document.documentElement;
-      const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-      const iframeName = window.name;
-      if (window.parent) {
-        window.parent.postMessage({
-          type: 'setIframeHeight',
-          height: height,
-          iframeName: iframeName
-        }, '*');
-      }
-    }
-  
-    window.addEventListener('message', (event) => {
-      if (event.data && event.data.type === 'setIframeHeight') {
-        const iframeName = event.data.iframeName;
-        const height = event.data.height;
-        const targetIframe = document.querySelector(`iframe[name="${iframeName}"]`);
-        if (targetIframe) {
-          targetIframe.style.height = `${height}px`;
-        }
-      }
-    });
-    window.addEventListener('load', sendHeightToParent);
-    window.addEventListener('resize', sendHeightToParent);
-  </script>
- 
   <div class="floating-toc" id="floatingToc"></div>
-  <div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
-  <div class="mobile-toc-modal" id="mobileTocModal">
-    <div class="mobile-toc-content" id="mobileTocContent"></div>
-    <button class="mobile-toc-close-btn" id="mobileTocCloseBtn">X</button>
-  </div>
+<div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
+<div class="mobile-toc-modal" id="mobileTocModal">
+  <div class="mobile-toc-content" id="mobileTocContent"></div>
+  <button class="mobile-toc-close-btn" id="mobileTocCloseBtn">X</button>
+</div>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const postContent = document.querySelector('.post-content');
+    const floatingToc = document.getElementById('floatingToc');
+    const mobileTocBtn = document.getElementById('mobileTocBtn');
+    const mobileTocModal = document.getElementById('mobileTocModal');
+    const mobileTocContent = document.getElementById('mobileTocContent');
+    const mobileTocCloseBtn = document.getElementById('mobileTocCloseBtn');
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const toc = document.querySelector(".auto-toc");
-      const floatingToc = document.getElementById("floatingToc");
-      const mobileBtn = document.getElementById("mobileTocBtn");
-      const mobileModal = document.getElementById("mobileTocModal");
-      const mobileContent = document.getElementById("mobileTocContent");
-      const mobileTocCloseBtn = document.getElementById("mobileTocCloseBtn"); // 모바일 닫기 버튼 요소 가져오기
+    if (!postContent) return;
 
-      // .auto-toc이 없으면 목차 기능 비활성화
-      if (!toc) {
+    // 1. 목차 생성 및 ID 부여
+    function generateToc() {
+      const headings = postContent.querySelectorAll('h1, h2');
+      if (headings.length === 0) {
+        // 목차가 없으면 목차 관련 요소 숨기기
         if (floatingToc) floatingToc.style.display = 'none';
-        if (mobileBtn) mobileBtn.style.display = 'none';
+        if (mobileTocBtn) mobileTocBtn.style.display = 'none';
         return;
       }
-    
-      // 1. 목차 내용을 플로팅 목차와 모바일 목차 모달에 복사
-      floatingToc.innerHTML = toc.innerHTML;
-      mobileContent.innerHTML = toc.innerHTML;
-    
-      // 2. 모바일 팝업 기능
-      if (mobileBtn) {
-        mobileBtn.addEventListener("click", () => {
-          if (mobileModal) {
-            mobileModal.classList.add("show");
-            document.body.classList.add("modal-open"); // 스크롤 막기
-          }
-        });
-      }
 
-      if (mobileTocCloseBtn) { // 닫기 버튼 이벤트 리스너 추가
-        mobileTocCloseBtn.addEventListener("click", () => {
-          if (mobileModal) {
-            mobileModal.classList.remove("show");
-            document.body.classList.remove("modal-open"); // 다시 스크롤 허용
-          }
-        });
-      }
-    
-      if (mobileModal) {
-        mobileModal.addEventListener("click", (e) => {
-          if (e.target === mobileModal) { // 모달 배경 클릭 시
-            mobileModal.classList.remove("show");
-            document.body.classList.remove("modal-open"); // 다시 스크롤 허용
-          }
-        });
-      }
-    
-      // 모바일 목차 링크 클릭 시 모달 닫고 스크롤 이동
-      if (mobileContent) {
-        mobileContent.addEventListener("click", (e) => {
-          if (e.target.tagName === "A") {
-            e.preventDefault(); // 기본 링크 이동 방지
-            const targetId = e.target.getAttribute("href").replace("#", "");
-            const el = document.getElementById(targetId);
-            if (el) {
-              el.scrollIntoView({ behavior: "smooth" });
-              if (mobileModal) {
-                mobileModal.classList.remove("show");
-                document.body.classList.remove("modal-open"); // 다시 스크롤 허용
-              }
-            }
-          }
-        });
-      }
-    
-      // 3. 스크롤 위치에 따른 플로팅 목차/모바일 버튼 표시 기능 (센티넬 활용)
-      const topSentinel = document.createElement("div");
-      topSentinel.style.height = "1px";
-      toc.before(topSentinel); // 본문 내 목차 위에 센티넬 삽입
-    
-      const bottomSentinel = document.createElement("div");
-      bottomSentinel.style.height = "1px";
-      toc.after(bottomSentinel); // 본문 내 목차 아래에 센티넬 삽입
-    
-      // 실시간 위치 확인 함수
-      const checkFloatingToc = () => {
-        const top = topSentinel.getBoundingClientRect().top;
-        const bottom = bottomSentinel.getBoundingClientRect().top;
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-    
-        // 본문 내 목차가 화면 위로 완전히 지나갔는지 (topSentinel이 화면 위로, bottomSentinel도 화면 위로)
-        const isTocFullyPassed = top < 0 && bottom < 0; 
-    
-        // 데스크톱 (플로팅 목차)
-        if (window.innerWidth > 768) { 
-          if (isTocFullyPassed) {
-            floatingToc.classList.add("show");
-          } else {
-            floatingToc.classList.remove("show");
-          }
-        } else { // 모바일 (플로팅 목차는 항상 숨김)
-          floatingToc.classList.remove("show");
+      let tocHtml = '<strong>📑 <%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">';
+      let h1Count = 0;
+      let h2Count = 0;
+
+      headings.forEach((heading, index) => {
+        const tag = heading.tagName.toLowerCase();
+        let sectionNumber = '';
+        
+        // 기존 ID가 없거나 유효하지 않으면 새로 생성
+        if (!heading.id || !heading.id.startsWith('toc-')) {
+            heading.id = `toc-${tag}-${index}`;
         }
 
-        // 모바일 (모바일 버튼)
-        if (mobileBtn) { // mobileBtn이 존재하는지 확인
-            if (window.innerWidth <= 768) { // 모바일에서만
-                if (isTocFullyPassed) {
-                    mobileBtn.classList.add("show");
-                } else {
-                    mobileBtn.classList.remove("show");
-                }
-            } else { // 데스크톱에서는 모바일 버튼 숨김
-                mobileBtn.classList.remove("show");
-            }
+        if (tag === 'h1') {
+          h1Count++;
+          h2Count = 0; // Reset h2 count for new h1
+          sectionNumber = `${h1Count}.`;
+          tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`;
+        } else if (tag === 'h2') {
+          h2Count++;
+          // H1이 없이 H2가 먼저 나올 경우를 대비 (선택 사항)
+          if (h1Count === 0) h1Count = 1; 
+          sectionNumber = `${h1Count}.${h2Count}`;
+          tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`;
         }
-      };
-    
-      // 스크롤, 리사이즈 시 확인
-      window.addEventListener("scroll", checkFloatingToc);
-      window.addEventListener("resize", checkFloatingToc);
-      checkFloatingToc(); // 처음 로드 시 확인
-    });
-  </script>
-
-  <script>
-    (function enableFloatingTocDrag() {
-      const toc = document.getElementById('floatingToc');
-      if (!toc) return;
-
-      let isDragging = false;
-      let startX, startY;
-      let startLeft, startTop;
-
-      toc.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        startLeft = parseInt(window.getComputedStyle(toc).left, 10) || toc.offsetLeft; // 초기 left 값
-        startTop = parseInt(window.getComputedStyle(toc).top, 10) || toc.offsetTop; // 초기 top 값
-        toc.style.transition = 'none'; // 드래그할 때 부드럽게 안 밀리게
-        toc.style.cursor = 'grabbing'; // 드래그 중 커서 변경
-        e.preventDefault(); // 텍스트 선택 방지
       });
+      tocHtml += '</ul>';
 
-      document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        toc.style.left = `${startLeft + dx}px`;
-        toc.style.top = `${startTop + dy}px`;
+      if (floatingToc) {
+        floatingToc.innerHTML = tocHtml;
+        floatingToc.style.display = 'block'; // 목차 내용이 있으면 보이게
+      }
+      if (mobileTocContent) {
+        mobileTocContent.innerHTML = tocHtml;
+        mobileTocBtn.style.display = 'block'; // 모바일 버튼 보이게
+      }
+    }
+
+    // 2. 스크롤 감지 및 플로팅 목차 표시/숨김 (데스크톱용)
+    function handleScroll() {
+      const scrollThreshold = 300; // 스크롤이 이 값(px) 이상 내려가면 목차 표시
+      if (window.innerWidth > 768) { // 데스크톱에서만 작동하도록 (모바일에서는 버튼이 따로 있으므로)
+        if (window.scrollY > scrollThreshold) {
+          if (floatingToc) floatingToc.classList.add('show');
+        } else {
+          if (floatingToc) floatingToc.classList.remove('show');
+        }
+      }
+    }
+
+    // 3. 모바일 목차 모달 토글
+    if (mobileTocBtn) {
+      mobileTocBtn.addEventListener('click', function() {
+        if (mobileTocModal) mobileTocModal.classList.add('show');
       });
+    }
 
-      document.addEventListener('mouseup', () => {
-        isDragging = false;
-        toc.style.transition = ''; // 드래그 끝나면 트랜지션 다시 활성화
-        toc.style.cursor = 'grab'; // 커서 원래대로
+    if (mobileTocCloseBtn) {
+      mobileTocCloseBtn.addEventListener('click', function() {
+        if (mobileTocModal) mobileTocModal.classList.remove('show');
       });
-    })();
-  </script>
-    
-  <%- include('partials/footer') %>
-  <%- include('partials/scripts') %>
+    }
 
+    // 모바일 목차 링크 클릭 시 모달 닫기
+    if (mobileTocContent) {
+      mobileTocContent.addEventListener('click', function(event) {
+        if (event.target.tagName === 'A' && mobileTocModal) {
+          mobileTocModal.classList.remove('show');
+        }
+      });
+    }
+
+    // 초기 목차 생성
+    generateToc();
+    // 스크롤 이벤트 리스너 등록
+    window.addEventListener('scroll', handleScroll);
+    // 리사이즈 시에도 스크롤 핸들러 재실행 (데스크톱/모바일 전환 대응)
+    window.addEventListener('resize', handleScroll);
+  });
+</script>
+
+<%- include('partials/scripts') %>
 </body>
 </html>
