@@ -3,8 +3,8 @@
 <head>
   <%
 // 테스트 관련 키워드들 정의
-[cite_start]const testKeywords = ['테스트', 'Test', 'テスト', '测试', 'Test 2', '테스트 2', 'テスト2', '测试2']; [cite: 1]
-const hasTestCategory = post.categories.some(cat =>
+[cite_start]var testKeywords = ['테스트', 'Test', 'テスト', '测试', 'Test 2', '테스트 2', 'テスト2', '测试2']; [cite: 1]
+var hasTestCategory = post.categories.some(cat =>
   testKeywords.some(keyword => cat.includes(keyword))
 [cite_start]); [cite: 2]
 %>
@@ -37,7 +37,7 @@ const hasTestCategory = post.categories.some(cat =>
       [cite_start]font-size: 14px; [cite: 6]
       display: block; [cite_start]/* 한 줄 전체 클릭 가능 */ [cite: 6]
       line-height: 1.4;
-      [cite_start]padding: 2px 6px; [cite: 7]
+      padding: 2px 6px;
       [cite_start]border-radius: 4px; [cite: 7]
       color: #0366d6;
       text-decoration: none;
@@ -58,7 +58,7 @@ const hasTestCategory = post.categories.some(cat =>
     }
 
     .toc-item.toc-h2 {
-      padding-left: 1.2rem; [cite_start]/* ✅ 부제목 들여쓰기*/ [cite: 12]
+      [cite_start]padding-left: 1.2rem; [cite: 12]
     }
     .post-content ul, .post-content ol {
       [cite_start]padding-left: 1em; [cite: 13]
@@ -150,7 +150,6 @@ const hasTestCategory = post.categories.some(cat =>
       [cite_start]margin-bottom: 2rem; [cite: 27]
     } 
 
-    /* 이게 문제 */ 
     .post-content {
       [cite_start]line-height: 1.7; [cite: 28]
       [cite_start]font-size: 1rem; [cite: 28]
@@ -228,7 +227,7 @@ const hasTestCategory = post.categories.some(cat =>
       [cite_start]margin-top: 2rem; [cite: 40]
     }
     
-    /* 기존 플로팅 목차 (데스크톱) 디자인 유지 */
+    /* 플로팅 목차 (데스크톱) CSS */
     .floating-toc {
       position: fixed;
       top: 100px; /* 적절한 초기 위치 조정 */
@@ -249,6 +248,21 @@ const hasTestCategory = post.categories.some(cat =>
     .floating-toc.show {
       opacity: 1;
       display: block; /* opacity transition을 위해 block으로 변경 후 opacity 1 */
+    }
+
+    /* 모바일 관련 목차 CSS (외부 CSS 파일에 있을 것을 가정하여 이곳에서는 제거) */
+    /* 단, .mobile-toc-button과 .mobile-toc-modal의 .show 클래스 제어를 위한 최소한의 display 속성은 유지 */
+
+    .mobile-toc-button {
+      display: none; /* JS에서 .show 클래스로 제어 */
+    }
+
+    .mobile-toc-modal {
+      display: none; /* JS에서 .show 클래스로 제어 */
+    }
+    
+    .mobile-toc-modal.show {
+        display: flex; /* 모달이 보일 때 flex로 설정 */
     }
 
     /* 모달이 열렸을 때 body 스크롤 방지 */
@@ -276,14 +290,14 @@ const hasTestCategory = post.categories.some(cat =>
     </div>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-      [cite_start]crossorigin="anonymous"></script> [cite: 41]
+      crossorigin="anonymous"></script>
     <ins class="adsbygoogle"
-         [cite_start]style="display:block; text-align:center;" [cite: 42]
+         style="display:block; text-align:center;"
          data-ad-layout="in-article"
          data-ad-format="fluid"
          data-ad-client="ca-pub-2585969189290118"
          data-ad-slot="3406391330"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    [cite_start]<script>(adsbygoogle = window.adsbygoogle || []).push({});</script> [cite: 41, 42]
 
     <div class="post-content">
       <%- post.content %>
@@ -310,8 +324,8 @@ const hasTestCategory = post.categories.some(cat =>
     document.addEventListener("DOMContentLoaded", () => {
   
       // 1. HTML 위젯(iframe) 처리 로직
-      [cite_start]document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => { [cite: 44]
-        [cite_start]const encoded = el.getAttribute("data-code"); [cite: 45]
+      document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
+        [cite_start]const encoded = el.getAttribute("data-code"); [cite: 44, 45]
         if (!encoded) return;
   
         try {
@@ -330,7 +344,7 @@ const hasTestCategory = post.categories.some(cat =>
           iframe.setAttribute('name', `snippet-iframe-${index}`);
   
           iframe.style.width = '100%';
-          [cite_start]iframe.style.minHeight = '100px'; [cite: 49]
+          iframe.style.minHeight = '100px';
           [cite_start]iframe.style.border = '1px solid #ccc'; [cite: 49]
           iframe.style.borderRadius = '8px';
           iframe.style.margin = '1rem 0';
@@ -342,7 +356,7 @@ const hasTestCategory = post.categories.some(cat =>
           [cite_start]el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>'; [cite: 51]
           [cite_start]console.error('디코딩 오류:', e); [cite: 51]
         }
-      [cite_start]}); [cite: 52]
+      });
       // 2. 본문 내 광고 동적 삽입 로직
       const adCode = `
         <ins class="adsbygoogle"
@@ -351,11 +365,11 @@ const hasTestCategory = post.categories.some(cat =>
              data-ad-slot="7758400001"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
-      `;
+      [cite_start]`; [cite: 52]
       [cite_start]const postContent = document.querySelector('.post-content'); [cite: 53]
       if (postContent) {
         [cite_start]const potentialAdTargets = postContent.querySelectorAll('p, h2'); [cite: 54]
-        const adPositions = [2, 6]; // 👈 광고 위치는 여기서 조절
+        const adPositions = [2, 6]; [cite_start]// 👈 광고 위치는 여기서 조절 [cite: 54]
   
         adPositions.forEach(position => {
           if (potentialAdTargets.length > position) {
@@ -433,7 +447,7 @@ const hasTestCategory = post.categories.some(cat =>
       const mobileBtn = document.getElementById("mobileTocBtn");
       const mobileModal = document.getElementById("mobileTocModal");
       const mobileContent = document.getElementById("mobileTocContent");
-      const mobileTocCloseBtn = document.getElementById("mobileTocCloseBtn"); // 모바일 닫기 버튼 요소 가져오기
+      const mobileTocCloseBtn = document.getElementById("mobileTocCloseBtn");
 
       // .auto-toc이 없으면 목차 기능 비활성화
       if (!toc) {
@@ -466,17 +480,17 @@ const hasTestCategory = post.categories.some(cat =>
       }
     
       [cite_start]if (mobileModal) { [cite: 66]
-        [cite_start]mobileModal.addEventListener("click", (e) => { [cite: 66]
+        mobileModal.addEventListener("click", (e) => {
           if (e.target === mobileModal) { // 모달 배경 클릭 시
             mobileModal.classList.remove("show");
-            document.body.classList.remove("modal-open"); [cite_start]// 다시 스크롤 허용 [cite: 66]
+            document.body.classList.remove("modal-open"); // 다시 스크롤 허용
           }
         });
       }
     
       // 모바일 목차 링크 클릭 시 모달 닫고 스크롤 이동
       [cite_start]if (mobileContent) { [cite: 67]
-        [cite_start]mobileContent.addEventListener("click", (e) => { [cite: 67]
+        mobileContent.addEventListener("click", (e) => {
           if (e.target.tagName === "A") {
             e.preventDefault(); // 기본 링크 이동 방지
             const targetId = e.target.getAttribute("href").replace("#", "");
@@ -513,7 +527,7 @@ const hasTestCategory = post.categories.some(cat =>
         // 데스크톱 (플로팅 목차)
         if (window.innerWidth > 768) { 
           if (isTocFullyPassed) {
-            [cite_start]floatingToc.classList.add("show"); [cite: 73]
+            floatingToc.classList.add("show");
           } else {
             floatingToc.classList.remove("show");
           }
@@ -525,9 +539,9 @@ const hasTestCategory = post.categories.some(cat =>
         if (mobileBtn) { // mobileBtn이 존재하는지 확인
             if (window.innerWidth <= 768) { // 모바일에서만
                 if (isTocFullyPassed) {
-                    mobileBtn.classList.add("show");
+                    [cite_start]mobileBtn.classList.add("show"); [cite: 73]
                 } else {
-                    mobileBtn.classList.remove("show");
+                    [cite_start]mobileBtn.classList.remove("show"); [cite: 74]
                 }
             } else { // 데스크톱에서는 모바일 버튼 숨김
                 mobileBtn.classList.remove("show");
@@ -536,7 +550,7 @@ const hasTestCategory = post.categories.some(cat =>
       };
     
       // 스크롤, 리사이즈 시 확인
-      [cite_start]window.addEventListener("scroll", checkFloatingToc); [cite: 74]
+      [cite_start]window.addEventListener("scroll", checkFloatingToc); [cite: 75]
       [cite_start]window.addEventListener("resize", checkFloatingToc); [cite: 75]
       checkFloatingToc(); [cite_start]// 처음 로드 시 확인 [cite: 75]
     });
@@ -544,14 +558,14 @@ const hasTestCategory = post.categories.some(cat =>
 
   <script>
     (function enableFloatingTocDrag() [cite_start]{ [cite: 76]
-      [cite_start]const toc = document.getElementById('floatingToc'); [cite: 77]
+      const toc = document.getElementById('floatingToc');
       if (!toc) return;
 
       let isDragging = false;
       let startX, startY;
       let startLeft, startTop;
 
-      [cite_start]toc.addEventListener('mousedown', (e) => { [cite: 77]
+      toc.addEventListener('mousedown', (e) => {
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
@@ -562,15 +576,15 @@ const hasTestCategory = post.categories.some(cat =>
         e.preventDefault(); // 텍스트 선택 방지
       });
 
-      document.addEventListener('mousemove', (e) => {
+      [cite_start]document.addEventListener('mousemove', (e) => { [cite: 77]
         if (!isDragging) return;
-        [cite_start]const dx = e.clientX - startX; [cite: 77]
+        const dx = e.clientX - startX;
         [cite_start]const dy = e.clientY - startY; [cite: 77]
         toc.style.left = `${startLeft + dx}px`;
         toc.style.top = `${startTop + dy}px`;
       });
 
-      [cite_start]document.addEventListener('mouseup', () => { [cite: 77]
+      document.addEventListener('mouseup', () => {
         isDragging = false;
         toc.style.transition = ''; // 드래그 끝나면 트랜지션 다시 활성화
         toc.style.cursor = 'grab'; // 커서 원래대로
