@@ -3,16 +3,16 @@
 <head>
   <%
 // 테스트 관련 키워드들 정의
-const testKeywords = ['테스트', 'Test', 'テスト', '测试', 'Test 2', '테스트 2', 'テスト2', '测试2'];
+[cite_start]const testKeywords = ['테스트', 'Test', 'テスト', '测试', 'Test 2', '테스트 2', 'テスト2', '测试2']; [cite: 1]
 const hasTestCategory = post.categories.some(cat =>
   testKeywords.some(keyword => cat.includes(keyword))
-);
+[cite_start]); [cite: 2]
 %>
 
 <% if (hasTestCategory) { %>
   <meta name="robots" content="noindex">
 <% } %>
-  <title><%= post.title %> | BlindLove</title>
+  <title><%= post.title %> | [cite_start]BlindLove</title> [cite: 3]
   <link rel="stylesheet" href="/assets/css/signup.css" />
   <link rel="stylesheet" href="/assets/css/post-view.css" />
   <%- include('partials/head') %>
@@ -25,67 +25,67 @@ const hasTestCategory = post.categories.some(cat =>
     <% alternateLinks.forEach(link => { %>
       <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
     <% }); %>
-    <link rel="alternate" hreflang="x-default" href="https://blindly.love/<%= lang %>/post/<%= post.id %>">
+    [cite_start]<link rel="alternate" hreflang="x-default" href="https://blindly.love/<%= lang %>/post/<%= post.id %>"> [cite: 4]
   <% } %>
   <style>
     /* 📑 목차 박스 디자인 */
     .toc-list {
-      font-size: 0; /* 줄바꿈 공백 제거 */
+      font-size: 0; [cite_start]/* 줄바꿈 공백 제거 */ [cite: 5]
     }
 
     .toc-list a {
-      font-size: 14px;
-      display: block; /* 한 줄 전체 클릭 가능 */
+      [cite_start]font-size: 14px; [cite: 6]
+      display: block; [cite_start]/* 한 줄 전체 클릭 가능 */ [cite: 6]
       line-height: 1.4;
-      padding: 2px 6px;
-      border-radius: 4px;
+      [cite_start]padding: 2px 6px; [cite: 7]
+      [cite_start]border-radius: 4px; [cite: 7]
       color: #0366d6;
       text-decoration: none;
-      transition: all 0.2s ease;
+      [cite_start]transition: all 0.2s ease; [cite: 8]
     }
 
     .toc-list a:hover {
       color: #999ff9 !important;
-      text-decoration: underline !important;
+      [cite_start]text-decoration: underline !important; [cite: 9]
     }
 
     html.dark .toc-list a {
-      color: #6fb7ff !important;
+      [cite_start]color: #6fb7ff !important; [cite: 10]
     }
 
     html.dark .toc-list a:hover {
-      color: #a2d4ff !important;
+      [cite_start]color: #a2d4ff !important; [cite: 11]
     }
 
     .toc-item.toc-h2 {
-      padding-left: 1.2rem; /* ✅ 부제목 들여쓰기*/
+      padding-left: 1.2rem; [cite_start]/* ✅ 부제목 들여쓰기*/ [cite: 12]
     }
     .post-content ul, .post-content ol {
-      padding-left: 1em;
-      margin: 0.3rem 0;
+      [cite_start]padding-left: 1em; [cite: 13]
+      [cite_start]margin: 0.3rem 0; [cite: 13]
     }
 
     .post-content li {
       margin: 0;
-      padding: 0;
+      [cite_start]padding: 0; [cite: 14]
     }
 
     .post-content footer {
       display: block;
       font-size: 0.85rem;
-      color: #666;
-      margin: 0.3em 0;
+      [cite_start]color: #666; [cite: 15]
+      [cite_start]margin: 0.3em 0; [cite: 15]
       line-height: 1.5;
     }
 
     html.dark .post-content footer {
-      color: #aaa;
+      [cite_start]color: #aaa; [cite: 16]
     }
 
     .post-content .auto-toc {
       background: #f7f9fa;
-      border: 1px solid #d0d7de;
-      padding: 1rem 1rem;
+      [cite_start]border: 1px solid #d0d7de; [cite: 17]
+      [cite_start]padding: 1rem 1rem; [cite: 17]
       margin-bottom: 1rem;
       border-radius: 6px;
       font-size: 0.95rem;
@@ -93,130 +93,130 @@ const hasTestCategory = post.categories.some(cat =>
       max-width: 280px;
       width: 100%;
       margin-left: 0;
-      margin-right: auto;
+      [cite_start]margin-right: auto; [cite: 18]
     }
     /* 모든 h1에 기본 위 여백을 줌 */
     .post-content .auto-toc li.toc-h1 {
-      margin-top: 0.8rem;
+      [cite_start]margin-top: 0.8rem; [cite: 19]
     }
     .post-content .auto-toc .toc-title {
       font-weight: bold;
       margin-bottom: 0rem;
-      display: block;
+      [cite_start]display: block; [cite: 20]
     }
 
     .post-content .auto-toc ul {
       list-style: none;
       padding: 0;
-      margin: 0;
+      [cite_start]margin: 0; [cite: 21]
     }
 
     .post-content .auto-toc li {
       margin: 0.1em 0;
       line-height: 1.2;
-      padding-right: 0;
+      [cite_start]padding-right: 0; [cite: 22]
     }
 
     html.dark .post-content .auto-toc {
       background: #1f1f2b;
-      border: 1px solid #444;
-      color: #ddd;
+      [cite_start]border: 1px solid #444; [cite: 23]
+      [cite_start]color: #ddd; [cite: 23]
     }
 
     /* 제목 간격 조정 */
     .post-content h1,
     .post-content h2 {
-      margin-top: 0.8em;
-      margin-bottom: 0.4em;
+      [cite_start]margin-top: 0.8em; [cite: 24]
+      [cite_start]margin-bottom: 0.4em; [cite: 24]
       line-height: 1.3;
     }
 
    .post-content .auto-toc + h1,
     .post-content .auto-toc + h2 {
-      margin-top: 0.5rem !important;
+      [cite_start]margin-top: 0.5rem !important; [cite: 25]
     } 
 
     .post-title {
       font-size: 1.5rem;
       font-weight: bold;
       text-align: center;
-      margin-bottom: 1rem;
+      [cite_start]margin-bottom: 1rem; [cite: 26]
     }
 
     .post-meta {
       text-align: center;
       font-size: 0.9rem;
       color: #777;
-      margin-bottom: 2rem;
+      [cite_start]margin-bottom: 2rem; [cite: 27]
     } 
 
     /* 이게 문제 */ 
     .post-content {
-      line-height: 1.7;
-      font-size: 1rem;
+      [cite_start]line-height: 1.7; [cite: 28]
+      [cite_start]font-size: 1rem; [cite: 28]
       white-space: pre-wrap; 
       color: #333;
       max-width: 640px;
       margin: 0 auto;
       padding-left: 0.5rem;
-      position: relative;
+      [cite_start]position: relative; [cite: 29]
     } 
 
     html.dark body .post-content {
-      color: #ddd;
+      [cite_start]color: #ddd; [cite: 30]
     }
 
     .post-actions a.edit-btn,
     .post-actions form button {
-      display: inline-block;
-      padding: 4px 10px;
+      [cite_start]display: inline-block; [cite: 31]
+      [cite_start]padding: 4px 10px; [cite: 31]
       margin: 0 4px;
       border: none;
       border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
+      [cite_start]cursor: pointer; [cite: 32]
+      [cite_start]transition: background 0.2s ease, color 0.2s ease; [cite: 32]
     }
 
     .post-actions a.edit-btn {
-      background-color: #f0f8ff;
-      color: #0077cc;
+      [cite_start]background-color: #f0f8ff; [cite: 33]
+      [cite_start]color: #0077cc; [cite: 33]
       text-decoration: none;
     }
 
     .post-actions a.edit-btn:hover {
       background-color: #d8edff;
-      color: #005fa3;
+      [cite_start]color: #005fa3; [cite: 34]
     }
 
     .post-actions form button {
       background-color: #fff0f0;
-      color: #cc0000;
-      border: 1px solid #cc0000;
+      [cite_start]color: #cc0000; [cite: 35]
+      [cite_start]border: 1px solid #cc0000; [cite: 35]
     }
 
     .post-actions form button:hover {
-      background-color: #ffe5e5;
-      color: #a30000;
+      [cite_start]background-color: #ffe5e5; [cite: 36]
+      [cite_start]color: #a30000; [cite: 36]
     }
 
     .logo-wrap {
       display: flex;
       justify-content: center;
-      align-items: center;
+      [cite_start]align-items: center; [cite: 37]
     }
 
     .logo-wrap img {
       max-width: 150px;
       height: auto;
       display: block;
-      margin-bottom: 1rem;
+      [cite_start]margin-bottom: 1rem; [cite: 38]
     }
 
     /* 블럭 요소들 사이 간격 조절*/
     .post-content p {
-      margin-bottom: 2rem;
+      [cite_start]margin-bottom: 2rem; [cite: 39]
     }
 
     .post-content h1 {
@@ -225,14 +225,10 @@ const hasTestCategory = post.categories.some(cat =>
 
     .post-content h2 {
       margin-bottom: 2rem;
-      margin-top: 2rem;
+      [cite_start]margin-top: 2rem; [cite: 40]
     }
-
-    /* 추가된 목차 관련 CSS (post-view.css에 포함되어야 함)
-    JavaScript에서 'show' 클래스를 토글하여 표시/숨김
-    */
-
-    /* 플로팅 목차 (데스크톱) */
+    
+    /* 기존 플로팅 목차 (데스크톱) 디자인 유지 */
     .floating-toc {
       position: fixed;
       top: 100px; /* 적절한 초기 위치 조정 */
@@ -255,112 +251,6 @@ const hasTestCategory = post.categories.some(cat =>
       display: block; /* opacity transition을 위해 block으로 변경 후 opacity 1 */
     }
 
-    /* 모바일 목차 버튼 */
-    .mobile-toc-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      font-size: 1.5em;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      display: none; /* 기본 숨김, JS에서 보이게 처리 */
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-    }
-
-    .mobile-toc-button.show {
-      opacity: 1;
-      display: flex; /* opacity transition을 위해 flex로 변경 후 opacity 1 */
-    }
-
-    @media (max-width: 768px) {
-      .floating-toc {
-        display: none !important; /* 모바일에서는 플로팅 TOC 숨김 */
-      }
-      /* mobile-toc-button.show가 flex로 설정될 것이므로, 여기서는 display: none만 override */
-      .mobile-toc-button {
-        display: none; /* JS에서 .show 클래스로 제어 */
-      }
-    }
-
-    /* 모바일 TOC 모달 */
-    .mobile-toc-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
-      visibility: hidden; /* 기본 숨김 */
-      opacity: 0;
-      transition: visibility 0s, opacity 0.3s ease-in-out;
-    }
-
-    .mobile-toc-modal.show {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .mobile-toc-content {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 90%;
-      max-height: 90%;
-      overflow-y: auto;
-      width: 100%;
-    }
-
-    .mobile-toc-content ul {
-        list-style: none;
-        padding: 0;
-    }
-    .mobile-toc-content li {
-        margin-bottom: 8px;
-    }
-    .mobile-toc-content li a {
-        text-decoration: none;
-        color: #333;
-        font-size: 1.1em;
-        display: block;
-        padding: 5px 0;
-    }
-    .mobile-toc-content li.toc-h1 {
-        font-weight: bold;
-        margin-top: 15px;
-        font-size: 1.2em;
-    }
-    .mobile-toc-content li.toc-h2 {
-        padding-left: 25px;
-        font-size: 1em;
-    }
-
-    .mobile-toc-close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 2em;
-      cursor: pointer;
-      z-index: 1002;
-    }
-    
     /* 모달이 열렸을 때 body 스크롤 방지 */
     body.modal-open {
         overflow: hidden;
@@ -386,9 +276,9 @@ const hasTestCategory = post.categories.some(cat =>
     </div>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-      crossorigin="anonymous"></script>
+      [cite_start]crossorigin="anonymous"></script> [cite: 41]
     <ins class="adsbygoogle"
-         style="display:block; text-align:center;"
+         [cite_start]style="display:block; text-align:center;" [cite: 42]
          data-ad-layout="in-article"
          data-ad-format="fluid"
          data-ad-client="ca-pub-2585969189290118"
@@ -403,7 +293,7 @@ const hasTestCategory = post.categories.some(cat =>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
         <a href="/<%= lang %>/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
         <form action="/<%= lang %>/delete/<%= post.id %>" method="POST" style="display: inline;">
-          <button type="submit" onclick="return confirm('정말 삭제하시겠어요?');">🗑 삭제하기</button>
+          [cite_start]<button type="submit" onclick="return confirm('정말 삭제하시겠어요?');">🗑 삭제하기</button> [cite: 43]
         </form>
       </div>
     <% } %>
@@ -420,39 +310,39 @@ const hasTestCategory = post.categories.some(cat =>
     document.addEventListener("DOMContentLoaded", () => {
   
       // 1. HTML 위젯(iframe) 처리 로직
-      document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
-        const encoded = el.getAttribute("data-code");
+      [cite_start]document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => { [cite: 44]
+        [cite_start]const encoded = el.getAttribute("data-code"); [cite: 45]
         if (!encoded) return;
   
         try {
-          const binaryString = atob(encoded);
-          const len = binaryString.length;
+          [cite_start]const binaryString = atob(encoded); [cite: 46]
+          [cite_start]const len = binaryString.length; [cite: 46]
           const bytes = new Uint8Array(len);
           for (let i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
+            [cite_start]bytes[i] = binaryString.charCodeAt(i); [cite: 47]
           }
           const decoder = new TextDecoder('utf-8');
-          const decoded = decoder.decode(bytes);
-          const iframe = document.createElement('iframe');
+          [cite_start]const decoded = decoder.decode(bytes); [cite: 48]
+          [cite_start]const iframe = document.createElement('iframe'); [cite: 48]
           iframe.setAttribute('sandbox', 'allow-scripts');
           iframe.setAttribute('referrerpolicy', 'no-referrer');
           iframe.setAttribute('title', '삽입된 HTML');
           iframe.setAttribute('name', `snippet-iframe-${index}`);
   
           iframe.style.width = '100%';
-          iframe.style.minHeight = '100px';
-          iframe.style.border = '1px solid #ccc';
+          [cite_start]iframe.style.minHeight = '100px'; [cite: 49]
+          [cite_start]iframe.style.border = '1px solid #ccc'; [cite: 49]
           iframe.style.borderRadius = '8px';
           iframe.style.margin = '1rem 0';
           iframe.srcdoc = decoded;
   
           el.innerHTML = '';
-          el.appendChild(iframe);
+          [cite_start]el.appendChild(iframe); [cite: 50]
         } catch (e) {
-          el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
-          console.error('디코딩 오류:', e);
+          [cite_start]el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>'; [cite: 51]
+          [cite_start]console.error('디코딩 오류:', e); [cite: 51]
         }
-      });
+      [cite_start]}); [cite: 52]
       // 2. 본문 내 광고 동적 삽입 로직
       const adCode = `
         <ins class="adsbygoogle"
@@ -462,9 +352,9 @@ const hasTestCategory = post.categories.some(cat =>
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
       `;
-      const postContent = document.querySelector('.post-content');
+      [cite_start]const postContent = document.querySelector('.post-content'); [cite: 53]
       if (postContent) {
-        const potentialAdTargets = postContent.querySelectorAll('p, h2');
+        [cite_start]const potentialAdTargets = postContent.querySelectorAll('p, h2'); [cite: 54]
         const adPositions = [2, 6]; // 👈 광고 위치는 여기서 조절
   
         adPositions.forEach(position => {
@@ -473,7 +363,7 @@ const hasTestCategory = post.categories.some(cat =>
             const adContainer = document.createElement('div');
             adContainer.innerHTML = adCode;
             
-            targetElement.insertAdjacentElement('afterend', adContainer);
+            [cite_start]targetElement.insertAdjacentElement('afterend', adContainer); [cite: 55]
             
             try {
               (adsbygoogle = window.adsbygoogle || []).push({});
@@ -481,8 +371,8 @@ const hasTestCategory = post.categories.some(cat =>
               console.error("Adsense push error: ", e);
             }
           }
-        });
-      }
+        [cite_start]}); [cite: 56]
+      [cite_start]} [cite: 57]
   
       // 3. .post-body 안의 스크립트 실행 로직 (필요 시 사용)
       document.querySelectorAll('.post-body script').forEach(script => {
@@ -491,9 +381,9 @@ const hasTestCategory = post.categories.some(cat =>
               newScript.src = script.src;
           } else {
               newScript.textContent = script.textContent;
-          }
+          [cite_start]} [cite: 58]
           document.body.appendChild(newScript);
-      });
+      [cite_start]}); [cite: 59]
     });
   
     // ----------------------------------------------------
@@ -501,16 +391,16 @@ const hasTestCategory = post.categories.some(cat =>
     // (DOMContentLoaded 바깥에 있어도 괜찮은 부분)
     // ----------------------------------------------------
     function sendHeightToParent() {
-      const body = document.body;
-      const html = document.documentElement;
+      [cite_start]const body = document.body; [cite: 60]
+      [cite_start]const html = document.documentElement; [cite: 60]
       const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
-      const iframeName = window.name;
-      if (window.parent) {
+      [cite_start]const iframeName = window.name; [cite: 61]
+      [cite_start]if (window.parent) { [cite: 61]
         window.parent.postMessage({
           type: 'setIframeHeight',
           height: height,
           iframeName: iframeName
-        }, '*');
+        [cite_start]}, '*'); [cite: 62]
       }
     }
   
@@ -523,9 +413,9 @@ const hasTestCategory = post.categories.some(cat =>
           targetIframe.style.height = `${height}px`;
         }
       }
-    });
-    window.addEventListener('load', sendHeightToParent);
-    window.addEventListener('resize', sendHeightToParent);
+    [cite_start]}); [cite: 63]
+    [cite_start]window.addEventListener('load', sendHeightToParent); [cite: 63]
+    [cite_start]window.addEventListener('resize', sendHeightToParent); [cite: 63]
   </script>
  
   <div class="floating-toc" id="floatingToc"></div>
@@ -553,15 +443,15 @@ const hasTestCategory = post.categories.some(cat =>
       }
     
       // 1. 목차 내용을 플로팅 목차와 모바일 목차 모달에 복사
-      floatingToc.innerHTML = toc.innerHTML;
-      mobileContent.innerHTML = toc.innerHTML;
+      [cite_start]floatingToc.innerHTML = toc.innerHTML; [cite: 64]
+      [cite_start]mobileContent.innerHTML = toc.innerHTML; [cite: 64]
     
       // 2. 모바일 팝업 기능
       if (mobileBtn) {
         mobileBtn.addEventListener("click", () => {
           if (mobileModal) {
             mobileModal.classList.add("show");
-            document.body.classList.add("modal-open"); // 스크롤 막기
+            [cite_start]document.body.classList.add("modal-open"); // 스크롤 막기 [cite: 65]
           }
         });
       }
@@ -575,18 +465,18 @@ const hasTestCategory = post.categories.some(cat =>
         });
       }
     
-      if (mobileModal) {
-        mobileModal.addEventListener("click", (e) => {
+      [cite_start]if (mobileModal) { [cite: 66]
+        [cite_start]mobileModal.addEventListener("click", (e) => { [cite: 66]
           if (e.target === mobileModal) { // 모달 배경 클릭 시
             mobileModal.classList.remove("show");
-            document.body.classList.remove("modal-open"); // 다시 스크롤 허용
+            document.body.classList.remove("modal-open"); [cite_start]// 다시 스크롤 허용 [cite: 66]
           }
         });
       }
     
       // 모바일 목차 링크 클릭 시 모달 닫고 스크롤 이동
-      if (mobileContent) {
-        mobileContent.addEventListener("click", (e) => {
+      [cite_start]if (mobileContent) { [cite: 67]
+        [cite_start]mobileContent.addEventListener("click", (e) => { [cite: 67]
           if (e.target.tagName === "A") {
             e.preventDefault(); // 기본 링크 이동 방지
             const targetId = e.target.getAttribute("href").replace("#", "");
@@ -599,31 +489,31 @@ const hasTestCategory = post.categories.some(cat =>
               }
             }
           }
-        });
+        [cite_start]}); [cite: 68]
       }
     
       // 3. 스크롤 위치에 따른 플로팅 목차/모바일 버튼 표시 기능 (센티넬 활용)
-      const topSentinel = document.createElement("div");
-      topSentinel.style.height = "1px";
-      toc.before(topSentinel); // 본문 내 목차 위에 센티넬 삽입
+      [cite_start]const topSentinel = document.createElement("div"); [cite: 69]
+      [cite_start]topSentinel.style.height = "1px"; [cite: 69]
+      toc.before(topSentinel); [cite_start]// 본문 내 목차 위에 센티넬 삽입 [cite: 69]
     
-      const bottomSentinel = document.createElement("div");
-      bottomSentinel.style.height = "1px";
-      toc.after(bottomSentinel); // 본문 내 목차 아래에 센티넬 삽입
+      [cite_start]const bottomSentinel = document.createElement("div"); [cite: 70]
+      [cite_start]bottomSentinel.style.height = "1px"; [cite: 70]
+      toc.after(bottomSentinel); [cite_start]// 본문 내 목차 아래에 센티넬 삽입 [cite: 70]
     
       // 실시간 위치 확인 함수
       const checkFloatingToc = () => {
-        const top = topSentinel.getBoundingClientRect().top;
-        const bottom = bottomSentinel.getBoundingClientRect().top;
+        [cite_start]const top = topSentinel.getBoundingClientRect().top; [cite: 71]
+        [cite_start]const bottom = bottomSentinel.getBoundingClientRect().top; [cite: 71]
         const vh = window.innerHeight || document.documentElement.clientHeight;
     
         // 본문 내 목차가 화면 위로 완전히 지나갔는지 (topSentinel이 화면 위로, bottomSentinel도 화면 위로)
-        const isTocFullyPassed = top < 0 && bottom < 0; 
+        [cite_start]const isTocFullyPassed = top < 0 && bottom < 0; [cite: 72]
     
         // 데스크톱 (플로팅 목차)
         if (window.innerWidth > 768) { 
           if (isTocFullyPassed) {
-            floatingToc.classList.add("show");
+            [cite_start]floatingToc.classList.add("show"); [cite: 73]
           } else {
             floatingToc.classList.remove("show");
           }
@@ -646,22 +536,22 @@ const hasTestCategory = post.categories.some(cat =>
       };
     
       // 스크롤, 리사이즈 시 확인
-      window.addEventListener("scroll", checkFloatingToc);
-      window.addEventListener("resize", checkFloatingToc);
-      checkFloatingToc(); // 처음 로드 시 확인
+      [cite_start]window.addEventListener("scroll", checkFloatingToc); [cite: 74]
+      [cite_start]window.addEventListener("resize", checkFloatingToc); [cite: 75]
+      checkFloatingToc(); [cite_start]// 처음 로드 시 확인 [cite: 75]
     });
   </script>
 
   <script>
-    (function enableFloatingTocDrag() {
-      const toc = document.getElementById('floatingToc');
+    (function enableFloatingTocDrag() [cite_start]{ [cite: 76]
+      [cite_start]const toc = document.getElementById('floatingToc'); [cite: 77]
       if (!toc) return;
 
       let isDragging = false;
       let startX, startY;
       let startLeft, startTop;
 
-      toc.addEventListener('mousedown', (e) => {
+      [cite_start]toc.addEventListener('mousedown', (e) => { [cite: 77]
         isDragging = true;
         startX = e.clientX;
         startY = e.clientY;
@@ -674,18 +564,18 @@ const hasTestCategory = post.categories.some(cat =>
 
       document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+        [cite_start]const dx = e.clientX - startX; [cite: 77]
+        [cite_start]const dy = e.clientY - startY; [cite: 77]
         toc.style.left = `${startLeft + dx}px`;
         toc.style.top = `${startTop + dy}px`;
       });
 
-      document.addEventListener('mouseup', () => {
+      [cite_start]document.addEventListener('mouseup', () => { [cite: 77]
         isDragging = false;
         toc.style.transition = ''; // 드래그 끝나면 트랜지션 다시 활성화
         toc.style.cursor = 'grab'; // 커서 원래대로
       });
-    })();
+    [cite_start]})(); [cite: 78]
   </script>
     
   <%- include('partials/footer') %>
