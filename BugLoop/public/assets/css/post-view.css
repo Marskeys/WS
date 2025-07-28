@@ -185,6 +185,23 @@ html.dark .post-content footer {
   margin-right: auto;
 }
 
+@media (max-width: 768px) {
+  .post-content .auto-toc {
+    max-width: 100%;      /* 뷰포트에 맞게 줄어듦 */
+    box-sizing: border-box;
+    padding: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .toc-list a {
+    word-break: break-word;  /* 긴 링크 줄바꿈 */
+    white-space: normal;     /* 텍스트 줄바꿈 허용 */
+  }
+}
+
 .post-content .auto-toc .toc-title {
   font-weight: bold;
   margin-bottom: 0;
