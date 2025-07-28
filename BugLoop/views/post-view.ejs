@@ -57,7 +57,110 @@
 <div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
 <div class="mobile-toc-modal" id="mobileTocModal">
   <div class="mobile-toc-content" id="mobileTocContent"></div>
+  <button class="mobile-toc-close-btn" id="mobileTocCloseBtn">X</button>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const postContent = document.querySelector('.post-content');
+    const floatingToc = document.getElementById('floatingToc');
+    const mobileTocBtn = document.getElementById('mobileTocBtn');
+    const mobileTocModal = document.getElementById('mobileTocModal');
+    const mobileTocContent = document.getElementById('mobileTocContent');
+    [cite_start]const mobileTocCloseBtn = document.getElementById('mobileTocCloseBtn'); // [cite: 1]
+
+    if (!postContent) return; [cite_start]// [cite: 1]
+
+    [cite_start]// 1. 목차 생성 및 ID 부여 [cite: 1]
+    function generateToc() {
+      const headings = postContent.querySelectorAll('h1, h2'); [cite_start]// [cite: 1]
+      [cite_start]if (headings.length === 0) { // [cite: 1]
+        // 목차가 없으면 목차 관련 요소 숨기기
+        if (floatingToc) floatingToc.style.display = 'none'; [cite_start]// [cite: 1]
+        if (mobileTocBtn) mobileTocBtn.style.display = 'none'; [cite_start]// [cite: 1]
+        return; [cite_start]// [cite: 1]
+      }
+
+      let tocHtml = '<strong>📑 <%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">'; [cite_start]// [cite: 1]
+      let h1Count = 0; [cite_start]// [cite: 1]
+      let h2Count = 0; [cite_start]// [cite: 1]
+
+      [cite_start]headings.forEach((heading, index) => { // [cite: 1]
+        const tag = heading.tagName.toLowerCase(); [cite_start]// [cite: 1]
+        let sectionNumber = ''; [cite_start]// [cite: 1]
+        
+        // 기존 ID가 없거나 유효하지 않으면 새로 생성
+        [cite_start]if (!heading.id || !heading.id.startsWith('toc-')) { // [cite: 1]
+            heading.id = `toc-${tag}-${index}`; [cite_start]// [cite: 1]
+        }
+
+        [cite_start]if (tag === 'h1') { // [cite: 1]
+          h1Count++; [cite_start]// [cite: 1]
+          h2Count = 0; [cite_start]// Reset h2 count for new h1 [cite: 1]
+          sectionNumber = `${h1Count}.`; [cite_start]// [cite: 1]
+          tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`; [cite_start]// [cite: 1]
+        [cite_start]} else if (tag === 'h2') { // [cite: 1]
+          h2Count++; [cite_start]// [cite: 1]
+          // H1이 없이 H2가 먼저 나올 경우를 대비 (선택 사항)
+          if (h1Count === 0) h1Count = 1; [cite_start]// [cite: 1] 
+          sectionNumber = `${h1Count}.${h2Count}`; [cite_start]// [cite: 1]
+          tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`; [cite_start]// [cite: 1]
+        }
+      });
+      tocHtml += '</ul>'; [cite_start]// [cite: 1]
+
+      [cite_start]if (floatingToc) { // [cite: 1]
+        floatingToc.innerHTML = tocHtml; [cite_start]// [cite: 1]
+        floatingToc.style.display = 'block'; [cite_start]// 목차 내용이 있으면 보이게 [cite: 1]
+      }
+      [cite_start]if (mobileTocContent) { // [cite: 1]
+        mobileTocContent.innerHTML = tocHtml; [cite_start]// [cite: 1]
+        mobileTocBtn.style.display = 'block'; [cite_start]// 모바일 버튼 보이게 [cite: 1]
+      }
+    }
+
+    [cite_start]// 2. 스크롤 감지 및 플로팅 목차 표시/숨김 (데스크톱용) [cite: 1]
+    [cite_start]function handleScroll() { // [cite: 1]
+      const scrollThreshold = 300; [cite_start]// 스크롤이 이 값(px) 이상 내려가면 목차 표시 [cite: 1]
+      [cite_start]if (window.innerWidth > 768) { // 데스크톱에서만 작동하도록 (모바일에서는 버튼이 따로 있으므로) [cite: 1]
+        [cite_start]if (window.scrollY > scrollThreshold) { // [cite: 1]
+          if (floatingToc) floatingToc.classList.add('show'); [cite_start]// [cite: 1]
+        [cite_start]} else { // [cite: 1]
+          if (floatingToc) floatingToc.classList.remove('show'); [cite_start]// [cite: 1]
+        }
+      }
+    }
+
+    [cite_start]// 3. 모바일 목차 모달 토글 [cite: 1]
+    [cite_start]if (mobileTocBtn) { // [cite: 1]
+      [cite_start]mobileTocBtn.addEventListener('click', function() { // [cite: 1]
+        if (mobileTocModal) mobileTocModal.classList.add('show'); [cite_start]// [cite: 1]
+      });
+    }
+
+    [cite_start]if (mobileTocCloseBtn) { // [cite: 1]
+      [cite_start]mobileTocCloseBtn.addEventListener('click', function() { // [cite: 1]
+        if (mobileTocModal) mobileTocModal.classList.remove('show'); [cite_start]// [cite: 1]
+      });
+    }
+
+    [cite_start]// 모바일 목차 링크 클릭 시 모달 닫기 [cite: 1]
+    [cite_start]if (mobileTocContent) { // [cite: 1]
+      [cite_start]mobileTocContent.addEventListener('click', function(event) { // [cite: 1]
+        [cite_start]if (event.target.tagName === 'A' && mobileTocModal) { // [cite: 1]
+          mobileTocModal.classList.remove('show'); [cite_start]// [cite: 1]
+        }
+      });
+    }
+
+    [cite_start]// 초기 목차 생성 [cite: 1]
+    generateToc(); [cite_start]// [cite: 1]
+    [cite_start]// 스크롤 이벤트 리스너 등록 [cite: 1]
+    window.addEventListener('scroll', handleScroll); [cite_start]// [cite: 1]
+    [cite_start]// 리사이즈 시에도 스크롤 핸들러 재실행 (데스크톱/모바일 전환 대응) [cite: 1]
+    window.addEventListener('resize', handleScroll); [cite_start]// [cite: 1]
+  });
+</script>
 
 <%- include('partials/scripts') %>
 </body>
