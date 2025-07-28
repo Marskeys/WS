@@ -742,42 +742,55 @@
           document.querySelectorAll('.toolbar').forEach(toolbar => {
             toolbar.addEventListener('click', (event) => {
               const button = event.target.closest('button[data-command], .dropdown-toggle');
-              if (!button) return;
+              // ⭐ 추가: 드롭다운 메뉴 내의 스타일 명령 요소를 찾도록 수정
+              const styleCommandElement = event.target.closest('[data-style-command]');
+
+              if (!button && !styleCommandElement) return; // 유효한 요소가 아니면 반환
 
               saveSelection(); // 명령 실행 전에 현재 선택 영역 저장
 
-              const command = button.dataset.command;
-              const styleCommand = button.dataset.styleCommand;
+              // ⭐ 수정된 부분: styleCommandElement가 있다면 applyStyle 실행
+              if (styleCommandElement) {
+                  const styleCommand = styleCommandElement.dataset.styleCommand;
+                  applyStyle(styleCommand);
+                  // 스타일 적용 후 드롭다운 메뉴 닫기
+                  const styleDropdown = styleCommandElement.closest('.dropdown-menu');
+                  if (styleDropdown) {
+                      styleDropdown.classList.remove('show');
+                  }
+                  // 클릭 이벤트가 툴바 전체로 전파되지 않도록 방지
+                  event.stopPropagation(); 
+              } else if (button) { // 기존 button 처리 로직
+                const command = button.dataset.command;
 
-              if (command) {
-                switch (command) {
-                  case 'insertTOC':
-                    insertTOC();
-                    break;
-                  case 'createLink':
-                    showCustomInput("링크 URL을 입력하세요:", (url) => {
-                      if (url) format('createLink', url);
-                    });
-                    break;
-                  case 'insertImage':
-                    insertImage();
-                    break;
-                  case 'openHtmlPopup':
-                    // openHtmlPopup 함수는 별도로 구현 필요 (현재 코드에 없음)
-                    // 필요하다면 여기서 구현하거나 showCustomInput 등을 활용
-                    showCustomMessage("HTML 삽입 기능은 현재 구현되지 않았습니다.");
-                    break;
-                  case 'removeFormat':
-                    format('removeFormat');
-                    break;
-                  default:
-                    format(command);
-                    break;
+                if (command) {
+                  switch (command) {
+                    case 'insertTOC':
+                      insertTOC();
+                      break;
+                    case 'createLink':
+                      showCustomInput("링크 URL을 입력하세요:", (url) => {
+                        if (url) format('createLink', url);
+                      });
+                      break;
+                    case 'insertImage':
+                      insertImage();
+                      break;
+                    case 'openHtmlPopup':
+                      showCustomMessage("HTML 삽입 기능은 현재 구현되지 않았습니다.");
+                      break;
+                    case 'removeFormat':
+                      format('removeFormat');
+                      break;
+                    default:
+                      format(command);
+                      break;
+                  }
+                } else if (button.classList.contains('dropdown-toggle')) {
+                  toggleDropdown();
+                  // 드롭다운 토글 버튼 클릭 시 이벤트 전파 방지
+                  event.stopPropagation(); 
                 }
-              } else if (styleCommand) {
-                applyStyle(styleCommand);
-              } else if (button.classList.contains('dropdown-toggle')) {
-                toggleDropdown();
               }
             });
 
