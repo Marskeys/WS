@@ -130,15 +130,17 @@
                         const now = new Date();
                         const createdAt = new Date(post.created_at);
                         const updatedAt = new Date(post.updated_at);
-                      
                         const oneDay = 1000 * 60 * 60 * 24;
+                      
                         const isNew = (now - createdAt) < oneDay;
-                        const isEdited = !isNew && (updatedAt > createdAt);
+                        const wasEdited = updatedAt > createdAt;
+                        const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+                        const showEditedLabel = !isNew && isRecentlyEdited;
                       %>
                       
                       <% if (isNew) { %>
                         <span class="label-icon new-icon"></span>
-                      <% } else if (isEdited) { %>
+                      <% } else if (showEditedLabel) { %>
                         <span class="label-icon edited-icon"></span>
                       <% } %>
             
@@ -215,15 +217,17 @@
                     const now = new Date();
                     const createdAt = new Date(post.created_at);
                     const updatedAt = new Date(post.updated_at);
-                  
                     const oneDay = 1000 * 60 * 60 * 24;
+                  
                     const isNew = (now - createdAt) < oneDay;
-                    const isEdited = !isNew && (updatedAt > createdAt);
+                    const wasEdited = updatedAt > createdAt;
+                    const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+                    const showEditedLabel = !isNew && isRecentlyEdited;
                   %>
                   
                   <% if (isNew) { %>
                     <span class="label-icon new-icon"></span>
-                  <% } else if (isEdited) { %>
+                  <% } else if (showEditedLabel) { %>
                     <span class="label-icon edited-icon"></span>
                   <% } %>
         
