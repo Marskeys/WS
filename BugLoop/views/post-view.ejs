@@ -257,21 +257,7 @@ const hasTestCategory = post.categories.some(cat =>
     }
 
     /* 모바일 TOC 모달 */
-    .mobile-toc-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
-      visibility: hidden; /* 기본 숨김 */
-      opacity: 0;
-      transition: visibility 0s, opacity 0.3s ease-in-out;
-    }
+ 
 
     .mobile-toc-modal.show {
       visibility: visible;
