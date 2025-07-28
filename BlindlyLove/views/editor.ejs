@@ -652,6 +652,192 @@
           }
       };
 
+      // New function: Auto convert plain text URLs to <a> tags
+      /**
+       * 에디터 내에서 일반 텍스트 URL을 <a> 태그로 자동 변환합니다.
+       * @param {HTMLElement} editor - contenteditable 에디터 엘리먼트.
+       */
+      function autoConvertUrlToLink(editor) {
+          if (!editor || editor.style.display === 'none') return; // 에디터가 없거나 HTML 모드일 때는 실행 안 함
+
+          const blContent = editor.querySelector('.bl-content');
+          if (!blContent) return;
+
+          // 현재 선택 영역을 저장 (변환 후 복원하여 커서 위치 유지)
+          const selection = window.getSelection();
+          let savedRange = null;
+          if (selection.rangeCount > 0) {
+              savedRange = selection.getRangeAt(0).cloneRange();
+          }
+
+          // URL을 감지하기 위한 정규식 (http, https로 시작하고 공백이 없는 문자열 또는 www.로 시작)
+          // 이메일 주소는 제외하도록 개선했습니다.
+          const urlRegex = /(?<!\S)((https?:\/\/[^\s<>"']+|www\.[^\s<>"']+\.[a-zA-Z]{2,}))(?!\S)/g;
+
+          // DOM 트리를 순회하며 텍스트 노드를 처리하는 재귀 함수
+          const processNode = (node) => {
+              if (node.nodeType === Node.TEXT_NODE) {
+                  const text = node.nodeValue;
+                  let match;
+                  let lastIndex = 0;
+                  const fragment = document.createDocumentFragment();
+                  let replaced = false; // 변환이 일어났는지 추적
+
+                  while ((match = urlRegex.exec(text)) !== null) {
+                      const fullUrl = match[0];
+                      let href = fullUrl;
+
+                      // 'www.'로 시작하면 'http://'를 붙여줌
+                      if (href.startsWith('www.') && !href.startsWith('http')) {
+                          href = 'http://' + href;
+                      }
+
+                      // 매치된 URL 앞의 텍스트 추가
+                      if (match.index > lastIndex) {
+                          fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+                      }
+
+                      // <a> 태그 생성 및 추가
+                      const link = document.createElement('a');
+                      link.href = href;
+                      link.target = "_blank"; // 새 탭에서 열기
+                      link.rel = "noopener noreferrer"; // 보안 권장 사항
+                      link.textContent = fullUrl;
+                      fragment.appendChild(link);
+                      replaced = true;
+
+                      lastIndex = urlRegex.lastIndex;
+                  }
+
+                  // 마지막 매치 이후의 남은 텍스트 추가
+                  if (lastIndex < text.length) {
+                      fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+                  }
+
+                  // 변경 사항이 있다면 노드 교체
+                  if (replaced && fragment.hasChildNodes()) {
+                      node.replaceWith(fragment);
+                  }
+              }
+              // 요소 노드인 경우 (이미 <a> 태그인 경우는 건너뛰고, 자식 노드 재귀 처리)
+              else if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() !== 'a' && node.tagName.toLowerCase() !== 'iframe') {
+                  // NodeList는 실시간 컬렉션이므로, Array.from으로 복사하여 순회 중 변경에 대비
+                  Array.from(node.childNodes).forEach(processNode);
+              }
+          };
+
+          // bl-content 내부의 모든 자식 노드부터 처리 시작
+          Array.from(blContent.childNodes).forEach(processNode);
+
+          // 저장된 선택 영역 복원
+          if (savedRange) {
+              try {
+                  selection.removeAllRanges();
+                  selection.addRange(savedRange);
+              } catch (e) {
+                  // 복원 실패 시 (예: DOM 구조가 크게 변경되어 기존 Range가 유효하지 않을 때)
+                  // 에디터의 끝으로 커서 이동 시도
+                  const newRange = document.createRange();
+                  newRange.selectNodeContents(blContent);
+                  newRange.collapse(false); // 끝으로 이동
+                  selection.removeAllRanges();
+                  selection.addRange(newRange);
+              }
+          }
+      }
+
+      // Modified function: Auto convert YouTube links to embeds (handles both <a> and raw text)
+      /**
+       * 주어진 에디터 내부의 유튜브 링크 (<a> 태그 또는 일반 텍스트)를 유튜브 임베드 iframe으로 변환합니다.
+       * @param {HTMLElement} editor - `contenteditable` 속성을 가진 에디터 엘리먼트 (예: `editor_ko`).
+       */
+      function convertYouTubeLinksToEmbeds(editor) {
+        if (!editor) return;
+
+        const blContent = editor.querySelector('.bl-content');
+        // bl-content가 없거나, HTML 모드에서는 변환하지 않음
+        if (!blContent || editor.style.display === 'none') return;
+
+        // 유튜브 URL을 감지하기 위한 정규식 (표준 유튜브 URL 및 http://googleusercontent.com/youtube.com/ 패턴 포함)
+        // 11자리의 표준 YouTube ID를 정확히 캡처하도록 개선
+        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/|googleusercontent\.com\/youtube\.com\/)([\w-]{11})(?:\S+)?/i;
+
+        // DOM 트리를 순회하며 텍스트 노드와 <a> 태그를 처리하는 재귀 함수
+        const processNode = (node) => {
+          // 텍스트 노드인 경우
+          if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.nodeValue;
+            let match;
+            let lastIndex = 0;
+            const fragment = document.createDocumentFragment();
+            let replaced = false;
+
+            // 텍스트 내에서 유튜브 URL 패턴을 찾음
+            // global 플래그 (g)를 사용하여 모든 매치를 찾음
+            while ((match = youtubeRegex.exec(text)) !== null) {
+              const videoId = match[1];
+
+              // 매치된 URL 앞의 텍스트 추가
+              if (match.index > lastIndex) {
+                fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+              }
+
+              // iframe 생성 및 추가
+              const iframe = document.createElement('iframe');
+              iframe.width = "560";
+              iframe.height = "315";
+              iframe.src = `https://www.youtube.com/embed/${videoId}`; // 표준 유튜브 임베드 URL 사용
+              iframe.frameBorder = "0";
+              iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+              iframe.allowFullscreen = true;
+              iframe.setAttribute('loading', 'lazy'); // 레이지 로딩 추가
+              fragment.appendChild(iframe);
+              replaced = true;
+
+              lastIndex = youtubeRegex.lastIndex;
+            }
+
+            // 마지막 매치 이후의 남은 텍스트 추가
+            if (lastIndex < text.length) {
+              fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+            }
+
+            // 변경 사항이 있다면 노드 교체
+            if (replaced && fragment.hasChildNodes()) {
+              node.replaceWith(fragment);
+            }
+          }
+          // 요소 노드인 경우 (특히 <a> 태그 처리)
+          else if (node.nodeType === Node.ELEMENT_NODE) {
+            // 이미 <a> 태그로 존재하는 링크 처리
+            if (node.tagName.toLowerCase() === 'a') {
+              const url = node.href;
+              const match = url.match(youtubeRegex); // <a> 태그의 href 속성에서 다시 정규식 매치
+              if (match && match[1]) {
+                const videoId = match[1];
+                const iframe = document.createElement('iframe');
+                iframe.width = "560";
+                iframe.height = "315";
+                iframe.src = `https://www.youtube.com/embed/${videoId}`; // 표준 유튜브 임베드 URL 사용
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('loading', 'lazy');
+                node.replaceWith(iframe);
+              }
+            } else {
+              // 다른 자식 노드들도 재귀적으로 처리 (깊이 우선 탐색)
+              // NodeList는 실시간 컬렉션이므로, Array.from으로 복사하여 순회 중 변경에 대비
+              Array.from(node.childNodes).forEach(processNode);
+            }
+          }
+        };
+
+        // bl-content 내부의 모든 자식 노드부터 처리 시작
+        // NodeList는 실시간 컬렉션이므로, Array.from으로 복사하여 순회 중 변경에 대비
+        Array.from(blContent.childNodes).forEach(processNode);
+      }
+
       window.onload = () => {
           // 카테고리 불러오기 및 렌더링
           fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
@@ -679,6 +865,9 @@
               currentActiveHtmlEditor = initialHtmlEditor;
               initialEditor.focus();
               detectStyle(); 
+              // Initial conversion for existing content on load
+              autoConvertUrlToLink(initialEditor);
+              convertYouTubeLinksToEmbeds(initialEditor);
           } else { 
               currentActiveEditor = document.querySelector('.language-editor');
               if (currentActiveEditor) {
@@ -686,6 +875,9 @@
                 currentActiveEditor.style.display = 'block';
                 currentActiveEditor.focus();
                 detectStyle();
+                // Initial conversion for existing content on load
+                autoConvertUrlToLink(currentActiveEditor);
+                convertYouTubeLinksToEmbeds(currentActiveEditor);
               }
           }
 
@@ -696,6 +888,27 @@
               editor.addEventListener('mouseup', detectStyle);
               editor.addEventListener('mouseup', saveSelection);
               editor.addEventListener('keyup', saveSelection);
+              
+              // URL to Link conversion (on keyup and blur)
+              editor.addEventListener('keyup', () => {
+                autoConvertUrlToLink(editor);
+                // After converting to <a>, immediately check for YouTube embeds
+                convertYouTubeLinksToEmbeds(editor); 
+              });
+              editor.addEventListener('blur', () => {
+                autoConvertUrlToLink(editor);
+                convertYouTubeLinksToEmbeds(editor);
+              });
+              
+              // Paste event handling for both
+              editor.addEventListener('paste', (event) => {
+                // Allow DOM to update with pasted content before running conversion
+                setTimeout(() => {
+                  autoConvertUrlToLink(editor);
+                  convertYouTubeLinksToEmbeds(editor);
+                }, 0);
+              });
+
               editor.addEventListener('focus', () => {
                   const langCode = editor.dataset.langEditor;
                   document.getElementById('langSelector').value = langCode;
@@ -731,142 +944,142 @@
       };
 
       function insertTOC() {
-  if (!currentActiveEditor) {
-    showCustomMessage("에디터가 활성화되지 않았습니다.");
-    return;
-  }
+        if (!currentActiveEditor) {
+          showCustomMessage("에디터가 활성화되지 않았습니다.");
+          return;
+        }
 
-  const blContentDiv = currentActiveEditor.querySelector('.bl-content');
+        const blContentDiv = currentActiveEditor.querySelector('.bl-content');
 
-  if (!blContentDiv) {
-    showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
-    return;
-  }
+        if (!blContentDiv) {
+          showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
+          return;
+        }
 
-  const headings = blContentDiv.querySelectorAll("h1, h2");
-  if (!headings.length) {
-    showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
-    return;
-  }
+        const headings = blContentDiv.querySelectorAll("h1, h2");
+        if (!headings.length) {
+          showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
+          return;
+        }
 
-  // 기존 목차 제거
-  const oldTOC = blContentDiv.querySelector(".auto-toc");
-  if (oldTOC) oldTOC.remove();
+        // 기존 목차 제거
+        const oldTOC = blContentDiv.querySelector(".auto-toc");
+        if (oldTOC) oldTOC.remove();
 
-  const tocWrapper = document.createElement("div");
-  tocWrapper.className = "auto-toc";
-  tocWrapper.contentEditable = "false";
+        const tocWrapper = document.createElement("div");
+        tocWrapper.className = "auto-toc";
+        tocWrapper.contentEditable = "false";
 
-  const tocTitle = document.createElement("strong");
-  tocTitle.className = "toc-title";
-  tocTitle.textContent = "📑 목차";
+        const tocTitle = document.createElement("strong");
+        tocTitle.className = "toc-title";
+        tocTitle.textContent = "📑 목차";
 
-  const tocList = document.createElement("ul");
-  tocList.className = "toc-list";
-  tocList.style.margin = "0";
-  tocList.style.padding = "0";
+        const tocList = document.createElement("ul");
+        tocList.className = "toc-list";
+        tocList.style.margin = "0";
+        tocList.style.padding = "0";
 
-  let h1Count = 0;
-  let h2Count = 0;
+        let h1Count = 0;
+        let h2Count = 0;
 
-  headings.forEach(el => {
-    const tag = el.tagName.toLowerCase();
-    let number = "";
+        headings.forEach(el => {
+          const tag = el.tagName.toLowerCase();
+          let number = "";
 
-    if (tag === "h1") {
-      h1Count++;
-      h2Count = 0;
-      number = `${h1Count}.`;
-    } else if (tag === "h2") {
-      h2Count++;
-      number = `${h1Count}.${h2Count}`;
-    }
+          if (tag === "h1") {
+            h1Count++;
+            h2Count = 0;
+            number = `${h1Count}.`;
+          } else if (tag === "h2") {
+            h2Count++;
+            number = `${h1Count}.${h2Count}`;
+          }
 
-    // ID 부여 (기존 ID 무시하고 항상 재생성)
-    const id = `toc-${number.replace(/\./g, "-")}`;
-    el.id = id;
+          // ID 부여 (기존 ID 무시하고 항상 재생성)
+          const id = `toc-${number.replace(/\./g, "-")}`;
+          el.id = id;
 
-    const li = document.createElement("li");
-    li.className = `toc-item toc-${tag}`;
+          const li = document.createElement("li");
+          li.className = `toc-item toc-${tag}`;
 
-    const a = document.createElement("a");
-    a.href = `#${id}`;
-    a.textContent = `${number} ${el.textContent.trim()}`;
-    a.onclick = function(e) {
-      e.preventDefault();
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    };
+          const a = document.createElement("a");
+          a.href = `#${id}`;
+          a.textContent = `${number} ${el.textContent.trim()}`;
+          a.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+          };
 
-    li.appendChild(a);
-    tocList.appendChild(li);
-  });
+          li.appendChild(a);
+          tocList.appendChild(li);
+        });
 
-  tocWrapper.appendChild(tocTitle);
-  tocWrapper.appendChild(tocList);
+        tocWrapper.appendChild(tocTitle);
+        tocWrapper.appendChild(tocList);
 
-  // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
-  blContentDiv.prepend(tocWrapper);
-}
+        // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
+        blContentDiv.prepend(tocWrapper);
+      }
       // 수정된 switchToHtmlMode 함수: 현재 활성 에디터를 사용하도록 변경
       function switchToHtmlMode() {
-  const editorDiv = currentActiveEditor;
-  const htmlEditor = currentActiveHtmlEditor;
+        const editorDiv = currentActiveEditor;
+        const htmlEditor = currentActiveHtmlEditor;
 
-  if (!editorDiv || !htmlEditor) {
-    console.error("HTML 모드 전환 실패: 활성 에디터 없음");
-    return;
-  }
+        if (!editorDiv || !htmlEditor) {
+          console.error("HTML 모드 전환 실패: 활성 에디터 없음");
+          return;
+        }
 
-  let currentContent = editorDiv.innerHTML.trim();
+        let currentContent = editorDiv.innerHTML.trim();
 
-  // ✅ bl-content로 감싸져 있는지 확인
-  const isWrapped = currentContent.startsWith('<div class="bl-content"');
+        // ✅ bl-content로 감싸져 있는지 확인
+        const isWrapped = currentContent.startsWith('<div class="bl-content"');
 
-  if (!isWrapped) {
-    // 빈 상태도 감싸기
-    if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
-      currentContent = '<p><br></p>';
-    }
+        if (!isWrapped) {
+          // 빈 상태도 감싸기
+          if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
+            currentContent = '<p><br></p>';
+          }
 
-    currentContent = `
+          currentContent = `
 <div class="bl-content" style="white-space:normal; line-height: 1.7;">
   ${currentContent}
 </div>`.trim();
-  }
+        }
 
-  htmlEditor.value = html_beautify(currentContent, {
-    indent_size: 2,
-    wrap_attributes: 'auto',
-    indent_with_tabs: false
-  });
+        htmlEditor.value = html_beautify(currentContent, {
+          indent_size: 2,
+          wrap_attributes: 'auto',
+          indent_with_tabs: false
+        });
 
-  editorDiv.style.display = 'none';
-  htmlEditor.style.display = 'block';
-}
+        editorDiv.style.display = 'none';
+        htmlEditor.style.display = 'block';
+      }
 
       // 수정된 switchToDesignMode 함수: 현재 활성 에디터를 사용하도록 변경
       function switchToDesignMode() {
-  const editorDiv = currentActiveEditor;
-  const htmlEditor = currentActiveHtmlEditor;
+        const editorDiv = currentActiveEditor;
+        const htmlEditor = currentActiveHtmlEditor;
 
-  if (!editorDiv || !htmlEditor) {
-    console.error("디자인 모드 전환 실패: 활성 에디터 없음");
-    return;
-  }
+        if (!editorDiv || !htmlEditor) {
+          console.error("디자인 모드 전환 실패: 활성 에디터 없음");
+          return;
+        }
 
-  let rawHtml = htmlEditor.value.trim();
+        let rawHtml = htmlEditor.value.trim();
 
-  // ✅ bl-content 감싸기 누락 시 자동 추가
-  if (!rawHtml.startsWith('<div class="bl-content"')) {
-    rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
-  }
+        // ✅ bl-content 감싸기 누락 시 자동 추가
+        if (!rawHtml.startsWith('<div class="bl-content"')) {
+          rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
+        }
 
-  editorDiv.innerHTML = rawHtml;
-  htmlEditor.style.display = 'none';
-  editorDiv.style.display = 'block';
-  editorDiv.focus();
-  detectStyle();
-}
+        editorDiv.innerHTML = rawHtml;
+        htmlEditor.style.display = 'none';
+        editorDiv.style.display = 'block';
+        editorDiv.focus();
+        detectStyle();
+      }
 
       // 언어 선택 드롭다운 변경 이벤트
       document.getElementById('langSelector').addEventListener('change', function() {
@@ -882,6 +1095,9 @@
                       currentActiveHtmlEditor = htmlEditorDiv;
                       editorDiv.focus();
                       detectStyle();
+                      // Also perform conversions when switching languages
+                      autoConvertUrlToLink(editorDiv);
+                      convertYouTubeLinksToEmbeds(editorDiv);
                   }
               } else {
                   block.style.display = 'none';
@@ -894,77 +1110,6 @@
           });
       });
   </script>
-
-<script>
-  /**
-   * 주어진 에디터 내부의 유튜브 링크를 유튜브 임베드 iframe으로 변환합니다.
-   * @param {HTMLElement} editor - `contenteditable` 속성을 가진 에디터 엘리먼트 (예: `editor_ko`).
-   */
-  function convertYouTubeLinksToEmbeds(editor) {
-    if (!editor) return;
-  
-    const blContent = editor.querySelector('.bl-content');
-    // bl-content가 없거나, HTML 모드에서는 변환하지 않음
-    if (!blContent || editor.style.display === 'none') return; 
-  
-    const links = blContent.querySelectorAll('a');
-  
-    links.forEach(link => {
-      const url = link.href;
-      // 유튜브 비디오 ID를 추출하는 정규식 (watch?v= 또는 youtu.be/ 패턴 모두 처리)
-      const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})(?:\S+)?/);
-  
-      if (match && match[1]) {
-        const videoId = match[1];
-        const iframe = document.createElement('iframe');
-        iframe.width = "560"; // 기본 너비
-        iframe.height = "315"; // 기본 높이
-        iframe.src = `https://www.youtube.com/embed/${videoId}`; // 올바른 유튜브 임베드 URL
-        iframe.frameBorder = "0";
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-        iframe.allowFullscreen = true;
-        iframe.setAttribute('loading', 'lazy'); // 레이지 로딩 추가
-
-        // iframe을 링크 대신 삽입
-        link.replaceWith(iframe);
-      }
-    });
-  }
-
-  // 페이지 로드 후 모든 에디터에 이벤트 리스너 추가
-  // `languageEditors` 변수가 이미 `window.onload` 내에서 정의되어 있으므로, 
-  // 해당 변수를 `window.onload` 스코프 밖으로 이동하거나, 
-  // 이 스크립트 블록 자체를 `window.onload` 내부에 넣는 것이 안전합니다.
-  // 여기서는 `window.onload`가 이미 정의되어 있고, 그 안에 필요한 초기화 로직이 있으므로,
-  // `window.onload`에 추가하거나, 별도의 함수로 분리하여 `window.onload`에서 호출하는 방식이 좋습니다.
-
-  // 편의상 새로운 스크립트 블록에 추가합니다.
-  // 이 코드는 `window.onload` 이후에 실행되어야 하므로, 기존 `window.onload` 함수 내부에 추가하거나
-  // DOMContentLoaded 이벤트 리스너를 추가하는 것이 더 적절합니다.
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const languageEditors = document.querySelectorAll('.language-editor');
-    languageEditors.forEach(editor => {
-      // 'input' 이벤트: 사용자가 텍스트를 입력하거나 붙여넣을 때 (일부 붙여넣기는 감지 못할 수 있음)
-      editor.addEventListener('input', () => {
-        convertYouTubeLinksToEmbeds(editor);
-      });
-
-      // 'blur' 이벤트: 에디터에서 포커스를 잃을 때 (링크를 붙여넣고 다른 곳을 클릭했을 때 유용)
-      editor.addEventListener('blur', () => {
-        convertYouTubeLinksToEmbeds(editor);
-      });
-
-      // 'paste' 이벤트: 직접 붙여넣기를 할 때
-      editor.addEventListener('paste', (event) => {
-        // 붙여넣기된 텍스트가 DOM에 적용된 후에 변환 함수를 실행하기 위해 setTimeout 사용
-        setTimeout(() => {
-          convertYouTubeLinksToEmbeds(editor);
-        }, 0); 
-      });
-    });
-  });
-</script>
 
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
