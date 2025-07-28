@@ -235,6 +235,41 @@
 });
 
 </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const floatingToc = document.getElementById("floatingToc");
+  
+    if (window.innerWidth > 768 && floatingToc) {
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+  
+      floatingToc.style.position = "fixed";
+      floatingToc.style.cursor = "move";
+  
+      floatingToc.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - floatingToc.getBoundingClientRect().left;
+        offsetY = e.clientY - floatingToc.getBoundingClientRect().top;
+        document.body.style.userSelect = "none";
+      });
+  
+      document.addEventListener("mousemove", (e) => {
+        if (isDragging) {
+          floatingToc.style.left = e.clientX - offsetX + "px";
+          floatingToc.style.top = e.clientY - offsetY + "px";
+        }
+      });
+  
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        document.body.style.userSelect = "";
+      });
+    }
+  });
+  </script>
+  
 <%- include('partials/scripts') %>
 </body>
 </html>
