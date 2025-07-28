@@ -162,7 +162,8 @@
   });
 </script>
 
-document.addEventListener("DOMContentLoaded", () => {
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
   const toc = document.querySelector(".auto-toc");
   const floatingToc = document.getElementById("floatingToc");
   const mobileBtn = document.getElementById("mobileTocBtn");
@@ -171,17 +172,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!toc) return;
 
-  // 내용 복사
+  // 📌 내용 복사 (floating & 모바일 modal)
   floatingToc.innerHTML = toc.innerHTML;
   mobileContent.innerHTML = toc.innerHTML;
 
-  // 모바일 팝업 열기
+  // 📱 모바일 팝업 열기
   mobileBtn.addEventListener("click", () => {
     mobileModal.style.display = "flex";
     document.body.classList.add("modal-open");
   });
 
-  // 모바일 팝업 닫기
+  // 📱 모바일 팝업 닫기 (배경 클릭 시)
   mobileModal.addEventListener("click", (e) => {
     if (e.target === mobileModal) {
       mobileModal.style.display = "none";
@@ -189,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 모바일 목차에서 항목 클릭 → 스크롤
+  // 📱 모바일 항목 클릭 시 스크롤 & 모달 닫기
   mobileContent.addEventListener("click", (e) => {
     if (e.target.tagName === "A") {
       e.preventDefault();
@@ -203,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 스크롤 감지용 센티넬
+  // 🧷 센티넬 요소 생성 (목차 위/아래 기준점)
   const topSentinel = document.createElement("div");
   topSentinel.style.height = "1px";
   toc.before(topSentinel);
@@ -212,11 +213,13 @@ document.addEventListener("DOMContentLoaded", () => {
   bottomSentinel.style.height = "1px";
   toc.after(bottomSentinel);
 
+  // 👁️ 스크롤 기준 목차 표시 감지
   const checkFloatingToc = () => {
     const top = topSentinel.getBoundingClientRect().top;
     const bottom = bottomSentinel.getBoundingClientRect().top;
 
     const isTocFullyPassed = top < 0 && bottom < 0;
+
     if (isTocFullyPassed) {
       floatingToc.style.display = "block";
       mobileBtn.classList.add("show");
@@ -231,39 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
   checkFloatingToc();
 });
 
-// 🖱 드래그 기능 (floatingToc 옮기기)
-(function enableFloatingTocDrag() {
-  const toc = document.getElementById('floatingToc');
-  if (!toc) return;
-
-  let isDragging = false;
-  let startX, startY;
-  let startLeft, startTop;
-
-  toc.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    startLeft = parseInt(window.getComputedStyle(toc).left, 10);
-    startTop = parseInt(window.getComputedStyle(toc).top, 10);
-    toc.style.transition = 'none';
-    e.preventDefault();
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    toc.style.left = `${startLeft + dx}px`;
-    toc.style.top = `${startTop + dy}px`;
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-})();
-
-
+</script>
 <%- include('partials/scripts') %>
 </body>
 </html>
