@@ -233,7 +233,22 @@ const hasTestCategory = post.categories.some(cat =>
     */
 
     /* 플로팅 목차 (데스크톱) */
- 
+    .floating-toc {
+      position: fixed;
+      top: 100px; /* 적절한 초기 위치 조정 */
+      right: 20px; /* 적절한 초기 위치 조정 */
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 999;
+      display: none; /* 기본 숨김 */
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      cursor: grab; /* 드래그 가능함을 표시 */
+    }
 
     .floating-toc.show {
       opacity: 1;
