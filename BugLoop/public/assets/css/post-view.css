@@ -65,7 +65,7 @@
   
   @media (max-width: 768px) {
     .mobile-toc-button {
-
+      display: flex;
     }
   }
   
@@ -143,7 +143,7 @@ html.dark body .post-content {
 }
 
 .post-content p {
-  margin-bottom: 2rem;
+  
 }
 
 .post-content ul,
