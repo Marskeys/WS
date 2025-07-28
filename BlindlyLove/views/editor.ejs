@@ -895,6 +895,41 @@
       });
   </script>
 
+<script>
+  function convertYouTubeLinksToEmbeds(editor) {
+    if (!editor) return;
+  
+    const blContent = editor.querySelector('.bl-content');
+    if (!blContent) return;
+  
+    const links = blContent.querySelectorAll('a');
+  
+    links.forEach(link => {
+      const url = link.href;
+      const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
+  
+      if (match) {
+        const videoId = match[1];
+        const iframe = document.createElement('iframe');
+        iframe.width = "560";
+        iframe.height = "315";
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.frameBorder = "0";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        iframe.allowFullscreen = true;
+  
+        link.replaceWith(iframe);
+      }
+    });
+  }
+
+  languageEditors.forEach(editor => {
+  editor.addEventListener('input', () => {
+    convertYouTubeLinksToEmbeds(editor);
+  });
+});
+  </script>
+
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
 
