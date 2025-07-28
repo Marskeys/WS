@@ -162,6 +162,108 @@
   });
 </script>
 
+document.addEventListener("DOMContentLoaded", () => {
+  const toc = document.querySelector(".auto-toc");
+  const floatingToc = document.getElementById("floatingToc");
+  const mobileBtn = document.getElementById("mobileTocBtn");
+  const mobileModal = document.getElementById("mobileTocModal");
+  const mobileContent = document.getElementById("mobileTocContent");
+
+  if (!toc) return;
+
+  // 내용 복사
+  floatingToc.innerHTML = toc.innerHTML;
+  mobileContent.innerHTML = toc.innerHTML;
+
+  // 모바일 팝업 열기
+  mobileBtn.addEventListener("click", () => {
+    mobileModal.style.display = "flex";
+    document.body.classList.add("modal-open");
+  });
+
+  // 모바일 팝업 닫기
+  mobileModal.addEventListener("click", (e) => {
+    if (e.target === mobileModal) {
+      mobileModal.style.display = "none";
+      document.body.classList.remove("modal-open");
+    }
+  });
+
+  // 모바일 목차에서 항목 클릭 → 스크롤
+  mobileContent.addEventListener("click", (e) => {
+    if (e.target.tagName === "A") {
+      e.preventDefault();
+      const targetId = e.target.getAttribute("href").replace("#", "");
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        mobileModal.style.display = "none";
+        document.body.classList.remove("modal-open");
+      }
+    }
+  });
+
+  // 스크롤 감지용 센티넬
+  const topSentinel = document.createElement("div");
+  topSentinel.style.height = "1px";
+  toc.before(topSentinel);
+
+  const bottomSentinel = document.createElement("div");
+  bottomSentinel.style.height = "1px";
+  toc.after(bottomSentinel);
+
+  const checkFloatingToc = () => {
+    const top = topSentinel.getBoundingClientRect().top;
+    const bottom = bottomSentinel.getBoundingClientRect().top;
+
+    const isTocFullyPassed = top < 0 && bottom < 0;
+    if (isTocFullyPassed) {
+      floatingToc.style.display = "block";
+      mobileBtn.classList.add("show");
+    } else {
+      floatingToc.style.display = "none";
+      mobileBtn.classList.remove("show");
+    }
+  };
+
+  window.addEventListener("scroll", checkFloatingToc);
+  window.addEventListener("resize", checkFloatingToc);
+  checkFloatingToc();
+});
+
+// 🖱 드래그 기능 (floatingToc 옮기기)
+(function enableFloatingTocDrag() {
+  const toc = document.getElementById('floatingToc');
+  if (!toc) return;
+
+  let isDragging = false;
+  let startX, startY;
+  let startLeft, startTop;
+
+  toc.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    startLeft = parseInt(window.getComputedStyle(toc).left, 10);
+    startTop = parseInt(window.getComputedStyle(toc).top, 10);
+    toc.style.transition = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    toc.style.left = `${startLeft + dx}px`;
+    toc.style.top = `${startTop + dy}px`;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+})();
+
+
 <%- include('partials/scripts') %>
 </body>
 </html>
