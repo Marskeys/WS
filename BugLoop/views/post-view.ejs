@@ -347,48 +347,7 @@ const hasTestCategory = post.categories.some(cat =>
           console.error('디코딩 오류:', e);
         }
       });
-      // 2. 본문 내 광고 동적 삽입 로직
-      const adCode = `
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-2585969189290118"
-             data-ad-slot="7758400001"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-      `;
-      const postContent = document.querySelector('.post-content');
-      if (postContent) {
-        const potentialAdTargets = postContent.querySelectorAll('p, h2');
-        const adPositions = [2, 6]; // 👈 광고 위치는 여기서 조절
-  
-        adPositions.forEach(position => {
-          if (potentialAdTargets.length > position) {
-            const targetElement = potentialAdTargets[position];
-            const adContainer = document.createElement('div');
-            adContainer.innerHTML = adCode;
-            
-            targetElement.insertAdjacentElement('afterend', adContainer);
-            
-            try {
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (e) {
-              console.error("Adsense push error: ", e);
-            }
-          }
-        });
-      }
-  
-      // 3. .post-body 안의 스크립트 실행 로직 (필요 시 사용)
-      document.querySelectorAll('.post-body script').forEach(script => {
-          const newScript = document.createElement('script');
-          if (script.src) {
-              newScript.src = script.src;
-          } else {
-              newScript.textContent = script.textContent;
-          }
-          document.body.appendChild(newScript);
-      });
-    });
+
   
     // ----------------------------------------------------
     // iframe 높이 조절 관련 함수 및 이벤트 리스너
