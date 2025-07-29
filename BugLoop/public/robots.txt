@@ -8,7 +8,7 @@ Allow: /
 
 # 네이버 검색 로봇(Yeti) 전용 규칙 (모든 경로 허용)
 User-agent: Yeti
-Disallow:  # 또는 Allow: / 도 가능
+Disallow: # 또는 Allow: / 도 가능
 
 # 사이트맵 명시 (모든 봇 참고 가능)
-Sitemap: https://blindly.love/sitemap.xml
+Sitemap: https://bugloop.dev/sitemap.xml

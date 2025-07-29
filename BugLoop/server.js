@@ -68,7 +68,7 @@ app.get('/sitemap.xml', async (req, res) => {
       supportedLangs.forEach(lang => {
         postUrls.push(`
           <url>
-            <loc>https://blindly.love/${lang}/post/${post.id}</loc>
+            <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
             <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
             <priority>0.80</priority>
           </url>
@@ -79,8 +79,8 @@ app.get('/sitemap.xml', async (req, res) => {
 
     const staticUrls = [
       // 정적 페이지도 각 언어별로 추가
-      ...supportedLangs.map(lang => `<url><loc>https://blindly.love/${lang}/</loc><priority>1.00</priority></url>`),
-      ...supportedLangs.map(lang => `<url><loc>https://blindly.love/${lang}/signup</loc><priority>0.80</priority></url>`)
+      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
+      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
     ].join('');
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
