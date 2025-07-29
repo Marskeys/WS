@@ -53,15 +53,26 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.get('/sitemap.xml', async (req, res) => {
   try {
+    // 사이트맵에서 제외할 카테고리 키워드 정의
+    // 이 키워드들이 포함된 카테고리를 가진 게시글은 사이트맵에 포함되지 않습니다.
+    const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개']; 
+
+    // SQL 쿼리에서 testCategoryKeywords에 해당하는 카테고리를 제외하는 조건 생성
+    // FIND_IN_SET 함수를 사용하여 콤마로 구분된 'categories' 문자열 내에서 각 키워드의 존재 여부를 확인합니다.
+    // 각 키워드에 대해 'FIND_IN_SET(?, p.categories)' 조건을 생성하고 'OR'로 연결한 후, 전체를 'NOT'으로 감싸 제외합니다.
+    const excludeConditions = testCategoryKeywords.map(keyword => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+
+    // 데이터베이스에서 게시글 정보를 조회합니다.
+    // is_private이 0 (공개)이고, 테스트 카테고리 키워드를 포함하지 않는 게시글만 선택합니다.
     const [posts] = await db.query(`
-      SELECT id, updated_at
-      FROM posts
-      WHERE is_private = 0
-      ORDER BY updated_at DESC
-    `);
+      SELECT p.id, p.updated_at, p.categories
+      FROM posts p
+      WHERE p.is_private = 0
+        AND NOT (${excludeConditions}) -- 여기에 테스트 카테고리 제외 조건 추가
+      ORDER BY p.updated_at DESC
+    `, testCategoryKeywords); // excludeConditions에 필요한 파라미터로 testCategoryKeywords 배열을 전달합니다.
 
     let postUrls = [];
     posts.forEach(post => {
@@ -77,12 +88,13 @@ app.get('/sitemap.xml', async (req, res) => {
     });
     postUrls = postUrls.join('');
 
+    // 정적 페이지 URL을 생성합니다. 도메인은 bugloop.dev로 설정되어 있습니다.
     const staticUrls = [
-      // 정적 페이지도 각 언어별로 추가
       ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
       ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
     ].join('');
 
+    // 최종 Sitemap XML 문자열을 구성합니다.
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
       <urlset
         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -94,6 +106,7 @@ app.get('/sitemap.xml', async (req, res) => {
       </urlset>
     `;
 
+    // 응답 헤더를 XML로 설정하고 Sitemap을 전송합니다.
     res.header('Content-Type', 'application/xml');
     res.send(sitemap.trim());
   } catch (err) {
@@ -101,7 +114,6 @@ app.get('/sitemap.xml', async (req, res) => {
     res.status(500).send('Sitemap 생성 실패');
   }
 });
-
 
 // 로그인 상태 확인 API
 app.get('/session', (req, res) => {
