@@ -10,6 +10,13 @@ const PORT = process.env.PORT || 3002;
 const allLocales = require('./locales/all.json');
 
 
+app.use((req, res, next) => {
+  if (req.headers.host.startsWith('www.')) {
+    return res.redirect(301, `https://${req.headers.host.replace('www.', '')}${req.url}`);
+  }
+  next();
+});
+
 // EJS 템플릿 엔진 설정
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -114,6 +121,8 @@ app.get('/sitemap.xml', async (req, res) => {
     res.status(500).send('Sitemap 생성 실패');
   }
 });
+
+
 
 // 로그인 상태 확인 API
 app.get('/session', (req, res) => {
