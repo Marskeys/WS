@@ -220,7 +220,7 @@
 
     const isTocFullyPassed = top < 0 && bottom < 0;
 
-    if (isTocFullyPassed) {
+    if (window.innerWidth <= 768 && isTocFullyPassed) {
       floatingToc.style.display = "block";
       mobileBtn.classList.add("show");
     } else {
