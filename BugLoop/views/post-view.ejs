@@ -220,14 +220,17 @@
 
     const isTocFullyPassed = top < 0 && bottom < 0;
 
-    if (window.innerWidth <= 768 && isTocFullyPassed) {
-      floatingToc.style.display = "block";
-      mobileBtn.classList.add("show");
-    } else {
-      floatingToc.style.display = "none";
-      mobileBtn.classList.remove("show");
-    }
-  };
+      // 모바일 전용
+  if (window.innerWidth <= 768 && isTocFullyPassed) {
+    floatingToc.style.display = "none"; // 모바일에선 floating 숨김
+    mobileBtn.classList.add("show");
+  } else {
+    mobileBtn.classList.remove("show");
+    // 데스크톱에서는 기존 floatingToc 표시/숨김 처리
+    floatingToc.style.display = isTocFullyPassed ? "block" : "none";
+  }
+};
+
 
   window.addEventListener("scroll", checkFloatingToc);
   window.addEventListener("resize", checkFloatingToc);
