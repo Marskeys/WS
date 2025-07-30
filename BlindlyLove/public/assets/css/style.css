@@ -874,3 +874,67 @@ html.dark .lang-option:hover {
 html.dark .lang-btn i {
   color: #ffffff; /* 원하는 색상으로 변경 */
 }
+
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.desktop-menu .menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  padding: 0;
+  margin: 0;
+}
+
+.desktop-menu .menu-item {
+  position: relative;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+}
+
+.desktop-menu .menu-item:hover {
+  color: #ff6f6f; /* 호버 시 강조색 */
+}
+
+/* 서브메뉴 숨기기 */
+.desktop-menu .submenu {
+  display: none;
+  position: absolute;
+  top: 2rem; /* 부모 메뉴 아래에 뜸 */
+  left: 0;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  list-style: none;
+  padding: 0.5rem 0;
+  min-width: 140px;
+  z-index: 5000;
+}
+
+.desktop-menu .submenu li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #333;
+  white-space: nowrap;
+}
+
+.desktop-menu .submenu li a:hover {
+  background: #f7f7f7;
+}
+
+/* 호버 시 서브메뉴 보이기 */
+.desktop-menu .menu-item:hover .submenu {
+  display: block;
+}
+
+/* 모바일에서는 숨기기 */
+@media (max-width: 640px) {
+  .desktop-menu {
+    display: none;
+  }
+}
