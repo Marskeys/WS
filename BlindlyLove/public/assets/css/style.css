@@ -976,3 +976,79 @@ html.dark .desktop-menu .submenu li a:hover {
     display: none;
   }
 }
+
+
+.mobile-main-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.mobile-main-menu > li {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.mobile-main-menu a {
+  display: block;
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.mobile-main-menu a:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* 서브메뉴 */
+.mobile-submenu {
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(0,0,0,0.3);
+}
+
+.mobile-submenu li a {
+  font-size: 0.95rem;
+  padding: 0.8rem;
+}
+
+/* 드롭다운 열릴 때 */
+.mobile-dropdown.open > .mobile-submenu {
+  display: block;
+}
+
+/* 🌙 다크모드 모바일 메뉴 */
+html.dark .mobile-menu {
+  background-color: rgba(30, 30, 30, 0.95);
+  color: #eee;
+}
+
+html.dark .mobile-main-menu a {
+  color: #eee;
+}
+
+html.dark .mobile-main-menu a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+html.dark .mobile-submenu {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+html.dark .mobile-submenu li a {
+  color: #ccc;
+}
+
+html.dark .mobile-submenu li a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 드롭다운 활성화 상태 시 테두리 강조 */
+html.dark .mobile-dropdown.open > a {
+  background-color: rgba(255, 255, 255, 0.1);
+}

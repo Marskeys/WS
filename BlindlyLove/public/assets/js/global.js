@@ -82,3 +82,24 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  // 언어 감지 (URL에서 /ko, /en, /fr, /zh, /ja 추출)
+  const pathLang = location.pathname.split('/')[1];
+  const supportedLangs = ['ko','en','fr','zh','ja'];
+  const lang = supportedLangs.includes(pathLang) ? pathLang : 'ko';
+
+  // 모바일 스도쿠 링크 설정
+  const mobileSudoku = document.getElementById('mobile-sudoku-link');
+  if (mobileSudoku) {
+    mobileSudoku.href = `/assets/sudoku/sudoku_${lang}.html`;
+  }
+
+  // 모바일 드롭다운 열고 닫기
+  document.querySelectorAll('.mobile-dropdown > a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      a.parentElement.classList.toggle('open');
+    });
+  });
+});
+
