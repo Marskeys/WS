@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 모바일 스도쿠 링크 설정
   const mobileSudoku = document.getElementById('mobile-sudoku-link');
   if (mobileSudoku) {
-    mobileSudoku.href = `/assets/sudoku/sudoku_${lang}.html`;
+    mobileSudoku.href = `/assets/games/sudoku/sudoku_${lang}.html`;
   }
 
   // 모바일 드롭다운 열고 닫기
