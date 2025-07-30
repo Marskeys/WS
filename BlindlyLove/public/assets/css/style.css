@@ -8,16 +8,22 @@ html, body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: hidden; /* 가로 스크롤 방지 */
   background: linear-gradient(
-    to bottom,
-    #ffffff 0%,
-    #fff0f5 70%,
-    #ffd1dc 82%,
-    #fcb7c2 95%,
-    #e68cab 100%
-  );
+  to bottom,
+  #ffffff 0%,     /* 하얀색 시작 */
+  #fff0f5 70%,    /* 라벤더블러쉬 같은 연분홍 */
+  #ffd1dc 82%,    /* 벚꽃잎 느낌 */
+  #fcb7c2 95%,    /* 더 진해짐 */
+  #e68cab 100%    /* 짙은 벚꽃핑크 */
+);
 }
+
+
+
+
+
+
 
 /* ✅ 헤더 */
 .welcome-text strong {
@@ -34,8 +40,9 @@ html, body {
   flex-shrink: 0;
   top: 0;
   z-index: 9000;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); 
 }
+ 
 
 .header-top::after {
   content: "";
@@ -49,10 +56,10 @@ html, body {
 
 .top-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* ✅ 유지 */
   align-items: center;
   width: 100%;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap; 
   z-index: 5000;
 }
 
@@ -89,6 +96,7 @@ html, body {
   transform: translateY(-2px);
 }
 
+/* ✅ 데스크탑에서 크기 줄이기 */
 @media (min-width: 640px) {
   .floating-home-logo {
     width: 120px
@@ -104,6 +112,7 @@ html, body {
   }
 }
 
+
 .auth-buttons {
   display: flex;
   align-items: center;
@@ -111,12 +120,12 @@ html, body {
   font-weight: 100;
   letter-spacing: -0.5px;
   white-space: nowrap;
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 0.5rem; 
 }
 
 @media (max-width: 640px) {
   .auth-buttons {
-    gap: 4px;
+    gap: 4px; /* ✅ 모바일에서는 살짝 붙게 */
   }
 
   .auth-btn.write-post,
@@ -127,6 +136,8 @@ html, body {
     margin-right: 1px
   }
 }
+
+
 
 .auth-btn.login {
   cursor: pointer;
@@ -171,11 +182,11 @@ html, body {
   font-size: 0.85rem;
   padding: 4px 10px !important;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 4px; /* 너무 둥글지 않게 */
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  text-decoration: none;
+  text-decoration: none; /* 밑줄 제거 */
   transition: background-color 0.1s ease, border-color 0.1s ease;
 }
 
@@ -209,6 +220,9 @@ html, body {
   box-shadow: 0 4px 8px rgba(157, 107, 255, 0.2);
 }
 
+
+
+
 @media (max-width: 640px) {
   .light-switch {
     width: 60px;
@@ -225,7 +239,7 @@ html, body {
 
 @media (max-width: 640px) {
   .right-controls {
-    gap: 4px !important;
+    gap: 4px !important; /* 기존 8px → 4px로 줄이기 */
   }
 
   .auth-btn.logout {
@@ -237,6 +251,8 @@ html, body {
     transform: scale(0.85);
   }
 }
+
+
 
 .logo-wrapper {
   display: flex;
@@ -260,7 +276,7 @@ html, body {
   }
 }
 
-/* ✅ 검색창 전체 컨테이너 */
+/* ✅ 검색창 전체 컨테이너 - 기존 유지 */
 .search-container {
   position: relative;
   z-index: 1000;
@@ -275,17 +291,22 @@ html, body {
   gap: 0.5rem;
 }
 
+
+
+
+/* ✅ 검색 input - 기존 유지 */
 .search-box {
   flex: 1;
-  padding: 10px 52px 10px 5px;
+  padding: 10px 52px 10px 5px; /* 🔑 오른쪽 버튼 공간 확보 */
   border: none;
   outline: none;
   font-size: 1rem;
   border-radius: 999px;
   background: transparent;
-  box-sizing: border-box;
+  box-sizing: border-box;      /* 🔥 꼭 필요함!! */
 }
 
+/* ✅ 검색 버튼 - 기존 유지 */
 .icon-submit-btn {
   position: absolute;
   right: 1.5vw;
@@ -311,13 +332,15 @@ html, body {
   background: none;
   border: none;
   cursor: pointer;
+  color: #9d6bff;
 }
 .icon-submit-btn:hover i {
   color: #caa8ff;
   transform: translateY(-50%) scale(1.15);
 }
 
-/* ✅ 하단 고정 푸터 */
+
+/* ✅ 하단 고정 푸터 - 기존 유지 */
 .global-footer {
   bottom: 0;
   left: 0;
@@ -332,11 +355,14 @@ html, body {
   z-index: 1000;
 }
 
+/* 회원가입 페이지에서는 푸터 고정 안함 - 기존 유지 */
 body.no-fixed-footer footer {
   position: static;
 }
 
-/* ✅ 햄버거 버튼 */
+
+
+/* ✅ 햄버거 버튼 기본 */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -354,15 +380,19 @@ body.no-fixed-footer footer {
   z-index: 3000;
 }
 
+
+
+/* ✅ 줄 스타일 (세 줄) */
 .hamburger span {
   display: block;
   width: 100%;
   height: 3px;
-  background: #333;
+  background: #333; /* 기본 줄 색상 */
   border-radius: 3px;
   transition: all 0.3s ease;
 }
 
+/* ✅ 햄버거 -> X자 애니메이션 */
 .hamburger.open span:nth-child(1) {
   transform: translateY(9.5px) rotate(45deg);
 }
@@ -373,31 +403,472 @@ body.no-fixed-footer footer {
   transform: translateY(-9.5px) rotate(-45deg);
 }
 
+/* ✅ 모바일 화면에서 보이게 */
 .hamburger span {
   background: #333;
 }
 
+/* ✅ 다크모드 대응 */
 html.dark body .hamburger span {
   background: white;
 }
 
+/* ✅ 메뉴가 열렸을 때 오른쪽 상단으로 이동 */
 .hamburger.is-in-menu {
   top: 1.2rem;
   right: 0.95rem;
-  left: auto;
+  left: auto; /* 기존 left 무효화 */
   z-index: 3001;
 }
 
 .hamburger.is-in-menu span {
-  background: rgb(252, 164, 164);
+  background: rgb(252, 164, 164); /* 어두운 배경 위에서 보이게 */
 }
 
 html.dark body .hamburger.is-in-menu span {
-  background: #eee;
+  background: #eee; /* 다크모드 대응 */
 }
+
+
+
+/* ✅ 모바일 메뉴 */
+.mobile-menu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* padding-right: 0.2rem;  이 줄은 이전에 제거를 논의했으므로, 다시 확인해 주세요. */
+  top: 0;
+  left: 0; 
+  width: 70vw;
+  /* height: 100vh; 대신 max-height 사용 */
+  max-height: 100vh; /* 뷰포트 높이를 넘지 않는 선에서 최대 높이 설정 */
+  background-color: rgba(250, 74, 74, 1); 
+  color: white;
+  z-index: 120000;
+  border: 0px solid rgb(255, 255, 255); 
+  border-radius: 3px;
+  box-sizing: border-box;
+
+  /* 내용이 넘칠 때 스크롤바 생성 */
+  overflow-y: auto; 
+  /* 스크롤바 숨기기 (선택 사항) */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  transform: translateX(-100%); 
+  opacity: 0; 
+  pointer-events: none;
+
+  transition:
+    transform 0.3s ease-in-out,
+    opacity 0.3s ease-in-out,
+    width 0.6s ease,
+    border-radius 0.6s ease,
+    padding 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+/* Webkit 계열 브라우저 (Chrome, Safari)에서 스크롤바 숨기기 */
+.mobile-menu::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+
+
+html.dark body .mobile-menu{
+  background-color: rgb(0, 0, 0, 0.7);
+}
+
+.mobile-menu.open {
+  /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
+  transform: translateX(0); 
+  opacity: 1;
+  pointer-events: auto; /* 메뉴가 열렸을 때 클릭 이벤트를 허용합니다. */
+
+  /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 (위의 .mobile-menu에서 이미 정의) */
+  /* 여기에 다시 transition을 정의할 필요가 없습니다. */
+}
+
+.mobile-menu-header {
+    position: relative; /* 햄버거 버튼의 위치 기준 */
+    width: 100%;
+    height: 40px; /* 적절한 높이 설정 */
+    margin-bottom: 2rem;
+}
+
+
+.mobile-auth-buttons {
+  margin-top: 2rem; /* 헤더 공간을 고려하여 여백 조정 */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mobile-auth-buttons a {
+  display: block;
+  text-align: center;
+  padding: 0.9rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.mobile-login {
+  background-color: transparent;
+  color: white; /* 흰색으로 변경 */
+  border: 1px solid #aaa;
+}
+.mobile-login:hover {
+  background-color: #4c16b9;
+  color: white;
+}
+
+.mobile-signup {
+  background-color: transparent;
+  color: white; /* 흰색으로 변경 */
+  border: 1px solid #aaa;
+}
+.mobile-signup:hover {
+  color: white;
+  background-color: #f0657f;
+}
+
+.social-login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  text-decoration: none;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+.naver-login {
+  background-color: #1ec800;
+}
+.naver-login:hover {
+  background-color: #18a700;
+}
+
+.google-login {
+  background-color: #4285f4;
+}
+.google-login:hover {
+  background-color: #3367d6;
+}
+
+.social-btn i {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.naver-img {
+  width: 30px;
+  height: 30px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+
+/* ✅ 모바일 검색 결과 패널 (슬라이드 완성본) - 기존 유지 */
+.mobile-search-results {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80vh;
+  background: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1002;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+.mobile-search-results.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.results-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ✅ 모바일 검색 시 헤더 고정 검색창 길이 - 기존 유지 */
+@media (max-width: 640px) {
+  .search-form {
+    max-width: 95% !important;
+    width: 90%;
+    display: flex;  
+    box-sizing: border-box;
+  }
+}
+
+/* 팝오버 로그인창 - 기존 유지 */
+.login-box {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  padding-right: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 9100;
+  width: 260px;
+  box-sizing: border-box;
+}
+
+.login-box input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 0.5rem;
+  background: #ff9696;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.login-footer-links {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.login-footer-links a {
+  color: #ff6f6f;
+  text-decoration: none;
+  margin: 0 0.2rem;
+}
+
+.login-footer-links a:hover {
+  text-decoration: underline;
+}
+
+
+@media (max-width: 640px) {
+  .header-top {
+    position: sticky;
+  }
+
+  .logo-link {
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2000;
+    margin: 0 !important;
+  }}
+  
+
+  /* 프리로더 전체 화면 덮기 */
+  #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff; /* 필요하면 배경색 지정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.2s ease; /* 부드럽게 사라짐 */
+  }
+  
+  #preloader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+/* 스피너 애니메이션 */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #555;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+@media (max-width: 640px) {
+  .auth-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;   /* 오른쪽 정렬 */
+    align-items: center;         /* 세로 가운데 정렬 */
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .light-switch {
+    transform: scale(0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0; /* 혹시 밀려있으면 조정 */
+  }
+
+  .welcome-text {
+    order: 1;                    /* 다음 줄로 내리기 */
+    flex-basis: 100%;            /* 한 줄 전체 차지 */
+    text-align: center;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    white-space: nowrap;
+    color: #666;
+  }
+
+  .header-top {
+    padding-left: 3rem;          /* ✅ 햄버거 버튼 영역 확보! */
+  }
+}
+
+@media (max-width: 640px) {
+  .right-controls {
+    transform: scale(0.65); /* ✅ 전체 줄 비율 축소 */
+    transform-origin: right center; /* ✅ 오른쪽 기준으로 축소 */
+  }
+
+}
+
 
 @media (max-width: 640px) {
   .hamburger {
     display: flex;
   }
+
+  .mobile-menu {
+    display: flex;
+  }
+
+  .mobile-menu.open {
+    /* 열렸을 때의 상태: 화면에 보이고, 불투명함 */
+    display: flex;
+    transform: translateX(0); 
+    opacity: 1;
+    pointer-events: auto; /* 메뉴가 열렸을 때 클릭 이벤트를 허용합니다. */
+  
+    /* 열릴 때와 닫힐 때 모두 동일한 트랜지션 적용 (위의 .mobile-menu에서 이미 정의) */
+    /* 여기에 다시 transition을 정의할 필요가 없습니다. */
+  }
+
+}
+
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  touch-action: none; /* 모바일 터치 막기 */
+}
+
+.spacer {
+  height: 10rem;
+}
+
+
+.language-dropdown {
+  position: relative;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lang-btn .fi {
+  width: 1.5rem;
+  height: 1.2rem;
+}
+
+.lang-menu {
+  display: none;
+  list-style: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  min-width: 100px;
+  padding: 0.3rem 0;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  text-decoration: none;
+  color: #333;
+  white-space: nowrap;  
+}
+
+.lang-option:hover {
+  background-color: #f2f2f2;
+}
+
+/* 🌙 다크 모드 지원 */
+html.dark .lang-menu {
+  background: #222;
+  border-color: #444;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+}
+
+html.dark .lang-option {
+  color: #eee;
+}
+
+html.dark .lang-option:hover {
+  background-color: #333;
+}
+
+html.dark .lang-btn i {
+  color: #ffffff; /* 원하는 색상으로 변경 */
 }
