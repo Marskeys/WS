@@ -1,108 +1,132 @@
 {
-    "ko": {
-      "tableHeaders": {
-        "number": "번호",
-        "title": "제목",
-        "author": "작성자",
-        "category": "카테고리",
-        "date": "날짜",
-        "views": "조회수"
-      },
-      "tabs": {
-        "allPosts": "전체글",
-        "searchResults": "검색 결과"
-      },
-      "search": {
-        "resultsFor": "'%s'(으)로 검색한 결과입니다",
-        "placeholder": "필요한 정보를 입력하세요..."
-      },
-      "ui": {
-        "tocButton": "📑 목차"
-      }
+  "ko": {
+    "tableHeaders": {
+      "number": "번호",
+      "title": "제목",
+      "author": "작성자",
+      "category": "카테고리",
+      "date": "날짜",
+      "views": "조회수"
     },
-    "en": {
-      "tableHeaders": {
-        "number": "No.",
-        "title": "Title",
-        "author": "Author",
-        "category": "Category",
-        "date": "Date",
-        "views": "Views"
-      },
-      "tabs": {
-        "allPosts": "All Posts",
-        "searchResults": "Search Results"
-      },
-      "search": {
-        "resultsFor": "Search results for '%s'",
-        "placeholder": "Enter the information you need..."
-      },
-      "ui": {
-        "tocButton": "📑 Table of Contents"
-      }
+    "tabs": {
+      "allPosts": "전체글",
+      "searchResults": "검색 결과"
     },
-    "fr": {
-      "tableHeaders": {
-        "number": "N°",
-        "title": "Titre",
-        "author": "Auteur",
-        "category": "Catégorie",
-        "date": "Date",
-        "views": "Vues"
-      },
-      "tabs": {
-        "allPosts": "Tous les articles",
-        "searchResults": "Résultats de recherche"
-      },
-      "search": {
-        "resultsFor": "Résultats de recherche pour « %s »",
-        "placeholder": "Entrez les informations nécessaires..."
-      },
-      "ui": {
-        "tocButton": "📑 Table des matières"
-      }
+    "search": {
+      "resultsFor": "'%s'(으)로 검색한 결과입니다",
+      "placeholder": "필요한 정보를 입력하세요..."
     },
-    "zh": {
-      "tableHeaders": {
-        "number": "编号",
-        "title": "标题",
-        "author": "作者",
-        "category": "分类",
-        "date": "日期",
-        "views": "浏览数"
-      },
-      "tabs": {
-        "allPosts": "全部文章",
-        "searchResults": "搜索结果"
-      },
-      "search": {
-        "resultsFor": "“%s”的搜索结果",
-        "placeholder": "请输入所需信息..."
-      },
-      "ui": {
-        "tocButton": "📑 目录"
-      }
+    "ui": {
+      "tocButton": "📑 목차"
     },
-    "ja": {
-      "tableHeaders": {
-        "number": "番号",
-        "title": "タイトル",
-        "author": "投稿者",
-        "category": "カテゴリー",
-        "date": "日付",
-        "views": "閲覧数"
-      },
-      "tabs": {
-        "allPosts": "すべての投稿",
-        "searchResults": "検索結果"
-      },
-      "search": {
-        "resultsFor": "「%s」の検索結果",
-        "placeholder": "必要な情報を入力してください..."
-      },
-      "ui": {
-        "tocButton": "📑 目次"
-      }
+    "menu": {
+      "freeGames": "온라인 무료 게임",
+      "freeTests": "온라인 무료 검사",
+      "sudoku": "스도쿠"
+    }
+  },
+  "en": {
+    "tableHeaders": {
+      "number": "No.",
+      "title": "Title",
+      "author": "Author",
+      "category": "Category",
+      "date": "Date",
+      "views": "Views"
+    },
+    "tabs": {
+      "allPosts": "All Posts",
+      "searchResults": "Search Results"
+    },
+    "search": {
+      "resultsFor": "Search results for '%s'",
+      "placeholder": "Enter the information you need..."
+    },
+    "ui": {
+      "tocButton": "📑 Table of Contents"
+    },
+    "menu": {
+      "freeGames": "Online Free Games",
+      "freeTests": "Online Free Tests",
+      "sudoku": "Sudoku"
+    }
+  },
+  "fr": {
+    "tableHeaders": {
+      "number": "N°",
+      "title": "Titre",
+      "author": "Auteur",
+      "category": "Catégorie",
+      "date": "Date",
+      "views": "Vues"
+    },
+    "tabs": {
+      "allPosts": "Tous les articles",
+      "searchResults": "Résultats de recherche"
+    },
+    "search": {
+      "resultsFor": "Résultats de recherche pour « %s »",
+      "placeholder": "Entrez les informations nécessaires..."
+    },
+    "ui": {
+      "tocButton": "📑 Table des matières"
+    },
+    "menu": {
+      "freeGames": "Jeux gratuits en ligne",
+      "freeTests": "Tests gratuits en ligne",
+      "sudoku": "Sudoku"
+    }
+  },
+  "zh": {
+    "tableHeaders": {
+      "number": "编号",
+      "title": "标题",
+      "author": "作者",
+      "category": "分类",
+      "date": "日期",
+      "views": "浏览数"
+    },
+    "tabs": {
+      "allPosts": "全部文章",
+      "searchResults": "搜索结果"
+    },
+    "search": {
+      "resultsFor": "“%s”的搜索结果",
+      "placeholder": "请输入所需信息..."
+    },
+    "ui": {
+      "tocButton": "📑 目录"
+    },
+    "menu": {
+      "freeGames": "在线免费游戏",
+      "freeTests": "在线免费测试",
+      "sudoku": "数独"
+    }
+  },
+  "ja": {
+    "tableHeaders": {
+      "number": "番号",
+      "title": "タイトル",
+      "author": "投稿者",
+      "category": "カテゴリー",
+      "date": "日付",
+      "views": "閲覧数"
+    },
+    "tabs": {
+      "allPosts": "すべての投稿",
+      "searchResults": "検索結果"
+    },
+    "search": {
+      "resultsFor": "「%s」の検索結果",
+      "placeholder": "必要な情報を入力してください..."
+    },
+    "ui": {
+      "tocButton": "📑 目次"
+    },
+    "menu": {
+      "freeGames": "オンライン無料ゲーム",
+      "freeTests": "オンライン無料テスト",
+      "sudoku": "数独"
     }
   }
-  
+}

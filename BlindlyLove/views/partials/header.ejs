@@ -28,16 +28,16 @@
     <div class="desktop-menu">
       <ul class="menu">
         <li class="menu-item">
-          <span>온라인 무료 게임</span>
+          <span><%= menu.freeGames %></span>
           <ul class="submenu">
             <li>
-              <a href="#" id="sudoku-link">온라인 무료 스도쿠</a>
+              <a href="#" id="sudoku-link"><%= menu.sudoku %></a>
             </li>
             
           </ul>
         </li>
         <li class="menu-item">
-          <span>온라인 무료 검사</span>
+          <span><%= menu.freeTests %></span>
           <ul class="submenu">
           </ul>
         </li>
@@ -116,15 +116,15 @@
     <ul class="mobile-main-menu">
       <!-- 온라인 무료 게임 -->
       <li class="mobile-dropdown">
-        <a href="#">온라인 무료 게임</a>
+        <a href="#"><%= menu.freeGames %></a>
         <ul class="mobile-submenu">
-          <li><a href="#" id="mobile-sudoku-link">스도쿠</a></li>
+          <li><a href="#" id="mobile-sudoku-link"><%= menu.freeGames %></a></li>
         </ul>
       </li>
   
       <!-- 온라인 무료 검사 (현재 비어있음) -->
       <li class="mobile-dropdown">
-        <a href="#">온라인 무료 검사</a>
+        <a href="#"><%= menu.freeTests %></a>
         <ul class="mobile-submenu">
           <!-- 여기에 검사 항목 추가 예정 -->
         </ul>
