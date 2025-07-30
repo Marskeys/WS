@@ -82,23 +82,3 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.getElementById("hamburger-btn");
-  const mobileMenu = document.getElementById("mobile-menu");
-
-  // 🍔 햄버거 클릭 시 열고 닫기
-  hamburger?.addEventListener("click", () => {
-    mobileMenu.classList.toggle("open");
-    hamburger.classList.toggle("open");
-    document.body.classList.toggle("menu-open");
-  });
-
-  // ✅ 데스크톱에서 처음 로딩 시 자동으로 열기
-  if (window.innerWidth > 640) {
-    setTimeout(() => {
-      if (hamburger && !hamburger.classList.contains("open")) {
-        hamburger.click(); // 강제 클릭
-      }
-    }, 50); // 약간의 지연을 줘야 CSS 적용 후 애니메이션 자연스러움
-  }
-});
