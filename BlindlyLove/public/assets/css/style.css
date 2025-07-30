@@ -875,18 +875,20 @@ html.dark .lang-btn i {
   color: #ffffff; /* 원하는 색상으로 변경 */
 }
 
+/* ===== 데스크톱 메뉴 ===== */
 .desktop-menu {
   display: flex;
   align-items: center;
   margin-left: 2rem;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 .desktop-menu .menu {
   display: flex;
-  list-style: none;
-  gap: 2rem;
+  gap: 2.5rem;
   padding: 0;
   margin: 0;
+  list-style: none;
 }
 
 .desktop-menu .menu-item {
@@ -894,45 +896,81 @@ html.dark .lang-btn i {
   font-weight: 600;
   cursor: pointer;
   color: #333;
+  white-space: nowrap; /* 🔹 줄바꿈 방지 */
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
 }
 
 .desktop-menu .menu-item:hover {
-  color: #ff6f6f; /* 호버 시 강조색 */
+  color: #ff6f6f;
 }
 
-/* 서브메뉴 숨기기 */
+/* ===== 서브메뉴 ===== */
 .desktop-menu .submenu {
-  display: none;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.25s ease;
+  
   position: absolute;
-  top: 2rem; /* 부모 메뉴 아래에 뜸 */
+  top: 2.2rem;
   left: 0;
-  background: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  border-radius: 6px;
+  min-width: 160px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
   list-style: none;
   padding: 0.5rem 0;
-  min-width: 140px;
   z-index: 5000;
 }
 
 .desktop-menu .submenu li a {
   display: block;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.88rem;
   text-decoration: none;
   color: #333;
   white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .desktop-menu .submenu li a:hover {
-  background: #f7f7f7;
+  background: #ffe8e8;
+  color: #ff4b4b;
 }
 
-/* 호버 시 서브메뉴 보이기 */
+/* ===== 호버 시 보이기 ===== */
 .desktop-menu .menu-item:hover .submenu {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
-/* 모바일에서는 숨기기 */
+/* ===== 다크모드 ===== */
+html.dark .desktop-menu .menu-item {
+  color: #eee;
+}
+
+html.dark .desktop-menu .menu-item:hover {
+  color: #ff9b9b;
+}
+
+html.dark .desktop-menu .submenu {
+  background: #222;
+  box-shadow: 0 6px 16px rgba(255,255,255,0.05);
+}
+
+html.dark .desktop-menu .submenu li a {
+  color: #eee;
+}
+
+html.dark .desktop-menu .submenu li a:hover {
+  background: #333;
+  color: #ff8080;
+}
+
+/* ===== 모바일 숨기기 ===== */
 @media (max-width: 640px) {
   .desktop-menu {
     display: none;
