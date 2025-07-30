@@ -270,7 +270,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 0.3em;
+            font-size: 1.8em;
             font-weight: bold;
             color: #333;
             box-sizing: border-box;
@@ -374,22 +374,19 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
         }
 
-        /* --- 모바일 반응형 (600px 이하) 수정된 부분 --- */
+        /* 모바일 반응형 (600px 이하) */
         @media (max-width: 600px) {
             #sudoku-grid {
-                width: 320px; /* 전체 그리드 크기를 조금 줄여서 화면에 더 잘 맞게 */
-                height: 320px;
-                margin-top: 15px; /* 상단 여백 추가 */
-                margin-bottom: 20px; /* 하단 여백 추가 */
+                width: 350px; /* 모바일에서 스도쿠 그리드 크기 키움 */
+                height: 350px;
             }
             .cell {
-                width: calc(320px / 9); /* 그리드 크기에 맞춰 셀 크기 조정 */
-                height: calc(320px / 9);
-                font-size: 1.7em; /* 셀 내부 폰트 크기를 좀 더 크게 */
+                width: calc(350px / 9); /* 그리드 크기에 맞춰 셀 크기 조정 */
+                height: calc(350px / 9);
+                font-size: 1.5em; /* 셀 내부 글자 크기 조금 더 키움 */
             }
             .cell input {
-                font-size: 1.7em; /* 입력 필드 폰트 크기를 좀 더 크게 */
-                line-height: 1; /* 글자가 세로 중앙에 오도록 추가 */
+                font-size: 1.5em; /* 입력 필드 글자 크기 조정 */
             }
             h1 {
                 font-size: 1.8em;
@@ -410,7 +407,7 @@
                 margin: 0 20px;
             }
             .container {
-                margin-bottom: 20px; /* 모바일 버전 하단 여백 조정 */
+                margin-bottom: 20px; /* 모바일에서 하단 여백 조정 */
             }
         }
     </style>
