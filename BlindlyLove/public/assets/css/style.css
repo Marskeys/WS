@@ -1052,3 +1052,15 @@ html.dark .mobile-submenu li a:hover {
 html.dark .mobile-dropdown.open > a {
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 햄버거 없는 경우 */
+.header-content.no-hamburger {
+  justify-content: flex-start; /* 왼쪽 정렬 */
+}
