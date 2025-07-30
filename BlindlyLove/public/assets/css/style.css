@@ -364,7 +364,7 @@ body.no-fixed-footer footer {
 
 /* ✅ 햄버거 버튼 기본 */
 .hamburger {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: absolute;
