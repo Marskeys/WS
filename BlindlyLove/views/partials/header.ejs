@@ -19,20 +19,20 @@
         <li class="menu-item">
           <span>온라인 무료 게임</span>
           <ul class="submenu">
-            <li><a href="/game1">게임 1</a></li>
-            <li><a href="/game2">게임 2</a></li>
+            <li>
+              <a href="#" id="sudoku-link">온라인 무료 스도쿠</a>
+            </li>
+            
           </ul>
         </li>
         <li class="menu-item">
           <span>온라인 무료 검사</span>
           <ul class="submenu">
-            <li><a href="/test1">성격 검사</a></li>
-            <li><a href="/test2">IQ 테스트</a></li>
           </ul>
         </li>
       </ul>
     </div>
-    
+
     </div>
 
     <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
@@ -187,5 +187,29 @@
     });
   });
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const lang = '<%= lang %>';  // EJS에서 현재 언어코드
+    const sudokuBtn = document.getElementById('sudoku-link');
+
+    sudokuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const langMap = {
+        ko: '/assets/games/sudoku/sudoku_ko.html',
+        en: '/assets/games/sudoku/sudoku_en.html',
+        fr: '/assets/games/sudoku/sudoku_fr.html',
+        zh: '/assets/games/sudoku/sudoku_zh.html',
+        ja: '/assets/games/sudoku/sudoku_ja.html'
+      };
+
+      // 없는 언어면 한국어 기본
+      const targetUrl = langMap[lang] || langMap.ko;
+      window.location.href = targetUrl;
+    });
+  });
+</script>
+
 
 </div>
