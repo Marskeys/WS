@@ -107,6 +107,9 @@
             position: absolute;
         }
 
+        .intro-box ol{
+          counter-reset: item; 
+        }
         .intro-box ol li:before {
             content: counter(item) ".";
             counter-increment: item;
