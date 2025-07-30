@@ -17,17 +17,12 @@
       </a>
     <% } %>
     
-    <% if (showHamburger) { %>
-      <button 
-      class="hamburger" 
-      id="hamburger-btn" 
-      aria-label="메뉴 열기/닫기"
-      style="<%= showHamburger ? '' : 'display:none;' %>"
-    >
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <% if (!showLogo) { %>
+      <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     <% } %>
 
     <div class="desktop-menu">
