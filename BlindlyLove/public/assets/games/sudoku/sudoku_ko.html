@@ -433,12 +433,11 @@
     <div id="start-logo">Start!</div>
 
     <div class="container">
-        <a href="/<%= lang %>/" class="logo-link">
+        <a id="logo-link" class="logo-link">
             <img src="/assets/images/logo.png" 
-            alt="홈페이지로 가기" 
-            class="logo-link" 
-            style="width: 120px; height: auto;">
-        </a>
+                 alt="홈으로" 
+                 style="width:120px;height:auto;">
+          </a>
       <h1>재미있는 스도쿠</h1>
         <div class="controls">
             <label for="difficulty">난이도:</label>
@@ -865,5 +864,12 @@
         difficultySelect.addEventListener('change', generateGame);
 
     </script>
+
+<script>
+    // 현재 URL에서 첫 번째 폴더를 언어코드로 가정
+    const currentLang = window.location.pathname.split("/")[1]; 
+    // ex) /ko/page → ko, /en/ → en
+    document.getElementById("logo-link").href = "/" + (currentLang || "");
+  </script>
 </body>
 </html>
