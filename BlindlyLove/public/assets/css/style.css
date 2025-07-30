@@ -438,10 +438,10 @@ html.dark body .hamburger.is-in-menu span {
   flex-direction: column;
   align-items: center;
   top: 0;
-  left: 0; 
-  width: 70vw;
-  height: 100vh;            /* ✅ 전체 화면 높이 고정 */
-  background-color: rgba(61, 39, 39, 0.8); 
+  left: 0;
+  width: 200px;              /* ✅ 데스크톱 기본 */
+  height: 100vh;             /* ✅ 전체 화면 높이 */
+  background-color: rgba(61, 39, 39, 0.8);
   color: white;
   z-index: 120000;
   border-radius: 3px;
@@ -467,6 +467,14 @@ html.dark body .hamburger.is-in-menu span {
 .mobile-menu::-webkit-scrollbar {
   display: none;
 }
+
+/* ✅ 모바일에서만 70vw */
+@media (max-width: 640px) {
+  .mobile-menu {
+    width: 70vw;
+  }
+}
+
 
 
 
