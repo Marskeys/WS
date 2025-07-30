@@ -437,27 +437,22 @@ html.dark body .hamburger.is-in-menu span {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* padding-right: 0.2rem;  이 줄은 이전에 제거를 논의했으므로, 다시 확인해 주세요. */
   top: 0;
   left: 0; 
   width: 70vw;
-  /* height: 100vh; 대신 max-height 사용 */
-  max-height: 100vh; /* 뷰포트 높이를 넘지 않는 선에서 최대 높이 설정 */
+  height: 100vh;            /* ✅ 전체 화면 높이 고정 */
   background-color: rgba(250, 74, 74, 1); 
   color: white;
   z-index: 120000;
-  border: 0px solid rgb(255, 255, 255); 
   border-radius: 3px;
   box-sizing: border-box;
 
-  /* 내용이 넘칠 때 스크롤바 생성 */
-  overflow-y: auto; 
-  /* 스크롤바 숨기기 (선택 사항) */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
-  transform: translateX(-100%); 
-  opacity: 0; 
+  transform: translateX(-100%);
+  opacity: 0;
   pointer-events: none;
 
   transition:
@@ -469,7 +464,6 @@ html.dark body .hamburger.is-in-menu span {
     box-shadow 0.6s ease;
 }
 
-/* Webkit 계열 브라우저 (Chrome, Safari)에서 스크롤바 숨기기 */
 .mobile-menu::-webkit-scrollbar {
   display: none;
 }
