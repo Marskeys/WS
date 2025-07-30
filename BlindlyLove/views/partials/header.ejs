@@ -6,12 +6,23 @@
       const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                        pathWithoutLang.startsWith('/post') ||
                        pathWithoutLang.startsWith('/edit');
+    
+      // 햄버거 버튼 조건: 로고가 안 뜨고, 경로가 "/" (홈)
+      const showHamburger = !showLogo && (pathWithoutLang === '' || pathWithoutLang === '/');
     %>
     
     <% if (showLogo) { %>
       <a href="/<%= lang %>/" class="logo-link">
         <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
       </a>
+    <% } %>
+    
+    <% if (showHamburger) { %>
+      <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     <% } %>
 
     <div class="desktop-menu">
@@ -35,11 +46,7 @@
 
     </div>
 
-    <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+
 
    
 
