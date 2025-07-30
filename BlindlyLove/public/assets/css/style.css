@@ -377,7 +377,7 @@ body.no-fixed-footer footer {
   cursor: pointer;
   padding: 0;
   transition: all 0.3s ease;
-  z-index: 3000;
+  z-index: 999999;
 }
 
 
