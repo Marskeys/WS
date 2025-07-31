@@ -72,17 +72,17 @@
 
         <div class="toolbar">
           <div class="dropdown">
-            <div class="dropdown-toggle" id="currentStyle_<%= code %>" onclick="toggleDropdown(event)">본문 ▼</div>
+            <div class="dropdown-toggle" id="currentStyle_<%= code %>" onclick="toggleDropdown()">본문 ▼</div>
             <div class="dropdown-menu" id="styleDropdown">
-              <div class="h1" onmousedown="applyStyle(event, 'h1')">제목</div>
-              <div class="h2" onmousedown="applyStyle(event, 'h2')">부제목</div>
-              <div class="h3" onmousedown="applyStyle(event, 'h3')">머리말 1</div>
-              <div class="red" onmousedown="applyStyle(event, 'h4')">빨간 머리말</div>
-              <div class="p" onmousedown="applyStyle(event, 'p')">본문</div>
-              <div class="desc" onmousedown="applyStyle(event, 'small')">설명</div>
-              <div class="meta" onmousedown="applyStyle(event, 'footer')">머리말 및 꼬리말</div>
-              <div class="label" onmousedown="applyStyle(event, 'span')">레이블</div>
-              <div class="label label-bold" onmousedown="applyStyle(event, 'strong')">진한 레이블</div>
+              <div class="h1" onclick="applyStyle('h1')">제목</div>
+              <div class="h2" onclick="applyStyle('h2')">부제목</div>
+              <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
+              <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
+              <div class="p" onclick="applyStyle('p')">본문</div>
+              <div class="desc" onclick="applyStyle('small')">설명</div>
+              <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
+              <div class="label" onclick="applyStyle('span')">레이블</div>
+              <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
             </div>
           </div>
           <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
@@ -151,7 +151,6 @@
                class="editor language-editor"
                spellcheck="false"
                data-lang-editor="<%= code %>"
-               tabindex="0" <% // tabindex 추가로 포커스 가능하게 함 %>
                style="<%= code === lang ? '' : 'display:none;' %>"
           >
             <%
@@ -225,101 +224,6 @@
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
     const CURRENT_PAGE_LANG = '<%= lang %>';
-
-    // 메시지 박스 및 입력창 관련 함수
-    function createMessageBox(message, isConfirm = false, onConfirm = null) {
-        let modal = document.getElementById('customMessageModal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'customMessageModal';
-            modal.style = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-                align-items: center; z-index: 1000;
-            `;
-            document.body.appendChild(modal);
-        }
-        modal.innerHTML = `
-            <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                <p style="color: black;">${message}</p>
-                ${isConfirm ? `
-                    <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                    <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-                ` : `
-                    <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                `}
-            </div>
-        `;
-        modal.style.display = 'flex';
-
-        if (isConfirm) {
-            document.getElementById('confirmBtn').onclick = () => {
-                modal.style.display = 'none';
-                if (onConfirm) onConfirm();
-            };
-            document.getElementById('cancelBtn').onclick = () => {
-                modal.style.display = 'none';
-            };
-        } else {
-            document.getElementById('okBtn').onclick = () => {
-                modal.style.display = 'none';
-                if (onConfirm) onConfirm();
-            };
-        }
-    }
-
-    function showCustomMessage(message, isConfirm = false, onConfirm = null) {
-        createMessageBox(message, isConfirm, onConfirm);
-    }
-
-    function showCustomInput(message, onInput) {
-        let modal = document.getElementById('customInputModal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'customInputModal';
-            modal.style = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-                align-items: center; z-index: 1000;
-            `;
-            document.body.appendChild(modal);
-        }
-        modal.innerHTML = `
-            <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-                <p style="color: black;">${message}</p>
-                <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
-                <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-                <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-            </div>
-        `;
-        modal.style.display = 'flex';
-
-        document.getElementById('inputOkBtn').onclick = () => {
-            const inputValue = document.getElementById('customInput').value;
-            modal.style.display = 'none';
-            if (onInput) onInput(inputValue);
-        };
-        document.getElementById('inputCancelBtn').onclick = () => {
-            const inputValue = document.getElementById('customInput').value;
-            modal.style.display = 'none';
-            if (onInput) onInput(null);
-        };
-        document.getElementById('customInput').focus();
-    }
-
-    window.onclick = function(e) {
-        // 드롭다운 메뉴를 제외한 다른 곳을 클릭했을 때 드롭다운 닫기
-        // 드롭다운 토글 버튼도 클릭 시에는 닫히지 않도록 수정
-        if (!e.target.matches('.dropdown-toggle') && !e.target.closest('.dropdown-menu')) {
-            const dropdowns = document.getElementsByClassName('dropdown-menu');
-            for (let d of dropdowns) {
-                if (d.classList.contains('show')) {
-                    d.classList.remove('show');
-                }
-            }
-        }
-    };
-    // 여기까지 메시지 박스 및 입력창 관련 함수
 
     function renderCategories() {
         const list = document.getElementById('categoryList');
@@ -417,12 +321,11 @@
               }
 
               let contentToSave = '';
-              // 현재 활성화된 모드에 따라 내용을 가져옵니다.
-              if (htmlEditorDiv.style.display === 'block') { 
+              if (htmlEditorDiv.style.display === 'block') { // HTML 모드인 경우
                   contentToSave = htmlEditorDiv.value.trim();
-              } else {
+              } else { // 디자인 모드인 경우
+                  // 디자인 모드에서 내용을 가져올 때, bl-content 내부의 내용만 가져오도록 합니다.
                   const blContent = editorDiv.querySelector('.bl-content');
-                  // bl-content가 없다면 전체 editorDiv.innerHTML을 사용
                   contentToSave = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
               }
 
@@ -449,6 +352,7 @@
             return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
           }
       
+          // 폼 제출 URL을 현재 언어 경로를 포함하도록 수정
           const submitUrl = IS_EDIT_PAGE && POST_ID ? `/${CURRENT_PAGE_LANG}/edit/${POST_ID}` : `/${CURRENT_PAGE_LANG}/savePost`;
 
           fetch(submitUrl, {
@@ -460,12 +364,13 @@
           .then(data => {
             if (data.success) {
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
+                // 저장 후 리디렉션 URL에도 현재 언어 경로를 포함
                 if (IS_EDIT_PAGE && POST_ID) {
                   window.location.href = `/${CURRENT_PAGE_LANG}/post/${POST_ID}`;
-                } else if (data.postId) {
+                } else if (data.postId) { // 새로 생성된 글의 경우 ID가 있을 수 있음
                   window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
                 } else {
-                  window.location.href = `/${CURRENT_PAGE_LANG}/`;
+                  window.location.href = `/${CURRENT_PAGE_LANG}/`; // 글 ID가 없는 경우 메인 페이지로
                 }
               });
             } else {
@@ -478,110 +383,52 @@
           });
         }
       
-    // ** format 함수 수정 (드래그 유지) **
-    function format(command, value = null) {
-        // 현재 포커스된 요소가 제목 입력 필드인지 확인
-        const activeElement = document.activeElement;
-        if (activeElement && activeElement.tagName === 'INPUT' && activeElement.type === 'text' && activeElement.name.startsWith('title_')) {
-            // 제목 입력 필드에 포커스가 있다면, 에디터에 강제 포커스를 주지 않고 리턴
-            return; 
-        }
+      function format(command, value = null) {
+          if (!currentActiveEditor) return;
+          currentActiveEditor.focus();
+          document.execCommand("styleWithCSS", false, false);
+          document.execCommand(command, false, value);
+          setTimeout(detectStyle, 100);
+      }
 
-        if (!currentActiveEditor) return; // 활성 에디터가 없으면 리턴
+      function applyStyle(tag) {
+        if (!currentActiveEditor) return;
+        const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
 
-        // 드래그 유지: execCommand 전에 선택 영역을 복원하고, 에디터에 포커스
-        restoreSelection(); 
+        restoreSelection();
         currentActiveEditor.focus();
-        
-        document.execCommand("styleWithCSS", false, false);
-        document.execCommand(command, false, value);
+
+        if (blockTags.includes(tag)) {
+          document.execCommand("styleWithCSS", false, false);
+          document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
+          saveSelection();
+        } else {
+          const sel = window.getSelection();
+          if (!sel.rangeCount || sel.isCollapsed) return;
+          if (!currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) return;
+
+          const range = sel.getRangeAt(0);
+          const tempElement = document.createElement(tag);
+          if (tag === 'span') tempElement.classList.add('label');
+          if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
+
+          try {
+            const contents = range.extractContents();
+            tempElement.appendChild(contents);
+            range.insertNode(tempElement);
+
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNode(tempElement);
+            sel.addRange(newRange);
+
+            saveSelection();
+          } catch (e) {
+            console.error("applyStyle(span/strong) 오류:", e);
+          }
+        }
         setTimeout(detectStyle, 100);
-        saveSelection(); // 변경 후 선택 영역 다시 저장
-    }
-
-    // ** applyStyle 함수 개선 (드래그 유지 및 스타일 적용) **
-    function applyStyle(event, tag) {
-        // 드롭다운 메뉴 아이템 클릭 시, 브라우저의 기본 포커스 이동 및 선택 해제 방지
-        event.preventDefault(); 
-        event.stopPropagation(); // 이벤트 버블링도 막아줍니다.
-
-        if (!currentActiveEditor) {
-            console.warn("현재 활성화된 에디터가 없습니다.");
-            return;
-        }
-        
-        // 드롭다운 닫기
-        const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
-        if (styleDropdown) {
-            styleDropdown.classList.remove('show');
-        }
-
-        // 드래그 유지: 스타일 적용 전에 선택 영역 복원
-        restoreSelection(); 
-        currentActiveEditor.focus(); // 에디터에 포커스 (restoreSelection 후 포커스)
-
-        const sel = window.getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) {
-            // 선택 영역이 없거나 선택이 접혀있으면 (드래그 안함),
-            // 현재 커서 위치에 스타일을 적용하거나, 경고를 표시
-            // 여기서는 경고만 표시
-            console.warn("선택 영역이 없어 스타일을 적용할 수 없습니다. 텍스트를 선택해주세요.");
-            return;
-        }
-
-        // 에디터 외부의 선택 영역은 무시
-        if (!currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-            console.warn("에디터 외부의 선택 영역입니다.");
-            return;
-        }
-
-        const range = sel.getRangeAt(0);
-        const contents = range.extractContents(); // 선택된 내용 추출
-
-        let wrapperElement;
-
-        // 특정 태그에 따라 래퍼 엘리먼트 생성 및 클래스 추가
-        switch (tag) {
-            case 'h1':
-            case 'h2':
-            case 'h3':
-            case 'p':
-            case 'small':
-            case 'footer':
-                wrapperElement = document.createElement(tag);
-                break;
-            case 'h4': // '빨간 머리말'
-                wrapperElement = document.createElement('h4');
-                wrapperElement.classList.add('red'); // 'red' 클래스 추가
-                break;
-            case 'span': // '레이블'
-                wrapperElement = document.createElement('span');
-                wrapperElement.classList.add('label');
-                break;
-            case 'strong': // '진한 레이블'
-                wrapperElement = document.createElement('strong');
-                wrapperElement.classList.add('label', 'label-bold');
-                break;
-            default:
-                console.warn(`알 수 없는 스타일 태그: ${tag}`);
-                return;
-        }
-
-        // 추출한 내용을 래퍼 엘리먼트에 추가
-        wrapperElement.appendChild(contents);
-
-        // 래퍼 엘리먼트를 원래 선택 영역 위치에 삽입
-        range.insertNode(wrapperElement);
-
-        // 삽입된 새 엘리먼트를 다시 선택하여 사용자에게 피드백 제공
-        sel.removeAllRanges();
-        const newRange = document.createRange();
-        newRange.selectNode(wrapperElement);
-        sel.addRange(newRange);
-
-        saveSelection(); // 변경된 선택 영역 저장
-        detectStyle(); // 현재 스타일 다시 감지
-    }
+      }
 
       function insertImage() {
           showCustomInput("이미지 URL을 입력하세요:", (url) => {
@@ -593,16 +440,9 @@
           showCustomMessage("임시 저장 완료!");
       }
 
-    // ** toggleDropdown 함수 수정 (event 인자 추가 및 preventDefault) **
-      function toggleDropdown(event) {
-          // 토글 버튼 클릭 시, 브라우저의 기본 포커스 이동 및 선택 해제 방지
-          event.preventDefault(); 
-          event.stopPropagation(); // 이벤트 버블링도 막아줍니다.
-
+      function toggleDropdown() {
           const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
           if (styleDropdown) {
-              // 드롭다운 열기 전에 현재 선택 영역 저장
-              saveSelection(); 
               styleDropdown.classList.toggle('show');
           }
       }
@@ -629,77 +469,39 @@
       function detectStyle() {
         if (!currentActiveEditor) return;
         const sel = window.getSelection();
-        // 선택 영역이 없거나, 현재 활성 에디터 내에 있지 않다면 기본 스타일 표시
         if (!sel.rangeCount || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
             updateCurrentStyle('p');
             return;
         }
         let node = sel.getRangeAt(0).startContainer;
 
-        if (node.nodeType === 3) node = node.parentNode; // 텍스트 노드면 부모 요소로
+        if (node.nodeType === 3) node = node.parentNode;
 
         while (node && node !== currentActiveEditor) {
           const tag = node.tagName?.toLowerCase();
-          // h4 태그이면서 'red' 클래스를 가지고 있는지 확인
-          if (tag === 'h4' && node.classList.contains('red')) {
-            updateCurrentStyle('h4');
-            return;
-          }
-          // span 태그이면서 'label' 클래스를 가지고 있는지 확인
-          if (tag === 'span' && node.classList.contains('label')) {
-            updateCurrentStyle('span');
-            return;
-          }
-          // strong 태그이면서 'label-bold' 클래스를 가지고 있는지 확인
-          if (tag === 'strong' && node.classList.contains('label-bold')) {
-            updateCurrentStyle('strong');
-            return;
-          }
-          if (['h1', 'h2', 'h3', 'p', 'small', 'footer'].includes(tag)) {
+          if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
             updateCurrentStyle(tag);
             return;
           }
           node = node.parentNode;
         }
-        updateCurrentStyle('p'); // 기본값
+        updateCurrentStyle('p');
       }
 
       function saveSelection() {
           const sel = window.getSelection();
-          // currentActiveEditor가 존재하고, 현재 선택 영역이 그 안에 있을 때만 저장
           if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
               savedRange = sel.getRangeAt(0).cloneRange();
           } else {
-              savedRange = null; // 유효하지 않은 경우 null로 초기화
+              savedRange = null;
           }
       }
 
       function restoreSelection() {
           const sel = window.getSelection();
           if (savedRange && currentActiveEditor) {
-              // 저장된 영역이 currentActiveEditor 내부에 유효한지 다시 확인
-              if (currentActiveEditor.contains(savedRange.commonAncestorContainer)) {
-                  sel.removeAllRanges();
-                  sel.addRange(savedRange);
-              } else {
-                  // 유효하지 않은 경우, 에디터에 포커스를 주고 커서를 끝으로 이동 (혹시 모를 오류 방지)
-                  currentActiveEditor.focus();
-                  const range = document.createRange();
-                  range.selectNodeContents(currentActiveEditor);
-                  range.collapse(false); // 끝으로 이동
-                  sel.removeAllRanges();
-                  sel.addRange(range);
-                  savedRange = range; // 새로운 유효한 범위로 저장
-              }
-          } else if (currentActiveEditor) {
-              // 저장된 범위가 없지만 에디터가 활성화된 경우, 에디터에 포커스를 주고 커서를 끝으로 이동
-              currentActiveEditor.focus();
-              const range = document.createRange();
-              range.selectNodeContents(currentActiveEditor);
-              range.collapse(false);
               sel.removeAllRanges();
-              sel.addRange(range);
-              savedRange = range;
+              sel.addRange(savedRange);
           }
       }
 
@@ -712,30 +514,31 @@
 
         if (color === "__clear__") {
           const contents = range.cloneContents();
-          const tempDiv = document.createElement('div');
-          tempDiv.appendChild(contents);
+          const spans = contents.querySelectorAll("span");
 
-          const spans = tempDiv.querySelectorAll("span");
           spans.forEach(span => {
             if (command === 'foreColor') span.style.color = '';
             else if (command === 'hiliteColor') span.style.backgroundColor = '';
-            if (!span.style.cssText) {
-                while (span.firstChild) {
-                    span.parentNode.insertBefore(span.firstChild, span);
-                }
-                span.parentNode.removeChild(span);
-            }
           });
+
           range.deleteContents();
-          while (tempDiv.firstChild) {
-              range.insertNode(tempDiv.firstChild);
-          }
-          saveSelection();
-          detectStyle();
+          range.insertNode(contents);
           return;
         }
 
-        document.execCommand(command, false, color);
+        const span = document.createElement("span");
+        if (command === "foreColor") span.style.color = color;
+        else if (command === "hiliteColor") span.style.backgroundColor = color;
+
+        const contents = range.extractContents();
+        span.appendChild(contents);
+        range.insertNode(span);
+
+        sel.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNode(span);
+        sel.addRange(newRange);
+
         saveSelection();
         detectStyle();
       }
@@ -758,86 +561,192 @@
         return 'p';
       }
 
+      function createMessageBox(message, isConfirm = false, onConfirm = null) {
+          let modal = document.getElementById('customMessageModal');
+          if (!modal) {
+              modal = document.createElement('div');
+              modal.id = 'customMessageModal';
+              modal.style = `
+                  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                  background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                  align-items: center; z-index: 1000;
+              `;
+              document.body.appendChild(modal);
+          }
+          modal.innerHTML = `
+              <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+                  <p style="color: black;">${message}</p>
+                  ${isConfirm ? `
+                      <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                      <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+                  ` : `
+                      <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                  `}
+              </div>
+          `;
+          modal.style.display = 'flex';
+
+          if (isConfirm) {
+              document.getElementById('confirmBtn').onclick = () => {
+                  modal.style.display = 'none';
+                  if (onConfirm) onConfirm();
+              };
+              document.getElementById('cancelBtn').onclick = () => {
+                  modal.style.display = 'none';
+              };
+          } else {
+              document.getElementById('okBtn').onclick = () => {
+                  modal.style.display = 'none';
+                  if (onConfirm) onConfirm();
+              };
+          }
+      }
+
+      function showCustomMessage(message, isConfirm = false, onConfirm = null) {
+          createMessageBox(message, isConfirm, onConfirm);
+      }
+
+      function showCustomInput(message, onInput) {
+          let modal = document.getElementById('customInputModal');
+          if (!modal) {
+              modal = document.createElement('div');
+              modal.id = 'customInputModal';
+              modal.style = `
+                  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                  background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                  align-items: center; z-index: 1000;
+              `;
+              document.body.appendChild(modal);
+          }
+          modal.innerHTML = `
+              <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+                  <p style="color: black;">${message}</p>
+                  <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
+                  <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                  <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+              </div>
+          `;
+          modal.style.display = 'flex';
+
+          document.getElementById('inputOkBtn').onclick = () => {
+              const inputValue = document.getElementById('customInput').value;
+              modal.style.display = 'none';
+              if (onInput) onInput(inputValue);
+          };
+          document.getElementById('inputCancelBtn').onclick = () => {
+              const inputValue = document.getElementById('customInput').value;
+              modal.style.display = 'none';
+              if (onInput) onInput(null);
+          };
+          document.getElementById('customInput').focus();
+      }
+
+      window.onclick = function(e) {
+          if (!e.target.matches('.dropdown-toggle')) {
+              const dropdowns = document.getElementsByClassName('dropdown-menu');
+              for (let d of dropdowns) {
+                  if (d.classList.contains('show')) {
+                      d.classList.remove('show');
+                  }
+              }
+          }
+      };
+
+      // New function: Auto convert plain text URLs to <a> tags
       /**
        * 에디터 내에서 일반 텍스트 URL을 <a> 태그로 자동 변환합니다.
        * @param {HTMLElement} editor - contenteditable 에디터 엘리먼트.
        */
       function autoConvertUrlToLink(editor) {
-          if (!editor || editor.style.display === 'none') return; 
+          if (!editor || editor.style.display === 'none') return; // 에디터가 없거나 HTML 모드일 때는 실행 안 함
 
           const blContent = editor.querySelector('.bl-content');
           if (!blContent) return;
 
+          // 현재 선택 영역을 저장 (변환 후 복원하여 커서 위치 유지)
           const selection = window.getSelection();
           let savedRange = null;
           if (selection.rangeCount > 0) {
               savedRange = selection.getRangeAt(0).cloneRange();
           }
 
+          // URL을 감지하기 위한 정규식 (http, https로 시작하고 공백이 없는 문자열 또는 www.로 시작)
+          // 이메일 주소는 제외하도록 개선했습니다.
           const urlRegex = /(?<!\S)((https?:\/\/[^\s<>"']+|www\.[^\s<>"']+\.[a-zA-Z]{2,}))(?!\S)/g;
 
+          // DOM 트리를 순회하며 텍스트 노드를 처리하는 재귀 함수
           const processNode = (node) => {
               if (node.nodeType === Node.TEXT_NODE) {
                   const text = node.nodeValue;
                   let match;
                   let lastIndex = 0;
                   const fragment = document.createDocumentFragment();
-                  let replaced = false; 
+                  let replaced = false; // 변환이 일어났는지 추적
 
-                  const currentUrlRegex = /(?<!\S)((https?:\/\/[^\s<>"']+|www\.[^\s<>"']+\.[a-zA-Z]{2,}))(?!\S)/g;
-
-                  while ((match = currentUrlRegex.exec(text)) !== null) {
+                  while ((match = urlRegex.exec(text)) !== null) {
                       const fullUrl = match[0];
                       let href = fullUrl;
 
+                      // 'www.'로 시작하면 'http://'를 붙여줌
                       if (href.startsWith('www.') && !href.startsWith('http')) {
                           href = 'http://' + href;
                       }
 
+                      // 매치된 URL 앞의 텍스트 추가
                       if (match.index > lastIndex) {
                           fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
                       }
 
+                      // <a> 태그 생성 및 추가
                       const link = document.createElement('a');
                       link.href = href;
-                      link.target = "_blank"; 
-                      link.rel = "noopener noreferrer"; 
+                      link.target = "_blank"; // 새 탭에서 열기
+                      link.rel = "noopener noreferrer"; // 보안 권장 사항
                       link.textContent = fullUrl;
                       fragment.appendChild(link);
                       replaced = true;
 
-                      lastIndex = currentUrlRegex.lastIndex;
+                      lastIndex = urlRegex.lastIndex;
                   }
 
+                  // 마지막 매치 이후의 남은 텍스트 추가
                   if (lastIndex < text.length) {
                       fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
                   }
 
+                  // 변경 사항이 있다면 노드 교체
                   if (replaced && fragment.hasChildNodes()) {
                       node.replaceWith(fragment);
                   }
               }
+              // 요소 노드인 경우 (이미 <a> 태그인 경우는 건너뛰고, 자식 노드 재귀 처리)
               else if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() !== 'a' && node.tagName.toLowerCase() !== 'iframe') {
+                  // NodeList는 실시간 컬렉션이므로, Array.from으로 복사하여 순회 중 변경에 대비
                   Array.from(node.childNodes).forEach(processNode);
               }
           };
 
+          // bl-content 내부의 모든 자식 노드부터 처리 시작
           Array.from(blContent.childNodes).forEach(processNode);
 
+          // 저장된 선택 영역 복원
           if (savedRange) {
               try {
                   selection.removeAllRanges();
                   selection.addRange(savedRange);
               } catch (e) {
+                  // 복원 실패 시 (예: DOM 구조가 크게 변경되어 기존 Range가 유효하지 않을 때)
+                  // 에디터의 끝으로 커서 이동 시도
                   const newRange = document.createRange();
                   newRange.selectNodeContents(blContent);
-                  newRange.collapse(false); 
+                  newRange.collapse(false); // 끝으로 이동
                   selection.removeAllRanges();
                   selection.addRange(newRange);
               }
           }
       }
 
+      // Modified function: Auto convert YouTube links to embeds (handles both <a> and raw text)
       /**
        * 주어진 에디터 내부의 유튜브 링크 (<a> 태그 또는 일반 텍스트)를 유튜브 임베드 iframe으로 변환합니다.
        * @param {HTMLElement} editor - `contenteditable` 속성을 가진 에디터 엘리먼트 (예: `editor_ko`).
@@ -846,287 +755,364 @@
         if (!editor) return;
 
         const blContent = editor.querySelector('.bl-content');
+        // bl-content가 없거나, HTML 모드에서는 변환하지 않음
         if (!blContent || editor.style.display === 'none') return;
 
-        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})(?:\S+)?/i;
-        const googleUserContentYoutubeRegex = /(?:https?:\/\/)?googleusercontent\.com\/youtube\.com\/embed\/([\w-]{11})(?:\S+)?/i;
+        // 유튜브 URL을 감지하기 위한 정규식 (표준 유튜브 URL 및 http://googleusercontent.com/youtube.com/ 패턴 포함)
+        // 11자리의 표준 YouTube ID를 정확히 캡처하도록 개선
+        const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/|googleusercontent\.com\/youtube\.com\/)([\w-]{11})(?:\S+)?/i;
 
-        const selection = window.getSelection();
-        let savedRange = null;
-        if (selection.rangeCount > 0) {
-            savedRange = selection.getRangeAt(0).cloneRange();
-        }
-
-        const nodesToProcess = [];
-        const treeWalker = document.createTreeWalker(
-            blContent,
-            NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-            {
-                acceptNode: (node) => {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        if (node.tagName.toLowerCase() === 'iframe' || node === editor) {
-                            return NodeFilter.FILTER_SKIP;
-                        }
-                        if (node.tagName.toLowerCase() === 'a' && (node.href.match(youtubeRegex) || node.href.match(googleUserContentYoutubeRegex))) {
-                            return NodeFilter.FILTER_ACCEPT; 
-                        }
-                    }
-                    return NodeFilter.FILTER_ACCEPT;
-                }
-            },
-            false
-        );
-
-        let currentNode;
-        while ((currentNode = treeWalker.nextNode())) {
-            nodesToProcess.push(currentNode);
-        }
-
-        nodesToProcess.forEach(node => {
+        // DOM 트리를 순회하며 텍스트 노드와 <a> 태그를 처리하는 재귀 함수
+        const processNode = (node) => {
+          // 텍스트 노드인 경우
+          if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.nodeValue;
+            let match;
+            let lastIndex = 0;
+            const fragment = document.createDocumentFragment();
             let replaced = false;
 
-            if (node.nodeType === Node.TEXT_NODE) {
-                const text = node.nodeValue;
-                const fragment = document.createDocumentFragment();
-                let currentText = text;
+            // 텍스트 내에서 유튜브 URL 패턴을 찾음
+            // global 플래그 (g)를 사용하여 모든 매치를 찾음
+            while ((match = youtubeRegex.exec(text)) !== null) {
+              const videoId = match[1];
 
-                const tempYoutubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})(?:\S+)?/i;
-                let match;
+              // 매치된 URL 앞의 텍스트 추가
+              if (match.index > lastIndex) {
+                fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+              }
 
-                while ((match = tempYoutubeRegex.exec(currentText)) !== null) {
-                    const videoId = match[1];
+              // iframe 생성 및 추가
+              const iframe = document.createElement('iframe');
+              iframe.width = "560";
+              iframe.height = "315";
+              iframe.src = `https://www.youtube.com/embed/${videoId}`; // 표준 유튜브 임베드 URL 사용
+              iframe.frameBorder = "0";
+              iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+              iframe.allowFullscreen = true;
+              iframe.setAttribute('loading', 'lazy'); // 레이지 로딩 추가
+              fragment.appendChild(iframe);
+              replaced = true;
 
-                    if (match.index > 0) {
-                        fragment.appendChild(document.createTextNode(currentText.substring(0, match.index)));
-                    }
-
-                    const iframe = document.createElement('iframe');
-                    iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); 
-                    iframe.setAttribute('width', '560'); 
-                    iframe.setAttribute('height', '315'); 
-                    iframe.setAttribute('frameborder', '0');
-                    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-                    iframe.setAttribute('allowfullscreen', '');
-                    iframe.setAttribute('loading', 'lazy'); 
-                    iframe.classList.add('youtube-embed'); 
-
-                    fragment.appendChild(iframe);
-                    replaced = true;
-                    currentText = currentText.substring(tempYoutubeRegex.lastIndex);
-                    tempYoutubeRegex.lastIndex = 0; 
-                }
-
-                if (currentText.length > 0) {
-                    fragment.appendChild(document.createTextNode(currentText));
-                }
-
-                if (replaced && fragment.hasChildNodes()) {
-                    node.replaceWith(fragment);
-                }
-            } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() === 'a') {
-                const href = node.getAttribute('href');
-                if (href) {
-                    let match = href.match(youtubeRegex);
-                    if (!match) { 
-                        match = href.match(googleUserContentYoutubeRegex);
-                    }
-
-                    if (match) {
-                        const videoId = match[1];
-
-                        const iframe = document.createElement('iframe');
-                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); 
-                        iframe.setAttribute('width', '560');
-                        iframe.setAttribute('height', '315');
-                        iframe.setAttribute('frameborder', '0');
-                        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-                        iframe.setAttribute('allowfullscreen', '');
-                        iframe.setAttribute('loading', 'lazy');
-                        iframe.classList.add('youtube-embed');
-
-                        node.replaceWith(iframe); 
-                    }
-                }
+              lastIndex = youtubeRegex.lastIndex;
             }
-        });
 
-        if (savedRange) {
-            try {
-                selection.removeAllRanges();
-                selection.addRange(savedRange);
-            } catch (e) {
-                const newRange = document.createRange();
-                newRange.selectNodeContents(blContent);
-                newRange.collapse(false);
-                selection.removeAllRanges();
-                selection.addRange(newRange);
+            // 마지막 매치 이후의 남은 텍스트 추가
+            if (lastIndex < text.length) {
+              fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
             }
-        }
-      }
 
-      // ** 목차 삽입 기능 (insertTOC) - 원래 코드 복구 **
-      function insertTOC() {
-        // 여기에 원래 목차 삽입 기능 코드를 다시 넣어주세요.
-        // 예시: 
-        // const headings = currentActiveEditor.querySelectorAll('h1, h2, h3, h4');
-        // let tocHtml = '<ul style="list-style: none; padding: 0;">';
-        // headings.forEach((heading, index) => {
-        //     const id = `toc-${index}`;
-        //     heading.id = id; // 제목에 ID 부여
-        //     tocHtml += `<li style="margin-left: ${parseInt(heading.tagName[1]) * 15}px;"><a href="#${id}">${heading.textContent}</a></li>`;
-        // });
-        // tocHtml += '</ul>';
-        // document.execCommand('insertHTML', false, tocHtml);
-        showCustomMessage("목차 삽입 기능을 구현할 코드를 이 함수 안에 넣어주세요. (현재는 빈 기능입니다.)"); 
-      }
-
-      // ** HTML 삽입 팝업 (openHtmlPopup) - 원래 코드 복구 **
-      function openHtmlPopup() {
-        showCustomInput("삽입할 HTML 코드를 입력하세요:", (htmlCode) => {
-          if (htmlCode) {
-            document.execCommand('insertHTML', false, htmlCode);
+            // 변경 사항이 있다면 노드 교체
+            if (replaced && fragment.hasChildNodes()) {
+              node.replaceWith(fragment);
+            }
           }
-        });
+          // 요소 노드인 경우 (특히 <a> 태그 처리)
+          else if (node.nodeType === Node.ELEMENT_NODE) {
+            // 이미 <a> 태그로 존재하는 링크 처리
+            if (node.tagName.toLowerCase() === 'a') {
+              const url = node.href;
+              const match = url.match(youtubeRegex); // <a> 태그의 href 속성에서 다시 정규식 매치
+              if (match && match[1]) {
+                const videoId = match[1];
+                const iframe = document.createElement('iframe');
+                iframe.width = "560";
+                iframe.height = "315";
+                iframe.src = `https://www.youtube.com/embed/${videoId}`; // 표준 유튜브 임베드 URL 사용
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                iframe.setAttribute('loading', 'lazy');
+                node.replaceWith(iframe);
+              }
+            } else {
+              // 다른 자식 노드들도 재귀적으로 처리 (깊이 우선 탐색)
+              // NodeList는 실시간 컬렉션이므로, Array.from으로 복사하여 순회 중 변경에 대비
+              Array.from(node.childNodes).forEach(processNode);
+            }
+          }
+        };
+
+        // bl-content 내부의 모든 자식 노드부터 처리 시작
+        // NodeList는 실시간 컬렉션이므로, Array.from으로 복사하여 순회 중 변경에 대비
+        Array.from(blContent.childNodes).forEach(processNode);
       }
 
-
-    // ** DOMContentLoaded 이벤트 리스너: 에디터 초기화 및 이벤트 바인딩 **
-    document.addEventListener('DOMContentLoaded', () => {
-        const langSelector = document.getElementById('langSelector');
-        if (langSelector) {
-            langSelector.addEventListener('change', (event) => {
-                const selectedLang = event.target.value;
-                initializeEditorForLang(selectedLang);
+      window.onload = () => {
+          // 카테고리 불러오기 및 렌더링
+          fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
+            .then(res => res.json())
+            .then(data => {
+              categories = data.categories || [];
+              renderCategories();
+            })
+            .catch(err => {
+              console.error("카테고리 불러오기 오류:", err);
+              categories = ['일상', '기록', '리뷰']; // 대체 카테고리
+              renderCategories();
             });
-        }
 
-        // 초기 페이지 로드 시 현재 언어에 맞는 에디터 활성화
-        initializeEditorForLang(CURRENT_PAGE_LANG);
+          // 언어 선택 드롭다운 초기값 설정 (currentLang에 따라)
+          document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
 
-        // 각 디자인 모드 에디터에 이벤트 리스너 바인딩
-        document.querySelectorAll('.language-editor').forEach(editor => {
-            editor.addEventListener('focus', () => {
-                currentActiveEditor = editor;
+          // 페이지 로드 시 현재 언어 (lang) 에디터를 활성화
+          const initialEditor = document.getElementById(`editor_${CURRENT_PAGE_LANG}`);
+          const initialHtmlEditor = document.getElementById(`htmlEditor_${CURRENT_PAGE_LANG}`);
+          
+          if (initialEditor) {
+              initialEditor.style.display = 'block'; 
+              currentActiveEditor = initialEditor; 
+              currentActiveHtmlEditor = initialHtmlEditor;
+              initialEditor.focus();
+              detectStyle(); 
+              // Initial conversion for existing content on load
+              autoConvertUrlToLink(initialEditor);
+              convertYouTubeLinksToEmbeds(initialEditor);
+          } else { 
+              currentActiveEditor = document.querySelector('.language-editor');
+              if (currentActiveEditor) {
+                currentActiveHtmlEditor = document.getElementById(`htmlEditor_${currentActiveEditor.dataset.langEditor}`);
+                currentActiveEditor.style.display = 'block';
+                currentActiveEditor.focus();
                 detectStyle();
-            });
-            editor.addEventListener('mouseup', saveSelection); // 마우스 드래그 끝날 때 선택 영역 저장
-            editor.addEventListener('keyup', (e) => { // 키 입력 시
-                detectStyle(); // 스타일 감지
-                // 스페이스바, 엔터, 마침표, 슬래시 등 입력 시 URL/YouTube 링크 자동 변환 시도
-                if (e.key === ' ' || e.key === 'Enter' || e.key === '.' || e.key === '/') {
-                    autoConvertUrlToLink(currentActiveEditor);
-                    convertYouTubeLinksToEmbeds(currentActiveEditor);
-                }
-                saveSelection(); // 키 입력 후 선택 영역 저장
-            });
-            editor.addEventListener('paste', (e) => {
-                // 붙여넣기 완료 후 URL/YouTube 링크 자동 변환
+                // Initial conversion for existing content on load
+                autoConvertUrlToLink(currentActiveEditor);
+                convertYouTubeLinksToEmbeds(currentActiveEditor);
+              }
+          }
+
+          // 모든 언어 에디터에 이벤트 리스너 추가
+          const languageEditors = document.querySelectorAll('.language-editor');
+          languageEditors.forEach(editor => {
+              editor.addEventListener('keyup', detectStyle);
+              editor.addEventListener('mouseup', detectStyle);
+              editor.addEventListener('mouseup', saveSelection);
+              editor.addEventListener('keyup', saveSelection);
+              
+              // URL to Link conversion (on keyup and blur)
+              editor.addEventListener('keyup', () => {
+                autoConvertUrlToLink(editor);
+                // After converting to <a>, immediately check for YouTube embeds
+                convertYouTubeLinksToEmbeds(editor); 
+              });
+              editor.addEventListener('blur', () => {
+                autoConvertUrlToLink(editor);
+                convertYouTubeLinksToEmbeds(editor);
+              });
+              
+              // Paste event handling for both
+              editor.addEventListener('paste', (event) => {
+                // Allow DOM to update with pasted content before running conversion
                 setTimeout(() => {
-                    autoConvertUrlToLink(currentActiveEditor);
-                    convertYouTubeLinksToEmbeds(currentActiveEditor);
+                  autoConvertUrlToLink(editor);
+                  convertYouTubeLinksToEmbeds(editor);
                 }, 0);
-            });
-            // 선택 영역이 변경될 때마다 savedRange 업데이트
-            editor.addEventListener('selectionchange', () => {
-                saveSelection();
-            });
+              });
+
+              editor.addEventListener('focus', () => {
+                  const langCode = editor.dataset.langEditor;
+                  document.getElementById('langSelector').value = langCode;
+
+                  document.querySelectorAll('.lang-meta-block').forEach(block => {
+                      if (block.dataset.lang === langCode) {
+                          block.style.display = '';
+                      } else {
+                          block.style.display = 'none';
+                          const otherEditorDiv = document.getElementById(`editor_${block.dataset.lang}`);
+                          const otherHtmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
+                          if (otherEditorDiv) otherEditorDiv.style.display = 'none';
+                          if (otherHtmlEditorDiv) otherHtmlEditorDiv.style.display = 'none';
+                      }
+                  });
+
+                  currentActiveEditor = editor;
+                  currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
+                  
+                  // 포커스 시 HTML 모드였다면 디자인 모드로 자동 전환
+                  if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
+                      switchToDesignMode(); // code 파라미터 없이 호출
+                  }
+                  detectStyle();
+              });
+          });
+
+          // 툴바 버튼 이벤트 리스너 추가 (선택 영역 저장)
+          const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
+          toolbarButtons.forEach(button => {
+              button.addEventListener('mousedown', saveSelection);
+          });
+      };
+
+      function insertTOC() {
+        if (!currentActiveEditor) {
+          showCustomMessage("에디터가 활성화되지 않았습니다.");
+          return;
+        }
+
+        const blContentDiv = currentActiveEditor.querySelector('.bl-content');
+
+        if (!blContentDiv) {
+          showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
+          return;
+        }
+
+        const headings = blContentDiv.querySelectorAll("h1, h2");
+        if (!headings.length) {
+          showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
+          return;
+        }
+
+        // 기존 목차 제거
+        const oldTOC = blContentDiv.querySelector(".auto-toc");
+        if (oldTOC) oldTOC.remove();
+
+        const tocWrapper = document.createElement("div");
+        tocWrapper.className = "auto-toc";
+        tocWrapper.contentEditable = "false";
+
+        const tocTitle = document.createElement("strong");
+        tocTitle.className = "toc-title";
+        tocTitle.textContent = "📑 목차";
+
+        const tocList = document.createElement("ul");
+        tocList.className = "toc-list";
+        tocList.style.margin = "0";
+        tocList.style.padding = "0";
+
+        let h1Count = 0;
+        let h2Count = 0;
+
+        headings.forEach(el => {
+          const tag = el.tagName.toLowerCase();
+          let number = "";
+
+          if (tag === "h1") {
+            h1Count++;
+            h2Count = 0;
+            number = `${h1Count}.`;
+          } else if (tag === "h2") {
+            h2Count++;
+            number = `${h1Count}.${h2Count}`;
+          }
+
+          // ID 부여 (기존 ID 무시하고 항상 재생성)
+          const id = `toc-${number.replace(/\./g, "-")}`;
+          el.id = id;
+
+          const li = document.createElement("li");
+          li.className = `toc-item toc-${tag}`;
+
+          const a = document.createElement("a");
+          a.href = `#${id}`;
+          a.textContent = `${number} ${el.textContent.trim()}`;
+          a.onclick = function(e) {
+            e.preventDefault();
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+          };
+
+          li.appendChild(a);
+          tocList.appendChild(li);
         });
 
-        // 제목 입력 필드에 포커스 이벤트 리스너
-        document.querySelectorAll('.title-wrap input').forEach(titleInput => {
-            titleInput.addEventListener('focus', () => {
-                // 제목 입력 필드에 포커스가 왔을 때, 현재 디자인 에디터가 활성화되어 있었다면 포커스를 해제
-                if (currentActiveEditor && document.activeElement !== currentActiveEditor) {
-                    currentActiveEditor.blur(); 
-                    // currentActiveEditor를 null로 만들지는 않고, 단순히 포커스만 해제합니다.
-                    // 이렇게 해야 사용자가 에디터를 다시 클릭했을 때 바로 포커스를 받을 수 있습니다.
-                }
-            });
+        tocWrapper.appendChild(tocTitle);
+        tocWrapper.appendChild(tocList);
+
+        // ✅ 목차를 bl-content 가장 위에 삽입 (prepend 방식)
+        blContentDiv.prepend(tocWrapper);
+      }
+      // 수정된 switchToHtmlMode 함수: 현재 활성 에디터를 사용하도록 변경
+      function switchToHtmlMode() {
+        const editorDiv = currentActiveEditor;
+        const htmlEditor = currentActiveHtmlEditor;
+
+        if (!editorDiv || !htmlEditor) {
+          console.error("HTML 모드 전환 실패: 활성 에디터 없음");
+          return;
+        }
+
+        let currentContent = editorDiv.innerHTML.trim();
+
+        // ✅ bl-content로 감싸져 있는지 확인
+        const isWrapped = currentContent.startsWith('<div class="bl-content"');
+
+        if (!isWrapped) {
+          // 빈 상태도 감싸기
+          if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
+            currentContent = '<p><br></p>';
+          }
+
+          currentContent = `
+<div class="bl-content" style="white-space:normal; line-height: 1.7;">
+  ${currentContent}
+</div>`.trim();
+        }
+
+        htmlEditor.value = html_beautify(currentContent, {
+          indent_size: 2,
+          wrap_attributes: 'auto',
+          indent_with_tabs: false
         });
-    });
 
-    // ** 에디터 초기화 및 언어 전환을 위한 함수 **
-    function initializeEditorForLang(langCode) {
-        // 모든 언어 블록 숨기기
-        document.querySelectorAll('.lang-meta-block').forEach(block => {
-            block.style.display = 'none';
-        });
+        editorDiv.style.display = 'none';
+        htmlEditor.style.display = 'block';
+      }
 
-        // 선택된 언어 블록 표시
-        const currentLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
-        if (currentLangBlock) {
-            currentLangBlock.style.display = '';
+      // 수정된 switchToDesignMode 함수: 현재 활성 에디터를 사용하도록 변경
+      function switchToDesignMode() {
+        const editorDiv = currentActiveEditor;
+        const htmlEditor = currentActiveHtmlEditor;
+
+        if (!editorDiv || !htmlEditor) {
+          console.error("디자인 모드 전환 실패: 활성 에디터 없음");
+          return;
         }
 
-        const editorDiv = document.getElementById(`editor_${langCode}`);
-        const htmlEditorDiv = document.getElementById(`htmlEditor_${langCode}`);
+        let rawHtml = htmlEditor.value.trim();
 
-        // 현재 활성 에디터 및 HTML 에디터 업데이트
-        currentActiveEditor = editorDiv;
-        currentActiveHtmlEditor = htmlEditorDiv;
-
-        // 디자인 모드 에디터가 표시되어 있다면 포커스 (초기 로드 시 바로 에디터에 포커스)
-        if (editorDiv && editorDiv.style.display !== 'none') {
-            editorDiv.focus();
-            detectStyle(); // 현재 스타일 감지
+        // ✅ bl-content 감싸기 누락 시 자동 추가
+        if (!rawHtml.startsWith('<div class="bl-content"')) {
+          rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
         }
-        // HTML 모드 에디터가 표시되어 있다면 포커스
-        else if (htmlEditorDiv && htmlEditorDiv.style.display !== 'none') {
-            htmlEditorDiv.focus();
-        }
-    }
 
-    // ** 모드 전환 함수 **
-    function switchToDesignMode() {
-        const currentLang = document.getElementById('langSelector').value;
-        const editorDiv = document.getElementById(`editor_${currentLang}`);
-        const htmlEditorDiv = document.getElementById(`htmlEditor_${currentLang}`);
+        editorDiv.innerHTML = rawHtml;
+        htmlEditor.style.display = 'none';
+        editorDiv.style.display = 'block';
+        editorDiv.focus();
+        detectStyle();
+      }
 
-        if (editorDiv && htmlEditorDiv) {
-            htmlEditorDiv.style.display = 'none';
-            
-            // HTML 내용을 가져와서 디자인 모드 에디터에 설정
-            let content = htmlEditorDiv.value;
-            try {
-                // HTML을 보기 좋게 정리
-                content = html_beautify(content, { indent_size: 2, wrap_line_length: 80 });
-            } catch (e) {
-                console.error("HTML beautify error:", e);
-            }
-            editorDiv.innerHTML = content; // 디자인 모드에 내용 삽입
-            editorDiv.style.display = 'block';
-            editorDiv.focus(); // 디자인 모드로 전환 시 포커스
-            currentActiveEditor = editorDiv;
-            currentActiveHtmlEditor = null; // HTML 에디터는 비활성화
-            detectStyle(); // 스타일 감지
-            showCustomMessage("디자인 모드로 전환되었습니다.");
-        }
-    }
-
-    function switchToHtmlMode() {
-        const currentLang = document.getElementById('langSelector').value;
-        const editorDiv = document.getElementById(`editor_${currentLang}`);
-        const htmlEditorDiv = document.getElementById(`htmlEditor_${currentLang}`);
-
-        if (editorDiv && htmlEditorDiv) {
-            // 디자인 모드 내용을 가져와서 HTML 에디터에 설정
-            let content = editorDiv.innerHTML;
-            try {
-                // HTML을 보기 좋게 정리
-                content = html_beautify(content, { indent_size: 2, wrap_line_length: 80 });
-            } catch (e) {
-                console.error("HTML beautify error:", e);
-            }
-            htmlEditorDiv.value = content; // HTML 에디터에 내용 삽입
-            editorDiv.style.display = 'none';
-            htmlEditorDiv.style.display = 'block';
-            htmlEditorDiv.focus(); // HTML 모드로 전환 시 포커스
-            currentActiveHtmlEditor = htmlEditorDiv;
-            currentActiveEditor = null; // 디자인 에디터는 비활성화
-            showCustomMessage("HTML 모드로 전환되었습니다.");
-        }
-    }
-
+      // 언어 선택 드롭다운 변경 이벤트
+      document.getElementById('langSelector').addEventListener('change', function() {
+          const selectedLang = this.value;
+          document.querySelectorAll('.lang-meta-block').forEach(block => {
+              if (block.dataset.lang === selectedLang) {
+                  block.style.display = ''; 
+                  const editorDiv = document.getElementById(`editor_${selectedLang}`);
+                  const htmlEditorDiv = document.getElementById(`htmlEditor_${selectedLang}`);
+                  if (editorDiv) {
+                      editorDiv.style.display = 'block';
+                      currentActiveEditor = editorDiv;
+                      currentActiveHtmlEditor = htmlEditorDiv;
+                      editorDiv.focus();
+                      detectStyle();
+                      // Also perform conversions when switching languages
+                      autoConvertUrlToLink(editorDiv);
+                      convertYouTubeLinksToEmbeds(editorDiv);
+                  }
+              } else {
+                  block.style.display = 'none';
+                  const editorDiv = document.getElementById(`editor_${block.dataset.lang}`);
+                  const htmlEditorDiv = document.getElementById(`htmlEditor_${block.dataset.lang}`);
+                  // 다른 언어 블록의 에디터와 HTML 에디터를 숨김
+                  if (editorDiv) editorDiv.style.display = 'none';
+                  if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
+              }
+          });
+      });
   </script>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
 </body>
 </html>
