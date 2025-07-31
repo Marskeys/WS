@@ -677,10 +677,17 @@ html.dark .lang-option:hover {
     display: flex;
     width: 70%;
     gap: 20px;
-    overflow-x: auto; /* ← 가로 스크롤 허용 */
+    overflow-x: auto; /* 가로 스크롤 허용 */
     overflow-y: hidden;
     white-space: nowrap; /* 줄바꿈 방지 */
-    scrollbar-width: thin; /* 파이어폭스 전용 얇은 스크롤 */
+  
+    /* 스크롤바 숨기기 */
+    scrollbar-width: none; /* 파이어폭스 */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .header-menu .main-menu::-webkit-scrollbar {
+    display: none; /* 크롬/사파리/엣지 */
   }
   
   /* 크롬, 사파리 전용 스크롤 얇게 */
