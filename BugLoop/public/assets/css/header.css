@@ -636,89 +636,46 @@ html.dark .lang-option:hover {
     animation: icon-pulse-sway 2s ease-in-out infinite !important;
   }
 
- 
-
-/* ✅ 기존 스타일 유지 */
-.header-menu ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  margin-right: 20px;
-}
-
-.header-menu li a,
-.header-menu .menu-item > span {
-  text-decoration: none;
-  color: inherit;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  cursor: pointer;
-}
-
-@media (max-width: 640px) {
-  .header-menu li a,
-  .header-menu .menu-item > span {
-    font-size: 0.7rem;
-  }
   .header-menu ul {
-    gap: 10px;
-    margin-right: -10px;
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap; /* ✅ 줄바꿈 안 되게 */
+    margin-right: 20px;
   }
-}
+  
+  .header-menu li a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
 
-.header-top.scrolled .header-menu li a,
-.header-top.scrolled .header-menu .menu-item > span {
-  color: white;
-}
+  @media (max-width: 640px) {
+    .header-menu li a {
+      font-size: 0.7rem;  /* 👈 모바일에서 더 작게 */
+    }
+    .header-menu ul {
+      gap: 10px;
+      margin-right: -10px;
+    }
+  }
 
-.header-menu li a:hover,
-.header-menu .menu-item:hover > span {
-  color: #007BFF;
-}
+  .header-top.scrolled .header-menu li a {
+    color: white;
+  }
+  
+  .header-menu li a:hover {
+    color: #007BFF; /* 강조 색상 */
+  }
 
-/* ✅ 서브메뉴 (오른쪽 확장형) */
-.header-menu .menu-item {
-  position: relative;
-  flex-shrink: 0;
-}
 
-.header-menu .submenu {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 100%;
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 10px;
-  list-style: none;
-  display: flex;
-  gap: 8px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  white-space: nowrap;
-  z-index: 100;
-}
 
-.header-menu .submenu li a {
-  display: inline-block;
-  padding: 6px 12px;
-  color: #333;
-  text-decoration: none;
-  background: #f9f9f9;
-  border-radius: 4px;
-  transition: 0.2s;
-  white-space: nowrap;
-}
 
-.header-menu .submenu li a:hover {
-  background: #eee;
-}
 
-/* 호버 시 확장 */
-.header-menu .menu-item:hover .submenu {
-  display: flex;
-}
+
+  
+  
