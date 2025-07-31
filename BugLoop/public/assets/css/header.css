@@ -675,6 +675,7 @@ html.dark .lang-option:hover {
 
   .header-menu .main-menu {
     display: flex;
+    width: 70%;
     gap: 20px;
     overflow-x: auto; /* ← 가로 스크롤 허용 */
     overflow-y: hidden;
