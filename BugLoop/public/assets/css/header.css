@@ -673,7 +673,20 @@ html.dark .lang-option:hover {
   }
 
 
-.main-menu {
-  overflow-y: hidden;
-  overflow-x: auto;
-}
+  .header-menu .main-menu {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto; /* ← 가로 스크롤 허용 */
+    overflow-y: hidden;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    scrollbar-width: thin; /* 파이어폭스 전용 얇은 스크롤 */
+  }
+  
+  /* 크롬, 사파리 전용 스크롤 얇게 */
+  .header-menu .main-menu::-webkit-scrollbar {
+    height: 6px;
+  }
+  .header-menu .main-menu::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2);
+    border-radius: 3px;
+  }
