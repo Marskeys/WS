@@ -673,9 +673,7 @@ html.dark .lang-option:hover {
   }
 
 
-
-
-
-
-  
-  
+.main-menu {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
