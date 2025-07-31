@@ -164,12 +164,22 @@
 .tabs-wrapper {
   display: block;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   width: 100%;
   padding: 0 0.2rem;
   margin-bottom: 0.1rem;
   box-sizing: border-box;
+}
+
+.tabs-wrapper {
+  overflow-x: auto;        /* 가로 스크롤 가능 */
+  -ms-overflow-style: none; /* IE/Edge용 */
+  scrollbar-width: none;    /* Firefox용 */
+}
+
+.tabs-wrapper::-webkit-scrollbar {
+  display: none;           /* Chrome/Safari/Edge용 */
 }
 
 .tabs-container {
