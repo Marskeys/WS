@@ -374,7 +374,7 @@
 ====================== */
 .header-top {
     width: 100%;
-    padding: 5px 20px;
+    padding: 0px 20px;
     box-sizing: border-box;
     display: flex;
     justify-content: flex-end;
@@ -410,8 +410,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px;
-    height: 25px;
+    width: 36px;
+    height: 20px;
     cursor: pointer;
     border-top: none;
     margin-top: 0;
@@ -420,8 +420,8 @@
 }
 
 .light-switch .switch-label {
-    width: 45px;
-    height: 25px;
+    width: 36px;
+    height: 20px;
     background-color: #888;
     border-radius: 999px;
     position: relative;
