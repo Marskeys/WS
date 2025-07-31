@@ -72,17 +72,17 @@
 
         <div class="toolbar">
           <div class="dropdown">
-            <div class="dropdown-toggle" id="currentStyle_<%= code %>" onclick="toggleDropdown()">본문 ▼</div>
+            <div class="dropdown-toggle" id="currentStyle_<%= code %>" onclick="toggleDropdown(event)">본문 ▼</div>
             <div class="dropdown-menu" id="styleDropdown">
-              <div class="h1" onclick="applyStyle('h1')">제목</div>
-              <div class="h2" onclick="applyStyle('h2')">부제목</div>
-              <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
-              <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
-              <div class="p" onclick="applyStyle('p')">본문</div>
-              <div class="desc" onclick="applyStyle('small')">설명</div>
-              <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
-              <div class="label" onclick="applyStyle('span')">레이블</div>
-              <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
+              <div class="h1" onclick="applyStyle(event, 'h1')">제목</div>
+              <div class="h2" onclick="applyStyle(event, 'h2')">부제목</div>
+              <div class="h3" onclick="applyStyle(event, 'h3')">머리말 1</div>
+              <div class="red" onclick="applyStyle(event, 'h4')">빨간 머리말</div>
+              <div class="p" onclick="applyStyle(event, 'p')">본문</div>
+              <div class="desc" onclick="applyStyle(event, 'small')">설명</div>
+              <div class="meta" onclick="applyStyle(event, 'footer')">머리말 및 꼬리말</div>
+              <div class="label" onclick="applyStyle(event, 'span')">레이블</div>
+              <div class="label label-bold" onclick="applyStyle(event, 'strong')">진한 레이블</div>
             </div>
           </div>
           <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
@@ -308,7 +308,8 @@
     }
 
     window.onclick = function(e) {
-        if (!e.target.matches('.dropdown-toggle')) {
+        // 드롭다운 메뉴를 제외한 다른 곳을 클릭했을 때 드롭다운 닫기
+        if (!e.target.matches('.dropdown-toggle') && !e.target.closest('.dropdown-menu')) {
             const dropdowns = document.getElementsByClassName('dropdown-menu');
             for (let d of dropdowns) {
                 if (d.classList.contains('show')) {
@@ -498,10 +499,20 @@
     }
 
     // ** applyStyle 함수 개선 (드래그 유지 및 스타일 적용) **
-    function applyStyle(tag) {
+    function applyStyle(event, tag) {
+        // 드롭다운 메뉴 아이템 클릭 시, 기본 이벤트 (포커스 이동) 방지
+        event.preventDefault(); 
+        event.stopPropagation(); // 이벤트 버블링도 막아줍니다.
+
         if (!currentActiveEditor) {
             console.warn("현재 활성화된 에디터가 없습니다.");
             return;
+        }
+        
+        // 드롭다운 닫기
+        const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
+        if (styleDropdown) {
+            styleDropdown.classList.remove('show');
         }
 
         // 드래그 유지: 스타일 적용 전에 선택 영역 복원
@@ -578,8 +589,12 @@
           showCustomMessage("임시 저장 완료!");
       }
 
-    // ** toggleDropdown 함수 수정 (드래그 유지) **
-      function toggleDropdown() {
+    // ** toggleDropdown 함수 수정 (event 인자 추가 및 preventDefault) **
+      function toggleDropdown(event) {
+          // 토글 버튼 클릭 시, 브라우저의 기본 포커스 이동 및 선택 해제 방지
+          event.preventDefault(); 
+          event.stopPropagation(); // 이벤트 버블링도 막아줍니다.
+
           const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
           if (styleDropdown) {
               // 드롭다운 열기 전에 현재 선택 영역 저장
@@ -861,7 +876,7 @@
                     }
 
                     const iframe = document.createElement('iframe');
-                    iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); // http -> https로 변경
+                    iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); 
                     iframe.setAttribute('width', '560'); 
                     iframe.setAttribute('height', '315'); 
                     iframe.setAttribute('frameborder', '0');
@@ -895,7 +910,7 @@
                         const videoId = match[1];
 
                         const iframe = document.createElement('iframe');
-                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); // http -> https로 변경
+                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); 
                         iframe.setAttribute('width', '560');
                         iframe.setAttribute('height', '315');
                         iframe.setAttribute('frameborder', '0');
