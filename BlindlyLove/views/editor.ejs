@@ -476,47 +476,40 @@
           });
         }
       
-    // ** 포커스 충돌 해결을 위한 format 함수 수정 **
+    // ** format 함수 수정 (드래그 유지) **
     function format(command, value = null) {
         // 현재 포커스된 요소가 제목 입력 필드인지 확인
         const activeElement = document.activeElement;
         if (activeElement && activeElement.tagName === 'INPUT' && activeElement.type === 'text' && activeElement.name.startsWith('title_')) {
             // 제목 입력 필드에 포커스가 있다면, 에디터에 강제 포커스를 주지 않고 리턴
-            // 툴바 버튼을 누르는 것은 에디터 기능을 사용하려는 의도이므로,
-            // 이 경우에는 에디터에 포커스를 주는 것이 맞습니다.
-            // 따라서 이 if 문은 이제 툴바 버튼 클릭 시에는 실행되지 않아야 합니다.
-            // 대신, 아래 currentActiveEditor.focus() 앞에 다른 조건이 필요할 수 있습니다.
-            // 하지만 기본적으로 툴바 버튼 클릭은 에디터 포커스를 유도하는 것이 자연스럽습니다.
+            return; 
         }
 
         if (!currentActiveEditor) return; // 활성 에디터가 없으면 리턴
 
-        // 툴바 버튼 클릭 시, 에디터에 포커스를 줍니다.
-        // 이것이 제목 입력 필드의 포커스를 뺏는 주된 원인이었지만,
-        // 사용자가 툴바 버튼을 눌렀다면 에디터에 대한 의도가 있다고 판단합니다.
+        // 드래그 유지: execCommand 전에 선택 영역을 복원하고, 에디터에 포커스
+        restoreSelection(); 
         currentActiveEditor.focus();
+        
         document.execCommand("styleWithCSS", false, false);
         document.execCommand(command, false, value);
         setTimeout(detectStyle, 100);
+        saveSelection(); // 변경 후 선택 영역 다시 저장
     }
 
-    // ** applyStyle 함수 개선 **
+    // ** applyStyle 함수 개선 (드래그 유지 및 스타일 적용) **
     function applyStyle(tag) {
         if (!currentActiveEditor) {
             console.warn("현재 활성화된 에디터가 없습니다.");
             return;
         }
 
-        restoreSelection(); // 이전에 저장된 선택 영역 복원
-        currentActiveEditor.focus(); // 에디터에 포커스
+        // 드래그 유지: 스타일 적용 전에 선택 영역 복원
+        restoreSelection(); 
+        currentActiveEditor.focus(); // 에디터에 포커스 (restoreSelection 후 포커스)
 
         const sel = window.getSelection();
         if (!sel.rangeCount || sel.isCollapsed) {
-            // 선택 영역이 없거나 비어있는 경우, 현재 블록에 적용 시도
-            // 대부분의 블록 스타일은 execCommand('formatBlock')으로 처리 가능하지만,
-            // 클래스 추가 등 세부 제어를 위해 아래의 복잡한 로직을 따릅니다.
-            // 여기서는 선택 영역이 없는 경우의 기본 동작을 정의합니다.
-            // 선택 영역이 없으면 스타일을 적용하기 어렵습니다.
             console.warn("선택 영역이 없어 스타일을 적용할 수 없습니다. 텍스트를 선택해주세요.");
             return;
         }
@@ -585,9 +578,12 @@
           showCustomMessage("임시 저장 완료!");
       }
 
+    // ** toggleDropdown 함수 수정 (드래그 유지) **
       function toggleDropdown() {
           const styleDropdown = currentActiveEditor.closest('.lang-meta-block').querySelector('#styleDropdown');
           if (styleDropdown) {
+              // 드롭다운 열기 전에 현재 선택 영역 저장
+              saveSelection(); 
               styleDropdown.classList.toggle('show');
           }
       }
@@ -675,9 +671,6 @@
         const range = sel.getRangeAt(0);
 
         if (color === "__clear__") {
-          // 'removeFormat' 명령은 글꼴 색상/배경 색상도 포함하여 모든 서식을 제거합니다.
-          // 특정 색상만 제거하려면 더 복잡한 DOM 조작이 필요할 수 있습니다.
-          // 여기서는 removeFormat을 사용하거나, 선택 영역 내 span을 찾아 스타일을 제거합니다.
           const contents = range.cloneContents();
           const tempDiv = document.createElement('div');
           tempDiv.appendChild(contents);
@@ -686,9 +679,7 @@
           spans.forEach(span => {
             if (command === 'foreColor') span.style.color = '';
             else if (command === 'hiliteColor') span.style.backgroundColor = '';
-            // 만약 span에 다른 인라인 스타일이 없다면 span 자체를 제거하여 HTML을 깨끗하게 유지
             if (!span.style.cssText) {
-                // span의 자식 노드를 span이 있던 위치로 이동
                 while (span.firstChild) {
                     span.parentNode.insertBefore(span.firstChild, span);
                 }
@@ -696,7 +687,6 @@
             }
           });
           range.deleteContents();
-          // tempDiv의 자식 노드를 원래 위치에 삽입합니다.
           while (tempDiv.firstChild) {
               range.insertNode(tempDiv.firstChild);
           }
@@ -705,7 +695,6 @@
           return;
         }
 
-        // 색상 적용 (기존 execCommand 사용)
         document.execCommand(command, false, color);
         saveSelection();
         detectStyle();
@@ -729,7 +718,6 @@
         return 'p';
       }
 
-      // New function: Auto convert plain text URLs to <a> tags
       /**
        * 에디터 내에서 일반 텍스트 URL을 <a> 태그로 자동 변환합니다.
        * @param {HTMLElement} editor - contenteditable 에디터 엘리먼트.
@@ -810,7 +798,6 @@
           }
       }
 
-      // Modified function: Auto convert YouTube links to embeds (handles both <a> and raw text)
       /**
        * 주어진 에디터 내부의 유튜브 링크 (<a> 태그 또는 일반 텍스트)를 유튜브 임베드 iframe으로 변환합니다.
        * @param {HTMLElement} editor - `contenteditable` 속성을 가진 에디터 엘리먼트 (예: `editor_ko`).
@@ -874,7 +861,7 @@
                     }
 
                     const iframe = document.createElement('iframe');
-                    iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); // http -> https로 변경 권장
+                    iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); // http -> https로 변경
                     iframe.setAttribute('width', '560'); 
                     iframe.setAttribute('height', '315'); 
                     iframe.setAttribute('frameborder', '0');
@@ -908,7 +895,7 @@
                         const videoId = match[1];
 
                         const iframe = document.createElement('iframe');
-                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); // http -> https로 변경 권장
+                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}`); // http -> https로 변경
                         iframe.setAttribute('width', '560');
                         iframe.setAttribute('height', '315');
                         iframe.setAttribute('frameborder', '0');
@@ -940,24 +927,23 @@
       // ** 목차 삽입 기능 (insertTOC) - 원래 코드 복구 **
       function insertTOC() {
         // 여기에 원래 목차 삽입 기능 코드를 다시 넣어주세요.
-        // 예를 들어:
+        // 예시: 
         // const headings = currentActiveEditor.querySelectorAll('h1, h2, h3, h4');
-        // let tocHtml = '<ul>';
+        // let tocHtml = '<ul style="list-style: none; padding: 0;">';
         // headings.forEach((heading, index) => {
         //     const id = `toc-${index}`;
-        //     heading.id = id;
-        //     tocHtml += `<li><a href="#${id}">${heading.textContent}</a></li>`;
+        //     heading.id = id; // 제목에 ID 부여
+        //     tocHtml += `<li style="margin-left: ${parseInt(heading.tagName[1]) * 15}px;"><a href="#${id}">${heading.textContent}</a></li>`;
         // });
         // tocHtml += '</ul>';
         // document.execCommand('insertHTML', false, tocHtml);
-        showCustomMessage("목차 삽입 기능을 구현할 코드를 이 함수 안에 넣어주세요."); // 이 줄은 제거하거나 주석 처리하세요.
+        showCustomMessage("목차 삽입 기능을 구현할 코드를 이 함수 안에 넣어주세요. (현재는 빈 기능입니다.)"); 
       }
 
       // ** HTML 삽입 팝업 (openHtmlPopup) - 원래 코드 복구 **
       function openHtmlPopup() {
         showCustomInput("삽입할 HTML 코드를 입력하세요:", (htmlCode) => {
           if (htmlCode) {
-            // contenteditable 에디터에 HTML 삽입
             document.execCommand('insertHTML', false, htmlCode);
           }
         });
