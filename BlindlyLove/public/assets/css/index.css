@@ -164,7 +164,7 @@
 .tabs-wrapper {
   display: block;
   position: relative;
-  overflow-x: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   width: 100%;
   padding: 0 0.2rem;
