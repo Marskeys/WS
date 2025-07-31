@@ -442,7 +442,7 @@
 }
 
 .light-switch[aria-checked="true"] .switch-handle {
-    left: calc(100% - 2px - 10px);
+    left: calc(100% - 2px - 13px);
     background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
 }
 
