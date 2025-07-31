@@ -74,15 +74,15 @@
           <div class="dropdown">
             <div class="dropdown-toggle" id="currentStyle_<%= code %>" onclick="toggleDropdown(event)">본문 ▼</div>
             <div class="dropdown-menu" id="styleDropdown">
-              <div class="h1" onclick="applyStyle(event, 'h1')">제목</div>
-              <div class="h2" onclick="applyStyle(event, 'h2')">부제목</div>
-              <div class="h3" onclick="applyStyle(event, 'h3')">머리말 1</div>
-              <div class="red" onclick="applyStyle(event, 'h4')">빨간 머리말</div>
-              <div class="p" onclick="applyStyle(event, 'p')">본문</div>
-              <div class="desc" onclick="applyStyle(event, 'small')">설명</div>
-              <div class="meta" onclick="applyStyle(event, 'footer')">머리말 및 꼬리말</div>
-              <div class="label" onclick="applyStyle(event, 'span')">레이블</div>
-              <div class="label label-bold" onclick="applyStyle(event, 'strong')">진한 레이블</div>
+              <div class="h1" onmousedown="applyStyle(event, 'h1')">제목</div>
+              <div class="h2" onmousedown="applyStyle(event, 'h2')">부제목</div>
+              <div class="h3" onmousedown="applyStyle(event, 'h3')">머리말 1</div>
+              <div class="red" onmousedown="applyStyle(event, 'h4')">빨간 머리말</div>
+              <div class="p" onmousedown="applyStyle(event, 'p')">본문</div>
+              <div class="desc" onmousedown="applyStyle(event, 'small')">설명</div>
+              <div class="meta" onmousedown="applyStyle(event, 'footer')">머리말 및 꼬리말</div>
+              <div class="label" onmousedown="applyStyle(event, 'span')">레이블</div>
+              <div class="label label-bold" onmousedown="applyStyle(event, 'strong')">진한 레이블</div>
             </div>
           </div>
           <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
@@ -309,6 +309,7 @@
 
     window.onclick = function(e) {
         // 드롭다운 메뉴를 제외한 다른 곳을 클릭했을 때 드롭다운 닫기
+        // 드롭다운 토글 버튼도 클릭 시에는 닫히지 않도록 수정
         if (!e.target.matches('.dropdown-toggle') && !e.target.closest('.dropdown-menu')) {
             const dropdowns = document.getElementsByClassName('dropdown-menu');
             for (let d of dropdowns) {
@@ -500,7 +501,7 @@
 
     // ** applyStyle 함수 개선 (드래그 유지 및 스타일 적용) **
     function applyStyle(event, tag) {
-        // 드롭다운 메뉴 아이템 클릭 시, 기본 이벤트 (포커스 이동) 방지
+        // 드롭다운 메뉴 아이템 클릭 시, 브라우저의 기본 포커스 이동 및 선택 해제 방지
         event.preventDefault(); 
         event.stopPropagation(); // 이벤트 버블링도 막아줍니다.
 
@@ -521,6 +522,9 @@
 
         const sel = window.getSelection();
         if (!sel.rangeCount || sel.isCollapsed) {
+            // 선택 영역이 없거나 선택이 접혀있으면 (드래그 안함),
+            // 현재 커서 위치에 스타일을 적용하거나, 경고를 표시
+            // 여기서는 경고만 표시
             console.warn("선택 영역이 없어 스타일을 적용할 수 없습니다. 텍스트를 선택해주세요.");
             return;
         }
@@ -662,19 +666,40 @@
 
       function saveSelection() {
           const sel = window.getSelection();
-          // 현재 포커스된 요소가 currentActiveEditor 내부일 때만 저장
+          // currentActiveEditor가 존재하고, 현재 선택 영역이 그 안에 있을 때만 저장
           if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
               savedRange = sel.getRangeAt(0).cloneRange();
           } else {
-              savedRange = null;
+              savedRange = null; // 유효하지 않은 경우 null로 초기화
           }
       }
 
       function restoreSelection() {
           const sel = window.getSelection();
           if (savedRange && currentActiveEditor) {
+              // 저장된 영역이 currentActiveEditor 내부에 유효한지 다시 확인
+              if (currentActiveEditor.contains(savedRange.commonAncestorContainer)) {
+                  sel.removeAllRanges();
+                  sel.addRange(savedRange);
+              } else {
+                  // 유효하지 않은 경우, 에디터에 포커스를 주고 커서를 끝으로 이동 (혹시 모를 오류 방지)
+                  currentActiveEditor.focus();
+                  const range = document.createRange();
+                  range.selectNodeContents(currentActiveEditor);
+                  range.collapse(false); // 끝으로 이동
+                  sel.removeAllRanges();
+                  sel.addRange(range);
+                  savedRange = range; // 새로운 유효한 범위로 저장
+              }
+          } else if (currentActiveEditor) {
+              // 저장된 범위가 없지만 에디터가 활성화된 경우, 에디터에 포커스를 주고 커서를 끝으로 이동
+              currentActiveEditor.focus();
+              const range = document.createRange();
+              range.selectNodeContents(currentActiveEditor);
+              range.collapse(false);
               sel.removeAllRanges();
-              sel.addRange(savedRange);
+              sel.addRange(range);
+              savedRange = range;
           }
       }
 
@@ -1000,6 +1025,10 @@
                     autoConvertUrlToLink(currentActiveEditor);
                     convertYouTubeLinksToEmbeds(currentActiveEditor);
                 }, 0);
+            });
+            // 선택 영역이 변경될 때마다 savedRange 업데이트
+            editor.addEventListener('selectionchange', () => {
+                saveSelection();
             });
         });
 
