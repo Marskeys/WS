@@ -8,6 +8,11 @@ body.panel-open .left-controls {
   padding-left: 350px;
 }
 
+@media (max-width: 640px) {
+  .left-controls {
+padding-left: 30px;
+  }
+}
 
 
 @media (max-width: 768px) {
