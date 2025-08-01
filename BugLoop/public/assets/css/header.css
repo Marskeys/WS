@@ -687,7 +687,7 @@ html.dark .lang-option:hover {
     display: flex;
     gap: 20px;
     max-width: 600px;       /* 폭 제한 */
-    width: 30%;             /* 필요시 조정 */
+    width: 50%;             /* 필요시 조정 */
     overflow-x: auto;       /* 가로 스크롤 */
     overflow-y: hidden;
     white-space: nowrap;
