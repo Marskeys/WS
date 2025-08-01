@@ -403,7 +403,7 @@
   display: none;
 }
 
-/* ✨ 핵심 수정 부분 */
+/* ✨ 이 부분이 핵심 수정입니다. */
 .menu-item-wrapper {
   display: flex;
   flex-direction: column;
@@ -415,10 +415,9 @@
   left: 0;
   top: 0;
   z-index: 10;
-  background: black; /* 부모와 동일한 배경색으로 설정 */
-  padding-right: 20px; /* 라벨과 서브메뉴 사이 간격 */
-  margin-right: -20px; /* 다음 라벨과 겹치도록 설정 */
-
+  background-color: black; /* 부모와 동일한 배경색으로 설정하여 자연스럽게 겹치도록 합니다. */
+  
+  /* 메뉴 라벨 디자인 */
   font-size: 0.95rem;
   font-weight: 500;
   color: #fff;
