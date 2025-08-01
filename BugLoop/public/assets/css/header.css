@@ -537,9 +537,14 @@ html.dark .lang-option:hover {
     height: 200px;
     object-fit: cover;
     margin-bottom: 5px;
-  margin-left: 25px;
+    margin-left: 25px;
     opacity: 0;
     animation: fadeIn 0.2s ease 0.1s forwards;
+  
+    /* 드래그/선택/클릭 방지 */
+    pointer-events: none;       /* 마우스 이벤트 차단 */
+    user-select: none;          /* 선택 방지 */
+    -webkit-user-drag: none;    /* 드래그 방지 (크롬/사파리) */
   }
   
   @keyframes fadeIn {
