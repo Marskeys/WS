@@ -110,10 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isSearch = path.includes('/search') || searchParams.has('q');
   const isFiltered = searchParams.has('category');
 
-  // 데스크톱 환경 감지 (768px 이상)
-  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-
-  if (isHome && !isSearch && !isFiltered && isDesktop) { // 데스크톱 환경에서만 'profile' 탭 초기 활성화
+  if (isHome && !isSearch && !isFiltered) {
     requestAnimationFrame(() => {
       setTimeout(() => {
         openTab('profile');
@@ -147,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('❌ 로그인 요소 못 찾음');
   }
 
-  // ✅ 최초 바인딩
+  // ✅ 최초 바인딩ㅎ
   bindLangDropdown(document);
 });
 
