@@ -8,9 +8,10 @@ body.panel-open .header-top {
   left: 410px;
 }
 
-body.panel-open .left-controls{
+body.panel-open .left-controls {
   width: 100px;
 }
+
 @media (max-width: 768px) {
   body.panel-open {
     transition: none !important;
