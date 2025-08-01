@@ -729,14 +729,22 @@ html.dark .lang-option:hover {
   padding-right: 50px;
 }
 
-/* 기본적으로 숨기기 */
+
+
 #right-controls {
-  display: none;
+  /* 기존 display: none; 을 아래 두 속성으로 대체합니다. */
+  visibility: hidden;
+  opacity: 0;
+  
+  /* 요소가 서서히 나타나고 사라지도록 트랜지션 추가 */
+  /* 모든 속성 변화에 0.5초 동안 부드럽게 적용됩니다. */
+  transition: visibility 0.5s ease, opacity 0.5s ease;
 }
 
-/* is-active 클래스가 추가되었을 때 보이게 하기 */
 #right-controls.is-active {
-  display: flex;
+  /* is-active 클래스가 추가되면 보이도록 변경합니다. */
+  visibility: visible;
+  opacity: 1;
 }
 
 /* 모바일 화면에서만 적용되도록 미디어 쿼리 추가 */
