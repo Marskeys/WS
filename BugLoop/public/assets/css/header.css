@@ -84,7 +84,6 @@
 .side-panel.main-panel-only {
   pointer-events: none;
 }
-
 .side-panel.main-panel-only.open {
   pointer-events: auto;
 }
@@ -115,7 +114,7 @@
 ====================== */
 .sidebar-extension-panel {
   position: relative;
-  box-sizing: border-box;
+  box-sizing: border-box; 
   top: 0;
   left: 0;
   width: 360px;
@@ -398,14 +397,13 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   height: 100%;
-  gap: 20px; /* 메뉴 항목 간 간격 설정 */
 }
 
 .main-menu-container::-webkit-scrollbar {
   display: none;
 }
 
-/* ✨ 이 부분을 수정했습니다. */
+/* ✨ 핵심 수정 부분 */
 .menu-item-wrapper {
   display: flex;
   flex-direction: column;
@@ -417,23 +415,27 @@
   left: 0;
   top: 0;
   z-index: 10;
+  background: black; /* 부모와 동일한 배경색으로 설정 */
+  padding-right: 20px; /* 라벨과 서브메뉴 사이 간격 */
+  margin-right: -20px; /* 다음 라벨과 겹치도록 설정 */
+
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
   background-color: #4CAF50;
-  color: white;
   padding: 5px 12px;
   border-radius: 6px;
-  font-weight: 500;
-  font-size: 13px;
-  display: inline-block;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  white-space: nowrap;
+  display: inline-block;
 }
 
 .submenu {
   display: flex;
   list-style: none;
   padding: 0;
-  margin-top: 5px; /* 라벨과 서브메뉴 간 간격 */
+  margin: 5px 0 0 0;
   gap: 10px;
   white-space: nowrap;
 }
