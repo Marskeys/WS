@@ -370,6 +370,10 @@
   background: black;
 }
 
+@media (max-width: 640px) {
+  .header-top: height: 20px;
+}
+
 .top-controls {
   display: flex;
   align-items: center;
