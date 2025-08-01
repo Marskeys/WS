@@ -717,3 +717,7 @@ html.dark .lang-option:hover {
   cursor: pointer; /* 마우스 올리면 버튼 느낌 */
   transition: background-color 0.2s ease;
 }
+
+.submenu {
+  padding-right: 50px;
+}
