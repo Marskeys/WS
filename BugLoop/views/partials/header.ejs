@@ -302,12 +302,13 @@
     const end = Math.floor(100 - 100 * percent);
 
     header.style.background = `
-      linear-gradient(to right,
-        rgba(0,0,0,0) ${start}%,
-        rgba(0,0,0,0.3) ${mid}%,
-        rgba(0,0,0,0.9) ${end}%,
-        rgba(0,0,0,1) 100%
-      )
+linear-gradient(
+  to right,
+  rgba(0,255,0,0) ${start}%,
+  rgba(0,255,0,0.3) ${mid}%,
+  rgba(0,255,0,0.9) ${end}%,
+  rgba(0,255,0,1) 100%
+)
     `;
 
     // 색상 토글
