@@ -641,6 +641,10 @@ html.dark .lang-option:hover {
     animation: icon-pulse-sway 2s ease-in-out infinite !important;
   }
 
+  .header-menu {
+    display:flex;
+  }
+  
   .header-menu ul {
     list-style: none;
     display: flex;
@@ -679,7 +683,7 @@ html.dark .lang-option:hover {
 
 
   .header-menu .main-menu {
-    display: none;
+    display: flex;
     width: 70%;
     gap: 20px;
     overflow-x: auto; /* 가로 스크롤 허용 */
