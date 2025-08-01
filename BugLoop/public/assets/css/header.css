@@ -648,6 +648,7 @@ html.dark .lang-option:hover {
     display: flex; /* 라벨과 서브메뉴 전체 세트들을 가로로 나열 */
     gap: 20px;
     margin: 0;
+    margin-right: 100px;
     padding: 0;
     white-space: nowrap; /* 줄바꿈 방지 */
     
