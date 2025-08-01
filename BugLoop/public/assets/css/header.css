@@ -714,3 +714,14 @@ html.dark .lang-option:hover {
 .blink-highlight {
   animation: icon-pulse-sway 2s ease-in-out infinite !important;
 }
+
+.menu-label {
+  background-color: #4CAF50; /* 밝은 초록색 */
+  color: white; /* 글씨는 흰색 */
+  padding: 6px 12px; /* 버튼 느낌을 주는 패딩 */
+  border-radius: 6px; /* 모서리 둥글게 */
+  font-weight: 500; /* 약간 두껍게 */
+  display: inline-block; /* 텍스트만큼 영역 차지 */
+  cursor: pointer; /* 마우스 올리면 버튼 느낌 */
+  transition: background-color 0.2s ease;
+}
