@@ -732,18 +732,20 @@ html.dark .lang-option:hover {
 
 
 #right-controls {
-  /* 요소를 숨길 때, 최대 높이를 0으로 만듭니다. */
-  max-height: 0;
-  overflow: hidden; /* 높이가 0일 때 내용이 넘치지 않도록 숨깁니다. */
+  position: absolute; /* 레이아웃 흐름에서 제외 */
+  left: 100%; /* 화면 오른쪽 밖으로 이동 */
+  visibility: hidden;
   opacity: 0;
   
-  /* 부드러운 애니메이션 효과를 위해 transition을 추가합니다. */
-  transition: max-height 0.5s ease, opacity 0.5s ease;
+  /* 애니메이션 효과를 위한 트랜지션 추가 */
+  transition: opacity 0.5s ease, left 0.5s ease;
+  z-index: 1000; /* 다른 요소 위에 덮이도록 z-index 설정 */
 }
 
 #right-controls.is-active {
-  /* 활성화되면 최대 높이를 원래 크기보다 충분히 큰 값으로 설정합니다. */
-  max-height: 500px; /* 실제 내용의 최대 높이보다 크게 설정 */
+  position: absolute; /* 활성화될 때도 레이아웃 흐름에서 제외 */
+  left: 0; /* 화면 안으로 이동 */
+  visibility: visible;
   opacity: 1;
 }
 
