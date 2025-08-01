@@ -401,7 +401,7 @@ display: none; /* Chrome, Safari, Opera */
   flex-grow: 1; /* 남은 공간을 최대한 가져감 */
   min-width: 0; /* 메뉴가 좁아질 수 있게 허용 */
   flex-shrink: 1;
-  overflow: hidden;
+
 }
 
 .main-menu-container {
