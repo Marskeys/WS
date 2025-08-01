@@ -645,65 +645,29 @@ html.dark .lang-option:hover {
   .header-menu {
     width: 100%;
     background: #fff;
-    border-bottom: 2px solid #eee;
-    font-family: sans-serif;
   }
   
   .main-menu {
     list-style: none;
-    padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
+    padding: 0;
   }
   
-  /* 라벨 한 줄 */
   .menu-item {
     display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid #eee;
+    align-items: center;
+    gap: 16px; /* 간격 조절 */
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
   }
   
   .menu-label {
-    padding: 10px 20px;
     font-weight: bold;
-    white-space: nowrap;
-    background: #f9f9f9;
-    border-bottom: 1px solid #eee;
+    min-width: 150px; /* 라벨 고정 폭 */
   }
-  
-  /* 서브메뉴 가로 스크롤 */
-  .submenu {
-    display: flex;
-    overflow-x: auto;
-    gap: 20px;
-    padding: 10px 20px;
-    margin: 0;
-    list-style: none;
-    background: white;
-  }
-  
-  .submenu li {
-    flex: 0 0 auto;
-  }
-  
-  .submenu a {
+  .menu-item a {
     text-decoration: none;
     color: #333;
-    white-space: nowrap;
-    font-size: 0.9rem;
-  }
-  
-  .submenu::-webkit-scrollbar {
-    height: 6px;
-  }
-  
-  .submenu::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 3px;
-  }
-  
-  .submenu a:hover {
-    color: #007BFF;
+    white-space: nowrap; /* 줄바꿈 방지 */
   }
   
