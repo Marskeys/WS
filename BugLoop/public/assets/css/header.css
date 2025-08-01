@@ -745,3 +745,14 @@ html.dark .lang-option:hover {
       /* 모바일 화면에 맞게 스타일 조정 */
   }
 }
+
+/* 기본 상태: 어두운 회색 */
+.sidebar-icon[data-tab="settings"] {
+  color: #a0a0a0; /* 어두운 회색 (예시) */
+  transition: color 0.3s ease; /* 색상 변화에 애니메이션 효과 추가 */
+}
+
+/* 활성화 상태: 하얀색 */
+.sidebar-icon[data-tab="settings"].is-active {
+  color: #ffffff; /* 하얀색 */
+}

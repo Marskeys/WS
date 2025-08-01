@@ -157,5 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // rightControls의 is-active 클래스 토글
       rightControls.classList.toggle('is-active');
+      settingsIcon.classList.toggle('is-active');
   });
 });
