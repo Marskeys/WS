@@ -728,3 +728,24 @@ html.dark .lang-option:hover {
 .submenu {
   padding-right: 50px;
 }
+
+/* 기본적으로 숨기기 */
+#right-controls {
+  display: none;
+}
+
+/* is-active 클래스가 추가되었을 때 보이게 하기 */
+#right-controls.is-active {
+  display: flex; /* flexbox 사용 */
+  /* 필요에 따라 모바일 화면에 맞게 스타일 조정 */
+  flex-direction: column; 
+  align-items: center;
+  width: 100%;
+}
+
+/* 모바일 화면에서만 적용되도록 미디어 쿼리 추가 */
+@media (max-width: 768px) {
+  #right-controls.is-active {
+      /* 모바일 화면에 맞게 스타일 조정 */
+  }
+}
