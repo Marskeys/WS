@@ -9,7 +9,7 @@ body.panel-open .header-top {
 }
 
 body.panel-open .left-controls {
-  width: 100px;
+  width: 100px !important;
 }
 
 @media (max-width: 768px) {
