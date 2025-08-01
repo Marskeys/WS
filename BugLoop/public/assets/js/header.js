@@ -20,6 +20,30 @@ document.addEventListener('DOMContentLoaded', () => {
     sidePanel?.style.setProperty('pointer-events', 'none');
   }
 
+  // ==== 언어 드롭다운 이벤트 바인딩 함수 ====
+  function bindLangDropdown(context = document) {
+    const langToggle = context.getElementById
+      ? context.getElementById('langToggle')
+      : context.querySelector('#langToggle');
+    const langMenu = context.getElementById
+      ? context.getElementById('langMenu')
+      : context.querySelector('#langMenu');
+
+    if (langToggle && langMenu) {
+      langToggle.addEventListener('click', (e) => {
+        console.log('🟣 langToggle clicked');
+        e.preventDefault();
+        langMenu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+          langMenu.classList.remove('show');
+        }
+      });
+    }
+  }
+
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
     if (!extensionPanel.classList.contains('open')) {
@@ -35,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
+      bindLangDropdown(clone);
     }
 
     icons.forEach(i => i.classList.remove('active'));
@@ -117,59 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('❌ 로그인 요소 못 찾음');
   }
 
-  // ** 기존 bindLangDropdown 함수 로직을 직접 포함하고, 사이드바 버튼에 대한 리스너도 추가했습니다.
-  // ** 이 코드가 모든 언어 버튼과 토글을 한 번에 제어합니다.
-  const langToggle = document.getElementById('langToggle');
-  const langMenu = document.getElementById('langMenu');
-  const langToggleSidebar = document.getElementById('langToggleSidebar');
-  const langMenuSidebar = document.getElementById('langMenuSidebar');
-
-  const modeToggle = document.getElementById('mode-toggle-accessible');
-  const modeToggleSidebar = document.getElementById('mode-toggle-accessible-sidebar');
-  
-  if (langToggle && langMenu) {
-    langToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      langMenu.classList.toggle('show');
-    });
-  }
-
-  if (langToggleSidebar && langMenuSidebar) {
-    langToggleSidebar.addEventListener('click', (e) => {
-      e.preventDefault();
-      langMenuSidebar.classList.toggle('show');
-    });
-  }
-
-  // 라이트/다크 모드 토글
-  const toggleDarkMode = () => {
-    document.body.classList.toggle('dark-mode');
-    const isDarkMode = document.body.classList.contains('dark-mode');
-    localStorage.setItem('darkMode', isDarkMode);
-
-    if (modeToggle) modeToggle.setAttribute('aria-checked', isDarkMode);
-    if (modeToggleSidebar) modeToggleSidebar.setAttribute('aria-checked', isDarkMode);
-  };
-
-  if (modeToggle) modeToggle.addEventListener('click', toggleDarkMode);
-  if (modeToggleSidebar) modeToggleSidebar.addEventListener('click', toggleDarkMode);
-
-  // 초기 다크 모드 설정
-  const isDarkMode = localStorage.getItem('darkMode') === 'true';
-  if (isDarkMode) {
-    document.body.classList.add('dark-mode');
-    if (modeToggle) modeToggle.setAttribute('aria-checked', 'true');
-    if (modeToggleSidebar) modeToggleSidebar.setAttribute('aria-checked', 'true');
-  }
-
-  // 드롭다운 외부 클릭 시 닫기
-  document.addEventListener('click', (e) => {
-    if (langMenu && !langToggle.contains(e.target) && !langMenu.contains(e.target)) {
-      langMenu.classList.remove('show');
-    }
-    if (langMenuSidebar && !langToggleSidebar.contains(e.target) && !langMenuSidebar.contains(e.target)) {
-      langMenuSidebar.classList.remove('show');
-    }
-  });
-
+  // ✅ 최초 바인딩ㅎ
+  bindLangDropdown(document);
 });

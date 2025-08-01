@@ -218,12 +218,11 @@
             </button>
             <ul id="langMenuSidebar" class="lang-menu">
               <%
-                // **수정된 부분:** 변수명을 'sidebarCurrentPathWithoutLang'로 변경하여 충돌을 방지했습니다.
-                const sidebarCurrentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+                const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
               %>
               <% supportedLangs.forEach(langCode => { %>
                 <li>
-                  <a href="/<%= langCode %><%= sidebarCurrentPathWithoutLang %>"
+                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
                     class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
                     <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
                     <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
