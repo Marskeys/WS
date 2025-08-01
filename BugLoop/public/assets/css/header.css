@@ -82,13 +82,12 @@
 }
 
 .side-panel.main-panel-only {
-  pointer-events: none; /* 기본은 막아둠 */
+  pointer-events: none;
 }
 .side-panel.main-panel-only.open {
-  pointer-events: auto; /* 열리면 클릭 가능 */
+  pointer-events: auto;
 }
 
-/* vscode-sidebar는 항상 허용 */
 .vscode-sidebar {
   pointer-events: auto !important;
 }
@@ -118,12 +117,12 @@
   box-sizing: border-box; 
   top: 0;
   left: 0;
-  width: 360px; /* 원하는 고정 폭 */
+  width: 360px;
   min-width: 360px;
   max-width: 360px;
   background-color: rgb(0, 0, 0);
   color: rgb(210, 210, 210);
-  padding: 10px 16px; /* 상하 10px, 좌우 16px */
+  padding: 10px 16px;
   border-right: 1px solid #444;
   height: 100vh;
   overflow-y: auto;
@@ -134,12 +133,12 @@
   opacity: 0;
   pointer-events: none;
   transition: transform 0.3s ease, opacity 0.3s ease;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .sidebar-extension-panel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .sidebar-extension-panel.open {
@@ -154,7 +153,6 @@
       transform: translateX(-100%);
       min-width: 0px;
   }
-
   .sidebar-extension-panel.open {
       transform: translateX(0);
   }
@@ -189,7 +187,7 @@
  🔹 panel-footer 하단 고정
 ====================== */
 .panel-footer {
-  margin-top: auto; /* 🧡 푸터를 항상 맨 아래로 */
+  margin-top: auto;
   flex-shrink: 0;
   padding: 10px;
   border-top: 1px solid #444;
@@ -354,7 +352,7 @@
 }
 
 /* ==================================
- 🔹 헤더 & 메뉴 레이아웃
+ 🔹 헤더 & 메뉴 레이아웃 (재수정)
 ================================== */
 .header-top {
   width: 100%;
@@ -365,7 +363,7 @@
   align-items: center;
   position: fixed;
   top: 0;
-  left: 50px; /* 사이드바 너비만큼 왼쪽에서 띄움 */
+  left: 50px;
   z-index: 1;
   transition: background 0.4s ease;
   background: black;
@@ -388,7 +386,6 @@
   flex-shrink: 1;
 }
 
-/* 🚩 메뉴 컨테이너 스크롤 관련 */
 .main-menu-container {
   list-style: none;
   display: flex;
@@ -399,7 +396,8 @@
   overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  height: 100%; /* 부모 높이를 채우도록 설정 */
+  height: 100%;
+  gap: 0; /* ✨ gap 제거 */
 }
 
 .main-menu-container::-webkit-scrollbar {
@@ -410,31 +408,36 @@
 .menu-item-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  flex-shrink: 0; /* ✨ 각 메뉴 항목이 줄어들지 않도록 설정 */
+  margin-right: 20px; /* ✨ 메뉴 항목 간 간격 설정 */
+  min-width: 120px; /* ✨ 최소 너비 설정 (필요에 따라 조정) */
 }
 
 .menu-label-wrapper {
   position: sticky;
-  left: 0; /* 가로 스크롤 시 상단에 고정 */
+  left: 0;
   z-index: 10;
-  background: inherit; /* 부모 요소의 배경색을 상속받아 자연스럽게 만듦 */
-  padding-right: 10px; /* 라벨과 서브메뉴 간의 간격 조정 */
+  background: inherit;
+  padding-right: 10px;
 }
 
 .menu-label {
-  font-size: 0.95rem;
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 6px;
   font-weight: 500;
-  color: #fff;
-  white-space: nowrap;
-  padding-top: 3px;
-  padding-bottom: 3px;
+  font-size: 13px;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .submenu {
   display: flex;
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin-top: 5px; /* ✨ 라벨과 서브메뉴 간 간격 */
   gap: 10px;
   white-space: nowrap;
 }
@@ -583,7 +586,6 @@ html.dark .lang-option {
 html.dark .lang-option:hover {
   background-color: #333;
 }
-
 
 /* ======================
  🔹 프로필 탭
