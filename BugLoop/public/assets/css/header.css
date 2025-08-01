@@ -370,7 +370,7 @@ display: none; /* Chrome, Safari, Opera */
 
 
 /* ======================
- 🔹 헤더 & 언어 선택
+ 🔹 헤더 & 언어 선택 (수정된 부분)
 ====================== */
 .header-top {
   width: 100%;
@@ -383,7 +383,7 @@ display: none; /* Chrome, Safari, Opera */
   top: 0;
   left: 100px;
   z-index: 1;
-  transition: background 0.4s ease; /* 💡 부드럽게 전환 */
+  transition: background 0.4s ease;
   background: black;
 }
 
@@ -394,63 +394,62 @@ display: none; /* Chrome, Safari, Opera */
   width: 100%;
 }
 
+.left-controls {
+  flex-shrink: 0;
+  padding-right: 15px;
+}
+
 .header-menu {
-  /* 메뉴가 차지할 최대 공간을 명확히 정의합니다.
-     오른쪽 컨트롤러가 차지할 공간(대략 150px)을 남겨줍니다. */
-  width: calc(100% - 150px);
-  flex-shrink: 1; /* 공간이 부족하면 메뉴가 줄어들도록 합니다. */
+  flex-grow: 1;
   min-width: 0;
-  
-  /* 메뉴가 차지하는 영역을 명확히 하기 위해 추가 */
+  flex-shrink: 1;
   overflow: hidden;
 }
 
 .main-menu-container {
   list-style: none;
-  display: flex; /* 라벨과 서브메뉴 전체 세트들을 가로로 나열 */
+  display: flex;
   gap: 20px;
   margin: 0;
   padding: 0;
-  white-space: nowrap; /* 줄바꿈 방지 */
+  white-space: nowrap; 
   
-  /* 가로 스크롤 적용 */
   overflow-x: auto;
   overflow-y: hidden;
   
-  /* 스크롤바 숨기기 */
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .main-menu-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .menu-item-wrapper {
   display: flex;
-  flex-direction: column; /* 라벨과 서브메뉴가 세로로 쌓이도록 */
-  gap: 5px; /* 라벨과 서브메뉴 사이 간격 */
+  flex-direction: column;
+  gap: 5px;
 }
 
 .menu-label {
   font-size: 0.95rem;
   font-weight: 500;
   color: #fff;
-  white-space: nowrap; /* 라벨 줄바꿈 방지 */
+  white-space: nowrap;
 }
 
 .submenu {
-  display: flex; /* 서브메뉴 아이템들을 가로로 나열 */
+  display: flex;
   list-style: none;
   padding: 0;
   margin: 0;
-  gap: 10px; /* 서브메뉴 아이템 간 간격 */
+  gap: 10px;
   white-space: nowrap;
 }
 
 .submenu li a {
   text-decoration: none;
-  color: #fff; /* 서브메뉴 링크 색상 */
+  color: #fff;
   font-size: 0.85rem;
   transition: color 0.2s ease;
 }
@@ -469,8 +468,8 @@ display: none; /* Chrome, Safari, Opera */
   display: flex;
   align-items: center;
   gap: 15px;
-  z-index: 1000; /* 메뉴보다 높은 z-index를 부여하여 겹쳐도 보이게 합니다. */
-  flex-shrink: 0; /* 공간이 부족해도 줄어들지 않도록 합니다. */
+  z-index: 1000;
+  flex-shrink: 0;
 }
 
 .light-switch {
