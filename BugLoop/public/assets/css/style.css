@@ -4,6 +4,9 @@ body.panel-open {
   width: calc(100%);
 }
 
+body.panel-open .header-top {
+  left: 420px;
+}
 
 @media (max-width: 768px) {
   body.panel-open {
