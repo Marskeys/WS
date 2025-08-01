@@ -467,10 +467,9 @@ display: none; /* Chrome, Safari, Opera */
   align-items: center;
   gap: 5px;
   z-index: 1000;
-  flex-basis: 180px; 
+  flex-basis: 200px; 
   flex-shrink: 0; /* 이 부분이 중요합니다. 절대 줄어들지 않도록 고정 */
   margin-left: auto; /* 이 부분이 메뉴와 우측 컨트롤러 사이에 여백을 줍니다. */
-  padding-right: 10px;
 }
 
 /* ==================================
