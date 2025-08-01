@@ -368,10 +368,9 @@ display: none; /* Chrome, Safari, Opera */
 }
 
 
-
-/* ======================
- 🔹 헤더 & 언어 선택 (수정된 부분)
-====================== */
+/* ==================================
+ 🔹 헤더 & 메뉴 레이아웃 (수정된 부분)
+================================== */
 .header-top {
   width: 100%;
   padding: 3px 20px;
@@ -389,7 +388,6 @@ display: none; /* Chrome, Safari, Opera */
 
 .top-controls {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -400,8 +398,8 @@ display: none; /* Chrome, Safari, Opera */
 }
 
 .header-menu {
-  flex-grow: 1;
-  min-width: 0;
+  flex-grow: 1; /* 남은 공간을 최대한 가져감 */
+  min-width: 0; /* 메뉴가 좁아질 수 있게 허용 */
   flex-shrink: 1;
   overflow: hidden;
 }
@@ -469,9 +467,13 @@ display: none; /* Chrome, Safari, Opera */
   align-items: center;
   gap: 15px;
   z-index: 1000;
-  flex-shrink: 0;
+  flex-shrink: 0; /* 이 부분이 중요합니다. 절대 줄어들지 않도록 고정 */
+  margin-left: auto; /* 이 부분이 메뉴와 우측 컨트롤러 사이에 여백을 줍니다. */
 }
 
+/* ==================================
+ 🔹 라이트 모드 & 언어 선택
+================================== */
 .light-switch {
   display: flex;
   align-items: center;
@@ -515,6 +517,7 @@ display: none; /* Chrome, Safari, Opera */
 .language-dropdown {
   position: relative;
   display: inline-block;
+  flex-shrink: 0; /* 이 부분도 추가했습니다. */
 }
 
 .lang-btn {
@@ -588,6 +591,9 @@ html.dark .lang-option:hover {
 
 
 
+/* ======================
+ 🔹 프로필 탭
+====================== */
 .profile-tab {
   display: flex;
   position: relative;
