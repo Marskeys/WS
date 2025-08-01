@@ -15,6 +15,13 @@
         <% } %>
       </div>
       
+      이전에 제가 제공해 드린 EJS 코드는 스크롤 동작을 방해하는 구조적인 문제가 있었습니다. 고객님이 원하시는 대로 라벨은 고정되고 서브메뉴만 스크롤되도록 EJS 코드를 다음과 같이 수정해야 합니다.
+
+      수정된 EJS 코드
+      아래 코드를 기존 EJS 파일의 메뉴 부분에 덮어쓰기 해 주세요. 핵심은 menu-item-wrapper 안에 라벨과 서브메뉴가 함께 배치되도록 하는 것입니다.
+      
+      HTML
+      
       <nav class="header-menu">
           <ul class="main-menu-container">
               <li class="menu-item-wrapper">

@@ -403,11 +403,12 @@
   display: none;
 }
 
-/* ✨ 이 부분이 핵심 수정입니다. */
+/* ✨ 이 부분을 수정했습니다. flex-direction: column을 제거하고, 라벨과 서브메뉴가 가로로 나열되도록 했습니다. */
 .menu-item-wrapper {
   display: flex;
-  flex-direction: column;
   flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
 }
 
 .menu-label {
@@ -415,26 +416,26 @@
   left: 0;
   top: 0;
   z-index: 10;
-  background-color: black; /* 부모와 동일한 배경색으로 설정하여 자연스럽게 겹치도록 합니다. */
   
-  /* 메뉴 라벨 디자인 */
+  /* 부모 컨테이너와 동일한 배경색을 설정하여 라벨이 고정되었을 때 자연스럽게 보이도록 합니다. */
+  background-color: black;
+  
+  /* 라벨 자체의 스타일 */
   font-size: 0.95rem;
   font-weight: 500;
   color: #fff;
   white-space: nowrap;
-  background-color: #4CAF50;
   padding: 5px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  display: inline-block;
 }
 
 .submenu {
   display: flex;
   list-style: none;
   padding: 0;
-  margin: 5px 0 0 0;
+  margin: 0;
   gap: 10px;
   white-space: nowrap;
 }
