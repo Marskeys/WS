@@ -718,10 +718,10 @@ html.dark .lang-option:hover {
 .menu-label {
   background-color: #4CAF50; /* 밝은 초록색 */
   color: white; /* 글씨는 흰색 */
-  padding: 3px 12px; /* 버튼 느낌을 주는 패딩 */
+  padding: 5px 12px; /* 버튼 느낌을 주는 패딩 */
   border-radius: 6px; /* 모서리 둥글게 */
   font-weight: 500; /* 약간 두껍게 */
-  font-size: 10px;
+  font-size: 13px;
   display: inline-block; /* 텍스트만큼 영역 차지 */
   cursor: pointer; /* 마우스 올리면 버튼 느낌 */
   transition: background-color 0.2s ease;
