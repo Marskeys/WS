@@ -642,120 +642,69 @@ html.dark .lang-option:hover {
   }
 
 
- /* ==================================
-   🔹 메뉴 전체 레이아웃 (수정)
-================================== */
-.header-menu {
-  display: flex;
-  flex-direction: column; /* 라벨과 서브메뉴가 세로로 쌓이도록 변경 */
-  justify-content: flex-start;
-}
-
-/* ==================================
-   🔹 상위 라벨 영역 (고정)
-================================== */
-/* 새로 추가된 라벨 컨테이너 */
-.main-menu-labels {
-  list-style: none;
-  display: flex; /* 라벨들을 가로로 나열 */
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-}
-
-.main-menu-labels .menu-item-label {
-  /* 메뉴 아이템의 기본 스타일 */
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  color: white; /* 스크롤 전 기본 색상 */
-  transition: color 0.2s ease;
-}
-
-.main-menu-labels .menu-label {
-  font-size: 0.95rem;
-}
-
-/* ==================================
-   🔹 서브메뉴 영역 (가로 스크롤)
-================================== */
-/* 서브메뉴들을 담는 스크롤 컨테이너 - 핵심 */
-.submenu-scroll-container {
-  overflow-x: auto;       /* 가로 스크롤 허용 */
-  overflow-y: hidden;     /* 세로 스크롤 숨기기 */
-  width: 100%;            /* 부모 요소에 맞춤 */
-  padding-top: 10px;      /* 라벨과 서브메뉴 간 간격 */
-  box-sizing: border-box;
-
-  /* 스크롤바 숨기기 (크롬/사파리/엣지) */
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-
-.submenu-scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
-/* 서브메뉴들을 담는 ul - 가로 정렬 */
-.main-menu-items {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap; /* 서브메뉴 아이템 줄바꿈 방지 */
-}
-
-/* 각 서브메뉴 그룹의 ul */
-.main-menu-items .submenu {
-  display: flex;
-  gap: 15px; /* 서브메뉴 아이템 간 간격 */
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* 서브메뉴의 각 링크 */
-.main-menu-items .submenu li a {
-  text-decoration: none;
-  color: inherit;
-  font-size: 0.85rem; /* 서브메뉴 글자 크기 조정 */
-  transition: color 0.2s ease;
-}
-
-/* 마우스 오버 효과 */
-.main-menu-labels .menu-label:hover,
-.main-menu-items .submenu li a:hover {
-  color: #007BFF;
-}
-
-
-/* ==================================
-   🔹 스크롤 시 색상 변화 (기존 CSS와 통합)
-================================== */
-.header-top.scrolled .main-menu-labels .menu-item-label,
-.header-top.scrolled .main-menu-items .submenu li a {
-  color: white;
-}
-
-/* ==================================
-   🔹 반응형 (모바일)
-================================== */
-@media (max-width: 640px) {
-  /* 라벨과 서브메뉴 글자 크기 더 작게 조정 */
-  .main-menu-labels .menu-label {
-    font-size: 0.8rem;
+  .header-menu {
+    /* ... (기존 스타일 유지) ... */
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
   }
-  .main-menu-items .submenu li a {
-    font-size: 0.75rem;
+  
+  .main-menu-container {
+    list-style: none;
+    display: flex; /* 라벨과 서브메뉴 전체 세트들을 가로로 나열 */
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    
+    /* 가로 스크롤 적용 */
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    /* 스크롤바 숨기기 */
+    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
   }
-
-  /* 간격 조정 */
-  .main-menu-labels {
-    gap: 10px;
+  
+  .main-menu-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
-  .main-menu-items {
-    gap: 10px;
+  
+  .menu-item-wrapper {
+    display: flex;
+    flex-direction: column; /* 라벨과 서브메뉴가 세로로 쌓이도록 */
+    gap: 5px; /* 라벨과 서브메뉴 사이 간격 */
   }
-}
+  
+  .menu-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap; /* 라벨 줄바꿈 방지 */
+  }
+  
+  .submenu {
+    display: flex; /* 서브메뉴 아이템들을 가로로 나열 */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 10px; /* 서브메뉴 아이템 간 간격 */
+    white-space: nowrap;
+  }
+  
+  .submenu li a {
+    text-decoration: none;
+    color: #fff; /* 서브메뉴 링크 색상 */
+    font-size: 0.85rem;
+    transition: color 0.2s ease;
+  }
+  
+  .submenu li a:hover {
+    color: #007BFF;
+  }
+  
+  /* 스크롤 시 색상 변화 */
+  .header-top.scrolled .menu-label,
+  .header-top.scrolled .submenu li a {
+    color: white;
+  }
