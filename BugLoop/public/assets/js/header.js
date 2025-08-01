@@ -145,3 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ✅ 최초 바인딩ㅎ
   bindLangDropdown(document);
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  const settingsIcon = document.querySelector('a[data-tab="settings"]');
+  const rightControls = document.getElementById('right-controls');
+
+  settingsIcon.addEventListener('click', function(event) {
+      event.preventDefault(); // 링크 이동 방지
+      
+      // rightControls의 is-active 클래스 토글
+      rightControls.classList.toggle('is-active');
+  });
+});
