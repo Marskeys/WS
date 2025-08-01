@@ -645,6 +645,7 @@ html.dark .lang-option:hover {
   .header-menu {
     display: flex;
     justify-content: left; /* 가운데 배치 */
+    left: 80px;
   }
   
   .header-menu ul {
