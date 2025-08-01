@@ -291,32 +291,4 @@
   <script src="/assets/js/header.js"></script>
   <script src="/assets/js/global.js"></script>
 
-  <script>
-    document.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      const header = document.querySelector('.header-top');
-
-      // 배경 변화
-      const maxScroll = 300;
-      const percent = Math.min(scrollY / maxScroll, 1);
-      const start = Math.floor(80 - 80 * percent);
-      const mid = Math.floor(95 - 95 * percent);
-      const end = Math.floor(100 - 100 * percent);
-
-      header.style.background = `
-        linear-gradient(to right,
-          rgba(0,0,0,0) ${start}%,
-          rgba(0,0,0,0.3) ${mid}%,
-          rgba(0,0,0,0.9) ${end}%,
-          rgba(0,0,0,1) 100%
-        )
-      `;
-
-      // 색상 토글
-      if (percent > 0.2) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    });
-  </script>
+ 
