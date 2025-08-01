@@ -643,56 +643,67 @@ html.dark .lang-option:hover {
 
 
   .header-menu {
-    display: flex;
-    justify-content: flex-start;
+    width: 100%;
+    background: #fff;
+    border-bottom: 2px solid #eee;
+    font-family: sans-serif;
   }
   
-  .header-menu .main-menu {
+  .main-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    width: 100%;
   }
   
+  /* 라벨 한 줄 */
   .menu-item {
     display: flex;
-    align-items: center;
-    position: relative;
+    flex-direction: column;
+    border-bottom: 1px solid #eee;
   }
   
-  .menu-item .menu-label {
-    position: sticky;
-    left: 0;
-    min-width: 120px;   /* 라벨 영역 고정 폭 */
-    background: white;  /* 배경색 있어야 아래 내용 안 비침 */
+  .menu-label {
+    padding: 10px 20px;
     font-weight: bold;
-    padding: 5px 10px;
-    z-index: 1;
+    white-space: nowrap;
+    background: #f9f9f9;
+    border-bottom: 1px solid #eee;
   }
   
+  /* 서브메뉴 가로 스크롤 */
   .submenu {
     display: flex;
     overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
     gap: 20px;
-    margin-left: 10px;
-    scrollbar-width: none;
+    padding: 10px 20px;
+    margin: 0;
+    list-style: none;
+    background: white;
+  }
+  
+  .submenu li {
+    flex: 0 0 auto;
+  }
+  
+  .submenu a {
+    text-decoration: none;
+    color: #333;
+    white-space: nowrap;
+    font-size: 0.9rem;
   }
   
   .submenu::-webkit-scrollbar {
-    display: none;
+    height: 6px;
   }
   
-  .submenu li a {
-    text-decoration: none;
-    color: inherit;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
+  .submenu::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
   }
   
-  .submenu li a:hover {
+  .submenu a:hover {
     color: #007BFF;
   }
   
