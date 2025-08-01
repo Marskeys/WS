@@ -84,6 +84,7 @@
 .side-panel.main-panel-only {
   pointer-events: none;
 }
+
 .side-panel.main-panel-only.open {
   pointer-events: auto;
 }
@@ -114,7 +115,7 @@
 ====================== */
 .sidebar-extension-panel {
   position: relative;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   top: 0;
   left: 0;
   width: 360px;
@@ -397,54 +398,42 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   height: 100%;
+  gap: 20px; /* 메뉴 항목 간 간격 설정 */
 }
 
 .main-menu-container::-webkit-scrollbar {
   display: none;
 }
 
-/* ✨ 여기를 수정합니다. */
+/* ✨ 이 부분을 수정했습니다. */
 .menu-item-wrapper {
-  position: sticky;
-  top: 0;
-  left: 0; /* 가로 스크롤에 고정 */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* 라벨과 서브메뉴를 왼쪽으로 정렬 */
-  flex-shrink: 0; /* 공간이 부족해도 줄어들지 않음 */
-  z-index: 10; /* 다른 메뉴 위로 올라오도록 설정 */
-  background: black; /* 부모와 동일한 배경색으로 설정 */
+  flex-shrink: 0;
 }
 
-.menu-item-wrapper:not(:first-child) {
-  margin-left: -5px; /* 다음 메뉴 항목이 현재 항목을 밀어내는 효과를 위해 음수 마진 사용 */
-}
-
-.menu-item-wrapper > .menu-label {
-  padding-right: 10px; /* 라벨과 서브메뉴 간격 */
-  position: relative;
-  z-index: 11;
-}
-
-/* ✨ 이전 코드에서 옮겨온 스타일 */
 .menu-label {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #fff;
-  white-space: nowrap;
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 10;
   background-color: #4CAF50;
+  color: white;
   padding: 5px 12px;
   border-radius: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  display: inline-block;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  display: inline-block;
+  white-space: nowrap;
 }
 
 .submenu {
   display: flex;
   list-style: none;
   padding: 0;
-  margin: 5px 0 0 0;
+  margin-top: 5px; /* 라벨과 서브메뉴 간 간격 */
   gap: 10px;
   white-space: nowrap;
 }
