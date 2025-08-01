@@ -645,29 +645,64 @@ html.dark .lang-option:hover {
   .header-menu {
     width: 100%;
     background: #fff;
-  }
-  
-  .main-menu {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 16px; /* 간격 조절 */
     border-bottom: 1px solid #ddd;
-    padding: 8px 0;
+    font-family: sans-serif;
   }
   
-  .menu-label {
-    font-weight: bold;
-    min-width: 150px; /* 라벨 고정 폭 */
+  .label-row {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #f8f8f8;
+    border-bottom: 1px solid #ddd;
   }
-  .menu-item a {
+  
+  .label-row .menu-label {
+    padding: 12px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  .label-row .menu-label:hover {
+    background: #eee;
+    color: #007bff;
+  }
+  
+  .label-row .menu-label.active {
+    background: #007bff;
+    color: #fff;
+  }
+  
+  .submenu-container {
+    background: #fff;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+  }
+  
+  .submenu {
+    display: none;
+    list-style: none;
+    padding: 0 20px;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .submenu.active {
+    display: flex;
+  }
+  
+  .submenu li a {
     text-decoration: none;
     color: #333;
-    white-space: nowrap; /* 줄바꿈 방지 */
+    transition: color 0.3s;
+    white-space: nowrap;
   }
   
+  .submenu li a:hover {
+    color: #007bff;
+  }
