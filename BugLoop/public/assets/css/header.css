@@ -729,24 +729,14 @@ html.dark .lang-option:hover {
   padding-right: 50px;
 }
 
-
-
+/* 기본적으로 숨기기 */
 #right-controls {
-  position: absolute; /* 레이아웃 흐름에서 제외 */
-  left: 100%; /* 화면 오른쪽 밖으로 이동 */
-  visibility: hidden;
-  opacity: 0;
-  
-  /* 애니메이션 효과를 위한 트랜지션 추가 */
-  transition: opacity 0.5s ease, left 0.5s ease;
-  z-index: 1000; /* 다른 요소 위에 덮이도록 z-index 설정 */
+  display: none;
 }
 
+/* is-active 클래스가 추가되었을 때 보이게 하기 */
 #right-controls.is-active {
-  position: absolute; /* 활성화될 때도 레이아웃 흐름에서 제외 */
-  left: 0; /* 화면 안으로 이동 */
-  visibility: visible;
-  opacity: 1;
+  display: flex;
 }
 
 /* 모바일 화면에서만 적용되도록 미디어 쿼리 추가 */
