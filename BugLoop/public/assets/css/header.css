@@ -466,8 +466,8 @@
   flex-shrink: 0;
   margin-left: auto;
   
-  /* 아래 코드를 추가합니다. */
-  filter: blur(5px);
+  /* 이 한 줄을 추가합니다. */
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* ==================================
