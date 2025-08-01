@@ -381,7 +381,7 @@
     align-items: center;
     position: fixed;
     top: 0;
-    left: 0;
+    left: 100px;
     z-index: 1;
     transition: background 0.4s ease; /* 💡 부드럽게 전환 */
     background: linear-gradient(to right,
@@ -645,7 +645,6 @@ html.dark .lang-option:hover {
   .header-menu {
     display: flex;
     justify-content: left; /* 가운데 배치 */
-    left: 80px;
   }
   
   .header-menu ul {
