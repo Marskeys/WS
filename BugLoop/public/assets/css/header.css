@@ -746,18 +746,6 @@ html.dark .lang-option:hover {
   }
 }
 
-/* 모바일 화면에서만 적용될 스타일 (예: 화면 너비가 768px 이하일 때) */
-@media (max-width: 768px) {
-  /* 모바일 기본 상태: right-controls 숨기기 */
-  #right-controls {
-    display: none;
-    flex-direction: column; /* 모바일에 맞게 세로 정렬 */
-  }
-
-  /* 모바일에서 is-active 클래스가 있을 때만 보이게 함 */
-  #right-controls.is-active {
-    display: flex;
-  }
 
 /* 기본 상태: 어두운 회색 */
 .sidebar-icon[data-tab="settings"] {
