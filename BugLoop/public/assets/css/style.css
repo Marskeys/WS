@@ -44,37 +44,7 @@ html, body {
 
 
 
-/* ======================
-   🔹 헤더 상단 컨트롤 (언어/다크모드 버튼 배치)
-====================== */
 
-.top-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    flex-wrap: nowrap;
-    z-index: 5000;
-}
-
-.left-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: relative;
-    flex: 1 1 auto;
-    width: 100%;
-    min-width: 0;
-}
-
-.right-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-    flex: 0 0 auto;
-    white-space: nowrap;
-}
 
 /* ======================
    🔹 로고 스타일
@@ -201,12 +171,7 @@ html, body {
   } */ /* 주석 처리 */
 }
 
-@media (max-width: 640px) {
-  .right-controls {
-    transform: scale(0.65); /* ✅ 전체 줄 비율 축소 */
-    transform-origin: right center; /* ✅ 오른쪽 기준으로 축소 */
-  }
-}
+
 
 /* ======================
    🔹 기타 유틸리티
