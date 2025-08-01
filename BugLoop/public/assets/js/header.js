@@ -71,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
   icons.forEach(icon => {
     icon.addEventListener('click', (e) => {
       const selectedTab = icon.dataset.tab;
-      if (selectedTab === 'write' || selectedTab === 'home') return;
+      if (selectedTab === 'write' || selectedTab === 'home' || selectedTab === 'settings') {
+        return; 
+      }
       if (icon.classList.contains('toggle-extension')) return;
       e.preventDefault();
       openTab(selectedTab);
