@@ -203,17 +203,17 @@
           <div class="language-dropdown sidebar-icon">
             <button id="langToggleSidebar" class="lang-btn">
               <%
-                let flagCode = lang;
+                let sidebarFlagCode = lang;
                 switch(lang) {
-                  case 'ko': flagCode = 'kr'; break;
-                  case 'en': flagCode = 'gb'; break;
-                  case 'zh': flagCode = 'cn'; break;
-                  case 'ja': flagCode = 'jp'; break;
-                  case 'fr': flagCode = 'fr'; break;
-                  default: flagCode = 'kr';
+                  case 'ko': sidebarFlagCode = 'kr'; break;
+                  case 'en': sidebarFlagCode = 'gb'; break;
+                  case 'zh': sidebarFlagCode = 'cn'; break;
+                  case 'ja': sidebarFlagCode = 'jp'; break;
+                  case 'fr': sidebarFlagCode = 'fr'; break;
+                  default: sidebarFlagCode = 'kr';
                 }
               %>
-              <span class="fi fi-<%= flagCode %>"></span>
+              <span class="fi fi-<%= sidebarFlagCode %>"></span>
               <i class="fas fa-caret-down"></i>
             </button>
             <ul id="langMenuSidebar" class="lang-menu">
