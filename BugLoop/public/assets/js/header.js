@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginBtn = document.getElementById('login');
   const loginFormContainer = document.getElementById('login-form-container');
   const sidePanel = document.querySelector('.side-panel.main-panel-only');
+  const settingsIcon = document.querySelector('a[data-tab="settings"]');
+  const rightControls = document.getElementById('right-controls');
 
   let blinkRemoved = false;
 
@@ -103,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // ==== URL 기반 탭 초기 열기 ====
   const path = location.pathname;
   const searchParams = new URLSearchParams(location.search);
 
@@ -134,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ==== 로그인 버튼 ====
   if (loginBtn && loginFormContainer) {
     console.log('✅ 로그인 버튼 활성화됨');
     loginBtn.addEventListener('click', () => {
@@ -144,19 +148,21 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('❌ 로그인 요소 못 찾음');
   }
 
-  // ✅ 최초 바인딩ㅎ
+  // ✅ 최초 바인딩
   bindLangDropdown(document);
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-  const settingsIcon = document.querySelector('a[data-tab="settings"]');
-  const rightControls = document.getElementById('right-controls');
+  // ==== 설정 아이콘 & right-controls ====
+  // ✅ 초기 상태 설정 (데스크톱만 활성화)
+  if (settingsIcon && rightControls && window.innerWidth >= 1024) {
+    rightControls.classList.add('is-active');
+    settingsIcon.classList.add('is-active');
+  }
 
-  settingsIcon.addEventListener('click', function(event) {
-      event.preventDefault(); // 링크 이동 방지
-      
-      // rightControls의 is-active 클래스 토글
-      rightControls.classList.toggle('is-active');
-      settingsIcon.classList.toggle('is-active');
+  settingsIcon?.addEventListener('click', function(event) {
+    event.preventDefault(); // 링크 이동 방지
+    
+    // rightControls의 is-active 클래스 토글
+    rightControls?.classList.toggle('is-active');
+    settingsIcon?.classList.toggle('is-active');
   });
 });
