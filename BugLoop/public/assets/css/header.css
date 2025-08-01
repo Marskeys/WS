@@ -686,7 +686,7 @@ html.dark .lang-option:hover {
   .header-menu .main-menu {
     display: flex;
     gap: 20px;
-    max-width: 1600px;       /* 폭 제한 */
+    max-width: 2000px;       /* 폭 제한 */
     width: 100%;             /* 필요시 조정 */
     overflow-x: auto;       /* 가로 스크롤 */
     overflow-y: hidden;
