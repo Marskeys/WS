@@ -76,21 +76,21 @@
   left: 0;
   display: flex;
   flex-direction: row;
-  height:auto;
+  height: auto;
   width: auto;
   z-index: 30;
 }
 
 .side-panel.main-panel-only {
-pointer-events: none; /* 기본은 막아둠 */
+  pointer-events: none; /* 기본은 막아둠 */
 }
 .side-panel.main-panel-only.open {
-pointer-events: auto; /* 열리면 클릭 가능 */
+  pointer-events: auto; /* 열리면 클릭 가능 */
 }
 
 /* vscode-sidebar는 항상 허용 */
 .vscode-sidebar {
-pointer-events: auto !important;
+  pointer-events: auto !important;
 }
 
 .sidebar-wrapper {
@@ -124,7 +124,6 @@ pointer-events: auto !important;
   background-color: rgb(0, 0, 0);
   color: rgb(210, 210, 210);
   padding: 10px 16px; /* 상하 10px, 좌우 16px */
-
   border-right: 1px solid #444;
   height: 100vh;
   overflow-y: auto;
@@ -140,9 +139,8 @@ pointer-events: auto !important;
 }
 
 .sidebar-extension-panel::-webkit-scrollbar {
-display: none; /* Chrome, Safari, Opera */
+  display: none; /* Chrome, Safari, Opera */
 }
-
 
 .sidebar-extension-panel.open {
   transform: translateX(0);
@@ -214,42 +212,36 @@ display: none; /* Chrome, Safari, Opera */
   display: none;
 }
 
-
-
 /* ======================
- 🔹 auth 버튼들 (수정완료)
+ 🔹 auth 버튼들
 ====================== */
 .auth-buttons {
   display: flex;
-  flex-direction: column;     /* ✅ 세로 정렬 */
-  align-items: stretch;       /* ✅ 양옆 채움 */
+  flex-direction: column;
+  align-items: stretch;
   gap: 10px;
   padding: 10px;
   box-sizing: border-box;
   width: 100%;
 }
 
-/* 모바일 대응 */
 @media (max-width: 640px) {
   .auth-buttons {
-    gap: 8px;
-    flex-direction: column;
-    width: 100%;
+      gap: 8px;
+      flex-direction: column;
+      width: 100%;
   }
-
   .auth-btn.write-post,
   .auth-btn.logout {
-    margin-left: 0 !important;
+      margin-left: 0 !important;
   }
-
   .auth-btn.logout {
-    margin-right: 0 !important;
+      margin-right: 0 !important;
   }
 }
 
-/* 공통 버튼 */
 .auth-btn {
-  width: 100%;                /* ✅ 전체 가로폭 */
+  width: 100%;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -263,7 +255,6 @@ display: none; /* Chrome, Safari, Opera */
   border-radius: 6px;
 }
 
-/* 로그인 버튼 */
 .auth-btn.login {
   border-radius: 999px;
   font-size: 1.2rem;
@@ -276,15 +267,14 @@ display: none; /* Chrome, Safari, Opera */
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
-/* 회원가입 버튼 */
 .auth-btn.signup {
   background: none;
-  border: none;                      /* ✅ 테두리 완전 제거 */
+  border: none;
   color: white;
   font-size: 0.9rem;
   padding: 6px 4px;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  box-shadow: none;                 /* ✅ 그림자도 제거 */
+  box-shadow: none;
 }
 
 .auth-btn.signup:hover {
@@ -292,7 +282,6 @@ display: none; /* Chrome, Safari, Opera */
   text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
 }
 
-/* 글쓰기 버튼 */
 .auth-btn.write-post {
   margin-left: 10px;
   font-size: 0.85rem;
@@ -312,7 +301,6 @@ display: none; /* Chrome, Safari, Opera */
   border-color: rgba(255, 255, 180, 0.8);
 }
 
-/* 로그아웃 버튼 */
 .auth-btn.logout {
   font-size: 0.85rem;
   border-radius: 999px;
@@ -326,12 +314,10 @@ display: none; /* Chrome, Safari, Opera */
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
-
 /* ======================
  🔹 ...로그인 폼 (버튼 클릭 시 등장)
 ====================== */
 .login-form-container {
-  /* display: none; 기본은 숨김 */
   margin-top: 10px;
   padding: 10px;
   border-top: 1px solid #555;
@@ -367,9 +353,8 @@ display: none; /* Chrome, Safari, Opera */
   background-color: #4c16b9;
 }
 
-
 /* ==================================
- 🔹 헤더 & 메뉴 레이아웃 (수정된 부분)
+ 🔹 헤더 & 메뉴 레이아웃
 ================================== */
 .header-top {
   width: 100%;
@@ -380,7 +365,7 @@ display: none; /* Chrome, Safari, Opera */
   align-items: center;
   position: fixed;
   top: 0;
-  left: 50px;
+  left: 50px; /* 사이드바 너비만큼 왼쪽에서 띄움 */
   z-index: 1;
   transition: background 0.4s ease;
   background: black;
@@ -398,35 +383,42 @@ display: none; /* Chrome, Safari, Opera */
 }
 
 .header-menu {
-  flex-grow: 1; /* 남은 공간을 최대한 가져감 */
-  min-width: 0; /* 메뉴가 좁아질 수 있게 허용 */
+  flex-grow: 1;
+  min-width: 0;
   flex-shrink: 1;
-
 }
 
+/* 🚩 메뉴 컨테이너 스크롤 관련 */
 .main-menu-container {
   list-style: none;
   display: flex;
-  gap: 20px;
   margin: 0;
   padding: 0;
-  white-space: nowrap; 
-  
+  white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
-  
   scrollbar-width: none;
   -ms-overflow-style: none;
+  height: 100%; /* 부모 높이를 채우도록 설정 */
 }
 
 .main-menu-container::-webkit-scrollbar {
   display: none;
 }
 
+/* 🚩 sticky 효과를 적용할 메뉴 항목 */
 .menu-item-wrapper {
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.menu-label-wrapper {
+  position: sticky;
+  left: 0; /* 가로 스크롤 시 상단에 고정 */
+  z-index: 10;
+  background: inherit; /* 부모 요소의 배경색을 상속받아 자연스럽게 만듦 */
+  padding-right: 10px; /* 라벨과 서브메뉴 간의 간격 조정 */
 }
 
 .menu-label {
@@ -434,6 +426,8 @@ display: none; /* Chrome, Safari, Opera */
   font-weight: 500;
   color: #fff;
   white-space: nowrap;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .submenu {
@@ -456,7 +450,6 @@ display: none; /* Chrome, Safari, Opera */
   color: #007BFF;
 }
 
-/* 스크롤 시 색상 변화 */
 .header-top.scrolled .menu-label,
 .header-top.scrolled .submenu li a {
   color: white;
@@ -467,10 +460,10 @@ display: none; /* Chrome, Safari, Opera */
   align-items: center;
   gap: 5px;
   z-index: 1000;
-  flex-basis: 150px; 
+  flex-basis: 150px;
   padding-left: 5px;
-  flex-shrink: 0; /* 이 부분이 중요합니다. 절대 줄어들지 않도록 고정 */
-  margin-left: auto; /* 이 부분이 메뉴와 우측 컨트롤러 사이에 여백을 줍니다. */
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* ==================================
@@ -519,7 +512,7 @@ display: none; /* Chrome, Safari, Opera */
 .language-dropdown {
   position: relative;
   display: inline-block;
-  flex-shrink: 0; /* 이 부분도 추가했습니다. */
+  flex-shrink: 0;
 }
 
 .lang-btn {
@@ -580,7 +573,7 @@ display: none; /* Chrome, Safari, Opera */
 html.dark .lang-menu {
   background: #222;
   border-color: #444;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
 }
 
 html.dark .lang-option {
@@ -590,7 +583,6 @@ html.dark .lang-option {
 html.dark .lang-option:hover {
   background-color: #333;
 }
-
 
 
 /* ======================
@@ -614,33 +606,32 @@ html.dark .lang-option:hover {
   margin-left: 25px;
   opacity: 0;
   animation: fadeIn 0.2s ease 0.1s forwards;
-
-  /* 드래그/선택/클릭 방지 */
-  pointer-events: none;       /* 마우스 이벤트 차단 */
-  user-select: none;          /* 선택 방지 */
-  -webkit-user-drag: none;    /* 드래그 방지 (크롬/사파리) */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 @keyframes fadeIn {
   to {
-    opacity: 1;
+      opacity: 1;
   }
 }
+
 .sidebar-extension-panel::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 155px; /* 필요한 만큼만 보이게 조절 */
+  height: 155px;
   background-image: url('/assets/images/room.webp');
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
   z-index: 0;
-  opacity: 1; /* 은은하게 조절 가능 */
+  opacity: 1;
   pointer-events: none;
-  border-bottom: 2px solid rgba(255, 255, 255, 1); /* 은은한 흰 선 */
+  border-bottom: 2px solid rgba(255, 255, 255, 1);
 }
 
 .profile-info {
@@ -667,6 +658,7 @@ html.dark .lang-option:hover {
 .profile-social {
   margin-top: 20px;
 }
+
 .profile-social a {
   color: inherit;
   margin: 0px 8px;
@@ -694,35 +686,23 @@ html.dark .lang-option:hover {
 
 @keyframes icon-pulse-sway {
   0%, 100% {
-    transform: scale(1) translateX(0);
-    color: #ffffff;
+      transform: scale(1) translateX(0);
+      color: #ffffff;
   }
   25% {
-    transform: scale(1.5) translateX(-0.6px);
-    color: #f0f0f0;
+      transform: scale(1.5) translateX(-0.6px);
+      color: #f0f0f0;
   }
   50% {
-    transform: scale(0.9) translateX(0.6px);
-    color: #eaeaea;
+      transform: scale(0.9) translateX(0.6px);
+      color: #eaeaea;
   }
   75% {
-    transform: scale(1.2) translateX(-0.3px);
-    color: #f5f5f5;
+      transform: scale(1.2) translateX(-0.3px);
+      color: #f5f5f5;
   }
 }
 
 .blink-highlight {
   animation: icon-pulse-sway 2s ease-in-out infinite !important;
-}
-
-.menu-label {
-  background-color: #4CAF50; /* 밝은 초록색 */
-  color: white; /* 글씨는 흰색 */
-  padding: 5px 12px; /* 버튼 느낌을 주는 패딩 */
-  border-radius: 6px; /* 모서리 둥글게 */
-  font-weight: 500; /* 약간 두껍게 */
-  font-size: 13px;
-  display: inline-block; /* 텍스트만큼 영역 차지 */
-  cursor: pointer; /* 마우스 올리면 버튼 느낌 */
-  transition: background-color 0.2s ease;
 }

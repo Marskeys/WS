@@ -1,294 +1,305 @@
-  <div class="full-header-container" style="z-index:20000;">
-    <div class="header-top">
-      <div class="top-controls">
-        <div class="left-controls">
-          <%
-          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-          const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
-                          pathWithoutLang.startsWith('/post') ||
-                          pathWithoutLang.startsWith('/edit');
-          %>
-          <% if (showLogo) { %>
-            <a href="/<%= lang %>/" class="logo-link">
+<div class="full-header-container" style="z-index:20000;">
+  <div class="header-top">
+    <div class="top-controls">
+      <div class="left-controls">
+        <%
+        const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+        const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+                        pathWithoutLang.startsWith('/post') ||
+                        pathWithoutLang.startsWith('/edit');
+        %>
+        <% if (showLogo) { %>
+          <a href="/<%= lang %>/" class="logo-link">
 
-            </a>
-          <% } %>
+          </a>
+        <% } %>
+      </div>
+
+      <nav class="header-menu">
+        <ul class="main-menu-container">
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">프론트엔드</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">HTML</a></li>
+              <li><a href="#">CSS</a></li>
+              <li><a href="#">JavaScript</a></li>
+              <li><a href="#">React</a></li>
+              <li><a href="#">Vue</a></li>
+              <li><a href="#">Angular</a></li>
+              <li><a href="#">Svelte</a></li>
+              <li><a href="#">Tailwind</a></li>
+              <li><a href="#">Bootstrap</a></li>
+              <li><a href="#">Webpack</a></li>
+              <li><a href="#">Vite</a></li>
+              <li><a href="#">PWA</a></li>
+            </ul>
+          </li>
+      
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">백엔드</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">Node.js</a></li>
+              <li><a href="#">Express</a></li>
+              <li><a href="#">Django</a></li>
+              <li><a href="#">Flask</a></li>
+              <li><a href="#">FastAPI</a></li>
+              <li><a href="#">Spring</a></li>
+              <li><a href="#">PHP</a></li>
+              <li><a href="#">Laravel</a></li>
+              <li><a href="#">Rails</a></li>
+              <li><a href="#">Go</a></li>
+              <li><a href="#">REST API</a></li>
+              <li><a href="#">GraphQL</a></li>
+            </ul>
+          </li>
+      
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">데이터베이스</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">MySQL</a></li>
+              <li><a href="#">PostgreSQL</a></li>
+              <li><a href="#">MongoDB</a></li>
+              <li><a href="#">Redis</a></li>
+              <li><a href="#">Oracle</a></li>
+              <li><a href="#">SQLite</a></li>
+              <li><a href="#">ElasticSearch</a></li>
+              <li><a href="#">InfluxDB</a></li>
+              <li><a href="#">TimescaleDB</a></li>
+            </ul>
+          </li>
+      
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">네트워크/인프라</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">HTTP</a></li>
+              <li><a href="#">HTTPS</a></li>
+              <li><a href="#">DNS</a></li>
+              <li><a href="#">TCP/IP</a></li>
+              <li><a href="#">WebSocket</a></li>
+              <li><a href="#">CDN</a></li>
+              <li><a href="#">Docker</a></li>
+              <li><a href="#">Kubernetes</a></li>
+              <li><a href="#">AWS</a></li>
+              <li><a href="#">GCP</a></li>
+              <li><a href="#">Azure</a></li>
+              <li><a href="#">Nginx</a></li>
+              <li><a href="#">Apache</a></li>
+            </ul>
+          </li>
+      
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">보안</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">JWT</a></li>
+              <li><a href="#">OAuth2</a></li>
+              <li><a href="#">XSS</a></li>
+              <li><a href="#">CSRF</a></li>
+              <li><a href="#">SQL Injection</a></li>
+              <li><a href="#">HTTPS</a></li>
+              <li><a href="#">TLS</a></li>
+              <li><a href="#">WAF</a></li>
+              <li><a href="#">VPN</a></li>
+              <li><a href="#">DDoS</a></li>
+              <li><a href="#">OWASP Top 10</a></li>
+            </ul>
+          </li>
+      
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">DevOps/운영</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">Git</a></li>
+              <li><a href="#">GitHub Actions</a></li>
+              <li><a href="#">Jenkins</a></li>
+              <li><a href="#">CI/CD</a></li>
+              <li><a href="#">Prometheus</a></li>
+              <li><a href="#">Grafana</a></li>
+              <li><a href="#">ELK Stack</a></li>
+              <li><a href="#">Blue-Green</a></li>
+            </ul>
+          </li>
+      
+          <li class="menu-item-wrapper">
+            <div class="menu-label-wrapper">
+              <span class="menu-label">기타</span>
+            </div>
+            <ul class="submenu">
+              <li><a href="#">웹 성능 최적화</a></li>
+              <li><a href="#">Lighthouse</a></li>
+              <li><a href="#">Core Web Vitals</a></li>
+              <li><a href="#">ARIA</a></li>
+              <li><a href="#">WebAssembly</a></li>
+              <li><a href="#">Electron</a></li>
+              <li><a href="#">React Native</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      
+
+      <div class="right-controls">
+        <div class="language-dropdown">
+          <button id="langToggle" class="lang-btn">
+            <%
+              let flagCode = lang;
+              switch(lang) {
+                case 'ko': flagCode = 'kr'; break;
+                case 'en': flagCode = 'gb'; break;
+                case 'zh': flagCode = 'cn'; break;
+                case 'ja': flagCode = 'jp'; break;
+                case 'fr': flagCode = 'fr'; break;
+                default: flagCode = 'kr';
+              }
+            %>
+            <span class="fi fi-<%= flagCode %>"></span>
+            <i class="fas fa-caret-down"></i>
+          </button>
+          <ul id="langMenu" class="lang-menu">
+            <%
+              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+            %>
+            <% supportedLangs.forEach(langCode => { %>
+              <li>
+                <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
+                  <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                </a>
+              </li>
+            <% }); %>
+          </ul>
         </div>
 
-        <nav class="header-menu">
-          <ul class="main-menu-container">
-            <li class="menu-item-wrapper">
-              <span class="menu-label">프론트엔드</span>
-              <ul class="submenu">
-                <li><a href="#">HTML</a></li>
-                <li><a href="#">CSS</a></li>
-                <li><a href="#">JavaScript</a></li>
-                <li><a href="#">React</a></li>
-                <li><a href="#">Vue</a></li>
-                <li><a href="#">Angular</a></li>
-                <li><a href="#">Svelte</a></li>
-                <li><a href="#">Tailwind</a></li>
-                <li><a href="#">Bootstrap</a></li>
-                <li><a href="#">Webpack</a></li>
-                <li><a href="#">Vite</a></li>
-                <li><a href="#">PWA</a></li>
-              </ul>
-            </li>
-        
-            <li class="menu-item-wrapper">
-              <span class="menu-label">백엔드</span>
-              <ul class="submenu">
-                <li><a href="#">Node.js</a></li>
-                <li><a href="#">Express</a></li>
-                <li><a href="#">Django</a></li>
-                <li><a href="#">Flask</a></li>
-                <li><a href="#">FastAPI</a></li>
-                <li><a href="#">FastAPI</a></li>
-                <li><a href="#">Spring</a></li>
-                <li><a href="#">PHP</a></li>
-                <li><a href="#">Laravel</a></li>
-                <li><a href="#">Rails</a></li>
-                <li><a href="#">Go</a></li>
-                <li><a href="#">REST API</a></li>
-                <li><a href="#">GraphQL</a></li>
-              </ul>
-            </li>
-        
-            <li class="menu-item-wrapper">
-              <span class="menu-label">데이터베이스</span>
-              <ul class="submenu">
-                <li><a href="#">MySQL</a></li>
-                <li><a href="#">PostgreSQL</a></li>
-                <li><a href="#">MongoDB</a></li>
-                <li><a href="#">Redis</a></li>
-                <li><a href="#">Oracle</a></li>
-                <li><a href="#">SQLite</a></li>
-                <li><a href="#">ElasticSearch</a></li>
-                <li><a href="#">InfluxDB</a></li>
-                <li><a href="#">TimescaleDB</a></li>
-              </ul>
-            </li>
-        
-            <li class="menu-item-wrapper">
-              <span class="menu-label">네트워크/인프라</span>
-              <ul class="submenu">
-                <li><a href="#">HTTP</a></li>
-                <li><a href="#">HTTPS</a></li>
-                <li><a href="#">DNS</a></li>
-                <li><a href="#">TCP/IP</a></li>
-                <li><a href="#">WebSocket</a></li>
-                <li><a href="#">CDN</a></li>
-                <li><a href="#">Docker</a></li>
-                <li><a href="#">Kubernetes</a></li>
-                <li><a href="#">AWS</a></li>
-                <li><a href="#">GCP</a></li>
-                <li><a href="#">Azure</a></li>
-                <li><a href="#">Nginx</a></li>
-                <li><a href="#">Apache</a></li>
-              </ul>
-            </li>
-        
-            <li class="menu-item-wrapper">
-              <span class="menu-label">보안</span>
-              <ul class="submenu">
-                <li><a href="#">JWT</a></li>
-                <li><a href="#">OAuth2</a></li>
-                <li><a href="#">XSS</a></li>
-                <li><a href="#">CSRF</a></li>
-                <li><a href="#">SQL Injection</a></li>
-                <li><a href="#">HTTPS</a></li>
-                <li><a href="#">TLS</a></li>
-                <li><a href="#">WAF</a></li>
-                <li><a href="#">VPN</a></li>
-                <li><a href="#">DDoS</a></li>
-                <li><a href="#">OWASP Top 10</a></li>
-              </ul>
-            </li>
-        
-            <li class="menu-item-wrapper">
-              <span class="menu-label">DevOps/운영</span>
-              <ul class="submenu">
-                <li><a href="#">Git</a></li>
-                <li><a href="#">GitHub Actions</a></li>
-                <li><a href="#">Jenkins</a></li>
-                <li><a href="#">CI/CD</a></li>
-                <li><a href="#">Prometheus</a></li>
-                <li><a href="#">Grafana</a></li>
-                <li><a href="#">ELK Stack</a></li>
-                <li><a href="#">Blue-Green</a></li>
-              </ul>
-            </li>
-        
-            <li class="menu-item-wrapper">
-              <span class="menu-label">기타</span>
-              <ul class="submenu">
-                <li><a href="#">웹 성능 최적화</a></li>
-                <li><a href="#">Lighthouse</a></li>
-                <li><a href="#">Core Web Vitals</a></li>
-                <li><a href="#">ARIA</a></li>
-                <li><a href="#">WebAssembly</a></li>
-                <li><a href="#">Electron</a></li>
-                <li><a href="#">React Native</a></li>
-              </ul>
-            </li>
-          </ul>
-        </nav>
-        
+        <div class="light-switch" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0" id="mode-toggle-accessible">
+          <span class="switch-label"><span class="switch-handle"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="right-controls">
-          <div class="language-dropdown">
-            <button id="langToggle" class="lang-btn">
-              <%
-                let flagCode = lang;
-                switch(lang) {
-                  case 'ko': flagCode = 'kr'; break;
-                  case 'en': flagCode = 'gb'; break;
-                  case 'zh': flagCode = 'cn'; break;
-                  case 'ja': flagCode = 'jp'; break;
-                  case 'fr': flagCode = 'fr'; break;
-                  default: flagCode = 'kr';
-                }
-              %>
-              <span class="fi fi-<%= flagCode %>"></span>
-              <i class="fas fa-caret-down"></i>
-            </button>
-            <ul id="langMenu" class="lang-menu">
-              <%
-                const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-              %>
-              <% supportedLangs.forEach(langCode => { %>
-                <li>
-                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                    class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
-                    <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                    <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-                  </a>
-                </li>
-              <% }); %>
-            </ul>
+  <aside class="side-panel main-panel-only">
+    <div class="sidebar-wrapper">
+      <nav class="vscode-sidebar">
+        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+
+        <a href="https://www.bugloop.dev" class="sidebar-icon active" data-tab="home" title="홈"><i class="fas fa-home"></i></a>
+
+        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필"><i class="fas fa-user"></i></a>
+        <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
+
+        <% if (user) { %>
+          <% if (Number(user.is_admin) === 1) { %>
+            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기">
+              <i class="fas fa-pen"></i>
+            </a>
+          <% } %>
+          <a href="#" class="sidebar-icon" data-tab="settings" title="설정">
+            <i class="fas fa-cog"></i>
+          </a>
+        <% } %>
+      </nav>
+
+      <div class="sidebar-extension-panel">
+        <div class="tab-container"></div>
+        <div class="tab-content" data-tab="profile" style="display: none;">
+          <div class="profile-tab">
+            <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
+            
+            <div class="profile-info">
+              <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
+              <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
+              
+              <div class="profile-tags">
+                <% locale.profile["profile-tags"].forEach(tag => { %>
+                  <span><%= tag %></span>
+                <% }) %>
+              </div>
+
+              <div class="profile-social">
+                <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="" target="_blank"><i class="fab fa-github"></i></a>
+                <a href=""><i class="fas fa-envelope"></i></a>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <div class="light-switch" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0" id="mode-toggle-accessible">
-            <span class="switch-label"><span class="switch-handle"></span></span>
+        <% if (typeof posts !== 'undefined') { %>
+          <div class="tab-content" data-tab="search" style="display: none;">
+            <div class="search-container">
+              <a href="/<%= lang %>/">
+              </a>
+          
+              <div class="search-wrapper">
+                <form method="get" action="/<%= lang %>/search" class="search-form">
+                  <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
+          
+                  <button type="submit" class="icon-submit-btn">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          
+            <% if (isSearch && searchKeyword) { %>
+              <%
+                const searchWord = `${searchKeyword}`;
+                const resultLine = locale.search.resultsFor.replace('%s', searchWord);
+              %>
+              <p class="search-result-msg"><%= resultLine %></p>
+            <% } %>
+            
+            <%- include('table') %>
+          </div>
+        <% } %>
+
+        <div class="panel-footer">
+          <% if (user) { %>
+            <div class="greeting" style="text-align: center; margin-top: 10px; font-weight: bold;">
+              <%= user.nickname %>님, 안녕하세요!
+            </div>
+          <% } %>
+          <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+            <div class="auth-buttons">
+              <% if (user) { %>
+                <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
+              <% } else { %>
+                <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
+
+                <button class="auth-btn login" id="login" type="button">로그인</button>
+              <% } %>
+            </div>
+          <% } %>
+      
+          <div id="login-form-container" class="login-form-container hidden">
+            <form id="login-form" method="POST" action="/login">
+              <input type="text" name="id" placeholder="아이디" required />
+              <input type="password" name="password" placeholder="비밀번호" required />
+              <button type="submit">로그인</button>
+            </form>
+          </div>
+      
+          <div class="real-footer">
+            <small>© 2025 Bug Loop</small>
           </div>
         </div>
       </div>
     </div>
+  </aside>
+</div>
 
-    <aside class="side-panel main-panel-only">
-      <div class="sidebar-wrapper">
-        <nav class="vscode-sidebar">
-          <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기">
-            <i class="fas fa-chevron-left"></i>
-          </a>
-
-          <a href="https://www.bugloop.dev" class="sidebar-icon active" data-tab="home" title="홈"><i class="fas fa-home"></i></a>
-
-          <a href="#" class="sidebar-icon" data-tab="profile" title="프로필"><i class="fas fa-user"></i></a>
-          <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
-
-          <% if (user) { %>
-            <% if (Number(user.is_admin) === 1) { %>
-              <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기">
-                <i class="fas fa-pen"></i>
-              </a>
-            <% } %>
-            <a href="#" class="sidebar-icon" data-tab="settings" title="설정">
-              <i class="fas fa-cog"></i>
-            </a>
-          <% } %>
-        </nav>
-
-        <div class="sidebar-extension-panel">
-          <div class="tab-container"></div>
-          <div class="tab-content" data-tab="profile" style="display: none;">
-            <div class="profile-tab">
-              <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
-              
-              <div class="profile-info">
-                <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
-                <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
-                
-                <div class="profile-tags">
-                  <% locale.profile["profile-tags"].forEach(tag => { %>
-                    <span><%= tag %></span>
-                  <% }) %>
-                </div>
-
-                <div class="profile-social">
-                  <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
-                  <a href="" target="_blank"><i class="fab fa-github"></i></a>
-                  <a href=""><i class="fas fa-envelope"></i></a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <% if (typeof posts !== 'undefined') { %>
-            <div class="tab-content" data-tab="search" style="display: none;">
-              <div class="search-container">
-                <a href="/<%= lang %>/">
-                </a>
-            
-                <div class="search-wrapper">
-                  <form method="get" action="/<%= lang %>/search" class="search-form">
-                    <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
-            
-                    <button type="submit" class="icon-submit-btn">
-                      <i class="fas fa-search"></i>
-                    </button>
-                  </form>
-                </div>
-              </div>
-            
-              <% if (isSearch && searchKeyword) { %>
-                <%
-                  const searchWord = `${searchKeyword}`;
-                  const resultLine = locale.search.resultsFor.replace('%s', searchWord);
-                %>
-                <p class="search-result-msg"><%= resultLine %></p>
-              <% } %>
-              
-              <%- include('table') %>
-            </div>
-          <% } %>
-
-          <div class="panel-footer">
-            <% if (user) { %>
-              <div class="greeting" style="text-align: center; margin-top: 10px; font-weight: bold;">
-                <%= user.nickname %>님, 안녕하세요!
-              </div>
-            <% } %>
-            <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-              <div class="auth-buttons">
-                <% if (user) { %>
-                  <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
-                <% } else { %>
-                  <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
-
-                  <button class="auth-btn login" id="login" type="button">로그인</button>
-                <% } %>
-              </div>
-            <% } %>
-        
-            <div id="login-form-container" class="login-form-container hidden">
-              <form id="login-form" method="POST" action="/login">
-                <input type="text" name="id" placeholder="아이디" required />
-                <input type="password" name="password" placeholder="비밀번호" required />
-                <button type="submit">로그인</button>
-              </form>
-            </div>
-        
-            <div class="real-footer">
-              <small>© 2025 Bug Loop</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </aside>
-  </div>
-
-  <script src="/assets/js/header.js"></script>
-  <script src="/assets/js/global.js"></script>
-
- 
+<script src="/assets/js/header.js"></script>
+<script src="/assets/js/global.js"></script>
