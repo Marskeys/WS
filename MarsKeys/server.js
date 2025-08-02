@@ -181,11 +181,10 @@ app.get('/signup-success', (req, res) => {
 
 // ✅ 새 글 저장 처리
 app.post('/savePost', async (req, res) => {
-  // ✅ post_translations 테이블에 맞게 수정
   const { categories, is_private, is_pinned, lang_content } = req.body;
   const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
   
-  // ✅ 필수 항목 유효성 검사: 한국어 제목, 내용, 카테고리만 확인하도록 수정
+  // 필수 항목 유효성 검사: 한국어 제목, 내용, 카테고리만 확인
   const koreanContent = lang_content.ko;
   if (!koreanContent || !koreanContent.title || !koreanContent.content || !categories || categories.length === 0) {
     return res.status(400).json({ success: false, error: '제목, 내용, 카테고리를 모두 입력해주세요.' });
@@ -213,16 +212,17 @@ app.post('/savePost', async (req, res) => {
     const postId = postResult.insertId;
 
     // 2️⃣ post_translations 테이블에 번역된 제목과 내용 저장
-    const translations = Object.keys(lang_content).map(lang_code => {
+    // 개별 INSERT를 반복하여 안정성 확보 (기존 코드 수정)
+    for (const lang_code in lang_content) {
       const { title, content } = lang_content[lang_code];
-      return [postId, lang_code, title || null, content || '<p><br></p>'];
-    });
-
-    await db.query(
-      'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES ?',
-      [translations]
-    );
-
+      const contentToInsert = content || '<p><br></p>';
+      
+      await db.query(
+        'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?)',
+        [postId, lang_code, title || null, contentToInsert]
+      );
+    }
+    
     res.json({ success: true, postId: postId });
   } catch (err) {
     console.error('글 저장 오류:', err);
@@ -351,8 +351,6 @@ app.post('/edit/:id', async (req, res) => {
       );
     }
     
-    // 이전에 에디터 파일에 없는 언어는 삭제하지 않고 놔둠
-
     res.json({ success: true, redirect: `/${res.locals.lang}/post/${postId}` });
   } catch (err) {
     console.error('수정 처리 오류:', err);
