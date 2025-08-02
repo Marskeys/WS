@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application de dépistage simple du champ visuel</title>
+    <title>Application simple de test du champ visuel (dépistage)</title>
     
     <style>
         :root {
@@ -187,9 +187,24 @@
         #downloadPdfButton:hover {
             background-color: var(--button-success-color);
         }
+        
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            z-index: 100;
+            display: none;
+        }
 
         #result-content {
             width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
         }
 
         #result-points-container {
@@ -211,7 +226,6 @@
             z-index: 3;
         }
 
-        /* Correction de la taille des points manqués pour corriger un bug */
         .missed-point {
             position: absolute;
             width: 8px;
@@ -356,22 +370,22 @@
                 class="logo-link" 
                 style="width: 120px; height: auto;">
             </a>
-            <h1>Application de dépistage simple du champ visuel</h1>
-            <p><strong>Attention : cette application est une version très simplifiée d'un examen du champ visuel et ne remplace en aucun cas un examen ophtalmologique officiel.</strong><br>
-            Elle est conçue pour permettre aux personnes atteintes de maladies progressives de la vue de vérifier simplement l'évolution de leur champ visuel à domicile.<br>
-            Veuillez toujours effectuer le test dans le même environnement. L'utilisation sur des appareils mobiles n'est pas recommandée.<br>
+            <h1>Application simple de test du champ visuel</h1>
+            <p><strong>Attention : Cette application est une version extrêmement simplifiée du test de champ visuel standard et ne peut en aucun cas se substituer à un examen ophtalmologique formel.</strong><br>
+            Elle a été conçue pour permettre aux personnes atteintes de maladies progressives qui perdent leur champ visuel de surveiller les changements à domicile.<br>
+            Veuillez toujours effectuer le test dans le même environnement. L'utilisation sur un appareil mobile n'est pas recommandée.<br>
                 
-            Continuez de regarder le point noir et la croix au centre.<br>
-            Si vous voyez un point rouge, appuyez immédiatement sur le bouton « Cliquez ! » en bas de l'écran.</p>
+            Fixez le point et la croix noirs au centre de l'écran.<br>
+            Si vous voyez le point rouge, appuyez immédiatement sur le bouton « Cliquez ! » en bas de l'écran.</p>
             
-            <h3>Sélectionner la taille des points de test</h3>
+            <h3>Sélectionnez la taille du point de test</h3>
             <div id="size-options">
-                <button class="option-button" data-size="15">Standard</button>
+                <button class="option-button" data-size="15">Normal</button>
                 <button class="option-button" data-size="25">Grand</button>
                 <button class="option-button" data-size="35">Plus grand</button>
             </div>
             
-            <h3 style="margin-top: 20px;">Sélectionner le nombre de points de test</h3>
+            <h3 style="margin-top: 20px;">Sélectionnez le nombre de points de test</h3>
             <p style="color: #666; font-size: 14px; margin-top: 0;">Plus il y a de points, plus la précision est élevée.</p>
             <div id="count-options">
                 <button class="option-button" data-count="10">10 points</button>
@@ -385,17 +399,18 @@
         
         <div id="result-screen" class="hidden">
             <div id="result-content">
-                <h2>Rapport des résultats du test</h2>
+                <h2>Rapport de résultats du test</h2>
                 <p id="test-date"></p>
                 <div id="report-legend"></div> 
                 <div id="report-summary"></div>
                 <div id="result-points-container"></div>
             </div>
-            <button id="downloadPdfButton" class="styled-button">Télécharger le rapport en PDF</button>
+            <button id="downloadPdfButton" class="styled-button">Télécharger en PDF</button>
             <button id="restartButton" class="styled-button">Recommencer</button>
             <button id="homeButton" class="styled-button">Retour à l'accueil</button>
         </div>
         <button id="response-button">Cliquez !</button>
+        <div id="loading-message" class="hidden">Génération du PDF en cours...</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -422,6 +437,7 @@
             const countOptions = document.getElementById('count-options');
             const message = document.getElementById('message');
             const reportLegend = document.getElementById('report-legend');
+            const loadingMessage = document.getElementById('loading-message');
         
             let pointsFound = [];
             let pointsMissed = [];
@@ -460,7 +476,7 @@
             function checkStartButtonState() {
                 if (selectedPointSize > 0 && selectedPointCount > 0) {
                     startButton.disabled = false;
-                    message.textContent = 'Appuyez sur le bouton « Commencer le test » quand vous êtes prêt.';
+                    message.textContent = 'Veuillez appuyer sur le bouton « Commencer le test » lorsque vous êtes prêt.';
                 } else {
                     startButton.disabled = true;
                     message.textContent = 'Veuillez sélectionner la taille et le nombre de points.';
@@ -503,9 +519,7 @@
                 testViewportHeight = window.innerHeight;
                 updateCounter();
                 
-                // Démarre le test après un délai aléatoire de 1 à 2 secondes
-                const delay = Math.random() * 1000 + 1000; // Délai entre 1000ms et 2000ms
-                setTimeout(runTest, delay);
+                setTimeout(runTest, 1000);
             });
         
             responseButton.addEventListener('click', () => {
@@ -571,7 +585,6 @@
                         
                         const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
                         
-                        // Sauvegarder la position finale et la trajectoire du point manqué sous forme d'objet
                         pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
                         allPointsPaths.push(currentPointPath);
                         
@@ -623,13 +636,13 @@
                 resultPointsContainer.innerHTML = '';
                 
                 const today = new Date();
-                const formattedDate = `${today.getFullYear()}年 ${today.getMonth() + 1}月 ${today.getDate()}日`;
+                const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
                 testDateElement.textContent = `Date du test : ${formattedDate}`;
 
                 const summaryHtml = `
                     <h3>Résumé du test</h3>
-                    <p>Nombre total de points testés : ${TOTAL_POINTS}</p>
-                    <p style="color: black;">Points détectés : ${pointsFound.length}</p>
+                    <p>Nombre total de points : ${TOTAL_POINTS}</p>
+                    <p style="color: black;">Points trouvés : ${pointsFound.length}</p>
                     <p style="color: red;">Points manqués : ${pointsMissed.length}</p>
                 `;
                 reportSummary.innerHTML = summaryHtml;
@@ -637,17 +650,16 @@
                 const legendHtml = `
                     <div class="legend-item">
                         <div class="point-color found"></div>
-                        <span>Points détectés (zone visible)</span>
+                        <span>Points trouvés (zone visible)</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color path-legend-found"></div>
-                        <span>Trajectoire des points détectés (zone invisible)</span>
+                        <span>Trajectoire des points trouvés (zone non visible)</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color missed"></div>
-                        <span>Trajectoire des points manqués (zone invisible)</span>
+                        <span>Trajectoire des points manqués (zone non visible)</span>
                     </div>
-                
                 `;
                 reportLegend.innerHTML = legendHtml;
 
@@ -688,7 +700,6 @@
                     return { x: mappedX, y: mappedY };
                 }
 
-                // Dessiner la trajectoire des points trouvés
                 allPointsPaths.forEach((path, index) => {
                     if (path.length > 0) {
                         const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
@@ -706,7 +717,6 @@
                     }
                 });
 
-                // Dessiner les points noirs à la position finale des points trouvés
                 pointsFound.forEach(point => {
                     const mapped = mapToContainer(point, containerWidth, containerHeight);
                     if (mapped) {
@@ -718,7 +728,6 @@
                     }
                 });
 
-                // Dessiner les points rouges à la position finale des points manqués
                 pointsMissed.forEach(item => {
                     const mapped = mapToContainer(item.point, containerWidth, containerHeight);
                     if (mapped) {
@@ -741,26 +750,59 @@
                 selectedPointCount = 0;
             });
             
-            // Ajouter le gestionnaire d'événements pour le bouton "Retour à l'accueil"
             homeButton.addEventListener('click', () => {
                 window.location.href = '/fr/';
             });
-
+            
             downloadPdfButton.addEventListener('click', async () => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const captureTarget = resultContent;
-                const canvas = await html2canvas(captureTarget, { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
+                loadingMessage.classList.remove('hidden');
+                downloadPdfButton.disabled = true;
 
-                const imgWidth = 180;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
-                const y = 10;
-                
-                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-                pdf.save('Resultat_test_champ_visuel.pdf');
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 10;
+                    
+                    const captureTarget = resultScreen;
+                    
+                    if (!captureTarget) {
+                        console.error("Impossible de trouver l'élément de l'écran de résultats à capturer.");
+                        throw new Error('Impossible de trouver la cible de capture PDF.');
+                    }
+
+                    const canvas = await html2canvas(captureTarget, {
+                        scale: 2,
+                        windowWidth: captureTarget.scrollWidth,
+                        windowHeight: captureTarget.scrollHeight
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgRatio = imgProps.width / imgProps.height;
+                    
+                    let finalImgWidth = pdfWidth - margin * 2;
+                    let finalImgHeight = finalImgWidth / imgRatio;
+
+                    if (finalImgHeight > pdfHeight - margin * 2) {
+                        finalImgHeight = pdfHeight - margin * 2;
+                        finalImgWidth = finalImgHeight * imgRatio;
+                    }
+
+                    const x = (pdfWidth - finalImgWidth) / 2;
+                    const y = (pdfHeight - finalImgHeight) / 2;
+
+                    pdf.addImage(imgData, 'JPEG', x, y, finalImgWidth, finalImgHeight);
+                    pdf.save('resultats_test_champ_visuel.pdf');
+
+                } catch (error) {
+                    console.error('Une erreur est survenue lors de la génération du PDF :', error);
+                    alert('Une erreur est survenue lors de la génération du PDF. Veuillez réessayer plus tard.');
+                } finally {
+                    loadingMessage.classList.add('hidden');
+                    downloadPdfButton.disabled = false;
+                }
             });
         });
     </script>

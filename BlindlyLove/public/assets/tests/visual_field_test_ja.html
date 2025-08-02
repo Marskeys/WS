@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>簡易視野検査アプリ (スクリーニング用)</title>
+    <title>簡易視野検査アプリ（スクリーニング用）</title>
     
     <style>
         :root {
@@ -131,7 +131,7 @@
             max-height: 90vh;
         }
 
-        /* 共通のボタン スタイル */
+        /* 共通ボタンのスタイル */
         .styled-button {
             padding: 15px 30px;
             font-size: 20px;
@@ -187,9 +187,24 @@
         #downloadPdfButton:hover {
             background-color: var(--button-success-color);
         }
+        
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            z-index: 100;
+            display: none;
+        }
 
         #result-content {
             width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
         }
 
         #result-points-container {
@@ -211,7 +226,6 @@
             z-index: 3;
         }
 
-        /* サイズのバグを修正するため、見逃した点のサイズを再定義 */
         .missed-point {
             position: absolute;
             width: 8px;
@@ -352,27 +366,27 @@
         <div id="start-screen">
             <a href="/ja/" class="logo-link">
                 <img src="/assets/images/logo.png" 
-                alt="ホームページへ" 
+                alt="ホームページへ移動" 
                 class="logo-link" 
                 style="width: 120px; height: auto;">
             </a>
             <h1>簡易視野検査アプリ</h1>
-            <p><strong>注意: このアプリは、既存の視野検査を非常に単純化したものであり、正式な眼科検査に代わるものではありません。</strong><br>
-            進行性の疾患により日々視野を少しずつ失っていく人々が、自宅で簡単に視野の変化をチェックできるように考案されました。<br>
-            検査は常に同じ環境で行ってください。モバイル端末での使用は推奨しません。<br>
+            <p><strong>注意：このアプリは、標準的な視野検査の非常に簡易的なバージョンであり、正式な眼科検査に代わるものではありません。</strong><br>
+            視野が徐々に狭まる進行性の病気を持つ方が、自宅で変化をモニタリングできるように設計されています。<br>
+            検査は必ず同じ環境で行ってください。モバイルデバイスでの使用は推奨されません。<br>
                 
-            中央の黒い点と十字をずっと見つめてください。<br>
-            赤い点が見えたら、画面下部の「クリック！」ボタンをすぐに押してください。</p>
+            画面中央の黒い点と十字を凝視してください。<br>
+            赤い点が見えたら、すぐに画面下の「クリック！」ボタンを押してください。</p>
             
             <h3>検査点のサイズを選択</h3>
             <div id="size-options">
-                <button class="option-button" data-size="15">基本</button>
-                <button class="option-button" data-size="25">大きく</button>
-                <button class="option-button" data-size="35">さらに大きく</button>
+                <button class="option-button" data-size="15">標準</button>
+                <button class="option-button" data-size="25">大</button>
+                <button class="option-button" data-size="35">特大</button>
             </div>
             
             <h3 style="margin-top: 20px;">検査点の数を選択</h3>
-            <p style="color: #666; font-size: 14px; margin-top: 0;">点の数が多いほど精度が高くなります。</p>
+            <p style="color: #666; font-size: 14px; margin-top: 0;">点数が多いほど、精度が向上します。</p>
             <div id="count-options">
                 <button class="option-button" data-count="10">10個</button>
                 <button class="option-button" data-count="20">20個</button>
@@ -392,10 +406,11 @@
                 <div id="result-points-container"></div>
             </div>
             <button id="downloadPdfButton" class="styled-button">結果をPDFでダウンロード</button>
-            <button id="restartButton" class="styled-button">やり直す</button>
-            <button id="homeButton" class="styled-button">ホームに戻る</button>
+            <button id="restartButton" class="styled-button">もう一度</button>
+            <button id="homeButton" class="styled-button">ホームへ戻る</button>
         </div>
         <button id="response-button">クリック！</button>
+        <div id="loading-message" class="hidden">PDFを生成中です...</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -422,6 +437,7 @@
             const countOptions = document.getElementById('count-options');
             const message = document.getElementById('message');
             const reportLegend = document.getElementById('report-legend');
+            const loadingMessage = document.getElementById('loading-message');
         
             let pointsFound = [];
             let pointsMissed = [];
@@ -460,7 +476,7 @@
             function checkStartButtonState() {
                 if (selectedPointSize > 0 && selectedPointCount > 0) {
                     startButton.disabled = false;
-                    message.textContent = '準備ができたら「検査開始」ボタンを押してください。';
+                    message.textContent = '準備ができたら、「検査開始」ボタンを押してください。';
                 } else {
                     startButton.disabled = true;
                     message.textContent = '点のサイズと数を選択してください。';
@@ -502,6 +518,7 @@
                 testViewportWidth = window.innerWidth;
                 testViewportHeight = window.innerHeight;
                 updateCounter();
+                
                 setTimeout(runTest, 1000);
             });
         
@@ -568,7 +585,6 @@
                         
                         const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
                         
-                        // 見逃した点の最終位置と軌跡をオブジェクトとして保存
                         pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
                         allPointsPaths.push(currentPointPath);
                         
@@ -620,13 +636,13 @@
                 resultPointsContainer.innerHTML = '';
                 
                 const today = new Date();
-                const formattedDate = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+                const formattedDate = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
                 testDateElement.textContent = `検査日: ${formattedDate}`;
 
                 const summaryHtml = `
-                    <h3>検査概要</h3>
+                    <h3>検査サマリー</h3>
                     <p>総検査点数: ${TOTAL_POINTS}個</p>
-                    <p style="color: black;">検出された点: ${pointsFound.length}個</p>
+                    <p style="color: black;">発見された点: ${pointsFound.length}個</p>
                     <p style="color: red;">見逃した点: ${pointsMissed.length}個</p>
                 `;
                 reportSummary.innerHTML = summaryHtml;
@@ -634,17 +650,16 @@
                 const legendHtml = `
                     <div class="legend-item">
                         <div class="point-color found"></div>
-                        <span>検出された点 (見える部分)</span>
+                        <span>発見された点（見える部分）</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color path-legend-found"></div>
-                        <span>検出された点の軌跡 (見えない部分)</span>
+                        <span>発見された点の軌跡（見えない部分）</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color missed"></div>
-                        <span>見逃した点の軌跡 (見えない部分)</span>
+                        <span>見逃した点の軌跡（見えない部分）</span>
                     </div>
-                
                 `;
                 reportLegend.innerHTML = legendHtml;
 
@@ -685,7 +700,6 @@
                     return { x: mappedX, y: mappedY };
                 }
 
-                // 検出された点の軌跡を描画
                 allPointsPaths.forEach((path, index) => {
                     if (path.length > 0) {
                         const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
@@ -703,7 +717,6 @@
                     }
                 });
 
-                // 検出された点の最終位置に黒い点を描画
                 pointsFound.forEach(point => {
                     const mapped = mapToContainer(point, containerWidth, containerHeight);
                     if (mapped) {
@@ -715,7 +728,6 @@
                     }
                 });
 
-                // 見逃した点の最終位置に赤い点を描画
                 pointsMissed.forEach(item => {
                     const mapped = mapToContainer(item.point, containerWidth, containerHeight);
                     if (mapped) {
@@ -738,26 +750,59 @@
                 selectedPointCount = 0;
             });
             
-            // 「ホームに戻る」ボタンのクリックイベントハンドラを追加
             homeButton.addEventListener('click', () => {
                 window.location.href = '/ja/';
             });
-
+            
             downloadPdfButton.addEventListener('click', async () => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const captureTarget = resultContent;
-                const canvas = await html2canvas(captureTarget, { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
+                loadingMessage.classList.remove('hidden');
+                downloadPdfButton.disabled = true;
 
-                const imgWidth = 180;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
-                const y = 10;
-                
-                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-                pdf.save('視野検査_結果.pdf');
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 10;
+                    
+                    const captureTarget = resultScreen;
+                    
+                    if (!captureTarget) {
+                        console.error('結果画面をキャプチャする要素が見つかりません。');
+                        throw new Error('PDFキャプチャ対象が見つかりません。');
+                    }
+
+                    const canvas = await html2canvas(captureTarget, {
+                        scale: 2,
+                        windowWidth: captureTarget.scrollWidth,
+                        windowHeight: captureTarget.scrollHeight
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgRatio = imgProps.width / imgProps.height;
+                    
+                    let finalImgWidth = pdfWidth - margin * 2;
+                    let finalImgHeight = finalImgWidth / imgRatio;
+
+                    if (finalImgHeight > pdfHeight - margin * 2) {
+                        finalImgHeight = pdfHeight - margin * 2;
+                        finalImgWidth = finalImgHeight * imgRatio;
+                    }
+
+                    const x = (pdfWidth - finalImgWidth) / 2;
+                    const y = (pdfHeight - finalImgHeight) / 2;
+
+                    pdf.addImage(imgData, 'JPEG', x, y, finalImgWidth, finalImgHeight);
+                    pdf.save('視野検査結果.pdf');
+
+                } catch (error) {
+                    console.error('PDFの生成中にエラーが発生しました:', error);
+                    alert('PDFの生成中にエラーが発生しました。しばらくしてから再度お試しください。');
+                } finally {
+                    loadingMessage.classList.add('hidden');
+                    downloadPdfButton.disabled = false;
+                }
             });
         });
     </script>

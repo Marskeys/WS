@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Visual Field Screening App</title>
+    <title>Simple Visual Field Test App (Screening)</title>
     
     <style>
         :root {
@@ -187,9 +187,24 @@
         #downloadPdfButton:hover {
             background-color: var(--button-success-color);
         }
+        
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            z-index: 100;
+            display: none;
+        }
 
         #result-content {
             width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
         }
 
         #result-points-container {
@@ -211,7 +226,6 @@
             z-index: 3;
         }
 
-        /* Redefine missed point size to fix a size bug */
         .missed-point {
             position: absolute;
             width: 8px;
@@ -347,7 +361,7 @@
         <div id="fixation-point"></div>
         <div id="fixation-cross"></div>
         <div id="test-point"></div>
-        <div id="counter">Remaining points: 10</div>
+        <div id="counter">Remaining Points: 10</div>
         
         <div id="start-screen">
             <a href="/en/" class="logo-link">
@@ -356,13 +370,13 @@
                 class="logo-link" 
                 style="width: 120px; height: auto;">
             </a>
-            <h1>Simple Visual Field Screening App</h1>
-            <p><strong>Warning: This app is a simplified version of a visual field test and is not a substitute for a formal ophthalmology exam.</strong><br>
-            It is designed for people with progressive visual loss to simply monitor changes in their visual field from home.<br>
-            Please perform the test in the same environment each time. Use on mobile devices is not recommended.<br>
+            <h1>Simple Visual Field Test App</h1>
+            <p><strong>Warning: This app is a simplified version of a formal visual field test and cannot replace a professional eye examination.</strong><br>
+            It is designed for individuals with progressive eye diseases to simply check for changes in their visual field at home.<br>
+            Please perform the test in the same environment each time. Use on a mobile device is not recommended.<br>
                 
             Keep looking at the black point and cross in the center.<br>
-            If you see a red point, press the 'Click!' button at the bottom of the screen immediately.</p>
+            If you see the red dot, immediately press the 'Click!' button at the bottom of the screen.</p>
             
             <h3>Select Test Point Size</h3>
             <div id="size-options">
@@ -371,7 +385,7 @@
                 <button class="option-button" data-size="35">Larger</button>
             </div>
             
-            <h3 style="margin-top: 20px;">Select Test Point Count</h3>
+            <h3 style="margin-top: 20px;">Select Number of Test Points</h3>
             <p style="color: #666; font-size: 14px; margin-top: 0;">More points lead to higher accuracy.</p>
             <div id="count-options">
                 <button class="option-button" data-count="10">10 points</button>
@@ -380,7 +394,7 @@
             </div>
             
             <button id="startButton" class="styled-button" disabled>Start Test</button>
-            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">Please select point size and count.</p>
+            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">Please select the point size and number of points.</p>
         </div>
         
         <div id="result-screen" class="hidden">
@@ -396,6 +410,7 @@
             <button id="homeButton" class="styled-button">Return to Home</button>
         </div>
         <button id="response-button">Click!</button>
+        <div id="loading-message" class="hidden">Generating PDF...</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -422,6 +437,7 @@
             const countOptions = document.getElementById('count-options');
             const message = document.getElementById('message');
             const reportLegend = document.getElementById('report-legend');
+            const loadingMessage = document.getElementById('loading-message');
         
             let pointsFound = [];
             let pointsMissed = [];
@@ -460,10 +476,10 @@
             function checkStartButtonState() {
                 if (selectedPointSize > 0 && selectedPointCount > 0) {
                     startButton.disabled = false;
-                    message.textContent = 'Press the "Start Test" button when ready.';
+                    message.textContent = 'Press the "Start Test" button when you are ready.';
                 } else {
                     startButton.disabled = true;
-                    message.textContent = 'Please select point size and count.';
+                    message.textContent = 'Please select the point size and number of points.';
                 }
             }
 
@@ -502,6 +518,7 @@
                 testViewportWidth = window.innerWidth;
                 testViewportHeight = window.innerHeight;
                 updateCounter();
+                
                 setTimeout(runTest, 1000);
             });
         
@@ -525,7 +542,7 @@
             });
 
             function updateCounter() {
-                counter.textContent = `Remaining points: ${TOTAL_POINTS - pointCount}`;
+                counter.textContent = `Remaining Points: ${TOTAL_POINTS - pointCount}`;
             }
         
             function showTestPoint() {
@@ -568,7 +585,6 @@
                         
                         const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
                         
-                        // Save the final location and path of the missed point as an object
                         pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
                         allPointsPaths.push(currentPointPath);
                         
@@ -625,9 +641,9 @@
 
                 const summaryHtml = `
                     <h3>Test Summary</h3>
-                    <p>Total points tested: ${TOTAL_POINTS}</p>
-                    <p style="color: black;">Points found: ${pointsFound.length}</p>
-                    <p style="color: red;">Points missed: ${pointsMissed.length}</p>
+                    <p>Total Points: ${TOTAL_POINTS}</p>
+                    <p style="color: black;">Points Found: ${pointsFound.length}</p>
+                    <p style="color: red;">Points Missed: ${pointsMissed.length}</p>
                 `;
                 reportSummary.innerHTML = summaryHtml;
 
@@ -644,7 +660,6 @@
                         <div class="point-color missed"></div>
                         <span>Path of Missed Points (Invisible Area)</span>
                     </div>
-                
                 `;
                 reportLegend.innerHTML = legendHtml;
 
@@ -685,7 +700,6 @@
                     return { x: mappedX, y: mappedY };
                 }
 
-                // Draw path of found points
                 allPointsPaths.forEach((path, index) => {
                     if (path.length > 0) {
                         const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
@@ -703,7 +717,6 @@
                     }
                 });
 
-                // Draw black points at the final location of found points
                 pointsFound.forEach(point => {
                     const mapped = mapToContainer(point, containerWidth, containerHeight);
                     if (mapped) {
@@ -715,7 +728,6 @@
                     }
                 });
 
-                // Draw red points at the final location of missed points
                 pointsMissed.forEach(item => {
                     const mapped = mapToContainer(item.point, containerWidth, containerHeight);
                     if (mapped) {
@@ -732,32 +744,65 @@
                 resultScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
                 startButton.disabled = true;
-                message.textContent = 'Please select point size and count.';
+                message.textContent = 'Please select the point size and number of points.';
                 document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
                 selectedPointSize = 0;
                 selectedPointCount = 0;
             });
             
-            // Add click event handler for the "Return to Home" button
             homeButton.addEventListener('click', () => {
                 window.location.href = '/en/';
             });
-
+            
             downloadPdfButton.addEventListener('click', async () => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const captureTarget = resultContent;
-                const canvas = await html2canvas(captureTarget, { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
+                loadingMessage.classList.remove('hidden');
+                downloadPdfButton.disabled = true;
 
-                const imgWidth = 180;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
-                const y = 10;
-                
-                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-                pdf.save('Visual_Field_Test_Result.pdf');
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 10;
+                    
+                    const captureTarget = resultScreen;
+                    
+                    if (!captureTarget) {
+                        console.error('Could not find the result screen element to capture.');
+                        throw new Error('Could not find the PDF capture target.');
+                    }
+
+                    const canvas = await html2canvas(captureTarget, {
+                        scale: 2,
+                        windowWidth: captureTarget.scrollWidth,
+                        windowHeight: captureTarget.scrollHeight
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgRatio = imgProps.width / imgProps.height;
+                    
+                    let finalImgWidth = pdfWidth - margin * 2;
+                    let finalImgHeight = finalImgWidth / imgRatio;
+
+                    if (finalImgHeight > pdfHeight - margin * 2) {
+                        finalImgHeight = pdfHeight - margin * 2;
+                        finalImgWidth = finalImgHeight * imgRatio;
+                    }
+
+                    const x = (pdfWidth - finalImgWidth) / 2;
+                    const y = (pdfHeight - finalImgHeight) / 2;
+
+                    pdf.addImage(imgData, 'JPEG', x, y, finalImgWidth, finalImgHeight);
+                    pdf.save('visual_field_test_results.pdf');
+
+                } catch (error) {
+                    console.error('An error occurred while generating the PDF:', error);
+                    alert('An error occurred while generating the PDF. Please try again later.');
+                } finally {
+                    loadingMessage.classList.add('hidden');
+                    downloadPdfButton.disabled = false;
+                }
             });
         });
     </script>
