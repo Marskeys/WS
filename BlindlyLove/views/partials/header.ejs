@@ -33,12 +33,15 @@
             <li>
               <a href="#" id="sudoku-link"><%= locale.menu.sudoku %></a>
             </li>
-            
           </ul>
         </li>
+
         <li class="menu-item">
           <span><%= locale.menu.freeTests %></span>
           <ul class="submenu">
+            <li>
+              <a href="#" id="visual-field-link"><%= locale.menu.visualField %></a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -126,7 +129,7 @@
       <li class="mobile-dropdown">
         <a href="#"><%= locale.menu.freeTests %></a>
         <ul class="mobile-submenu">
-          <!-- 여기에 검사 항목 추가 예정 -->
+          <a href="#" id="visual-field-link"><%= locale.menu.visualField %></a>
         </ul>
       </li>
     </ul>
@@ -230,5 +233,27 @@
   });
 </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const lang = '<%= lang %>';  // EJS에서 현재 언어코드
+    const sudokuBtn = document.getElementById('visual-field-link');
+
+    sudokuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const langMap = {
+        ko: '/assets/tests/visual_field_test_kr.html',
+        en: '/assets/tests/visual_field_test_en.html',
+        fr: '/assets/tests/visual_field_test_fr.html',
+        zh: '/assets/tests/visual_field_test_zh.html',
+        ja: '/assets/tests/visual_field_test_ja.html'
+      };
+
+      // 없는 언어면 한국어 기본
+      const targetUrl = langMap[lang] || langMap.ko;
+      window.location.href = targetUrl;
+    });
+  });
+</script>
 
 </div>
