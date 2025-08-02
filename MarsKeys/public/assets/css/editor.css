@@ -1,41 +1,47 @@
+/* /assets/css/editor.css */
+
+/* 리셋 스타일링 - 모든 요소에 border-box 적용 */
 * {
   box-sizing: border-box;
 }
 
+
+/* <body> 태그 기본 스타일 - 패딩 문제 해결을 위해 0으로 설정 */
 body {
   margin: 0;
-  padding: 40px 0;
-  background-color: #1a1a1a;
-  color: #ddd;
+  padding: 0; /* 이전에 editor.ejs의 인라인 스타일에서 body에 padding:0 이 있었습니다. */
+  background: linear-gradient(135deg, #fff7f0, #ffe4e1);
   font-family: 'Nanum Gothic', sans-serif;
 }
 
-.save-btn,
-.post-btn {
+
+/* -------------------- 에디터 관련 주요 스타일 -------------------- */
+
+.save-btn {
   margin-top: 20px;
-  background: #444;
-  color: #fff;
-  border: 1px solid #666;
+  background: #62a4eb; /* 연하늘 파랑 */
+  color: #333;
+  border: none;
   padding: 8px 20px;
   border-radius: 8px;
   font-weight: bold;
   font-size: 14px;
   cursor: pointer;
+  margin-right: 10px;
 }
 
-.save-btn:hover,
-.post-btn:hover {
-  background: #666;
+.save-btn:hover {
+  background: #b8d6fb;
 }
 
 .editor-container {
-  background-color: #1a1a1a;
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(197, 215, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
   width: 90%;
   max-width: 800px;
-  margin: 60px auto;
+  margin: 60px auto; /* 60px auto는 에디터 상하 마진을 줍니다. */
 }
 
 .logo-wrap {
@@ -57,16 +63,16 @@ body {
   width: 100%;
   padding: 12px 16px;
   font-size: 20px;
-  border: 1px solid #444;
+  border: 1px solid #ccc;
   border-radius: 12px;
   outline: none;
-  background: #2a2a2a;
-  color: #eee;
+  background: #fffefc;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .title-wrap input:focus {
   border-color: #ff9990;
-  background: #333;
+  background: #fff7f5;
 }
 
 .toolbar {
@@ -78,26 +84,56 @@ body {
 }
 
 .toolbar button,
-.toolbar input[type="color"],
-.dropdown-toggle {
+.toolbar input[type="color"] {
   padding: 6px 8px;
-  border: 1px solid #444;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  background: #333;
-  color: #ddd;
+  background: #fff;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 }
 
-.toolbar button:hover,
-.dropdown-toggle:hover {
-  background-color: #555;
+.toolbar button[data-tooltip]::after,
+.toolbar input[type="color"][data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 100;
+}
+
+.toolbar button[data-tooltip]:hover::after,
+.toolbar input[type="color"][data-tooltip]:hover::after {
+  opacity: 1;
 }
 
 .dropdown {
   position: relative;
+}
+
+.dropdown-toggle {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  min-width: 50px; /* 폭 지정 */
+  white-space: nowrap; /* 줄바꿈 방지 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
 }
 
 .dropdown-menu {
@@ -105,13 +141,13 @@ body {
   position: absolute;
   top: 110%;
   left: 0;
-  background: #2a2a2a;
-  color: #ddd;
+  background: #2c2c2c;
+  color: white;
   border-radius: 4px;
   overflow: hidden;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  min-width: 160px;
+  min-width: 160px; /* 메뉴도 넉넉하게 */
 }
 
 .dropdown-menu.show {
@@ -132,81 +168,87 @@ body {
 .dropdown-menu .h3 { font-size: 18px; font-weight: bold; background: #333; }
 .dropdown-menu .red { color: red; font-weight: bold; }
 .dropdown-menu .p { font-size: 16px; }
-.dropdown-menu .desc,
-.dropdown-menu .meta {
-  font-size: 13px;
-  color: #aaa;
-  font-style: italic;
+.dropdown-menu .desc { font-size: 13px; color: #aaa; font-style: italic; }
+.dropdown-menu .meta { font-size: 12px; color: #bbb; font-style: italic; }
+.dropdown-menu .label { font-size: 12px; background: #888; border-radius: 4px; padding: 2px 6px; display: inline-block; }
+.dropdown-menu .label-bold { font-weight: bold; }
+
+/* 에디터 본문 영역 */
+#editor { /* #editor 아이디를 가진 요소에만 적용 */
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid #ddd; /* 원래 .editor의 border로 통합 */
+  border-radius: 12px; /* 원래 .editor의 border-radius로 통합 */
+  min-height: 300px; /* 원래 .editor의 min-height로 통합 */
+  font-size: 16px; /* 원래 .editor의 font-size로 통합 */
+  line-height: 1.6; /* 원래 .editor의 line-height로 통합 */
+  background: #fffefc; /* 원래 .editor의 background로 통합 */
 }
-.dropdown-menu .label {
-  font-size: 12px;
-  background: #888;
+
+#htmlEditor {
+  width: 100%;
+  height: 400px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 2px 6px;
-  display: inline-block;
-}
-.dropdown-menu .label-bold {
-  font-weight: bold;
 }
 
-.editor {
-  border: 1px solid #444;
-  border-radius: 12px;
-  min-height: 300px;
-  padding: 15px;
-  font-size: 16px;
-  line-height: 1.6;
-  background: #1e1e1e;
-  color: #ddd;
-}
 
+/* 에디터 내부의 HTML 요소 스타일 */
 .editor h1 {
   font-size: 32px;
   font-weight: bold;
+  color: #333;
   margin: 16px 0;
-  color: #ddd;
 }
 
 .editor h2 {
   font-size: 26px;
   font-weight: bold;
+  color: #444;
   margin: 14px 0;
-  color: #ccc;
 }
 
 .editor h3 {
   font-size: 22px;
   font-weight: bold;
+  color: #555;
   margin: 12px 0;
-  color: #bbb;
 }
 
 .editor h4 {
   font-size: 20px;
   font-weight: bold;
-  margin: 10px 0;
   color: red;
+  margin: 10px 0;
 }
 
 .editor p {
   font-size: 16px;
   margin: 8px 0;
-  color: #ddd;
+  color: #222;
 }
 
-.editor small,
-.editor footer {
+.editor small {
   font-size: 13px;
   color: #888;
   font-style: italic;
 }
 
+.editor footer {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+}
+
 .editor span.label {
   font-size: 14px;
-  background: #444;
+  background: #eee;
   padding: 2px 4px;
   border-radius: 4px;
-  color: #eee;
 }
 
 .editor strong {
@@ -222,7 +264,6 @@ body {
   display: block;
   margin-bottom: 6px;
   font-weight: bold;
-  color: #ccc;
 }
 
 .category-list {
@@ -233,24 +274,21 @@ body {
 
 .category-item {
   position: relative;
-  background: #333;
+  background: #f0f0f0;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 14px;
   cursor: pointer;
   transition: 0.2s ease;
-  color: #eee;
-  border: 1px solid #555;
 }
 
 .category-item.selected {
-  background: #555;
-  color: #fff;
+  background: #ffd2cc;
   font-weight: bold;
 }
 
 .category-item:hover {
-  background: #444;
+  background: #ffe4e1;
 }
 
 .category-item .remove-btn {
@@ -274,33 +312,39 @@ body {
 
 .add-category-btn {
   margin-top: 12px;
-  background: #333;
-  border: 1px solid #555;
+  background: #d0e7ff;
+  border: none;
   padding: 6px 14px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  color: #eee;
 }
 
 .add-category-btn:hover {
-  background: #444;
+  background: #b8d6fb;
 }
 
+.post-btn {
+  margin-top: 20px;
+  background: #6cc48f;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.post-btn:hover {
+  background: #4fb476;
+}
+
+/* 컬러 피커 툴바 관련 스타일 */
 .color-palette {
   display: flex;
   gap: 4px;
-  align-items: center;
   margin-left: 8px;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 4px;
-  border-radius: 6px;
-  position: absolute;
-  top: calc(90% + 2px);
-  left: 0;
-  z-index: 999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .color-palette button {
@@ -309,7 +353,29 @@ body {
   border: 1px solid #aaa;
   border-radius: 4px;
   cursor: pointer;
-  padding: 0;
+  padding: 0; /* 패딩 0으로 설정 */
+}
+
+.toolbar button {
+  position: relative;
+}
+
+.toolbar button .color-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+#foreColorBtn i {
+  color: #000; /* 기본값 검정 */
+}
+
+#bgColorBtn {
+  background-color: #fff; /* 기본값 흰색 */
 }
 
 .color-palette .none-icon {
@@ -317,6 +383,7 @@ body {
   position: relative;
   overflow: hidden;
 }
+
 .color-palette .none-icon::before {
   content: "";
   position: absolute;
@@ -329,7 +396,7 @@ body {
   transform-origin: top left;
 }
 
-.custom-color {
+.color-palette .custom-color {
   display: flex;
   align-items: center;
   font-size: 14px;
@@ -341,13 +408,40 @@ body {
   background: white;
 }
 
-.custom-color input[type="color"] {
+.color-palette .custom-color input[type="color"] {
   border: none;
   background: transparent;
   width: 24px;
   height: 24px;
   padding: 0;
   margin-left: 4px;
+  cursor: pointer;
+}
+
+.color-tool {
+  position: relative;
+  display: inline-block;
+}
+
+.color-palette {
+  position: absolute;
+  top: calc(90% + 2px);
+  left: 0;
+  display: none;
+  background: white;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 999;
+}
+
+.color-tool:hover .color-palette,
+.color-palette:hover {
+  display: flex;
+}
+
+.color-tool button {
   cursor: pointer;
 }
 
@@ -359,15 +453,42 @@ body {
   background-color: white;
 }
 
+/* -------------------- 모드 토글 버튼 스타일 -------------------- */
+.mode-toggle {
+  margin-top: 1rem; 
+  margin-bottom: 0.5rem;
+  text-align: right;
+}
+
+.mode-toggle button {
+  margin-left: 0.3rem;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: linear-gradient(to bottom right, #fdfdfd, #f1f1f1);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.mode-toggle button:hover {
+  background: linear-gradient(to bottom right, #eaeaea, #dcdcdc);
+  color: #000;
+  transform: scale(1.03);
+}
+
+/* -------------------- 목차 박스 스타일 -------------------- */
 .auto-toc {
-  background: #1f1f2b;
-  border: 1px solid #444;
+  background: #f7f9fa;
+  border: 1px solid #d0d7de;
   padding: 1rem;
   margin-bottom: 1.5rem;
   border-radius: 6px;
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #ddd;
 }
 
 .auto-toc .toc-title {
@@ -386,9 +507,8 @@ body {
   margin-bottom: 0.3rem;
 }
 
-.auto-toc .toc-h1 a,
-.auto-toc .toc-h2 a {
-  color: #6fb7ff;
+.auto-toc .toc-h1 a {
+  color: #0366d6;
   font-weight: 600;
 }
 
@@ -396,25 +516,245 @@ body {
   margin-left: 1em;
 }
 
-.color-tool {
-  position: relative; /* ✅ 이거 추가 */
+.auto-toc .toc-h2 a {
+  color: #0366d6;
+  font-weight: 400;
+  font-size: 0.94em;
+}
+
+.auto-toc .toc-item {
+  display: block; /* 무조건 줄바꿈되게 (에디터 인라인 스타일에서 가져옴) */
+}
+
+/* -------------------- 다크모드 스타일 -------------------- */
+html.dark body {
+    background-color: #1a1a1a;
+    color: #ddd;
+  }
+
+  html.dark body .editor-container {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 23px rgba(197, 215, 255, 0.5); /* 부드러운 파란 글로우 */
+    border-radius: 12px; /* 원한다면 모서리 둥글게 */
+    transition: box-shadow 0.3s ease;
+  }
+
+  html.dark body #editor {
+    background-color: #1a1a1a;
+    box-shadow: 0 0 23px rgba(197, 215, 255, 0.5); /* 부드러운 파란 글로우 */
+    border-radius: 12px; /* 원한다면 모서리 둥글게 */
+    transition: box-shadow 0.3s ease;
+    color:white;
+  }
+
+  /* ✍️ 제목 입력창 */
+  html.dark body #postTitle {
+    background-color: #2a2a2a;
+    color: #eee;
+    border: 1px solid #444;
+  }
+
+  /* 🧰 툴바 버튼 */
+  html.dark body .toolbar button,
+  html.dark body .dropdown-toggle {
+    background-color: #333;
+    color: #ddd;
+    border: 1px solid #444;
+  }
+
+  html.dark body .toolbar button:hover,
+  html.dark body .dropdown-toggle:hover {
+    background-color: #555;
+  }
+
+  /* 🎨 드롭다운 메뉴 */
+  html.dark body .dropdown-menu {
+    background-color: #2a2a2a;
+    color: #ddd;
+    border: 1px solid #444;
+  }
+
+  html.dark body .dropdown-menu > div:hover {
+    background-color: #444;
+  }
+
+  /* ✏️ 에디터 영역 */
+  html.dark body .editor { /* #editor 아이디에도 적용될 것임 */
+    background-color: #1e1e1e;
+    color: #ddd !important;
+    border: 1px solid #444;
+  }
+
+  html.dark body .editor p,
+html.dark body .editor h1,
+html.dark body .editor h2,
+html.dark body .editor h3,
+html.dark body .editor h4,
+html.dark body .editor small,
+html.dark body .editor footer {
+  color: #ddd !important;
+}
+
+  /* 🏷 카테고리 */
+  html.dark body .category-item {
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+  }
+
+  html.dark body .category-item.selected {
+    background-color: #555;
+    color: #fff;
+  }
+
+  /* 💾 저장/포스트 버튼 */
+  html.dark body .post-btn,
+  html.dark body .save-btn {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #666;
+  }
+
+  html.dark body .post-btn:hover,
+  html.dark body .save-btn:hover {
+    background-color: #666;
+  }
+
+  /* 🧾 라벨들 */
+  html.dark body label {
+    color: #ccc;
+  }
+
+/* 🌙 다크모드 목차 스타일 */
+html.dark .auto-toc {
+  background: #1f1f2b;
+  border: 1px solid #444;
+  color: #ddd;
+}
+
+html.dark .auto-toc a {
+  color: #6fb7ff;
+}
+
+/* 🌙 다크 모드 대응 */
+html.dark body .mode-toggle button {
+  background: linear-gradient(to bottom right, #2c2f35, #3a3d45); /* 어두운 그라데이션 배경 */
+  color: #eee; /* 밝은 글자색 */
+  border: 1px solid #555; /* 어두운 테두리 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5); /* 어두운 그림자 */
+}
+
+html.dark body .mode-toggle button:hover {
+  background: linear-gradient(to bottom right, #3a3d45, #4b4e57); /* 호버 시 조금 더 밝은 어두운 배경 */
+  color: #fff; /* 호버 시 흰색 글자 */
+  transform: scale(1.03); /* 기존 효과 유지 */
+}
+
+
+/* 언어 선택: 레이블과 드롭다운 나란히 */
+.lang-selector-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.lang-selector-wrap label {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+#langSelector {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  color: #333;
+}
+
+html.dark #langSelector {
+  background: #333;
+  color: #eee;
+  border-color: #555;
+}
+
+/* 공통 버튼 스타일 */
+/* 공통 버튼 스타일 */
+.bl-button {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 1rem;
+  padding: 0.3rem 0.5rem;
+  margin: 1.2rem 0.6rem;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
   display: inline-block;
 }
 
-.color-tool:hover .color-palette,
-.color-palette:hover {
-  display: flex;
+/* ➕ 추가 버튼: 파란색 단색 */
+.bl-button.add {
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  background-color: #1976d2; /* 선명한 파란색 */
+  color: white;
 }
 
-.color-palette {
-  display: none;
-  position: absolute;
-  top: calc(100% + 4px); /* 버튼 아래에 뜨게 */
-  left: 0;
-  background: white;
-  padding: 4px;
+.bl-button.add:hover {
+  background-color: #1565c0; /* 살짝 더 진하게 */
+}
+
+/* 💾 저장 버튼: 밝은 초록 단색 */
+.bl-button.save {
+  background-color: #2ecc71; /* 밝은 초록색 */
+  color: white;
+  font-size: 1.05rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.bl-button.save:hover {
+  background-color: #27ae60; /* 살짝 더 진하게 */
+}
+
+/* 다크 모드: 대비 강화 */
+html.dark .bl-button.add {
+  background-color: #64b5f6;
+}
+
+html.dark .bl-button.add:hover {
+  background-color: #42a5f5;
+}
+
+html.dark .bl-button.save {
+  background-color: #58d68d;
+}
+
+html.dark .bl-button.save:hover {
+  background-color: #45c37b;
+}
+
+.save-button-wrap {
+  text-align: right;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.editor {
+  width: 100% !important;
+  min-height: 400px;
+  box-sizing: border-box;
+  padding: 1rem;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  z-index: 999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.editor-area-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 }
