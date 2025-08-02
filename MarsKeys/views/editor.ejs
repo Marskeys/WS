@@ -1,190 +1,234 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
-<%- include('partials/head') %>
-<body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="/assets/css/editor.css" />
+  <title>BlindLove 에디터</title>
+  <%- include('partials/head') %>
+  <% if (user) { %>
+    <meta name="author" content="<%= user.nickname %>">
+  <% } %>
+<style>
+
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body class="edit-body">
+  <div id="preloader">
+    <div class="spinner"></div>
+  </div>
   <%- include('partials/header') %>
-  <% const isEdit = !!post; %>
+  <% const isEdit = typeof post !== 'undefined' && post !== null;
+ %>
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold; margin-top:3rem;">
       <%= user.nickname %>님, 에디터에 오신 걸 환영합니다!
-    </div>
+ </div>
   <% } %>
 
-  <div class="editor-container hologram-border">
-    <div class="editor-lang-selector">
-      <label for="langSelector">편집 언어:</label>
+  <div class="editor-container">
+    <div class="logo-wrap">
+      <a href="/<%= lang %>/">
+        <img src="/assets/images/logo.png" alt="BlindLove 로고" />
+      </a>
+    </div>
+
+    <div class="lang-selector-wrap">
+      <label for="langSelector">편집 중인 언어</label>
       <select id="langSelector">
-        <% supportedLangs.forEach(supportedLang => { %>
-          <option value="<%= supportedLang %>" <%= lang === supportedLang ? 'selected' : '' %>>
-            <%= supportedLang.toUpperCase() %>
-          </option>
-        <% }) %>
+        <%
+          const langLabels = {
+              'ko': '한국어',
+              'en': 'English',
+              'fr': 'Français',
+              'zh': '中文',
+              'ja': '日本語'
+          };
+ supportedLangs.forEach(langCode => {
+        %>
+          <option value="<%= langCode %>" <%= lang === langCode ? 'selected' : '' %>><%= langLabels[langCode] %></option>
+        <%
+          });
+ %>
       </select>
     </div>
-    
-    <% const currentPost = post || {}; %>
 
-    <% supportedLangs.forEach(langCode => { %>
-      <div class="lang-meta-block" data-lang="<%= langCode %>" style="<%= langCode === lang ? '' : 'display:none;' %>">
-        
+    <%
+      const langList = [
+        { code: 'ko', label: '한국어' },
+        { code: 'en', label: 'English' },
+        { code: 'fr', label: 'Français' },
+        { code: 'zh', label: '简体中文' },
+        { code: 'ja', label: '日本語' }
+      ];
+ %>
+
+    <% langList.forEach(({ code, label }) => { %>
+      <div class="lang-meta-block" data-lang="<%= code %>" style="<%= code === lang ? '' : 'display:none;' %>">
         <div class="title-wrap">
-          <input type="text" id="postTitle_<%= langCode %>" placeholder="<%= langCode.toUpperCase() %> 제목을 입력하세요" value="<%= currentPost?.translations?.[langCode]?.title || currentPost?.title || '' %>" />
+          <input
+            type="text"
+            name="title_<%= code %>"
+            placeholder="<%= label %> 제목"
+            value="<%= post?.[code]?.title || '' %>"
+          />
         </div>
 
-        <div class="toolbar" data-lang-toolbar="<%= langCode %>">
+        <div class="toolbar" data-lang-toolbar="<%= code %>">
           <div class="dropdown">
-            <div class="dropdown-toggle" id="currentStyle_<%= langCode %>" onclick="toggleDropdown()">본문 ▼</div>
-            <div class="dropdown-menu" id="styleDropdown_<%= langCode %>">
-              <div class="h1" onclick="applyStyle('h1')">제목</div>
-              <div class="h2" onclick="applyStyle('h2')">부제목</div>
-              <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
-              <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
-              <div class="p" onclick="applyStyle('p')">본문</div>
-              <div class="desc" onclick="applyStyle('small')">설명</div>
-              <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
-              <div class="label" onclick="applyStyle('span')">레이블</div>
-              <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
+            <div class="dropdown-toggle" data-style-toggle="<%= code %>">본문 ▼</div>
+            <div class="dropdown-menu" data-style-dropdown="<%= code %>">
+              <div class="h1" data-style-command="h1">제목</div>
+              <div class="h2" data-style-command="h2">부제목</div>
+              <div class="h3" data-style-command="h3">머리말 1</div>
+              <div class="red" data-style-command="h4">빨간 머리말</div>
+              <div class="p" data-style-command="p">본문</div>
+              <div class="desc" data-style-command="small">설명</div>
+              <div class="meta" data-style-command="footer">머리말 및 꼬리말</div>
+              <div class="label" data-style-command="span">레이블</div>
+              <div class="label label-bold" data-style-command="strong">진한 레이블</div>
             </div>
           </div>
-          <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
-          <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
-          <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
-          <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
-          <button onclick="format('strikeThrough')" data-tooltip="취소선"><s>S</s></button>
-          <button onclick="format('justifyLeft')" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
-          <button onclick="format('justifyCenter')" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
-          <button onclick="format('justifyRight')" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
-          <button onclick="format('insertOrderedList')" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
-          <button onclick="format('insertUnorderedList')" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
-          <button onclick="format('outdent')" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
-          <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
-          <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
-          <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
+          <button data-command="insertTOC" data-tooltip="목차 삽입">📑 목차</button>
+          <button data-command="bold" data-tooltip="굵게"><b>B</b></button>
+          <button data-command="italic" data-tooltip="기울이기"><i>I</i></button>
+          <button data-command="underline" data-tooltip="밑줄"><u>U</u></button>
+          <button data-command="strikeThrough" data-tooltip="취소선"><s>S</s></button>
+          <button data-command="justifyLeft" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
+          <button data-command="justifyCenter" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
+          <button data-command="justifyRight" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
+          <button data-command="insertOrderedList" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
+          <button data-command="insertUnorderedList" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
+          <button data-command="outdent" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
+          <button data-command="indent" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
+          <button data-command="createLink" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
+          <button data-command="unlink" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
           
-          <div class="color-tool" id="foreTool_<%= langCode %>">
-            <button id="foreColorBtn_<%= langCode %>" data-tooltip="글자 색상" onmousedown="saveSelection()">
-              <i class="fas fa-pencil-alt" id="foreIcon_<%= langCode %>"></i>
+          <div class="color-tool" data-color-tool="foreColor">
+            <button data-color-btn="foreColor" data-tooltip="글자 색상">
+              <i class="fas fa-pencil-alt"></i>
             </button>
-            <div class="color-palette" id="forePalette_<%= langCode %>">
-              <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
-              <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
-              <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
-              <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
-              <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
-              <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
+            <div class="color-palette" data-color-palette="foreColor">
+              <button style="background:black" data-color-value="black"></button>
+              <button style="background:red" data-color-value="red"></button>
+              <button style="background:orange" data-color-value="orange"></button>
+              <button style="background:green" data-color-value="green"></button>
+              <button style="background:blue" data-color-value="blue"></button>
+              <button class="none-icon" data-color-value="__clear__" title="색 없음"></button>
               <label class="custom-color">
-                🎨<input type="color" onchange="setColor('foreColor', this.value)" />
+                🎨<input type="color" data-color-input="foreColor" />
               </label>
             </div>
           </div>
           
-          <div class="color-tool" id="bgTool_<%= langCode %>">
-            <button id="bgColorBtn_<%= langCode %>" data-tooltip="배경 색상" onmousedown="saveSelection()">
-              <i class="fas fa-fill-drip" id="bgIcon_<%= langCode %>"></i>
+          <div class="color-tool" data-color-tool="hiliteColor">
+            <button data-color-btn="hiliteColor" data-tooltip="배경 색상">
+              <i class="fas fa-fill-drip"></i>
             </button>
-            <div class="color-palette" id="bgPalette_<%= langCode %>">
-              <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
-              <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
-              <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
-              <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
-              <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
-              <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
+            <div class="color-palette" data-color-palette="hiliteColor">
+              <button style="background:yellow" data-color-value="yellow"></button>
+              <button style="background:lightblue" data-color-value="lightblue"></button>
+              <button style="background:lightgreen" data-color-value="lightgreen"></button>
+              <button style="background:pink" data-color-value="pink"></button>
+              <button style="background:#ccc" data-color-value="#ccc"></button>
+              <button class="none-icon" data-color-value="__clear__" title="색 없음"></button>
               <label class="custom-color">
-                🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
+                🎨<input type="color" data-color-input="hiliteColor" />
               </label>
             </div>
           </div>
-
-          <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-          <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
+          <button data-command="openHtmlPopup" data-tooltip="HTML 삽입"><i class="fas fa-code"></i></button> 
+          <button data-command="insertImage" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
+          <button data-command="removeFormat" data-tooltip="형식 제거">지우기</button>
         </div>
-
+    
         <% if (user && Number(user.is_admin) === 1) { %>
         <div class="mode-toggle">
-          <button onclick="switchToDesignMode()">디자인 모드</button>
-          <button onclick="switchToHtmlMode()">HTML 모드</button>
+          <button data-mode-toggle="design">디자인 모드</button>
+          <button data-mode-toggle="html">HTML 모드</button>
         </div>
         <% } %>
         
-        <div id="editorWrapper_<%= langCode %>">
-          <div id="editor_<%= langCode %>" contenteditable="true" class="editor" spellcheck="false">
-            <%- currentPost?.translations?.[langCode]?.content || currentPost?.content || '<p><br></p>' %>
+        <div class="editor-area-wrapper">
+          <div id="editor_<%= code %>"
+               contenteditable="true"
+               class="editor language-editor"
+               spellcheck="false"
+               data-lang-editor="<%= code %>"
+               style="<%= code === lang ? '' : 'display:none;' %>"
+          >
+            <%
+              let initialContent = post?.[code]?.content || '<p><br></p>';
+              const isWrapped = initialContent.startsWith('<div class="bl-content"');
+              if (!isWrapped) {
+                initialContent = `
+                  <div class="bl-content" style="white-space:normal; line-height: 1.7;">
+                    ${initialContent}
+                  </div>
+                `;
+              }
+            %>
+            <%- initialContent %>
           </div>
-          <textarea id="htmlEditor_<%= langCode %>" class="editor" style="display: none;"></textarea>
+          <textarea id="htmlEditor_<%= code %>" class="editor html-editor" style="display: none;"></textarea>
         </div>
 
+        <div class="global-options" style="margin-top: 2rem;">
+          <label style="margin-right: 2rem;">
+            <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.is_private ? 'checked' : '' %> />
+            🔒 비공개 글로 설정
+          </label>
+        
+          <% if (user && Number(user.is_admin) === 1) { %>
+            <label>
+              <input type="checkbox" id="isPinnedCheckbox" name="is_pinned" value="1" <%= post?.is_pinned ? 'checked' : '' %> />
+              📌 상단에 고정하기
+            </label>
+          <% } %>
+        </div>
+
+
       </div>
-    <% }); %>
-
-    <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
-      <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.is_private ? 'checked' : '' %> />
-      비공개 글로 설정
-    </label>
-
-    <% if (user && Number(user.is_admin) === 1) { %>
-      <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
-        <input type="checkbox" id="isPinnedCheckbox" name="is_pinned" value="1" <%= post?.is_pinned ? 'checked' : '' %> />
-        상단에 고정하기 📌
-      </label>
-    <% } %>
+    <% }) %> 
 
     <div class="category-box">
-      <label>카테고리:</label>
+      <label>카테고리 선택:</label>
       <div class="category-list" id="categoryList"></div>
-      <button class="add-category-btn" onclick="addCategory()">➕ 카테고리 추가</button>
-      <button class="post-btn" onclick="postContent()">📬 포스팅</button>
-      <button class="save-btn" onclick="saveContent()">💾 저장</button>
+      <button class="bl-button add" onclick="addCategory()">+ 추가</button>
     </div>
-  </div>
 
-  <%
-    const categoryList = (post && post.categories) ? post.categories.split(',') : ['일상'];
-  %>
+    <div class="save-button-wrap">
+      <button type="button" class="bl-button save" onclick="postContent()">💾 저장</button>
+    </div>
 
+  </div> 
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
   <script>
-    let selectedCategories = <%- JSON.stringify(categoryList) %>;
+    let selectedCategories = [];
+    <% if (post && post.categories) { %>
+      selectedCategories = <%- JSON.stringify(post.categories.split(',')) %>;
+ <% } %>
+
     let categories = [];
     let savedRange = null;
-    let currentActiveEditor = document.getElementById('editor_<%= lang %>');
-    let currentActiveHtmlEditor = document.getElementById('htmlEditor_<%= lang %>');
-    
-    // openHtmlPopup 함수는 수정 없이 기존과 동일하게 유지합니다.
-    function openHtmlPopup() {
-      showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
-        if (!rawCode) return;
-        const encoder = new TextEncoder();
-        const encodedUint8 = encoder.encode(rawCode); 
-        const base64Code = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const result = reader.result;
-                if (typeof result === 'string') {
-                    resolve(result.split(',')[1]);
-                } else {
-                    reject(new Error("FileReader result is not a string."));
-                }
-            };
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(new Blob([encodedUint8]));
-        });
-        const wrapper = document.createElement("div");
-        wrapper.className = "custom-widget";
-        wrapper.setAttribute("data-type", "html-snippet");
-        wrapper.setAttribute("data-code", base64Code);
-        wrapper.innerHTML = `<div style="border: 1px dashed gray; padding: 0.5rem; color: #666;">[HTML 코드 삽입됨]</div>`;
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) {
-          const range = sel.getRangeAt(0);
-          range.deleteContents();
-          range.insertNode(wrapper);
-        } else {
-          currentActiveEditor.appendChild(wrapper);
-        }
-        saveSelection();
-      });
-    }
+    let currentActiveEditor = null;
+    let currentActiveHtmlEditor = null;
+    let currentActiveToolbar = null;
 
-    // renderCategories 함수
+    const langList = [
+        { code: 'ko', label: '한국어' },
+        { code: 'en', label: 'English' },
+        { code: 'fr', label: 'Français' },
+        { code: 'zh', label: '简体中文' },
+        { code: 'ja', label: '日本語' }
+    ];
+    const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
+    const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
+    const CURRENT_PAGE_LANG = '<%= lang %>';
+
     function renderCategories() {
         const list = document.getElementById('categoryList');
         list.innerHTML = '';
@@ -229,463 +273,566 @@
           list.appendChild(item);
         });
       }
-    
-    // addCategory 함수
-    function addCategory() {
-      showCustomInput("새 카테고리 이름을 입력하세요:", (newCat) => {
-        newCat = newCat?.trim();
-        if (!newCat || categories.includes(newCat)) return;
-        fetch('/api/categories', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: newCat })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            categories.push(newCat);
-            renderCategories();
-            showCustomMessage("카테고리가 성공적으로 추가되었습니다.");
-          } else {
-            showCustomMessage("추가 실패: " + data.error);
-          }
-        })
-        .catch(err => {
-          console.error("추가 오류:", err);
-          showCustomMessage("추가 중 오류가 발생했습니다.");
-        });
-      });
-    }
-    
-    // postContent 함수 (수정됨)
-    function postContent() {
-      console.log('포스팅 버튼이 클릭되었습니다.');
 
-      const isEdit = <%= isEdit %>;
-      const postId = '<%= post?.id || "" %>';
-      const currentLang = document.getElementById('langSelector').value;
+      function addCategory() {
+        showCustomInput("새 카테고리 이름을 입력하세요:", (newCat) => {
+          newCat = newCat?.trim();
+          if (!newCat || categories.includes(newCat)) return;
       
-      const postData = {
+          fetch('/api/categories', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newCat })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              categories.push(newCat);
+              renderCategories();
+              showCustomMessage("카테고리가 성공적으로 추가되었습니다.");
+            } else {
+              showCustomMessage("추가 실패: " + data.error);
+            }
+          })
+          .catch(err => {
+            console.error("추가 오류:", err);
+            showCustomMessage("추가 중 오류가 발생했습니다.");
+          });
+        });
+      }
+
+      function postContent() {
+        const postData = {
           categories: selectedCategories,
           is_private: document.getElementById('isPrivateCheckbox')?.checked ? 1 : 0,
           is_pinned: document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0,
           lang_content: {}
-      };
+        };
 
-      // HTML 모드에서 포스팅을 누른 경우, 디자인 모드로 전환하여 에디터 내용 동기화
-      const currentHtmlEditor = document.getElementById(`htmlEditor_${currentLang}`);
-      const currentEditor = document.getElementById(`editor_${currentLang}`);
-      if (currentHtmlEditor && currentEditor && currentHtmlEditor.style.display !== 'none') {
-          currentEditor.innerHTML = currentHtmlEditor.value;
-      }
-      
-      let hasAnyContent = false;
-      const supportedLangs = <%- JSON.stringify(supportedLangs) %>;
-
-      supportedLangs.forEach(code => {
-          const titleInput = document.getElementById(`postTitle_${code}`);
+        let hasContentForDefaultLang = false;
+        langList.forEach(({ code }) => {
+          const titleInput = document.querySelector(`input[name="title_${code}"]`);
           const editorDiv = document.getElementById(`editor_${code}`);
+          const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`);
 
-          let contentToSave = editorDiv.innerHTML.trim();
+          if (!titleInput || !editorDiv || !htmlEditorDiv) {
+            console.warn(`언어 코드 ${code} 에 대한 입력 필드 또는 에디터 DIV를 찾을 수 없습니다.`);
+            return;
+          }
 
+          let contentToSave = '';
+          if (htmlEditorDiv.style.display === 'block') {
+            // HTML 모드인 경우
+            contentToSave = htmlEditorDiv.value.trim();
+          } else {
+            // 디자인 모드인 경우
+            // 디자인 모드에서 내용을 가져올 때, bl-content 내부의 내용만 가져오도록 합니다.
+            const blContent = editorDiv.querySelector('.bl-content');
+            contentToSave = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
+          }
+
+          // 내용이 비어있거나 기본 플레이스홀더 내용인 경우 '<p><br></p>'로 통일
           if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
-              contentToSave = '';
+            contentToSave = '<p><br></p>';
           }
           
           postData.lang_content[code] = {
-              title: titleInput.value.trim(),
-              content: contentToSave
+            title: titleInput.value.trim(),
+            content: contentToSave
           };
           
-          // 최소 한 개 이상의 언어로 내용이 있는지 확인
-          if (postData.lang_content[code].title || postData.lang_content[code].content !== '') {
-              hasAnyContent = true;
+          if (code === 'ko' && (postData.lang_content[code].title || postData.lang_content[code].content !== '<p><br></p>')) {
+            hasContentForDefaultLang = true;
           }
-      });
-      
-      if (!selectedCategories || selectedCategories.length === 0) {
-        return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
-      }
-
-      // 수정: 최소 한 개의 언어라도 내용이 있어야 포스팅 가능하도록 변경
-      if (!hasAnyContent) {
-          return showCustomMessage("제목 또는 내용을 최소 한 개 언어로 입력해주세요.");
-      }
-      
-      const submitUrl = isEdit && postId ? `/${currentLang}/edit/${postId}` : `/${currentLang}/savePost`;
-
-      fetch(submitUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData)
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-            if (isEdit) {
-              window.location.href = `/${currentLang}/post/${postId}`;
-            } else {
-              window.location.href = `/${currentLang}/`;
-            }
-          });
-        } else {
-          showCustomMessage("저장 실패: " + data.error);
-        }
-      })
-      .catch(err => {
-        console.error("저장 중 오류:", err);
-        showCustomMessage("저장 중 오류가 발생했습니다.");
-      });
-    }
-
-    // format 함수
-    function format(command, value = null) {
-      if (!currentActiveEditor) return;
-      document.execCommand("styleWithCSS", false, false);
-      currentActiveEditor.focus();
-      document.execCommand(command, false, value);
-      setTimeout(detectStyle, 100);
-    }
-    
-    // applyStyle 함수
-    function applyStyle(tag) {
-      if (!currentActiveEditor) return;
-      const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
-      restoreSelection();
-      currentActiveEditor.focus();
-      if (blockTags.includes(tag)) {
-        document.execCommand("styleWithCSS", false, false);
-        document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
-        saveSelection();
-      } else {
-        const sel = window.getSelection();
-        if (!sel.rangeCount || sel.isCollapsed) return;
-        const range = sel.getRangeAt(0);
-        const tempElement = document.createElement(tag);
-        if (tag === 'span') tempElement.classList.add('label');
-        if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
-        try {
-          const contents = range.extractContents();
-          tempElement.appendChild(contents);
-          range.insertNode(tempElement);
-          sel.removeAllRanges();
-          const newRange = document.createRange();
-          newRange.selectNode(tempElement);
-          sel.addRange(newRange);
-          saveSelection();
-        } catch (e) {
-          console.error("applyStyle(span/strong) 오류:", e);
-        }
-      }
-      setTimeout(detectStyle, 100);
-    }
-
-    // insertImage 함수
-    function insertImage() {
-      showCustomInput("이미지 URL을 입력하세요:", (url) => {
-        if (url) format('insertImage', url);
-      });
-    }
-
-    // saveContent 함수
-    function saveContent() {
-      showCustomMessage("임시 저장 완료!");
-    }
-
-    // toggleDropdown 함수
-    function toggleDropdown() {
-      const currentLangCode = document.getElementById('langSelector').value;
-      document.getElementById(`styleDropdown_${currentLangCode}`).classList.toggle('show');
-    }
-
-    // updateCurrentStyle 함수
-    function updateCurrentStyle(tagName) {
-      const currentLangCode = document.getElementById('langSelector').value;
-      const labelMap = {
-        h1: "제목", h2: "부제목", h3: "머리말 1", h4: "빨간 머리말",
-        p: "본문", small: "설명", footer: "머리말 및 꼬리말",
-        span: "레이블", strong: "진한 레이블"
-      };
-      const label = labelMap[tagName.toLowerCase()] || tagName;
-      document.getElementById(`currentStyle_${currentLangCode}`).innerText = `${label} ▼`;
-    }
-
-    // detectStyle 함수
-    function detectStyle() {
-      if (!currentActiveEditor) return;
-      const sel = window.getSelection();
-      if (!sel.rangeCount || !currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) return;
-      
-      let node = sel.getRangeAt(0).startContainer;
-      if (node.nodeType === 3) node = node.parentNode;
-      while (node && node !== currentActiveEditor) {
-        const tag = node.tagName?.toLowerCase();
-        if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
-          updateCurrentStyle(tag);
-          return;
-        }
-        node = node.parentNode;
-      }
-      updateCurrentStyle('p');
-    }
-
-    // saveSelection 함수
-    function saveSelection() {
-      if (!currentActiveEditor) return;
-      const sel = window.getSelection();
-      if (sel.rangeCount > 0 && currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) {
-        savedRange = sel.getRangeAt(0).cloneRange();
-      }
-    }
-
-    // restoreSelection 함수
-    function restoreSelection() {
-      if (!currentActiveEditor || !savedRange) return;
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(savedRange);
-      currentActiveEditor.focus();
-    }
-
-    // setColor 함수
-    function setColor(command, color) {
-      if (!currentActiveEditor) return;
-      restoreSelection();
-      const sel = window.getSelection();
-      if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) return;
-      const range = sel.getRangeAt(0);
-      
-      if (color === "__clear__") {
-        document.execCommand("removeFormat", false, null);
-        return;
-      }
-      
-      document.execCommand(command, false, color);
-      saveSelection();
-      detectStyle();
-    }
-    
-    // switchToHtmlMode 함수
-    function switchToHtmlMode() {
-      if (!currentActiveEditor) return;
-      const htmlEditor = document.getElementById(currentActiveHtmlEditor.id);
-      htmlEditor.value = currentActiveEditor.innerHTML.trim();
-      currentActiveEditor.style.display = "none";
-      htmlEditor.style.display = "block";
-    }
-
-    // switchToDesignMode 함수
-    function switchToDesignMode() {
-      if (!currentActiveEditor) return;
-      const htmlEditor = document.getElementById(currentActiveHtmlEditor.id);
-      currentActiveEditor.innerHTML = htmlEditor.value;
-      htmlEditor.style.display = "none";
-      currentActiveEditor.style.display = "block";
-    }
-    
-    // 언어 선택 로직
-    function switchLanguage(selectedLangCode) {
-        const langBlocks = document.querySelectorAll('.lang-meta-block');
-        langBlocks.forEach(block => {
-            if (block.getAttribute('data-lang') === selectedLangCode) {
-                block.style.display = '';
-            } else {
-                block.style.display = 'none';
-            }
         });
-        
-        currentActiveEditor = document.getElementById(`editor_${selectedLangCode}`);
-        currentActiveHtmlEditor = document.getElementById(`htmlEditor_${selectedLangCode}`);
-        
-        if (currentActiveEditor) {
-            currentActiveEditor.focus();
-            detectStyle();
-            saveSelection();
+
+        if (!postData.categories || postData.categories.length === 0) {
+          return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
         }
-    }
 
-    // 커스텀 메시지 박스 및 입력 박스 구현 (기존 코드와 동일)
-    function createMessageBox(message, isConfirm = false, onConfirm = null) {
-      let modal = document.getElementById('customMessageModal');
-      if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'customMessageModal';
-        modal.style = `
-          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-          align-items: center; z-index: 1000;
-        `;
-        document.body.appendChild(modal);
-      }
-      modal.innerHTML = `
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-          <p style="color: black;">${message}</p>
-          ${isConfirm ? `
-              <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-              <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-          ` : `
-              <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-          `}
-        </div>
-      `;
-      modal.style.display = 'flex';
-      if (isConfirm) {
-        document.getElementById('confirmBtn').onclick = () => {
-          modal.style.display = 'none';
-          if (onConfirm) onConfirm();
-        };
-        document.getElementById('cancelBtn').onclick = () => {
-          modal.style.display = 'none';
-        };
-      } else {
-        document.getElementById('okBtn').onclick = () => {
-          modal.style.display = 'none';
-          if (onConfirm) onConfirm();
-        };
-      }
-    }
-
-    function showCustomMessage(message, isConfirm = false, onConfirm = null) {
-      // 수정: alert() 함수를 제거하여 중복 메시지 현상을 해결합니다.
-      createMessageBox(message, isConfirm, onConfirm);
-    }
-
-    function showCustomInput(message, onInput) {
-      let modal = document.getElementById('customInputModal');
-      if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'customInputModal';
-        modal.style = `
-          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-          align-items: center; z-index: 1000;
-        `;
-        document.body.appendChild(modal);
-      }
-      modal.innerHTML = `
-        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
-          <p style="color: black;">${message}</p>
-          <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
-          <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-          <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-        </div>
-      `;
-      modal.style.display = 'flex';
-      document.getElementById('inputOkBtn').onclick = () => {
-        const inputValue = document.getElementById('customInput').value;
-        modal.style.display = 'none';
-        if (onInput) onInput(inputValue);
-      };
-      document.getElementById('inputCancelBtn').onclick = () => {
-        modal.style.display = 'none';
-        if (onInput) onInput(null);
-      };
-      document.getElementById('customInput').focus();
-    }
-    
-    // window.onclick 함수
-    window.onclick = function(e) {
-      if (!e.target.matches('.dropdown-toggle')) {
-        const dropdowns = document.querySelectorAll('.dropdown-menu');
-        for (let d of dropdowns) d.classList.remove('show');
-      }
-    };
-    
-    // insertTOC 함수
-    function insertTOC() {
-      if (!currentActiveEditor) return;
-      const headings = currentActiveEditor.querySelectorAll("h1, h2");
-      if (!headings.length) {
-        showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
-        return;
-      }
-      const oldTOC = currentActiveEditor.querySelector(".auto-toc");
-      if (oldTOC) oldTOC.remove();
-      const tocWrapper = document.createElement("div");
-      tocWrapper.className = "auto-toc";
-      tocWrapper.contentEditable = "false";
-      const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
-      const tocList = document.createElement("ul");
-      tocList.className = "toc-list";
-      tocList.style.margin = "0";
-      tocList.style.padding = "0";
-      let h1Count = 0;
-      let h2Count = 0;
-      headings.forEach((el) => {
-        const tag = el.tagName.toLowerCase();
-        let number = "";
-        if (tag === "h1") {
-          h1Count++;
-          h2Count = 0;
-          number = `${h1Count}.`;
-        } else if (tag === "h2") {
-          h2Count++;
-          number = `${h1Count}.${h2Count}`;
+        if (!hasContentForDefaultLang) {
+          return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
         }
-        const id = `toc-${number.replace(/\./g, "-")}`;
-        el.id = id;
-        const li = document.createElement("li");
-        li.className = `toc-item toc-${tag}`;
-        li.style.margin = "0.2em 0";
-        li.style.lineHeight = "1.2";
-        if (tag === "h2") li.style.marginLeft = "1.2rem";
-        const a = document.createElement("a");
-        a.href = `#${id}`;
-        a.textContent = `${number} ${el.textContent.trim()}`;
-        a.onclick = function (e) {
-          e.preventDefault();
-          document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-        };
-        a.style.color = "#0366d6";
-        a.style.textDecoration = "none";
-        li.appendChild(a);
-        tocList.appendChild(li);
-      });
-      tocWrapper.innerHTML = tocTitle;
-      tocWrapper.appendChild(tocList);
-      const firstHeading = [...headings][0];
-      currentActiveEditor.insertBefore(tocWrapper, firstHeading);
-    }
-    
-    // ✅ DOMContentLoaded 이벤트 리스너 통합 및 언어 변경 로직 추가
-    document.addEventListener('DOMContentLoaded', () => {
-      const langSelect = document.getElementById('langSelector');
-      if (langSelect) {
-        langSelect.addEventListener('change', (e) => {
-          switchLanguage(e.target.value);
-        });
-      }
 
-      // 카테고리 불러오기 및 렌더링
-      fetch('/api/categories')
+        // 폼 제출 URL을 현재 언어 경로를 포함하도록 수정
+        const submitUrl = IS_EDIT_PAGE && POST_ID ? `/${CURRENT_PAGE_LANG}/edit/${POST_ID}` : `/${CURRENT_PAGE_LANG}/savePost`;
+
+        fetch(submitUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(postData)
+        })
         .then(res => res.json())
         .then(data => {
-          categories = data.categories || [];
-          renderCategories();
+          if (data.success) {
+            showCustomMessage("성공적으로 저장되었습니다!", false, () => {
+              window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
+            });
+          } else {
+            showCustomMessage("저장 실패: " + data.error);
+          }
         })
         .catch(err => {
-          console.error("카테고리 불러오기 오류:", err);
-          categories = ['일상', '기록', '리뷰'];
-          renderCategories();
+          console.error("저장 중 오류:", err);
+          showCustomMessage("저장 중 오류가 발생했습니다.");
         });
-
-      // 에디터 이벤트 리스너 추가
-      const editors = document.querySelectorAll('.editor');
-      editors.forEach(editor => {
-        editor.addEventListener('keyup', detectStyle);
-        editor.addEventListener('mouseup', detectStyle);
-        editor.addEventListener('mouseup', saveSelection);
-        editor.addEventListener('keyup', saveSelection);
-      });
+      }
       
-      // 툴바 버튼 이벤트 리스너 추가 (선택 영역 저장)
-      const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
-      toolbarButtons.forEach(button => {
-        button.addEventListener('mousedown', saveSelection);
+      function format(command) {
+        if (!currentActiveEditor) return;
+        currentActiveEditor.focus();
+        document.execCommand(command, false, null);
+        setTimeout(detectStyle, 100);
+      }
+
+      function applyStyle(tag) {
+        if (!currentActiveEditor) return;
+        const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
+        restoreSelection();
+        currentActiveEditor.focus();
+        if (blockTags.includes(tag)) {
+          document.execCommand("styleWithCSS", false, false);
+          document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
+          saveSelection();
+        } else {
+          // span, strong 같은 인라인 태그 처리
+          const sel = window.getSelection();
+          if (!sel.rangeCount || sel.isCollapsed) return;
+          const range = sel.getRangeAt(0);
+          const tempElement = document.createElement(tag);
+          if (tag === 'span') tempElement.classList.add('label');
+          if (tag === 'strong') tempElement.classList.add('label', 'label-bold');
+          try {
+            const contents = range.extractContents();
+            tempElement.appendChild(contents);
+            range.insertNode(tempElement);
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNode(tempElement);
+            sel.addRange(newRange);
+            saveSelection();
+          } catch (e) {
+            console.error("applyStyle(span/strong) 오류:", e);
+          }
+        }
+        setTimeout(detectStyle, 100);
+      }
+      
+      function setColor(command, color) {
+        if (!currentActiveEditor) return;
+        restoreSelection();
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) return;
+        const range = sel.getRangeAt(0);
+
+        // 색상 초기화 로직 추가
+        if (color === "__clear__") {
+            // command에 따라 적절한 색상 초기화 로직을 수행
+            if (command === 'foreColor') {
+                document.execCommand("removeFormat", false, "foreColor");
+            } else if (command === 'hiliteColor') {
+                // hiliteColor는 removeFormat으로는 잘 안지워져서 별도 처리
+                document.execCommand('backColor', false, '#ffffff'); // 흰색으로 바꾸기
+            }
+            return;
+        }
+
+        document.execCommand(command, false, color);
+        saveSelection();
+        detectStyle();
+      }
+
+      function insertImage() {
+        showCustomInput("이미지 URL을 입력하세요:", (url) => {
+          if (url) format('insertImage', url);
+        });
+      }
+
+      function toggleDropdown(langCode) {
+          const dropdownMenu = document.querySelector(`.dropdown-menu[data-style-dropdown="${langCode}"]`);
+          if (dropdownMenu) {
+              dropdownMenu.classList.toggle('show');
+          }
+      }
+
+      function updateCurrentStyle(tagName, langCode) {
+        const labelMap = {
+          h1: "제목", h2: "부제목", h3: "머리말 1", h4: "빨간 머리말",
+          p: "본문", small: "설명", footer: "머리말 및 꼬리말",
+          span: "레이블", strong: "진한 레이블"
+        };
+        const label = labelMap[tagName] || tagName;
+        const toggle = document.querySelector(`[data-style-toggle="${langCode}"]`);
+        if (toggle) {
+          toggle.innerText = `${label} ▼`;
+        }
+      }
+
+      function detectStyle() {
+        if (!currentActiveEditor) return;
+        const sel = window.getSelection();
+        if (!sel.rangeCount || !currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) return;
+        
+        let node = sel.getRangeAt(0).startContainer;
+        if (node.nodeType === 3) node = node.parentNode;
+        
+        // 텍스트 노드의 부모 노드를 찾아서 스타일을 감지
+        while (node && node !== currentActiveEditor) {
+          const tag = node.tagName?.toLowerCase();
+          if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+            updateCurrentStyle(tag, currentActiveEditor.getAttribute('data-lang-editor'));
+            return;
+          }
+          node = node.parentNode;
+        }
+
+        // 일치하는 블록 태그가 없으면 기본값 'p'로 설정
+        updateCurrentStyle('p', currentActiveEditor.getAttribute('data-lang-editor'));
+      }
+
+      function saveSelection() {
+        if (!currentActiveEditor) return;
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0 && currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) {
+          savedRange = sel.getRangeAt(0).cloneRange();
+        }
+      }
+
+      function restoreSelection() {
+        if (!currentActiveEditor || !savedRange) return;
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+        currentActiveEditor.focus();
+      }
+
+      function switchToHtmlMode() {
+        if (!currentActiveEditor || !currentActiveHtmlEditor) return;
+        const contentToDisplay = beautify.html(currentActiveEditor.innerHTML.trim(), {
+            indent_size: 2,
+            space_in_empty_paren: true
+        });
+        currentActiveHtmlEditor.value = contentToDisplay;
+        currentActiveEditor.style.display = "none";
+        currentActiveHtmlEditor.style.display = "block";
+      }
+
+      function switchToDesignMode() {
+        if (!currentActiveEditor || !currentActiveHtmlEditor) return;
+        currentActiveEditor.innerHTML = currentActiveHtmlEditor.value;
+        currentActiveHtmlEditor.style.display = "none";
+        currentActiveEditor.style.display = "block";
+      }
+      
+      function switchLanguage(langCode) {
+          const langBlocks = document.querySelectorAll('.lang-meta-block');
+          langBlocks.forEach(block => {
+              block.style.display = 'none';
+          });
+          const activeBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
+          if (activeBlock) {
+              activeBlock.style.display = 'block';
+          }
+
+          currentActiveEditor = document.getElementById(`editor_${langCode}`);
+          currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
+          currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+
+          if (currentActiveEditor) {
+              currentActiveEditor.focus();
+              detectStyle();
+              saveSelection();
+          }
+      }
+
+      // 커스텀 메시지 박스 및 입력 박스 구현 (기존 코드와 동일)
+      function createMessageBox(message, isConfirm = false, onConfirm = null) {
+        let modal = document.getElementById('customMessageModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'customMessageModal';
+          modal.style = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+          `;
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+          <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+            <p style="color: black;">${message}</p>
+            ${isConfirm ? `
+                <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+                <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+            ` : `
+                <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+            `}
+          </div>
+        `;
+        modal.style.display = 'flex';
+        if (isConfirm) {
+          document.getElementById('confirmBtn').onclick = () => {
+            modal.style.display = 'none';
+            if (onConfirm) onConfirm();
+          };
+          document.getElementById('cancelBtn').onclick = () => {
+            modal.style.display = 'none';
+          };
+        } else {
+          document.getElementById('okBtn').onclick = () => {
+            modal.style.display = 'none';
+            if (onConfirm) onConfirm();
+          };
+        }
+      }
+
+      function showCustomMessage(message, isConfirm = false, onConfirm = null) {
+        createMessageBox(message, isConfirm, onConfirm);
+      }
+
+      function showCustomInput(message, onInput) {
+        let modal = document.getElementById('customInputModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'customInputModal';
+          modal.style = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+          `;
+          document.body.appendChild(modal);
+        }
+        modal.innerHTML = `
+          <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
+            <p style="color: black;">${message}</p>
+            <input type="text" id="customInput" style="width: calc(100% - 20px); padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px;" />
+            <button id="inputOkBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
+            <button id="inputCancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
+          </div>
+        `;
+        modal.style.display = 'flex';
+        document.getElementById('inputOkBtn').onclick = () => {
+          const inputValue = document.getElementById('customInput').value;
+          modal.style.display = 'none';
+          if (onInput) onInput(inputValue);
+        };
+        document.getElementById('inputCancelBtn').onclick = () => {
+          modal.style.display = 'none';
+          if (onInput) onInput(null);
+        };
+        document.getElementById('customInput').focus();
+      }
+
+      function openHtmlPopup() {
+        showCustomInput("삽입할 HTML 코드를 입력하세요:", async (rawCode) => {
+          if (!rawCode) return;
+          const encoder = new TextEncoder();
+          const encodedUint8 = encoder.encode(rawCode); 
+          const base64Code = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                  const result = reader.result;
+                  if (typeof result === 'string') {
+                      resolve(result.split(',')[1]);
+                  } else {
+                      reject(new Error("FileReader result is not a string."));
+                  }
+              };
+              reader.onerror = (error) => reject(error);
+              reader.readAsDataURL(new Blob([encodedUint8]));
+          });
+          const wrapper = document.createElement("div");
+          wrapper.className = "custom-widget";
+          wrapper.setAttribute("data-type", "html-snippet");
+          wrapper.setAttribute("data-code", base64Code);
+          wrapper.innerHTML = `<div style="border: 1px dashed gray; padding: 0.5rem; color: #666;">[HTML 코드 삽입됨]</div>`;
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount > 0) {
+            const range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(wrapper);
+          } else {
+            currentActiveEditor.appendChild(wrapper);
+          }
+          saveSelection();
+        });
+      }
+      
+      function insertTOC() {
+        if (!currentActiveEditor) return;
+        const headings = currentActiveEditor.querySelectorAll("h1, h2");
+        if (!headings.length) {
+          showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
+          return;
+        }
+
+        const oldTOC = currentActiveEditor.querySelector(".auto-toc");
+        if (oldTOC) oldTOC.remove();
+
+        const tocWrapper = document.createElement("div");
+        tocWrapper.className = "auto-toc";
+        tocWrapper.contentEditable = "false";
+
+        const tocTitle = `<strong class="toc-title">📑 목차</strong>`;
+        const tocList = document.createElement("ul");
+        tocList.className = "toc-list";
+        tocList.style.margin = "0";
+        tocList.style.padding = "0";
+
+        let h1Count = 0;
+        let h2Count = 0;
+        headings.forEach((el) => {
+          const tag = el.tagName.toLowerCase();
+          let number = "";
+
+          if (tag === "h1") {
+            h1Count++;
+            h2Count = 0;
+            number = `${h1Count}.`;
+          } else if (tag === "h2") {
+            h2Count++;
+            number = `${h1Count}.${h2Count}`;
+          }
+
+          const id = `toc-${number.replace(/\./g, "-")}`;
+          el.id = id;
+
+          const li = document.createElement("li");
+          li.className = `toc-item toc-${tag}`;
+          li.style.margin = "0.2em 0";
+          li.style.lineHeight = "1.2";
+          if (tag === "h2") li.style.marginLeft = "1.2rem";
+
+          const a = document.createElement("a");
+          a.href = `#${id}`;
+          a.textContent = `${number} ${el.textContent.trim()}`;
+          a.onclick = function (e) {
+            e.preventDefault();
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+          };
+          a.style.color = "#0366d6";
+          a.style.textDecoration = "none";
+          li.appendChild(a);
+          tocList.appendChild(li);
+        });
+        
+        tocWrapper.innerHTML = tocTitle;
+        tocWrapper.appendChild(tocList);
+        const firstHeading = [...headings][0];
+        currentActiveEditor.insertBefore(tocWrapper, firstHeading);
+      }
+      
+      document.addEventListener('DOMContentLoaded', () => {
+          const langSelect = document.getElementById('langSelector');
+          if (langSelect) {
+              langSelect.addEventListener('change', (e) => {
+                  switchLanguage(e.target.value);
+              });
+          }
+
+          fetch('/api/categories')
+              .then(res => res.json())
+              .then(data => {
+                  categories = data.categories || [];
+                  renderCategories();
+              })
+              .catch(err => {
+                  console.error("카테고리 불러오기 오류:", err);
+                  categories = ['일상', '기록', '리뷰'];
+                  renderCategories();
+              });
+
+          document.querySelectorAll('.dropdown-toggle').forEach(el => {
+              el.addEventListener('click', (e) => {
+                  const langCode = e.target.getAttribute('data-style-toggle');
+                  toggleDropdown(langCode);
+              });
+          });
+
+          document.querySelectorAll('[data-style-command]').forEach(el => {
+              el.addEventListener('click', (e) => {
+                  const command = e.target.getAttribute('data-style-command');
+                  applyStyle(command);
+                  e.target.closest('.dropdown-menu').classList.remove('show');
+              });
+          });
+
+          document.querySelectorAll('[data-command]').forEach(el => {
+              const command = el.getAttribute('data-command');
+              el.addEventListener('click', (e) => {
+                  if (command === 'insertImage') {
+                      insertImage();
+                  } else if (command === 'openHtmlPopup') {
+                      openHtmlPopup();
+                  } else if (command === 'insertTOC') {
+                      insertTOC();
+                  } else {
+                      format(command);
+                  }
+              });
+          });
+
+          document.querySelectorAll('[data-mode-toggle]').forEach(el => {
+              el.addEventListener('click', (e) => {
+                  const mode = e.target.getAttribute('data-mode-toggle');
+                  if (mode === 'design') {
+                      switchToDesignMode();
+                  } else if (mode === 'html') {
+                      switchToHtmlMode();
+                  }
+              });
+          });
+          
+          document.querySelectorAll('[data-color-tool]').forEach(tool => {
+              const command = tool.getAttribute('data-color-tool');
+              const palette = tool.querySelector(`[data-color-palette="${command}"]`);
+              tool.querySelector(`[data-color-btn="${command}"]`).addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  document.querySelectorAll('.color-palette').forEach(p => {
+                      if (p !== palette) p.classList.remove('show');
+                  });
+                  palette.classList.toggle('show');
+              });
+
+              palette.querySelectorAll('[data-color-value]').forEach(btn => {
+                  btn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      setColor(command, e.target.getAttribute('data-color-value'));
+                      palette.classList.remove('show');
+                  });
+              });
+
+              palette.querySelector(`[data-color-input="${command}"]`).addEventListener('change', (e) => {
+                  e.stopPropagation();
+                  setColor(command, e.target.value);
+                  palette.classList.remove('show');
+              });
+          });
+
+          window.addEventListener('click', (e) => {
+              document.querySelectorAll('.dropdown-menu.show').forEach(el => {
+                  if (!el.contains(e.target) && !e.target.matches('.dropdown-toggle')) {
+                      el.classList.remove('show');
+                  }
+              });
+              document.querySelectorAll('.color-palette.show').forEach(el => {
+                  if (!el.contains(e.target) && !e.target.matches('[data-color-btn]')) {
+                      el.classList.remove('show');
+                  }
+              });
+          });
+          
+          const editors = document.querySelectorAll('.editor');
+          editors.forEach(editor => {
+            editor.addEventListener('keyup', detectStyle);
+            editor.addEventListener('mouseup', detectStyle);
+            editor.addEventListener('mouseup', saveSelection);
+            editor.addEventListener('keyup', saveSelection);
+          });
+
+          // 초기 활성 에디터 설정
+          switchLanguage(CURRENT_PAGE_LANG);
       });
-    });
-    // 스크립트의 끝
   </script>
   <%- include('partials/footer') %>
   <%- include('partials/scripts') %>
