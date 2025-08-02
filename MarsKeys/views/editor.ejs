@@ -263,7 +263,7 @@
 
       const isEdit = <%= isEdit %>;
       const postId = '<%= post?.id || "" %>';
-      const currentLang = document.getElementById('langSelector').value; // 현재 선택된 언어 가져오기
+      const currentLang = document.getElementById('langSelector').value;
       
       const postData = {
           categories: selectedCategories,
@@ -272,9 +272,6 @@
           lang_content: {}
       };
 
-      let hasContentForDefaultLang = false;
-      const supportedLangs = <%- JSON.stringify(supportedLangs) %>;
-
       // HTML 모드에서 포스팅을 누른 경우, 디자인 모드로 전환하여 에디터 내용 동기화
       const currentHtmlEditor = document.getElementById(`htmlEditor_${currentLang}`);
       const currentEditor = document.getElementById(`editor_${currentLang}`);
@@ -282,6 +279,9 @@
           currentEditor.innerHTML = currentHtmlEditor.value;
       }
       
+      let hasAnyContent = false;
+      const supportedLangs = <%- JSON.stringify(supportedLangs) %>;
+
       supportedLangs.forEach(code => {
           const titleInput = document.getElementById(`postTitle_${code}`);
           const editorDiv = document.getElementById(`editor_${code}`);
@@ -297,8 +297,9 @@
               content: contentToSave
           };
           
-          if (code === 'ko' && (postData.lang_content[code].title || postData.lang_content[code].content !== '')) {
-              hasContentForDefaultLang = true;
+          // 최소 한 개 이상의 언어로 내용이 있는지 확인
+          if (postData.lang_content[code].title || postData.lang_content[code].content !== '') {
+              hasAnyContent = true;
           }
       });
       
@@ -306,8 +307,9 @@
         return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
       }
 
-      if (!hasContentForDefaultLang && !isEdit) {
-          return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
+      // 수정: 최소 한 개의 언어라도 내용이 있어야 포스팅 가능하도록 변경
+      if (!hasAnyContent) {
+          return showCustomMessage("제목 또는 내용을 최소 한 개 언어로 입력해주세요.");
       }
       
       const submitUrl = isEdit && postId ? `/${currentLang}/edit/${postId}` : `/${currentLang}/savePost`;
@@ -545,8 +547,7 @@
     }
 
     function showCustomMessage(message, isConfirm = false, onConfirm = null) {
-      // 기존 모달이 제대로 작동하지 않을 경우를 대비하여 alert도 함께 호출
-      alert(message);
+      // 수정: alert() 함수를 제거하여 중복 메시지 현상을 해결합니다.
       createMessageBox(message, isConfirm, onConfirm);
     }
 
