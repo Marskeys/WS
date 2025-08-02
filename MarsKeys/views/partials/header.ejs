@@ -76,302 +76,302 @@
   html.dark .lang-option:hover {
     background-color: #333;
   }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css" />
-  <header class="sticky-header" id="stickyHeader">
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css" />
+<header class="sticky-header" id="stickyHeader">
+  <nav class="mk-nav">
+    <a href="#youtube" class="nav-icon" title="YouTube">
+      <i class="fab fa-youtube"></i>
+    </a>
+    <a href="#soundcloud" class="nav-icon" title="SoundCloud">
+      <i class="fab fa-soundcloud"></i>
+    </a>
+    <a href="#instagram" class="nav-icon" title="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="#tiktok" class="nav-icon" title="TikTok">
+      <i class="fab fa-tiktok"></i>
+    </a>
+    <a href="#naver" class="nav-icon" title="Naver">
+      <span class="naver-icon-box">N</span>
+    </a>
+    <a href="#lessons" class="nav-icon" title="<%= locale.lectures %>">
+      <i class="fas fa-chalkboard-teacher"></i>
+    </a>
+    <a href="#experiments" class="nav-icon" title="<%= locale.experiments %>">
+      <i class="fas fa-vial"></i>
+    </a>
+    <a href="#shop" class="nav-icon" title="<%= locale.store %>">
+      <i class="fas fa-shopping-bag"></i>
+    </a>
+  </nav>
+</header>
+
+<header class="mk-header" id="mainHeader">
+  <div class="auth-buttons">
+    <div class="language-dropdown">
+      <button id="langToggle" class="lang-btn">
+        <%
+          let flagCode = lang;
+          switch(lang) {
+            case 'ko': flagCode = 'kr'; break;
+            case 'en': flagCode = 'gb'; break;
+            case 'zh': flagCode = 'cn'; break;
+            case 'ja': flagCode = 'jp'; break;
+            case 'fr': flagCode = 'fr'; break;
+            default: flagCode = 'kr';
+          }
+        %>
+        <span class="fi fi-<%= flagCode %>"></span>
+        <i class="fas fa-caret-down"></i>
+      </button>
+      <ul id="langMenu" class="lang-menu">
+        <%
+          const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+        %>
+        <% supportedLangs.forEach(langCode => { %>
+          <li>
+            <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+              class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
+              <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+              <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+            </a>
+          </li>
+        <% }); %>
+      </ul>
+    </div>
+    <% if (user) { %>
+      <span class="welcome"><strong><%= user.nickname %></strong><%= locale.greeting %></span>
+      <a href="/logout" class="auth-button"><%= locale.logout %></a>
+    <% } else { %>
+      <a href="/signup" class="auth-button"><%= locale.signup %></a>
+      <a href="/login" class="auth-button" id="login"><%= locale.login %></a>
+    <% } %>
+  </div>
+
+  <div id="loginBox" style="display:none; position:absolute; z-index:9999;" class="hologram-border">
+    <form>
+      <input type="text" name="id" placeholder="<%= locale.id %>" required />
+      <input type="password" name="password" placeholder="<%= locale.password %>" required />
+      <button type="submit"><%= locale.login %></button>
+    </form>
+  </div>
+
+  <div class="mk-header-inner">
+    <div class="logo-wrapper" id="logoWrapper">
+      <object id="logo" type="image/svg+xml" data="/assets/images/logo.svg"></object>
+    </div>
+
     <nav class="mk-nav">
-      <a href="#youtube" class="nav-icon" title="YouTube">
+      <a href="#youtube" class="nav-icon tooltip" title="YouTube">
         <i class="fab fa-youtube"></i>
+        <span class="tooltip-text">YouTube</span>
       </a>
-      <a href="#soundcloud" class="nav-icon" title="SoundCloud">
+      <a href="#soundcloud" class="nav-icon tooltip" title="SoundCloud">
         <i class="fab fa-soundcloud"></i>
+        <span class="tooltip-text">SoundCloud</span>
       </a>
-      <a href="#instagram" class="nav-icon" title="Instagram">
+      <a href="#instagram" class="nav-icon tooltip" title="Instagram">
         <i class="fab fa-instagram"></i>
+        <span class="tooltip-text">Instagram</span>
       </a>
-      <a href="#tiktok" class="nav-icon" title="TikTok">
+      <a href="#tiktok" class="nav-icon tooltip" title="TikTok">
         <i class="fab fa-tiktok"></i>
+        <span class="tooltip-text">TikTok</span>
       </a>
-      <a href="#naver" class="nav-icon" title="Naver">
+      <a href="#naver" class="nav-icon tooltip" title="Naver">
         <span class="naver-icon-box">N</span>
+        <span class="tooltip-text">NAVER</span>
       </a>
-      <a href="#lessons" class="nav-icon" title="<%= translations.lectures %>">
+      <a href="#lessons" class="nav-icon tooltip" title="<%= locale.lectures %>">
         <i class="fas fa-chalkboard-teacher"></i>
+        <span class="tooltip-text"><%= locale.lectures %></span>
       </a>
-      <a href="#experiments" class="nav-icon" title="<%= translations.experiments %>">
+      <a href="#experiments" class="nav-icon tooltip" title="<%= locale.experiments %>">
         <i class="fas fa-vial"></i>
+        <span class="tooltip-text"><%= locale.experiments %></span>
       </a>
-      <a href="#shop" class="nav-icon" title="<%= translations.store %>">
+      <a href="#shop" class="nav-icon tooltip" title="<%= locale.store %>">
         <i class="fas fa-shopping-bag"></i>
+        <span class="tooltip-text"><%= locale.store %></span>
       </a>
     </nav>
-  </header>
-  
-  <header class="mk-header" id="mainHeader">
-    <div class="auth-buttons">
-      <div class="language-dropdown">
-        <button id="langToggle" class="lang-btn">
-          <%
-            let flagCode = lang;
-            switch(lang) {
-              case 'ko': flagCode = 'kr'; break;
-              case 'en': flagCode = 'gb'; break;
-              case 'zh': flagCode = 'cn'; break;
-              case 'ja': flagCode = 'jp'; break;
-              case 'fr': flagCode = 'fr'; break;
-              default: flagCode = 'kr';
-            }
-          %>
-          <span class="fi fi-<%= flagCode %>"></span>
-          <i class="fas fa-caret-down"></i>
-        </button>
-        <ul id="langMenu" class="lang-menu">
-          <%
-            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-          %>
-          <% supportedLangs.forEach(langCode => { %>
-            <li>
-              <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
-                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
-              </a>
-            </li>
-          <% }); %>
-        </ul>
-      </div>
-      <% if (user) { %>
-        <span class="welcome"><strong><%= user.nickname %></strong><%= translations.greeting %></span>
-        <a href="/logout" class="auth-button"><%= translations.logout %></a>
-      <% } else { %>
-        <a href="/signup" class="auth-button"><%= translations.signup %></a>
-        <a href="/login" class="auth-button" id="login"><%= translations.login %></a>
-      <% } %>
-    </div>
-  
-    <div id="loginBox" style="display:none; position:absolute; z-index:9999;" class="hologram-border">
-      <form>
-        <input type="text" name="id" placeholder="<%= translations.id %>" required />
-        <input type="password" name="password" placeholder="<%= translations.password %>" required />
-        <button type="submit"><%= translations.login %></button>
-      </form>
-    </div>
-  
-    <div class="mk-header-inner">
-      <div class="logo-wrapper" id="logoWrapper">
-        <object id="logo" type="image/svg+xml" data="/assets/images/logo.svg"></object>
-      </div>
-  
-      <nav class="mk-nav">
-        <a href="#youtube" class="nav-icon tooltip" title="YouTube">
-          <i class="fab fa-youtube"></i>
-          <span class="tooltip-text">YouTube</span>
-        </a>
-        <a href="#soundcloud" class="nav-icon tooltip" title="SoundCloud">
-          <i class="fab fa-soundcloud"></i>
-          <span class="tooltip-text">SoundCloud</span>
-        </a>
-        <a href="#instagram" class="nav-icon tooltip" title="Instagram">
-          <i class="fab fa-instagram"></i>
-          <span class="tooltip-text">Instagram</span>
-        </a>
-        <a href="#tiktok" class="nav-icon tooltip" title="TikTok">
-          <i class="fab fa-tiktok"></i>
-          <span class="tooltip-text">TikTok</span>
-        </a>
-        <a href="#naver" class="nav-icon tooltip" title="Naver">
-          <span class="naver-icon-box">N</span>
-          <span class="tooltip-text">NAVER</span>
-        </a>
-        <a href="#lessons" class="nav-icon tooltip" title="<%= translations.lectures %>">
-          <i class="fas fa-chalkboard-teacher"></i>
-          <span class="tooltip-text"><%= translations.lectures %></span>
-        </a>
-        <a href="#experiments" class="nav-icon tooltip" title="<%= translations.experiments %>">
-          <i class="fas fa-vial"></i>
-          <span class="tooltip-text"><%= translations.experiments %></span>
-        </a>
-        <a href="#shop" class="nav-icon tooltip" title="<%= translations.store %>">
-          <i class="fas fa-shopping-bag"></i>
-          <span class="tooltip-text"><%= translations.store %></span>
-        </a>
-      </nav>
-    </div>
-  </header>
-  <script>
-    const obj = document.getElementById('logo');
-    obj.addEventListener('load', () => {
-      const svgDoc = obj.contentDocument;
-  
-      const getAll = (prefix, count) =>
-        Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}${i + 1}`)).filter(Boolean);
-  
-      const fadeIn = (elements, duration = 1000, baseColor = [255, 255, 255]) => {
-        elements.forEach(el => el.setAttribute('fill', `rgba(${baseColor[0]},${baseColor[1]},${baseColor[2]},0)`));
-        let t = 0;
-        const step = 16 / duration;
-        const animate = () => {
-          t += step;
-          if (t > 1) t = 1;
-          const [r, g, b] = baseColor;
-          const color = `rgba(${r},${g},${b},${t})`;
-          elements.forEach(el => el.setAttribute('fill', color));
-          if (t < 1) requestAnimationFrame(animate);
-        };
-        animate();
+  </div>
+</header>
+<script>
+  const obj = document.getElementById('logo');
+  obj.addEventListener('load', () => {
+    const svgDoc = obj.contentDocument;
+
+    const getAll = (prefix, count) =>
+      Array.from({ length: count }, (_, i) => svgDoc.getElementById(`${prefix}${i + 1}`)).filter(Boolean);
+
+    const fadeIn = (elements, duration = 1000, baseColor = [255, 255, 255]) => {
+      elements.forEach(el => el.setAttribute('fill', `rgba(${baseColor[0]},${baseColor[1]},${baseColor[2]},0)`));
+      let t = 0;
+      const step = 16 / duration;
+      const animate = () => {
+        t += step;
+        if (t > 1) t = 1;
+        const [r, g, b] = baseColor;
+        const color = `rgba(${r},${g},${b},${t})`;
+        elements.forEach(el => el.setAttribute('fill', color));
+        if (t < 1) requestAnimationFrame(animate);
       };
-  
-      // ✅ 필터 정의
-      const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
-  
-      const glowBlue = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-      glowBlue.setAttribute("id", "glow-blue");
-      glowBlue.innerHTML = `
-        <feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="deepskyblue" flood-opacity="1"/>
-      `;
-      defs.appendChild(glowBlue);
-  
-      const glowPurple = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-      glowPurple.setAttribute("id", "glow-purple");
-      glowPurple.innerHTML = `
-        <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a066ff" flood-opacity="1"/>
-      `;
-      defs.appendChild(glowPurple);
-  
-      svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
-  
-      // ✅ human 계열 페이드인
-      const humans = getAll('human', 5);
-      fadeIn(humans, 1000, [255, 255, 255]);
-  
-      // ✅ eyebrow 페이드인 + 애니메이션 루프
-      const eyebrow = svgDoc.getElementById('eyebrow');
-      if (eyebrow) {
-        fadeIn([eyebrow], 1000, [255, 255, 255]);
-  
-        const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-        move.setAttribute('attributeName', 'transform');
-        move.setAttribute('type', 'translate');
-        move.setAttribute('dur', '2s');
-        move.setAttribute('repeatCount', 'indefinite');
-        move.setAttribute('values', '0,0;0,0;0,0;0,-2;0,2;0,-2;0,0;0,0');
-        move.setAttribute('keyTimes', '0;0.1;0.2;0.3;0.5;0.7;0.9;1');
-        move.setAttribute('calcMode', 'spline');
-        move.setAttribute('keySplines', '0 0 1 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1');
-        eyebrow.appendChild(move);
-      }
-  
-      // ✅ glow: 페이드인 후 랜덤 홀로그램 or 회색 반복
-      const glow = svgDoc.getElementById('glow');
-      if (glow) {
-        const children = glow.querySelectorAll('*');
-  
-        // 초기 상태: 투명한 짙은 회색
-        const darkColor = 'rgba(34,34,34,0)';
-        children.forEach(el => el.setAttribute('fill', darkColor));
-        glow.setAttribute('fill', darkColor);
-  
-        // ⏳ 페이드인 (짙은 회색으로)
-        let t = 0;
-        const duration = 1000;
-        const step = 16 / duration;
-        const fadeIn = () => {
-          t += step;
-          if (t > 1) t = 1;
-          const color = `rgba(34,34,34,${t})`;
+      animate();
+    };
+
+    // ✅ 필터 정의
+    const defs = svgDoc.querySelector('defs') || svgDoc.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+    const glowBlue = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowBlue.setAttribute("id", "glow-blue");
+    glowBlue.innerHTML = `
+      <feDropShadow dx="0" dy="0" stdDeviation="11" flood-color="deepskyblue" flood-opacity="1"/>
+    `;
+    defs.appendChild(glowBlue);
+
+    const glowPurple = document.createElementNS("http://www.w3.org/2000/svg", "filter");
+    glowPurple.setAttribute("id", "glow-purple");
+    glowPurple.innerHTML = `
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a066ff" flood-opacity="1"/>
+    `;
+    defs.appendChild(glowPurple);
+
+    svgDoc.documentElement.insertBefore(defs, svgDoc.documentElement.firstChild);
+
+    // ✅ human 계열 페이드인
+    const humans = getAll('human', 5);
+    fadeIn(humans, 1000, [255, 255, 255]);
+
+    // ✅ eyebrow 페이드인 + 애니메이션 루프
+    const eyebrow = svgDoc.getElementById('eyebrow');
+    if (eyebrow) {
+      fadeIn([eyebrow], 1000, [255, 255, 255]);
+
+      const move = svgDoc.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+      move.setAttribute('attributeName', 'transform');
+      move.setAttribute('type', 'translate');
+      move.setAttribute('dur', '2s');
+      move.setAttribute('repeatCount', 'indefinite');
+      move.setAttribute('values', '0,0;0,0;0,0;0,-2;0,2;0,-2;0,0;0,0');
+      move.setAttribute('keyTimes', '0;0.1;0.2;0.3;0.5;0.7;0.9;1');
+      move.setAttribute('calcMode', 'spline');
+      move.setAttribute('keySplines', '0 0 1 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1');
+      eyebrow.appendChild(move);
+    }
+
+    // ✅ glow: 페이드인 후 랜덤 홀로그램 or 회색 반복
+    const glow = svgDoc.getElementById('glow');
+    if (glow) {
+      const children = glow.querySelectorAll('*');
+
+      // 초기 상태: 투명한 짙은 회색
+      const darkColor = 'rgba(34,34,34,0)';
+      children.forEach(el => el.setAttribute('fill', darkColor));
+      glow.setAttribute('fill', darkColor);
+
+      // ⏳ 페이드인 (짙은 회색으로)
+      let t = 0;
+      const duration = 1000;
+      const step = 16 / duration;
+      const fadeIn = () => {
+        t += step;
+        if (t > 1) t = 1;
+        const color = `rgba(34,34,34,${t})`;
+        children.forEach(el => el.setAttribute('fill', color));
+        glow.setAttribute('fill', color);
+        if (t < 1) {
+          requestAnimationFrame(fadeIn);
+        } else {
+          startRandomBlink();
+        }
+      };
+      fadeIn();
+
+      const hologramColors = [
+        '#222', '#222', '#222', // 어두운 색 더 자주
+        'hsl(45, 100%, 65%)',     // ✅ 짙은 노란빛 (글로우 없음)
+        'rgba(255,255,255,1)',    // 하얀빛
+        'hsl(100, 100%, 85%)',    // 연두빛
+        'hsl(210, 100%, 85%)',    // 푸른 파란빛
+        'hsl(280, 100%, 85%)',    // 보라빛
+        'hsl(340, 100%, 85%)'     // 더 붉은 붉은빛
+      ];
+
+      const startRandomBlink = () => {
+        const updateColor = () => {
+          // 무작위 색상 선택
+          const color = hologramColors[Math.floor(Math.random() * hologramColors.length)];
+
+          // 글로우 적용은 밝은 색상일 때만
+          const isGlow = color !== '#222';
+          if (isGlow) {
+            glow.setAttribute('filter', 'url(#glow-blue)');
+          } else {
+            glow.removeAttribute('filter');
+          }
+
           children.forEach(el => el.setAttribute('fill', color));
           glow.setAttribute('fill', color);
-          if (t < 1) {
-            requestAnimationFrame(fadeIn);
-          } else {
-            startRandomBlink();
-          }
+
+          // 다음 색상 변경 시간 설정 (1~5초 사이)
+          const delay = 600 + Math.random() * 2000;
+          setTimeout(updateColor, delay);
         };
-        fadeIn();
-  
-        const hologramColors = [
-          '#222', '#222', '#222', // 어두운 색 더 자주
-          'hsl(45, 100%, 65%)',     // ✅ 짙은 노란빛 (글로우 없음)
-          'rgba(255,255,255,1)',    // 하얀빛
-          'hsl(100, 100%, 85%)',    // 연두빛
-          'hsl(210, 100%, 85%)',    // 푸른 파란빛
-          'hsl(280, 100%, 85%)',    // 보라빛
-          'hsl(340, 100%, 85%)'     // 더 붉은 붉은빛
-        ];
-  
-        const startRandomBlink = () => {
-          const updateColor = () => {
-            // 무작위 색상 선택
-            const color = hologramColors[Math.floor(Math.random() * hologramColors.length)];
-  
-            // 글로우 적용은 밝은 색상일 때만
-            const isGlow = color !== '#222';
-            if (isGlow) {
-              glow.setAttribute('filter', 'url(#glow-blue)');
-            } else {
-              glow.removeAttribute('filter');
-            }
-  
-            children.forEach(el => el.setAttribute('fill', color));
-            glow.setAttribute('fill', color);
-  
-            // 다음 색상 변경 시간 설정 (1~5초 사이)
-            const delay = 600 + Math.random() * 2000;
-            setTimeout(updateColor, delay);
-          };
-  
-          updateColor();
-        };
-      }
-  
-      const keys = getAll('keys', 4);
-      // filter 제거 👇
-      fadeIn(keys, 1000, [226, 210, 255]); // 연보라 색
-  
-      // ✅ sonic + atelier: 하얀 fill 페이드인, 글로우 없음
-      fadeIn([...getAll('sonic', 5), ...getAll('atelier', 7)], 1000, [255, 255, 255]);
-    });
-  </script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const mainHeader = document.querySelector('.mk-header');
-      const stickyHeader = document.querySelector('.sticky-header');
-  
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            // 메인 헤더가 보이면 스티키 숨기기
-            stickyHeader.classList.remove('show');
-          } else {
-            // 메인 헤더가 화면에서 사라지면 스티키 보이기
-            stickyHeader.classList.add('show');
-          }
-        },
-        {
-          root: null,
-          threshold: 0,
+
+        updateColor();
+      };
+    }
+
+    const keys = getAll('keys', 4);
+    // filter 제거 👇
+    fadeIn(keys, 1000, [226, 210, 255]); // 연보라 색
+
+    // ✅ sonic + atelier: 하얀 fill 페이드인, 글로우 없음
+    fadeIn([...getAll('sonic', 5), ...getAll('atelier', 7)], 1000, [255, 255, 255]);
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainHeader = document.querySelector('.mk-header');
+    const stickyHeader = document.querySelector('.sticky-header');
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // 메인 헤더가 보이면 스티키 숨기기
+          stickyHeader.classList.remove('show');
+        } else {
+          // 메인 헤더가 화면에서 사라지면 스티키 보이기
+          stickyHeader.classList.add('show');
         }
-      );
-  
-      if (mainHeader) observer.observe(mainHeader);
-  
-      // 언어 드롭다운 스크립트 추가
-      const langToggle = document.getElementById('langToggle');
-      const langMenu = document.getElementById('langMenu');
-  
-      if (langToggle && langMenu) {
-        langToggle.addEventListener('click', (e) => {
-          e.stopPropagation();
-          langMenu.classList.toggle('show');
-        });
-  
-        document.addEventListener('click', (e) => {
-          if (!langMenu.contains(e.target) && !langToggle.contains(e.target)) {
-            langMenu.classList.remove('show');
-          }
-        });
+      },
+      {
+        root: null,
+        threshold: 0,
       }
-    });
-  </script>
+    );
+
+    if (mainHeader) observer.observe(mainHeader);
+
+    // 언어 드롭다운 스크립트 추가
+    const langToggle = document.getElementById('langToggle');
+    const langMenu = document.getElementById('langMenu');
+
+    if (langToggle && langMenu) {
+      langToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langMenu.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!langMenu.contains(e.target) && !langToggle.contains(e.target)) {
+          langMenu.classList.remove('show');
+        }
+      });
+    }
+  });
+</script>
