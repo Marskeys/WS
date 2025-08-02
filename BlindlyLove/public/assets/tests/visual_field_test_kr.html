@@ -502,8 +502,6 @@
                 testViewportWidth = window.innerWidth;
                 testViewportHeight = window.innerHeight;
                 updateCounter();
-                
-                // 수정된 부분: 1초 후에 첫 번째 점이 나타나도록 설정
                 setTimeout(runTest, 1000);
             });
         
@@ -750,60 +748,15 @@
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 
                 const captureTarget = resultContent;
-
-                // html2canvas로 고해상도 캡처 (scale 2 사용)
-                const canvas = await html2canvas(captureTarget, {
-                    scale: 2,
-                    height: captureTarget.scrollHeight, // 스크롤 영역 전체 캡처
-                    windowWidth: captureTarget.scrollWidth,
-                    windowHeight: captureTarget.scrollHeight
-                });
+                const canvas = await html2canvas(captureTarget, { scale: 2 });
                 const imgData = canvas.toDataURL('image/png');
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = 180;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
+                const y = 10;
                 
-                // 이미지의 가로세로 비율 계산
-                const imgRatio = canvas.width / canvas.height;
-
-                // PDF 페이지의 가로 너비에 꽉 차도록 이미지 크기 계산
-                const finalImgWidth = pdfWidth - 20; // 좌우 여백 10mm씩
-                const finalImgHeight = finalImgWidth / imgRatio;
-
-                const x = (pdfWidth - finalImgWidth) / 2;
-                // 세로 중앙 정렬 대신 상단에 배치
-                const y = 10; 
-
-                // 만약 세로 길이가 PDF 페이지를 초과하면 여러 페이지로 나누어 출력
-                if (finalImgHeight > pdfHeight - 20) {
-                    let heightLeft = finalImgHeight;
-                    let position = y;
-                    const totalPages = Math.ceil(finalImgHeight / (pdfHeight - 20));
-
-                    for (let i = 0; i < totalPages; i++) {
-                        const pageHeight = pdfHeight - 20;
-                        const srcY = i * pageHeight * (canvas.height / finalImgHeight);
-                        const srcHeight = Math.min(pageHeight, heightLeft);
-
-                        const tempCanvas = document.createElement('canvas');
-                        const tempContext = tempCanvas.getContext('2d');
-                        tempCanvas.width = canvas.width;
-                        tempCanvas.height = srcHeight * (canvas.height / finalImgHeight);
-
-                        tempContext.drawImage(canvas, 0, srcY, tempCanvas.width, tempCanvas.height, 0, 0, tempCanvas.width, tempCanvas.height);
-                        const tempImgData = tempCanvas.toDataURL('image/png');
-
-                        if (i > 0) {
-                            pdf.addPage();
-                        }
-                        
-                        pdf.addImage(tempImgData, 'PNG', x, y, finalImgWidth, srcHeight);
-                        heightLeft -= pageHeight;
-                    }
-                } else {
-                    pdf.addImage(imgData, 'PNG', x, y, finalImgWidth, finalImgHeight);
-                }
-                
+                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
                 pdf.save('시야검사_결과.pdf');
             });
         });
