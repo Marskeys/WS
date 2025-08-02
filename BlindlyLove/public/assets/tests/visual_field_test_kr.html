@@ -187,6 +187,19 @@
         #downloadPdfButton:hover {
             background-color: var(--button-success-color);
         }
+        
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            z-index: 100;
+            display: none;
+        }
 
         #result-content {
             width: 100%;
@@ -399,6 +412,7 @@
             <button id="homeButton" class="styled-button">홈으로 돌아가기</button>
         </div>
         <button id="response-button">클릭!</button>
+        <div id="loading-message" class="hidden">PDF를 생성 중입니다...</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -425,6 +439,7 @@
             const countOptions = document.getElementById('count-options');
             const message = document.getElementById('message');
             const reportLegend = document.getElementById('report-legend');
+            const loadingMessage = document.getElementById('loading-message');
         
             let pointsFound = [];
             let pointsMissed = [];
@@ -749,48 +764,58 @@
             });
             
             downloadPdfButton.addEventListener('click', async () => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                const margin = 10; // 여백 10mm
-                
-                const captureTarget = resultContent;
-                
-                // HTML 요소가 제대로 존재하는지 확인
-                if (!captureTarget) {
-                    console.error('결과를 캡처할 요소를 찾을 수 없습니다.');
-                    return;
+                // PDF 생성 시작, 로딩 메시지 표시
+                loadingMessage.classList.remove('hidden');
+                downloadPdfButton.disabled = true; // 버튼 비활성화
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 10; // 여백 10mm
+                    
+                    const captureTarget = resultContent;
+                    
+                    if (!captureTarget) {
+                        throw new Error('결과를 캡처할 요소를 찾을 수 없습니다.');
+                    }
+
+                    // html2canvas로 고해상도 캡처. await로 작업이 완료될 때까지 기다림.
+                    const canvas = await html2canvas(captureTarget, {
+                        scale: 2,
+                        height: captureTarget.scrollHeight,
+                        windowWidth: captureTarget.scrollWidth,
+                        windowHeight: captureTarget.scrollHeight
+                    });
+                    const imgData = canvas.toDataURL('image/png');
+
+                    // 이미지의 가로세로 비율 계산
+                    const imgRatio = canvas.width / canvas.height;
+                    
+                    // PDF 페이지의 가로 너비에 꽉 차도록 이미지 크기 계산
+                    const finalImgWidth = pdfWidth - margin * 2;
+                    let finalImgHeight = finalImgWidth / imgRatio;
+
+                    // 이미지를 한 페이지에 맞게 강제로 축소
+                    if (finalImgHeight > pdfHeight - margin * 2) {
+                        finalImgHeight = pdfHeight - margin * 2;
+                        finalImgWidth = finalImgHeight * imgRatio;
+                    }
+
+                    const x = (pdfWidth - finalImgWidth) / 2;
+                    const y = (pdfHeight - finalImgHeight) / 2;
+
+                    pdf.addImage(imgData, 'PNG', x, y, finalImgWidth, finalImgHeight);
+                    pdf.save('시야검사_결과.pdf');
+                } catch (error) {
+                    console.error('PDF 생성 중 오류가 발생했습니다:', error);
+                    alert('PDF 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                } finally {
+                    // PDF 생성 완료 또는 오류 발생 후 로딩 메시지 숨김
+                    loadingMessage.classList.add('hidden');
+                    downloadPdfButton.disabled = false; // 버튼 다시 활성화
                 }
-
-                // html2canvas로 고해상도 캡처
-                // async/await를 사용하여 캡처가 완료될 때까지 기다림
-                const canvas = await html2canvas(captureTarget, {
-                    scale: 2,
-                    height: captureTarget.scrollHeight,
-                    windowWidth: captureTarget.scrollWidth,
-                    windowHeight: captureTarget.scrollHeight
-                });
-                const imgData = canvas.toDataURL('image/png');
-
-                // 이미지의 가로세로 비율 계산
-                const imgRatio = canvas.width / canvas.height;
-                
-                // PDF 페이지의 가로 너비에 꽉 차도록 이미지 크기 계산
-                const finalImgWidth = pdfWidth - margin * 2;
-                let finalImgHeight = finalImgWidth / imgRatio;
-
-                // 이미지를 한 페이지에 맞게 강제로 축소
-                if (finalImgHeight > pdfHeight - margin * 2) {
-                    finalImgHeight = pdfHeight - margin * 2;
-                    finalImgWidth = finalImgHeight * imgRatio;
-                }
-
-                const x = (pdfWidth - finalImgWidth) / 2;
-                const y = (pdfHeight - finalImgHeight) / 2;
-
-                pdf.addImage(imgData, 'PNG', x, y, finalImgWidth, finalImgHeight);
-                pdf.save('시야검사_결과.pdf');
             });
         });
     </script>
