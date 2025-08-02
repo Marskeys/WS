@@ -227,37 +227,39 @@ const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
 const CURRENT_PAGE_LANG = '<%= lang %>';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 언어 선택 드롭다운 이벤트 리스너
   const langSelector = document.getElementById('langSelector');
-  langSelector.addEventListener('change', (e) => {
-    const selectedLang = e.target.value;
-    document.querySelectorAll('.lang-meta-block').forEach(block => {
-      block.style.display = (block.dataset.lang === selectedLang) ? '' : 'none';
+  if (langSelector) {
+    langSelector.addEventListener('change', (e) => {
+      const selectedLang = e.target.value;
+      document.querySelectorAll('.lang-meta-block').forEach(block => {
+        block.style.display = (block.dataset.lang === selectedLang) ? '' : 'none';
+      });
+      currentActiveEditor = document.querySelector(`.language-editor[data-lang-editor="${selectedLang}"]`);
+      currentActiveHtmlEditor = document.querySelector(`#htmlEditor_${selectedLang}`);
+      currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${selectedLang}"]`);
     });
-    // 현재 활성 에디터를 업데이트
-    currentActiveEditor = document.querySelector(`.language-editor[data-lang-editor="${selectedLang}"]`);
-    currentActiveHtmlEditor = document.querySelector(`#htmlEditor_${selectedLang}`);
-    currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${selectedLang}"]`);
-  });
+  }
 
-  // 초기 로드 시 현재 언어의 에디터와 툴바를 활성화
   currentActiveEditor = document.querySelector(`.language-editor[data-lang-editor="${CURRENT_PAGE_LANG}"]`);
   currentActiveHtmlEditor = document.querySelector(`#htmlEditor_${CURRENT_PAGE_LANG}`);
   currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${CURRENT_PAGE_LANG}"]`);
 
   fetchCategories();
-  renderCategories();
   setupEditorEvents();
 });
 
 function fetchCategories() {
-  fetch('/api/categories')
+  fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
     .then(res => res.json())
     .then(data => {
-      categories = data.categories;
+      categories = data.categories || [];
       renderCategories();
     })
-    .catch(err => console.error('Failed to fetch categories:', err));
+    .catch(err => {
+      console.error('Failed to fetch categories:', err);
+      categories = ['일상', '기록', '리뷰'];
+      renderCategories();
+    });
 }
 
 function renderCategories() {
@@ -269,10 +271,40 @@ function renderCategories() {
     if (selectedCategories.includes(cat)) {
       item.classList.add('selected');
     }
-    item.innerHTML = `
-      <span>${cat}</span>
-      <button onclick="toggleCategory('${cat}')" class="toggle-btn"></button>
-    `;
+
+    const itemText = document.createElement('span');
+    itemText.innerText = cat;
+    itemText.onclick = () => {
+        toggleCategory(cat);
+    };
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-btn';
+    removeBtn.innerText = '×';
+    removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (confirm(`'${cat}' 카테고리를 삭제하시겠습니까?`)) {
+            fetch(`/api/categories/${encodeURIComponent(cat)}`, {
+                method: 'DELETE'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    selectedCategories = selectedCategories.filter(c => c !== cat);
+                    fetchCategories();
+                } else {
+                    alert("삭제 실패: " + data.error);
+                }
+            })
+            .catch(err => {
+                console.error("삭제 오류:", err);
+                alert("삭제 중 오류가 발생했습니다.");
+            });
+        }
+    };
+    
+    item.appendChild(itemText);
+    item.appendChild(removeBtn);
     list.appendChild(item);
   });
 }
@@ -298,7 +330,7 @@ function addCategory() {
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        fetchCategories(); // 카테고리 목록 새로고침
+        fetchCategories();
       } else {
         alert(data.error);
       }
@@ -307,24 +339,26 @@ function addCategory() {
   }
 }
 
-// -------------------------------------------------------------
-// 핵심 로직: postContent() 함수 (서버에 데이터 전송)
-// -------------------------------------------------------------
 function postContent() {
     const lang_content = {};
     let hasValidContent = false;
-
+    
     langList.forEach(({ code }) => {
         const titleInput = document.querySelector(`input[name="title_${code}"]`);
-        const contentEditor = document.getElementById(`editor_${code}`);
-        const htmlEditor = document.getElementById(`htmlEditor_${code}`);
+        const editorDiv = document.getElementById(`editor_${code}`);
+        const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`);
         
-        let title = titleInput ? titleInput.value : '';
-        let content = contentEditor ? contentEditor.innerHTML : htmlEditor.value;
+        let title = titleInput ? titleInput.value.trim() : '';
+        let content = '';
 
-        // HTML 모드에서 저장 시, 에디터의 내용을 가져옴
-        if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none' && code === currentActiveHtmlEditor.id.replace('htmlEditor_', '')) {
-            content = htmlEditor.value;
+        if (htmlEditorDiv && htmlEditorDiv.style.display === 'block') {
+            content = htmlEditorDiv.value.trim();
+        } else if (editorDiv) {
+            content = editorDiv.innerHTML.trim();
+        }
+
+        if (!content || content === '<div><br></div>' || content === '<p><br></p>') {
+            content = '<p><br></p>';
         }
 
         lang_content[code] = {
@@ -332,19 +366,17 @@ function postContent() {
             content: content
         };
         
-        // 한국어 제목과 내용이 있는지 유효성 검사
-        if (code === 'ko' && title && content) {
+        if (code === 'ko' && (title || content !== '<p><br></p>')) {
             hasValidContent = true;
         }
     });
 
     if (!hasValidContent) {
-        alert("한국어 제목과 내용을 모두 입력해주세요.");
+        alert("한국어 제목 또는 내용을 입력해주세요.");
         return;
     }
 
-    const categoriesElement = document.getElementById('categoryList');
-    if (selectedCategories.length === 0) {
+    if (!selectedCategories || selectedCategories.length === 0) {
         alert("카테고리를 최소 하나 이상 선택해주세요.");
         return;
     }
@@ -386,9 +418,6 @@ function postContent() {
         alert("서버 오류로 인해 글을 저장할 수 없습니다.");
     });
 }
-// -------------------------------------------------------------
-// 이하 에디터 툴바 관련 로직 (기존 코드와 유사하므로 유지)
-// -------------------------------------------------------------
 
 function setupEditorEvents() {
   document.querySelectorAll('.language-editor').forEach(editor => {
@@ -398,9 +427,7 @@ function setupEditorEvents() {
       currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
       currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
       
-      // 모든 툴바 숨기기
       document.querySelectorAll('.toolbar').forEach(t => t.style.display = 'none');
-      // 현재 활성 툴바 보이기
       if (currentActiveToolbar) {
         currentActiveToolbar.style.display = 'flex';
       }
@@ -485,13 +512,10 @@ function setupEditorEvents() {
       if (currentActiveEditor && currentActiveHtmlEditor) {
         const mode = this.dataset.modeToggle;
         if (mode === 'design') {
-          // HTML -> 디자인
           currentActiveEditor.style.display = 'block';
           currentActiveHtmlEditor.style.display = 'none';
           currentActiveEditor.innerHTML = currentActiveHtmlEditor.value;
-          // beautify 적용 해제
         } else {
-          // 디자인 -> HTML
           currentActiveEditor.style.display = 'none';
           currentActiveHtmlEditor.style.display = 'block';
           currentActiveHtmlEditor.value = html_beautify(currentActiveEditor.innerHTML, {
@@ -571,9 +595,8 @@ function executeColorCommand(command, value) {
   if (currentActiveEditor) {
     restoreSelection();
     if (value === '__clear__') {
-      // 색상 제거 로직 (배경색은 style 속성 제거, 글자색은 font color 제거)
       if (command === 'foreColor') {
-        document.execCommand('foreColor', false, '#000000'); // 기본값으로 되돌리기
+        document.execCommand('foreColor', false, '#000000');
       } else if (command === 'hiliteColor') {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
@@ -623,7 +646,6 @@ function insertTOC() {
     }
   }
 }
-
 </script>
 </body>
 </html>
