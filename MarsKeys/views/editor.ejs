@@ -4,8 +4,6 @@
 <body>
   <%- include('partials/header') %>
   <% const isEdit = !!post; %>
-  <% const currentPost = post?.translations?.[lang] || post || {}; %>
-
   <% if (user) { %>
     <div style="text-align: center; font-weight: bold; margin-top:3rem;">
       <%= user.nickname %>님, 에디터에 오신 걸 환영합니다!
@@ -14,8 +12,8 @@
 
   <div class="editor-container hologram-border">
     <div class="editor-lang-selector">
-      <label for="post-lang">언어 선택:</label>
-      <select id="post-lang" name="lang">
+      <label for="langSelector">편집 언어:</label>
+      <select id="langSelector">
         <% supportedLangs.forEach(supportedLang => { %>
           <option value="<%= supportedLang %>" <%= lang === supportedLang ? 'selected' : '' %>>
             <%= supportedLang.toUpperCase() %>
@@ -24,91 +22,99 @@
       </select>
     </div>
     
-    <div class="title-wrap">
-      <input type="text" id="postTitle" placeholder="제목을 입력하세요" value="<%= currentPost.title || '' %>" />
-    </div>
+    <% const currentPost = post || {}; %>
 
-    <div class="toolbar">
-      <div class="dropdown">
-        <div class="dropdown-toggle" id="currentStyle" onclick="toggleDropdown()">본문 ▼</div>
-        <div class="dropdown-menu" id="styleDropdown">
-          <div class="h1" onclick="applyStyle('h1')">제목</div>
-          <div class="h2" onclick="applyStyle('h2')">부제목</div>
-          <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
-          <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
-          <div class="p" onclick="applyStyle('p')">본문</div>
-          <div class="desc" onclick="applyStyle('small')">설명</div>
-          <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
-          <div class="label" onclick="applyStyle('span')">레이블</div>
-          <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
+    <% supportedLangs.forEach(langCode => { %>
+      <div class="lang-meta-block" data-lang="<%= langCode %>" style="<%= langCode === lang ? '' : 'display:none;' %>">
+        
+        <div class="title-wrap">
+          <input type="text" id="postTitle_<%= langCode %>" placeholder="<%= langCode.toUpperCase() %> 제목을 입력하세요" value="<%= currentPost?.translations?.[langCode]?.title || currentPost?.title || '' %>" />
         </div>
-      </div>
-      <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
-      <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
-      <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
-      <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
-      <button onclick="format('strikeThrough')" data-tooltip="취소선"><s>S</s></button>
-      <button onclick="format('justifyLeft')" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
-      <button onclick="format('justifyCenter')" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
-      <button onclick="format('justifyRight')" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
-      <button onclick="format('insertOrderedList')" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
-      <button onclick="format('insertUnorderedList')" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
-      <button onclick="format('outdent')" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
-      <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
-      <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
-      <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
-      
-      <div class="color-tool" id="foreTool">
-        <button id="foreColorBtn" data-tooltip="글자 색상" onmousedown="saveSelection()">
-          <i class="fas fa-pencil-alt" id="foreIcon"></i>
-        </button>
-        <div class="color-palette" id="forePalette">
-          <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
-          <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
-          <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
-          <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
-          <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
-          <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
-          <label class="custom-color">
-            🎨<input type="color" onchange="setColor('foreColor', this.value)" />
-          </label>
-        </div>
-      </div>
-      
-      <div class="color-tool" id="bgTool">
-        <button id="bgColorBtn" data-tooltip="배경 색상" onmousedown="saveSelection()">
-          <i class="fas fa-fill-drip" id="bgIcon"></i>
-        </button>
-        <div class="color-palette" id="bgPalette">
-          <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
-          <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
-          <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
-          <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
-          <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
-          <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
-          <label class="custom-color">
-            🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
-          </label>
-        </div>
-      </div>
 
-      <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
-      <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
-    </div>
+        <div class="toolbar" data-lang-toolbar="<%= langCode %>">
+          <div class="dropdown">
+            <div class="dropdown-toggle" id="currentStyle_<%= langCode %>" onclick="toggleDropdown()">본문 ▼</div>
+            <div class="dropdown-menu" id="styleDropdown_<%= langCode %>">
+              <div class="h1" onclick="applyStyle('h1')">제목</div>
+              <div class="h2" onclick="applyStyle('h2')">부제목</div>
+              <div class="h3" onclick="applyStyle('h3')">머리말 1</div>
+              <div class="red" onclick="applyStyle('h4')">빨간 머리말</div>
+              <div class="p" onclick="applyStyle('p')">본문</div>
+              <div class="desc" onclick="applyStyle('small')">설명</div>
+              <div class="meta" onclick="applyStyle('footer')">머리말 및 꼬리말</div>
+              <div class="label" onclick="applyStyle('span')">레이블</div>
+              <div class="label label-bold" onclick="applyStyle('strong')">진한 레이블</div>
+            </div>
+          </div>
+          <button onclick="insertTOC()" data-tooltip="목차 삽입">📑 목차</button>
+          <button onclick="format('bold')" data-tooltip="굵게"><b>B</b></button>
+          <button onclick="format('italic')" data-tooltip="기울이기"><i>I</i></button>
+          <button onclick="format('underline')" data-tooltip="밑줄"><u>U</u></button>
+          <button onclick="format('strikeThrough')" data-tooltip="취소선"><s>S</s></button>
+          <button onclick="format('justifyLeft')" data-tooltip="왼쪽 정렬"><i class="fas fa-align-left"></i></button>
+          <button onclick="format('justifyCenter')" data-tooltip="가운데 정렬"><i class="fas fa-align-center"></i></button>
+          <button onclick="format('justifyRight')" data-tooltip="오른쪽 정렬"><i class="fas fa-align-right"></i></button>
+          <button onclick="format('insertOrderedList')" data-tooltip="번호 목록"><i class="fas fa-list-ol"></i></button>
+          <button onclick="format('insertUnorderedList')" data-tooltip="글머리 기호"><i class="fas fa-list-ul"></i></button>
+          <button onclick="format('outdent')" data-tooltip="내어쓰기"><i class="fas fa-outdent"></i></button>
+          <button onclick="format('indent')" data-tooltip="들여쓰기"><i class="fas fa-indent"></i></button>
+          <button onclick="format('createLink')" data-tooltip="링크 삽입"><i class="fas fa-link"></i></button>
+          <button onclick="format('unlink')" data-tooltip="링크 제거"><i class="fas fa-unlink"></i></button>
+          
+          <div class="color-tool" id="foreTool_<%= langCode %>">
+            <button id="foreColorBtn_<%= langCode %>" data-tooltip="글자 색상" onmousedown="saveSelection()">
+              <i class="fas fa-pencil-alt" id="foreIcon_<%= langCode %>"></i>
+            </button>
+            <div class="color-palette" id="forePalette_<%= langCode %>">
+              <button style="background:black" onclick="setColor('foreColor', 'black')"></button>
+              <button style="background:red" onclick="setColor('foreColor', 'red')"></button>
+              <button style="background:orange" onclick="setColor('foreColor', 'orange')"></button>
+              <button style="background:green" onclick="setColor('foreColor', 'green')"></button>
+              <button style="background:blue" onclick="setColor('foreColor', 'blue')"></button>
+              <button class="none-icon" onclick="setColor('foreColor', '__clear__')" title="색 없음"></button>
+              <label class="custom-color">
+                🎨<input type="color" onchange="setColor('foreColor', this.value)" />
+              </label>
+            </div>
+          </div>
+          
+          <div class="color-tool" id="bgTool_<%= langCode %>">
+            <button id="bgColorBtn_<%= langCode %>" data-tooltip="배경 색상" onmousedown="saveSelection()">
+              <i class="fas fa-fill-drip" id="bgIcon_<%= langCode %>"></i>
+            </button>
+            <div class="color-palette" id="bgPalette_<%= langCode %>">
+              <button style="background:yellow" onclick="setColor('hiliteColor', 'yellow')"></button>
+              <button style="background:lightblue" onclick="setColor('hiliteColor', 'lightblue')"></button>
+              <button style="background:lightgreen" onclick="setColor('hiliteColor', 'lightgreen')"></button>
+              <button style="background:pink" onclick="setColor('hiliteColor', 'pink')"></button>
+              <button style="background:#ccc" onclick="setColor('hiliteColor', '#ccc')"></button>
+              <button class="none-icon" onclick="setColor('hiliteColor', '__clear__')" title="색 없음"></button>
+              <label class="custom-color">
+                🎨<input type="color" onchange="setColor('hiliteColor', this.value)" />
+              </label>
+            </div>
+          </div>
 
-    <% if (user && Number(user.is_admin) === 1) { %>
-    <div class="mode-toggle">
-      <button onclick="switchToDesignMode()">디자인 모드</button>
-      <button onclick="switchToHtmlMode()">HTML 모드</button>
-    </div>
-    <% } %>
-    
-    <div id="editorWrapper">
-      <div id="editor" contenteditable="true" class="editor" spellcheck="false">
-        <%- currentPost.content || '<p><br></p>' %>
+          <button onclick="insertImage()" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
+          <button onclick="format('removeFormat')" data-tooltip="형식 제거">지우기</button>
+        </div>
+
+        <% if (user && Number(user.is_admin) === 1) { %>
+        <div class="mode-toggle">
+          <button onclick="switchToDesignMode()">디자인 모드</button>
+          <button onclick="switchToHtmlMode()">HTML 모드</button>
+        </div>
+        <% } %>
+        
+        <div id="editorWrapper_<%= langCode %>">
+          <div id="editor_<%= langCode %>" contenteditable="true" class="editor" spellcheck="false">
+            <%- currentPost?.translations?.[langCode]?.content || currentPost?.content || '<p><br></p>' %>
+          </div>
+          <textarea id="htmlEditor_<%= langCode %>" class="editor" style="display: none;"></textarea>
+        </div>
+
       </div>
-      <textarea id="htmlEditor" class="editor" style="display: none;"></textarea>
-    </div>
+    <% }); %>
 
     <label style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
       <input type="checkbox" id="isPrivateCheckbox" name="is_private" value="1" <%= post?.is_private ? 'checked' : '' %> />
@@ -136,12 +142,11 @@
   %>
 
   <script>
-    // ... (기존 스크립트 코드) ...
-    // 스크립트의 시작 부분입니다.
-    // 기존 스크립트 코드는 모두 이 안에 포함되어야 합니다.
     let selectedCategories = <%- JSON.stringify(categoryList) %>;
     let categories = [];
     let savedRange = null;
+    let currentActiveEditor = document.getElementById('editor_<%= lang %>');
+    let currentActiveHtmlEditor = document.getElementById('htmlEditor_<%= lang %>');
     
     // openHtmlPopup 함수는 수정 없이 기존과 동일하게 유지합니다.
     function openHtmlPopup() {
@@ -173,8 +178,7 @@
           range.deleteContents();
           range.insertNode(wrapper);
         } else {
-          const editor = document.getElementById("editor");
-          editor.appendChild(wrapper);
+          currentActiveEditor.appendChild(wrapper);
         }
         saveSelection();
       });
@@ -253,40 +257,66 @@
       });
     }
     
-    // postContent 함수
+    // postContent 함수 (수정됨)
     function postContent() {
-      const title = document.getElementById('postTitle').value.trim();
-      const content = document.getElementById('editor').innerHTML.trim();
-      const categoriesToSend = selectedCategories;
-      const isPrivate = document.getElementById('isPrivateCheckbox').checked ? 1 : 0;
-      const isPinned = document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0;
-      const lang = document.getElementById('post-lang').value;
+      const isEdit = <%= isEdit %>;
+      const postId = '<%= post?.id || "" %>';
+      
+      const postData = {
+          categories: selectedCategories,
+          is_private: document.getElementById('isPrivateCheckbox')?.checked ? 1 : 0,
+          is_pinned: document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0,
+          lang_content: {}
+      };
 
-      if (!title) return showCustomMessage("제목을 입력해주세요.");
-      if (!content || content === '<div><br></div>' || content === '<p><br></p>') return showCustomMessage("내용을 입력해주세요.");
-      if (!categoriesToSend || categoriesToSend.length === 0) return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
-  
-      fetch("<%= post ? '/' + lang + '/edit/' + post.id : '/' + lang + '/savePost' %>", {
+      let hasContentForDefaultLang = false;
+      const supportedLangs = <%- JSON.stringify(supportedLangs) %>;
+
+      supportedLangs.forEach(code => {
+          const titleInput = document.getElementById(`postTitle_${code}`);
+          const editorDiv = document.getElementById(`editor_${code}`);
+          const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`);
+
+          let contentToSave = editorDiv.innerHTML.trim();
+
+          if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
+              contentToSave = '';
+          }
+          
+          postData.lang_content[code] = {
+              title: titleInput.value.trim(),
+              content: contentToSave
+          };
+          
+          if (code === 'ko' && (postData.lang_content[code].title || postData.lang_content[code].content !== '')) {
+              hasContentForDefaultLang = true;
+          }
+      });
+      
+      if (!selectedCategories || selectedCategories.length === 0) {
+        return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
+      }
+
+      if (!hasContentForDefaultLang && !isEdit) {
+          return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
+      }
+      
+      const submitUrl = isEdit && postId ? `/${lang}/edit/${postId}` : `/${lang}/savePost`;
+
+      fetch(submitUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title,
-          content,
-          categories: categoriesToSend,
-          is_private: isPrivate,
-          is_pinned: isPinned,
-          lang
-        })
+        body: JSON.stringify(postData)
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
           showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-            <% if (post) { %>
-              window.location.href = "/<%= lang %>/post/<%= post.id %>";
-            <% } else { %>
-              window.location.href = "/<%= lang %>/";
-            <% } %>
+            if (isEdit) {
+              window.location.href = `/${lang}/post/${postId}`;
+            } else {
+              window.location.href = `/${lang}/`;
+            }
           });
         } else {
           showCustomMessage("저장 실패: " + data.error);
@@ -300,17 +330,19 @@
 
     // format 함수
     function format(command, value = null) {
+      if (!currentActiveEditor) return;
       document.execCommand("styleWithCSS", false, false);
+      currentActiveEditor.focus();
       document.execCommand(command, false, value);
       setTimeout(detectStyle, 100);
     }
     
     // applyStyle 함수
     function applyStyle(tag) {
+      if (!currentActiveEditor) return;
       const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
-      const editor = document.getElementById("editor");
       restoreSelection();
-      editor.focus();
+      currentActiveEditor.focus();
       if (blockTags.includes(tag)) {
         document.execCommand("styleWithCSS", false, false);
         document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
@@ -352,27 +384,31 @@
 
     // toggleDropdown 함수
     function toggleDropdown() {
-      document.getElementById('styleDropdown').classList.toggle('show');
+      const currentLangCode = document.getElementById('langSelector').value;
+      document.getElementById(`styleDropdown_${currentLangCode}`).classList.toggle('show');
     }
 
     // updateCurrentStyle 함수
     function updateCurrentStyle(tagName) {
+      const currentLangCode = document.getElementById('langSelector').value;
       const labelMap = {
         h1: "제목", h2: "부제목", h3: "머리말 1", h4: "빨간 머리말",
         p: "본문", small: "설명", footer: "머리말 및 꼬리말",
         span: "레이블", strong: "진한 레이블"
       };
       const label = labelMap[tagName.toLowerCase()] || tagName;
-      document.getElementById("currentStyle").innerText = `${label} ▼`;
+      document.getElementById(`currentStyle_${currentLangCode}`).innerText = `${label} ▼`;
     }
 
     // detectStyle 함수
     function detectStyle() {
+      if (!currentActiveEditor) return;
       const sel = window.getSelection();
-      if (!sel.rangeCount) return;
+      if (!sel.rangeCount || !currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) return;
+      
       let node = sel.getRangeAt(0).startContainer;
       if (node.nodeType === 3) node = node.parentNode;
-      while (node && node !== document) {
+      while (node && node !== currentActiveEditor) {
         const tag = node.tagName?.toLowerCase();
         if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
           updateCurrentStyle(tag);
@@ -385,70 +421,80 @@
 
     // saveSelection 함수
     function saveSelection() {
+      if (!currentActiveEditor) return;
       const sel = window.getSelection();
-      if (sel.rangeCount > 0) {
+      if (sel.rangeCount > 0 && currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) {
         savedRange = sel.getRangeAt(0).cloneRange();
       }
     }
 
     // restoreSelection 함수
     function restoreSelection() {
+      if (!currentActiveEditor || !savedRange) return;
       const sel = window.getSelection();
-      if (savedRange) {
-        sel.removeAllRanges();
-        sel.addRange(savedRange);
-      }
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+      currentActiveEditor.focus();
     }
 
     // setColor 함수
     function setColor(command, color) {
+      if (!currentActiveEditor) return;
       restoreSelection();
       const sel = window.getSelection();
-      if (!sel.rangeCount || sel.isCollapsed) return;
+      if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).startContainer)) return;
       const range = sel.getRangeAt(0);
+      
       if (color === "__clear__") {
-        const contents = range.cloneContents();
-        const spans = contents.querySelectorAll("span");
-        spans.forEach(span => {
-          if (command === 'foreColor') span.style.color = '';
-          else if (command === 'hiliteColor') span.style.backgroundColor = '';
-        });
-        range.deleteContents();
-        range.insertNode(contents);
+        document.execCommand("removeFormat", false, null);
         return;
       }
-      const span = document.createElement("span");
-      if (command === "foreColor") span.style.color = color;
-      else if (command === "hiliteColor") span.style.backgroundColor = color;
-      const contents = range.extractContents();
-      span.appendChild(contents);
-      range.insertNode(span);
-      sel.removeAllRanges();
-      const newRange = document.createRange();
-      newRange.selectNode(span);
-      sel.addRange(newRange);
+      
+      document.execCommand(command, false, color);
       saveSelection();
       detectStyle();
     }
     
-    // getCurrentBlockTag 함수
-    function getCurrentBlockTag() {
-      const sel = window.getSelection();
-      if (!sel.rangeCount) return null;
-      let node = sel.getRangeAt(0).startContainer;
-      while (node && node !== document) {
-        if (node.nodeType === 1) {
-          const tag = node.tagName.toLowerCase();
-          if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
-            return tag;
-          }
-        }
-        node = node.parentNode;
-      }
-      return 'p';
+    // switchToHtmlMode 함수
+    function switchToHtmlMode() {
+      if (!currentActiveEditor) return;
+      const htmlEditor = document.getElementById(currentActiveHtmlEditor.id);
+      htmlEditor.value = currentActiveEditor.innerHTML.trim();
+      currentActiveEditor.style.display = "none";
+      htmlEditor.style.display = "block";
     }
 
-    // 커스텀 메시지 박스 및 입력 박스 구현
+    // switchToDesignMode 함수
+    function switchToDesignMode() {
+      if (!currentActiveEditor) return;
+      const htmlEditor = document.getElementById(currentActiveHtmlEditor.id);
+      currentActiveEditor.innerHTML = htmlEditor.value;
+      htmlEditor.style.display = "none";
+      currentActiveEditor.style.display = "block";
+    }
+    
+    // 언어 선택 로직
+    function switchLanguage(selectedLangCode) {
+        const langBlocks = document.querySelectorAll('.lang-meta-block');
+        langBlocks.forEach(block => {
+            if (block.getAttribute('data-lang') === selectedLangCode) {
+                block.style.display = '';
+            } else {
+                block.style.display = 'none';
+            }
+        });
+        
+        currentActiveEditor = document.getElementById(`editor_${selectedLangCode}`);
+        currentActiveHtmlEditor = document.getElementById(`htmlEditor_${selectedLangCode}`);
+        
+        if (currentActiveEditor) {
+            currentActiveEditor.focus();
+            detectStyle();
+            saveSelection();
+        }
+    }
+
+    // 커스텀 메시지 박스 및 입력 박스 구현 (기존 코드와 동일)
     function createMessageBox(message, isConfirm = false, onConfirm = null) {
       let modal = document.getElementById('customMessageModal');
       if (!modal) {
@@ -529,20 +575,20 @@
     // window.onclick 함수
     window.onclick = function(e) {
       if (!e.target.matches('.dropdown-toggle')) {
-        const dropdowns = document.getElementsByClassName('dropdown-menu');
+        const dropdowns = document.querySelectorAll('.dropdown-menu');
         for (let d of dropdowns) d.classList.remove('show');
       }
     };
     
     // insertTOC 함수
     function insertTOC() {
-      const editor = document.getElementById("editor");
-      const headings = editor.querySelectorAll("h1, h2");
+      if (!currentActiveEditor) return;
+      const headings = currentActiveEditor.querySelectorAll("h1, h2");
       if (!headings.length) {
         showCustomMessage("제목 또는 부제목이 없어 목차를 만들 수 없습니다.");
         return;
       }
-      const oldTOC = editor.querySelector(".auto-toc");
+      const oldTOC = currentActiveEditor.querySelector(".auto-toc");
       if (oldTOC) oldTOC.remove();
       const tocWrapper = document.createElement("div");
       tocWrapper.className = "auto-toc";
@@ -587,41 +633,15 @@
       tocWrapper.innerHTML = tocTitle;
       tocWrapper.appendChild(tocList);
       const firstHeading = [...headings][0];
-      editor.insertBefore(tocWrapper, firstHeading);
+      currentActiveEditor.insertBefore(tocWrapper, firstHeading);
     }
     
-    // switchToHtmlMode 함수
-    function switchToHtmlMode() {
-      const editor = document.getElementById("editor");
-      const htmlEditor = document.getElementById("htmlEditor");
-      htmlEditor.value = editor.innerHTML.trim();
-      editor.style.display = "none";
-      htmlEditor.style.display = "block";
-    }
-
-    // switchToDesignMode 함수
-    function switchToDesignMode() {
-      const editor = document.getElementById("editor");
-      const htmlEditor = document.getElementById("htmlEditor");
-      editor.innerHTML = htmlEditor.value;
-      htmlEditor.style.display = "none";
-      editor.style.display = "block";
-    }
-
     // ✅ DOMContentLoaded 이벤트 리스너 통합 및 언어 변경 로직 추가
     document.addEventListener('DOMContentLoaded', () => {
-      const supportedLangs = <%- JSON.stringify(supportedLangs) %>;
-      const langSelect = document.getElementById('post-lang');
-      const isEdit = <%= isEdit %>;
-      const postId = '<%= post?.id || "" %>';
-      const currentPath = window.location.pathname.replace(new RegExp(`^/(${supportedLangs.join('|')})`), '');
-      
+      const langSelect = document.getElementById('langSelector');
       if (langSelect) {
         langSelect.addEventListener('change', (e) => {
-          const selectedLang = e.target.value;
-          if (isEdit && postId) {
-            window.location.href = `/${selectedLang}${currentPath}?lang=${selectedLang}`;
-          }
+          switchLanguage(e.target.value);
         });
       }
 
@@ -639,13 +659,13 @@
         });
 
       // 에디터 이벤트 리스너 추가
-      const editor = document.getElementById('editor');
-      if (editor) {
+      const editors = document.querySelectorAll('.editor');
+      editors.forEach(editor => {
         editor.addEventListener('keyup', detectStyle);
         editor.addEventListener('mouseup', detectStyle);
         editor.addEventListener('mouseup', saveSelection);
         editor.addEventListener('keyup', saveSelection);
-      }
+      });
       
       // 툴바 버튼 이벤트 리스너 추가 (선택 영역 저장)
       const toolbarButtons = document.querySelectorAll('.toolbar button, .dropdown-toggle');
