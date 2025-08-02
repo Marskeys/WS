@@ -1,11 +1,16 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const db = require('./config/db');
-
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// ✅ 다국어 지원을 위한 설정
+const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+app.locals.supportedLangs = supportedLangs;
+const translations = JSON.parse(fs.readFileSync(path.join(__dirname, 'all.json'), 'utf8'));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -15,13 +20,24 @@ app.use(express.json());
 
 // ✅ 세션 설정
 app.use(session({
-  secret: '너만의_비밀문자열', // 이 값을 실제 운영 환경에서는 더 복잡하게 설정하세요.
+  secret: '너만의_비밀문자열',
   resave: false,
   saveUninitialized: true,
 }));
 
-// ✅ 사용자 정보 템플릿에 전달 미들웨어
+// ✅ 언어 감지 미들웨어 (모든 라우트보다 먼저 실행)
 app.use((req, res, next) => {
+  let lang = 'ko'; // 기본 언어 설정
+  const parts = req.path.split('/');
+
+  if (parts.length > 1 && supportedLangs.includes(parts[1])) {
+    lang = parts[1];
+    req.url = req.url.substring(lang.length + 1) || '/';
+  }
+
+  res.locals.lang = lang;
+  res.locals.translations = translations[lang] || translations['ko']; // 현재 언어에 맞는 번역 데이터 전달
+  res.locals.supportedLangs = supportedLangs;
   res.locals.currentPath = req.path;
   res.locals.user = req.session.user || null;
   next();
@@ -78,16 +94,28 @@ app.get('/logout', (req, res) => {
 });
 
 // ✅ 글쓰기 페이지
-app.get('/write', (req, res) => {
+app.get('/write', async (req, res) => {
   // 관리자만 글쓰기 가능하도록 권한 확인
   if (!req.session.user || req.session.user.is_admin !== 1) {
     return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
   }
-  res.render('editor', {
-    user: req.session.user,
-    post: null,      // 새 글 작성 시에는 post가 null
-    isEdit: false    // 새 글 작성 모드임을 나타냄
-  });
+
+  try {
+    // ✅ 카테고리 목록을 현재 언어에 맞게 가져옴
+    const lang = res.locals.lang;
+    const [categories] = await db.query(`SELECT id, name_${lang} AS name FROM categories`);
+
+    res.render('editor', {
+      user: req.session.user,
+      post: null,      // 새 글 작성 시에는 post가 null
+      isEdit: false,   // 새 글 작성 모드임을 나타냄
+      categories,
+      lang // 현재 언어를 에디터 템플릿에 전달
+    });
+  } catch (err) {
+    console.error('글쓰기 페이지 오류:', err);
+    res.status(500).send('서버 오류');
+  }
 });
 
 // ✅ ID 중복 확인 API
@@ -144,49 +172,54 @@ app.get('/signup-success', (req, res) => {
 
 // ✅ 새 글 저장 처리
 app.post('/savePost', async (req, res) => {
-  const { title, content, categories, is_private, is_pinned } = req.body;
+  // ✅ post_translations 테이블에 맞게 수정
+  const { title, content, categories, is_private, is_pinned, lang } = req.body;
   const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
-  // 필수 입력값 확인
-  if (!title || !content || !categories) {
-    return res.status(400).json({ success: false, error: '제목, 내용, 카테고리를 모두 입력해주세요.' });
+  
+  if (!title || !content || !categories || !lang) {
+    return res.status(400).json({ success: false, error: '제목, 내용, 카테고리, 언어 코드를 모두 입력해주세요.' });
   }
-  // 로그인한 사용자만 글을 쓸 수 있도록 권한 확인
+  
   if (!req.session.user) {
     return res.status(401).json({ success: false, error: '로그인이 필요합니다.' });
   }
 
-  // is_private 값을 1 (비공개) 또는 0 (공개)으로 변환
-  const isPrivate = is_private ? 1 : 0; // 프론트에서 1로 넘어오면 true, 아니면 false (0)
+  const isPrivate = is_private ? 1 : 0;
 
   try {
-    // 글 정보 DB 저장
-    const [result] = await db.query(
-      'INSERT INTO posts (title, content, categories, author, user_id, is_private, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    // 1️⃣ 먼저 posts 테이블에 공통 정보 저장
+    const [postResult] = await db.query(
+      'INSERT INTO posts (categories, author, user_id, is_private, is_pinned) VALUES (?, ?, ?, ?, ?)',
       [
-        title,
-        content,
-        categories.join(','), // 카테고리 배열을 콤마로 구분된 문자열로 저장
-        req.session.user.nickname, // 세션에서 작성자 닉네임 가져오기
-        req.session.user.id,       // 세션에서 작성자 ID 가져오기
+        categories.join(','),
+        req.session.user.nickname,
+        req.session.user.id,
         isPrivate,
         pinnedValue
       ]
     );
-    // 글 저장 성공 후, 저장된 글의 ID와 함께 성공 응답
-    res.json({ success: true, postId: result.insertId });
+
+    const postId = postResult.insertId;
+
+    // 2️⃣ post_translations 테이블에 번역된 제목과 내용 저장
+    await db.query(
+      'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?)',
+      [postId, lang, title, content]
+    );
+
+    res.json({ success: true, postId: postId });
   } catch (err) {
     console.error('글 저장 오류:', err);
     res.status(500).json({ success: false, error: '서버 오류로 글을 저장할 수 없습니다.' });
   }
 });
 
-// ✅ 글 삭제 처리
+// ✅ 글 삭제 처리 (기존과 동일)
 app.post('/delete/:id', async (req, res) => {
   const postId = req.params.id;
-  const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
+  const userId = req.session.user?.id;
 
   try {
-    // 1️⃣ 해당 글의 작성자 ID 불러오기
     const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
     if (rows.length === 0) {
       return res.status(404).send('게시글을 찾을 수 없습니다.');
@@ -194,14 +227,13 @@ app.post('/delete/:id', async (req, res) => {
 
     const post = rows[0];
 
-    // 2️⃣ 권한 확인: 글 작성자이거나 관리자인 경우에만 삭제 가능
     if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
       return res.status(403).send('글 작성자 또는 관리자만 삭제할 수 있습니다.');
     }
 
-    // 3️⃣ 삭제 수행
+    // posts 테이블에서 삭제하면 post_translations도 CASCADE로 함께 삭제됨
     await db.query('DELETE FROM posts WHERE id = ?', [postId]);
-    res.redirect('/'); // 삭제 후 메인 페이지로 리디렉션
+    res.redirect('/');
   } catch (err) {
     console.error('삭제 오류:', err);
     res.status(500).send('서버 오류로 삭제할 수 없습니다.');
@@ -211,24 +243,45 @@ app.post('/delete/:id', async (req, res) => {
 // ✅ 글 수정 페이지
 app.get('/edit/:id', async (req, res) => {
   const postId = req.params.id;
-  const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
+  const userId = req.session.user?.id;
+  const lang = req.query.lang || 'ko'; // 쿼리 파라미터로 언어 코드를 받음
 
   try {
-    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-    if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+    // 1️⃣ posts 테이블에서 기본 정보 조회
+    const [posts] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    if (posts.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+    const post = posts[0];
 
-    const post = rows[0];
-
-    // 권한 체크: 글 작성자이거나 관리자인 경우에만 수정 페이지 접근 가능
+    // 2️⃣ 권한 체크
     if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
       return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
     }
+    
+    // 3️⃣ post_translations 테이블에서 해당 언어의 번역된 제목/내용 조회
+    const [translations] = await db.query(
+        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
+        [postId, lang]
+    );
+    
+    // 4️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴
+    const [categories] = await db.query(`SELECT id, name_${res.locals.lang} AS name FROM categories`);
 
-    // `editor.ejs`에 수정 모드로 렌더링
+    // 기존 post 객체에 번역된 내용을 추가
+    if (translations.length > 0) {
+        post.title = translations[0].title;
+        post.content = translations[0].content;
+    } else {
+        // 번역이 없는 경우, 제목과 내용을 빈 문자열로 초기화
+        post.title = '';
+        post.content = '';
+    }
+
     res.render('editor', {
       user: req.session.user,
-      post,  // 기존 글 정보를 템플릿에 전달
-      isEdit: true // 수정 모드임을 나타냄
+      post,
+      isEdit: true,
+      categories,
+      lang // 현재 언어를 에디터 템플릿에 전달
     });
   } catch (err) {
     console.error('수정 페이지 오류:', err);
@@ -239,69 +292,88 @@ app.get('/edit/:id', async (req, res) => {
 // ✅ 글 수정 처리
 app.post('/edit/:id', async (req, res) => {
   const postId = req.params.id;
-  const userId = req.session.user?.id; // 현재 로그인된 사용자 ID
-  const { title, content, categories, is_private, is_pinned } = req.body;
+  const userId = req.session.user?.id;
+  // ✅ post_translations 테이블에 맞게 수정
+  const { title, content, categories, is_private, is_pinned, lang } = req.body;
 
-  // is_private 값을 1 (비공개) 또는 0 (공개)으로 변환
   const isPrivate = is_private ? 1 : 0;
+  const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
 
   try {
-    // 글의 작성자 ID 확인
-    const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
-    if (rows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+    // 1️⃣ 글의 작성자 ID 확인
+    const [posts] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
+    if (posts.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+    const post = posts[0];
 
-    const post = rows[0];
-    // 권한 확인: 글 작성자이거나 관리자인 경우에만 수정 가능
+    // 2️⃣ 권한 확인: 글 작성자이거나 관리자인 경우에만 수정 가능
     if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
       return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
     }
 
-    const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
-
-
-    // 글 정보 DB 업데이트
+    // 3️⃣ posts 테이블 업데이트 (제목, 내용 제외)
     await db.query(
-      'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [title, content, categories.join(','), isPrivate, pinnedValue, postId]
+      'UPDATE posts SET categories = ?, is_private = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [categories.join(','), isPrivate, pinnedValue, postId]
     );
 
-    res.json({ success: true, redirect: `/post/${postId}` }); // 수정 후 해당 글 페이지로 리디렉션
+    // 4️⃣ post_translations 테이블 업데이트 (제목, 내용)
+    // ON DUPLICATE KEY UPDATE를 사용하여 이미 존재하는 번역이면 수정, 없으면 새로 추가
+    await db.query(
+      'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = VALUES(title), content = VALUES(content)',
+      [postId, lang, title, content]
+    );
+
+    res.json({ success: true, redirect: `/${res.locals.lang}/post/${postId}` });
   } catch (err) {
     console.error('수정 처리 오류:', err);
     res.status(500).send('서버 오류');
   }
 });
 
-// ✅ 특정 글 보기 페이지 (비공개 글 접근 시 JSON 응답으로 변경)
+// ✅ 특정 글 보기 페이지
 app.get('/post/:id', async (req, res) => {
+  const lang = res.locals.lang;
+
   try {
     const postId = req.params.id;
-
-    // ✅ 세션에 viewedPosts 배열이 없으면 초기화
     if (!req.session.viewedPosts) {
       req.session.viewedPosts = [];
     }
 
-    // ✅ 글 정보 조회
-    const [rows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    // ✅ post_translations와 posts 테이블을 JOIN하여 현재 언어의 글을 가져옴
+    const [rows] = await db.query(`
+      SELECT
+        p.id,
+        t.title,
+        t.content,
+        p.categories,
+        p.author,
+        p.user_id,
+        p.created_at,
+        p.updated_at,
+        p.is_private,
+        p.is_pinned,
+        IFNULL(p.views, 0) AS views
+      FROM posts p
+      JOIN post_translations t ON p.id = t.post_id
+      WHERE p.id = ? AND t.lang_code = ?
+    `, [postId, lang]);
+
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: '게시글을 찾을 수 없습니다.' });
     }
 
     const post = rows[0];
 
-    // ✅ 비공개 글 접근 제한
     if (post.is_private && (!req.session.user || req.session.user.id !== post.user_id)) {
       return res.status(403).json({ success: false, message: '이 글은 비공개로 설정되어 접근할 수 없습니다.' });
     }
 
-    // ✅ 중복 조회 방지: 세션에 이 글 ID가 없을 때만 카운트 증가
     if (!req.session.viewedPosts.includes(postId)) {
       await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
       req.session.viewedPosts.push(postId);
     }
 
-    // ✅ 렌더링
     res.render('post-view', { post, user: req.session.user });
 
   } catch (err) {
@@ -310,10 +382,12 @@ app.get('/post/:id', async (req, res) => {
   }
 });
 
-// ✅ 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용)
+
+// ✅ 검색 결과 페이지 (다국어 지원)
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.redirect('/');
+  const lang = res.locals.lang;
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
@@ -323,39 +397,53 @@ app.get('/search', async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    // 전체 글 중 검색어에 해당하는 글만 가져옴
-    const [allPosts] = await db.query(`
-      SELECT id, title, content, categories, author, user_id, created_at, is_private, is_pinned
-      FROM posts
-      WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
-      ORDER BY is_pinned DESC, GREATEST(updated_at, created_at) DESC
-    `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+    const baseQuery = `
+      SELECT
+        p.id,
+        t.title,
+        t.content,
+        p.categories,
+        p.author,
+        p.user_id,
+        p.created_at,
+        p.is_private,
+        p.is_pinned
+      FROM posts p
+      JOIN post_translations t ON p.id = t.post_id
+      WHERE t.lang_code = ? AND (t.title LIKE ? OR t.content LIKE ?)
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
+    `;
 
-    // 비공개 글 필터링
-    const filteredAll = allPosts.map(post => {
+    const countQuery = `
+      SELECT COUNT(p.id) AS count
+      FROM posts p
+      JOIN post_translations t ON p.id = t.post_id
+      WHERE t.lang_code = ? AND (t.title LIKE ? OR t.content LIKE ?)
+    `;
+
+    const searchParams = [lang, `%${keyword}%`, `%${keyword}%`];
+    const [posts] = await db.query(baseQuery, [...searchParams, limit, offset]);
+    const [[{ count }]] = await db.query(countQuery, searchParams);
+
+    const filteredPosts = posts.map(post => {
       if (post.is_private && post.user_id !== userId && !isAdmin) {
         return {
           ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
+          content: res.locals.translations.private_post_message
         };
       }
       return post;
     });
 
-    const total = filteredAll.length;
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
-
-    const paginatedPosts = filteredAll.slice(offset, offset + limit);
-
-    const categorySet = new Set();
-    filteredAll.forEach(post => {
-      post.categories.split(',').map(cat => cat.trim()).forEach(cat => cat && categorySet.add(cat));
-    });
-    const categories = Array.from(categorySet);
+    
+    // ✅ 카테고리 목록을 현재 언어에 맞게 가져옴
+    const [categories] = await db.query(`SELECT id, name_${lang} AS name FROM categories`);
 
     res.render('index', {
-      posts: paginatedPosts,
+      posts: filteredPosts,
       categories,
       isSearch: true,
       searchKeyword: keyword,
@@ -365,8 +453,8 @@ app.get('/search', async (req, res) => {
         total: totalPages,
         range: paginationRange
       },
-      selectedCategory: null, 
-      user: req.session.user   
+      selectedCategory: null,
+      user: req.session.user
     });
   } catch (err) {
     console.error('검색 오류:', err);
@@ -397,10 +485,10 @@ function generatePagination(current, total) {
     rangeWithDots.push(i);
     l = i;
   }
-
   return rangeWithDots;
 }
 
+// ✅ 메인 페이지 (다국어 지원)
 app.get('/', async (req, res) => {
   const category = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
@@ -409,55 +497,69 @@ app.get('/', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
+  const lang = res.locals.lang;
 
   try {
-    // 카테고리 조건에 따라 쿼리 다르게 구성
+    // 1️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴
+    const [categories] = await db.query(`SELECT id, name_${lang} AS name FROM categories`);
+
+    // 2️⃣ 포스트 목록을 가져오는 쿼리 수정 (JOIN 사용)
     let baseQuery = `
-      SELECT id, title, content, categories, author, user_id, created_at, updated_at, is_private, is_pinned, IFNULL(views, 0) AS views
-      FROM posts
+      SELECT
+        p.id,
+        t.title,
+        t.content,
+        p.categories,
+        p.author,
+        p.user_id,
+        p.created_at,
+        p.updated_at,
+        p.is_private,
+        p.is_pinned,
+        IFNULL(p.views, 0) AS views
+      FROM posts p
+      JOIN post_translations t ON p.id = t.post_id
+      WHERE t.lang_code = ?
     `;
-    let countQuery = `SELECT COUNT(*) as count FROM posts`;
-    const params = [];
-    const countParams = [];
+    let countQuery = `
+      SELECT COUNT(p.id) as count
+      FROM posts p
+      JOIN post_translations t ON p.id = t.post_id
+      WHERE t.lang_code = ?
+    `;
+
+    const params = [lang];
+    const countParams = [lang];
 
     if (category !== 'all') {
-      baseQuery += ` WHERE FIND_IN_SET(?, categories)`;
-      countQuery += ` WHERE FIND_IN_SET(?, categories)`;
+      baseQuery += ` AND FIND_IN_SET(?, p.categories)`;
+      countQuery += ` AND FIND_IN_SET(?, p.categories)`;
       params.push(category);
       countParams.push(category);
     }
 
-    baseQuery += ` ORDER BY is_pinned DESC, GREATEST(updated_at, created_at) DESC LIMIT ? OFFSET ?`;
+    baseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
     params.push(limit, offset);
 
-    // 게시글 조회
     const [posts] = await db.query(baseQuery, params);
 
-    // 비공개 필터링
     const filteredPosts = posts.map(post => {
       if (post.is_private && post.user_id !== userId && !isAdmin) {
         return {
           ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
+          content: res.locals.translations.private_post_message
         };
       }
       return post;
     });
 
-    // 전체 개수
     const [[{ count }]] = await db.query(countQuery, countParams);
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
 
-    // 카테고리 목록 만들기
-    const categorySet = new Set();
-    filteredPosts.forEach(post => {
-      post.categories?.split(',').map(c => c.trim()).forEach(c => c && categorySet.add(c));
-    });
-
     res.render('index', {
       posts: filteredPosts,
-      categories: Array.from(categorySet),
+      categories,
       isSearch: false,
       searchKeyword: '',
       currentPath: req.path,
@@ -475,10 +577,12 @@ app.get('/', async (req, res) => {
 });
 
 
-// ✅ 카테고리 전체 가져오기 API
+// ✅ 카테고리 전체 가져오기 API (다국어 지원)
 app.get('/api/categories', async (req, res) => {
+  const lang = res.locals.lang;
   try {
-    const [rows] = await db.query('SELECT * FROM categories ORDER BY id ASC');
+    // 현재 언어에 맞는 카테고리 이름 가져오기
+    const [rows] = await db.query(`SELECT id, name_${lang} AS name FROM categories ORDER BY id ASC`);
     res.json({ categories: rows.map(r => r.name) });
   } catch (err) {
     console.error('카테고리 조회 오류:', err);
@@ -486,18 +590,18 @@ app.get('/api/categories', async (req, res) => {
   }
 });
 
-// ✅ 카테고리 추가 API
+// ✅ 카테고리 추가 API (다국어 지원)
 app.post('/api/categories', async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: '카테고리 이름이 필요합니다.' });
 
   try {
-    // 중복 카테고리 추가 방지
-    const [existing] = await db.query('SELECT * FROM categories WHERE name = ?', [name]);
+    const [existing] = await db.query('SELECT * FROM categories WHERE name_ko = ? OR name_en = ? OR name_fr = ? OR name_zh = ? OR name_ja = ?', [name, name, name, name, name]);
     if (existing.length > 0) {
       return res.status(409).json({ success: false, error: '이미 존재하는 카테고리입니다.' });
     }
-    await db.query('INSERT INTO categories (name) VALUES (?)', [name]);
+    // 기본 언어(한국어)에만 이름을 추가하고, 나머지는 NULL로 둠
+    await db.query('INSERT INTO categories (name_ko) VALUES (?)', [name]);
     res.json({ success: true });
   } catch (err) {
     console.error('카테고리 추가 오류:', err);
@@ -505,11 +609,15 @@ app.post('/api/categories', async (req, res) => {
   }
 });
 
-// ✅ 카테고리 삭제 API
+// ✅ 카테고리 삭제 API (기존과 동일)
 app.delete('/api/categories/:name', async (req, res) => {
   const { name } = req.params;
   try {
-    await db.query('DELETE FROM categories WHERE name = ?', [decodeURIComponent(name)]);
+    // 모든 언어 필드에서 해당 이름의 카테고리를 찾아 삭제
+    await db.query(
+      `DELETE FROM categories WHERE name_ko = ? OR name_en = ? OR name_fr = ? OR name_zh = ? OR name_ja = ?`,
+      [decodeURIComponent(name), decodeURIComponent(name), decodeURIComponent(name), decodeURIComponent(name), decodeURIComponent(name)]
+    );
     res.json({ success: true });
   } catch (err) {
     console.error('카테고리 삭제 오류:', err);
@@ -518,35 +626,44 @@ app.delete('/api/categories/:name', async (req, res) => {
 });
 
 
-// ✅ AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용)
+// ✅ AJAX 검색 API (다국어 지원)
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   if (!keyword) return res.json({ posts: [] });
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
+  const lang = res.locals.lang;
 
   try {
-    // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
+    // post_translations 테이블을 JOIN하여 현재 언어의 글에서 검색
     const [posts] = await db.query(`
-      SELECT id, title, content, categories, author, user_id, created_at, is_private, is_pinned
-      FROM posts
-      WHERE title LIKE ? OR content LIKE ? OR categories LIKE ?
-      ORDER BY is_pinned DESC, GREATEST(updated_at, created_at) DESC
-    `, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+      SELECT
+        p.id,
+        t.title,
+        t.content,
+        p.categories,
+        p.author,
+        p.user_id,
+        p.created_at,
+        p.is_private,
+        p.is_pinned
+      FROM posts p
+      JOIN post_translations t ON p.id = t.post_id
+      WHERE t.lang_code = ? AND (t.title LIKE ? OR t.content LIKE ?)
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `, [lang, `%${keyword}%`, `%${keyword}%`]);
 
-    // 비공개 글의 내용을 필터링합니다
     const filteredPosts = posts.map(post => {
-      // 글이 비공개이고, 작성자도 아니고, 관리자도 아닌 경우
       if (post.is_private && post.user_id !== userId && !isAdmin) {
         return {
           ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.' // 내용은 숨기고 메시지 표시
+          content: res.locals.translations.private_post_message
         };
       }
       return post;
     });
-    res.json({ posts: filteredPosts }); // 필터링된 글 목록 전달
+    res.json({ posts: filteredPosts });
   } catch (err) {
     console.error('AJAX 검색 오류:', err);
     res.status(500).json({ error: '검색 중 오류 발생' });
@@ -562,7 +679,7 @@ db.query('SELECT NOW()')
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
 app.get('/game', (req, res) => {
-    res.render('game'); // views/game.ejs 렌더링
+    res.render('game');
 });
 
 // ✅ 서버 실행

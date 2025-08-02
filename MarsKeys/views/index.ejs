@@ -12,8 +12,8 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="/assets/js/index.js" defer></script>
   </head>
-    <body>
-      <img src="/assets/images/glow-circuit-bg.webp" style="display:none" alt="preload background">
+  <body>
+    <img src="/assets/images/glow-circuit-bg.webp" style="display:none" alt="preload background">
 
     <style>
       .bg-preload {
@@ -27,24 +27,15 @@
 
     <%- include('partials/header') %>
     <main class="grid">
-
-
-
-
       <div class="grid-item ultrawide marskeys-intro hologram-border">
-        Welcome to MarsKeys — where we create digital content focused on sound and music, in artistic, educational, and entertaining ways.<br>
-        We also build virtual instruments and audio plug-ins to share our tools with others.<br>
-        Exploring sound, sharing ideas — and having fun along the way.
+        <%= translations.marskeys_intro %>
       </div>
 
       <div class="grid-item youtube-carousel hologram-border" id="youtube">
         <div class="corner-ribbon">YouTube</div>
         <div class="carousel-track">
-      
-          <!-- 🎬 플레이어 1 -->
           <div class="video-wrapper" data-video-id="" data-player-id="player1">
             <div class="video-thumbnail">
-              <!-- <img class="thumbnail-img" src="/assets/images/youtube-example1.png" alt="Video Thumbnail"> !-->
               <div class="play-button">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
@@ -55,10 +46,8 @@
             <div id="player1" class="yt-player"></div>
           </div>
       
-          <!-- 🎬 플레이어 2 -->
           <div class="video-wrapper" data-video-id="" data-player-id="player2">
             <div class="video-thumbnail">
-              <!-- <img class="thumbnail-img" src="/assets/images/youtube-example2.png" alt="Video Thumbnail"> !-->
               <div class="play-button">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
@@ -68,15 +57,9 @@
             </div>
             <div id="player2" class="yt-player"></div>
           </div>
-      
         </div>
       </div>
       
-      
-      
-      
-      
-
       <div class="grid-item tall soundcloud-box hologram-border">      
         <iframe 
           width="100%" 
@@ -88,41 +71,28 @@
       </div>
       <div class="grid-item small hologram-border"> <span class="invisible-text"></span></div>
       <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">
-        <span class="about-text">About Me</span>
+        <span class="about-text"><%= translations.about_me %></span>
         <picture class="about-image hidden">
           <source srcset="/assets/images/about-me-mobile.svg" media="(max-width: 768px)">
-          <img src="/assets/images/about-me.svg" alt="About Me">
+          <img src="/assets/images/about-me.svg" alt="<%= translations.about_me %>">
         </picture>
       </div>
 
       <div class="grid-item big hologram-border"> <%- include('partials/table') %> </div>
-    
       <div class="grid-item wide hologram-border"></div>
-        
-        
-        
-        
-
-  
       <div id="orbit-balls"></div>
-
-
- 
     </main>
 
     <footer class="site-footer">
       <div class="footer-content">
         <p class="footer-text">© 2025 MarsKeys. All rights reserved.</p>
         <div class="footer-links">
-          <a href="/"><i class="fas fa-house"></i> Home</a>
-          <a href="/terms">Terms of Service</a>
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/cookies">Cookie Policy</a>
+          <a href="/<%= lang %>"><i class="fas fa-house"></i> <%= translations.home %></a>
+          <a href="/<%= lang %>/terms"><%= translations.terms %></a>
+          <a href="/<%= lang %>/privacy"><%= translations.privacy %></a>
+          <a href="/<%= lang %>/cookies"><%= translations.cookies %></a>
         </div>
       </div>
     </footer>
-
-
   </body>
-  
-  </html>
+</html>

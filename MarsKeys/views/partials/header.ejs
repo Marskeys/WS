@@ -15,39 +15,49 @@
   <a href="#naver" class="nav-icon" title="Naver">
     <span class="naver-icon-box">N</span>
   </a>
-  <a href="#lessons" class="nav-icon" title="교육">
+  <a href="#lessons" class="nav-icon" title="<%= translations.lectures %>">
     <i class="fas fa-chalkboard-teacher"></i>
   </a>
-  <a href="#experiments" class="nav-icon" title="실험">
+  <a href="#experiments" class="nav-icon" title="<%= translations.experiments %>">
     <i class="fas fa-vial"></i>
   </a>
-  <a href="#shop" class="nav-icon" title="쇼핑">
+  <a href="#shop" class="nav-icon" title="<%= translations.store %>">
     <i class="fas fa-shopping-bag"></i>
   </a>
 </nav>
 </header>
 
 <header class="mk-header" id="mainHeader">
-  <!-- ✅ 오른쪽 상단 버튼 -->
   <div class="auth-buttons">
+    <div class="language-selector">
+      <button class="lang-button"><%= lang.toUpperCase() %></button>
+      <ul class="lang-dropdown-menu">
+        <% supportedLangs.forEach(supportedLang => { %>
+          <li>
+            <a href="/<%= supportedLang %><%= currentPath %>" class="lang-dropdown-item">
+              <%= supportedLang.toUpperCase() %>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
     <% if (user) { %>
-      <span class="welcome"><strong><%= user.nickname %></strong>님, 안녕하세요!</span>
-      <a href="/logout" class="auth-button">로그아웃</a>
+      <span class="welcome"><strong><%= user.nickname %></strong><%= translations.greeting %></span>
+      <a href="/logout" class="auth-button"><%= translations.logout %></a>
     <% } else { %>
-      <a href="/signup" class="auth-button">회원가입</a>
-      <a href="/login" class="auth-button" id="login">로그인</a>
+      <a href="/signup" class="auth-button"><%= translations.signup %></a>
+      <a href="/login" class="auth-button" id="login"><%= translations.login %></a>
     <% } %>
   </div>
 
   <div id="loginBox" style="display:none; position:absolute; z-index:9999;" class="hologram-border">
     <form>
-      <input type="text" name="id" placeholder="아이디" required />
-      <input type="password" name="password" placeholder="비밀번호" required />
-      <button type="submit">로그인</button>
+      <input type="text" name="id" placeholder="<%= translations.id %>" required />
+      <input type="password" name="password" placeholder="<%= translations.password %>" required />
+      <button type="submit"><%= translations.login %></button>
     </form>
   </div>
 
-  <!-- ✅ 로고와 메뉴 -->
   <div class="mk-header-inner">
     <div class="logo-wrapper" id="logoWrapper">
       <object id="logo" type="image/svg+xml" data="/assets/images/logo.svg"></object>
@@ -74,17 +84,17 @@
         <span class="naver-icon-box">N</span>
         <span class="tooltip-text">NAVER</span>
       </a>
-      <a href="#lessons" class="nav-icon tooltip" title="교육">
+      <a href="#lessons" class="nav-icon tooltip" title="<%= translations.lectures %>">
         <i class="fas fa-chalkboard-teacher"></i>
-        <span class="tooltip-text">Lectures</span>
+        <span class="tooltip-text"><%= translations.lectures %></span>
       </a>
-      <a href="#experiments" class="nav-icon tooltip" title="실험">
+      <a href="#experiments" class="nav-icon tooltip" title="<%= translations.experiments %>">
         <i class="fas fa-vial"></i>
-        <span class="tooltip-text">Sound Experiments</span>
+        <span class="tooltip-text"><%= translations.experiments %></span>
       </a>
-      <a href="#shop" class="nav-icon tooltip" title="쇼핑">
+      <a href="#shop" class="nav-icon tooltip" title="<%= translations.store %>">
         <i class="fas fa-shopping-bag"></i>
-        <span class="tooltip-text">Store</span>
+        <span class="tooltip-text"><%= translations.store %></span>
       </a>
     </nav>
   </div>
