@@ -324,12 +324,12 @@ app.post('/edit/:id', async (req, res) => {
   try {
     // 1️⃣ 글의 작성자 ID 확인
     const [posts] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
-    if (posts.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+    if (posts.length === 0) return res.status(404).json({ success: false, error: '게시글을 찾을 수 없습니다.' });
     const post = posts[0];
 
     // 2️⃣ 권한 확인: 글 작성자이거나 관리자인 경우에만 수정 가능
     if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
-      return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
+      return res.status(403).json({ success: false, error: '글 작성자 또는 관리자만 수정할 수 있습니다.' });
     }
 
     // 3️⃣ posts 테이블 업데이트 (제목, 내용 제외)
@@ -354,7 +354,7 @@ app.post('/edit/:id', async (req, res) => {
     res.json({ success: true, redirect: `/${res.locals.lang}/post/${postId}` });
   } catch (err) {
     console.error('수정 처리 오류:', err);
-    res.status(500).send('서버 오류');
+    res.status(500).json({ success: false, error: '서버 오류로 글을 수정할 수 없습니다.' });
   }
 });
 
