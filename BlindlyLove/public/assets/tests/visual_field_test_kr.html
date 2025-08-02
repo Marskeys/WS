@@ -750,15 +750,39 @@
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 
                 const captureTarget = resultContent;
-                const canvas = await html2canvas(captureTarget, { scale: 2 });
+
+                // html2canvas로 고해상도 캡처 (scale 2 사용)
+                const canvas = await html2canvas(captureTarget, {
+                    scale: 2,
+                    height: captureTarget.scrollHeight, // 스크롤 영역 전체 캡처
+                    windowWidth: captureTarget.scrollWidth,
+                    windowHeight: captureTarget.scrollHeight
+                });
                 const imgData = canvas.toDataURL('image/png');
 
-                const imgWidth = 180;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
-                const y = 10;
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
                 
-                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+                // 이미지의 가로세로 비율 계산
+                const imgRatio = canvas.width / canvas.height;
+                const pdfRatio = pdfWidth / pdfHeight;
+
+                let finalImgWidth;
+                let finalImgHeight;
+
+                // PDF 페이지 비율과 이미지 비율을 비교하여, 이미지가 잘리지 않도록 크기 조절
+                if (imgRatio > pdfRatio) {
+                    finalImgWidth = pdfWidth - 20; // 좌우 여백 10mm씩
+                    finalImgHeight = finalImgWidth / imgRatio;
+                } else {
+                    finalImgHeight = pdfHeight - 20; // 상하 여백 10mm씩
+                    finalImgWidth = finalImgHeight * imgRatio;
+                }
+
+                const x = (pdfWidth - finalImgWidth) / 2;
+                const y = (pdfHeight - finalImgHeight) / 2;
+
+                pdf.addImage(imgData, 'PNG', x, y, finalImgWidth, finalImgHeight);
                 pdf.save('시야검사_결과.pdf');
             });
         });
