@@ -88,93 +88,9 @@
       </div>
 
       <div class="grid-item big hologram-border">
-        <div class="post-list-container">
-          <div class="controls">
-            <div class="category-filter">
-              <a href="/<%= lang %>/" class="category-btn <%= selectedCategory === null ? 'active' : '' %>">
-                <%= locale.all_categories %>
-              </a>
-              <% categories.forEach(function(category) { %>
-                <a href="/<%= lang %>/?category=<%= category.original %>" class="category-btn <%= selectedCategory === category.translated ? 'active' : '' %>">
-                  <%= category.translated %>
-                </a>
-              <% }); %>
-            </div>
-          </div>
-
-          <% if (isSearch) { %>
-            <h2 class="search-title">
-              <%= locale.search_results_for %> "<%= searchKeyword %>"
-            </h2>
-          <% } %>
-
-          <div class="post-list">
-            <% if (posts && posts.length > 0) { %>
-              <% posts.forEach(function(post) { %>
-                <div class="post-item">
-                  <h3>
-                    <a href="/<%= lang %>/post/<%= post.id %>">
-                      <% if (post.is_pinned) { %>
-                        <i class="fas fa-thumbtack"></i>
-                      <% } %>
-                      <%= post.title %>
-                    </a>
-                  </h3>
-                  <div class="post-meta">
-                    <span class="author"><%= post.author %></span>
-                    <span class="date"><%= new Date(post.created_at).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
-                  </div>
-                  <p>
-                    <% if (post.content.length > 200) { %>
-                      <%= post.content.substring(0, 200) %>...
-                    <% } else { %>
-                      <%= post.content %>
-                    <% } %>
-                  </p>
-                  <div class="post-categories">
-                    <% if (post.translated_categories_display) { %>
-                      <% post.translated_categories_display.forEach(function(cat) { %>
-                        <span class="category-tag"><%= cat %></span>
-                      <% }); %>
-                    <% } %>
-                  </div>
-                  <div class="post-stats">
-                    <span><i class="fas fa-eye"></i> <%= post.views %></span>
-                  </div>
-                </div>
-              <% }); %>
-            <% } else { %>
-              <p class="no-posts-found"><%= locale.no_posts_found %></p>
-            <% } %>
-          </div>
-
-          <% if (pagination.total > 1) { %>
-            <div class="pagination">
-              <% if (pagination.current > 1) { %>
-                <a href="/<%= lang %>/<%= isSearch ? `search?q=${searchKeyword}&` : `?category=${encodeURIComponent(category)}&` %>page=<%= pagination.current - 1 %>">
-                  « <%= locale.previous %>
-                </a>
-              <% } %>
-
-              <% pagination.range.forEach(function(p) { %>
-                <% if (p === '...') { %>
-                  <span>...</span>
-                <% } else { %>
-                  <a href="/<%= lang %>/<%= isSearch ? `search?q=${searchKeyword}&` : `?category=${encodeURIComponent(category)}&` %>page=<%= p %>" class="<%= p === pagination.current ? 'active' : '' %>">
-                    <%= p %>
-                  </a>
-                <% } %>
-              <% }); %>
-
-              <% if (pagination.current < pagination.total) { %>
-                <a href="/<%= lang %>/<%= isSearch ? `search?q=${searchKeyword}&` : `?category=${encodeURIComponent(category)}&` %>page=<%= pagination.current + 1 %>">
-                  <%= locale.next %> »
-                </a>
-              <% } %>
-            </div>
-          <% } %>
+      
         </div>
-      </div>
+     
       <div class="grid-item wide hologram-border"></div>
       <div id="orbit-balls"></div>
     </main>
