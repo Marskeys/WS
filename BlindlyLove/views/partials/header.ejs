@@ -7,51 +7,41 @@
                        pathWithoutLang.startsWith('/post') ||
                        pathWithoutLang.startsWith('/edit');
     
-      // 햄버거 버튼 조건: 로고가 안 뜨고, 경로가 "/" (홈)
       const showHamburger = !showLogo && (pathWithoutLang === '' || pathWithoutLang === '/');
-    %>
+      %>
     
-    <% if (showLogo) { %>
-      <a href="/<%= lang %>/" class="logo-link">
-        <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
-      </a>
-    <% } %>
+      <% if (showLogo) { %>
+        <a href="/<%= lang %>/" class="logo-link">
+          <img src="/assets/images/logo.png" alt="로고" class="floating-home-logo" />
+        </a>
+      <% } %>
     
-    <% if (!showLogo) { %>
-      <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    <% } %>
+      <% if (!showLogo) { %>
+        <button class="hamburger" id="hamburger-btn" aria-label="메뉴 열기/닫기">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      <% } %>
 
-    <div class="desktop-menu">
-      <ul class="menu">
-        <li class="menu-item">
-          <span><%= locale.menu.freeGames %></span>
-          <ul class="submenu">
-            <li>
-              <a href="#" id="sudoku-link"><%= locale.menu.sudoku %></a>
-            </li>
-          </ul>
-        </li>
+      <div class="desktop-menu">
+        <ul class="menu">
+          <li class="menu-item">
+            <span><%= locale.menu.freeGames %></span>
+            <ul class="submenu">
+              <li><a href="#" id="sudoku-link"><%= locale.menu.sudoku %></a></li>
+            </ul>
+          </li>
 
-        <li class="menu-item">
-          <span><%= locale.menu.freeTests %></span>
-          <ul class="submenu">
-            <li>
-              <a href="#" id="visual-field-link"><%= locale.menu.visualField %></a>
-            </li>
-          </ul>
-        </li>
-      </ul>
+          <li class="menu-item">
+            <span><%= locale.menu.freeTests %></span>
+            <ul class="submenu">
+              <li><a href="#" id="visual-field-link"><%= locale.menu.visualField %></a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
-
-    </div>
-
-
-
-   
 
     <div class="right-controls">
       <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
@@ -59,7 +49,7 @@
           <% if (user) { %>
             <% if (Number(user.is_admin) === 1) { %>
               <span class="welcome-text"><strong><%= user.nickname %></strong>님 안녕하세요!</span>
-              <a href="/<%= lang %>/write" class="auth-btn write-post"> <i class="fas fa-pen"></i> 글쓰기</a>
+              <a href="/<%= lang %>/write" class="auth-btn write-post"><i class="fas fa-pen"></i> 글쓰기</a>
             <% } %>
             <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
           <% } else { %>
@@ -72,14 +62,14 @@
       <div class="language-dropdown">
         <button id="langToggle" class="lang-btn">
           <%
-            let flagCode = lang; // 'lang' 대신 'lang' 사용
-            switch(lang) { // 'lang' 대신 'lang' 사용
+            let flagCode = lang;
+            switch(lang) {
               case 'ko': flagCode = 'kr'; break;
-              case 'en': flagCode = 'gb'; break; /* 또는 'us' (미국 국기) */
+              case 'en': flagCode = 'gb'; break;
               case 'zh': flagCode = 'cn'; break;
               case 'ja': flagCode = 'jp'; break;
-              case 'fr': flagCode = 'fr'; break; // 프랑스어 추가
-              default: flagCode = 'kr'; // 기본값 설정
+              case 'fr': flagCode = 'fr'; break;
+              default: flagCode = 'kr';
             }
           %>
           <span class="fi fi-<%= flagCode %>"></span>
@@ -87,8 +77,6 @@
         </button>
         <ul id="langMenu" class="lang-menu">
           <%
-            // 현재 URL 경로에서 언어 접두사(/ko, /en 등)를 제거합니다.
-            // 예를 들어, /ko/post/12 -> /post/12, /signup -> /signup
             const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
           %>
           <% supportedLangs.forEach(langCode => { %>
@@ -114,10 +102,10 @@
     </div>
   </div>
 
+  <!-- 모바일 메뉴 -->
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
     <ul class="mobile-main-menu">
-      <!-- 온라인 무료 게임 -->
       <li class="mobile-dropdown">
         <a href="#"><%= locale.menu.freeGames %></a>
         <ul class="mobile-submenu">
@@ -125,16 +113,16 @@
         </ul>
       </li>
   
-      <!-- 온라인 무료 검사 (현재 비어있음) -->
       <li class="mobile-dropdown">
         <a href="#"><%= locale.menu.freeTests %></a>
         <ul class="mobile-submenu">
-          <li><a href="#" id="visual-field-link"><%= locale.menu.visualField %></a></li>
+          <li><a href="#" id="mobile-visual-field-link"><%= locale.menu.visualField %></a></li>
         </ul>
       </li>
     </ul>
   </nav>
 
+  <!-- 로그인 박스 -->
   <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
     <form action="/login" method="POST" class="pop-up-form">
       <input type="text" name="id" placeholder="아이디" required>
@@ -165,7 +153,6 @@
 
       .welcome-text {
         position: absolute;
-        bottom: -1.2rem;
         top: 2.5rem;
         right: -1rem;
         margin-right: -3rem;
@@ -174,17 +161,15 @@
         color: #666;
         pointer-events: none;
       }
-      /* 언어 선택 드롭다운 활성 언어 스타일 */
+
       .lang-option.active-lang {
         font-weight: bold;
-        color: var(--highlight-color); /* 테마에 맞는 강조 색상으로 변경 */
-        /* background-color: var(--hover-bg-color); */ /* 선택 사항 */
+        color: var(--highlight-color);
       }
     }
   </style>
 
   <script>
-    // 이 함수는 'url' 인자를 그대로 받아서 사용하므로, 호출하는 곳에서 언어 경로를 넣어줘야 합니다.
     function delayNavigation(e, url) {
       e.preventDefault();
       setTimeout(() => {
@@ -193,32 +178,29 @@
     }
   </script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const toggle = document.getElementById('langToggle');
-    const menu = document.getElementById('langMenu');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('langToggle');
+      const menu = document.getElementById('langMenu');
 
-    toggle.addEventListener('click', () => {
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      toggle.addEventListener('click', () => {
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+          menu.style.display = 'none';
+        }
+      });
     });
+  </script>
 
-    document.addEventListener('click', (e) => {
-      if (!toggle.contains(e.target) && !menu.contains(e.target)) {
-        menu.style.display = 'none';
-      }
-    });
-  });
-</script>
+  <!-- ✅ 스도쿠 + 시야검사 버튼 통합 이벤트 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = '<%= lang %>';
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const lang = '<%= lang %>';  // EJS에서 현재 언어코드
-    const sudokuBtn = document.getElementById('sudoku-link');
-
-    sudokuBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      const langMap = {
+      const sudokuMap = {
         ko: '/assets/games/sudoku/sudoku_ko.html',
         en: '/assets/games/sudoku/sudoku_en.html',
         fr: '/assets/games/sudoku/sudoku_fr.html',
@@ -226,22 +208,7 @@
         ja: '/assets/games/sudoku/sudoku_ja.html'
       };
 
-      // 없는 언어면 한국어 기본
-      const targetUrl = langMap[lang] || langMap.ko;
-      window.location.href = targetUrl;
-    });
-  });
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const lang = '<%= lang %>';  // EJS에서 현재 언어코드
-    const sudokuBtn = document.getElementById('visual-field-link');
-
-    sudokuBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-
-      const langMap = {
+      const visualFieldMap = {
         ko: '/assets/tests/visual_field_test_kr.html',
         en: '/assets/tests/visual_field_test_en.html',
         fr: '/assets/tests/visual_field_test_fr.html',
@@ -249,11 +216,18 @@
         ja: '/assets/tests/visual_field_test_ja.html'
       };
 
-      // 없는 언어면 한국어 기본
-      const targetUrl = langMap[lang] || langMap.ko;
-      window.location.href = targetUrl;
-    });
-  });
-</script>
+      function addClickHandler(selectors, map) {
+        document.querySelectorAll(selectors).forEach(btn => {
+          if (!btn) return;
+          btn.addEventListener('click', e => {
+            e.preventDefault();
+            window.location.href = map[lang] || map.ko;
+          });
+        });
+      }
 
+      addClickHandler('#sudoku-link, #mobile-sudoku-link', sudokuMap);
+      addClickHandler('#visual-field-link, #mobile-visual-field-link', visualFieldMap);
+    });
+  </script>
 </div>
