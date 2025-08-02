@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="<%= lang %>">
   <%- include('partials/head') %>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>MarsKeys Variable Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      <% if (isSearch) { %>
+        <%= locale.search_results_for %>: <%= searchKeyword %>
+      <% } else if (selectedCategory) { %>
+        <%= selectedCategory %>
+      <% } else { %>
+        <%= locale.marskeys_title %>
+      <% } %>
+    </title>
     <link rel="stylesheet" href="/assets/css/marskeys.css" />
     <link rel="stylesheet" href="/assets/css/style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -13,7 +21,7 @@
     <script src="/assets/js/index.js" defer></script>
   </head>
   <body>
-    <img src="/assets/images/glow-circuit-bg.webp" style="display:none" alt="preload background">
+    <img src="/assets/images/glow-circuit-bg.webp" style="display: none" alt="preload background" />
 
     <style>
       .bg-preload {
@@ -28,7 +36,7 @@
     <%- include('partials/header') %>
     <main class="grid">
       <div class="grid-item ultrawide marskeys-intro hologram-border">
-        <%= translations.marskeys_intro %>
+        <%= locale.marskeys_intro %>
       </div>
 
       <div class="grid-item youtube-carousel hologram-border" id="youtube">
@@ -38,20 +46,20 @@
             <div class="video-thumbnail">
               <div class="play-button">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
-                  <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
+                  <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)" />
+                  <polygon points="80,65 140,100 80,135" fill="#ffffff" />
                 </svg>
               </div>
             </div>
             <div id="player1" class="yt-player"></div>
           </div>
-      
+
           <div class="video-wrapper" data-video-id="" data-player-id="player2">
             <div class="video-thumbnail">
               <div class="play-button">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)"/>
-                  <polygon points="80,65 140,100 80,135" fill="#ffffff"/>
+                  <circle cx="100" cy="100" r="90" fill="rgba(0,0,0,0.6)" />
+                  <polygon points="80,65 140,100 80,135" fill="#ffffff" />
                 </svg>
               </div>
             </div>
@@ -59,38 +67,125 @@
           </div>
         </div>
       </div>
-      
-      <div class="grid-item tall soundcloud-box hologram-border">      
-        <iframe 
-          width="100%" 
-          height="300" 
-          scrolling="no" 
-          frameborder="no" 
-          src="">
-        </iframe>
+
+      <div class="grid-item tall soundcloud-box hologram-border">
+        <iframe
+          width="100%"
+          height="300"
+          scrolling="no"
+          frameborder="no"
+          src=""
+        ></iframe>
       </div>
-      <div class="grid-item small hologram-border"> <span class="invisible-text"></span></div>
+      <div class="grid-item small hologram-border"><span class="invisible-text"></span></div>
       <div class="grid-item small about-me hologram-border" onclick="toggleSize(this)">
-        <span class="about-text"><%= translations.about_me %></span>
+        <span class="about-text"><%= locale.about_me %></span>
         <picture class="about-image hidden">
-          <source srcset="/assets/images/about-me-mobile.svg" media="(max-width: 768px)">
-          <img src="/assets/images/about-me.svg" alt="<%= translations.about_me %>">
+          <source srcset="/assets/images/about-me-mobile.svg" media="(max-width: 768px)" />
+          <img src="/assets/images/about-me.svg" alt="<%= locale.about_me %>" />
         </picture>
       </div>
 
-      <div class="grid-item big hologram-border"> <%- include('partials/table') %> </div>
+      <div class="grid-item big hologram-border">
+        <div class="post-list-container">
+          <div class="controls">
+            <div class="category-filter">
+              <a href="/<%= lang %>/" class="category-btn <%= selectedCategory === null ? 'active' : '' %>">
+                <%= locale.all_categories %>
+              </a>
+              <% categories.forEach(function(category) { %>
+                <a href="/<%= lang %>/?category=<%= category.original %>" class="category-btn <%= selectedCategory === category.translated ? 'active' : '' %>">
+                  <%= category.translated %>
+                </a>
+              <% }); %>
+            </div>
+          </div>
+
+          <% if (isSearch) { %>
+            <h2 class="search-title">
+              <%= locale.search_results_for %> "<%= searchKeyword %>"
+            </h2>
+          <% } %>
+
+          <div class="post-list">
+            <% if (posts && posts.length > 0) { %>
+              <% posts.forEach(function(post) { %>
+                <div class="post-item">
+                  <h3>
+                    <a href="/<%= lang %>/post/<%= post.id %>">
+                      <% if (post.is_pinned) { %>
+                        <i class="fas fa-thumbtack"></i>
+                      <% } %>
+                      <%= post.title %>
+                    </a>
+                  </h3>
+                  <div class="post-meta">
+                    <span class="author"><%= post.author %></span>
+                    <span class="date"><%= new Date(post.created_at).toLocaleDateString(lang, { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                  </div>
+                  <p>
+                    <% if (post.content.length > 200) { %>
+                      <%= post.content.substring(0, 200) %>...
+                    <% } else { %>
+                      <%= post.content %>
+                    <% } %>
+                  </p>
+                  <div class="post-categories">
+                    <% if (post.translated_categories_display) { %>
+                      <% post.translated_categories_display.forEach(function(cat) { %>
+                        <span class="category-tag"><%= cat %></span>
+                      <% }); %>
+                    <% } %>
+                  </div>
+                  <div class="post-stats">
+                    <span><i class="fas fa-eye"></i> <%= post.views %></span>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <p class="no-posts-found"><%= locale.no_posts_found %></p>
+            <% } %>
+          </div>
+
+          <% if (pagination.total > 1) { %>
+            <div class="pagination">
+              <% if (pagination.current > 1) { %>
+                <a href="/<%= lang %>/?page=<%= pagination.current - 1 %>">
+                  &laquo; <%= locale.previous %>
+                </a>
+              <% } %>
+
+              <% pagination.range.forEach(function(p) { %>
+                <% if (p === '...') { %>
+                  <span>...</span>
+                <% } else { %>
+                  <a href="/<%= lang %>/?page=<%= p %>" class="<%= p === pagination.current ? 'active' : '' %>">
+                    <%= p %>
+                  </a>
+                <% } %>
+              <% }); %>
+
+              <% if (pagination.current < pagination.total) { %>
+                <a href="/<%= lang %>/?page=<%= pagination.current + 1 %>">
+                  <%= locale.next %> &raquo;
+                </a>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+      </div>
       <div class="grid-item wide hologram-border"></div>
       <div id="orbit-balls"></div>
     </main>
 
     <footer class="site-footer">
       <div class="footer-content">
-        <p class="footer-text">© 2025 MarsKeys. All rights reserved.</p>
+        <p class="footer-text">© 2025 MarsKeys. <%= locale.all_rights_reserved %></p>
         <div class="footer-links">
-          <a href="/<%= lang %>"><i class="fas fa-house"></i> <%= translations.home %></a>
-          <a href="/<%= lang %>/terms"><%= translations.terms %></a>
-          <a href="/<%= lang %>/privacy"><%= translations.privacy %></a>
-          <a href="/<%= lang %>/cookies"><%= translations.cookies %></a>
+          <a href="/<%= lang %>"><i class="fas fa-house"></i> <%= locale.home %></a>
+          <a href="/<%= lang %>/terms"><%= locale.terms %></a>
+          <a href="/<%= lang %>/privacy"><%= locale.privacy %></a>
+          <a href="/<%= lang %>/cookies"><%= locale.cookies %></a>
         </div>
       </div>
     </footer>
