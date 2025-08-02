@@ -745,23 +745,21 @@
                 window.location.href = '/ko/';
             });
 
-            downloadPdfButton.addEventListener('click', () => {
+            downloadPdfButton.addEventListener('click', async () => {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
+                
                 const captureTarget = resultContent;
+                const canvas = await html2canvas(captureTarget, { scale: 2 });
+                const imgData = canvas.toDataURL('image/png');
 
-                pdf.html(captureTarget, {
-                    callback: function (pdf) {
-                        pdf.save('시야검사_결과.pdf');
-                    },
-                    x: 10,
-                    y: 10,
-                    html2canvas: {
-                        scale: 0.7, // PDF 페이지에 맞게 스케일 조정
-                    },
-                    margin: [10, 10, 10, 10], // 상, 우, 하, 좌 여백 설정 (mm)
-                    autoPaging: true, // 콘텐츠가 페이지를 넘어가면 자동으로 다음 페이지로 이동
-                });
+                const imgWidth = 180;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
+                const y = 10;
+                
+                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+                pdf.save('시야검사_결과.pdf');
             });
         });
     </script>
