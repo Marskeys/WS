@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>간이 시야검사 앱 (스크리닝용)</title>
+    <title>簡易視野検査アプリ (スクリーニング用)</title>
     
     <style>
         :root {
@@ -15,6 +15,8 @@
             --border-color: #ccc;
             --button-hover-color: #0056b3;
             --button-success-color: #45a049;
+            --home-button-color: #6c757d;
+            --home-button-hover-color: #5a6268;
         }
 
         body, html {
@@ -129,7 +131,7 @@
             max-height: 90vh;
         }
 
-        /* 공통 버튼 스타일 */
+        /* 共通のボタン スタイル */
         .styled-button {
             padding: 15px 30px;
             font-size: 20px;
@@ -157,15 +159,33 @@
             background-color: var(--button-hover-color);
         }
 
-        #downloadPdfButton, #restartButton {
+        #downloadPdfButton, #restartButton, #homeButton {
             background-color: var(--primary-color);
             color: white;
             padding: 10px 20px;
             font-size: 16px;
             margin-top: 15px;
         }
-        #downloadPdfButton:hover, #restartButton:hover {
+        
+        #restartButton {
+            background-color: var(--primary-color);
+        }
+        #restartButton:hover {
             background-color: var(--button-hover-color);
+        }
+        
+        #homeButton {
+            background-color: var(--home-button-color);
+        }
+        #homeButton:hover {
+            background-color: var(--home-button-hover-color);
+        }
+        
+        #downloadPdfButton {
+            background-color: var(--secondary-color);
+        }
+        #downloadPdfButton:hover {
+            background-color: var(--button-success-color);
         }
 
         #result-content {
@@ -191,7 +211,7 @@
             z-index: 3;
         }
 
-        /* 크기 버그 해결을 위해 놓친 점의 크기 재정의 */
+        /* サイズのバグを修正するため、見逃した点のサイズを再定義 */
         .missed-point {
             position: absolute;
             width: 8px;
@@ -327,48 +347,55 @@
         <div id="fixation-point"></div>
         <div id="fixation-cross"></div>
         <div id="test-point"></div>
-        <div id="counter">남은 점: 10</div>
+        <div id="counter">残り点数: 10</div>
         
         <div id="start-screen">
-            <h1>간이 시야검사 앱</h1>
-            <p><strong>주의: 이 앱은 기존의 시야검사를 극도로 단순화한 것으로 정식 안과 검사를 대체할 수 없습니다.</strong><br>
-            진행성 질환으로 매일 시야를 조금씩 잃는 사람들이 집에서 간단히 시야의 변화를 체크할 수 있도록 고안되었습니다.<br>
-            항상 같은 환경에서 검사해 주세요. 모바일 기기에서의 사용은 권하지 않습니다.<br>
+            <a href="/ja/" class="logo-link">
+                <img src="/assets/images/logo.png" 
+                alt="ホームページへ" 
+                class="logo-link" 
+                style="width: 120px; height: auto;">
+            </a>
+            <h1>簡易視野検査アプリ</h1>
+            <p><strong>注意: このアプリは、既存の視野検査を非常に単純化したものであり、正式な眼科検査に代わるものではありません。</strong><br>
+            進行性の疾患により日々視野を少しずつ失っていく人々が、自宅で簡単に視野の変化をチェックできるように考案されました。<br>
+            検査は常に同じ環境で行ってください。モバイル端末での使用は推奨しません。<br>
                 
-            중앙의 검은 점과 십자를 계속 바라보세요.<br>
-            빨간 점이 보이면 화면 하단의 '클릭!' 버튼을 바로 눌러주세요.</p>
+            中央の黒い点と十字をずっと見つめてください。<br>
+            赤い点が見えたら、画面下部の「クリック！」ボタンをすぐに押してください。</p>
             
-            <h3>검사 점 크기 선택</h3>
+            <h3>検査点のサイズを選択</h3>
             <div id="size-options">
-                <button class="option-button" data-size="15">기본</button>
-                <button class="option-button" data-size="25">크게</button>
-                <button class="option-button" data-size="35">더 크게</button>
+                <button class="option-button" data-size="15">基本</button>
+                <button class="option-button" data-size="25">大きく</button>
+                <button class="option-button" data-size="35">さらに大きく</button>
             </div>
             
-            <h3 style="margin-top: 20px;">검사 점 개수 선택</h3>
-            <p style="color: #666; font-size: 14px; margin-top: 0;">점 개수가 많을수록 정확도가 높아집니다.</p>
+            <h3 style="margin-top: 20px;">検査点の数を選択</h3>
+            <p style="color: #666; font-size: 14px; margin-top: 0;">点の数が多いほど精度が高くなります。</p>
             <div id="count-options">
-                <button class="option-button" data-count="10">10개</button>
-                <button class="option-button" data-count="20">20개</button>
-                <button class="option-button" data-count="40">40개</button>
+                <button class="option-button" data-count="10">10個</button>
+                <button class="option-button" data-count="20">20個</button>
+                <button class="option-button" data-count="40">40個</button>
             </div>
             
-            <button id="startButton" class="styled-button" disabled>검사 시작</button>
-            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">점 크기와 개수를 선택해주세요.</p>
+            <button id="startButton" class="styled-button" disabled>検査開始</button>
+            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">点のサイズと数を選択してください。</p>
         </div>
         
         <div id="result-screen" class="hidden">
             <div id="result-content">
-                <h2>검사 결과 리포트</h2>
+                <h2>検査結果レポート</h2>
                 <p id="test-date"></p>
                 <div id="report-legend"></div> 
                 <div id="report-summary"></div>
                 <div id="result-points-container"></div>
             </div>
-            <button id="downloadPdfButton" class="styled-button">결과 PDF로 다운로드</button>
-            <button id="restartButton" class="styled-button">다시 하기</button>
+            <button id="downloadPdfButton" class="styled-button">結果をPDFでダウンロード</button>
+            <button id="restartButton" class="styled-button">やり直す</button>
+            <button id="homeButton" class="styled-button">ホームに戻る</button>
         </div>
-        <button id="response-button">클릭!</button>
+        <button id="response-button">クリック！</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -387,6 +414,7 @@
             const resultPointsContainer = document.getElementById('result-points-container');
             const downloadPdfButton = document.getElementById('downloadPdfButton');
             const restartButton = document.getElementById('restartButton');
+            const homeButton = document.getElementById('homeButton');
             const counter = document.getElementById('counter');
             const reportSummary = document.getElementById('report-summary');
             const testDateElement = document.getElementById('test-date');
@@ -432,10 +460,10 @@
             function checkStartButtonState() {
                 if (selectedPointSize > 0 && selectedPointCount > 0) {
                     startButton.disabled = false;
-                    message.textContent = '준비되면 검사 시작 버튼을 눌러주세요.';
+                    message.textContent = '準備ができたら「検査開始」ボタンを押してください。';
                 } else {
                     startButton.disabled = true;
-                    message.textContent = '점 크기와 개수를 선택해주세요.';
+                    message.textContent = '点のサイズと数を選択してください。';
                 }
             }
 
@@ -497,7 +525,7 @@
             });
 
             function updateCounter() {
-                counter.textContent = `남은 점: ${TOTAL_POINTS - pointCount}`;
+                counter.textContent = `残り点数: ${TOTAL_POINTS - pointCount}`;
             }
         
             function showTestPoint() {
@@ -540,7 +568,7 @@
                         
                         const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
                         
-                        // 놓친 점의 최종 위치와 궤적을 객체로 저장
+                        // 見逃した点の最終位置と軌跡をオブジェクトとして保存
                         pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
                         allPointsPaths.push(currentPointPath);
                         
@@ -592,29 +620,29 @@
                 resultPointsContainer.innerHTML = '';
                 
                 const today = new Date();
-                const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-                testDateElement.textContent = `검사일자: ${formattedDate}`;
+                const formattedDate = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+                testDateElement.textContent = `検査日: ${formattedDate}`;
 
                 const summaryHtml = `
-                    <h3>검사 요약</h3>
-                    <p>총 검사점 수: ${TOTAL_POINTS}개</p>
-                    <p style="color: black;">포착된 점: ${pointsFound.length}개</p>
-                    <p style="color: red;">놓친 점: ${pointsMissed.length}개</p>
+                    <h3>検査概要</h3>
+                    <p>総検査点数: ${TOTAL_POINTS}個</p>
+                    <p style="color: black;">検出された点: ${pointsFound.length}個</p>
+                    <p style="color: red;">見逃した点: ${pointsMissed.length}個</p>
                 `;
                 reportSummary.innerHTML = summaryHtml;
 
                 const legendHtml = `
                     <div class="legend-item">
                         <div class="point-color found"></div>
-                        <span>포착된 점 (보이는 부분)</span>
+                        <span>検出された点 (見える部分)</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color path-legend-found"></div>
-                        <span>포착된 점의 궤적 (안 보이는 부분)</span>
+                        <span>検出された点の軌跡 (見えない部分)</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color missed"></div>
-                        <span>놓친 점의 궤적 (안 보이는 부분)</span>
+                        <span>見逃した点の軌跡 (見えない部分)</span>
                     </div>
                 
                 `;
@@ -657,7 +685,7 @@
                     return { x: mappedX, y: mappedY };
                 }
 
-                // 포착된 점의 궤적 그리기
+                // 検出された点の軌跡を描画
                 allPointsPaths.forEach((path, index) => {
                     if (path.length > 0) {
                         const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
@@ -675,7 +703,7 @@
                     }
                 });
 
-                // 포착된 점의 최종 위치에 검은 점 그리기
+                // 検出された点の最終位置に黒い点を描画
                 pointsFound.forEach(point => {
                     const mapped = mapToContainer(point, containerWidth, containerHeight);
                     if (mapped) {
@@ -687,7 +715,7 @@
                     }
                 });
 
-                // 놓친 점의 최종 위치에 빨간 점 그리기
+                // 見逃した点の最終位置に赤い点を描画
                 pointsMissed.forEach(item => {
                     const mapped = mapToContainer(item.point, containerWidth, containerHeight);
                     if (mapped) {
@@ -704,10 +732,15 @@
                 resultScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
                 startButton.disabled = true;
-                message.textContent = '점 크기와 개수를 선택해주세요.';
+                message.textContent = '点のサイズと数を選択してください。';
                 document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
                 selectedPointSize = 0;
                 selectedPointCount = 0;
+            });
+            
+            // 「ホームに戻る」ボタンのクリックイベントハンドラを追加
+            homeButton.addEventListener('click', () => {
+                window.location.href = '/ja/';
             });
 
             downloadPdfButton.addEventListener('click', async () => {
@@ -724,7 +757,7 @@
                 const y = 10;
                 
                 pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-                pdf.save('시야검사_결과.pdf');
+                pdf.save('視野検査_結果.pdf');
             });
         });
     </script>

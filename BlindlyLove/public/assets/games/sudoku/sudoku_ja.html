@@ -3,763 +3,868 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>簡易視野検査アプリ (スクリーニング用)</title>
-    
+    <title>楽しい数独 | Blindly Love, あなたのウェルネスガイド</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #007BFF;
-            --secondary-color: #4CAF50;
-            --accent-color: #f0f0f0;
-            --background-color: #f0f0f0;
-            --text-color: #333;
-            --border-color: #ccc;
-            --button-hover-color: #0056b3;
-            --button-success-color: #45a049;
-            --home-button-color: #6c757d;
-            --home-button-hover-color: #5a6268;
-        }
-
-        body, html {
+        body {
+            font-family: 'Jua', sans-serif;
+            display: flex;
+            /* justify-content: center; 削除 - スペースはコンテナのflex-growとmargin-bottomで調整 */
+            align-items: center; /* 水平方向の中央揃えを維持 */
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--background-color);
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        #container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        #fixation-point {
-            width: 15px;
-            height: 15px;
-            background-color: black;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            display: none;
-        }
-        #fixation-cross {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 30px;
-            height: 30px;
-            transform: translate(-50%, -50%);
-            z-index: 11;
-            display: none;
-        }
-        #fixation-cross::before,
-        #fixation-cross::after {
-            content: "";
-            position: absolute;
-            background-color: black;
-        }
-        #fixation-cross::before {
-            width: 2px;
-            height: 30px;
-            left: 50%;
-            top: 0;
-            transform: translateX(-50%);
-        }
-        #fixation-cross::after {
-            width: 30px;
-            height: 2px;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-        }
-        
-        #test-point {
-            background-color: red;
-            border-radius: 50%;
-            position: absolute;
-            z-index: 5;
-            display: none;
-        }
-        
-        #response-button {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 30px;
-            font-size: 20px;
-            cursor: pointer;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 15;
-            display: none;
-            transition: background-color 0.3s;
-        }
-        #response-button:hover {
-            background-color: var(--button-success-color);
+            overflow-x: hidden; /* 水平方向のスクロールを防止 */
+            overflow-y: auto;   /* 必要に応じて垂直方向のスクロールを許可 */
+            color: #333;
+            flex-direction: column;
+            /* bodyのmargin-bottom: auto; はここでは効果がないため削除 */
         }
 
-        .hidden { display: none !important; }
-        
-        #start-screen, #result-screen {
+        /* --- チュートリアルポップアップのスタイル --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #intro-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-box {
+            background-color: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             text-align: center;
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            max-width: 600px;
+            width: 80%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-y: auto;
-            max-height: 90vh;
+            justify-content: space-between;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            animation: fadeInScale 0.5s forwards;
         }
 
-        /* 共通のボタン スタイル */
-        .styled-button {
-            padding: 15px 30px;
-            font-size: 20px;
-            cursor: pointer;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color 0.3s, transform 0.1s;
+        @keyframes fadeInScale {
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
-        .styled-button:not(:disabled):hover {
+
+        .intro-box h2 {
+            color: #4a90e2;
+            font-size: 2em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .intro-box p, .intro-box li {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .intro-box ul, .intro-box ol {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            text-align: left;
+            counter-reset: item; /* OLの番号付けの修正 */
+        }
+
+        .intro-box li {
+            padding-left: 1.8em;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .intro-box ul li:before {
+            content: '•';
+            color: #4a90e2;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.2em;
+            margin-left: -1.8em;
+            position: absolute;
+        }
+
+        .intro-box ol li:before {
+            content: counter(item) ".";
+            counter-increment: item;
+            color: #4a90e2;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.5em;
+            margin-left: -1.8em;
+            position: absolute;
+            text-align: right;
+        }
+
+        .intro-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .intro-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-family: 'Jua', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro-buttons button.next-btn {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .intro-buttons button.next-btn:hover {
+            background-color: #357ABD;
             transform: translateY(-2px);
         }
 
-        #startButton {
-            background-color: var(--primary-color);
+        .intro-buttons button.start-btn {
+            background-color: #28a745;
             color: white;
-            margin-top: 20px;
-        }
-        #startButton:disabled {
-            background-color: var(--border-color);
-            cursor: not-allowed;
-            transform: none;
-        }
-        #startButton:not(:disabled):hover {
-            background-color: var(--button-hover-color);
-        }
-
-        #downloadPdfButton, #restartButton, #homeButton {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-top: 15px;
-        }
-        
-        #restartButton {
-            background-color: var(--primary-color);
-        }
-        #restartButton:hover {
-            background-color: var(--button-hover-color);
-        }
-        
-        #homeButton {
-            background-color: var(--home-button-color);
-        }
-        #homeButton:hover {
-            background-color: var(--home-button-hover-color);
-        }
-        
-        #downloadPdfButton {
-            background-color: var(--secondary-color);
-        }
-        #downloadPdfButton:hover {
-            background-color: var(--button-success-color);
-        }
-
-        #result-content {
-            width: 100%;
-        }
-
-        #result-points-container {
-            position: relative;
-            border: 2px solid var(--border-color);
-            margin: 20px auto;
-            background-color: white;
-            flex-shrink: 0;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        
-        .result-point {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: black;
-            border-radius: 50%;
-            z-index: 3;
-        }
-
-        /* サイズのバグを修正するため、見逃した点のサイズを再定義 */
-        .missed-point {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: red;
-            border-radius: 50%;
-            z-index: 3;
-        }
-        
-        .path-point {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background-color: rgba(150, 150, 150, 0.7);
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        .path-point.missed-path {
-            background-color: rgba(255, 0, 0, 0.7);
-        }
-
-        .result-cross {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-        }
-        .result-cross::before,
-        .result-cross::after {
-            content: "";
-            position: absolute;
-            background-color: black;
-        }
-        .result-cross::before {
-            width: 2px;
-            height: 30px;
-            left: 50%;
-            top: 0;
-            transform: translateX(-50%);
-        }
-        .result-cross::after {
-            width: 30px;
-            height: 2px;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-        }
-
-        #counter {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--text-color);
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 10px 15px;
-            border-radius: 5px;
-            z-index: 20;
             display: none;
         }
 
-        #report-summary {
-            text-align: left;
-            width: 100%;
-            margin-top: 10px;
+        .intro-buttons button.start-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
 
-        #report-summary h3 {
-            margin-bottom: 5px;
-        }
-
-        #size-options, #count-options {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .option-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            background-color: var(--accent-color);
-            transition: background-color 0.2s, color 0.2s;
-        }
-        .option-button.selected {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        #report-legend {
+        /* --- 既存のゲームUIスタイル --- */
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            flex-grow: 1; /* 残りのスペースを埋めてコンテンツを上に押し上げ、下余白を確保する */
+            margin-top: 30px;
+            margin-bottom: 30px; /* 目的の下余白 */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 90%; /* 大きくなりすぎないように最大幅を設定 */
+            transition: all 0.5s ease-in-out;
+            position: relative;
+            
+            /* 内部コンテンツを垂直/水平方向に中央揃え */
             display: flex;
             flex-direction: column;
-            flex-wrap: wrap;
+            justify-content: center;
             align-items: center;
-            gap: 10px 30px;
+        }
+        
+        /* コンテナが display: none の場合、flexプロパティが適用されないようにする */
+        /* JSでbodyに.game-activeクラスを追加して、これらのスタイルを有効にする。 */
+        body:not(.game-active) .container {
+             display: none;
+        }
+        body.game-active .container {
+            display: flex; /* ゲームがアクティブな場合はflexに変更 */
+        }
+
+
+        h1 {
+            color: #4a90e2;
             margin-bottom: 20px;
-            height: 80px; 
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
-        .legend-item {
+
+        .controls {
+            margin-bottom: 25px;
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .controls label {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .controls select, .controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls select {
+            background-color: #e0f2f7;
+            border: 1px solid #b3e0ed;
+            color: #333;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%234a90e2%22%20d%3D%22M2%200L0%202h4zm0%205L0%203h4z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            padding-right: 30px;
+        }
+
+        .controls select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+        }
+
+        .controls button {
+            background-color: #4a90e2;
+            color: white;
+            font-weight: bold;
+        }
+
+        .controls button:hover {
+            background-color: #357ABD;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(9, 1fr);
+            width: 450px;
+            height: 450px;
+            border: 4px solid #4a90e2;
+            margin: 0 auto 30px;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 5px;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            box-sizing: border-box;
+            background-color: #fff;
+            transition: background-color 0.2s ease;
         }
-        .legend-item .point-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+
+       
+        .cell input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    border: none;
+    font-size: 1.8em; /* 현재 폰트 사이즈 유지 */
+    font-weight: bold;
+    color: #2c3e50; /* 숫자 색상 */
+    background-color: transparent; /* 배경 투명 유지 */
+    box-sizing: border-box;
+    -moz-appearance: textfield; /* Firefox */
+    -webkit-appearance: none; /* iOS Safari 및 Chrome */
+    appearance: none; /* 표준 속성 */
+    margin: 0; /* 불필요한 마진 제거 */
+    padding: 0; /* 불필요한 패딩 제거 */
+    line-height: 1; /* 라인 높이 명시적으로 1로 설정하여 잘림 방지 */
+}
+
+/* 스핀 버튼 제거는 이미 잘 되어 있습니다. */
+.cell input::-webkit-outer-spin-button,
+.cell input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+        .cell.fixed {
+            background-color: #e9ecef;
+            color: #666;
+            font-weight: bold;
         }
-        .legend-item .point-color.found {
-            background-color: black;
+
+        /* --- 色表示CSS --- */
+        .cell.correct-answer input {
+            color: #28a745;
         }
-        .legend-item .point-color.missed {
-            background-color: red;
+
+        .cell.wrong-answer input {
+            color: #dc3545;
+            animation: shake 0.3s;
         }
-        .legend-item .point-color.path-legend-found {
-            background-color: rgba(150, 150, 150, 0.7);
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
         }
-        .legend-item .point-color.path-legend-missed {
-            background-color: rgba(255, 0, 0, 0.7);
+
+        /* 太い罫線 */
+        .cell:nth-child(3n) { border-right: 2px solid #777; }
+        .cell:nth-child(9n) { border-right: 4px solid #4a90e2; }
+        .cell:nth-child(n+1):nth-child(-n+9) { border-top: 4px solid #4a90e2; }
+        .cell:nth-child(n+73):nth-child(-n+81) { border-bottom: 4px solid #4a90e2; }
+
+        .cell:nth-child(n) { border-left: 1px solid #ddd; border-top: 1px solid #ddd; }
+        .cell:nth-child(9n+1) { border-left: 4px solid #4a90e2; }
+
+        /* 3x3ブロック罫線 */
+        .cell:nth-child(n + 19):nth-child(-n + 27),
+        .cell:nth-child(n + 46):nth-child(-n + 54) {
+            border-bottom: 2px solid #777;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #27ae60;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease-out;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #start-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            font-size: 8em;
+            font-weight: bold;
+            color: #4a90e2;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            animation: startFadeOut 2s forwards;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+            display: none;
+        }
+
+        @keyframes startFadeOut {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            70% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+        }
+
+        /* モバイルレスポンシブ (600px未満) */
+        @media (max-width: 600px) {
+            #sudoku-grid {
+                width: 350px; /* モバイル版数独グリッドのサイズを大きくする */
+                height: 350px;
+            }
+            .cell {
+                width: calc(350px / 9); /* グリッドサイズに合わせてセルサイズを調整 */
+                height: calc(350px / 9);
+                font-size: 1.5em; /* セル内のフォントサイズを少し大きくする */
+            }
+            .cell input {
+                font-size: 1.5em; /* 入力フィールドのフォントサイズを調整 */
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .controls select, .controls button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .controls {
+                gap: 10px;
+            }
+            #start-logo {
+                font-size: 4em;
+            }
+            .intro-box {
+                width: calc(100% - 40px);
+                max-width: 500px;
+                margin: 0 20px;
+            }
+            .container {
+                margin-bottom: 20px; /* モバイル版の下余白を調整 */
+            }
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <div id="fixation-point"></div>
-        <div id="fixation-cross"></div>
-        <div id="test-point"></div>
-        <div id="counter">残り点数: 10</div>
-        
-        <div id="start-screen">
-            <a href="/ko/" class="logo-link">
-                <img src="/assets/images/logo.png" 
-                alt="ホームページへ" 
-                class="logo-link" 
-                style="width: 120px; height: auto;">
-            </a>
-            <h1>簡易視野検査アプリ</h1>
-            <p><strong>注意: このアプリは、既存の視野検査を非常に単純化したものであり、正式な眼科検査に代わるものではありません。</strong><br>
-            進行性の疾患により日々視野を少しずつ失っていく人々が、自宅で簡単に視野の変化をチェックできるように考案されました。<br>
-            検査は常に同じ環境で行ってください。モバイル端末での使用は推奨しません。<br>
-                
-            中央の黒い点と十字をずっと見つめてください。<br>
-            赤い点が見えたら、画面下部の「クリック！」ボタンをすぐに押してください。</p>
-            
-            <h3>検査点のサイズを選択</h3>
-            <div id="size-options">
-                <button class="option-button" data-size="15">基本</button>
-                <button class="option-button" data-size="25">大きく</button>
-                <button class="option-button" data-size="35">さらに大きく</button>
+    <div id="intro-overlay">
+        <div class="intro-box">
+            <div id="intro-content">
+                </div>
+            <div class="intro-buttons">
+                <button class="next-btn">次へ</button>
+                <button class="start-btn">ゲーム開始</button>
             </div>
-            
-            <h3 style="margin-top: 20px;">検査点の数を選択</h3>
-            <p style="color: #666; font-size: 14px; margin-top: 0;">点の数が多いほど精度が高くなります。</p>
-            <div id="count-options">
-                <button class="option-button" data-count="10">10個</button>
-                <button class="option-button" data-count="20">20個</button>
-                <button class="option-button" data-count="40">40個</button>
-            </div>
-            
-            <button id="startButton" class="styled-button" disabled>検査開始</button>
-            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">点のサイズと数を選択してください。</p>
         </div>
-        
-        <div id="result-screen" class="hidden">
-            <div id="result-content">
-                <h2>検査結果レポート</h2>
-                <p id="test-date"></p>
-                <div id="report-legend"></div> 
-                <div id="report-summary"></div>
-                <div id="result-points-container"></div>
-            </div>
-            <button id="downloadPdfButton" class="styled-button">結果をPDFでダウンロード</button>
-            <button id="restartButton" class="styled-button">やり直す</button>
-            <button id="homeButton" class="styled-button">ホームに戻る</button>
-        </div>
-        <button id="response-button">クリック！</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <div id="start-logo">Start!</div>
+
+    <div class="container">
+        <a href="/ja/" class="logo-link">
+            <img src="/assets/images/logo.png" 
+            alt="홈페이지로 가기" 
+            class="logo-link" 
+            style="width: 120px; height: auto;">
+        </a>
+      <h1>楽しい数独</h1>
+        <div class="controls">
+            <label for="difficulty">難易度：</label>
+            <select id="difficulty">
+                <option value="easy">簡単</option>
+                <option value="medium">中</option>
+                <option value="hard">難しい</option>
+            </select>
+            <button id="new-game-btn">新しいゲーム</button>
+            <button id="check-btn">答えを確認</button>
+            <button id="solve-btn">答えを表示</button>
+        </div>
+        <div id="sudoku-grid"></div>
+        <div id="message" class="message"></div>
+    </div>
 
     <script>
+        const sudokuGrid = document.getElementById('sudoku-grid');
+        const difficultySelect = document.getElementById('difficulty');
+        const newGameBtn = document.getElementById('new-game-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const solveBtn = document.getElementById('solve-btn');
+        const messageDiv = document.getElementById('message');
+        const startLogo = document.getElementById('start-logo');
+        const introOverlay = document.getElementById('intro-overlay');
+        const introContent = document.getElementById('intro-content');
+        const nextBtn = introOverlay.querySelector('.next-btn');
+        const startIntroBtn = introOverlay.querySelector('.start-btn');
+        const gameContainer = document.querySelector('.container');
+        const bodyElement = document.body; // body要素を追加
+
+        let initialBoard = [];
+        let currentBoard = [];
+        let solutionBoard = [];
+        let currentIntroPage = 0;
+
+        const difficulties = {
+            easy: 35,
+            medium: 45,
+            hard: 55
+        };
+
+        const introPages = [
+            {
+                title: '🧩 数独のルール',
+                content: `
+                    <ol>
+                        <li>各行には、1から9までの数字が重複せずに入ります。</li>
+                        <li>各列には、1から9までの数字が重複せずに入ります。</li>
+                        <li>9つの3x3のブロック（太い線で区切られた部分）それぞれにも、1から9までの数字が重複せずに入ります。</li>
+                        <li>すべての空欄を埋めて、すべての条件を満たせばゲームクリアです！</li>
+                    </ol>
+                `
+            },
+            {
+                title: '🧠 数独のメリット',
+                content: `
+                    <ul>
+                        <li>集中力アップ：数字を分析し、空欄を埋めるために高い集中力が必要です。</li>
+                        <li>論理的思考力の向上：ルールに基づいて数字の位置を推論することで、論理的思考力が養われます。</li>
+                        <li>記憶力の向上：これまでに試した数字や可能性のあるケースを記憶しておく必要があります。</li>
+                        <li>問題解決能力の育成：複雑なパズルに取り組むことで、忍耐力と問題解決能力が強化されます。</li>
+                        <li>ストレス解消と認知機能維持：パズルに没頭することでストレスを忘れ、脳を活性化させて認知機能をサポートします。</li>
+                    </ul>
+                `
+            }
+        ];
+
+        // 初期画面設定（チュートリアルポップアップ表示、ゲーム非表示）
         document.addEventListener('DOMContentLoaded', () => {
-            const startButton = document.getElementById('startButton');
-            const startScreen = document.getElementById('start-screen');
-            const fixationPoint = document.getElementById('fixation-point');
-            const fixationCross = document.getElementById('fixation-cross');
-            const testPoint = document.getElementById('test-point');
-            const responseButton = document.getElementById('response-button');
-            const resultScreen = document.getElementById('result-screen');
-            const resultContent = document.getElementById('result-content');
-            const resultPointsContainer = document.getElementById('result-points-container');
-            const downloadPdfButton = document.getElementById('downloadPdfButton');
-            const restartButton = document.getElementById('restartButton');
-            const homeButton = document.getElementById('homeButton');
-            const counter = document.getElementById('counter');
-            const reportSummary = document.getElementById('report-summary');
-            const testDateElement = document.getElementById('test-date');
-            const sizeOptions = document.getElementById('size-options');
-            const countOptions = document.getElementById('count-options');
-            const message = document.getElementById('message');
-            const reportLegend = document.getElementById('report-legend');
-        
-            let pointsFound = [];
-            let pointsMissed = [];
-            let allPointsPaths = [];
-            let testRunning = false;
-            let pointCount = 0;
-            let TOTAL_POINTS = 0;
-            let currentPointPosition = null;
-            let moveIntervalId = null;
-            let currentPointPath = [];
-            
-            let selectedPointSize = 0;
-            let selectedPointCount = 0;
-            
-            let testViewportWidth = 0;
-            let testViewportHeight = 0;
-            
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            function playBeep() {
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-
-                oscillator.type = 'sine';
-                oscillator.frequency.value = 440;
-                gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
-                
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                
-                oscillator.start(audioCtx.currentTime);
-                oscillator.stop(audioCtx.currentTime + 0.1);
-            }
-
-            function checkStartButtonState() {
-                if (selectedPointSize > 0 && selectedPointCount > 0) {
-                    startButton.disabled = false;
-                    message.textContent = '準備ができたら「検査開始」ボタンを押してください。';
-                } else {
-                    startButton.disabled = true;
-                    message.textContent = '点のサイズと数を選択してください。';
-                }
-            }
-
-            sizeOptions.addEventListener('click', (e) => {
-                const selectedButton = e.target.closest('.option-button');
-                if (!selectedButton) return;
-                document.querySelectorAll('#size-options .option-button').forEach(btn => btn.classList.remove('selected'));
-                selectedButton.classList.add('selected');
-                selectedPointSize = parseInt(selectedButton.dataset.size);
-                checkStartButtonState();
-            });
-
-            countOptions.addEventListener('click', (e) => {
-                const selectedButton = e.target.closest('.option-button');
-                if (!selectedButton) return;
-                document.querySelectorAll('#count-options .option-button').forEach(btn => btn.classList.remove('selected'));
-                selectedButton.classList.add('selected');
-                selectedPointCount = parseInt(selectedButton.dataset.count);
-                checkStartButtonState();
-            });
-
-            startButton.addEventListener('click', () => {
-                startScreen.classList.add('hidden');
-                fixationPoint.style.display = 'block';
-                fixationCross.style.display = 'block';
-                responseButton.style.display = 'block';
-                counter.style.display = 'block';
-                testRunning = true;
-                pointCount = 0;
-                pointsFound = [];
-                pointsMissed = [];
-                allPointsPaths = [];
-                TOTAL_POINTS = selectedPointCount;
-                testPoint.style.width = `${selectedPointSize}px`;
-                testPoint.style.height = `${selectedPointSize}px`;
-                testViewportWidth = window.innerWidth;
-                testViewportHeight = window.innerHeight;
-                updateCounter();
-                setTimeout(runTest, 1000);
-            });
-        
-            responseButton.addEventListener('click', () => {
-                if (!testRunning || !currentPointPosition) return;
-                
-                playBeep();
-                
-                clearInterval(moveIntervalId);
-                pointsFound.push(currentPointPosition);
-                allPointsPaths.push(currentPointPath);
-                hideTestPoint();
-                pointCount++;
-                updateCounter();
-                
-                if (pointCount < TOTAL_POINTS) {
-                    setTimeout(runTest, 1000);
-                } else {
-                    endTest();
-                }
-            });
-
-            function updateCounter() {
-                counter.textContent = `残り点数: ${TOTAL_POINTS - pointCount}`;
-            }
-        
-            function showTestPoint() {
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
-                const minBoundary = 100;
-                const maxBoundaryX = viewportWidth - 100;
-                const maxBoundaryY = viewportHeight - 100;
-
-                let currentX = Math.random() * (maxBoundaryX - minBoundary) + minBoundary;
-                let currentY = Math.random() * (maxBoundaryY - minBoundary) + minBoundary;
-                
-                testPoint.style.left = `${currentX}px`;
-                testPoint.style.top = `${currentY}px`;
-                testPoint.style.display = 'block';
-                
-                currentPointPosition = null;
-                currentPointPath = [];
-                
-                const moveDuration = 4000;
-                const moveSpeed = 10;
-                let elapsed = 0;
-                
-                const maxPathDistance = 150;
-                const angle = Math.random() * 2 * Math.PI;
-                const distance = Math.random() * maxPathDistance;
-                
-                let endX = currentX + distance * Math.cos(angle);
-                let endY = currentY + distance * Math.sin(angle);
-                
-                endX = Math.max(minBoundary, Math.min(maxBoundaryX, endX));
-                endY = Math.max(minBoundary, Math.min(maxBoundaryY, endY));
-
-                moveIntervalId = setInterval(() => {
-                    elapsed += moveSpeed;
-                    const progress = elapsed / moveDuration;
-
-                    if (progress > 1) {
-                        clearInterval(moveIntervalId);
-                        
-                        const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
-                        
-                        // 見逃した点の最終位置と軌跡をオブジェクトとして保存
-                        pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
-                        allPointsPaths.push(currentPointPath);
-                        
-                        hideTestPoint();
-                        pointCount++;
-                        updateCounter();
-
-                        if (pointCount < TOTAL_POINTS) {
-                            setTimeout(runTest, 1000);
-                        } else {
-                            endTest();
-                        }
-                    } else {
-                        currentX = currentX + (endX - currentX) * (moveSpeed / (moveDuration - elapsed));
-                        currentY = currentY + (endY - currentY) * (moveSpeed / (moveDuration - elapsed));
-
-                        testPoint.style.left = `${currentX}px`;
-                        testPoint.style.top = `${currentY}px`;
-                        
-                        currentPointPath.push({ x: currentX, y: currentY });
-                        currentPointPosition = { x: currentX, y: currentY };
-                    }
-                }, moveSpeed);
-            }
-            
-            function hideTestPoint() {
-                testPoint.style.display = 'none';
-                currentPointPosition = null;
-            }
-
-            function runTest() {
-                if (pointCount >= TOTAL_POINTS) return;
-                showTestPoint();
-            }
-        
-            function endTest() {
-                testRunning = false;
-                responseButton.style.display = 'none';
-                fixationPoint.style.display = 'none';
-                fixationCross.style.display = 'none';
-                hideTestPoint();
-                counter.style.display = 'none';
-                
-                resultScreen.classList.remove('hidden');
-                displayResultPoints();
-            }
-        
-            function displayResultPoints() {
-                resultPointsContainer.innerHTML = '';
-                
-                const today = new Date();
-                const formattedDate = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
-                testDateElement.textContent = `検査日: ${formattedDate}`;
-
-                const summaryHtml = `
-                    <h3>検査概要</h3>
-                    <p>総検査点数: ${TOTAL_POINTS}個</p>
-                    <p style="color: black;">検出された点: ${pointsFound.length}個</p>
-                    <p style="color: red;">見逃した点: ${pointsMissed.length}個</p>
-                `;
-                reportSummary.innerHTML = summaryHtml;
-
-                const legendHtml = `
-                    <div class="legend-item">
-                        <div class="point-color found"></div>
-                        <span>検出された点 (見える部分)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="point-color path-legend-found"></div>
-                        <span>検出された点の軌跡 (見えない部分)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="point-color missed"></div>
-                        <span>見逃した点の軌跡 (見えない部分)</span>
-                    </div>
-                
-                `;
-                reportLegend.innerHTML = legendHtml;
-
-                const ratio = testViewportWidth / testViewportHeight;
-                const maxResultContentWidth = 600;
-                const maxResultContentHeight = window.innerHeight * 0.7;
-
-                let containerWidth, containerHeight;
-                if (ratio > 1) {
-                    containerWidth = maxResultContentWidth;
-                    containerHeight = containerWidth / ratio;
-                    if (containerHeight > maxResultContentHeight) {
-                        containerHeight = maxResultContentHeight;
-                        containerWidth = containerHeight * ratio;
-                    }
-                } else {
-                    containerHeight = maxResultContentHeight;
-                    containerWidth = containerHeight * ratio;
-                    if (containerWidth > maxResultContentWidth) {
-                        containerWidth = maxResultContentWidth;
-                        containerHeight = maxResultContentWidth / ratio;
-                    }
-                }
-                
-                resultPointsContainer.style.width = `${containerWidth}px`;
-                resultPointsContainer.style.height = `${containerHeight}px`;
-                
-                const resultCross = document.createElement('div');
-                resultCross.className = 'result-cross';
-                resultPointsContainer.appendChild(resultCross);
-
-                function mapToContainer(point, containerWidth, containerHeight) {
-                    if (!point || typeof point.x !== 'number' || typeof point.y !== 'number' || isNaN(point.x) || isNaN(point.y)) {
-                        return null;
-                    }
-                    const mappedX = (point.x / (testViewportWidth || 1)) * containerWidth;
-                    const mappedY = (point.y / (testViewportHeight || 1)) * containerHeight;
-                    return { x: mappedX, y: mappedY };
-                }
-
-                // 検出された点の軌跡を描画
-                allPointsPaths.forEach((path, index) => {
-                    if (path.length > 0) {
-                        const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
-                        const pathClass = isMissedPath ? 'path-point missed-path' : 'path-point';
-                        path.forEach(point => {
-                            const mapped = mapToContainer(point, containerWidth, containerHeight);
-                            if (mapped) {
-                                const pathPoint = document.createElement('div');
-                                pathPoint.className = pathClass;
-                                pathPoint.style.left = `${mapped.x}px`;
-                                pathPoint.style.top = `${mapped.y}px`;
-                                resultPointsContainer.appendChild(pathPoint);
-                            }
-                        });
-                    }
-                });
-
-                // 検出された点の最終位置に黒い点を描画
-                pointsFound.forEach(point => {
-                    const mapped = mapToContainer(point, containerWidth, containerHeight);
-                    if (mapped) {
-                        const resultPoint = document.createElement('div');
-                        resultPoint.className = 'result-point';
-                        resultPoint.style.left = `${mapped.x}px`;
-                        resultPoint.style.top = `${mapped.y}px`;
-                        resultPointsContainer.appendChild(resultPoint);
-                    }
-                });
-
-                // 見逃した点の最終位置に赤い点を描画
-                pointsMissed.forEach(item => {
-                    const mapped = mapToContainer(item.point, containerWidth, containerHeight);
-                    if (mapped) {
-                        const missedPoint = document.createElement('div');
-                        missedPoint.className = 'missed-point';
-                        missedPoint.style.left = `${mapped.x}px`;
-                        missedPoint.style.top = `${mapped.y}px`;
-                        resultPointsContainer.appendChild(missedPoint);
-                    }
-                });
-            }
-        
-            restartButton.addEventListener('click', () => {
-                resultScreen.classList.add('hidden');
-                startScreen.classList.remove('hidden');
-                startButton.disabled = true;
-                message.textContent = '点のサイズと数を選択してください。';
-                document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
-                selectedPointSize = 0;
-                selectedPointCount = 0;
-            });
-            
-            // 「ホームに戻る」ボタンのクリックイベントハンドラを追加
-            homeButton.addEventListener('click', () => {
-                window.location.href = '/ko/';
-            });
-
-            downloadPdfButton.addEventListener('click', async () => {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const captureTarget = resultContent;
-                const canvas = await html2canvas(captureTarget, { scale: 2 });
-                const imgData = canvas.toDataURL('image/png');
-
-                const imgWidth = 180;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
-                const y = 10;
-                
-                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-                pdf.save('視野検査_結果.pdf');
-            });
+            renderIntroPage(currentIntroPage);
+            gameContainer.style.display = 'none';
+            startLogo.style.display = 'none';
+            // 最初はbodyにgame-activeクラスがないことを確認
+            bodyElement.classList.remove('game-active');
         });
+
+        // チュートリアルページのレンダリング
+        function renderIntroPage(pageIndex) {
+            const page = introPages[pageIndex];
+            introContent.innerHTML = `<h2>${page.title}</h2>${page.content}`;
+
+            if (pageIndex === introPages.length - 1) {
+                nextBtn.style.display = 'none';
+                startIntroBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                startIntroBtn.style.display = 'none';
+            }
+        }
+
+        // 次のチュートリアルページへ進む
+        nextBtn.addEventListener('click', () => {
+            currentIntroPage++;
+            if (currentIntroPage < introPages.length) {
+                renderIntroPage(currentIntroPage);
+            }
+        });
+
+        // ゲーム開始（チュートリアル終了後）
+        startIntroBtn.addEventListener('click', () => {
+            introOverlay.classList.add('fade-out');
+            introOverlay.addEventListener('transitionend', () => {
+                introOverlay.style.display = 'none';
+                showStartLogoAndGame();
+            }, { once: true });
+        });
+
+        // 「Start!」ロゴを表示してゲームを開始
+        function showStartLogoAndGame() {
+            startLogo.style.display = 'block';
+            setTimeout(() => {
+                startLogo.style.animation = 'startFadeOut 2s forwards';
+                startLogo.addEventListener('animationend', () => {
+                    startLogo.style.display = 'none';
+                    // ゲームコンテナを表示する前にbodyにgame-activeクラスを追加
+                    bodyElement.classList.add('game-active'); 
+                    gameContainer.style.display = 'flex'; // CSSでflexに変更されているため、ここもflexに
+                    generateGame();
+                }, { once: true });
+            }, 500);
+        }
+
+
+        // 空の数独グリッドを作成する関数
+        function createEmptyGrid() {
+            sudokuGrid.innerHTML = '';
+            for (let i = 0; i < 81; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '1';
+                input.max = '9';
+                input.maxLength = '1';
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length > e.target.maxLength) {
+                        e.target.value = e.target.value.slice(0, e.target.maxLength);
+                    }
+                    const val = parseInt(e.target.value);
+                    if (isNaN(val) || val < 1 || val > 9) {
+                        e.target.value = '';
+                        currentBoard[i] = 0;
+                    } else {
+                        currentBoard[i] = val;
+                    }
+                    cell.classList.remove('correct-answer', 'wrong-answer');
+                });
+                // Enterキーと矢印キーで次のセルに移動
+                input.addEventListener('keydown', (e) => {
+                    const currentIndex = i;
+                    let nextIndex = -1;
+
+                    if (e.key === 'Enter' || e.key === 'ArrowRight') {
+                        nextIndex = currentIndex + 1;
+                    } else if (e.key === 'ArrowLeft') {
+                        nextIndex = currentIndex - 1;
+                    } else if (e.key === 'ArrowDown') {
+                        nextIndex = currentIndex + 9;
+                    } else if (e.key === 'ArrowUp') {
+                        nextIndex = currentIndex - 9;
+                    }
+
+                    if (nextIndex >= 0 && nextIndex < 81) {
+                        let targetInput = null;
+                        if (e.key === 'Enter' || e.key === 'ArrowRight') {
+                            for (let k = nextIndex; k < 81; k++) {
+                                const potentialInput = sudokuGrid.children[k]?.querySelector('input');
+                                if (potentialInput && !potentialInput.readOnly) {
+                                    targetInput = potentialInput;
+                                    break;
+                                }
+                            }
+                        } else if (e.key === 'ArrowLeft') {
+                            for (let k = nextIndex; k >= 0; k--) {
+                                const potentialInput = sudokuGrid.children[k]?.querySelector('input');
+                                if (potentialInput && !potentialInput.readOnly) {
+                                    targetInput = potentialInput;
+                                    break;
+                                }
+                            }
+                        } else {
+                            targetInput = sudokuGrid.children[nextIndex]?.querySelector('input');
+                        }
+
+                        if (targetInput) {
+                            targetInput.focus();
+                            e.preventDefault();
+                        }
+                    }
+                });
+                cell.appendChild(input);
+                sudokuGrid.appendChild(cell);
+            }
+        }
+
+        // ボードを初期化して表示
+        function renderBoard(board) {
+            const cells = sudokuGrid.children;
+            for (let i = 0; i < 81; i++) {
+                const input = cells[i].querySelector('input');
+                cells[i].classList.remove('fixed', 'correct-answer', 'wrong-answer');
+                if (board[i] !== 0) {
+                    input.value = board[i];
+                    input.readOnly = true;
+                    cells[i].classList.add('fixed');
+                } else {
+                    input.value = '';
+                    input.readOnly = false;
+                }
+            }
+        }
+
+        // 数独パズルを生成（バックトラック）
+        function generateSudoku() {
+            let board = Array(81).fill(0);
+
+            function fillBoard(grid) {
+                for (let i = 0; i < 81; i++) {
+                    if (grid[i] === 0) {
+                        const row = Math.floor(i / 9);
+                        const col = i % 9;
+                        const numbers = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+                        for (let num of numbers) {
+                            if (isValid(grid, row, col, num)) {
+                                grid[i] = num;
+                                if (fillBoard(grid)) {
+                                    return true;
+                                }
+                                grid[i] = 0;
+                            }
+                        }
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            fillBoard(board);
+            solutionBoard = [...board];
+
+            let cellsToRemove = difficulties[difficultySelect.value];
+            let currentPuzzle = [...board];
+
+            let attempts = 0;
+            while (cellsToRemove > 0 && attempts < 500) {
+                const index = Math.floor(Math.random() * 81);
+
+                if (currentPuzzle[index] !== 0) {
+                    const originalValue = currentPuzzle[index];
+                    currentPuzzle[index] = 0;
+
+                    let solutionsFound = 0;
+                    let tempSolverBoard = [...currentPuzzle];
+
+                    function countSolutions(gridToCheck) {
+                        if (solutionsFound > 1) return true;
+
+                        for (let i = 0; i < 81; i++) {
+                            if (gridToCheck[i] === 0) {
+                                for (let num = 1; num <= 9; num++) {
+                                    if (isValid(gridToCheck, Math.floor(i / 9), i % 9, num)) {
+                                        gridToCheck[i] = num;
+                                        if (countSolutions(gridToCheck)) {
+                                            if (solutionsFound > 1) return true;
+                                        }
+                                        gridToCheck[i] = 0;
+                                    }
+                                }
+                                return false;
+                            }
+                        }
+                        solutionsFound++;
+                        return false;
+                    }
+
+                    countSolutions(tempSolverBoard);
+
+                    if (solutionsFound === 1) {
+                        cellsToRemove--;
+                    } else {
+                        currentPuzzle[index] = originalValue;
+                    }
+                }
+                attempts++;
+            }
+
+            initialBoard = [...currentPuzzle];
+            currentBoard = [...currentPuzzle];
+        }
+
+        // 特定の位置に数字を配置できるかチェック
+        function isValid(board, row, col, num) {
+            for (let c = 0; c < 9; c++) {
+                if (board[row * 9 + c] === num) {
+                    return false;
+                }
+            }
+            for (let r = 0; r < 9; r++) {
+                if (board[r * 9 + col] === num) {
+                    return false;
+                }
+            }
+            const startRow = Math.floor(row / 3) * 3;
+            const startCol = Math.floor(col / 3) * 3;
+            for (let r = 0; r < 3; r++) {
+                for (let c = 0; c < 3; c++) {
+                    if (board[(startRow + r) * 9 + (startCol + c)] === num) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // 配列をシャッフル（フィッシャー-イェーツアルゴリズム）
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 新しいゲームを生成
+        function generateGame() {
+            hideMessage();
+            createEmptyGrid();
+            generateSudoku();
+            renderBoard(initialBoard);
+        }
+
+        // 答えを確認
+        function checkSolution() {
+            let correct = true;
+            const cells = sudokuGrid.children;
+            for (let i = 0; i < 81; i++) {
+                const input = cells[i].querySelector('input');
+                cells[i].classList.remove('correct-answer', 'wrong-answer');
+
+                if (cells[i].classList.contains('fixed')) {
+                    continue;
+                }
+
+                const currentValue = input.value === '' ? 0 : parseInt(input.value);
+
+                if (currentValue === 0) {
+                    correct = false;
+                } else if (currentValue === solutionBoard[i]) {
+                    cells[i].classList.add('correct-answer');
+                } else {
+                    cells[i].classList.add('wrong-answer');
+                    correct = false;
+                }
+            }
+
+            if (correct) {
+                showMessage("おめでとうございます！正解です！🎉", '#27ae60');
+                for (let i = 0; i < 81; i++) {
+                    sudokuGrid.children[i].querySelector('input').readOnly = true;
+                    if (!sudokuGrid.children[i].classList.contains('fixed')) {
+                        sudokuGrid.children[i].classList.add('correct-answer');
+                        sudokuGrid.children[i].classList.remove('wrong-answer');
+                    }
+                }
+            } else {
+                showMessage("まだ正解ではありません。表示されたエラーを確認してください。", '#e74c3c');
+            }
+        }
+
+        // 答えを表示
+        function showSolution() {
+            const cells = sudokuGrid.children;
+            for (let i = 0; i < 81; i++) {
+                const input = cells[i].querySelector('input');
+                const cell = cells[i];
+
+                cell.classList.remove('correct-answer', 'wrong-answer');
+
+                const playerValue = input.value === '' ? 0 : parseInt(input.value);
+                const trueSolutionValue = solutionBoard[i];
+
+                if (cell.classList.contains('fixed')) {
+                    input.value = trueSolutionValue;
+                } else {
+                    input.readOnly = true;
+
+                    if (playerValue === 0) {
+                        input.value = trueSolutionValue;
+                        cell.classList.add('wrong-answer');
+                    } else if (playerValue === trueSolutionValue) {
+                        input.value = trueSolutionValue;
+                        cell.classList.add('correct-answer');
+                    } else {
+                        input.value = trueSolutionValue;
+                        cell.classList.add('wrong-answer');
+                    }
+                }
+            }
+            showMessage("答えが表示されました！", '#2980b9');
+        }
+
+        // メッセージを表示
+        function showMessage(msg, color) {
+            messageDiv.textContent = msg;
+            messageDiv.style.color = color;
+            messageDiv.classList.add('show');
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        // メッセージを非表示
+        function hideMessage() {
+            messageDiv.classList.remove('show');
+            messageDiv.textContent = '';
+        }
+
+        // イベントリスナー
+        newGameBtn.addEventListener('click', generateGame);
+        checkBtn.addEventListener('click', checkSolution);
+        solveBtn.addEventListener('click', showSolution);
+        difficultySelect.addEventListener('change', generateGame);
+
     </script>
 </body>
 </html>

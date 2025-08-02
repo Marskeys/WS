@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>간이 시야검사 앱 (스크리닝용)</title>
+    <title>简易视野筛查应用</title>
     
     <style>
         :root {
@@ -15,6 +15,8 @@
             --border-color: #ccc;
             --button-hover-color: #0056b3;
             --button-success-color: #45a049;
+            --home-button-color: #6c757d;
+            --home-button-hover-color: #5a6268;
         }
 
         body, html {
@@ -129,7 +131,7 @@
             max-height: 90vh;
         }
 
-        /* 공통 버튼 스타일 */
+        /* 通用按钮样式 */
         .styled-button {
             padding: 15px 30px;
             font-size: 20px;
@@ -157,15 +159,33 @@
             background-color: var(--button-hover-color);
         }
 
-        #downloadPdfButton, #restartButton {
+        #downloadPdfButton, #restartButton, #homeButton {
             background-color: var(--primary-color);
             color: white;
             padding: 10px 20px;
             font-size: 16px;
             margin-top: 15px;
         }
-        #downloadPdfButton:hover, #restartButton:hover {
+        
+        #restartButton {
+            background-color: var(--primary-color);
+        }
+        #restartButton:hover {
             background-color: var(--button-hover-color);
+        }
+        
+        #homeButton {
+            background-color: var(--home-button-color);
+        }
+        #homeButton:hover {
+            background-color: var(--home-button-hover-color);
+        }
+        
+        #downloadPdfButton {
+            background-color: var(--secondary-color);
+        }
+        #downloadPdfButton:hover {
+            background-color: var(--button-success-color);
         }
 
         #result-content {
@@ -191,7 +211,7 @@
             z-index: 3;
         }
 
-        /* 크기 버그 해결을 위해 놓친 점의 크기 재정의 */
+        /* 修复丢失点的大小bug */
         .missed-point {
             position: absolute;
             width: 8px;
@@ -327,48 +347,55 @@
         <div id="fixation-point"></div>
         <div id="fixation-cross"></div>
         <div id="test-point"></div>
-        <div id="counter">남은 점: 10</div>
+        <div id="counter">剩余点数: 10</div>
         
         <div id="start-screen">
-            <h1>간이 시야검사 앱</h1>
-            <p><strong>주의: 이 앱은 기존의 시야검사를 극도로 단순화한 것으로 정식 안과 검사를 대체할 수 없습니다.</strong><br>
-            진행성 질환으로 매일 시야를 조금씩 잃는 사람들이 집에서 간단히 시야의 변화를 체크할 수 있도록 고안되었습니다.<br>
-            항상 같은 환경에서 검사해 주세요. 모바일 기기에서의 사용은 권하지 않습니다.<br>
+            <a href="/zh/" class="logo-link">
+                <img src="/assets/images/logo.png" 
+                alt="返回主页" 
+                class="logo-link" 
+                style="width: 120px; height: auto;">
+            </a>
+            <h1>简易视野筛查应用</h1>
+            <p><strong>注意：本应用是现有视野检查的极度简化版，不能替代正式的眼科检查。</strong><br>
+            它旨在帮助因进行性疾病而逐渐丧失视力的人在家中简单地检查视野变化。<br>
+            请始终在相同的环境下进行测试。不建议在移动设备上使用。<br>
                 
-            중앙의 검은 점과 십자를 계속 바라보세요.<br>
-            빨간 점이 보이면 화면 하단의 '클릭!' 버튼을 바로 눌러주세요.</p>
+            请持续注视屏幕中央的黑点和十字。<br>
+            如果您看到红点，请立即按下屏幕下方的“点击！”按钮。</p>
             
-            <h3>검사 점 크기 선택</h3>
+            <h3>选择测试点大小</h3>
             <div id="size-options">
-                <button class="option-button" data-size="15">기본</button>
-                <button class="option-button" data-size="25">크게</button>
-                <button class="option-button" data-size="35">더 크게</button>
+                <button class="option-button" data-size="15">默认</button>
+                <button class="option-button" data-size="25">大</button>
+                <button class="option-button" data-size="35">更大</button>
             </div>
             
-            <h3 style="margin-top: 20px;">검사 점 개수 선택</h3>
-            <p style="color: #666; font-size: 14px; margin-top: 0;">점 개수가 많을수록 정확도가 높아집니다.</p>
+            <h3 style="margin-top: 20px;">选择测试点数量</h3>
+            <p style="color: #666; font-size: 14px; margin-top: 0;">点数越多，准确性越高。</p>
             <div id="count-options">
-                <button class="option-button" data-count="10">10개</button>
-                <button class="option-button" data-count="20">20개</button>
-                <button class="option-button" data-count="40">40개</button>
+                <button class="option-button" data-count="10">10个</button>
+                <button class="option-button" data-count="20">20个</button>
+                <button class="option-button" data-count="40">40个</button>
             </div>
             
-            <button id="startButton" class="styled-button" disabled>검사 시작</button>
-            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">점 크기와 개수를 선택해주세요.</p>
+            <button id="startButton" class="styled-button" disabled>开始测试</button>
+            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">请选择点的大小和数量。</p>
         </div>
         
         <div id="result-screen" class="hidden">
             <div id="result-content">
-                <h2>검사 결과 리포트</h2>
+                <h2>测试结果报告</h2>
                 <p id="test-date"></p>
                 <div id="report-legend"></div> 
                 <div id="report-summary"></div>
                 <div id="result-points-container"></div>
             </div>
-            <button id="downloadPdfButton" class="styled-button">결과 PDF로 다운로드</button>
-            <button id="restartButton" class="styled-button">다시 하기</button>
+            <button id="downloadPdfButton" class="styled-button">下载PDF结果</button>
+            <button id="restartButton" class="styled-button">重新开始</button>
+            <button id="homeButton" class="styled-button">返回主页</button>
         </div>
-        <button id="response-button">클릭!</button>
+        <button id="response-button">点击！</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -387,6 +414,7 @@
             const resultPointsContainer = document.getElementById('result-points-container');
             const downloadPdfButton = document.getElementById('downloadPdfButton');
             const restartButton = document.getElementById('restartButton');
+            const homeButton = document.getElementById('homeButton');
             const counter = document.getElementById('counter');
             const reportSummary = document.getElementById('report-summary');
             const testDateElement = document.getElementById('test-date');
@@ -432,10 +460,10 @@
             function checkStartButtonState() {
                 if (selectedPointSize > 0 && selectedPointCount > 0) {
                     startButton.disabled = false;
-                    message.textContent = '준비되면 검사 시작 버튼을 눌러주세요.';
+                    message.textContent = '准备好后请按“开始测试”按钮。';
                 } else {
                     startButton.disabled = true;
-                    message.textContent = '점 크기와 개수를 선택해주세요.';
+                    message.textContent = '请选择点的大小和数量。';
                 }
             }
 
@@ -497,7 +525,7 @@
             });
 
             function updateCounter() {
-                counter.textContent = `남은 점: ${TOTAL_POINTS - pointCount}`;
+                counter.textContent = `剩余点数: ${TOTAL_POINTS - pointCount}`;
             }
         
             function showTestPoint() {
@@ -540,7 +568,7 @@
                         
                         const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
                         
-                        // 놓친 점의 최종 위치와 궤적을 객체로 저장
+                        // 将丢失点的最终位置和轨迹保存为对象
                         pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
                         allPointsPaths.push(currentPointPath);
                         
@@ -592,29 +620,29 @@
                 resultPointsContainer.innerHTML = '';
                 
                 const today = new Date();
-                const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-                testDateElement.textContent = `검사일자: ${formattedDate}`;
+                const formattedDate = `${today.getFullYear()}年 ${today.getMonth() + 1}月 ${today.getDate()}日`;
+                testDateElement.textContent = `测试日期: ${formattedDate}`;
 
                 const summaryHtml = `
-                    <h3>검사 요약</h3>
-                    <p>총 검사점 수: ${TOTAL_POINTS}개</p>
-                    <p style="color: black;">포착된 점: ${pointsFound.length}개</p>
-                    <p style="color: red;">놓친 점: ${pointsMissed.length}개</p>
+                    <h3>测试摘要</h3>
+                    <p>总测试点数: ${TOTAL_POINTS}个</p>
+                    <p style="color: black;">发现的点: ${pointsFound.length}个</p>
+                    <p style="color: red;">丢失的点: ${pointsMissed.length}个</p>
                 `;
                 reportSummary.innerHTML = summaryHtml;
 
                 const legendHtml = `
                     <div class="legend-item">
                         <div class="point-color found"></div>
-                        <span>포착된 점 (보이는 부분)</span>
+                        <span>发现的点 (可见区域)</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color path-legend-found"></div>
-                        <span>포착된 점의 궤적 (안 보이는 부분)</span>
+                        <span>发现点的轨迹 (不可见区域)</span>
                     </div>
                     <div class="legend-item">
                         <div class="point-color missed"></div>
-                        <span>놓친 점의 궤적 (안 보이는 부분)</span>
+                        <span>丢失点的轨迹 (不可见区域)</span>
                     </div>
                 
                 `;
@@ -657,7 +685,7 @@
                     return { x: mappedX, y: mappedY };
                 }
 
-                // 포착된 점의 궤적 그리기
+                // 绘制发现点的轨迹
                 allPointsPaths.forEach((path, index) => {
                     if (path.length > 0) {
                         const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
@@ -675,7 +703,7 @@
                     }
                 });
 
-                // 포착된 점의 최종 위치에 검은 점 그리기
+                // 在发现点的最终位置绘制黑点
                 pointsFound.forEach(point => {
                     const mapped = mapToContainer(point, containerWidth, containerHeight);
                     if (mapped) {
@@ -687,7 +715,7 @@
                     }
                 });
 
-                // 놓친 점의 최종 위치에 빨간 점 그리기
+                // 在丢失点的最终位置绘制红点
                 pointsMissed.forEach(item => {
                     const mapped = mapToContainer(item.point, containerWidth, containerHeight);
                     if (mapped) {
@@ -704,10 +732,15 @@
                 resultScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
                 startButton.disabled = true;
-                message.textContent = '점 크기와 개수를 선택해주세요.';
+                message.textContent = '请选择点的大小和数量。';
                 document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
                 selectedPointSize = 0;
                 selectedPointCount = 0;
+            });
+            
+            // 添加“返回主页”按钮的点击事件处理程序
+            homeButton.addEventListener('click', () => {
+                window.location.href = '/zh/';
             });
 
             downloadPdfButton.addEventListener('click', async () => {
@@ -724,7 +757,7 @@
                 const y = 10;
                 
                 pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-                pdf.save('시야검사_결과.pdf');
+                pdf.save('视野测试结果.pdf');
             });
         });
     </script>
