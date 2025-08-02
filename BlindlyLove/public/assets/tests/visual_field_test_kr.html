@@ -750,15 +750,39 @@
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 
                 const captureTarget = resultContent;
-                const canvas = await html2canvas(captureTarget, { scale: 2 });
+
+                // 캡처할 요소의 전체 스크롤 높이를 가져옵니다.
+                const fullHeight = captureTarget.scrollHeight;
+
+                const canvas = await html2canvas(captureTarget, {
+                    scale: 2,
+                    height: fullHeight, // 요소의 전체 높이를 명시적으로 지정
+                    windowWidth: captureTarget.scrollWidth,
+                    windowHeight: fullHeight
+                });
                 const imgData = canvas.toDataURL('image/png');
 
-                const imgWidth = 180;
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pdfWidth - 20; // 좌우 여백 10mm씩
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                const x = (pdf.internal.pageSize.getWidth() - imgWidth) / 2;
-                const y = 10;
+
+                let position = 10; // 상단 여백 10mm
+                let heightLeft = imgHeight;
+
+                if (imgHeight > pdfHeight) {
+                    while (heightLeft > 0) {
+                        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                        heightLeft -= (pdfHeight - 10); // 페이지 하단 여백 10mm
+                        position -= (pdfHeight - 10);
+                        if (heightLeft > 0) {
+                            pdf.addPage();
+                        }
+                    }
+                } else {
+                    pdf.addImage(imgData, 'PNG', (pdfWidth - imgWidth) / 2, position, imgWidth, imgHeight);
+                }
                 
-                pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
                 pdf.save('시야검사_결과.pdf');
             });
         });
