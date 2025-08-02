@@ -220,3 +220,69 @@
   80%  { transform: translateY(1px) rotate(-1deg); }
   100% { transform: translateY(0) rotate(0deg); }
 }
+
+/* 검색 컨테이너 */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+}
+
+/* 검색 폼 */
+.search-form {
+  display: flex;
+  align-items: center;
+  background: #222; /* 어두운 배경 */
+  border: 1px solid #444;
+  border-radius: 50px;
+  padding: 5px 10px;
+  transition: border-color 0.3s ease;
+}
+
+.search-form:focus-within {
+  border-color: #00bfff; /* 포커스 시 포인트 컬러 */
+}
+
+/* 검색창 입력 */
+.search-box {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 10px 15px;
+  color: #fff;
+  width: 220px;
+  font-size: 1rem;
+}
+
+.search-box::placeholder {
+  color: #888;
+}
+
+/* 검색 버튼 */
+.icon-submit-btn {
+  background: #00bfff;
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.icon-submit-btn:hover {
+  background: #1ec8ff;
+  transform: scale(1.05);
+}
+
+/* 검색 결과 문구 */
+.search-result-msg {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ccc;
+}
