@@ -1,103 +1,182 @@
 {
-    "ko": {
-      "welcome": "환영합니다",
-      "home": "홈",
-      "logout": "로그아웃",
-      "signup": "회원가입",
-      "login": "로그인",
-      "greeting": "님, 안녕하세요!",
-      "my_page": "마이페이지",
-      "admin_page": "관리자 페이지",
-      "write_post": "글쓰기",
-      "language": "언어",
-      "marskeys_intro": "마스 키스의 사운드 공방에 오신 것을 환영합니다. 소리를 이용한 예술적이고, 교육적이며, 재미있는 디지털 콘텐츠를 만듭니다. 또한, 가상 악기와 오디오 플러그인을 개발 및 배포하고 있습니다. 사운드를 탐험하고, 아이디어를 공유하며, 그 과정에서 즐거움을 느껴보세요.",
-      "about_me": "소개",
-      "terms": "이용 약관",
-      "privacy": "개인 정보 보호 정책",
-      "cookies": "쿠키 정책",
-      "lectures": "강의",
-      "experiments": "실험",
-      "store": "스토어"
+  "ko": {
+    "welcome": "환영합니다",
+    "home": "홈",
+    "logout": "로그아웃",
+    "signup": "회원가입",
+    "login": "로그인",
+    "greeting": "님, 안녕하세요!",
+    "my_page": "마이페이지",
+    "admin_page": "관리자 페이지",
+    "write_post": "글쓰기",
+    "language": "언어",
+    "marskeys_intro": "마스 키스의 사운드 공방에 오신 것을 환영합니다. 소리를 이용한 예술적이고, 교육적이며, 재미있는 디지털 콘텐츠를 만듭니다. 또한, 가상 악기와 오디오 플러그인을 개발 및 배포하고 있습니다. 사운드를 탐험하고, 아이디어를 공유하며, 그 과정에서 즐거움을 느껴보세요.",
+    "about_me": "소개",
+    "terms": "이용 약관",
+    "privacy": "개인 정보 보호 정책",
+    "cookies": "쿠키 정책",
+    "lectures": "강의",
+    "experiments": "실험",
+    "store": "스토어",
+    "search": {
+      "placeholder": "게시글 검색...",
+      "resultsFor": "‘%s’에 대한 검색 결과"
     },
-    "en": {
-      "welcome": "Welcome",
-      "home": "Home",
-      "logout": "Logout",
-      "signup": "Sign Up",
-      "login": "Log In",
-      "greeting": ", welcome!",
-      "my_page": "My Page",
-      "admin_page": "Admin Page",
-      "write_post": "Write Post",
-      "language": "Language",
-      "marskeys_intro": "Welcome to MarsKeys — where we create digital content focused on sound and music, in artistic, educational, and entertaining ways. We also build virtual instruments and audio plug-ins to share our tools with others. Exploring sound, sharing ideas — and having fun along the way.",
-      "about_me": "About Me",
-      "terms": "Terms of Service",
-      "privacy": "Privacy Policy",
-      "cookies": "Cookie Policy",
-      "lectures": "Lectures",
-      "experiments": "Experiments",
-      "store": "Store"
+    "tabs": {
+      "allPosts": "전체 게시글",
+      "searchResults": "검색 결과"
     },
-    "fr": {
-      "welcome": "Bienvenue",
-      "home": "Accueil",
-      "logout": "Déconnexion",
-      "signup": "S'inscrire",
-      "login": "Connexion",
-      "greeting": ", bienvenue !",
-      "my_page": "Ma Page",
-      "admin_page": "Page Admin",
-      "write_post": "Écrire un article",
-      "language": "Langue",
-      "marskeys_intro": "Bienvenue dans l'atelier sonore de MarsKeys. Nous créons des contenus numériques artistiques, éducatifs et divertissants autour du son. Nous développons et distribuons également des instruments virtuels et des plug-ins audio. Explorez le son, partagez vos idées et amusez-vous en chemin.",
-      "about_me": "À propos",
-      "terms": "Conditions d'utilisation",
-      "privacy": "Politique de confidentialité",
-      "cookies": "Politique relative aux cookies",
-      "lectures": "Cours",
-      "experiments": "Expériences",
-      "store": "Boutique"
+    "tableHeaders": {
+      "number": "번호",
+      "title": "제목",
+      "author": "작성자",
+      "category": "카테고리",
+      "date": "작성일",
+      "views": "조회수"
+    }
+  },
+  "en": {
+    "welcome": "Welcome",
+    "home": "Home",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "login": "Log In",
+    "greeting": ", welcome!",
+    "my_page": "My Page",
+    "admin_page": "Admin Page",
+    "write_post": "Write Post",
+    "language": "Language",
+    "marskeys_intro": "Welcome to MarsKeys — where we create digital content focused on sound and music, in artistic, educational, and entertaining ways. We also build virtual instruments and audio plug-ins to share our tools with others. Exploring sound, sharing ideas — and having fun along the way.",
+    "about_me": "About Me",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "lectures": "Lectures",
+    "experiments": "Experiments",
+    "store": "Store",
+    "search": {
+      "placeholder": "Search posts...",
+      "resultsFor": "Search results for ‘%s’"
     },
-    "zh": {
-      "welcome": "欢迎",
-      "home": "首页",
-      "logout": "登出",
-      "signup": "注册",
-      "login": "登录",
-      "greeting": "，欢迎！",
-      "my_page": "我的页面",
-      "admin_page": "管理员页面",
-      "write_post": "写文章",
-      "language": "语言",
-      "marskeys_intro": "欢迎来到 MarsKeys 的声音工作坊。我们创作以声音为核心的艺术、教育和有趣的数字内容，并开发和发布虚拟乐器和音频插件。探索声音、分享想法，并享受其中的乐趣。",
-      "about_me": "关于我",
-      "terms": "服务条款",
-      "privacy": "隐私政策",
-      "cookies": "Cookie 政策",
-      "lectures": "课程",
-      "experiments": "实验",
-      "store": "商店"
+    "tabs": {
+      "allPosts": "All Posts",
+      "searchResults": "Search Results"
     },
-    "ja": {
-      "welcome": "ようこそ",
-      "home": "ホーム",
-      "logout": "ログアウト",
-      "signup": "サインアップ",
-      "login": "ログイン",
-      "greeting": "さん、こんにちは！",
-      "my_page": "マイページ",
-      "admin_page": "管理者ページ",
-      "write_post": "投稿を書く",
-      "language": "言語",
-      "marskeys_intro": "MarsKeysのサウンド工房へようこそ。私たちは、音を中心に芸術的で教育的、そして楽しいデジタルコンテンツを制作しています。また、バーチャル楽器やオーディオプラグインの開発・配布も行っています。音を探求し、アイデアを共有し、その過程を楽しんでください。",
-      "about_me": "紹介",
-      "terms": "利用規約",
-      "privacy": "プライバシーポリシー",
-      "cookies": "クッキーポリシー",
-      "lectures": "講義",
-      "experiments": "実験",
-      "store": "ストア"
+    "tableHeaders": {
+      "number": "No.",
+      "title": "Title",
+      "author": "Author",
+      "category": "Category",
+      "date": "Date",
+      "views": "Views"
+    }
+  },
+  "fr": {
+    "welcome": "Bienvenue",
+    "home": "Accueil",
+    "logout": "Déconnexion",
+    "signup": "S'inscrire",
+    "login": "Connexion",
+    "greeting": ", bienvenue !",
+    "my_page": "Ma Page",
+    "admin_page": "Page Admin",
+    "write_post": "Écrire un article",
+    "language": "Langue",
+    "marskeys_intro": "Bienvenue dans l'atelier sonore de MarsKeys. Nous créons des contenus numériques artistiques, éducatifs et divertissants autour du son. Nous développons et distribuons également des instruments virtuels et des plug-ins audio. Explorez le son, partagez vos idées et amusez-vous en chemin.",
+    "about_me": "À propos",
+    "terms": "Conditions d'utilisation",
+    "privacy": "Politique de confidentialité",
+    "cookies": "Politique relative aux cookies",
+    "lectures": "Cours",
+    "experiments": "Expériences",
+    "store": "Boutique",
+    "search": {
+      "placeholder": "Rechercher des articles...",
+      "resultsFor": "Résultats de recherche pour '%s'"
+    },
+    "tabs": {
+      "allPosts": "Tous les articles",
+      "searchResults": "Résultats de la recherche"
+    },
+    "tableHeaders": {
+      "number": "N°",
+      "title": "Titre",
+      "author": "Auteur",
+      "category": "Catégorie",
+      "date": "Date",
+      "views": "Vues"
+    }
+  },
+  "zh": {
+    "welcome": "欢迎",
+    "home": "首页",
+    "logout": "登出",
+    "signup": "注册",
+    "login": "登录",
+    "greeting": "，欢迎！",
+    "my_page": "我的页面",
+    "admin_page": "管理员页面",
+    "write_post": "写文章",
+    "language": "语言",
+    "marskeys_intro": "欢迎来到 MarsKeys 的声音工作坊。我们创作以声音为核心的艺术、教育和有趣的数字内容，并开发和发布虚拟乐器和音频插件。探索声音、分享想法，并享受其中的乐趣。",
+    "about_me": "关于我",
+    "terms": "服务条款",
+    "privacy": "隐私政策",
+    "cookies": "Cookie 政策",
+    "lectures": "课程",
+    "experiments": "实验",
+    "store": "商店",
+    "search": {
+      "placeholder": "搜索帖子...",
+      "resultsFor": "“%s”的搜索结果"
+    },
+    "tabs": {
+      "allPosts": "所有帖子",
+      "searchResults": "搜索结果"
+    },
+    "tableHeaders": {
+      "number": "编号",
+      "title": "标题",
+      "author": "作者",
+      "category": "类别",
+      "date": "日期",
+      "views": "浏览量"
+    }
+  },
+  "ja": {
+    "welcome": "ようこそ",
+    "home": "ホーム",
+    "logout": "ログアウト",
+    "signup": "サインアップ",
+    "login": "ログイン",
+    "greeting": "さん、こんにちは！",
+    "my_page": "マイページ",
+    "admin_page": "管理者ページ",
+    "write_post": "投稿を書く",
+    "language": "言語",
+    "marskeys_intro": "MarsKeysのサウンド工房へようこそ。私たちは、音を中心に芸術的で教育的、そして楽しいデジタルコンテンツを制作しています。また、バーチャル楽器やオーディオプラグインの開発・配布も行っています。音を探求し、アイデアを共有し、その過程を楽しんでください。",
+    "about_me": "紹介",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "cookies": "クッキーポリシー",
+    "lectures": "講義",
+    "experiments": "実験",
+    "store": "ストア",
+    "search": {
+      "placeholder": "投稿を検索...",
+      "resultsFor": "「%s」の検索結果"
+    },
+    "tabs": {
+      "allPosts": "すべての投稿",
+      "searchResults": "検索結果"
+    },
+    "tableHeaders": {
+      "number": "番号",
+      "title": "タイトル",
+      "author": "投稿者",
+      "category": "カテゴリ",
+      "date": "日付",
+      "views": "閲覧数"
     }
   }
-  
+}
