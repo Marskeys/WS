@@ -259,8 +259,11 @@
     
     // postContent 함수 (수정됨)
     function postContent() {
+      console.log('포스팅 버튼이 클릭되었습니다.');
+
       const isEdit = <%= isEdit %>;
       const postId = '<%= post?.id || "" %>';
+      const currentLang = document.getElementById('langSelector').value; // 현재 선택된 언어 가져오기
       
       const postData = {
           categories: selectedCategories,
@@ -272,10 +275,16 @@
       let hasContentForDefaultLang = false;
       const supportedLangs = <%- JSON.stringify(supportedLangs) %>;
 
+      // HTML 모드에서 포스팅을 누른 경우, 디자인 모드로 전환하여 에디터 내용 동기화
+      const currentHtmlEditor = document.getElementById(`htmlEditor_${currentLang}`);
+      const currentEditor = document.getElementById(`editor_${currentLang}`);
+      if (currentHtmlEditor && currentEditor && currentHtmlEditor.style.display !== 'none') {
+          currentEditor.innerHTML = currentHtmlEditor.value;
+      }
+      
       supportedLangs.forEach(code => {
           const titleInput = document.getElementById(`postTitle_${code}`);
           const editorDiv = document.getElementById(`editor_${code}`);
-          const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`);
 
           let contentToSave = editorDiv.innerHTML.trim();
 
@@ -301,7 +310,7 @@
           return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
       }
       
-      const submitUrl = isEdit && postId ? `/${lang}/edit/${postId}` : `/${lang}/savePost`;
+      const submitUrl = isEdit && postId ? `/${currentLang}/edit/${postId}` : `/${currentLang}/savePost`;
 
       fetch(submitUrl, {
         method: 'POST',
@@ -313,9 +322,9 @@
         if (data.success) {
           showCustomMessage("성공적으로 저장되었습니다!", false, () => {
             if (isEdit) {
-              window.location.href = `/${lang}/post/${postId}`;
+              window.location.href = `/${currentLang}/post/${postId}`;
             } else {
-              window.location.href = `/${lang}/`;
+              window.location.href = `/${currentLang}/`;
             }
           });
         } else {
@@ -536,6 +545,8 @@
     }
 
     function showCustomMessage(message, isConfirm = false, onConfirm = null) {
+      // 기존 모달이 제대로 작동하지 않을 경우를 대비하여 alert도 함께 호출
+      alert(message);
       createMessageBox(message, isConfirm, onConfirm);
     }
 
