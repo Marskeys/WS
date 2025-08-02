@@ -182,11 +182,13 @@ app.get('/signup-success', (req, res) => {
 // ✅ 새 글 저장 처리
 app.post('/savePost', async (req, res) => {
   // ✅ post_translations 테이블에 맞게 수정
-  const { title, content, categories, is_private, is_pinned, lang } = req.body;
+  const { categories, is_private, is_pinned, lang_content } = req.body;
   const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
   
-  if (!title || !content || !categories || !lang) {
-    return res.status(400).json({ success: false, error: '제목, 내용, 카테고리, 언어 코드를 모두 입력해주세요.' });
+  // ✅ 필수 항목 유효성 검사: 한국어 제목, 내용, 카테고리만 확인하도록 수정
+  const koreanContent = lang_content.ko;
+  if (!koreanContent || !koreanContent.title || !koreanContent.content || !categories || categories.length === 0) {
+    return res.status(400).json({ success: false, error: '제목, 내용, 카테고리를 모두 입력해주세요.' });
   }
   
   if (!req.session.user) {
@@ -211,9 +213,14 @@ app.post('/savePost', async (req, res) => {
     const postId = postResult.insertId;
 
     // 2️⃣ post_translations 테이블에 번역된 제목과 내용 저장
+    const translations = Object.keys(lang_content).map(lang_code => {
+      const { title, content } = lang_content[lang_code];
+      return [postId, lang_code, title || null, content || '<p><br></p>'];
+    });
+
     await db.query(
-      'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?)',
-      [postId, lang, title, content]
+      'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES ?',
+      [translations]
     );
 
     res.json({ success: true, postId: postId });
@@ -266,25 +273,24 @@ app.get('/edit/:id', async (req, res) => {
       return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
     }
     
-    // 3️⃣ post_translations 테이블에서 해당 언어의 번역된 제목/내용 조회
+    // 3️⃣ post_translations 테이블에서 모든 언어의 번역된 제목/내용 조회
     const [translations] = await db.query(
-        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
-        [postId, lang]
+        'SELECT lang_code, title, content FROM post_translations WHERE post_id = ?',
+        [postId]
     );
     
-    // 4️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴 (수정)
+    // 4️⃣ post 객체에 모든 번역된 내용을 추가
+    post.translations = {};
+    translations.forEach(t => {
+      post.translations[t.lang_code] = {
+        title: t.title,
+        content: t.content
+      };
+    });
+
+    // 5️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴 (수정)
     const categoryNameColumn = getCategoryNameColumn(lang);
     const [categories] = await db.query(`SELECT id, ${categoryNameColumn} AS name FROM categories`);
-
-    // 기존 post 객체에 번역된 내용을 추가
-    if (translations.length > 0) {
-        post.title = translations[0].title;
-        post.content = translations[0].content;
-    } else {
-        // 번역이 없는 경우, 제목과 내용을 빈 문자열로 초기화
-        post.title = '';
-        post.content = '';
-    }
 
     res.render('editor', {
       user: req.session.user,
@@ -304,10 +310,16 @@ app.post('/edit/:id', async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id;
   // ✅ post_translations 테이블에 맞게 수정
-  const { title, content, categories, is_private, is_pinned, lang } = req.body;
+  const { categories, is_private, is_pinned, lang_content } = req.body;
 
   const isPrivate = is_private ? 1 : 0;
   const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
+
+  // ✅ 필수 항목 유효성 검사: 한국어 제목, 내용, 카테고리만 확인하도록 수정
+  const koreanContent = lang_content.ko;
+  if (!koreanContent || !koreanContent.title || !koreanContent.content || !categories || categories.length === 0) {
+    return res.status(400).json({ success: false, error: '제목, 내용, 카테고리를 모두 입력해주세요.' });
+  }
 
   try {
     // 1️⃣ 글의 작성자 ID 확인
@@ -327,11 +339,19 @@ app.post('/edit/:id', async (req, res) => {
     );
 
     // 4️⃣ post_translations 테이블 업데이트 (제목, 내용)
-    // ON DUPLICATE KEY UPDATE를 사용하여 이미 존재하는 번역이면 수정, 없으면 새로 추가
-    await db.query(
-      'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = VALUES(title), content = VALUES(content)',
-      [postId, lang, title, content]
-    );
+    const translationsToUpdate = Object.keys(lang_content).map(lang_code => {
+      const { title, content } = lang_content[lang_code];
+      return [postId, lang_code, title || null, content || '<p><br></p>'];
+    });
+
+    for (const [pId, lang_code, title, content] of translationsToUpdate) {
+      await db.query(
+        'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title = VALUES(title), content = VALUES(content)',
+        [pId, lang_code, title, content]
+      );
+    }
+    
+    // 이전에 에디터 파일에 없는 언어는 삭제하지 않고 놔둠
 
     res.json({ success: true, redirect: `/${res.locals.lang}/post/${postId}` });
   } catch (err) {
@@ -339,6 +359,7 @@ app.post('/edit/:id', async (req, res) => {
     res.status(500).send('서버 오류');
   }
 });
+
 
 // ✅ 특정 글 보기 페이지
 app.get('/post/:id', async (req, res) => {
