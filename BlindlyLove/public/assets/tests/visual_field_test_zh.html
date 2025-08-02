@@ -502,7 +502,9 @@
                 testViewportWidth = window.innerWidth;
                 testViewportHeight = window.innerHeight;
                 updateCounter();
-                setTimeout(runTest, 1000);
+                
+                const delay = Math.random() * 1000 + 1000;
+                setTimeout(runTest, delay);
             });
         
             responseButton.addEventListener('click', () => {

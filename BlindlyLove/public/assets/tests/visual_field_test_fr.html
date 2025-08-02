@@ -362,7 +362,7 @@
             Veuillez toujours effectuer le test dans le même environnement. L'utilisation sur des appareils mobiles n'est pas recommandée.<br>
                 
             Continuez de regarder le point noir et la croix au centre.<br>
-            Si vous voyez un point rouge, appuyez immédiatement sur le bouton 'Cliquez !' en bas de l'écran.</p>
+            Si vous voyez un point rouge, appuyez immédiatement sur le bouton « Cliquez ! » en bas de l'écran.</p>
             
             <h3>Sélectionner la taille des points de test</h3>
             <div id="size-options">
@@ -460,7 +460,7 @@
             function checkStartButtonState() {
                 if (selectedPointSize > 0 && selectedPointCount > 0) {
                     startButton.disabled = false;
-                    message.textContent = 'Appuyez sur le bouton "Commencer le test" quand vous êtes prêt.';
+                    message.textContent = 'Appuyez sur le bouton « Commencer le test » quand vous êtes prêt.';
                 } else {
                     startButton.disabled = true;
                     message.textContent = 'Veuillez sélectionner la taille et le nombre de points.';
@@ -502,7 +502,10 @@
                 testViewportWidth = window.innerWidth;
                 testViewportHeight = window.innerHeight;
                 updateCounter();
-                setTimeout(runTest, 1000);
+                
+                // Démarre le test après un délai aléatoire de 1 à 2 secondes
+                const delay = Math.random() * 1000 + 1000; // Délai entre 1000ms et 2000ms
+                setTimeout(runTest, delay);
             });
         
             responseButton.addEventListener('click', () => {
