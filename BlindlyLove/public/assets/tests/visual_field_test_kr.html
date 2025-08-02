@@ -756,8 +756,15 @@
                 const margin = 10; // 여백 10mm
                 
                 const captureTarget = resultContent;
+                
+                // HTML 요소가 제대로 존재하는지 확인
+                if (!captureTarget) {
+                    console.error('결과를 캡처할 요소를 찾을 수 없습니다.');
+                    return;
+                }
 
                 // html2canvas로 고해상도 캡처
+                // async/await를 사용하여 캡처가 완료될 때까지 기다림
                 const canvas = await html2canvas(captureTarget, {
                     scale: 2,
                     height: captureTarget.scrollHeight,
