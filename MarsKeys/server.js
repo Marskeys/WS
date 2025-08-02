@@ -43,6 +43,14 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ 카테고리 이름 컬럼을 동적으로 가져오는 헬퍼 함수 추가
+const getCategoryNameColumn = (lang) => {
+  if (lang === 'ko') {
+    return 'name';
+  }
+  return `name_${lang}`;
+};
+
 // ✅ 로그인 상태 확인 API
 app.get('/session', (req, res) => {
   const user = req.session.user;
@@ -101,9 +109,10 @@ app.get('/write', async (req, res) => {
   }
 
   try {
-    // ✅ 카테고리 목록을 현재 언어에 맞게 가져옴
+    // ✅ 카테고리 목록을 현재 언어에 맞게 가져옴 (수정)
     const lang = res.locals.lang;
-    const [categories] = await db.query(`SELECT id, name_${lang} AS name FROM categories`);
+    const categoryNameColumn = getCategoryNameColumn(lang);
+    const [categories] = await db.query(`SELECT id, ${categoryNameColumn} AS name FROM categories`);
 
     res.render('editor', {
       user: req.session.user,
@@ -263,8 +272,9 @@ app.get('/edit/:id', async (req, res) => {
         [postId, lang]
     );
     
-    // 4️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴
-    const [categories] = await db.query(`SELECT id, name_${res.locals.lang} AS name FROM categories`);
+    // 4️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴 (수정)
+    const categoryNameColumn = getCategoryNameColumn(lang);
+    const [categories] = await db.query(`SELECT id, ${categoryNameColumn} AS name FROM categories`);
 
     // 기존 post 객체에 번역된 내용을 추가
     if (translations.length > 0) {
@@ -439,8 +449,9 @@ app.get('/search', async (req, res) => {
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
     
-    // ✅ 카테고리 목록을 현재 언어에 맞게 가져옴
-    const [categories] = await db.query(`SELECT id, name_${lang} AS name FROM categories`);
+    // ✅ 카테고리 목록을 현재 언어에 맞게 가져옴 (수정)
+    const categoryNameColumn = getCategoryNameColumn(lang);
+    const [categories] = await db.query(`SELECT id, ${categoryNameColumn} AS name FROM categories`);
 
     res.render('index', {
       posts: filteredPosts,
@@ -500,8 +511,9 @@ app.get('/', async (req, res) => {
   const lang = res.locals.lang;
 
   try {
-    // 1️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴
-    const [categories] = await db.query(`SELECT id, name_${lang} AS name FROM categories`);
+    // 1️⃣ 카테고리 목록을 현재 언어에 맞게 가져옴 (수정)
+    const categoryNameColumn = getCategoryNameColumn(lang);
+    const [categories] = await db.query(`SELECT id, ${categoryNameColumn} AS name FROM categories`);
 
     // 2️⃣ 포스트 목록을 가져오는 쿼리 수정 (JOIN 사용)
     let baseQuery = `
@@ -532,8 +544,9 @@ app.get('/', async (req, res) => {
     const countParams = [lang];
 
     if (category !== 'all') {
-      baseQuery += ` AND FIND_IN_SET(?, p.categories)`;
-      countQuery += ` AND FIND_IN_SET(?, p.categories)`;
+      // ✅ 카테고리 이름으로 찾기 위해 동적 컬럼명 사용
+      baseQuery += ` AND FIND_IN_SET((SELECT ${categoryNameColumn} FROM categories WHERE ${categoryNameColumn} = ?), p.categories)`;
+      countQuery += ` AND FIND_IN_SET((SELECT ${categoryNameColumn} FROM categories WHERE ${categoryNameColumn} = ?), p.categories)`;
       params.push(category);
       countParams.push(category);
     }
@@ -581,8 +594,9 @@ app.get('/', async (req, res) => {
 app.get('/api/categories', async (req, res) => {
   const lang = res.locals.lang;
   try {
-    // 현재 언어에 맞는 카테고리 이름 가져오기
-    const [rows] = await db.query(`SELECT id, name_${lang} AS name FROM categories ORDER BY id ASC`);
+    // ✅ 현재 언어에 맞는 카테고리 이름 가져오기 (수정)
+    const categoryNameColumn = getCategoryNameColumn(lang);
+    const [rows] = await db.query(`SELECT id, ${categoryNameColumn} AS name FROM categories ORDER BY id ASC`);
     res.json({ categories: rows.map(r => r.name) });
   } catch (err) {
     console.error('카테고리 조회 오류:', err);
@@ -596,12 +610,13 @@ app.post('/api/categories', async (req, res) => {
   if (!name) return res.status(400).json({ error: '카테고리 이름이 필요합니다.' });
 
   try {
-    const [existing] = await db.query('SELECT * FROM categories WHERE name_ko = ? OR name_en = ? OR name_fr = ? OR name_zh = ? OR name_ja = ?', [name, name, name, name, name]);
+    // ✅ name_ko 대신 name 컬럼으로 중복 확인 (수정)
+    const [existing] = await db.query('SELECT * FROM categories WHERE name = ? OR name_en = ? OR name_fr = ? OR name_zh = ? OR name_ja = ?', [name, name, name, name, name]);
     if (existing.length > 0) {
       return res.status(409).json({ success: false, error: '이미 존재하는 카테고리입니다.' });
     }
-    // 기본 언어(한국어)에만 이름을 추가하고, 나머지는 NULL로 둠
-    await db.query('INSERT INTO categories (name_ko) VALUES (?)', [name]);
+    // ✅ name_ko 대신 name 컬럼에 이름을 추가하고, 나머지는 NULL로 둠 (수정)
+    await db.query('INSERT INTO categories (name) VALUES (?)', [name]);
     res.json({ success: true });
   } catch (err) {
     console.error('카테고리 추가 오류:', err);
@@ -613,9 +628,9 @@ app.post('/api/categories', async (req, res) => {
 app.delete('/api/categories/:name', async (req, res) => {
   const { name } = req.params;
   try {
-    // 모든 언어 필드에서 해당 이름의 카테고리를 찾아 삭제
+    // ✅ name_ko 대신 name 컬럼으로 삭제 (수정)
     await db.query(
-      `DELETE FROM categories WHERE name_ko = ? OR name_en = ? OR name_fr = ? OR name_zh = ? OR name_ja = ?`,
+      `DELETE FROM categories WHERE name = ? OR name_en = ? OR name_fr = ? OR name_zh = ? OR name_ja = ?`,
       [decodeURIComponent(name), decodeURIComponent(name), decodeURIComponent(name), decodeURIComponent(name), decodeURIComponent(name)]
     );
     res.json({ success: true });
