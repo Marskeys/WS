@@ -15,8 +15,8 @@
             --border-color: #ccc;
             --button-hover-color: #0056b3;
             --button-success-color: #45a049;
-            --home-button-color: #6c757d; /* 홈 버튼 색상 추가 */
-            --home-button-hover-color: #5a6268; /* 홈 버튼 호버 색상 추가 */
+            --home-button-color: #6c757d;
+            --home-button-hover-color: #5a6268;
         }
 
         body, html {
@@ -203,8 +203,7 @@
 
         #result-content {
             width: 100%;
-            /* A4 용지 비율과 유사하게 설정 (세로모드) */
-            max-width: 210mm; /* A4 용지 너비 */
+            max-width: 210mm;
             margin: 0 auto;
         }
 
@@ -227,7 +226,6 @@
             z-index: 3;
         }
 
-        /* 크기 버그 해결을 위해 놓친 점의 크기 재정의 */
         .missed-point {
             position: absolute;
             width: 8px;
@@ -521,7 +519,6 @@
                 testViewportHeight = window.innerHeight;
                 updateCounter();
                 
-                // 수정된 부분: 1초 후에 첫 번째 점이 나타나도록 설정
                 setTimeout(runTest, 1000);
             });
         
@@ -588,7 +585,6 @@
                         
                         const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
                         
-                        // 놓친 점의 최종 위치와 궤적을 객체로 저장
                         pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
                         allPointsPaths.push(currentPointPath);
                         
@@ -705,7 +701,6 @@
                     return { x: mappedX, y: mappedY };
                 }
 
-                // 포착된 점의 궤적 그리기
                 allPointsPaths.forEach((path, index) => {
                     if (path.length > 0) {
                         const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
@@ -723,7 +718,6 @@
                     }
                 });
 
-                // 포착된 점의 최종 위치에 검은 점 그리기
                 pointsFound.forEach(point => {
                     const mapped = mapToContainer(point, containerWidth, containerHeight);
                     if (mapped) {
@@ -735,7 +729,6 @@
                     }
                 });
 
-                // 놓친 점의 최종 위치에 빨간 점 그리기
                 pointsMissed.forEach(item => {
                     const mapped = mapToContainer(item.point, containerWidth, containerHeight);
                     if (mapped) {
@@ -758,46 +751,41 @@
                 selectedPointCount = 0;
             });
             
-            // 홈으로 돌아가기 버튼 클릭 이벤트 핸들러 추가
             homeButton.addEventListener('click', () => {
                 window.location.href = '/ko/';
             });
             
             downloadPdfButton.addEventListener('click', async () => {
-                // PDF 생성 시작, 로딩 메시지 표시
                 loadingMessage.classList.remove('hidden');
-                downloadPdfButton.disabled = true; // 버튼 비활성화
+                downloadPdfButton.disabled = true;
 
                 try {
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = pdf.internal.pageSize.getHeight();
-                    const margin = 10; // 여백 10mm
+                    const margin = 10;
                     
-                    const captureTarget = resultContent;
+                    const captureTarget = resultScreen;
                     
                     if (!captureTarget) {
-                        throw new Error('결과를 캡처할 요소를 찾을 수 없습니다.');
+                        console.error('결과 화면을 캡처할 요소를 찾을 수 없습니다.');
+                        throw new Error('PDF 캡처 대상을 찾을 수 없습니다.');
                     }
 
-                    // html2canvas로 고해상도 캡처. await로 작업이 완료될 때까지 기다림.
                     const canvas = await html2canvas(captureTarget, {
                         scale: 2,
-                        height: captureTarget.scrollHeight,
                         windowWidth: captureTarget.scrollWidth,
                         windowHeight: captureTarget.scrollHeight
                     });
-                    const imgData = canvas.toDataURL('image/png');
 
-                    // 이미지의 가로세로 비율 계산
-                    const imgRatio = canvas.width / canvas.height;
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgRatio = imgProps.width / imgProps.height;
                     
-                    // PDF 페이지의 가로 너비에 꽉 차도록 이미지 크기 계산
-                    const finalImgWidth = pdfWidth - margin * 2;
+                    let finalImgWidth = pdfWidth - margin * 2;
                     let finalImgHeight = finalImgWidth / imgRatio;
 
-                    // 이미지를 한 페이지에 맞게 강제로 축소
                     if (finalImgHeight > pdfHeight - margin * 2) {
                         finalImgHeight = pdfHeight - margin * 2;
                         finalImgWidth = finalImgHeight * imgRatio;
@@ -806,15 +794,15 @@
                     const x = (pdfWidth - finalImgWidth) / 2;
                     const y = (pdfHeight - finalImgHeight) / 2;
 
-                    pdf.addImage(imgData, 'PNG', x, y, finalImgWidth, finalImgHeight);
+                    pdf.addImage(imgData, 'JPEG', x, y, finalImgWidth, finalImgHeight);
                     pdf.save('시야검사_결과.pdf');
+
                 } catch (error) {
                     console.error('PDF 생성 중 오류가 발생했습니다:', error);
                     alert('PDF 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
                 } finally {
-                    // PDF 생성 완료 또는 오류 발생 후 로딩 메시지 숨김
                     loadingMessage.classList.add('hidden');
-                    downloadPdfButton.disabled = false; // 버튼 다시 활성화
+                    downloadPdfButton.disabled = false;
                 }
             });
         });
