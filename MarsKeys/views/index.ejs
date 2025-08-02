@@ -34,6 +34,7 @@
     </style>
 
     <%- include('partials/header') %>
+
     <main class="grid">
       <div class="grid-item ultrawide marskeys-intro hologram-border">
         <%= locale.marskeys_intro %>
@@ -150,8 +151,8 @@
           <% if (pagination.total > 1) { %>
             <div class="pagination">
               <% if (pagination.current > 1) { %>
-                <a href="/<%= lang %>/?page=<%= pagination.current - 1 %>">
-                  &laquo; <%= locale.previous %>
+                <a href="/<%= lang %>/<%= isSearch ? `search?q=${searchKeyword}&` : `?category=${encodeURIComponent(category)}&` %>page=<%= pagination.current - 1 %>">
+                  « <%= locale.previous %>
                 </a>
               <% } %>
 
@@ -159,15 +160,15 @@
                 <% if (p === '...') { %>
                   <span>...</span>
                 <% } else { %>
-                  <a href="/<%= lang %>/?page=<%= p %>" class="<%= p === pagination.current ? 'active' : '' %>">
+                  <a href="/<%= lang %>/<%= isSearch ? `search?q=${searchKeyword}&` : `?category=${encodeURIComponent(category)}&` %>page=<%= p %>" class="<%= p === pagination.current ? 'active' : '' %>">
                     <%= p %>
                   </a>
                 <% } %>
               <% }); %>
 
               <% if (pagination.current < pagination.total) { %>
-                <a href="/<%= lang %>/?page=<%= pagination.current + 1 %>">
-                  <%= locale.next %> &raquo;
+                <a href="/<%= lang %>/<%= isSearch ? `search?q=${searchKeyword}&` : `?category=${encodeURIComponent(category)}&` %>page=<%= pagination.current + 1 %>">
+                  <%= locale.next %> »
                 </a>
               <% } %>
             </div>
