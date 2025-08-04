@@ -24,7 +24,7 @@
   .floating-toc .toc-title {
     display: block;
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   html.dark .floating-toc {
@@ -332,6 +332,3 @@ html.dark .toc-list a:hover {
   color: #a30000;
 }
 
-#mobileTocContent .toc-title {
-  margin-bottom: 20px; /* 원하는 여백 크기로 조절하세요 */
-}
