@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen de Campo Visual en Línea</title>
+    
+    <style>
+        :root {
+            --primary-color: #007BFF;
+            --secondary-color: #4CAF50;
+            --accent-color: #f0f0f0;
+            --background-color: #f0f0f0;
+            --text-color: #333;
+            --border-color: #ccc;
+            --button-hover-color: #0056b3;
+            --button-success-color: #45a049;
+            --home-button-color: #6c757d;
+            --home-button-hover-color: #5a6268;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--background-color);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #fixation-point {
+            width: 15px;
+            height: 15px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: none;
+        }
+        #fixation-cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            transform: translate(-50%, -50%);
+            z-index: 11;
+            display: none;
+        }
+        #fixation-cross::before,
+        #fixation-cross::after {
+            content: "";
+            position: absolute;
+            background-color: black;
+        }
+        #fixation-cross::before {
+            width: 2px;
+            height: 30px;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        #fixation-cross::after {
+            width: 30px;
+            height: 2px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        
+        #test-point {
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 5;
+            display: none;
+        }
+        
+        #response-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 15;
+            display: none;
+            transition: background-color 0.3s;
+        }
+        #response-button:hover {
+            background-color: var(--button-success-color);
+        }
+
+        .hidden { display: none !important; }
+        
+        #start-screen, #result-screen {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        /* Common button styles */
+        .styled-button {
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .styled-button:not(:disabled):hover {
+            transform: translateY(-2px);
+        }
+
+        #startButton {
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 20px;
+        }
+        #startButton:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            transform: none;
+        }
+        #startButton:not(:disabled):hover {
+            background-color: var(--button-hover-color);
+        }
+
+        #downloadPdfButton, #restartButton, #homeButton {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        #restartButton {
+            background-color: var(--primary-color);
+        }
+        #restartButton:hover {
+            background-color: var(--button-hover-color);
+        }
+        
+        #homeButton {
+            background-color: var(--home-button-color);
+        }
+        #homeButton:hover {
+            background-color: var(--home-button-hover-color);
+        }
+        
+        #downloadPdfButton {
+            background-color: var(--secondary-color);
+        }
+        #downloadPdfButton:hover {
+            background-color: var(--button-success-color);
+        }
+        
+        #loading-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            z-index: 100;
+            display: none;
+        }
+
+        #result-content {
+            width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+
+        #result-points-container {
+            position: relative;
+            border: 2px solid var(--border-color);
+            margin: 20px auto;
+            background-color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        
+        .result-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: black;
+            border-radius: 50%;
+            z-index: 3;
+        }
+
+        .missed-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: red;
+            border-radius: 50%;
+            z-index: 3;
+        }
+        
+        .path-point {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: rgba(150, 150, 150, 0.7);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .path-point.missed-path {
+            background-color: rgba(255, 0, 0, 0.7);
+        }
+
+        .result-cross {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+        .result-cross::before,
+        .result-cross::after {
+            content: "";
+            position: absolute;
+            background-color: black;
+        }
+        .result-cross::before {
+            width: 2px;
+            height: 30px;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        .result-cross::after {
+            width: 30px;
+            height: 2px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+
+        #counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 20;
+            display: none;
+        }
+
+        #report-summary {
+            text-align: left;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #report-summary h3 {
+            margin-bottom: 5px;
+        }
+
+        #size-options, #count-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .option-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--accent-color);
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .option-button.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        #report-legend {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 30px;
+            margin-bottom: 20px;
+            height: 100px; 
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-item .point-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .legend-item .point-color.found {
+            background-color: black;
+        }
+        .legend-item .point-color.missed {
+            background-color: red;
+        }
+        .legend-item .point-color.path-legend-found {
+            background-color: rgba(150, 150, 150, 0.7);
+        }
+        .legend-item .point-color.path-legend-missed {
+            background-color: rgba(255, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="fixation-point"></div>
+        <div id="fixation-cross"></div>
+        <div id="test-point"></div>
+        <div id="counter">Puntos restantes: 10</div>
+        
+        <div id="start-screen">
+            <a href="/es/" class="logo-link">
+                <img src="/assets/images/logo.png" 
+                alt="Ir a la página de inicio" 
+                class="logo-link" 
+                style="width: 120px; height: auto;">
+            </a>
+            <h1>Aplicación de Examen de Campo Visual Sencillo</h1>
+            <p><strong>Advertencia: Esta aplicación es una simplificación extrema del examen de campo visual estándar y no puede reemplazar una evaluación oftalmológica formal.</strong><br>
+            Fue diseñada para que las personas con enfermedades progresivas que pierden gradualmente la visión puedan controlar de forma sencilla los cambios en su campo visual en casa.<br>
+            Realice siempre el examen en el mismo entorno. No se recomienda su uso en dispositivos móviles.<br>
+                
+            Continúe mirando el punto negro y la cruz en el centro.<br>
+            Cuando vea un punto rojo, presione inmediatamente el botón '¡CLIC!' en la parte inferior de la pantalla.</p>
+            
+            <h3>Seleccionar el tamaño del punto de prueba</h3>
+            <div id="size-options">
+                <button class="option-button" data-size="15">Básico</button>
+                <button class="option-button" data-size="25">Grande</button>
+                <button class="option-button" data-size="35">Muy Grande</button>
+            </div>
+            
+            <h3 style="margin-top: 20px;">Seleccionar el número de puntos de prueba</h3>
+            <p style="color: #666; font-size: 14px; margin-top: 0;">Cuantos más puntos, mayor será la precisión.</p>
+            <div id="count-options">
+                <button class="option-button" data-count="10">10 puntos</button>
+                <button class="option-button" data-count="20">20 puntos</button>
+                <button class="option-button" data-count="40">40 puntos</button>
+            </div>
+            
+            <button id="startButton" class="styled-button" disabled>Comenzar Examen</button>
+            <p id="message" style="color: #666; font-size: 14px; margin-top: 10px;">Por favor, seleccione el tamaño y la cantidad de puntos.</p>
+        </div>
+        
+        <div id="result-screen" class="hidden">
+            <div id="result-content">
+                <h2>Informe de Resultados del Examen</h2>
+                <p id="test-date"></p>
+                <div id="report-legend"></div> 
+                <div id="report-summary"></div>
+                <div id="result-points-container"></div>
+            </div>
+            <button id="downloadPdfButton" class="styled-button">Descargar Resultados en PDF</button>
+            <button id="restartButton" class="styled-button">Volver a Intentarlo</button>
+            <button id="homeButton" class="styled-button">Volver a Inicio</button>
+        </div>
+        <button id="response-button">¡CLIC!</button>
+        <div id="loading-message" class="hidden">Generando PDF...</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startButton = document.getElementById('startButton');
+            const startScreen = document.getElementById('start-screen');
+            const fixationPoint = document.getElementById('fixation-point');
+            const fixationCross = document.getElementById('fixation-cross');
+            const testPoint = document.getElementById('test-point');
+            const responseButton = document.getElementById('response-button');
+            const resultScreen = document.getElementById('result-screen');
+            const resultContent = document.getElementById('result-content');
+            const resultPointsContainer = document.getElementById('result-points-container');
+            const downloadPdfButton = document.getElementById('downloadPdfButton');
+            const restartButton = document.getElementById('restartButton');
+            const homeButton = document.getElementById('homeButton');
+            const counter = document.getElementById('counter');
+            const reportSummary = document.getElementById('report-summary');
+            const testDateElement = document.getElementById('test-date');
+            const sizeOptions = document.getElementById('size-options');
+            const countOptions = document.getElementById('count-options');
+            const message = document.getElementById('message');
+            const reportLegend = document.getElementById('report-legend');
+            const loadingMessage = document.getElementById('loading-message');
+        
+            let pointsFound = [];
+            let pointsMissed = [];
+            let allPointsPaths = [];
+            let testRunning = false;
+            let pointCount = 0;
+            let TOTAL_POINTS = 0;
+            let currentPointPosition = null;
+            let moveIntervalId = null;
+            let currentPointPath = [];
+            
+            let selectedPointSize = 0;
+            let selectedPointCount = 0;
+            
+            let testViewportWidth = 0;
+            let testViewportHeight = 0;
+            
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            function playBeep() {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 440;
+                gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+                
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.1);
+            }
+
+            function checkStartButtonState() {
+                if (selectedPointSize > 0 && selectedPointCount > 0) {
+                    startButton.disabled = false;
+                    message.textContent = 'Cuando esté listo, presione el botón "Comenzar Examen".';
+                } else {
+                    startButton.disabled = true;
+                    message.textContent = 'Por favor, seleccione el tamaño y la cantidad de puntos.';
+                }
+            }
+
+            sizeOptions.addEventListener('click', (e) => {
+                const selectedButton = e.target.closest('.option-button');
+                if (!selectedButton) return;
+                document.querySelectorAll('#size-options .option-button').forEach(btn => btn.classList.remove('selected'));
+                selectedButton.classList.add('selected');
+                selectedPointSize = parseInt(selectedButton.dataset.size);
+                checkStartButtonState();
+            });
+
+            countOptions.addEventListener('click', (e) => {
+                const selectedButton = e.target.closest('.option-button');
+                if (!selectedButton) return;
+                document.querySelectorAll('#count-options .option-button').forEach(btn => btn.classList.remove('selected'));
+                selectedButton.classList.add('selected');
+                selectedPointCount = parseInt(selectedButton.dataset.count);
+                checkStartButtonState();
+            });
+
+            startButton.addEventListener('click', () => {
+                startScreen.classList.add('hidden');
+                fixationPoint.style.display = 'block';
+                fixationCross.style.display = 'block';
+                responseButton.style.display = 'block';
+                counter.style.display = 'block';
+                testRunning = true;
+                pointCount = 0;
+                pointsFound = [];
+                pointsMissed = [];
+                allPointsPaths = [];
+                TOTAL_POINTS = selectedPointCount;
+                testPoint.style.width = `${selectedPointSize}px`;
+                testPoint.style.height = `${selectedPointSize}px`;
+                testViewportWidth = window.innerWidth;
+                testViewportHeight = window.innerHeight;
+                updateCounter();
+                
+                setTimeout(runTest, 1000);
+            });
+        
+            responseButton.addEventListener('click', () => {
+                if (!testRunning || !currentPointPosition) return;
+                
+                playBeep();
+                
+                clearInterval(moveIntervalId);
+                pointsFound.push(currentPointPosition);
+                allPointsPaths.push(currentPointPath);
+                hideTestPoint();
+                pointCount++;
+                updateCounter();
+                
+                if (pointCount < TOTAL_POINTS) {
+                    setTimeout(runTest, 1000);
+                } else {
+                    endTest();
+                }
+            });
+
+            function updateCounter() {
+                counter.textContent = `Puntos restantes: ${TOTAL_POINTS - pointCount}`;
+            }
+        
+            function showTestPoint() {
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const minBoundary = 100;
+                const maxBoundaryX = viewportWidth - 100;
+                const maxBoundaryY = viewportHeight - 100;
+
+                let currentX = Math.random() * (maxBoundaryX - minBoundary) + minBoundary;
+                let currentY = Math.random() * (maxBoundaryY - minBoundary) + minBoundary;
+                
+                testPoint.style.left = `${currentX}px`;
+                testPoint.style.top = `${currentY}px`;
+                testPoint.style.display = 'block';
+                
+                currentPointPosition = null;
+                currentPointPath = [];
+                
+                const moveDuration = 4000;
+                const moveSpeed = 10;
+                let elapsed = 0;
+                
+                const maxPathDistance = 150;
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * maxPathDistance;
+                
+                let endX = currentX + distance * Math.cos(angle);
+                let endY = currentY + distance * Math.sin(angle);
+                
+                endX = Math.max(minBoundary, Math.min(maxBoundaryX, endX));
+                endY = Math.max(minBoundary, Math.min(maxBoundaryY, endY));
+
+                moveIntervalId = setInterval(() => {
+                    elapsed += moveSpeed;
+                    const progress = elapsed / moveDuration;
+
+                    if (progress > 1) {
+                        clearInterval(moveIntervalId);
+                        
+                        const missedPointLocation = currentPointPath.length > 0 ? currentPointPath[currentPointPath.length - 1] : { x: endX, y: endY };
+                        
+                        pointsMissed.push({ point: missedPointLocation, path: currentPointPath });
+                        allPointsPaths.push(currentPointPath);
+                        
+                        hideTestPoint();
+                        pointCount++;
+                        updateCounter();
+
+                        if (pointCount < TOTAL_POINTS) {
+                            setTimeout(runTest, 1000);
+                        } else {
+                            endTest();
+                        }
+                    } else {
+                        currentX = currentX + (endX - currentX) * (moveSpeed / (moveDuration - elapsed));
+                        currentY = currentY + (endY - currentY) * (moveSpeed / (moveDuration - elapsed));
+
+                        testPoint.style.left = `${currentX}px`;
+                        testPoint.style.top = `${currentY}px`;
+                        
+                        currentPointPath.push({ x: currentX, y: currentY });
+                        currentPointPosition = { x: currentX, y: currentY };
+                    }
+                }, moveSpeed);
+            }
+            
+            function hideTestPoint() {
+                testPoint.style.display = 'none';
+                currentPointPosition = null;
+            }
+
+            function runTest() {
+                if (pointCount >= TOTAL_POINTS) return;
+                showTestPoint();
+            }
+        
+            function endTest() {
+                testRunning = false;
+                responseButton.style.display = 'none';
+                fixationPoint.style.display = 'none';
+                fixationCross.style.display = 'none';
+                hideTestPoint();
+                counter.style.display = 'none';
+                
+                resultScreen.classList.remove('hidden');
+                displayResultPoints();
+            }
+        
+            function displayResultPoints() {
+                resultPointsContainer.innerHTML = '';
+                
+                const today = new Date();
+                const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+                testDateElement.textContent = `Fecha del examen: ${formattedDate}`;
+
+                const summaryHtml = `
+                    <h3>Resumen del Examen</h3>
+                    <p>Total de puntos de prueba: ${TOTAL_POINTS} puntos</p>
+                    <p style="color: black;">Puntos detectados: ${pointsFound.length} puntos</p>
+                    <p style="color: red;">Puntos no detectados: ${pointsMissed.length} puntos</p>
+                `;
+                reportSummary.innerHTML = summaryHtml;
+
+                const legendHtml = `
+                    <div class="legend-item">
+                        <div class="point-color found"></div>
+                        <span>Punto detectado (parte visible)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="point-color path-legend-found"></div>
+                        <span>Trayectoria del punto detectado (parte no visible)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="point-color missed"></div>
+                        <span>Trayectoria del punto no detectado (parte no visible)</span>
+                    </div>
+                
+                `;
+                reportLegend.innerHTML = legendHtml;
+
+                const ratio = testViewportWidth / testViewportHeight;
+                const maxResultContentWidth = 600;
+                const maxResultContentHeight = window.innerHeight * 0.7;
+
+                let containerWidth, containerHeight;
+                if (ratio > 1) {
+                    containerWidth = maxResultContentWidth;
+                    containerHeight = containerWidth / ratio;
+                    if (containerHeight > maxResultContentHeight) {
+                        containerHeight = maxResultContentHeight;
+                        containerWidth = containerHeight * ratio;
+                    }
+                } else {
+                    containerHeight = maxResultContentHeight;
+                    containerWidth = containerHeight * ratio;
+                    if (containerWidth > maxResultContentWidth) {
+                        containerWidth = maxResultContentWidth;
+                        containerHeight = maxResultContentWidth / ratio;
+                    }
+                }
+                
+                resultPointsContainer.style.width = `${containerWidth}px`;
+                resultPointsContainer.style.height = `${containerHeight}px`;
+                
+                const resultCross = document.createElement('div');
+                resultCross.className = 'result-cross';
+                resultPointsContainer.appendChild(resultCross);
+
+                function mapToContainer(point, containerWidth, containerHeight) {
+                    if (!point || typeof point.x !== 'number' || typeof point.y !== 'number' || isNaN(point.x) || isNaN(point.y)) {
+                        return null;
+                    }
+                    const mappedX = (point.x / (testViewportWidth || 1)) * containerWidth;
+                    const mappedY = (point.y / (testViewportHeight || 1)) * containerHeight;
+                    return { x: mappedX, y: mappedY };
+                }
+
+                allPointsPaths.forEach((path, index) => {
+                    if (path.length > 0) {
+                        const isMissedPath = pointsMissed.some(missedItem => missedItem.path === path);
+                        const pathClass = isMissedPath ? 'path-point missed-path' : 'path-point';
+                        path.forEach(point => {
+                            const mapped = mapToContainer(point, containerWidth, containerHeight);
+                            if (mapped) {
+                                const pathPoint = document.createElement('div');
+                                pathPoint.className = pathClass;
+                                pathPoint.style.left = `${mapped.x}px`;
+                                pathPoint.style.top = `${mapped.y}px`;
+                                resultPointsContainer.appendChild(pathPoint);
+                            }
+                        });
+                    }
+                });
+
+                pointsFound.forEach(point => {
+                    const mapped = mapToContainer(point, containerWidth, containerHeight);
+                    if (mapped) {
+                        const resultPoint = document.createElement('div');
+                        resultPoint.className = 'result-point';
+                        resultPoint.style.left = `${mapped.x}px`;
+                        resultPoint.style.top = `${mapped.y}px`;
+                        resultPointsContainer.appendChild(resultPoint);
+                    }
+                });
+
+                pointsMissed.forEach(item => {
+                    const mapped = mapToContainer(item.point, containerWidth, containerHeight);
+                    if (mapped) {
+                        const missedPoint = document.createElement('div');
+                        missedPoint.className = 'missed-point';
+                        missedPoint.style.left = `${mapped.x}px`;
+                        missedPoint.style.top = `${mapped.y}px`;
+                        resultPointsContainer.appendChild(missedPoint);
+                    }
+                });
+            }
+        
+            restartButton.addEventListener('click', () => {
+                resultScreen.classList.add('hidden');
+                startScreen.classList.remove('hidden');
+                startButton.disabled = true;
+                message.textContent = 'Por favor, seleccione el tamaño y la cantidad de puntos.';
+                document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+                selectedPointSize = 0;
+                selectedPointCount = 0;
+            });
+            
+            homeButton.addEventListener('click', () => {
+                window.location.href = '/es/';
+            });
+            
+            downloadPdfButton.addEventListener('click', async () => {
+                loadingMessage.classList.remove('hidden');
+                downloadPdfButton.disabled = true;
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 10;
+                    
+                    const captureTarget = resultScreen;
+                    
+                    if (!captureTarget) {
+                        console.error('No se pudo encontrar el elemento para capturar la pantalla de resultados.');
+                        throw new Error('No se pudo encontrar el objetivo para la captura de PDF.');
+                    }
+
+                    const canvas = await html2canvas(captureTarget, {
+                        scale: 2,
+                        windowWidth: captureTarget.scrollWidth,
+                        windowHeight: captureTarget.scrollHeight
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgRatio = imgProps.width / imgProps.height;
+                    
+                    let finalImgWidth = pdfWidth - margin * 2;
+                    let finalImgHeight = finalImgWidth / imgRatio;
+
+                    if (finalImgHeight > pdfHeight - margin * 2) {
+                        finalImgHeight = pdfHeight - margin * 2;
+                        finalImgWidth = finalImgHeight * imgRatio;
+                    }
+
+                    const x = (pdfWidth - finalImgWidth) / 2;
+                    const y = (pdfHeight - finalImgHeight) / 2;
+
+                    pdf.addImage(imgData, 'JPEG', x, y, finalImgWidth, finalImgHeight);
+                    pdf.save('resultado_examen_campo_visual.pdf');
+
+                } catch (error) {
+                    console.error('Ocurrió un error al generar el PDF:', error);
+                    alert('Ocurrió un error al generar el PDF. Por favor, inténtelo de nuevo más tarde.');
+                } finally {
+                    loadingMessage.classList.add('hidden');
+                    downloadPdfButton.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

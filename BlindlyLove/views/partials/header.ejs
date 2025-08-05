@@ -2,7 +2,7 @@
   <div class="top-controls">
     <div class="left-controls">
       <%
-      const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+      const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
       const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                        pathWithoutLang.startsWith('/post') ||
                        pathWithoutLang.startsWith('/edit');
@@ -69,6 +69,7 @@
               case 'zh': flagCode = 'cn'; break;
               case 'ja': flagCode = 'jp'; break;
               case 'fr': flagCode = 'fr'; break;
+              case 'es': flagCode = 'es'; break;
               default: flagCode = 'kr';
             }
           %>
@@ -77,14 +78,15 @@
         </button>
         <ul id="langMenu" class="lang-menu">
           <%
-            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+            const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
+            const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
           %>
           <% supportedLangs.forEach(langCode => { %>
             <li>
               <a href="/<%= langCode %><%= currentPathWithoutLang %>"
                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
-                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : (langCode === 'fr' ? 'fr' : (langCode === 'es' ? 'es' : '')))))) %>"></span>
+                <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語', es: 'Español'}[langCode] %>
               </a>
             </li>
           <% }); %>
@@ -102,7 +104,6 @@
     </div>
   </div>
 
-  <!-- 모바일 메뉴 -->
   <nav class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-header"></div>
     <ul class="mobile-main-menu">
@@ -122,7 +123,6 @@
     </ul>
   </nav>
 
-  <!-- 로그인 박스 -->
   <div id="loginBox" class="login-box" onclick="event.stopPropagation()">
     <form action="/login" method="POST" class="pop-up-form">
       <input type="text" name="id" placeholder="아이디" required>
@@ -195,7 +195,6 @@
     });
   </script>
 
-  <!-- ✅ 스도쿠 + 시야검사 버튼 통합 이벤트 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const lang = '<%= lang %>';
@@ -205,15 +204,17 @@
         en: '/assets/games/sudoku/sudoku_en.html',
         fr: '/assets/games/sudoku/sudoku_fr.html',
         zh: '/assets/games/sudoku/sudoku_zh.html',
-        ja: '/assets/games/sudoku/sudoku_ja.html'
+        ja: '/assets/games/sudoku/sudoku_ja.html',
+        es: '/assets/games/sudoku/sudoku_es.html'
       };
 
       const visualFieldMap = {
-        ko: '/assets/tests/visual_field_test_kr.html',
+        ko: '/assets/tests/visual_field_test_ko.html',
         en: '/assets/tests/visual_field_test_en.html',
         fr: '/assets/tests/visual_field_test_fr.html',
         zh: '/assets/tests/visual_field_test_zh.html',
-        ja: '/assets/tests/visual_field_test_ja.html'
+        ja: '/assets/tests/visual_field_test_ja.html',
+        es: '/assets/tests/visual_field_test_es.html'
       };
 
       function addClickHandler(selectors, map) {

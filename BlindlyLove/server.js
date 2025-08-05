@@ -4,7 +4,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const db = require('./config/db'); // DB 연결 설정 파일
-const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
 const app = express();
 const PORT = process.env.PORT || 3000;
 const allLocales = require('./locales/all.json');
@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 
 // ✅ 다국어 locale JSON에서 현재 언어에 맞는 텍스트를 res.locals.locale에 넣어줌
 app.use((req, res, next) => {
-  const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja)(\/|$)/);
+  const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja|es)(\/|$)/);
   if (langMatch) {
     res.locals.lang = langMatch[1]; // 'en', 'ko', ...
     req.url = req.url.replace(`/${res.locals.lang}`, ''); // URL 정리
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 
   res.locals.locale = allLocales[res.locals.lang] || allLocales['ko'];
 
-  res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+  res.locals.supportedLangs = supportedLangs;
   next();
 });
 

@@ -1,5 +1,3 @@
-
-
 // ✅ 모바일 메뉴 위치를 헤더 윗면에 맞춤
 function positionMobileMenu() {
   const header = document.querySelector('.top-controls');
@@ -83,9 +81,9 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 언어 감지 (URL에서 /ko, /en, /fr, /zh, /ja 추출)
+  // 언어 감지 (URL에서 /ko, /en, /fr, /zh, /ja, /es 추출)
   const pathLang = location.pathname.split('/')[1];
-  const supportedLangs = ['ko','en','fr','zh','ja'];
+  const supportedLangs = ['ko','en','fr','zh','ja','es'];
   const lang = supportedLangs.includes(pathLang) ? pathLang : 'ko';
 
   // 모바일 스도쿠 링크 설정
@@ -102,4 +100,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-
