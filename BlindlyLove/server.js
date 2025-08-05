@@ -109,6 +109,7 @@ app.get('/sitemap.xml', async (req, res) => {
         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.w3.org/2001/XMLSchema-instance"
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
         ${staticUrls}
         ${postUrls}
@@ -595,7 +596,7 @@ app.get('/api/categories', async (req, res) => {
 
 // 카테고리 추가 API (기존과 동일)
 app.post('/api/categories', async (req, res) => {
-  const { name, name_en, name_fr, name_zh, name_ja } = req.body;
+  const { name, name_en, name_fr, name_zh, name_ja, name_es } = req.body;
 
   if (!name) return res.status(400).json({ error: '기본 카테고리 이름(name)이 필요합니다.' });
 
@@ -607,8 +608,8 @@ app.post('/api/categories', async (req, res) => {
     }
 
     await db.query(
-      `INSERT INTO categories (name, name_en, name_fr, name_zh, name_ja) VALUES (?, ?, ?, ?, ?)`,
-      [name, name_en || '', name_fr || '', name_zh || '', name_ja || '']
+      `INSERT INTO categories (name, name_en, name_fr, name_zh, name_ja, name_es) VALUES (?, ?, ?, ?, ?, ?)`,
+      [name, name_en || '', name_fr || '', name_zh || '', name_ja || '', name_es || '']
     );
 
     res.json({ success: true });
@@ -790,7 +791,7 @@ app.get('/api/search', async (req, res) => {
             const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
             const placeholders = originalCategories.map(() => '?').join(',');
             const [categoryNames] = await db.query(
-                `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
+                `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
                 originalCategories
             );
             translatedCategories.push(...categoryNames.map(row => row.name));
