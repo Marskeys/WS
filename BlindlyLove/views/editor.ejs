@@ -411,7 +411,7 @@
                 if (IS_EDIT_PAGE && POST_ID) {
                   window.location.href = `/${CURRENT_PAGE_LANG}/post/${POST_ID}`;
                 } else if (data.postId) { // 새로 
-
+ 생성된 글의 경우 ID가 있을 수 있음
                   window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
                 } else {
                   window.location.href = `/${CURRENT_PAGE_LANG}/`; // 글 ID가 없는 경우 메인 페이지로
