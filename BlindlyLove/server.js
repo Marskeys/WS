@@ -633,22 +633,23 @@ app.delete('/api/categories/:name', async (req, res) => {
 
 
 // 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
+// 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
-  if (!keyword) return res.redirect(`/${res.locals.lang}/`); // 언어 경로 포함 리디렉션
+  const categoryFilter = req.query.category?.trim() || null; // ✅ 추가
+  if (!keyword) return res.redirect(`/${res.locals.lang}/`); 
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용 및 오타 수정
+  const safeLang = res.locals.lang;
 
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
 
   try {
-    // posts 테이블과 post_translations 테이블을 조인하여 검색
-    // 검색은 모든 언어의 제목/내용/카테고리에 대해 이루어져야 함
-    const [allPosts] = await db.query(`
+    // 기본 검색 SQL
+    let sql = `
       SELECT
           p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
           COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
@@ -656,21 +657,31 @@ app.get('/search', async (req, res) => {
       FROM posts p
       LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
       LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-      WHERE
+      WHERE (
           COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
           OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
-          OR p.categories LIKE ? -- 카테고리는 원본 이름으로 검색
+          OR p.categories LIKE ?
+      )
+    `;
+
+    const params = [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
+
+    // ✅ 카테고리 필터 추가
+    if (categoryFilter) {
+      sql += ` AND FIND_IN_SET(?, p.categories) > 0`; 
+      params.push(categoryFilter);
+    }
+
+    sql += `
       ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+    `;
 
+    const [allPosts] = await db.query(sql, params);
 
-    // 비공개 글 필터링
+    // 비공개 글 처리
     const filteredAll = allPosts.map(post => {
       if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
+        return { ...post, content: '이 글은 비공개로 설정되어 있습니다.' };
       }
       return post;
     });
@@ -679,8 +690,7 @@ app.get('/search', async (req, res) => {
     const totalPages = Math.ceil(total / limit);
     const paginationRange = generatePagination(page, totalPages);
 
-    // 🔁 전체 글에서 모든 카테고리와 가장 최근 글 작성일 기준 정렬
-    // 여기서는 언어별 카테고리 이름을 가져오도록 수정
+    // 카테고리 목록 불러오기 (관리자 전용)
     const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
     const [categoryRows] = await db.query(`
       SELECT
@@ -700,7 +710,7 @@ app.get('/search', async (req, res) => {
       GROUP BY original_category, translated_category_name
       ORDER BY latest DESC
     `);
-    // 고유한 번역된 카테고리 이름만 추출 (예: '기술', 'Technology')
+
     const allCategories = categoryRows.map(row => ({
       original: row.original_category,
       translated: row.translated_category_name
@@ -734,7 +744,7 @@ app.get('/search', async (req, res) => {
         total: totalPages,
         range: paginationRange
       },
-      selectedCategory: null,
+      selectedCategory: categoryFilter, // ✅ 선택된 카테고리 반영
       user: req.session.user,
       lang: safeLang,
       locale: res.locals.locale
@@ -744,6 +754,7 @@ app.get('/search', async (req, res) => {
     res.status(500).send('검색 중 오류 발생');
   }
 });
+
 
 // AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/api/search', async (req, res) => {

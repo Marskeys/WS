@@ -11,7 +11,6 @@
 
     <div class="full-layout">
       <aside class="side-panel main-panel-only">
-      
       </aside>
 
       <div class="main-layout">
@@ -31,7 +30,6 @@
               </div>
               <form method="get" action="/<%= lang %>/search" class="search-form">
                 <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
-
                 <button type="submit" class="icon-submit-btn">
                   <i class="fas fa-search"></i>
                 </button>
@@ -46,247 +44,294 @@
             %>
             <p class="search-result-msg"><%= resultLine %></p>
           <% } %>
-          
-          
-          <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
+
+          <!-- ===== 권한/상태 플래그 & 검색결과 카테고리 수집 ===== -->
+          <%
+            const isAdmin = user && user.is_admin === 1;
+            const isSearchMode = Boolean(isSearch && searchKeyword);
+
+            const resultCategorySet = new Set();
+            if (isSearchMode) {
+              (posts || []).forEach(p => {
+                (p.translated_categories_display || []).forEach(name => resultCategorySet.add(name));
+              });
+            }
+            const resultCategories = Array.from(resultCategorySet);
+
+            const canSeeListings = isAdmin || isSearchMode; // 목록/탭/페이지네이션 노출 여부
+          %>
+
+          <!-- ===== 탭 영역 ===== -->
+          <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>">
             <div class="tabs-blur-left"></div>
             <div class="tabs-blur-right"></div>
             <div class="tabs-wrapper">
               <div class="tabs">
                 <div class="tab-spacer"></div>
-                <a href="/<%= lang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">
-                  <%= locale.tabs.allPosts %>
-                </a>
-                
-          
-                <% if (isSearch) { %>
-                  <div class="tab active"><%= locale.tabs.searchResults %></div>
-                <% } %>
-          
-                <% categories.forEach(category => { %>
-                  <a href="/<%= lang %>/?category=<%= category.original %>" class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
-                    <%= category.translated %>
+
+                <% if (isAdmin) { %>
+                  <!-- 관리자: 전체탭 + (검색 중이면) 검색결과 탭 + 모든 카테고리 -->
+                  <a href="/<%= lang %>/?category=all"
+                     class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">
+                    <%= locale.tabs.allPosts %>
                   </a>
-                <% }) %>
+
+                  <% if (isSearchMode) { %>
+                    <div class="tab <%= isSearchMode ? 'active' : '' %>">
+                      <%= locale.tabs.searchResults %>
+                    </div>
+                  <% } %>
+
+                  <% (categories || []).forEach(category => { %>
+                    <a href="/<%= lang %>/?category=<%= category.original %>"
+                       class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
+                      <%= category.translated %>
+                    </a>
+                  <% }) %>
+
+                <% } else if (isSearchMode) { %>
+                  <!-- 일반 사용자(검색 중): 검색결과 탭 + 결과에 등장한 카테고리만 -->
+                  <div class="tab active"><%= locale.tabs.searchResults %></div>
+                  <% const searchBase = `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`; %>
+                  <% resultCategories.forEach(name => { %>
+                    <a href="<%= searchBase %>&category=<%= encodeURIComponent(name) %>" class="tab"><%= name %></a>
+                  <% }) %>
+                <% } %>
+                <!-- 일반 사용자 + 검색 아님: 탭 비노출 -->
               </div>
             </div>
           </div>
 
-          <% if (pagination.total > 1) { %>
-            <div class="pagination pagination-top desktop-only">
-              <%
-                const paginationBaseUrl = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
-              %>
-              <% if (pagination.current > 1) { %>
-                <a href="<%= paginationBaseUrl %>&page=1" class="page-link" aria-label="First">«</a>
-                <a href="<%= paginationBaseUrl %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
-              <% } else { %>
-                <span class="page-link disabled">«</span>
-                <span class="page-link disabled">‹</span>
-              <% } %>
+          <!-- ===== 목록/페이지네이션(데스크톱+모바일) - 권한/검색 상태에 따라 노출 ===== -->
+          <% if (canSeeListings) { %>
 
-              <% pagination.range.forEach(p => { %>
-                <% if (p === '...') { %>
-                  <span class="page-ellipsis">…</span>
+            <% if (pagination.total > 1) { %>
+              <div class="pagination pagination-top desktop-only">
+                <%
+                  const paginationBaseUrl = isSearchMode
+                    ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}${selectedCategory ? `&category=${encodeURIComponent(selectedCategory)}` : ''}`
+                    : `/${lang}/?category=${selectedCategory || 'all'}`;
+                %>
+                <% if (pagination.current > 1) { %>
+                  <a href="<%= paginationBaseUrl %>&page=1" class="page-link" aria-label="First">«</a>
+                  <a href="<%= paginationBaseUrl %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
                 <% } else { %>
-                  <a href="<%= paginationBaseUrl %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+                  <span class="page-link disabled">«</span>
+                  <span class="page-link disabled">‹</span>
                 <% } %>
-              <% }) %>
 
-              <% if (pagination.current < pagination.total) { %>
-                <a href="<%= paginationBaseUrl %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
-                <a href="<%= paginationBaseUrl %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
-              <% } else { %>
-                <span class="page-link disabled">›</span>
-                <span class="page-link disabled">»</span>
-              <% } %>
-            </div>
-          <% } %>
+                <% pagination.range.forEach(p => { %>
+                  <% if (p === '...') { %>
+                    <span class="page-ellipsis">…</span>
+                  <% } else { %>
+                    <a href="<%= paginationBaseUrl %>&page=<%= p %>"
+                       class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+                  <% } %>
+                <% }) %>
 
-          <table class="board-table">
-            <thead>
-              <tr>
-                <th><%= locale.tableHeaders.number %></th>
-                <th><%= locale.tableHeaders.title %></th>
-                <th><%= locale.tableHeaders.author %></th>
-                <th><%= locale.tableHeaders.category %></th>
-                <th><%= locale.tableHeaders.date %></th>
-                <th><%= locale.tableHeaders.views %></th>
-              </tr>
-            </thead>
-            <tbody id="board-content">
-              <% posts.forEach(post => { %>
+                <% if (pagination.current < pagination.total) { %>
+                  <a href="<%= paginationBaseUrl %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+                  <a href="<%= paginationBaseUrl %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+                <% } else { %>
+                  <span class="page-link disabled">›</span>
+                  <span class="page-link disabled">»</span>
+                <% } %>
+              </div>
+            <% } %>
+
+            <!-- 데스크톱 게시판 테이블 -->
+            <table class="board-table">
+              <thead>
                 <tr>
-                  <td><%= post.id %></td>
-                  <td>
-                    <div class="post-title-and-actions">
-                      <a href="/<%= lang %>/post/<%= post.id %>"
-                        class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
-                        data-post-id="<%= post.id %>"
-                        data-is-private="<%= post.is_private ? '1' : '0' %>"
-                        data-post-user-id="<%= post.user_id %>">
-                        
-                        <%
-                        const now = new Date();
-                        const createdAt = new Date(post.created_at);
-                        const updatedAt = new Date(post.updated_at);
-                        const oneDay = 1000 * 60 * 60 * 24;
-                      
-                        const isNew = (now - createdAt) < oneDay;
-                        const wasEdited = updatedAt > createdAt;
-                        const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-                        const showEditedLabel = !isNew && isRecentlyEdited;
+                  <th><%= locale.tableHeaders.number %></th>
+                  <th><%= locale.tableHeaders.title %></th>
+                  <th><%= locale.tableHeaders.author %></th>
+                  <th><%= locale.tableHeaders.category %></th>
+                  <th><%= locale.tableHeaders.date %></th>
+                  <th><%= locale.tableHeaders.views %></th>
+                </tr>
+              </thead>
+              <tbody id="board-content">
+                <% posts.forEach(post => { %>
+                  <tr>
+                    <td><%= post.id %></td>
+                    <td>
+                      <div class="post-title-and-actions">
+                        <a href="/<%= lang %>/post/<%= post.id %>"
+                          class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
+                          data-post-id="<%= post.id %>"
+                          data-is-private="<%= post.is_private ? '1' : '0' %>"
+                          data-post-user-id="<%= post.user_id %>">
+
+                          <%
+                            const now = new Date();
+                            const createdAt = new Date(post.created_at);
+                            const updatedAt = new Date(post.updated_at);
+                            const oneDay = 1000 * 60 * 60 * 24;
+
+                            const isNewPost = (now - createdAt) < oneDay;
+                            const wasEdited = updatedAt > createdAt;
+                            const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+                            const showEditedLabel = !isNewPost && isRecentlyEdited;
+                          %>
+
+                          <% if (isNewPost) { %>
+                            <span class="label-icon new-icon"></span>
+                          <% } else if (showEditedLabel) { %>
+                            <span class="label-icon edited-icon"></span>
+                          <% } %>
+
+                          <% if (post.is_pinned) { %><span>📌</span><% } %>
+                          <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+                        </a>
+
+                        <% if (user && user.id === post.user_id) { %>
+                          <div class="action-icons">
+                            <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                              <i class="fas fa-pen"></i>
+                            </a>
+                            <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                              <button type="submit" class="icon-btn delete-btn" title="삭제">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            </form>
+                          </div>
+                        <% } %>
+                      </div>
+                    </td>
+                    <td><%= post.author %></td>
+                    <td style="text-align: center;"><%= post.translated_categories_display.join(', ') %></td>
+                    <td><%= post.created_at.toISOString().slice(0, 10) %></td>
+                    <td style="text-align: center;"><%= post.views %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+
+            <% if (pagination.total > 1) { %>
+              <div class="pagination pagination-bottom desktop-only">
+                <%
+                  const paginationBaseUrlBottom = isSearchMode
+                    ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}${selectedCategory ? `&category=${encodeURIComponent(selectedCategory)}` : ''}`
+                    : `/${lang}/?category=${selectedCategory || 'all'}`;
+                %>
+                <% if (pagination.current > 1) { %>
+                  <a href="<%= paginationBaseUrlBottom %>&page=1" class="page-link" aria-label="First">«</a>
+                  <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+                <% } else { %>
+                  <span class="page-link disabled">«</span>
+                  <span class="page-link disabled">‹</span>
+                <% } %>
+
+                <% pagination.range.forEach(p => { %>
+                  <% if (p === '...') { %>
+                    <span class="page-ellipsis">…</span>
+                  <% } else { %>
+                    <a href="<%= paginationBaseUrlBottom %>&page=<%= p %>"
+                       class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+                  <% } %>
+                <% }) %>
+
+                <% if (pagination.current < pagination.total) { %>
+                  <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+                  <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+                <% } else { %>
+                  <span class="page-link disabled">›</span>
+                  <span class="page-link disabled">»</span>
+                <% } %>
+              </div>
+            <% } %>
+
+            <!-- 모바일 리스트 -->
+            <div class="mobile-board-list">
+              <% posts.forEach(post => { %>
+                <div class="mobile-post-item">
+                  <div class="post-title-and-actions">
+                    <a href="/<%= lang %>/post/<%= post.id %>"
+                      class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
+                      data-post-id="<%= post.id %>"
+                      data-is-private="<%= post.is_private ? '1' : '0' %>"
+                      data-post-user-id="<%= post.user_id %>">
+                      <%
+                        const nowM = new Date();
+                        const createdAtM = new Date(post.created_at);
+                        const updatedAtM = new Date(post.updated_at);
+                        const oneDayM = 1000 * 60 * 60 * 24;
+
+                        const isNewM = (nowM - createdAtM) < oneDayM;
+                        const wasEditedM = updatedAtM > createdAtM;
+                        const isRecentlyEditedM = wasEditedM && (nowM - updatedAtM < oneDayM);
+                        const showEditedLabelM = !isNewM && isRecentlyEditedM;
                       %>
-                      
-                      <% if (isNew) { %>
+
+                      <% if (isNewM) { %>
                         <span class="label-icon new-icon"></span>
-                      <% } else if (showEditedLabel) { %>
+                      <% } else if (showEditedLabelM) { %>
                         <span class="label-icon edited-icon"></span>
                       <% } %>
-            
+
                       <% if (post.is_pinned) { %><span>📌</span><% } %>
+                      <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+                    </a>
 
-                        <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
-                      </a>
-
-                      <% if (user && user.id === post.user_id) { %>
-                        <div class="action-icons">
-                          <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                            <i class="fas fa-pen"></i>
-                          </a>
-                          <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                            <button type="submit" class="icon-btn delete-btn" title="삭제">
-                              <i class="fas fa-trash"></i>
-                            </button>
-                          </form>
-                        </div>
-                      <% } %>
-                    </div>
-                  </td>
-                  <td><%= post.author %></td>
-                  <td style="text-align: center;"><%= post.translated_categories_display.join(', ') %></td>
-                  <td><%= post.created_at.toISOString().slice(0, 10) %></td>
-                  <td style="text-align: center;"><%= post.views %></td>
-                </tr>
+                    <% if (user && user.id === post.user_id) { %>
+                      <div class="action-icons">
+                        <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
+                          <i class="fas fa-pen"></i>
+                        </a>
+                        <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+                          <button type="submit" class="icon-btn delete-btn" title="삭제">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </form>
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="post-info">
+                    <%= post.author %> |
+                    <%= post.created_at.toISOString().slice(0, 10) %> |
+                    <%= locale.tableHeaders.views %> <%= post.views %> |
+                    <%= post.translated_categories_display.join(', ') %>
+                  </div>
+                </div>
               <% }) %>
-            </tbody>
-          </table>
-
-          <% if (pagination.total > 1) { %>
-            <div class="pagination pagination-bottom desktop-only">
-              <%
-                const paginationBaseUrlBottom = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
-              %>
-              <% if (pagination.current > 1) { %>
-                <a href="<%= paginationBaseUrlBottom %>&page=1" class="page-link" aria-label="First">«</a>
-                <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
-              <% } else { %>
-                <span class="page-link disabled">«</span>
-                <span class="page-link disabled">‹</span>
-              <% } %>
-
-              <% pagination.range.forEach(p => { %>
-                <% if (p === '...') { %>
-                  <span class="page-ellipsis">…</span>
-                <% } else { %>
-                  <a href="<%= paginationBaseUrlBottom %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
-                <% } %>
-              <% }) %>
-
-              <% if (pagination.current < pagination.total) { %>
-                <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
-                <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
-              <% } else { %>
-                <span class="page-link disabled">›</span>
-                <span class="page-link disabled">»</span>
-              <% } %>
             </div>
-          <% } %>
 
+            <% if (pagination.total > 1) { %>
+              <div class="pagination pagination-mobile mobile-only">
+                <%
+                  const paginationBaseUrlMobile = isSearchMode
+                    ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}${selectedCategory ? `&category=${encodeURIComponent(selectedCategory)}` : ''}`
+                    : `/${lang}/?category=${selectedCategory || 'all'}`;
+                %>
+                <% if (pagination.current > 1) { %>
+                  <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
+                  <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+                <% } else { %>
+                  <span class="page-link disabled">«</span>
+                  <span class="page-link disabled">‹</span>
+                <% } %>
 
-          <div class="mobile-board-list">
-            <% posts.forEach(post => { %>
-              <div class="mobile-post-item">
-                <div class="post-title-and-actions">
-                  <a href="/<%= lang %>/post/<%= post.id %>"
-                    class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
-                    data-post-id="<%= post.id %>"
-                    data-is-private="<%= post.is_private ? '1' : '0' %>"
-                    data-post-user-id="<%= post.user_id %>">
-                    <%
-                    const now = new Date();
-                    const createdAt = new Date(post.created_at);
-                    const updatedAt = new Date(post.updated_at);
-                    const oneDay = 1000 * 60 * 60 * 24;
-                  
-                    const isNew = (now - createdAt) < oneDay;
-                    const wasEdited = updatedAt > createdAt;
-                    const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-                    const showEditedLabel = !isNew && isRecentlyEdited;
-                  %>
-                  
-                  <% if (isNew) { %>
-                    <span class="label-icon new-icon"></span>
-                  <% } else if (showEditedLabel) { %>
-                    <span class="label-icon edited-icon"></span>
+                <% pagination.range.forEach(p => { %>
+                  <% if (p === '...') { %>
+                    <span class="page-ellipsis">…</span>
+                  <% } else { %>
+                    <a href="<%= paginationBaseUrlMobile %>&page=<%= p %>"
+                       class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
                   <% } %>
-        
-                  <% if (post.is_pinned) { %><span>📌</span><% } %>
-                    <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
-                  </a>
+                <% }) %>
 
-                  <% if (user && user.id === post.user_id) { %>
-                    <div class="action-icons">
-                      <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                        <i class="fas fa-pen"></i>
-                      </a>
-                      <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                        <button type="submit" class="icon-btn delete-btn" title="삭제">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </form>
-                    </div>
-                  <% } %>
-                </div>
-                <div class="post-info">
-                  <%= post.author %> |
-                  <%= post.created_at.toISOString().slice(0, 10) %> |
-                  <%= locale.tableHeaders.views %> <%= post.views %> |
-                  <%= post.translated_categories_display.join(', ') %>
-                </div>
+                <% if (pagination.current < pagination.total) { %>
+                  <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+                  <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+                <% } else { %>
+                  <span class="page-link disabled">›</span>
+                  <span class="page-link disabled">»</span>
+                <% } %>
               </div>
-            <% }) %>
-          </div>
-          <% if (pagination.total > 1) { %>
-            <div class="pagination pagination-mobile mobile-only">
-              <%
-                const paginationBaseUrlMobile = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
-              %>
-              <% if (pagination.current > 1) { %>
-                <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
-                <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
-              <% } else { %>
-                <span class="page-link disabled">«</span>
-                <span class="page-link disabled">‹</span>
-              <% } %>
+            <% } %>
 
-              <% pagination.range.forEach(p => { %>
-                <% if (p === '...') { %>
-                  <span class="page-ellipsis">…</span>
-                <% } else { %>
-                  <a href="<%= paginationBaseUrlMobile %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
-                <% } %>
-              <% }) %>
-
-              <% if (pagination.current < pagination.total) { %>
-                <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
-                <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
-              <% } else { %>
-                <span class="page-link disabled">›</span>
-                <span class="page-link disabled">»</span>
-              <% } %>
-            </div>
-          <% } %>
+          <% } %> <!-- /canSeeListings -->
 
           <div class="spacer"></div>
         </div>
@@ -308,6 +353,7 @@
         </div>
       </aside>
     </div>
+
     <script>
       function createMessageBox(message, isConfirm = false, onConfirm = null) {
         let modal = document.getElementById('customMessageModal');
@@ -317,8 +363,7 @@
           modal.style = `
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-            align-items: center; z-index: 1000;
-            display: none;
+            align-items: center; z-index: 1000; display: none;
           `;
           document.body.appendChild(modal);
         }
@@ -372,9 +417,7 @@
           });
         });
 
-        // 현재 페이지의 언어를 가져옵니다. (EJS 템플릿 변수를 사용)
-        const currentLanguage = '<%= lang %>'; 
-        // delete-post-form은 현재 이 파일에 없으므로, 해당 부분은 post-view.ejs에서 확인해야 합니다.
+        const currentLanguage = '<%= lang %>';
       });
     </script>
 
