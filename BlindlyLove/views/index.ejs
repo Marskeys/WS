@@ -108,7 +108,9 @@
                   </div>
 
                   <% facetCategories.forEach(cat => { %>
-                    <a href="/<%= lang %>/?category=<%= cat.original %>"
+                    <!-- href 막기 + data-cat-key로 강제 AJAX -->
+                    <a href="#"
+                       role="button"
                        class="tab <%= selectedCategory === cat.translated ? 'active' : '' %>"
                        data-cat-key="<%= cat.original %>"
                        data-cat-id="<%= cat.id %>">
@@ -229,7 +231,6 @@
                   <span class="page-link disabled">«</span>
                   <span class="page-link disabled">‹</span>
                 <% } %>
-
                 <% pagination.range.forEach(p => { %>
                   <% if (p === '...') { %>
                     <span class="page-ellipsis">…</span>
@@ -238,7 +239,6 @@
                        class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
                   <% } %>
                 <% }) %>
-
                 <% if (pagination.current < pagination.total) { %>
                   <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
                   <a href="<%= paginationBaseUrlBottom %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
@@ -269,7 +269,7 @@
                         const isRecentlyEditedM = wasEditedM && (nowM - updatedAtM < oneDayM);
                         const showEditedLabelM = !isNewM && isRecentlyEditedM;
                       %>
-                      <% if (isNewM) { %><span class="label-icon new-icon"></span><% } else if (showEditedLabelM) { %><span class="label-icon edited-icon"></span><% } %>
+                      <% if (isNewM) { %><span class="label-icon new-icon"></span><% } else { %><% if (showEditedLabelM) { %><span class="label-icon edited-icon"></span><% } %><% } %>
                       <% if (post.is_pinned) { %><span>📌</span><% } %>
                       <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                     </a>
@@ -389,8 +389,6 @@
           });
         };
         postDetailLinks.forEach(guard);
-
-        const currentLanguage = '<%= lang %>';
       });
     </script>
 
@@ -401,25 +399,28 @@
 
         const tabsRoot = document.getElementById('postTabs');
 
+        // 캡처 단계에서 가로채서 /api/posts만 호출
         tabsRoot?.addEventListener('click', (e) => {
-          const a = e.target.closest('a.tab');
+          const a = e.target.closest('a.tab[data-cat-key]');
           if (!a) return;
+          if (!searchKeyword) return;
+
+          e.preventDefault();
+          e.stopPropagation();
+          e.stopImmediatePropagation(); // 다른 핸들러 전부 무력화
 
           const catKey = a.dataset.catKey;
-          if (searchKeyword && catKey) {
-            e.preventDefault();
-            fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
-              .then(res => res.json())
-              .then(data => {
-                updatePostLists(Array.isArray(data.posts) ? data.posts : []);
-                activateTab(a);
-                setPaginationVisible(false);
-              })
-              .catch(err => console.error('AJAX 카테고리 전체글 로드 오류:', err));
-            return;
-          }
-        });
+          fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
+            .then(res => res.json())
+            .then(({ posts = [] }) => {
+              updatePostLists(posts);
+              activateTab(a);
+              setPaginationVisible(false);
+            })
+            .catch(err => console.error('AJAX 카테고리 전체글 로드 오류:', err));
+        }, true); // capture:true
 
+        // “검색결과” 탭 → 검색 원본 복귀
         const searchResultTab = document.querySelector('.tabs [data-search-tab="1"]');
         if (searchResultTab && searchKeyword) {
           searchResultTab.addEventListener('click', (e) => {
