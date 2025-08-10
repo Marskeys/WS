@@ -89,21 +89,20 @@
                     </a>
                   <% }) %>
 
-                  <% } else if (isSearchMode) { %>
-                    <% const searchBase = `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`; %>
-                  
-                    <!-- 검색결과 탭: 카테고리 선택 안 된 경우만 활성화 -->
-                    <div class="tab <%= selectedCategory ? '' : 'active' %>">
-                      <%= locale.tabs.searchResults %>
-                    </div>
-                  
-                    <% resultCategories.forEach(name => { %>
-                      <a href="<%= searchBase %>&category=<%= encodeURIComponent(name) %>"
-                         class="tab <%= selectedCategory === name ? 'active' : '' %>">
-                        <%= name %>
-                      </a>
-                    <% }) %>
-                  <% } %>
+                <% } else if (isSearchMode) { %>
+                  <% const searchBase = `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`; %>
+                  <!-- 검색결과 탭: 카테고리 선택 안 된 경우만 활성화 -->
+                  <div class="tab <%= selectedCategory ? '' : 'active' %>">
+                    <%= locale.tabs.searchResults %>
+                  </div>
+
+                  <% resultCategories.forEach(name => { %>
+                    <a href="<%= searchBase %>&category=<%= encodeURIComponent(name) %>"
+                       class="tab <%= selectedCategory === name ? 'active' : '' %>">
+                      <%= name %>
+                    </a>
+                  <% }) %>
+                <% } %>
                 <!-- 일반 사용자 + 검색 아님: 탭 비노출 -->
               </div>
             </div>
@@ -413,110 +412,160 @@
         const currentUserId = currentUser ? currentUser.id : null;
         const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
 
-        postDetailLinks.forEach(link => {
+        // 전역으로도 보관해서 AJAX 렌더 후 재사용
+        window.BL_USER = currentUser;
+
+        const guard = (link) => {
           link.addEventListener('click', (event) => {
             const isPrivate = event.currentTarget.dataset.isPrivate === '1';
             const postUserId = event.currentTarget.dataset.postUserId;
-            if (isPrivate && postUserId !== currentUserId && !isAdmin) {
+            if (isPrivate && postUserId !== String(currentUserId) && !isAdmin) {
               event.preventDefault();
               showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
             }
           });
-        });
+        };
+
+        postDetailLinks.forEach(guard);
 
         const currentLanguage = '<%= lang %>';
       });
     </script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const searchKeyword = '<%= searchKeyword || '' %>';
-    const currentLang = '<%= lang %>';
-  
-    // 탭 클릭 이벤트
-    document.querySelectorAll('.tabs .tab').forEach(tab => {
-      tab.addEventListener('click', function (e) {
-        const link = this.getAttribute('href');
-        if (!link) return; // 검색결과 탭 같은 <div>는 무시
-        if (!searchKeyword) return; // 검색 상태 아니면 무시
-  
-        e.preventDefault();
-  
-        const url = new URL(link, window.location.origin);
-        const category = url.searchParams.get('category') || '';
-  
-        fetch(`/api/search?q=${encodeURIComponent(searchKeyword)}${category ? `&category=${encodeURIComponent(category)}` : ''}`)
-          .then(res => res.json())
-          .then(data => {
-            updatePostLists(data.posts);
-            updateActiveTab(category);
-          })
-          .catch(err => console.error('AJAX 카테고리 필터 오류:', err));
-      });
-    });
-  
-    // 목록 업데이트 함수
-    function updatePostLists(posts) {
-      const tableBody = document.querySelector('#board-content');
-      const mobileList = document.querySelector('.mobile-board-list');
-  
-      if (tableBody) tableBody.innerHTML = '';
-      if (mobileList) mobileList.innerHTML = '';
-  
-      posts.forEach(post => {
-        // 데스크톱 테이블 행
-        if (tableBody) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${post.id}</td>
-            <td>
-              <a href="/${currentLang}/post/${post.id}" class="post-detail-link ${post.is_pinned ? 'pinned-title' : ''}">
-                ${post.is_pinned ? '📌 ' : ''}${post.title}${post.is_private ? ' <i class="fas fa-lock"></i>' : ''}
-              </a>
-            </td>
-            <td>${post.author}</td>
-            <td style="text-align:center;">${post.categories.join(', ')}</td>
-            <td>${post.created_at ? post.created_at.slice(0, 10) : ''}</td>
-            <td style="text-align:center;">${post.views || 0}</td>
-          `;
-          tableBody.appendChild(tr);
-        }
-  
-        // 모바일 리스트
-        if (mobileList) {
-          const div = document.createElement('div');
-          div.className = 'mobile-post-item';
-          div.innerHTML = `
-            <div class="post-title-and-actions">
-              <a href="/${currentLang}/post/${post.id}" class="post-title post-detail-link ${post.is_pinned ? 'pinned-title' : ''}">
-                ${post.is_pinned ? '📌 ' : ''}${post.title}${post.is_private ? ' <i class="fas fa-lock"></i>' : ''}
-              </a>
-            </div>
-            <div class="post-info">
-              ${post.author} | ${post.created_at ? post.created_at.slice(0, 10) : ''} | 조회 ${post.views || 0} | ${post.categories.join(', ')}
-            </div>
-          `;
-          mobileList.appendChild(div);
-        }
-      });
-    }
-  
-    // 탭 활성화 상태 변경
-    function updateActiveTab(category) {
-      document.querySelectorAll('.tabs .tab').forEach(tab => tab.classList.remove('active'));
-  
-      if (category) {
-        document.querySelectorAll(`.tabs .tab[href*="category=${encodeURIComponent(category)}"]`)
-          .forEach(tab => tab.classList.add('active'));
-      } else {
-        // 카테고리 없는 경우(검색결과 탭 활성)
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const searchKeyword = '<%= searchKeyword || '' %>';
+        const currentLang = '<%= lang %>';
+
+        // a[href] 로 걸린 카테고리 탭만 대상으로
+        document.querySelectorAll('.tabs a.tab[href]').forEach(tab => {
+          tab.addEventListener('click', function (e) {
+            if (!searchKeyword) return; // 검색 상태 아니면 무시
+            e.preventDefault();
+
+            const url = new URL(this.getAttribute('href'), window.location.origin);
+            const category = url.searchParams.get('category') || '';
+
+            fetch(`/api/search?q=${encodeURIComponent(searchKeyword)}${category ? `&category=${encodeURIComponent(category)}` : ''}`)
+              .then(res => res.json())
+              .then(data => {
+                updatePostLists(data.posts);
+                updateActiveTab(category);
+                // history.replaceState(null, '', `/${currentLang}/search?q=${encodeURIComponent(searchKeyword)}${category ? `&category=${encodeURIComponent(category)}` : ''}`);
+              })
+              .catch(err => console.error('AJAX 카테고리 필터 오류:', err));
+          });
+        });
+
+        // “검색결과” 탭(비링크) 클릭 시 전체 검색으로 복귀
         const searchResultTab = document.querySelector('.tabs .tab:not([href])');
-        if (searchResultTab) searchResultTab.classList.add('active');
-      }
-    }
-  });
-  </script>
-  
+        if (searchResultTab && searchKeyword) {
+          searchResultTab.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch(`/api/search?q=${encodeURIComponent(searchKeyword)}`)
+              .then(res => res.json())
+              .then(data => {
+                updatePostLists(data.posts);
+                updateActiveTab('');
+                // history.replaceState(null, '', `/${currentLang}/search?q=${encodeURIComponent(searchKeyword)}`);
+              })
+              .catch(err => console.error('AJAX 검색결과 탭 오류:', err));
+          });
+        }
+
+        // 목록 업데이트 함수 (새로 그린 링크에도 비공개 가드 재적용)
+        function updatePostLists(posts) {
+          const tableBody = document.querySelector('#board-content');
+          const mobileList = document.querySelector('.mobile-board-list');
+
+          if (tableBody) tableBody.innerHTML = '';
+          if (mobileList) mobileList.innerHTML = '';
+
+          posts.forEach(post => {
+            // 데스크톱 테이블 행
+            if (tableBody) {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td>${post.id}</td>
+                <td>
+                  <a href="/${currentLang}/post/${post.id}" 
+                     class="post-detail-link ${post.is_pinned ? 'pinned-title' : ''}"
+                     data-is-private="${post.is_private ? '1' : '0'}"
+                     data-post-user-id="${post.user_id ?? ''}">
+                    ${post.is_pinned ? '📌 ' : ''}${post.title}${post.is_private ? ' <i class="fas fa-lock"></i>' : ''}
+                  </a>
+                </td>
+                <td>${post.author ?? ''}</td>
+                <td style="text-align:center;">${(post.categories || []).join(', ')}</td>
+                <td>${post.created_at ? post.created_at.slice(0, 10) : ''}</td>
+                <td style="text-align:center;">${post.views || 0}</td>
+              `;
+              tableBody.appendChild(tr);
+            }
+
+            // 모바일 리스트
+            if (mobileList) {
+              const div = document.createElement('div');
+              div.className = 'mobile-post-item';
+              div.innerHTML = `
+                <div class="post-title-and-actions">
+                  <a href="/${currentLang}/post/${post.id}" 
+                     class="post-title post-detail-link ${post.is_pinned ? 'pinned-title' : ''}"
+                     data-is-private="${post.is_private ? '1' : '0'}"
+                     data-post-user-id="${post.user_id ?? ''}">
+                    ${post.is_pinned ? '📌 ' : ''}${post.title}${post.is_private ? ' <i class="fas fa-lock"></i>' : ''}
+                  </a>
+                </div>
+                <div class="post-info">
+                  ${post.author ?? ''} | ${post.created_at ? post.created_at.slice(0, 10) : ''} | <%= locale.tableHeaders.views %> ${post.views || 0} | ${(post.categories || []).join(', ')}
+                </div>
+              `;
+              mobileList.appendChild(div);
+            }
+          });
+
+          // 비공개 가드 재적용
+          attachPrivateLinkGuards();
+        }
+
+        // 탭 활성화 상태 변경
+        function updateActiveTab(category) {
+          document.querySelectorAll('.tabs .tab').forEach(tab => tab.classList.remove('active'));
+
+          if (category) {
+            document.querySelectorAll(`.tabs a.tab[href*="category=${encodeURIComponent(category)}"]`)
+              .forEach(tab => tab.classList.add('active'));
+          } else {
+            const searchTab = document.querySelector('.tabs .tab:not([href])');
+            if (searchTab) searchTab.classList.add('active');
+          }
+        }
+
+        // 비공개 접근 차단 로직 (AJAX 후 재바인딩용)
+        function attachPrivateLinkGuards() {
+          const links = document.querySelectorAll('.post-detail-link');
+          const currentUser = window.BL_USER || null;
+          const currentUserId = currentUser ? String(currentUser.id) : null;
+          const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
+
+          links.forEach(link => {
+            // 중복 바인딩 방지
+            if (link.__bl_guard_attached) return;
+            link.__bl_guard_attached = true;
+
+            link.addEventListener('click', (event) => {
+              const isPrivate = event.currentTarget.dataset.isPrivate === '1';
+              const postUserId = event.currentTarget.dataset.postUserId;
+              if (isPrivate && postUserId !== String(currentUserId) && !isAdmin) {
+                event.preventDefault();
+                showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
+              }
+            });
+          });
+        }
+      });
+    </script>
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>
