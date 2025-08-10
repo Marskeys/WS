@@ -633,7 +633,6 @@ app.delete('/api/categories/:name', async (req, res) => {
 
 
 // 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
-// 검색 결과 페이지 (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/search', async (req, res) => {
   const keyword = req.query.q?.trim();
   const categoryFilter = req.query.category?.trim() || null; // ✅ 추가
@@ -755,6 +754,76 @@ app.get('/search', async (req, res) => {
   }
 });
 
+// ① 카테고리 전체 글 API (검색어 무시, 언어별 제목/카테고리 표시)
+app.get('/api/posts', async (req, res) => {
+  const catKey = (req.query.category || '').trim();      // posts.categories 안에 들어있는 원본 이름(쉼표CSV의 각 토큰)
+  const safeLang = res.locals.lang || 'ko';
+  const page = parseInt(req.query.page || '1', 10);
+  const size = parseInt(req.query.size || '20', 10);
+  const offset = (page - 1) * size;
+
+  if (!catKey) return res.json({ posts: [] });
+
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+
+  try {
+    // 언어별 제목 우선순위: 요청언어 → ko → 원문
+    const [rows] = await db.query(`
+      SELECT
+        p.id, p.user_id, p.author, p.is_private, p.is_pinned, IFNULL(p.views,0) AS views,
+        p.categories, p.created_at, p.updated_at,
+        COALESCE(pt_req.title, pt_ko.title, p.title) AS title
+      FROM posts p
+      LEFT JOIN post_translations pt_req
+        ON pt_req.post_id = p.id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko
+        ON pt_ko.post_id = p.id AND pt_ko.lang_code = 'ko'
+      WHERE FIND_IN_SET(?, p.categories) > 0
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
+    `, [safeLang, catKey, size, offset]);
+
+    // 카테고리 번역 맵(원본 name -> 표시용 이름)
+    const catCol = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    const [catRows] = await db.query(`
+      SELECT name AS original, COALESCE(${catCol}, name) AS label
+      FROM categories
+    `);
+    const catMap = Object.fromEntries(catRows.map(r => [String(r.original).trim(), r.label]));
+
+    // 비공개 필터 + 카테고리 표시 배열 구성
+    const posts = rows.map(post => {
+      // categories: "에세이, 개발 일지" → ["에세이","개발 일지"] → 언어별 라벨로 매핑
+      const originals = (post.categories || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const translated = originals.map(o => catMap[o] || o);
+
+      // 비공개: 본인/관리자 외엔 내용 숨김(리스트라 내용은 안 쓰지만 안전하게)
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          categories: translated,                          // 프런트에서 그대로 표시 가능
+          translated_categories_display: translated        // 호환 필드
+        };
+      }
+
+      return {
+        ...post,
+        categories: translated,
+        translated_categories_display: translated
+      };
+    });
+
+    res.json({ posts });
+  } catch (err) {
+    console.error('[/api/posts] 오류:', err);
+    res.status(500).json({ error: '카테고리 전체 글 로드 실패' });
+  }
+});
 
 // AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/api/search', async (req, res) => {
