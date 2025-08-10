@@ -90,6 +90,8 @@
                   <% }) %>
 
                   <% } else if (isSearchMode) { %>
+                    <% const searchBase = `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`; %>
+                  
                     <!-- 검색결과 탭: 카테고리 선택 안 된 경우만 활성화 -->
                     <div class="tab <%= selectedCategory ? '' : 'active' %>">
                       <%= locale.tabs.searchResults %>
