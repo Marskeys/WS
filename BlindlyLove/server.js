@@ -759,58 +759,64 @@ app.get('/search', async (req, res) => {
 // AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
+  const categoryFilter = req.query.category?.trim() || null; // ✅ 추가
   if (!keyword) return res.json({ posts: [] });
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
+  const safeLang = res.locals.lang;
 
   try {
-    // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
-    const [posts] = await db.query(`
+    let sql = `
       SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned, p.views,
           COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
           COALESCE(pt_req.content, pt_ko.content, p.content) AS content
       FROM posts p
       LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
       LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-      WHERE
+      WHERE (
           COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
           OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
-          OR p.categories LIKE ? -- 카테고리는 원본 이름으로 검색
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+          OR p.categories LIKE ?
+      )
+    `;
+    const params = [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
 
-    // 비공개 글의 내용을 필터링합니다
+    if (categoryFilter) {
+      sql += ` AND FIND_IN_SET(?, p.categories) > 0`;
+      params.push(categoryFilter);
+    }
+
+    sql += `
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `;
+
+    const [posts] = await db.query(sql, params);
+
     const filteredPosts = posts.map(post => {
-      // 글이 비공개이고, 작성자도 아니고, 관리자도 아닌 경우
       if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.' // 내용은 숨기고 메시지 표시
-        };
+        return { ...post, content: '이 글은 비공개로 설정되어 있습니다.' };
       }
       return post;
     });
 
-    // 각 게시글의 카테고리도 번역하여 응답에 포함
     for (const post of filteredPosts) {
-        const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-        const translatedCategories = [];
-        if (originalCategories.length > 0) {
-            const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-            const placeholders = originalCategories.map(() => '?').join(',');
-            const [categoryNames] = await db.query(
-                `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-                originalCategories
-            );
-            translatedCategories.push(...categoryNames.map(row => row.name));
-        }
-        post.categories = translatedCategories; // 번역된 카테고리 이름으로 대체
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.categories = translatedCategories;
     }
 
-    res.json({ posts: filteredPosts }); // 필터링된 글 목록 전달
+    res.json({ posts: filteredPosts });
   } catch (err) {
     console.error('AJAX 검색 오류:', err);
     res.status(500).json({ error: '검색 중 오류 발생' });
