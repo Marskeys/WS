@@ -89,14 +89,19 @@
                     </a>
                   <% }) %>
 
-                <% } else if (isSearchMode) { %>
-                  <!-- 일반 사용자(검색 중): 검색결과 탭 + 결과에 등장한 카테고리만 -->
-                  <div class="tab active"><%= locale.tabs.searchResults %></div>
-                  <% const searchBase = `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`; %>
-                  <% resultCategories.forEach(name => { %>
-                    <a href="<%= searchBase %>&category=<%= encodeURIComponent(name) %>" class="tab"><%= name %></a>
-                  <% }) %>
-                <% } %>
+                  <% } else if (isSearchMode) { %>
+                    <!-- 검색결과 탭: 카테고리 선택 안 된 경우만 활성화 -->
+                    <div class="tab <%= selectedCategory ? '' : 'active' %>">
+                      <%= locale.tabs.searchResults %>
+                    </div>
+                  
+                    <% resultCategories.forEach(name => { %>
+                      <a href="<%= searchBase %>&category=<%= encodeURIComponent(name) %>"
+                         class="tab <%= selectedCategory === name ? 'active' : '' %>">
+                        <%= name %>
+                      </a>
+                    <% }) %>
+                  <% } %>
                 <!-- 일반 사용자 + 검색 아님: 탭 비노출 -->
               </div>
             </div>
