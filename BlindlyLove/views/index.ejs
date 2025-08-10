@@ -49,7 +49,6 @@
             const isAdmin = user && user.is_admin === 1;
             const isSearchMode = Boolean(isSearch && searchKeyword);
 
-            // 검색결과에 등장한 "번역된" 카테고리명 세트 + 카운트
             const resultCategorySet = new Set();
             const resultCatCount = {};
             if (isSearchMode) {
@@ -61,20 +60,19 @@
               });
             }
 
-            // facets: 전체 카테고리 중 검색결과에 등장한 애만, id/원본키 포함
             const facetCategories = [];
             (categories || []).forEach(cat => {
               if (resultCategorySet.has(cat.translated)) {
                 facetCategories.push({
-                  id: cat.id,                           // 숫자 id 있으면 사용
-                  original: cat.original,               // 내부 key/slug
-                  translated: cat.translated,           // 표시용
+                  id: cat.id,
+                  original: cat.original,
+                  translated: cat.translated,
                   count: resultCatCount[cat.translated] || 0
                 });
               }
             });
 
-            const canSeeListings = isAdmin || isSearchMode; // 목록/탭/페이지네이션 노출
+            const canSeeListings = isAdmin || isSearchMode;
           %>
 
           <!-- ===== 탭 영역 ===== -->
@@ -86,7 +84,6 @@
                 <div class="tab-spacer"></div>
 
                 <% if (isAdmin) { %>
-                  <!-- 관리자: 전체탭 + (검색 중이면) 검색결과 탭 + 모든 카테고리 -->
                   <a href="/<%= lang %>/?category=all"
                      class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">
                     <%= locale.tabs.allPosts %>
@@ -106,13 +103,11 @@
                   <% }) %>
 
                 <% } else if (isSearchMode) { %>
-                  <!-- 일반 사용자 + 검색 중: '검색결과' + facet 카테고리(검색에 등장한 것만) -->
                   <div class="tab <%= selectedCategory ? '' : 'active' %>" data-search-tab="1">
                     <%= locale.tabs.searchResults %>
                   </div>
 
                   <% facetCategories.forEach(cat => { %>
-                    <!-- a[href]는 점잖은 폴백, JS로 ajax 가로채서 /api/posts 로 전체글 로드 -->
                     <a href="/<%= lang %>/?category=<%= cat.original %>"
                        class="tab <%= selectedCategory === cat.translated ? 'active' : '' %>"
                        data-cat-key="<%= cat.original %>"
@@ -163,7 +158,6 @@
               </div>
             <% } %>
 
-            <!-- 데스크톱 게시판 테이블 -->
             <table class="board-table">
               <thead>
                 <tr>
@@ -186,7 +180,6 @@
                           data-post-id="<%= post.id %>"
                           data-is-private="<%= post.is_private ? '1' : '0' %>"
                           data-post-user-id="<%= post.user_id %>">
-
                           <%
                             const now = new Date();
                             const createdAt = new Date(post.created_at);
@@ -198,26 +191,16 @@
                             const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
                             const showEditedLabel = !isNewPost && isRecentlyEdited;
                           %>
-
-                          <% if (isNewPost) { %>
-                            <span class="label-icon new-icon"></span>
-                          <% } else if (showEditedLabel) { %>
-                            <span class="label-icon edited-icon"></span>
-                          <% } %>
-
+                          <% if (isNewPost) { %><span class="label-icon new-icon"></span><% } else if (showEditedLabel) { %><span class="label-icon edited-icon"></span><% } %>
                           <% if (post.is_pinned) { %><span>📌</span><% } %>
                           <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                         </a>
 
                         <% if (user && user.id === post.user_id) { %>
                           <div class="action-icons">
-                            <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                              <i class="fas fa-pen"></i>
-                            </a>
+                            <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정"><i class="fas fa-pen"></i></a>
                             <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                              <button type="submit" class="icon-btn delete-btn" title="삭제">
-                                <i class="fas fa-trash"></i>
-                              </button>
+                              <button type="submit" class="icon-btn delete-btn" title="삭제"><i class="fas fa-trash"></i></button>
                             </form>
                           </div>
                         <% } %>
@@ -266,7 +249,6 @@
               </div>
             <% } %>
 
-            <!-- 모바일 리스트 -->
             <div class="mobile-board-list">
               <% posts.forEach(post => { %>
                 <div class="mobile-post-item">
@@ -287,13 +269,7 @@
                         const isRecentlyEditedM = wasEditedM && (nowM - updatedAtM < oneDayM);
                         const showEditedLabelM = !isNewM && isRecentlyEditedM;
                       %>
-
-                      <% if (isNewM) { %>
-                        <span class="label-icon new-icon"></span>
-                      <% } else if (showEditedLabelM) { %>
-                        <span class="label-icon edited-icon"></span>
-                      <% } %>
-
+                      <% if (isNewM) { %><span class="label-icon new-icon"></span><% } else if (showEditedLabelM) { %><span class="label-icon edited-icon"></span><% } %>
                       <% if (post.is_pinned) { %><span>📌</span><% } %>
                       <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
                     </a>
@@ -322,7 +298,6 @@
                   <span class="page-link disabled">«</span>
                   <span class="page-link disabled">‹</span>
                 <% } %>
-
                 <% pagination.range.forEach(p => { %>
                   <% if (p === '...') { %>
                     <span class="page-ellipsis">…</span>
@@ -331,7 +306,6 @@
                        class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
                   <% } %>
                 <% }) %>
-
                 <% if (pagination.current < pagination.total) { %>
                   <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
                   <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
@@ -342,7 +316,7 @@
               </div>
             <% } %>
 
-          <% } %> <!-- /canSeeListings -->
+          <% } %>
 
           <div class="spacer"></div>
         </div>
@@ -425,14 +399,12 @@
         const searchKeyword = '<%= searchKeyword || '' %>';
         const currentLang = '<%= lang %>';
 
-        // 탭 클릭 이벤트 위임
         const tabsRoot = document.getElementById('postTabs');
 
         tabsRoot?.addEventListener('click', (e) => {
           const a = e.target.closest('a.tab');
           if (!a) return;
 
-          // 검색모드 + facet 탭 클릭 → /api/posts 로 "해당 카테고리 전체 글" 로드
           const catKey = a.dataset.catKey;
           if (searchKeyword && catKey) {
             e.preventDefault();
@@ -441,14 +413,13 @@
               .then(data => {
                 updatePostLists(Array.isArray(data.posts) ? data.posts : []);
                 activateTab(a);
-                setPaginationVisible(false); // ajax 목록은 서버 페이지네이션 숨김
+                setPaginationVisible(false);
               })
               .catch(err => console.error('AJAX 카테고리 전체글 로드 오류:', err));
             return;
           }
         });
 
-        // “검색결과” 탭(비링크) 클릭 → 검색 원본 목록 복귀(AJAX)
         const searchResultTab = document.querySelector('.tabs [data-search-tab="1"]');
         if (searchResultTab && searchKeyword) {
           searchResultTab.addEventListener('click', (e) => {
@@ -509,7 +480,6 @@
           if (mobileList) mobileList.innerHTML = '';
 
           posts.forEach(post => {
-            // 데스크톱 테이블 행
             if (tableBody) {
               const tr = document.createElement('tr');
               tr.innerHTML = `
@@ -530,7 +500,6 @@
               tableBody.appendChild(tr);
             }
 
-            // 모바일 리스트
             if (mobileList) {
               const div = document.createElement('div');
               div.className = 'mobile-post-item';
