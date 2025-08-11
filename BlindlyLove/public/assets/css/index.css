@@ -5,78 +5,18 @@
   position: fixed;
   width: 100%;
   height: calc(100vh - 100px);
-  margin-bottom: -100px;
+  margin-bottom: -100px; /* 검색창에 가까이 */
   overflow: hidden;
 }
 
 #cherry-canvas {
-  position: absolute;
-  top: 10px;
+  position: absolute; /* ✅ fixed → absolute */
+  top: 10px;          /* ✅ header 아래부터 시작 */
   left: 0;
   width: 100vw;
   height: 80vh;
-  z-index: 1;
+  z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
   pointer-events: none;
-}
-
-/* ============================
-   🌬️ 캐릭터 애니메이션
-============================ */
-.character-anim {
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
-
-/* ============================
-   🧱 전체 레이아웃
-============================ */
-.full-layout {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 1500px;
-  margin: 0 auto;
-}
-
-.main-layout {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  flex-wrap: nowrap;
-  min-width: 0;
-}
-
-.main-panel {
-  background-color: transparent;
-  min-height: 100vh;
-  flex-direction: column;
-  padding: 0 0.5rem;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  max-width: calc(100vw - 400px);
-}
-
-.side-panel {
-  flex: 1;
-  max-width: 200px;
-  min-width: 200px;
-  background-color: transparent;
-  border-radius: 0;
-  min-height: 100vh;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
-  opacity: 0.95;
-  overflow: hidden;
-  padding: 0 0.5rem;
-  z-index: 8000;
-}
-
-.side-panel.right-panel-only {
-  flex-shrink: 0;
-  width: 200px;
 }
 
 /* ============================
@@ -150,6 +90,66 @@
 }
 
 /* ============================
+   🌬️ 캐릭터 애니메이션
+============================ */
+.character-anim {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+/* ============================
+   🧱 전체 레이아웃
+============================ */
+.full-layout {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.main-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.main-panel {
+  background-color: transparent;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 0 0.5rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  max-width: calc(100vw - 400px);
+}
+
+.side-panel {
+  flex: 1;
+  max-width: 200px;
+  min-width: 200px;
+  background-color: transparent;
+  border-radius: 0;
+  min-height: 100vh;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+  opacity: 0.95;
+  overflow: hidden;
+  padding: 0 0.5rem;
+  z-index: 8000;
+}
+
+.side-panel.right-panel-only {
+  flex-shrink: 0;
+  width: 200px;
+}
+
+/* ============================
    🧾 탭 + 게시판 (데스크탑)
 ============================ */
 .tab-board {
@@ -169,6 +169,7 @@
   padding: 0rem 0.2rem;
   margin-bottom: 0.1rem;
   box-sizing: border-box;
+  overflow-x: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -182,6 +183,7 @@
   width: 100%;
 }
 
+/* 왼쪽 블러 */
 .tabs-blur-left {
   position: absolute;
   top: 0;
@@ -189,10 +191,17 @@
   width: 30px;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 250, 0.6) 40%, rgba(255, 240, 245, 0.2) 80%, rgba(255, 240, 245, 0) 100%);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 248, 250, 0.6) 40%,
+    rgba(255, 240, 245, 0.2) 80%,
+    rgba(255, 240, 245, 0) 100%
+  );
   z-index: 5;
 }
 
+/* 오른쪽 블러 */
 .tabs-blur-right {
   position: absolute;
   top: 0;
@@ -200,16 +209,30 @@
   width: 30px;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(to left, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 250, 0.6) 40%, rgba(255, 240, 245, 0.2) 80%, rgba(255, 240, 245, 0) 100%);
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 248, 250, 0.6) 40%,
+    rgba(255, 240, 245, 0.2) 80%,
+    rgba(255, 240, 245, 0) 100%
+  );
   z-index: 5;
 }
 
 html.dark .tabs-blur-right {
-  background: linear-gradient(to left, rgba(11, 11, 26, 1) 0%, rgba(11, 11, 26, 0.6) 30%, rgba(11, 11, 26, 0.2) 60%, rgba(11, 11, 26, 0) 100%);
+  background: linear-gradient(to left,
+    rgba(11, 11, 26, 1) 0%,
+    rgba(11, 11, 26, 0.6) 30%,
+    rgba(11, 11, 26, 0.2) 60%,
+    rgba(11, 11, 26, 0) 100%);
 }
 
 html.dark .tabs-blur-left {
-  background: linear-gradient(to right, rgba(11, 11, 26, 1) 0%, rgba(11, 11, 26, 0.6) 30%, rgba(11, 11, 26, 0.2) 60%, rgba(11, 11, 26, 0) 100%);
+  background: linear-gradient(to right,
+    rgba(11, 11, 26, 1) 0%,
+    rgba(11, 11, 26, 0.6) 30%,
+    rgba(11, 11, 26, 0.2) 60%,
+    rgba(11, 11, 26, 0) 100%);
 }
 
 .tabs {
@@ -238,35 +261,19 @@ html.dark .tabs-blur-left {
 .tab:hover {
   background-color: #f7f3ff;
   border-color: #c4b2ff;
+  color: #d14da8;
+  background-color: rgba(247, 243, 255, 0.3);
 }
 
 .tab.active {
   background: #ffe4e1;
   border-color: #ff9999;
   font-weight: bold;
+  color: black;
 }
 
 .tabs::-webkit-scrollbar {
   display: none;
-}
-
-@media (max-width: 640px) {
-  .tabs-wrapper {
-    width: 100%;
-    max-width: 95vw;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .tabs-wrapper::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tab {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.7rem;
-  }
 }
 
 .board-table {
@@ -378,11 +385,28 @@ form button:hover {
     margin-top: 0.5rem;
   }
 
+  .tabs-wrapper {
+    width: 100%;
+    max-width: 95vw;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .tabs-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
   .tabs {
     padding: 1rem 1rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: max-content;
+  }
+
+  .tab {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.7rem;
   }
 
   .board-table {
@@ -485,7 +509,7 @@ form button:hover {
   .action-icons form,
   form button {
     padding: 0.2rem 0.2rem;
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* 필요시 더 줄여줘도 돼 */
   }
 }
 
@@ -615,7 +639,7 @@ html.dark body .search-result-msg {
 }
 
 .fixed-search-wrapper {
-  display: flex;
+  display: none;
   position: static;
   top: 100%;
   left: 0;
@@ -623,6 +647,7 @@ html.dark body .search-result-msg {
   background-color: transparent;
   box-shadow: none;
   margin: 0rem;
+  display: flex;
   align-items: center;
   max-width: 95vw;
   padding: 0 1vw;
@@ -657,6 +682,7 @@ html.dark body .search-result-msg {
   background-color: #e2e2e2;
 }
 
+/* ✅ 현재 페이지 */
 .page-link.active {
   background-color: #ff99cc;
   border-color: #ff66aa;
@@ -664,6 +690,7 @@ html.dark body .search-result-msg {
   font-weight: bold;
 }
 
+/* 📱 모바일 전용 */
 @media (max-width: 768px) {
   .pagination {
     font-size: 0.8rem;
@@ -675,6 +702,7 @@ html.dark body .search-result-msg {
   }
 }
 
+/* 🌙 다크모드 대응 */
 html.dark .pagination {
   background: transparent;
 }
@@ -696,6 +724,28 @@ html.dark .page-link.active {
   color: white;
 }
 
+/* ✅ PC 전용 */
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* ✅ 모바일 전용 */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+}
+
 .page-link.disabled {
   color: #ccc;
   background-color: #eee;
@@ -708,33 +758,14 @@ html.dark .page-link.disabled {
   background-color: #333;
 }
 
-.desktop-only {
-  display: block;
-}
-
-@media (max-width: 768px) {
-  .desktop-only {
-    display: none !important;
-  }
-}
-
-.mobile-only {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .mobile-only {
-    display: block;
-  }
-}
-
 .panel-section {
   margin-top: 2rem;
   margin-bottom: 2rem;
   padding: 0 1rem;
 }
 
-.panel-section .desktop {}
+.panel-section .desktop {
+}
 
 .panel-section .mobile {
   padding: 1.3rem 2.1rem;
@@ -747,10 +778,6 @@ html.dark .page-link.disabled {
   font-size: 0.85rem;
   margin-bottom: 0.8rem;
   color: #444;
-}
-
-html.dark .panel-title {
-  color: #ddd;
 }
 
 .app-button-group {
@@ -773,17 +800,20 @@ html.dark .panel-title {
   text-decoration: none;
   padding: 0.4rem 1rem;
   border-radius: 8px;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Gowun Dodum', sans-serif;
   font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.7);
   filter: brightness(1.5) contrast(1.3) saturate(1.2);
   background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center top;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  font-weight: bold;
+  color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .app-button:hover {
@@ -792,14 +822,21 @@ html.dark .panel-title {
   transform: scale(1.05);
   filter: brightness(2.0) contrast(1.0) saturate(1.2);
   background-position: bottom;
-  background-size: 100% auto;
+}
+
+/* 🌞 라이트 기본 */
+.panel-title {
+  color: #444;
+}
+
+/* 🌙 다크모드 */
+html.dark .panel-title {
+  color: #ddd;
 }
 
 html.dark .app-button {
   color: transparent;
 }
-
-html.dark .app-button:hover {}
 
 .app-button.tetris {
   background-image: url('/assets/images/apps/tetris.png');
