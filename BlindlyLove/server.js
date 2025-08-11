@@ -908,7 +908,12 @@ app.get('/api/search', async (req, res) => {
 
     const [rows] = await db.query(sql, dataParams);
 
-    res.json({ posts: rows, total, page, limit });
+    res.json({
+      posts: rows,
+      total: total,    // 전체 개수
+      page: page,      // 현재 페이지
+      limit: limit     // 한 페이지당 글 수
+    });
   } catch (err) {
     console.error('[/api/search] error', err);
     res.status(500).json({ error: '검색 실패' });
