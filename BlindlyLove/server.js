@@ -852,14 +852,37 @@ app.get('/api/category-count', async (req, res) => {
 // AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
-  const categoryFilter = req.query.category?.trim() || null; // ✅ 추가
-  if (!keyword) return res.json({ posts: [] });
+  const categoryFilter = req.query.category?.trim() || null;
+  if (!keyword) return res.json({ posts: [], total: 0, page: 1, limit: 10 });
 
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
   const safeLang = res.locals.lang;
+  const limit = parseInt(req.query.limit) || 10;
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * limit;
 
   try {
+    // 전체 개수
+    let countSql = `
+      SELECT COUNT(*) AS total
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko  ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      WHERE (
+          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
+          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
+          OR p.categories LIKE ?
+      )
+    `;
+    const params = [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
+
+    if (categoryFilter) {
+      countSql += ` AND FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0`;
+      params.push(categoryFilter);
+    }
+
+    const [[{ total }]] = await db.query(countSql, params);
+
+    // 데이터 조회
     let sql = `
       SELECT
           p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned, p.views,
@@ -874,45 +897,21 @@ app.get('/api/search', async (req, res) => {
           OR p.categories LIKE ?
       )
     `;
-    const params = [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`];
-
+    const dataParams = [...params];
     if (categoryFilter) {
-      sql += ` AND FIND_IN_SET(?, p.categories) > 0`;
-      params.push(categoryFilter);
+      sql += ` AND FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0`;
+      dataParams.push(categoryFilter);
     }
+    sql += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+             LIMIT ? OFFSET ?`;
+    dataParams.push(limit, offset);
 
-    sql += `
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `;
+    const [rows] = await db.query(sql, dataParams);
 
-    const [posts] = await db.query(sql, params);
-
-    const filteredPosts = posts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return { ...post, content: '이 글은 비공개로 설정되어 있습니다.' };
-      }
-      return post;
-    });
-
-    for (const post of filteredPosts) {
-      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-      const translatedCategories = [];
-      if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-          originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
-      }
-      post.categories = translatedCategories;
-    }
-
-    res.json({ posts: filteredPosts });
+    res.json({ posts: rows, total, page, limit });
   } catch (err) {
-    console.error('AJAX 검색 오류:', err);
-    res.status(500).json({ error: '검색 중 오류 발생' });
+    console.error('[/api/search] error', err);
+    res.status(500).json({ error: '검색 실패' });
   }
 });
 
