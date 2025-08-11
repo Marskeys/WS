@@ -70,11 +70,11 @@
 
 @media (max-width: 640px) {
   .search-wrapper {
-    max-width: 95vw; /* 화면 거의 꽉 차게 */
+    max-width: 99vw; /* 화면 거의 꽉 차게 */
   }
 
   .search-form {
-    padding: 0 1rem; /* 양옆 여백 줄이면 더 길어짐 */
+    padding: 0 0.2rem; /* 양옆 여백 줄이면 더 길어짐 */
   }
 }
 
