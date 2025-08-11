@@ -5,18 +5,78 @@
   position: fixed;
   width: 100%;
   height: calc(100vh - 100px);
-  margin-bottom: -100px; /* 검색창에 가까이 */
+  margin-bottom: -100px;
   overflow: hidden;
 }
 
 #cherry-canvas {
-  position: absolute; /* ✅ fixed → absolute */
-  top: 10px;          /* ✅ header 아래부터 시작 */
+  position: absolute;
+  top: 10px;
   left: 0;
   width: 100vw;
   height: 80vh;
-  z-index: 1; /* 검색창보다 위, 메뉴보다 아래 */
+  z-index: 1;
   pointer-events: none;
+}
+
+/* ============================
+   🌬️ 캐릭터 애니메이션
+============================ */
+.character-anim {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+
+/* ============================
+   🧱 전체 레이아웃
+============================ */
+.full-layout {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.main-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.main-panel {
+  background-color: transparent;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 0 0.5rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  max-width: calc(100vw - 400px);
+}
+
+.side-panel {
+  flex: 1;
+  max-width: 200px;
+  min-width: 200px;
+  background-color: transparent;
+  border-radius: 0;
+  min-height: 100vh;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.03);
+  opacity: 0.95;
+  overflow: hidden;
+  padding: 0 0.5rem;
+  z-index: 8000;
+}
+
+.side-panel.right-panel-only {
+  flex-shrink: 0;
+  width: 200px;
 }
 
 /* ============================
@@ -90,66 +150,6 @@
 }
 
 /* ============================
-   🌬️ 캐릭터 애니메이션
-============================ */
-.character-anim {
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
-
-/* ============================
-   🧱 전체 레이아웃
-============================ */
-.full-layout {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 1500px;
-  margin: 0 auto;
-}
-
-.main-layout {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  flex-wrap: nowrap;
-  min-width: 0;
-}
-
-.main-panel {
-  background-color: transparent;
-  min-height: 100vh;
-  flex-direction: column;
-  padding: 0 0.5rem;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  max-width: calc(100vw - 400px);
-}
-
-.side-panel {
-  flex: 1;
-  max-width: 200px;
-  min-width: 200px;
-  background-color: transparent;
-  border-radius: 0;
-  min-height: 100vh;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
-  opacity: 0.95;
-  overflow: hidden;
-  padding: 0 0.5rem;
-  z-index: 8000;
-}
-
-.side-panel.right-panel-only {
-  flex-shrink: 0;
-  width: 200px;
-}
-
-/* ============================
    🧾 탭 + 게시판 (데스크탑)
 ============================ */
 .tab-board {
@@ -169,12 +169,12 @@
   padding: 0rem 0.2rem;
   margin-bottom: 0.1rem;
   box-sizing: border-box;
-  -ms-overflow-style: none; /* IE/Edge용 */
-  scrollbar-width: none;    /* Firefox용 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .tabs-wrapper::-webkit-scrollbar {
-  display: none;           /* Chrome/Safari/Edge용 */
+  display: none;
 }
 
 .tabs-container {
@@ -182,7 +182,6 @@
   width: 100%;
 }
 
-/* 왼쪽 블러 */
 .tabs-blur-left {
   position: absolute;
   top: 0;
@@ -190,17 +189,10 @@
   width: 30px;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 248, 250, 0.6) 40%,
-    rgba(255, 240, 245, 0.2) 80%,
-    rgba(255, 240, 245, 0) 100%
-  );
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 250, 0.6) 40%, rgba(255, 240, 245, 0.2) 80%, rgba(255, 240, 245, 0) 100%);
   z-index: 5;
 }
 
-/* 오른쪽 블러 */
 .tabs-blur-right {
   position: absolute;
   top: 0;
@@ -208,34 +200,20 @@
   width: 30px;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(
-    to left,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 248, 250, 0.6) 40%,
-    rgba(255, 240, 245, 0.2) 80%,
-    rgba(255, 240, 245, 0) 100%
-  );
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 250, 0.6) 40%, rgba(255, 240, 245, 0.2) 80%, rgba(255, 240, 245, 0) 100%);
   z-index: 5;
 }
 
 html.dark .tabs-blur-right {
-  background: linear-gradient(to left,
-    rgba(11, 11, 26, 1) 0%,
-    rgba(11, 11, 26, 0.6) 30%,
-    rgba(11, 11, 26, 0.2) 60%,
-    rgba(11, 11, 26, 0) 100%);
+  background: linear-gradient(to left, rgba(11, 11, 26, 1) 0%, rgba(11, 11, 26, 0.6) 30%, rgba(11, 11, 26, 0.2) 60%, rgba(11, 11, 26, 0) 100%);
 }
 
 html.dark .tabs-blur-left {
-  background: linear-gradient(to right,
-    rgba(11, 11, 26, 1) 0%,
-    rgba(11, 11, 26, 0.6) 30%,
-    rgba(11, 11, 26, 0.2) 60%,
-    rgba(11, 11, 26, 0) 100%);
+  background: linear-gradient(to right, rgba(11, 11, 26, 1) 0%, rgba(11, 11, 26, 0.6) 30%, rgba(11, 11, 26, 0.2) 60%, rgba(11, 11, 26, 0) 100%);
 }
 
 .tabs {
-  display: inline-flex; /* ✅ 핵심 */
+  display: inline-flex;
   flex-wrap: nowrap;
   white-space: nowrap;
   gap: 0.5rem;
@@ -258,14 +236,12 @@ html.dark .tabs-blur-left {
 }
 
 .tab:hover {
-  color: #d14da8;
   background-color: #f7f3ff;
   border-color: #c4b2ff;
 }
 
 .tab.active {
   background: #ffe4e1;
-  color: black;
   border-color: #ff9999;
   font-weight: bold;
 }
@@ -280,15 +256,14 @@ html.dark .tabs-blur-left {
     max-width: 95vw;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    /* 스크롤바 감추기 (크롬, 사파리, 엣지) */
-    scrollbar-width: none;  
+    scrollbar-width: none;
   }
 
   .tabs-wrapper::-webkit-scrollbar {
-    display: none;                 /* Webkit 계열 */
+    display: none;
   }
 
-  .tab{
+  .tab {
     font-size: 0.7rem;
     padding: 0.25rem 0.7rem;
   }
@@ -404,7 +379,7 @@ form button:hover {
   }
 
   .tabs {
-    padding: 1rem 1rem; 
+    padding: 1rem 1rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: max-content;
@@ -444,7 +419,7 @@ form button:hover {
     background-color: #870000;
   }
 
-  html.dark .mobile-post-item::after{
+  html.dark .mobile-post-item::after {
     background-color: #ddd;
   }
 
@@ -510,7 +485,7 @@ form button:hover {
   .action-icons form,
   form button {
     padding: 0.2rem 0.2rem;
-    font-size: 0.9rem; /* 필요시 더 줄여줘도 돼 */
+    font-size: 0.9rem;
   }
 }
 
@@ -640,22 +615,20 @@ html.dark body .search-result-msg {
 }
 
 .fixed-search-wrapper {
-  display: none; /* 이전에 display: flex; 가 있었으나, display: none;이 최종이므로 유지 */
+  display: flex;
   position: static;
-  top: 100%; /* 헤더 내부에서 아래로 약간 뜨는 느낌이면 사용 */
+  top: 100%;
   left: 0;
   width: 100%;
   background-color: transparent;
   box-shadow: none;
-  margin: 0rem; 
-  display: flex; /* 최신 정보에 따라 flex로 변경 */
+  margin: 0rem;
   align-items: center;
-  max-width: 95vw; 
-  padding: 0 1vw;        /* ✅ 좌우 패딩 줄이기 */
-  z-index: 5000;            /* ✅ 헤더 위에 올려야 하면 */
+  max-width: 95vw;
+  padding: 0 1vw;
+  z-index: 5000;
   animation: slide-expand 0.5s ease forwards;
 }
-
 
 /* 🧼 공통 스타일 */
 .pagination {
@@ -670,7 +643,7 @@ html.dark body .search-result-msg {
 
 .page-link {
   display: inline-block;
-  margin: 0rem 0.1rem; 
+  margin: 0rem 0.1rem;
   padding: 0.4rem 0.7rem;
   border-radius: 6px;
   background-color: #f0f0f0;
@@ -684,7 +657,6 @@ html.dark body .search-result-msg {
   background-color: #e2e2e2;
 }
 
-/* ✅ 현재 페이지 */
 .page-link.active {
   background-color: #ff99cc;
   border-color: #ff66aa;
@@ -692,7 +664,6 @@ html.dark body .search-result-msg {
   font-weight: bold;
 }
 
-/* 📱 모바일 전용 */
 @media (max-width: 768px) {
   .pagination {
     font-size: 0.8rem;
@@ -704,7 +675,6 @@ html.dark body .search-result-msg {
   }
 }
 
-/* 🌙 다크모드 대응 */
 html.dark .pagination {
   background: transparent;
 }
@@ -726,35 +696,36 @@ html.dark .page-link.active {
   color: white;
 }
 
-/* ✅ PC 전용 */
-.desktop-only {
-  display: block;
-}
-@media (max-width: 768px) {
-  .desktop-only {
-    display: none !important;
-  }
-}
-
-/* ✅ 모바일 전용 */
-.mobile-only {
-  display: none;
-}
-@media (max-width: 768px) {
-  .mobile-only {
-    display: block;
-  }
-}
-
 .page-link.disabled {
   color: #ccc;
   background-color: #eee;
   pointer-events: none;
   cursor: default;
 }
+
 html.dark .page-link.disabled {
   color: #555;
   background-color: #333;
+}
+
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
 }
 
 .panel-section {
@@ -763,9 +734,7 @@ html.dark .page-link.disabled {
   padding: 0 1rem;
 }
 
-.panel-section .desktop {
-  /* 내용 없음 */
-}
+.panel-section .desktop {}
 
 .panel-section .mobile {
   padding: 1.3rem 2.1rem;
@@ -780,7 +749,6 @@ html.dark .page-link.disabled {
   color: #444;
 }
 
-/* 🌙 다크모드 */
 html.dark .panel-title {
   color: #ddd;
 }
@@ -805,18 +773,17 @@ html.dark .panel-title {
   text-decoration: none;
   padding: 0.4rem 1rem;
   border-radius: 8px;
-  font-family: 'Gowun Dodum', sans-serif; 
-  font-size: 1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.7); 
-  filter: brightness(1.5) contrast(1.3) saturate(1.2);
-  background-size: 100% auto;  /* 가로에 맞추고 세로는 자동 */
-  background-repeat: no-repeat;
-  background-position: center top; /* 초기 위치 */
   font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.4s ease;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.7);
+  filter: brightness(1.5) contrast(1.3) saturate(1.2);
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center top;
 }
 
 .app-button:hover {
@@ -824,33 +791,30 @@ html.dark .panel-title {
   box-shadow: 0 3px 8px rgba(197, 175, 12, 0.7);
   transform: scale(1.05);
   filter: brightness(2.0) contrast(1.0) saturate(1.2);
-  background-position: bottom; /* 아래쪽 영역으로 슬라이드 */
+  background-position: bottom;
+  background-size: 100% auto;
 }
 
-/* 🌙 다크모드 */
-html.dark .app-button {       /* 어두운 배경 */
+html.dark .app-button {
   color: transparent;
 }
 
+html.dark .app-button:hover {}
+
 .app-button.tetris {
-  background-image: 
-  url('/assets/images/apps/tetris.png'); /* 🎮 원래 그림 */
+  background-image: url('/assets/images/apps/tetris.png');
 }
 
 .app-button.sudoku {
-  background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), /* ✨ 어두→밝은 그라데이션 추가 */
-  url('/assets/images/apps/sudoku.png'); /* 🎮 원래 그림 */
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), url('/assets/images/apps/sudoku.png');
 }
 
 .app-button.hearing-test {
-  background-image:
-  linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), /* ✨ 어두→밝은 그라데이션 추가 */
-  url('/assets/images/apps/hearing-test.png'); /* 🎮 원래 그림 */
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), url('/assets/images/apps/hearing-test.png');
 }
 
 .tab-spacer {
-  width: 1.5rem; /* 원하는 초기 여백 */
+  width: 1.5rem;
   flex-shrink: 0;
   pointer-events: none;
 }
