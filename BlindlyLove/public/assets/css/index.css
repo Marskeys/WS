@@ -1798,3 +1798,10 @@ html.dark .tabs-label {
   color: #ffffff;
   box-shadow: 0 2px 5px rgba(255, 255, 255, 0.4);
 }
+
+@media (max-width: 640px) {
+  .tabs-wrapper,
+  .tabs-container {
+    overflow-y: visible !important; /* 세로 그림자 안 잘리게 */
+  }
+}
