@@ -589,7 +589,6 @@
         }
     
         function loadSearch(q, page=1, limit=DEFAULT_LIMIT) {
-          console.log('API search data:', data);
           const url = `/api/search?q=${encodeURIComponent(q)}&lang=${encodeURIComponent(currentLang)}&page=${page}&limit=${limit}`;
           fetch(url)
             .then(res => res.json())
