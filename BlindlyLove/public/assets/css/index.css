@@ -41,8 +41,7 @@
   width: 100%;
   position: relative;
   max-width: 600px;
-  margin: 0 auto;
-  background-color: blue;
+  margin: 0 auto;  
 }
 
 .search-position-anchor {
@@ -1026,7 +1025,7 @@ html.dark .app-button:hover {
 }
 
 .main-panel {
-  background-color: red;
+  background-color: transparent;
   min-height: 100vh;
   flex-direction: column;
   padding: 0 0.5rem;
