@@ -34,6 +34,23 @@
 <meta property="og:image" content="https://blindly.love/assets/logo.png"> <!-- 이미지 경로는 수정 필요 -->
 
 
+<script>
+  (function () {
+    try {
+      var key = 'theme-mode';
+      var saved = localStorage.getItem(key);
+      if (!saved) {
+        // 저장이 없으면 시스템 선호를 기본값으로
+        saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark' : 'light';
+      }
+      var root = document.documentElement;
+      root.classList.toggle('dark',  saved === 'dark');
+      root.classList.toggle('light', saved !== 'dark');
+    } catch (e) {}
+  })();
+</script>
+
   <!-- ✅ 테마를 페이지 렌더 전에 미리 적용 -->
   <script>
     (function() {

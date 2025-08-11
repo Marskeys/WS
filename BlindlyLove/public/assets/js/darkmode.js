@@ -1,86 +1,50 @@
-// ✅ 테마 상태를 Local Storage에 저장할 키
 const STORAGE_KEY = 'theme-mode';
 
-// ✅ HTML 문서가 완전히 로드된 후 실행
 document.addEventListener('DOMContentLoaded', () => {
-    const themeToggle = document.getElementById('mode-toggle-accessible');
-    const root = document.documentElement;
+  const themeToggle = document.getElementById('mode-toggle-accessible');
+  const root = document.documentElement;
 
-    // 1. Local Storage에서 저장된 테마 불러오기
-    function loadTheme() {
-        const savedTheme = localStorage.getItem(STORAGE_KEY);
+  function applyTheme(mode) {
+    root.classList.toggle('dark',  mode === 'dark');
+    root.classList.toggle('light', mode === 'light');
+    if (themeToggle) themeToggle.setAttribute('aria-checked', String(mode === 'dark'));
 
-        // ✅ 저장된 값이 없거나 'dark'이면 → 다크 모드 적용  if (!savedTheme || savedTheme === 'dark')
-        if (!savedTheme) {
-            root.classList.add('dark');
-            root.classList.remove('light');
-            if (themeToggle) {
-                themeToggle.setAttribute('aria-checked', 'true');
-            }
-        } else {
-            // ✅ 저장된 테마가 'light'인 경우
-            root.classList.remove('dark');
-            root.classList.add('light');
-            if (themeToggle) {
-                themeToggle.setAttribute('aria-checked', 'false');
-            }
-        }
-
-        // ✅ 버튼 텍스트도 초기화
-        const textToggleButton = document.getElementById('toggle-dark');
-        if (textToggleButton) {
-            textToggleButton.textContent = root.classList.contains('dark')
-                ? '☀️ 라이트모드'
-                : '🌙 다크모드';
-        }
+    const textToggleButton = document.getElementById('toggle-dark');
+    if (textToggleButton) {
+      textToggleButton.textContent = mode === 'dark' ? '☀️ 라이트모드' : '🌙 다크모드';
     }
+  }
 
-    // 2. 테마 전환 및 Local Storage 저장 함수
-    function toggleThemeAndSave() {
-        const isCurrentlyDark = root.classList.contains('dark');
-
-        if (isCurrentlyDark) {
-            root.classList.remove('dark');
-            root.classList.add('light');
-            localStorage.setItem(STORAGE_KEY, 'light');
-            if (themeToggle) {
-                themeToggle.setAttribute('aria-checked', 'false');
-            }
-        } else {
-            root.classList.add('dark');
-            root.classList.remove('light');
-            localStorage.setItem(STORAGE_KEY, 'dark');
-            if (themeToggle) {
-                themeToggle.setAttribute('aria-checked', 'true');
-            }
-        }
-
-        // ✅ 버튼 텍스트도 업데이트
-        const textToggleButton = document.getElementById('toggle-dark');
-        if (textToggleButton) {
-            textToggleButton.textContent = root.classList.contains('dark')
-                ? '☀️ 라이트모드'
-                : '🌙 다크모드';
-        }
+  function loadTheme() {
+    let saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) {
+      // 저장 없으면 시스템 선호 기준
+      saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark' : 'light';
+      // 필요하면 아래 줄 주석 해제해서 기본값을 저장까지 하도록
+      // localStorage.setItem(STORAGE_KEY, saved);
     }
+    applyTheme(saved === 'dark' ? 'dark' : 'light');
+  }
 
-    // 3. 페이지 로드 시 테마 적용
-    loadTheme();
+  function toggleThemeAndSave() {
+    const next = root.classList.contains('dark') ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem(STORAGE_KEY, next);
+  }
 
-    // 4. 스위치 이벤트 리스너 연결
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleThemeAndSave);
-        themeToggle.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleThemeAndSave();
-            }
-        });
-    }
+  loadTheme();
 
-    // 5. 'toggle-dark' 버튼도 동작하도록 연결
-    const btn = document.getElementById('toggle-dark');
-    if (btn) {
-        btn.addEventListener('click', toggleThemeAndSave);
-    }
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleThemeAndSave);
+    themeToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleThemeAndSave();
+      }
+    });
+  }
+
+  const btn = document.getElementById('toggle-dark');
+  if (btn) btn.addEventListener('click', toggleThemeAndSave);
 });
