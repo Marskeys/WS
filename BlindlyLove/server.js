@@ -759,9 +759,22 @@ app.get('/search', async (req, res) => {
 app.get('/api/posts', async (req, res) => {
   try {
     const catKey = (req.query.category || '').trim();
-    if (!catKey) return res.json({ posts: [] });
+    if (!catKey) return res.json({ posts: [], total: 0, page: 1, limit: 10 });
 
-    // 언어 필터는 두지 않음(기존 /api/search와 조건 맞춤)
+    const safeLang = (req.query.lang || 'ko').trim();
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    // 전체 개수 먼저 구하기
+    const countSql = `
+      SELECT COUNT(*) AS total
+      FROM posts
+      WHERE FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(categories, ' ', '')) > 0
+    `;
+    const [[{ total }]] = await db.query(countSql, [catKey]);
+
+    // 해당 페이지 데이터 가져오기
     const sql = `
       SELECT
         p.id, p.user_id, p.author, p.is_private, p.is_pinned,
@@ -774,19 +787,15 @@ app.get('/api/posts', async (req, res) => {
         ON pt_ko.post_id = p.id AND pt_ko.lang_code = 'ko'
       WHERE FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0
       ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
     `;
-    const safeLang = (req.query.lang || 'ko').trim();
-    const [rows] = await db.query(sql, [safeLang, catKey]);
+    const [rows] = await db.query(sql, [safeLang, catKey, limit, offset]);
 
-    // 카테고리 라벨 번역(기존 /api/search와 동일 로직)
+    // 카테고리 번역
     const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
     const posts = [];
     for (const post of rows) {
-      const originals = (post.categories || '')
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean);
-
+      const originals = (post.categories || '').split(',').map(s => s.trim()).filter(Boolean);
       let translated = [];
       if (originals.length) {
         const placeholders = originals.map(() => '?').join(',');
@@ -811,12 +820,13 @@ app.get('/api/posts', async (req, res) => {
       });
     }
 
-    res.json({ posts });
+    res.json({ posts, total, page, limit });
   } catch (err) {
     console.error('[/api/posts] error', err);
     res.status(500).json({ error: '카테고리 전체 글 로드 실패' });
   }
 });
+
 
 // === 카테고리 총 글 수(JSON) ===
 app.get('/api/category-count', async (req, res) => {
