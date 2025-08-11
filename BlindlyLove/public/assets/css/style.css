@@ -1065,10 +1065,3 @@ html.dark .mobile-dropdown.open > a {
   border-top-right-radius: 0;
 }
 
-/* iOS 노치일 때 내용만 아래로 밀기(틈 없이) */
-@supports (padding: env(safe-area-inset-top)) {
-  #mobile-menu,
-  .mobile-menu {
-    padding-top: env(safe-area-inset-top);
-  }
-}
