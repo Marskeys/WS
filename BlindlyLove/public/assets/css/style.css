@@ -446,15 +446,12 @@ html.dark body .hamburger.is-in-menu span {
   z-index: 120000;
   border-radius: 3px;
   box-sizing: border-box;
-
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
-
   transform: translateX(-100%);
   opacity: 0;
   pointer-events: none;
-
   transition:
     transform 0.3s ease-in-out,
     opacity 0.3s ease-in-out,
@@ -497,8 +494,8 @@ html.dark body .mobile-menu{
 .mobile-menu-header {
     position: relative; /* 햄버거 버튼의 위치 기준 */
     width: 100%;
-    height: 40px; /* 적절한 높이 설정 */
-    margin-bottom: 2rem;
+
+
 }
 
 
