@@ -151,6 +151,7 @@
 .side-panel.right-panel-only {
   flex-shrink: 0;
   width: 200px;
+  display: none;
 }
 
 /* ============================
