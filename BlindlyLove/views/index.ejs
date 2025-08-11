@@ -353,27 +353,26 @@
     
         // 공용: 목록 + 페이지네이션 렌더
         function renderListAndPaging({ posts, total, page, limit, baseUrl, ajaxMode=true }) {
-          console.log('[PAGER] total/page/limit:', total, page, limit, 'base:', baseUrl);
-          updatePostLists(posts);
-    
-          // 서버 페이지네이션은 가림
-          document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
-    
-          // 클라이언트 전용 컨테이너(없으면 생성) – 상/하/모바일
-          ensureAjaxPager('.pagination-top',    'ajax-pager-top');
-          ensureAjaxPager('.pagination-bottom', 'ajax-pager-bottom');
-          ensureAjaxPager('.pagination-mobile', 'ajax-pager-mobile');
-    
-          // 그려 넣기
-          drawPager('#ajax-pager-top',    total, page, limit, baseUrl);
-          drawPager('#ajax-pager-bottom', total, page, limit, baseUrl);
-          drawPager('#ajax-pager-mobile', total, page, limit, baseUrl);
-    
-          // 클릭 → 다시 불러오기 (AJAX)
-          bindPager('#ajax-pager-top', baseUrl, limit);
-          bindPager('#ajax-pager-bottom', baseUrl, limit);
-          bindPager('#ajax-pager-mobile', baseUrl, limit);
-        }
+  updatePostLists(posts);
+
+  // 서버 페이지네이션 숨김
+  document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
+
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  if (isMobile) {
+    ensureAjaxPager('.pagination-mobile', 'ajax-pager-mobile');
+    drawPager('#ajax-pager-mobile', total, page, limit, baseUrl);
+    bindPager('#ajax-pager-mobile', baseUrl, limit);
+  } else {
+    ensureAjaxPager('.pagination-top', 'ajax-pager-top');
+    ensureAjaxPager('.pagination-bottom', 'ajax-pager-bottom');
+    drawPager('#ajax-pager-top', total, page, limit, baseUrl);
+    drawPager('#ajax-pager-bottom', total, page, limit, baseUrl);
+    bindPager('#ajax-pager-top', baseUrl, limit);
+    bindPager('#ajax-pager-bottom', baseUrl, limit);
+  }
+}
     
         function ensureAjaxPager(selectorForPlace, ajaxId) {
   let holder = document.getElementById(ajaxId);
