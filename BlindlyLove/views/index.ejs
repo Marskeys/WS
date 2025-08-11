@@ -548,11 +548,11 @@
         }
     
         function loadCategory(catKey, page=1, limit=DEFAULT_LIMIT) {
-          console.log('[CAT] raw:', data); 
           const url = `/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}&page=${page}&limit=${limit}`;
           fetch(url)
             .then(res => res.json())
             .then(async (data) => {
+              console.log('[CAT] raw:', data); 
               const posts = data.posts || data.results || data.data || [];
               // 메타 폴백: 없으면 카운트 API로 total 계산
               let meta = normalizeMeta(data, undefined, page, limit);
