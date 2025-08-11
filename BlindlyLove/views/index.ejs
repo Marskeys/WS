@@ -353,6 +353,7 @@
     
         // 공용: 목록 + 페이지네이션 렌더
         function renderListAndPaging({ posts, total, page, limit, baseUrl, ajaxMode=true }) {
+          console.log('[PAGER] total/page/limit:', total, page, limit, 'base:', baseUrl);
           updatePostLists(posts);
     
           // 서버 페이지네이션은 가림
@@ -547,6 +548,7 @@
         }
     
         function loadCategory(catKey, page=1, limit=DEFAULT_LIMIT) {
+          console.log('[CAT] raw:', data); 
           const url = `/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}&page=${page}&limit=${limit}`;
           fetch(url)
             .then(res => res.json())
