@@ -1022,11 +1022,10 @@ html.dark .app-button:hover {
   margin: 0;
   flex-wrap: nowrap;
   min-width: 0;
-  background-color: red;
 }
 
 .main-panel {
-  background-color: transparent;
+  background-color: red;
   min-height: 100vh;
   flex-direction: column;
   padding: 0 0.5rem;
