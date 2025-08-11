@@ -124,7 +124,7 @@
 }
 
 .main-panel {
-  background-color: transparent;
+  background-color: red;
   min-height: 100vh;
   flex-direction: column;
   padding: 0 0rem;
@@ -151,7 +151,6 @@
 .side-panel.right-panel-only {
   flex-shrink: 0;
   width: 200px;
-  display: none;
 }
 
 /* ============================
