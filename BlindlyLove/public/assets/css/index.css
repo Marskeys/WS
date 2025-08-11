@@ -1781,6 +1781,11 @@ html.dark .app-button:hover {
 
 .tabs-label {
 
+  cursor: default;
+
+  color: #2a2a2a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
 }
 
 html.dark .tabs-label {
