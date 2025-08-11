@@ -500,7 +500,7 @@ html.dark body .mobile-menu{
 
 
 .mobile-auth-buttons {
-
+  margin-top: 2rem; /* 헤더 공간을 고려하여 여백 조정 */
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -1051,3 +1051,24 @@ html.dark .mobile-dropdown.open > a {
 }
 
 
+
+/* 최우선 덮어쓰기 */
+#mobile-menu,
+#mobile-menu.open,
+.mobile-menu,
+.mobile-menu.open {
+  top: 0 !important;              /* 의문의 9.59375px 제거 */
+  inset-block-start: 0 !important;/* top의 논리 속성도 강제 */
+  margin-top: 0 !important;
+  /* 필요하면 상단 모서리도 0으로 */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* iOS 노치일 때 내용만 아래로 밀기(틈 없이) */
+@supports (padding: env(safe-area-inset-top)) {
+  #mobile-menu,
+  .mobile-menu {
+    padding-top: env(safe-area-inset-top);
+  }
+}
