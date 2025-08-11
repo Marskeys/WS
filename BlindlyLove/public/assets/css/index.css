@@ -411,7 +411,7 @@ form button:hover {
   }
 
   .mobile-board-list {
-    display: none;
+    display: block;
     padding: 0rem 0.1rem;
     margin-top: 1rem;
     box-sizing: border-box;
@@ -1312,7 +1312,7 @@ form button:hover {
   }
 
   .mobile-board-list {
-    display: block;
+    display: none;
     padding: 0rem 0.1rem;
     margin-top: 2rem;
     box-sizing: border-box;
