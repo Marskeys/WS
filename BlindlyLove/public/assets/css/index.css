@@ -68,15 +68,7 @@
   box-shadow: 0 0 8px rgba(157, 107, 255, 0.6);
 }
 
-@media (max-width: 640px) {
-  .search-wrapper {
-    max-width: 99vw; /* 화면 거의 꽉 차게 */
-  }
 
-  .search-form {
-    padding: 0 0.2rem; /* 양옆 여백 줄이면 더 길어짐 */
-  }
-}
 
 .character-stand {
   position: absolute;
@@ -135,7 +127,7 @@
   background-color: transparent;
   min-height: 100vh;
   flex-direction: column;
-  padding: 0 0.5rem;
+  padding: 0 0rem;
   display: flex;
   width: 100%;
   align-items: center;
