@@ -2,39 +2,35 @@
 <html class="dark" lang="<%= lang %>">
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
-  <!-- ▶ 라벨(텍스트 안내) 경량 + 정렬 + 애니메이션 -->
+  <!-- ▶ 라벨 정렬/여백 리셋 + 애니메이션 (강제 적용) -->
   <style>
-    /* 탭 행 정렬을 확실히(부모가 이미 flex여도 문제 없음) */
-    .tabs { display:flex; align-items:center; flex-wrap:nowrap; gap:.25rem; }
-
+    /* 탭 바를 확실히 플렉스로 맞추고 중앙정렬 */
+    .tabs-container .tabs{ display:flex !important; align-items:center !important; gap:.25rem !important; }
+    /* 라벨 자체: 버튼 아님(얇은 텍스트), 아래여백/들뜸 제거 */
     .tabs-label{
       display:inline-flex; align-items:center; gap:.35rem;
-      margin:0 .25rem 0 .25rem; padding:0;
-      font-size:.86rem; line-height:1; white-space:nowrap;
+      margin:0 .25rem 0 .25rem !important; padding:0 !important;
+      font-size:.86rem; line-height:1 !important; white-space:nowrap;
       color:#94a3b8; letter-spacing:.01em;
-      user-select:none; pointer-events:none; /* 클릭 불가 텍스트 */
-      vertical-align:middle; position:relative; top:0;  /* 아래 여백 방지 */
-      will-change:transform;
-      animation: tabsLabelFloat 2.8s ease-in-out infinite;
+      user-select:none; pointer-events:none;
+      align-self:center !important; /* 부모 높이 중앙 정렬 보장 */
+      position:relative; top:0 !important;
     }
-    .tabs-label .caret{ opacity:.75; font-weight:600; }
     .dark .tabs-label{ color:#a8b3cf; }
+    .tabs-label .caret{ opacity:.75; font-weight:600; }
 
-    /* 살랑살랑(세로 2px 범위, 과하지 않게) */
-    @keyframes tabsLabelFloat {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-2px); }
-      100% { transform: translateY(0); }
-    }
+    /* 살랑살랑 애니메이션(세로 3px 범위) */
+    @keyframes tabsLabelFloatY { 0%{transform:translateY(0)} 50%{transform:translateY(-3px)} 100%{transform:translateY(0)} }
+    .tabs-label.animate{ animation: tabsLabelFloatY 2.8s ease-in-out infinite; will-change: transform; }
 
-    /* 사용자가 모션 줄이기 설정한 경우 애니메이션 비활성화 */
+    /* 모션 줄이기 존중 */
     @media (prefers-reduced-motion: reduce){
-      .tabs-label{ animation:none; }
+      .tabs-label.animate{ animation:none; }
     }
 
-    /* 모바일도 항상 보이게, 살짝만 사이즈 조정 */
+    /* 모바일에서도 항상 보이게 + 살짝 축소 */
     @media (max-width:600px){
-      .tabs-label{ font-size:.84rem; margin:0 .2rem; }
+      .tabs-label{ font-size:.84rem; margin:0 .2rem !important; }
     }
   </style>
   <body class="light">
@@ -123,7 +119,7 @@
                       <%= locale.tabs.searchResults %>
                     </div>
                     <% if (facetCategories.length) { %>
-                      <span class="tabs-label" role="presentation">
+                      <span class="tabs-label animate" role="presentation">
                         <span class="text"><%= (locale.tabs.relatedCategories || '관련 카테고리') %></span>
                         <span class="caret">›</span>
                       </span>
@@ -144,7 +140,7 @@
                   </div>
 
                   <% if (facetCategories.length) { %>
-                    <span class="tabs-label" role="presentation">
+                    <span class="tabs-label animate" role="presentation">
                       <span class="text"><%= (locale.tabs.relatedCategories || '관련 카테고리') %></span>
                       <span class="caret">›</span>
                     </span>
