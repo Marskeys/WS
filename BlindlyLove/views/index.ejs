@@ -376,17 +376,34 @@
         }
     
         function ensureAjaxPager(selectorForPlace, ajaxId) {
-          const place = document.querySelector(selectorForPlace);
-          if (!place) return;
-          let holder = document.getElementById(ajaxId);
-          if (!holder) {
-            const div = document.createElement('div');
-            div.id = ajaxId;
-            div.className = 'pagination ajax-pagination';
-            place.insertAdjacentElement('afterend', div);
-          }
-          document.getElementById(ajaxId).style.display = 'block';
-        }
+  let holder = document.getElementById(ajaxId);
+  if (!holder) {
+    holder = document.createElement('div');
+    holder.id = ajaxId;
+    holder.className = 'pagination ajax-pagination';
+    // 1) 원래 자리 찾기
+    const place = document.querySelector(selectorForPlace);
+    if (place) {
+      place.insertAdjacentElement('afterend', holder);
+    } else {
+      // 2) 자리 없으면 폴백 앵커
+      if (ajaxId.includes('top')) {
+        const table = document.querySelector('.board-table');
+        (table?.parentElement || document.querySelector('.main-panel') || document.body)
+          .insertBefore(holder, table || document.querySelector('.main-panel')?.firstChild);
+      } else if (ajaxId.includes('bottom')) {
+        const table = document.querySelector('.board-table');
+        (table?.parentElement || document.querySelector('.main-panel') || document.body)
+          .appendChild(holder);
+      } else {
+        const mobile = document.querySelector('.mobile-board-list');
+        (mobile?.parentElement || document.querySelector('.main-panel') || document.body)
+          .appendChild(holder);
+      }
+    }
+  }
+  holder.style.display = 'block';
+}
     
         // 페이지 버튼 범위 계산(서버 로직과 유사)
         function calcRange(current, total) {
