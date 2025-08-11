@@ -200,22 +200,7 @@
 }
 
 /* 오른쪽 블러 */
-.tabs-blur-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    to left,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 248, 250, 0.6) 40%,
-    rgba(255, 240, 245, 0.2) 80%,
-    rgba(255, 240, 245, 0) 100%
-  );
-  z-index: 5;
-}
+
 
 html.dark .tabs-blur-right {
   background: linear-gradient(to left,
