@@ -262,7 +262,6 @@ html.dark .tabs-blur-left {
   background-color: #f7f3ff;
   border-color: #c4b2ff;
   color: #d14da8;
-  background-color: rgba(247, 243, 255, 0.3);
 }
 
 .tab.active {
@@ -274,6 +273,39 @@ html.dark .tabs-blur-left {
 
 .tabs::-webkit-scrollbar {
   display: none;
+}
+
+.tab-spacer {
+  width: 1.5rem;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.tabs-label {
+  margin-top: 2rem;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: default;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #2a2a2a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+html.dark .tabs-label {
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 640px) {
+  .tabs-wrapper,
+  .tabs-container {
+    overflow-y: visible !important;
+  }
 }
 
 .board-table {
@@ -383,18 +415,6 @@ form button:hover {
   .main-panel {
     min-width: 320px;
     margin-top: 0.5rem;
-  }
-
-  .tabs-wrapper {
-    width: 100%;
-    max-width: 95vw;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .tabs-wrapper::-webkit-scrollbar {
-    display: none;
   }
 
   .tabs {
@@ -848,10 +868,4 @@ html.dark .app-button {
 
 .app-button.hearing-test {
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.05)), url('/assets/images/apps/hearing-test.png');
-}
-
-.tab-spacer {
-  width: 1.5rem;
-  flex-shrink: 0;
-  pointer-events: none;
 }
