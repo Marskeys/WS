@@ -755,67 +755,87 @@ app.get('/search', async (req, res) => {
 });
 
 // ① 카테고리 전체 글 API (검색어 무시, 언어별 제목/카테고리 표시)
-// 1) 카테고리 전체 글 목록 (/api/posts)
+// === 카테고리 전체 글 목록(JSON) ===
 app.get('/api/posts', async (req, res) => {
-  const catKey = (req.query.category || '').trim();
-  const lang   = (req.query.lang || res.locals.lang || 'ko').trim();
-  const page   = parseInt(req.query.page || '1', 10);
-  const size   = parseInt(req.query.size || '20', 10);
-  const offset = (page - 1) * size;
-  if (!catKey) return res.json({ posts: [] });
+  try {
+    const catKey = (req.query.category || '').trim();
+    if (!catKey) return res.json({ posts: [] });
 
-  const sql = `
-    SELECT
-      p.id, p.user_id, p.author, p.is_private, p.is_pinned,
-      IFNULL(p.views,0) AS views, p.categories, p.created_at, p.updated_at,
-      COALESCE(pt_req.title, pt_ko.title, p.title) AS title
-    FROM posts p
-    LEFT JOIN post_translations pt_req
-      ON pt_req.post_id = p.id AND pt_req.lang_code = ?
-    LEFT JOIN post_translations pt_ko
-      ON pt_ko.post_id = p.id AND pt_ko.lang_code = 'ko'
-    WHERE p.published = 1
-      AND p.lang = ?
-      AND FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0
-    ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    LIMIT ? OFFSET ?
-  `;
-  const [rows] = await db.query(sql, [lang, lang, catKey, size, offset]);
+    // 언어 필터는 두지 않음(기존 /api/search와 조건 맞춤)
+    const sql = `
+      SELECT
+        p.id, p.user_id, p.author, p.is_private, p.is_pinned,
+        IFNULL(p.views,0) AS views, p.categories, p.created_at, p.updated_at,
+        COALESCE(pt_req.title, pt_ko.title, p.title) AS title
+      FROM posts p
+      LEFT JOIN post_translations pt_req
+        ON pt_req.post_id = p.id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko
+        ON pt_ko.post_id = p.id AND pt_ko.lang_code = 'ko'
+      WHERE FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `;
+    const safeLang = (req.query.lang || 'ko').trim();
+    const [rows] = await db.query(sql, [safeLang, catKey]);
 
-  // 카테고리 라벨 맵
-  const displayCol = (lang === 'ko') ? 'name' : `name_${lang}`;
-  const [catRows] = await db.query(`SELECT name AS original, COALESCE(${displayCol}, name) AS label FROM categories`);
-  const catMap = Object.fromEntries(catRows.map(r => [String(r.original).trim(), r.label]));
+    // 카테고리 라벨 번역(기존 /api/search와 동일 로직)
+    const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    const posts = [];
+    for (const post of rows) {
+      const originals = (post.categories || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
 
-  const posts = rows.map(p => {
-    const originals = (p.categories || '').split(',').map(s => s.trim()).filter(Boolean);
-    const translated = originals.map(o => catMap[o] || o);
-    return {
-      id: p.id, user_id: p.user_id, author: p.author,
-      is_private: p.is_private, is_pinned: p.is_pinned, views: p.views,
-      title: p.title, created_at: p.created_at, updated_at: p.updated_at,
-      categories: translated, translated_categories_display: translated
-    };
-  });
+      let translated = [];
+      if (originals.length) {
+        const placeholders = originals.map(() => '?').join(',');
+        const [catRows] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+          originals
+        );
+        translated = catRows.map(r => r.name);
+      }
+      posts.push({
+        id: post.id,
+        user_id: post.user_id,
+        author: post.author,
+        is_private: post.is_private,
+        is_pinned: post.is_pinned,
+        views: post.views,
+        title: post.title,
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        categories: translated,
+        translated_categories_display: translated
+      });
+    }
 
-  res.json({ posts });
+    res.json({ posts });
+  } catch (err) {
+    console.error('[/api/posts] error', err);
+    res.status(500).json({ error: '카테고리 전체 글 로드 실패' });
+  }
 });
 
-// 2) 카테고리 총 개수 (/api/category-count)
+// === 카테고리 총 글 수(JSON) ===
 app.get('/api/category-count', async (req, res) => {
-  const catKey = (req.query.category || '').trim();
-  const lang   = (req.query.lang || res.locals.lang || 'ko').trim();
-  if (!catKey) return res.json({ total: 0 });
+  try {
+    const catKey = (req.query.category || '').trim();
+    if (!catKey) return res.json({ total: 0 });
 
-  const [rows] = await db.query(`
-    SELECT COUNT(*) AS total
-    FROM posts p
-    WHERE p.published = 1
-      AND p.lang = ?
-      AND FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0
-  `, [lang, catKey]);
-
-  res.json({ total: rows?.[0]?.total || 0 });
+    // /api/posts와 WHERE 완전 동일(언어 필터 없음, 공백 무시 매칭)
+    const [rows] = await db.query(
+      `SELECT COUNT(*) AS total
+       FROM posts p
+       WHERE FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0`,
+      [catKey]
+    );
+    res.json({ total: rows?.[0]?.total || 0 });
+  } catch (err) {
+    console.error('[/api/category-count] error', err);
+    res.status(500).json({ total: 0 });
+  }
 });
 
 
