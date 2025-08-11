@@ -1058,10 +1058,6 @@ html.dark .mobile-dropdown.open > a {
 .mobile-menu,
 .mobile-menu.open {
   top: 0 !important;              /* 의문의 9.59375px 제거 */
-  inset-block-start: 0 !important;/* top의 논리 속성도 강제 */
-  margin-top: 0 !important;
-  /* 필요하면 상단 모서리도 0으로 */
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+
 }
 
