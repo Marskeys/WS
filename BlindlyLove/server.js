@@ -755,33 +755,73 @@ app.get('/search', async (req, res) => {
 });
 
 // ① 카테고리 전체 글 API (검색어 무시, 언어별 제목/카테고리 표시)
+// === 카테고리 전체 글 API (검색어 무시) ===
 app.get('/api/posts', async (req, res) => {
-  const { category, lang = 'ko', page = 1, size = 20 } = req.query;
-  const offset = (page - 1) * size;
-  if (!category) return res.json({ posts: [] });
+  try {
+    const catKeyRaw = (req.query.category || '').trim(); // categories CSV 안에 들어있는 '원본 카테고리명'
+    const reqLang = (req.query.lang || '').trim();
+    const safeLang = reqLang || res.locals.lang || 'ko';
 
-  const [rows] = await db.query(`
-    SELECT p.id, p.title, p.user_id, p.is_private, p.is_pinned, IFNULL(p.views,0) views,
-           p.created_at, p.updated_at,
-           GROUP_CONCAT(DISTINCT COALESCE(
-             CASE ? WHEN 'ko' THEN c.name_ko
-                    WHEN 'en' THEN c.name_en
-                    WHEN 'ja' THEN c.name_ja
-                    WHEN 'zh' THEN c.name_zh
-               ELSE c.name_ko END, c.name_ko
-           ) ORDER BY c.id SEPARATOR ', ') AS translated_categories_display
-    FROM posts p
-    JOIN posts_categories pc ON pc.post_id = p.id
-    JOIN categories c ON c.id = pc.category_id
-    WHERE p.published = 1
-      AND p.lang = ?
-      AND (c.slug = ? OR c.id = ?)
-    GROUP BY p.id
-    ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    LIMIT ? OFFSET ?
-  `, [lang, lang, category, Number(category)||0, Number(size), offset]);
+    const page = parseInt(req.query.page || '1', 10);
+    const size = parseInt(req.query.size || '10', 10);
+    const offset = (page - 1) * size;
 
-  res.json({ posts: rows });
+    if (!catKeyRaw) return res.json({ posts: [] });
+
+    // CSV 공백 이슈 회피: REPLACE로 공백 제거 후 비교
+    // 예: "에세이, 개발 일지"도 "개발 일지" 매칭됨
+    const sql = `
+      SELECT
+        p.id, p.user_id, p.author, p.is_private, p.is_pinned,
+        IFNULL(p.views,0) AS views, p.categories, p.created_at, p.updated_at,
+        COALESCE(pt_req.title, pt_ko.title, p.title) AS title
+      FROM posts p
+      LEFT JOIN post_translations pt_req
+        ON pt_req.post_id = p.id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko
+        ON pt_ko.post_id = p.id AND pt_ko.lang_code = 'ko'
+      WHERE FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
+    `;
+    const [rows] = await db.query(sql, [safeLang, catKeyRaw, size, offset]);
+
+    // 카테고리 표시용 번역(언어별 컬럼)
+    const displayCol = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    const categoryNameSql = `
+      SELECT name AS original, COALESCE(${displayCol}, name) AS label
+      FROM categories
+    `;
+    const [catRows] = await db.query(categoryNameSql);
+    const catMap = Object.fromEntries(catRows.map(r => [String(r.original).trim(), r.label]));
+
+    // 응답 정제: translated_categories_display 만들어주기
+    const posts = rows.map(p => {
+      const originals = (p.categories || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean);
+      const translated = originals.map(o => catMap[o] || o);
+      return {
+        id: p.id,
+        user_id: p.user_id,
+        author: p.author,
+        is_private: p.is_private,
+        is_pinned: p.is_pinned,
+        views: p.views,
+        title: p.title,
+        created_at: p.created_at,
+        updated_at: p.updated_at,
+        categories: translated,                         // (프런트 호환)
+        translated_categories_display: translated       // (프런트 호환)
+      };
+    });
+
+    res.json({ posts });
+  } catch (err) {
+    console.error('[/api/posts] 오류:', err);
+    res.status(500).json({ error: '카테고리 전체 글 로드 실패' });
+  }
 });
 
 // AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
