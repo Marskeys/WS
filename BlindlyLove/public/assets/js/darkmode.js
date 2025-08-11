@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadTheme() {
         const savedTheme = localStorage.getItem(STORAGE_KEY);
 
-        // ✅ 저장된 값이 없거나 'dark'이면 → 다크 모드 적용
-        if (!savedTheme || savedTheme === 'dark') {
+        // ✅ 저장된 값이 없거나 'dark'이면 → 다크 모드 적용  if (!savedTheme || savedTheme === 'dark')
+        if (!savedTheme) {
             root.classList.add('dark');
             root.classList.remove('light');
             if (themeToggle) {
