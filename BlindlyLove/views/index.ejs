@@ -89,7 +89,7 @@
                       <%= locale.tabs.searchResults %>
                     </div>
                     <% if (facetCategories.length) { %>
-                      <span class="tab tabs-label animate" role="presentation">
+                      <span class="tabs-label" role="presentation">
                         <span class="text"><%= (locale.tabs.relatedCategories || '관련 카테고리') %></span>
                         <span class="caret">›</span>
                       </span>
@@ -110,16 +110,15 @@
                   </div>
 
                   <% if (facetCategories.length) { %>
-                    <span class="tab tabs-label animate" role="presentation">
+                    <span class="tabs-label" role="presentation">
                       <span class="text"><%= (locale.tabs.relatedCategories || '관련 카테고리') %></span>
                       <span class="caret">›</span>
                     </span>
                   <% } %>
 
                   <% facetCategories.forEach(cat => { %>
-                    <!-- href 막기 + data-cat-key로 강제 AJAX -->
-                    <a href="#"
-                       role="button"
+                    <!-- ✅ 폴백 가능한 실제 링크 + AJAX용 data-* -->
+                    <a href="/<%= lang %>/?category=<%= cat.original %>"
                        class="tab <%= selectedCategory === cat.translated ? 'active' : '' %>"
                        data-cat-key="<%= cat.original %>"
                        data-cat-id="<%= cat.id %>">
@@ -366,68 +365,89 @@
     <script>
       const searchKeyword = <%- JSON.stringify(searchKeyword || '') %>;
       const currentLang   = <%- JSON.stringify(lang || 'ko') %>;
+      const isSearchMode  = Boolean(searchKeyword);
+      window.BL_USER = <%- JSON.stringify(user || null) %>;
     </script>
 
     <script>
-      // 전역 캡처로 가로채서 /api/posts만 호출
-      document.addEventListener('click', (e) => {
-        const a = e.target.closest('a.tab[data-cat-key]');
-        if (!a) return;
-        if (!searchKeyword) return; // 검색 중일 때만 동작
-
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        const catKey = a.dataset.catKey;
-        fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
-          .then(res => res.json())
-          .then(({ posts = [] }) => {
-            updatePostLists(posts);
-            activateTab?.(a);
-            document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
-          })
-          .catch(err => console.error('카테고리 전체글 로드 실패:', err));
-      }, true);
-
-      // “검색결과” 탭 → 검색 원본 복귀
       document.addEventListener('DOMContentLoaded', () => {
+        const tabsRoot = document.getElementById('postTabs');
+
+        // 단일 위임: 관련 카테고리 탭 클릭 → AJAX로 "해당 카테고리 전체 글" 로드
+        if (tabsRoot) {
+          tabsRoot.addEventListener('click', (e) => {
+            const a = e.target.closest('a.tab[data-cat-key]');
+            if (!a) return;
+
+            // 검색 모드에서만 AJAX로 목록 전환 (그 외엔 서버 내비게이션 허용)
+            if (!isSearchMode) return;
+
+            e.preventDefault();
+
+            const catKey = a.dataset.catKey;
+            fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
+              .then(res => res.json())
+              .then((data) => {
+                const posts = Array.isArray(data.posts) ? data.posts
+                            : Array.isArray(data.results) ? data.results
+                            : Array.isArray(data.data) ? data.data
+                            : [];
+                updatePostLists(posts);
+
+                // 활성 탭 표시
+                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+                a.classList.add('active');
+
+                // 서버 페이지네이션 숨김
+                document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
+              })
+              .catch(err => {
+                console.error('카테고리 전체글 로드 실패:', err);
+                // 폴백: 서버 이동
+                window.location.href = a.getAttribute('href');
+              });
+          });
+        }
+
+        // “검색결과” 탭 → 검색 원본 복귀 (AJAX)
         const searchResultTab = document.querySelector('.tabs [data-search-tab="1"]');
-        if (searchResultTab && searchKeyword) {
+        if (searchResultTab && isSearchMode) {
           searchResultTab.addEventListener('click', (e) => {
             e.preventDefault();
             fetch(`/api/search?q=${encodeURIComponent(searchKeyword)}&lang=${encodeURIComponent(currentLang)}`)
               .then(res => res.json())
-              .then(data => {
-                const posts = Array.isArray(data.posts) ? data.posts : (data.results || []);
+              .then((data) => {
+                const posts = Array.isArray(data.posts) ? data.posts
+                            : Array.isArray(data.results) ? data.results
+                            : Array.isArray(data.data) ? data.data
+                            : [];
                 updatePostLists(posts);
-                activateTab?.(searchResultTab);
+                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+                searchResultTab.classList.add('active');
                 document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
               })
               .catch(err => console.error('AJAX 검색결과 복귀 오류:', err));
+          });
         }
 
-        // 활성 탭 표시
-        window.activateTab = function(targetEl){
-          document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-          targetEl.classList.add('active');
-        };
-
-        // 목록 렌더
-        window.updatePostLists = function(posts){
+        // 목록 렌더 유틸
+        function updatePostLists(posts){
           const tableBody = document.querySelector('#board-content');
           const mobileList = document.querySelector('.mobile-board-list');
-          const safeCatsStr = (post) => {
-            const cats = post.translated_categories_display || post.categories || [];
-            if (Array.isArray(cats)) return cats.join(', ');
-            if (typeof cats === 'string') return cats;
-            return '';
+
+          const getViews = (p) =>
+            p.views ?? p.view_count ?? p.viewCount ?? p.hits ?? p.reads ?? p.read ?? 0;
+
+          const getCats = (p) => {
+            const cats = p.translated_categories_display ?? p.categories ?? [];
+            return Array.isArray(cats) ? cats.join(', ') : (typeof cats === 'string' ? cats : '');
           };
 
           if (tableBody) tableBody.innerHTML = '';
           if (mobileList) mobileList.innerHTML = '';
 
           (posts || []).forEach(post => {
+            // 데스크톱
             if (tableBody) {
               const tr = document.createElement('tr');
               tr.innerHTML = `
@@ -441,13 +461,14 @@
                   </a>
                 </td>
                 <td>${post.author ?? ''}</td>
-                <td style="text-align:center;">${safeCatsStr(post)}</td>
+                <td style="text-align:center;">${getCats(post)}</td>
                 <td>${post.created_at ? String(post.created_at).slice(0,10) : ''}</td>
-                <td style="text-align:center;">${post.views ?? 0}</td>
+                <td style="text-align:center;">${getViews(post)}</td>
               `;
               tableBody.appendChild(tr);
             }
 
+            // 모바일
             if (mobileList) {
               const div = document.createElement('div');
               div.className = 'mobile-post-item';
@@ -461,7 +482,7 @@
                   </a>
                 </div>
                 <div class="post-info">
-                  ${post.author ?? ''} | ${post.created_at ? String(post.created_at).slice(0,10) : ''} | <%= locale.tableHeaders.views %> ${post.views ?? 0} | ${safeCatsStr(post)}
+                  ${post.author ?? ''} | ${post.created_at ? String(post.created_at).slice(0,10) : ''} | <%= locale.tableHeaders.views %> ${getViews(post)} | ${getCats(post)}
                 </div>
               `;
               mobileList.appendChild(div);
@@ -484,24 +505,20 @@
               }
             });
           });
-        };
-      });
-    </script>
+        }
 
-    <script>
-      /* 카테고리 총 글수로 배지 덮어쓰기 */
-      document.addEventListener('DOMContentLoaded', () => {
-        if (!searchKeyword) return;
-        const tabs = document.querySelectorAll('#postTabs a.tab[data-cat-key]');
-        tabs.forEach(a => {
-          const key = a.dataset.catKey;
-          const badge = a.querySelector('.facet-count');
-          if (!badge) return;
-          fetch(`/api/category-count?category=${encodeURIComponent(key)}&lang=${encodeURIComponent(currentLang)}`)
-            .then(r => r.json())
-            .then(({ total = 0 }) => { badge.textContent = ` (${total})`; })
-            .catch(() => {});
-        });
+        // 카테고리 총 글수로 배지 덮어쓰기 (검색 모드일 때만)
+        if (isSearchMode) {
+          document.querySelectorAll('#postTabs a.tab[data-cat-key]').forEach(a => {
+            const key = a.dataset.catKey;
+            const badge = a.querySelector('.facet-count');
+            if (!badge) return;
+            fetch(`/api/category-count?category=${encodeURIComponent(key)}&lang=${encodeURIComponent(currentLang)}`)
+              .then(r => r.json())
+              .then(({ total = 0 }) => { badge.textContent = ` (${total})`; })
+              .catch(() => {});
+          });
+        }
       });
     </script>
 
