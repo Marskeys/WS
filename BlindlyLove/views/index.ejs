@@ -511,6 +511,23 @@
       });
     </script>
 
+<script>
+  // 페이지 진입 시, 검색모드라면 탭 카운트를 "전체 글 수"로 덮어쓰기
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!searchKeyword) return; // 검색 아닐 땐 스킵
+    const tabs = document.querySelectorAll('#postTabs a.tab[data-cat-key]');
+    tabs.forEach(a => {
+      const key = a.dataset.catKey;
+      const badge = a.querySelector('.facet-count');
+      if (!badge) return;
+      fetch(`/api/category-count?category=${encodeURIComponent(key)}&lang=${encodeURIComponent(currentLang)}`)
+        .then(r => r.json())
+        .then(({ total = 0 }) => { badge.textContent = ` (${total})`; })
+        .catch(() => {}); // 실패해도 조용히 무시
+    });
+  });
+</script>
+
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
   </body>

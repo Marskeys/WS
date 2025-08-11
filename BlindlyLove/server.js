@@ -824,6 +824,27 @@ app.get('/api/posts', async (req, res) => {
   }
 });
 
+// 전체 글 수 반환(검색어 무시)
+app.get('/api/category-count', async (req, res) => {
+  const catKey = (req.query.category || '').trim();
+  const lang   = (req.query.lang || res.locals.lang || 'ko').trim();
+  if (!catKey) return res.json({ total: 0 });
+
+  try {
+    const [rows] = await db.query(`
+      SELECT COUNT(*) AS total
+      FROM posts p
+      WHERE p.published = 1
+        AND p.lang = ?
+        AND FIND_IN_SET(REPLACE(?, ' ', ''), REPLACE(p.categories, ' ', '')) > 0
+    `, [lang, catKey]);
+    res.json({ total: rows?.[0]?.total || 0 });
+  } catch (e) {
+    console.error('[GET /api/category-count] error', e);
+    res.status(500).json({ total: 0 });
+  }
+});
+
 // AJAX 검색 API (비공개 글 제목 공개 및 내용 숨김 적용) - 다국어 처리 수정
 app.get('/api/search', async (req, res) => {
   const keyword = req.query.q?.trim();
