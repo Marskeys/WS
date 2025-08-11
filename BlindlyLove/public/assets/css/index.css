@@ -265,6 +265,18 @@ html.dark .tabs-blur-left {
   text-decoration: none;
 }
 
+.tab.tabs-label {
+  margin-top: 2rem;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: none;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
 
 
 .tab:hover {
