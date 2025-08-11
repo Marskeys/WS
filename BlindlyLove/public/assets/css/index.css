@@ -123,16 +123,7 @@
   min-width: 0;
 }
 
-.main-panel {
-  background-color: red;
-  min-height: 100vh;
-  flex-direction: column;
-  padding: 0 0rem;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  max-width: calc(100vw - 400px);
-}
+
 
 .side-panel {
   flex: 1;
@@ -1033,7 +1024,7 @@ html.dark .app-button:hover {
 }
 
 .main-panel {
-  background-color: transparent;
+  background-color: red;
   min-height: 100vh;
   flex-direction: column;
   padding: 0 0.5rem;
