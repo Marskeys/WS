@@ -413,7 +413,7 @@ form button:hover {
   .mobile-board-list {
     display: block;
     padding: 0rem 0.1rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
     box-sizing: border-box;
     width: 100%;
     overflow-x: hidden;
@@ -1057,7 +1057,6 @@ html.dark .app-button:hover {
 .tabs-container {
   position: relative;
   width: 100%;
-  padding-bottom: 2rem;
 }
 
 /* 왼쪽 블러 */
