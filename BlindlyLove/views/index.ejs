@@ -31,18 +31,18 @@
             </div>
           </div>
 
-          <% if (isSearch && searchKeyword) { %>
-            <%
-              const searchWord = `${searchKeyword}`;
-              const resultLine = locale.search.resultsFor.replace('%s', searchWord);
-            %>
-            <p class="search-result-msg"><%= resultLine %></p>
-          <% } %>
+          <!-- ✅ 본문에 뜨던 'search results for …' 문구 제거됨 -->
 
           <!-- ===== 권한/상태 & 검색결과 카테고리 수집 ===== -->
           <%
             const isAdmin = user && user.is_admin === 1;
             const isSearchMode = Boolean(isSearch && searchKeyword);
+
+            // 탭 라벨에 넣을 검색 문구 생성
+            const searchWord = isSearchMode ? String(searchKeyword) : '';
+            const resultLine = isSearchMode
+              ? (locale.search.resultsFor || 'Search results for "%s"').replace('%s', searchWord)
+              : '';
 
             const resultCategorySet = new Set();
             const resultCatCount = {};
@@ -85,8 +85,9 @@
                   </a>
 
                   <% if (isSearchMode) { %>
-                    <div class="tab <%= selectedCategory ? '' : 'active' %>" data-search-tab="1">
-                      <%= locale.tabs.searchResults %>
+                    <!-- ✅ 검색 탭 라벨에 resultLine 삽입 -->
+                    <div class="tab <%= selectedCategory ? '' : 'active' %>" data-search-tab="1" title="<%= resultLine %>">
+                      <%= resultLine || locale.tabs.searchResults %>
                     </div>
                     <% if (facetCategories.length) { %>
                       <span class="tabs-label" role="presentation">
@@ -105,8 +106,9 @@
 
                 <% } else if (isSearchMode) { %>
                   <!-- 검색결과 탭 + 라벨 + 관련 카테고리 탭들 -->
-                  <div class="tab <%= selectedCategory ? '' : 'active' %>" data-search-tab="1">
-                    <%= locale.tabs.searchResults %>
+                  <!-- ✅ 여기에도 동일하게 삽입 -->
+                  <div class="tab <%= selectedCategory ? '' : 'active' %>" data-search-tab="1" title="<%= resultLine %>">
+                    <%= resultLine || locale.tabs.searchResults %>
                   </div>
 
                   <% if (facetCategories.length) { %>
