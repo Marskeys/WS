@@ -1042,6 +1042,7 @@ html.dark .app-button:hover {
   padding: 0 0.2rem;
   margin-bottom: 0.1rem;
   box-sizing: border-box;
+  background-color: black;
 }
 
 .tabs-wrapper {
@@ -1057,8 +1058,6 @@ html.dark .app-button:hover {
 .tabs-container {
   position: relative;
   width: 100%;
-  padding-bottom: 3rem;
-  background-color: black;
 }
 
 /* 왼쪽 블러 */
