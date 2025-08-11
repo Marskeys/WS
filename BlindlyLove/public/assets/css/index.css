@@ -1831,3 +1831,7 @@ html.dark .app-button:hover {
   transition: all 0.2s ease-in-out;
   text-decoration: none;
 }
+
+html.dark .tabs-label {
+  color: #ffffff;
+}
