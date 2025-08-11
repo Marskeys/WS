@@ -344,110 +344,139 @@
     </div>
 
     <script>
-      function createMessageBox(message, isConfirm = false, onConfirm = null) {
-        let modal = document.getElementById('customMessageModal');
-        if (!modal) {
-          modal = document.createElement('div'); modal.id = 'customMessageModal';
-          modal.style = `position:fixed;top:0;left:0;width:100%;height:100%;
-            background:rgba(0,0,0,.5);display:flex;justify-content:center;align-items:center;z-index:1000;display:none;`;
-          document.body.appendChild(modal);
-        }
-        modal.innerHTML = `
-          <div style="background:white;padding:20px;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,.1);max-width:400px;width:90%;text-align:center;">
-            <p style="color:black;margin-bottom:15px;">${message}</p>
-            <button id="okBtn" style="padding:8px 15px;margin:5px;background-color:#007bff;color:white;border:none;border-radius:5px;cursor:pointer;">확인</button>
-          </div>`;
-        modal.style.display = 'flex';
-        document.getElementById('okBtn').onclick = () => { modal.style.display = 'none'; };
-      }
-      function showCustomMessage(message){ createMessageBox(message,false,null); }
-    </script>
-
-    <!-- 안전 주입된 전역 변수 -->
-    <script>
-      const searchKeyword = <%- JSON.stringify(searchKeyword || '') %>;
-      const currentLang   = <%- JSON.stringify(lang || 'ko') %>;
-      const isSearchMode  = Boolean(searchKeyword);
-      window.BL_USER = <%- JSON.stringify(user || null) %>;
-    </script>
-
-    <script>
       document.addEventListener('DOMContentLoaded', () => {
         const tabsRoot = document.getElementById('postTabs');
-
-        // 단일 위임: 관련 카테고리 탭 클릭 → AJAX로 "해당 카테고리 전체 글" 로드
-        if (tabsRoot) {
-          tabsRoot.addEventListener('click', (e) => {
-            const a = e.target.closest('a.tab[data-cat-key]');
-            if (!a) return;
-
-            // 검색 모드에서만 AJAX로 목록 전환 (그 외엔 서버 내비게이션 허용)
-            if (!isSearchMode) return;
-
-            e.preventDefault();
-
-            const catKey = a.dataset.catKey;
-            fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
-              .then(res => res.json())
-              .then((data) => {
-                const posts = Array.isArray(data.posts) ? data.posts
-                            : Array.isArray(data.results) ? data.results
-                            : Array.isArray(data.data) ? data.data
-                            : [];
-                updatePostLists(posts);
-
-                // 활성 탭 표시
-                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-                a.classList.add('active');
-
-                // 서버 페이지네이션 숨김
-                document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
-              })
-              .catch(err => {
-                console.error('카테고리 전체글 로드 실패:', err);
-                // 폴백: 서버 이동
-                window.location.href = a.getAttribute('href');
-              });
+        const DEFAULT_LIMIT = 10;
+        const isSearchMode = Boolean(<%- JSON.stringify(!!searchKeyword) %>);
+        const currentLang   = <%- JSON.stringify(lang || 'ko') %>;
+        const searchKeyword = <%- JSON.stringify(searchKeyword || '') %>;
+    
+        // 공용: 목록 + 페이지네이션 렌더
+        function renderListAndPaging({ posts, total, page, limit, baseUrl, ajaxMode=true }) {
+          updatePostLists(posts);
+    
+          // 서버 페이지네이션은 가림
+          document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
+    
+          // 클라이언트 전용 컨테이너(없으면 생성) – 상/하/모바일
+          ensureAjaxPager('.pagination-top',    'ajax-pager-top');
+          ensureAjaxPager('.pagination-bottom', 'ajax-pager-bottom');
+          ensureAjaxPager('.pagination-mobile', 'ajax-pager-mobile');
+    
+          // 그려 넣기
+          drawPager('#ajax-pager-top',    total, page, limit, baseUrl);
+          drawPager('#ajax-pager-bottom', total, page, limit, baseUrl);
+          drawPager('#ajax-pager-mobile', total, page, limit, baseUrl);
+    
+          // 클릭 → 다시 불러오기 (AJAX)
+          bindPager('#ajax-pager-top', baseUrl, limit);
+          bindPager('#ajax-pager-bottom', baseUrl, limit);
+          bindPager('#ajax-pager-mobile', baseUrl, limit);
+        }
+    
+        function ensureAjaxPager(selectorForPlace, ajaxId) {
+          const place = document.querySelector(selectorForPlace);
+          if (!place) return;
+          let holder = document.getElementById(ajaxId);
+          if (!holder) {
+            const div = document.createElement('div');
+            div.id = ajaxId;
+            div.className = 'pagination ajax-pagination';
+            place.insertAdjacentElement('afterend', div);
+          }
+          document.getElementById(ajaxId).style.display = 'block';
+        }
+    
+        // 페이지 버튼 범위 계산(서버 로직과 유사)
+        function calcRange(current, total) {
+          const window = 5; // 최대 5 버튼
+          const pages = [];
+          if (total <= window) {
+            for (let i = 1; i <= total; i++) pages.push(i);
+            return pages;
+          }
+          const half = Math.floor(window/2);
+          let start = Math.max(1, current - half);
+          let end   = Math.min(total, start + window - 1);
+          if (end - start + 1 < window) start = Math.max(1, end - window + 1);
+    
+          if (start > 1) {
+            pages.push(1);
+            if (start > 2) pages.push('...');
+          }
+          for (let i = start; i <= end; i++) pages.push(i);
+          if (end < total) {
+            if (end < total - 1) pages.push('...');
+            pages.push(total);
+          }
+          return pages;
+        }
+    
+        function drawPager(containerSelector, total, currentPage, limit, baseUrl) {
+          const el = document.querySelector(containerSelector);
+          if (!el) return;
+          const totalPages = Math.max(1, Math.ceil((total ?? 0) / (limit || DEFAULT_LIMIT)));
+          if (totalPages <= 1) { el.innerHTML = ''; el.style.display = 'none'; return; }
+    
+          const range = calcRange(currentPage, totalPages);
+    
+          const mk = (href, text, disabled=false, active=false, aria='') =>
+            `<a href="${href}" class="page-link${disabled?' disabled':''}${active?' active':''}" ${aria}>${text}</a>`;
+    
+          const prevDisabled = currentPage <= 1;
+          const nextDisabled = currentPage >= totalPages;
+    
+          const first = mk(`${baseUrl}&page=1`, '«', prevDisabled, false, `aria-label="First"`);
+          const prev  = mk(`${baseUrl}&page=${Math.max(1, currentPage-1)}`, '‹', prevDisabled, false, `aria-label="Previous"`);
+          const next  = mk(`${baseUrl}&page=${Math.min(totalPages, currentPage+1)}`, '›', nextDisabled, false, `aria-label="Next"`);
+          const last  = mk(`${baseUrl}&page=${totalPages}`, '»', nextDisabled, false, `aria-label="Last"`);
+    
+          const mids = range.map(p => p === '...'
+            ? `<span class="page-ellipsis">…</span>`
+            : mk(`${baseUrl}&page=${p}`, String(p), false, p===currentPage)).join('');
+    
+          el.innerHTML = `${first}${prev}${mids}${next}${last}`;
+        }
+    
+        function bindPager(containerSelector, baseUrl, limit) {
+          const el = document.querySelector(containerSelector);
+          if (!el) return;
+          el.querySelectorAll('a.page-link').forEach(a => {
+            a.addEventListener('click', (e) => {
+              e.preventDefault();
+              const u = new URL(a.getAttribute('href'), window.location.origin);
+              const page = Number(u.searchParams.get('page') || '1');
+    
+              // baseUrl에 q / category 정보가 이미 포함되어 있음
+              const params = new URLSearchParams(u.search);
+              const q = params.get('q');
+              const category = params.get('category');
+    
+              if (q) {
+                loadSearch(q, page, limit);
+              } else if (category) {
+                loadCategory(category, page, limit);
+              }
+            });
           });
         }
-
-        // “검색결과” 탭 → 검색 원본 복귀 (AJAX)
-        const searchResultTab = document.querySelector('.tabs [data-search-tab="1"]');
-        if (searchResultTab && isSearchMode) {
-          searchResultTab.addEventListener('click', (e) => {
-            e.preventDefault();
-            fetch(`/api/search?q=${encodeURIComponent(searchKeyword)}&lang=${encodeURIComponent(currentLang)}`)
-              .then(res => res.json())
-              .then((data) => {
-                const posts = Array.isArray(data.posts) ? data.posts
-                            : Array.isArray(data.results) ? data.results
-                            : Array.isArray(data.data) ? data.data
-                            : [];
-                updatePostLists(posts);
-                document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
-                searchResultTab.classList.add('active');
-                document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
-              })
-              .catch(err => console.error('AJAX 검색결과 복귀 오류:', err));
-          });
-        }
-
-        // 목록 렌더 유틸
+    
+        // 목록 렌더(테이블+모바일)
         function updatePostLists(posts){
           const tableBody = document.querySelector('#board-content');
           const mobileList = document.querySelector('.mobile-board-list');
-
+    
           const getViews = (p) =>
             p.views ?? p.view_count ?? p.viewCount ?? p.hits ?? p.reads ?? p.read ?? 0;
-
+    
           const getCats = (p) => {
             const cats = p.translated_categories_display ?? p.categories ?? [];
             return Array.isArray(cats) ? cats.join(', ') : (typeof cats === 'string' ? cats : '');
           };
-
+    
           if (tableBody) tableBody.innerHTML = '';
           if (mobileList) mobileList.innerHTML = '';
-
+    
           (posts || []).forEach(post => {
             // 데스크톱
             if (tableBody) {
@@ -469,7 +498,7 @@
               `;
               tableBody.appendChild(tr);
             }
-
+    
             // 모바일
             if (mobileList) {
               const div = document.createElement('div');
@@ -490,7 +519,7 @@
               mobileList.appendChild(div);
             }
           });
-
+    
           // 비공개 가드 재바인딩
           const currentUser = window.BL_USER || null;
           const currentUserId = currentUser ? String(currentUser.id) : null;
@@ -508,8 +537,83 @@
             });
           });
         }
-
-        // 카테고리 총 글수로 배지 덮어쓰기 (검색 모드일 때만)
+    
+        // ===== 데이터 로더들 =====
+        function normalizeMeta(meta, fallbackTotal, page, limit) {
+          const total = Number(meta?.total ?? meta?.totalCount ?? fallbackTotal ?? 0);
+          const pg    = Number(meta?.page  ?? meta?.current   ?? page ?? 1);
+          const lim   = Number(meta?.limit ?? meta?.perPage   ?? limit ?? DEFAULT_LIMIT);
+          return { total, page: pg, limit: lim };
+        }
+    
+        function loadCategory(catKey, page=1, limit=DEFAULT_LIMIT) {
+          const url = `/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}&page=${page}&limit=${limit}`;
+          fetch(url)
+            .then(res => res.json())
+            .then(async (data) => {
+              const posts = data.posts || data.results || data.data || [];
+              // 메타 폴백: 없으면 카운트 API로 total 계산
+              let meta = normalizeMeta(data, undefined, page, limit);
+              if (!data.total && !data.totalCount) {
+                try {
+                  const r = await fetch(`/api/category-count?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`);
+                  const j = await r.json();
+                  meta = normalizeMeta({ total: j.total }, j.total, page, limit);
+                } catch(_) {}
+              }
+              const baseUrl = `/${currentLang}/search?category=${encodeURIComponent(catKey)}`;
+              renderListAndPaging({ posts, total: meta.total, page: meta.page, limit: meta.limit, baseUrl });
+            })
+            .catch(err => {
+              console.error('카테고리 로드 실패:', err);
+              window.location.href = `/${currentLang}/?category=${encodeURIComponent(catKey)}&page=${page}`;
+            });
+        }
+    
+        function loadSearch(q, page=1, limit=DEFAULT_LIMIT) {
+          const url = `/api/search?q=${encodeURIComponent(q)}&lang=${encodeURIComponent(currentLang)}&page=${page}&limit=${limit}`;
+          fetch(url)
+            .then(res => res.json())
+            .then((data) => {
+              const posts = data.posts || data.results || data.data || [];
+              const meta  = normalizeMeta(data, posts.length, page, limit);
+              const baseUrl = `/${currentLang}/search?q=${encodeURIComponent(q)}`;
+              renderListAndPaging({ posts, total: meta.total, page: meta.page, limit: meta.limit, baseUrl });
+            })
+            .catch(err => {
+              console.error('검색 로드 실패:', err);
+              window.location.href = `/${currentLang}/search?q=${encodeURIComponent(q)}&page=${page}`;
+            });
+        }
+    
+        // ===== 탭 이벤트 =====
+        if (tabsRoot) {
+          tabsRoot.addEventListener('click', (e) => {
+            const a = e.target.closest('a.tab[data-cat-key]');
+            if (!a) return;
+            if (!isSearchMode) return; // 검색이 아닐 땐 서버 내비게이션
+            e.preventDefault();
+    
+            const catKey = a.dataset.catKey;
+            loadCategory(catKey, 1, DEFAULT_LIMIT);
+    
+            // 탭 active 처리
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            a.classList.add('active');
+          });
+        }
+    
+        const searchResultTab = document.querySelector('.tabs [data-search-tab="1"]');
+        if (searchResultTab && isSearchMode) {
+          searchResultTab.addEventListener('click', (e) => {
+            e.preventDefault();
+            loadSearch(searchKeyword, 1, DEFAULT_LIMIT);
+            document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+            searchResultTab.classList.add('active');
+          });
+        }
+    
+        // 검색 모드에서 관련 카테고리 뱃지 총개수 덮어쓰기
         if (isSearchMode) {
           document.querySelectorAll('#postTabs a.tab[data-cat-key]').forEach(a => {
             const key = a.dataset.catKey;
@@ -523,6 +627,7 @@
         }
       });
     </script>
+    
 
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
