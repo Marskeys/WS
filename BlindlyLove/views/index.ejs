@@ -5,18 +5,14 @@
   <body class="light">
     <%- include('partials/header') %>
 
-    <div id="preloader">
-      <div class="spinner"></div>
-    </div>
+    <div id="preloader"><div class="spinner"></div></div>
 
     <div class="full-layout">
       <aside class="side-panel main-panel-only"></aside>
 
       <div class="main-layout">
         <div class="main-panel">
-          <div class="cherry-container">
-            <canvas id="cherry-canvas"></canvas>
-          </div>
+          <div class="cherry-container"><canvas id="cherry-canvas"></canvas></div>
 
           <div class="search-container">
             <a href="/<%= lang %>/">
@@ -29,9 +25,7 @@
               </div>
               <form method="get" action="/<%= lang %>/search" class="search-form">
                 <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
-                <button type="submit" class="icon-submit-btn">
-                  <i class="fas fa-search"></i>
-                </button>
+                <button type="submit" class="icon-submit-btn"><i class="fas fa-search"></i></button>
               </form>
             </div>
           </div>
@@ -187,7 +181,6 @@
                             const createdAt = new Date(post.created_at);
                             const updatedAt = new Date(post.updated_at);
                             const oneDay = 1000 * 60 * 60 * 24;
-
                             const isNewPost = (now - createdAt) < oneDay;
                             const wasEdited = updatedAt > createdAt;
                             const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
@@ -263,7 +256,6 @@
                         const createdAtM = new Date(post.created_at);
                         const updatedAtM = new Date(post.updated_at);
                         const oneDayM = 1000 * 60 * 60 * 24;
-
                         const isNewM = (nowM - createdAtM) < oneDayM;
                         const wasEditedM = updatedAtM > createdAtM;
                         const isRecentlyEditedM = wasEditedM && (nowM - updatedAtM < oneDayM);
@@ -392,35 +384,36 @@
       });
     </script>
 
+    <!-- 안전 주입된 전역 변수 -->
     <script>
+      const searchKeyword = <%- JSON.stringify(searchKeyword || '') %>;
+      const currentLang   = <%- JSON.stringify(lang || 'ko') %>;
+    </script>
+
+    <script>
+      // 전역 캡처로 가로채서 /api/posts만 호출
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('a.tab[data-cat-key]');
+        if (!a) return;
+        if (!searchKeyword) return; // 검색 중일 때만 동작
+
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation(); // 다른 핸들러 전부 무력화
+
+        const catKey = a.dataset.catKey;
+        fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
+          .then(res => res.json())
+          .then(({ posts = [] }) => {
+            updatePostLists(posts);
+            activateTab?.(a);
+            document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
+          })
+          .catch(err => console.error('카테고리 전체글 로드 실패:', err));
+      }, true); // capture:true
+
+      // “검색결과” 탭 → 검색 원본 복귀
       document.addEventListener('DOMContentLoaded', () => {
-        const searchKeyword = '<%= searchKeyword || '' %>';
-        const currentLang = '<%= lang %>';
-
-        const tabsRoot = document.getElementById('postTabs');
-
-        // 캡처 단계에서 가로채서 /api/posts만 호출
-        tabsRoot?.addEventListener('click', (e) => {
-          const a = e.target.closest('a.tab[data-cat-key]');
-          if (!a) return;
-          if (!searchKeyword) return;
-
-          e.preventDefault();
-          e.stopPropagation();
-          e.stopImmediatePropagation(); // 다른 핸들러 전부 무력화
-
-          const catKey = a.dataset.catKey;
-          fetch(`/api/posts?category=${encodeURIComponent(catKey)}&lang=${encodeURIComponent(currentLang)}`)
-            .then(res => res.json())
-            .then(({ posts = [] }) => {
-              updatePostLists(posts);
-              activateTab(a);
-              setPaginationVisible(false);
-            })
-            .catch(err => console.error('AJAX 카테고리 전체글 로드 오류:', err));
-        }, true); // capture:true
-
-        // “검색결과” 탭 → 검색 원본 복귀
         const searchResultTab = document.querySelector('.tabs [data-search-tab="1"]');
         if (searchResultTab && searchKeyword) {
           searchResultTab.addEventListener('click', (e) => {
@@ -428,65 +421,42 @@
             fetch(`/api/search?q=${encodeURIComponent(searchKeyword)}&lang=${encodeURIComponent(currentLang)}`)
               .then(res => res.json())
               .then(data => {
-                updatePostLists(Array.isArray(data.posts) ? data.posts : (data.results || []));
-                activateTab(searchResultTab);
-                setPaginationVisible(false);
+                const posts = Array.isArray(data.posts) ? data.posts : (data.results || []);
+                updatePostLists(posts);
+                activateTab?.(searchResultTab);
+                document.querySelectorAll('.pagination').forEach(el => el.style.display = 'none');
               })
               .catch(err => console.error('AJAX 검색결과 복귀 오류:', err));
           });
         }
 
-        function setPaginationVisible(on) {
-          document.querySelectorAll('.pagination').forEach(el => { el.style.display = on ? '' : 'none'; });
-        }
-
-        function activateTab(targetEl) {
+        // 활성 탭 표시 유틸
+        window.activateTab = function(targetEl){
           document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
           targetEl.classList.add('active');
-        }
+        };
 
-        function attachPrivateLinkGuards() {
-          const links = document.querySelectorAll('.post-detail-link');
-          const currentUser = window.BL_USER || null;
-          const currentUserId = currentUser ? String(currentUser.id) : null;
-          const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
-
-          links.forEach(link => {
-            if (link.__bl_guard_attached) return;
-            link.__bl_guard_attached = true;
-
-            link.addEventListener('click', (event) => {
-              const isPrivate = event.currentTarget.dataset.isPrivate === '1';
-              const postUserId = event.currentTarget.dataset.postUserId;
-              if (isPrivate && postUserId !== String(currentUserId) && !isAdmin) {
-                event.preventDefault();
-                showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
-              }
-            });
-          });
-        }
-
-        function safeCatsStr(post) {
-          const cats = post.translated_categories_display || post.categories || [];
-          if (Array.isArray(cats)) return cats.join(', ');
-          if (typeof cats === 'string') return cats;
-          return '';
-        }
-
-        function updatePostLists(posts) {
+        // 리스트 업데이트 유틸
+        window.updatePostLists = function(posts){
           const tableBody = document.querySelector('#board-content');
           const mobileList = document.querySelector('.mobile-board-list');
+          const safeCatsStr = (post) => {
+            const cats = post.translated_categories_display || post.categories || [];
+            if (Array.isArray(cats)) return cats.join(', ');
+            if (typeof cats === 'string') return cats;
+            return '';
+          };
 
           if (tableBody) tableBody.innerHTML = '';
           if (mobileList) mobileList.innerHTML = '';
 
-          posts.forEach(post => {
+          (posts || []).forEach(post => {
             if (tableBody) {
               const tr = document.createElement('tr');
               tr.innerHTML = `
                 <td>${post.id ?? ''}</td>
                 <td>
-                  <a href="/${currentLang}/post/${post.id}" 
+                  <a href="/${currentLang}/post/${post.id}"
                      class="post-detail-link ${post.is_pinned ? 'pinned-title' : ''}"
                      data-is-private="${post.is_private ? '1' : '0'}"
                      data-post-user-id="${post.user_id ?? ''}">
@@ -506,7 +476,7 @@
               div.className = 'mobile-post-item';
               div.innerHTML = `
                 <div class="post-title-and-actions">
-                  <a href="/${currentLang}/post/${post.id}" 
+                  <a href="/${currentLang}/post/${post.id}"
                      class="post-title post-detail-link ${post.is_pinned ? 'pinned-title' : ''}"
                      data-is-private="${post.is_private ? '1' : '0'}"
                      data-post-user-id="${post.user_id ?? ''}">
@@ -521,8 +491,23 @@
             }
           });
 
-          attachPrivateLinkGuards();
-        }
+          // 비공개 가드 재바인딩
+          const currentUser = window.BL_USER || null;
+          const currentUserId = currentUser ? String(currentUser.id) : null;
+          const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
+          document.querySelectorAll('.post-detail-link').forEach(link => {
+            if (link.__bl_guard_attached) return;
+            link.__bl_guard_attached = true;
+            link.addEventListener('click', (event) => {
+              const isPrivate = event.currentTarget.dataset.isPrivate === '1';
+              const postUserId = event.currentTarget.dataset.postUserId;
+              if (isPrivate && postUserId !== String(currentUserId) && !isAdmin) {
+                event.preventDefault();
+                showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
+              }
+            });
+          });
+        };
       });
     </script>
 
