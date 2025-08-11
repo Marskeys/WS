@@ -621,7 +621,7 @@ html.dark body .mobile-menu{
 /* ✅ 모바일 검색 시 헤더 고정 검색창 길이 - 기존 유지 */
 @media (max-width: 640px) {
   .search-form {
-    max-width: 95% !important;
+    max-width: 100% !important;
     width: 90%;
     display: flex;  
     box-sizing: border-box;
