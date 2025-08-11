@@ -2,37 +2,7 @@
 <html class="dark" lang="<%= lang %>">
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
-  <!-- ▶ 라벨 정렬/여백 리셋 + 애니메이션 (강제 적용) -->
-  <style>
-    /* 탭 바를 확실히 플렉스로 맞추고 중앙정렬 */
-    .tabs-container .tabs{ display:flex !important; align-items:center !important; gap:.25rem !important; }
-    /* 라벨 자체: 버튼 아님(얇은 텍스트), 아래여백/들뜸 제거 */
-    .tabs-label{
-      display:inline-flex; align-items:center; gap:.35rem;
-      margin:0 .25rem 0 .25rem !important; padding:0 !important;
-      font-size:.86rem; line-height:1 !important; white-space:nowrap;
-      color:#94a3b8; letter-spacing:.01em;
-      user-select:none; pointer-events:none;
-      align-self:center !important; /* 부모 높이 중앙 정렬 보장 */
-      position:relative; top:0 !important;
-    }
-    .dark .tabs-label{ color:#a8b3cf; }
-    .tabs-label .caret{ opacity:.75; font-weight:600; }
 
-    /* 살랑살랑 애니메이션(세로 3px 범위) */
-    @keyframes tabsLabelFloatY { 0%{transform:translateY(0)} 50%{transform:translateY(-3px)} 100%{transform:translateY(0)} }
-    .tabs-label.animate{ animation: tabsLabelFloatY 2.8s ease-in-out infinite; will-change: transform; }
-
-    /* 모션 줄이기 존중 */
-    @media (prefers-reduced-motion: reduce){
-      .tabs-label.animate{ animation:none; }
-    }
-
-    /* 모바일에서도 항상 보이게 + 살짝 축소 */
-    @media (max-width:600px){
-      .tabs-label{ font-size:.84rem; margin:0 .2rem !important; }
-    }
-  </style>
   <body class="light">
     <%- include('partials/header') %>
 
