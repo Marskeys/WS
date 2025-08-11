@@ -85,6 +85,31 @@
 }
 
 @media (max-width: 640px) {
+  .full-layout {
+    flex-direction: column;
+    align-items: stretch; /* 중앙 배치 말고 가로폭 꽉 채우기 */
+  }
+
+  .main-panel {
+    max-width: 100vw;     /* <- 이게 핵심: calc(...) 지우기 */
+    width: 100%;
+    padding: 0;           /* 좌우 패딩이 시각적 치우침 만들면 제거 */
+  }
+
+  .search-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;       /* 확실한 중앙 정렬 */
+    padding: 0;           /* 필요시 0으로 두고 */
+  }
+
+  .search-wrapper, .search-form {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
   #character-svg {
     width: 80%;
     min-width: 150px;
@@ -200,7 +225,22 @@
 }
 
 /* 오른쪽 블러 */
-
+.tabs-blur-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    to left,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 248, 250, 0.6) 40%,
+    rgba(255, 240, 245, 0.2) 80%,
+    rgba(255, 240, 245, 0) 100%
+  );
+  z-index: 5;
+}
 
 html.dark .tabs-blur-right {
   background: linear-gradient(to left,
