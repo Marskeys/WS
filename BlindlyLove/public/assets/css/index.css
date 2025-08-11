@@ -148,10 +148,9 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   width: 100%;
-  padding: 0.2rem 0.2rem;
+  padding: 0 0.2rem;
   margin-bottom: 0.1rem;
   box-sizing: border-box;
-  background-color: black;
 }
 
 .tabs-wrapper {
@@ -233,6 +232,7 @@ html.dark .tabs-blur-left {
 
 .tab {
   margin-top: 2rem;
+  margin-bottom: 2rem;
   padding: 0.3rem 0.9rem;
   border: 1px solid #d0cce6;
   background: #f9eded;
