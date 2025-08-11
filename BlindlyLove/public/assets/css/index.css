@@ -99,6 +99,7 @@
   width: 100%;
   max-width: 1500px;
   margin: 0 auto;
+  padding: 0 0.3rem;
 }
 
 .main-layout {
@@ -392,15 +393,6 @@ form button:hover {
     display: none;
   }
 
-  .main-layout,
-  .main-panel,
-  .search-container,
-  .tab-board {
-    width: 100%;
-    max-width: 100%;
-    padding: 0 0.2rem;
-    box-sizing: border-box;
-  }
 
   .main-panel {
     min-width: 320px;
@@ -991,15 +983,6 @@ html.dark .app-button:hover {
 /* ============================
    🧱 전체 레이아웃
 ============================ */
-.full-layout {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 1500px;
-  margin: 0 auto;
-}
 
 .main-layout {
   flex: 1;
