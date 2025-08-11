@@ -293,5 +293,6 @@ html.dark .tabs-label {
 @media (max-width: 640px) {
   .tabs-container {
     overflow: visible !important;
+    width: 100% !important;
   }
 }
