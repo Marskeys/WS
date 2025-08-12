@@ -55,59 +55,139 @@
       </div>
     </div>
   
-    <div id="panel-resizer"
-         role="separator"
-         aria-orientation="horizontal"
-         aria-label="패널 높이 조절"
-         aria-valuemin="120"
-         aria-valuemax="600"
-         aria-valuenow="240"></div>
-  </div>
-  
-  <script>
-  (function(){
-    const root = document.documentElement;
-    const resizer = document.getElementById('panel-resizer');
-    if(!resizer) return;
-  
-    const KEY='miniPanelH', MIN=120, MAX=600;
-    const saved = parseInt(localStorage.getItem(KEY),10);
-    root.style.setProperty('--panel-h', (Number.isNaN(saved)?240:saved)+'px');
-    resizer.setAttribute('aria-valuenow', String(Number.isNaN(saved)?240:saved));
-  
-    let startY=0, startH=0, dragging=false;
-  
-    function move(e){
-      if(!dragging) return;
-      const y = (e.touches?e.touches[0].clientY:e.clientY);
-      let h = Math.max(MIN, Math.min(MAX, startH + (y - startY)));
-      root.style.setProperty('--panel-h', h+'px');
-      resizer.setAttribute('aria-valuenow', String(h));
-      e.preventDefault?.();
-    }
-    function up(){
-      if(!dragging) return;
-      dragging=false; document.body.classList.remove('resizing');
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10);
-      if(!Number.isNaN(h)) localStorage.setItem(KEY,String(h));
-      window.removeEventListener('mousemove',move);
-      window.removeEventListener('mouseup',up);
-      window.removeEventListener('touchmove',move);
-      window.removeEventListener('touchend',up);
-    }
-    function down(e){
-      dragging=true; document.body.classList.add('resizing');
-      startY = (e.touches?e.touches[0].clientY:e.clientY);
-      startH = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
-      window.addEventListener('mousemove',move);
-      window.addEventListener('mouseup',up);
-      window.addEventListener('touchmove',move,{passive:false});
-      window.addEventListener('touchend',up);
-      e.preventDefault?.();
-    }
-  
-    resizer.addEventListener('mousedown',down);
-    resizer.addEventListener('touchstart',down,{passive:false});
-  })();
-  </script>
-  
+  <!-- HTML: resizer에 포커스 가능 + 툴팁 -->
+<div id="panel-resizer"
+role="separator"
+aria-orientation="horizontal"
+aria-label="패널 높이 조절"
+aria-valuemin="120"
+aria-valuemax="600"
+aria-valuenow="240"
+tabindex="0"
+title="드래그하거나 ↑/↓ 키로 높이 조절"></div>
+
+<style>
+/* 더 큰 터치 타깃 + 중앙 그립바 + 호버/포커스 강조 */
+#panel-resizer{
+position: relative;
+grid-row: 2;
+height: 14px;                    /* ↑ 살짝 두껍게 */
+cursor: ns-resize;
+background:#121212;              /* 어두운 바탕 */
+border: 1px solid #333; border-top:0;
+transition: background .15s ease, box-shadow .15s ease;
+}
+/* 중앙 그립바 */
+#panel-resizer::before{
+content:"";
+position:absolute; left:50%; top:50%;
+width: 78px; height: 4px; border-radius:999px;
+transform: translate(-50%,-50%);
+background: linear-gradient(90deg, #777, #aaa, #777);
+opacity:.9;
+}
+/* 그립 느낌 더 나게 점선 패턴 */
+#panel-resizer::after{
+content:"";
+position:absolute; left:50%; top:50%;
+width: 78px; height: 12px; transform: translate(-50%,-50%);
+pointer-events:none;
+background:
+ radial-gradient(currentColor 1px, transparent 2px) 0 50%/10px 8px repeat-x;
+color:#666; opacity:.55;
+}
+/* 호버/포커스 시 시각 강화 */
+#panel-resizer:hover,
+#panel-resizer:focus-visible,
+body.resizing #panel-resizer{
+background:#181818;
+box-shadow: inset 0 0 0 1px #444, 0 0 0 2px rgba(255,255,255,.05);
+}
+#panel-resizer:hover::before,
+#panel-resizer:focus-visible::before{
+transform: translate(-50%,-50%) scaleX(1.08);
+}
+
+/* 모바일: 터치 타깃 키우기 */
+@media (max-width:640px){
+#panel-resizer{ height: 18px; }
+}
+</style>
+
+<script>
+(function(){
+const root = document.documentElement;
+const resizer = document.getElementById('panel-resizer');
+if(!resizer) return;
+
+const KEY='miniPanelH', MIN=120, MAX=600, STEP=16, BIG=64;
+const saved = parseInt(localStorage.getItem(KEY),10);
+const start = Number.isNaN(saved)?240:saved;
+root.style.setProperty('--panel-h', start+'px');
+resizer.setAttribute('aria-valuenow', String(start));
+
+let startY=0, startH=0, dragging=false;
+
+function clamp(v){ return Math.max(MIN, Math.min(MAX, v)); }
+function setH(h, save=false){
+h = clamp(h);
+root.style.setProperty('--panel-h', h+'px');
+resizer.setAttribute('aria-valuenow', String(h));
+if(save) localStorage.setItem(KEY, String(h));
+}
+
+function move(e){
+if(!dragging) return;
+const y = (e.touches?e.touches[0].clientY:e.clientY);
+setH(startH + (y - startY));
+e.preventDefault?.();
+}
+function up(){
+if(!dragging) return;
+dragging=false; document.body.classList.remove('resizing');
+const h = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10);
+setH(h, true);
+window.removeEventListener('mousemove',move);
+window.removeEventListener('mouseup',up);
+window.removeEventListener('touchmove',move);
+window.removeEventListener('touchend',up);
+}
+function down(e){
+dragging=true; document.body.classList.add('resizing');
+startY = (e.touches?e.touches[0].clientY:e.clientY);
+startH = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
+window.addEventListener('mousemove',move);
+window.addEventListener('mouseup',up);
+window.addEventListener('touchmove',move,{passive:false});
+window.addEventListener('touchend',up);
+e.preventDefault?.();
+}
+resizer.addEventListener('mousedown',down);
+resizer.addEventListener('touchstart',down,{passive:false});
+
+// 키보드 접근성: ↑/↓ = STEP, Shift+↑/↓ = BIG, Home/End = MIN/MAX, Enter = 중간값
+resizer.addEventListener('keydown', (e)=>{
+const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
+if(e.key==='ArrowUp'){ setH(cur - (e.shiftKey?BIG:STEP), true); e.preventDefault(); }
+else if(e.key==='ArrowDown'){ setH(cur + (e.shiftKey?BIG:STEP), true); e.preventDefault(); }
+else if(e.key==='Home'){ setH(MIN, true); e.preventDefault(); }
+else if(e.key==='End'){ setH(MAX, true); e.preventDefault(); }
+else if(e.key==='Enter' || e.key===' '){ setH(240, true); e.preventDefault(); }
+});
+
+// 첫 방문 코칭 버블(한 번만)
+if(!localStorage.getItem('miniPanelHint')){
+const hint = document.createElement('div');
+hint.textContent = '드래그해서 높이를 조절할 수 있어요';
+Object.assign(hint.style, {
+ position:'absolute', left:'50%', bottom:'14px', transform:'translateX(-50%)',
+ background:'#000', color:'#fff', padding:'6px 10px', borderRadius:'8px',
+ fontSize:'12px', opacity:'0', transition:'opacity .3s ease', pointerEvents:'none'
+});
+resizer.appendChild(hint);
+requestAnimationFrame(()=> hint.style.opacity='0.9');
+setTimeout(()=>{ hint.style.opacity='0'; setTimeout(()=>hint.remove(), 300); }, 2600);
+localStorage.setItem('miniPanelHint','1');
+}
+})();
+</script>
