@@ -1,47 +1,183 @@
 <!DOCTYPE html>
 <html class="dark" lang="<%= lang %>">
- 
 <head>
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
-  </head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= locale.editor["editor-title"] %> — App Mode</title>
+  <style>
+    /* ===== Desktop-App Shell ===== */
+    :root{
+      --bg: #0f1115;           /* canvas */
+      --panel: #151923;        /* panels */
+      --panel-2: #0d1016;      /* deeper */
+      --border: #232838;       
+      --text: #e6e8ef;
+      --muted: #9aa4b2;
+      --accent: #00f5d4;
+      --accent-2: #7c9eff;
+      --danger: #ff5f57;
+      --warn: #ffbd2e;
+      --ok: #28c840;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius: 16px;
+    }
+    html:not(.dark){
+      --bg: #eef2f6;
+      --panel: #ffffff;
+      --panel-2: #f7f9fb;
+      --border: #dfe6ef;
+      --text: #1f2430;
+      --muted: #556174;
+      --accent: #0066ff;
+      --accent-2: #7c9eff;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
 
-  <body class="light">
+    html,body{height:100%;}
+    body{
+      margin:0; background: radial-gradient(1200px 700px at 70% -10%,rgba(0,245,212,.08),transparent 50%),
+                               radial-gradient(900px 600px at -10% 110%,rgba(124,158,255,.08),transparent 50%),
+                               var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      overflow:hidden; /* app */
+    }
 
-    <div id="preloader">
-      <div class="spinner"></div>
-    </div>
-    <%- include('partials/header') %>
-    <div class="full-layout">
-      <div class="main-layout">
-        <div class="main-panel">
-          <div class="dark-overlay"></div>
-          <div class="matrix-container">
-            <canvas id="matrix-canvas"></canvas>
+    /* Preloader keep (hidden in app mode) */
+    #preloader{display:none}
+
+    /* ===== App Window ===== */
+    .app-wrap{height:100%; display:grid; place-items:center; padding:20px; box-sizing:border-box;}
+    .window{width:min(1400px,calc(100vw - 40px)); height:min(860px,calc(100vh - 40px));
+      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)) , var(--panel);
+      border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
+      display:grid; grid-template-rows: 44px auto 26px; overflow:hidden; position:relative;
+    }
+
+    /* Titlebar (macOS style) */
+    .titlebar{
+      height:44px; display:flex; align-items:center; gap:10px; padding:0 14px; border-bottom:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+      -webkit-app-region: drag; /* feel */
+    }
+    .traffic{display:flex; gap:8px;}
+    .dot{width:12px;height:12px;border-radius:50%;}
+    .dot.red{background:var(--danger)}
+    .dot.yellow{background:var(--warn)}
+    .dot.green{background:var(--ok)}
+    .title{font-weight:600; letter-spacing:.2px; opacity:.9}
+    .actions{margin-left:auto; display:flex; align-items:center; gap:8px;}
+    .tb-btn{ -webkit-app-region: no-drag; padding:8px 10px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); border-radius:10px; font-size:.85rem; cursor:pointer}
+    .tb-btn:hover{border-color:var(--accent-2)}
+
+    /* ===== Main area: sidebar | editors | preview ===== */
+    .main{display:grid; grid-template-columns: 240px 8px 1fr 8px min(46%, 640px); height:100%;}
+
+    .sidebar{background:var(--panel-2); border-right:1px solid var(--border); display:flex; flex-direction:column;}
+    .side-top{padding:14px; display:flex; gap:8px;}
+    .chip{font-size:.78rem; padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:transparent; color:var(--muted); cursor:pointer}
+    .chip.active{color:var(--text); border-color:var(--accent-2)}
+
+    .files{padding:6px 10px 12px; overflow:auto;}
+    .file{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted)}
+    .file.active{background:var(--panel); color:var(--text); border:1px solid var(--border)}
+
+    .separator{background:linear-gradient(180deg,transparent, rgba(124,158,255,.25), transparent); cursor:col-resize}
+
+    .editors{display:flex; flex-direction:column; background:var(--panel)}
+    .tabbar{display:flex; gap:2px; padding:8px; border-bottom:1px solid var(--border); background:var(--panel-2)}
+    .tab{padding:8px 12px; border-radius:8px; border:1px solid transparent; color:var(--muted); cursor:pointer}
+    .tab.active{color:var(--text); background:var(--panel); border-color:var(--border)}
+
+    .editor-wrap{position:relative; flex:1; overflow:hidden}
+    .editor{position:absolute; inset:0; padding:14px; overflow:auto}
+    .editor textarea{width:100%; height:100%; resize:none; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding", monospace; font-size:13.5px; line-height:1.55; outline:none}
+
+    /* Preview */
+    .preview{background:var(--panel-2); border-left:1px solid var(--border); display:grid; grid-template-rows: 36px 1fr}
+    .pv-head{display:flex; align-items:center; gap:10px; padding:6px 10px; border-bottom:1px solid var(--border)}
+    .rec{width:8px;height:8px;border-radius:50%; background:#ff4747; box-shadow:0 0 8px #ff4747;}
+    .address{flex:1; border:1px solid var(--border); border-radius:8px; padding:4px 10px; font-size:.8rem; color:var(--muted); background:var(--panel)}
+    .pv-body{position:relative}
+    .frame{position:absolute; inset:0; width:100%; height:100%; border:0; background:var(--panel)}
+
+    /* Statusbar */
+    .statusbar{height:26px; display:flex; align-items:center; gap:14px; padding:0 10px; border-top:1px solid var(--border); background:var(--panel-2); font-size:.8rem; color:var(--muted)}
+    .statusbar .pill{padding:3px 8px; border:1px solid var(--border); border-radius:999px}
+
+    /* Command Palette */
+    .kbar{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.45)}
+    .kbar.active{display:grid}
+    .kcard{width:min(720px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)}
+    .khead{padding:12px; border-bottom:1px solid var(--border)}
+    .khead input{width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); outline:none}
+    .klist{max-height:320px; overflow:auto}
+    .kitem{padding:10px 14px; border-bottom:1px dashed var(--border); cursor:pointer}
+    .kitem:hover{background:var(--panel-2)}
+
+    /* Responsiveness: collapse preview below 980px */
+    @media (max-width: 980px){
+      .main{grid-template-columns: 0 0 1fr 0 0}
+      .preview{display:none}
+      body{overflow:auto}
+    }
+  </style>
+</head>
+<body class="light">
+  <!-- Optional global header remains but visually hidden in app mode -->
+  <%- include('partials/header') %>
+
+  <div class="app-wrap">
+    <div class="window" role="application" aria-label="Code Editor App">
+      <div class="titlebar">
+        <div class="traffic" aria-hidden="true">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="title">BlindlyLove Studio — <%= locale.editor["editor-title"] %></div>
+        <div class="actions">
+          <button class="tb-btn" id="runBtn">Run ▷ (Cmd/Ctrl+Enter)</button>
+          <button class="tb-btn" id="shareBtn">Share</button>
+          <button class="tb-btn" id="paletteBtn">⌘K</button>
+          <button class="tb-btn" id="themeBtn">Theme</button>
+        </div>
+      </div>
+
+      <div class="main">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+          <div class="side-top">
+            <button class="chip active" id="filesChip">Files</button>
+            <button class="chip" id="assetsChip">Assets</button>
           </div>
-        
-          <section class="code-preview-wrapper">
-            <h1 class="code-preview-title"><%= locale.editor["editor-title"] %></h1>
+          <div class="files" id="fileList">
+            <div class="file active" data-tab="html">📄 index.html</div>
+            <div class="file" data-tab="css">🎨 styles.css</div>
+            <div class="file" data-tab="js">⚙️ app.js</div>
+          </div>
+        </aside>
 
-            <div class="code-preview-body">
-              <div class="code-preview-left">
-                <div class="code-preview-tabs">
-                  <button class="code-preview-tab active" data-tab="html">HTML</button>
-                  <button class="code-preview-tab" data-tab="css">CSS</button>
-                  <button class="code-preview-tab" data-tab="js">JS</button>
-                </div>
+        <div class="separator" id="sep1" title="Drag to resize"></div>
 
-                <div class="code-preview-editors">
-                  <div id="code-preview-html" class="code-preview-editor active">
-                    <textarea id="code-preview-html-code">
+        <!-- Editors -->
+        <section class="editors">
+          <div class="tabbar">
+            <button class="tab active" data-tab="html">HTML</button>
+            <button class="tab" data-tab="css">CSS</button>
+            <button class="tab" data-tab="js">JS</button>
+          </div>
+          <div class="editor-wrap">
+            <div class="editor" id="editor-html">
+<textarea id="code-html">
 <header>
   <%= locale.editor["example-html"] %>
-                    </textarea>
-                  </div>
-
-                  <div id="code-preview-css" class="code-preview-editor">
-                    <textarea id="code-preview-css-code">
-body {
+</header>
+</textarea>
+            </div>
+            <div class="editor" id="editor-css" style="display:none">
+<textarea id="code-css">body {
   background: #fff;
   color: #222;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -54,381 +190,194 @@ header {
   padding: 20px 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-header h1 {
-  margin: 0;
-  color: #3366cc;
-}
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-nav li {
-  font-weight: bold;
-  color: #444;
-}
-main {
-  padding: 40px 20px;
-}
-section {
-  margin-bottom: 40px;
-}
-h2 {
-  color: #444;
-  margin-bottom: 10px;
-}
-ul {
-  list-style: none;
-  padding: 0;
-}
-ul li {
-  margin: 5px 0;
-  font-size: 1.1rem;
-}
-footer {
-  background: #f9f9f9;
-  padding: 20px 0;
-  font-size: 0.9rem;
-  color: #888;
-  border-top: 1px solid #eee;
-}
-                    </textarea>
-                  </div>
-
-                  <div id="code-preview-js" class="code-preview-editor">
-                    <textarea id="code-preview-js-code">
-document.body.style.transform = 'scale(1.02)';
-                    </textarea>
-                  </div>
-                </div>
-              </div>
-
-              <div class="code-preview-right">
-                <p class="preview-label">
-                  <span class="record-dot"></span>
-                  <%= locale.editor["preview-label"] %>
-                </p>
-                <div class="fake-browser">
-                  <div class="fake-browser-header">
-                    <div class="fake-browser-dots">
-                      <span class="dot red"></span>
-                      <span class="dot yellow"></span>
-                      <span class="dot green"></span>
-                    </div>
-                    <div class="fake-browser-address">https://preview.local</div>
-                  </div>
-                  <iframe id="code-preview-frame" sandbox="allow-scripts"></iframe>
-                </div>
-              </div>
+header h1 { margin: 0; color: #3366cc; }
+nav ul { list-style: none; padding: 0; margin: 10px 0 0; display: flex; justify-content: center; gap: 20px; }
+nav li { font-weight: bold; color: #444; }
+main { padding: 40px 20px; }
+section { margin-bottom: 40px; }
+h2 { color: #444; margin-bottom: 10px; }
+ul { list-style: none; padding: 0; }
+ul li { margin: 5px 0; font-size: 1.1rem; }
+footer { background: #f9f9f9; padding: 20px 0; font-size: 0.9rem; color: #888; border-top: 1px solid #eee; }
+</textarea>
             </div>
-          </section>
-        </div>
+            <div class="editor" id="editor-js" style="display:none">
+<textarea id="code-js">document.body.style.transform = 'scale(1.02)';</textarea>
+            </div>
+          </div>
+        </section>
+
+        <div class="separator" id="sep2" title="Drag to resize"></div>
+
+        <!-- Preview -->
+        <aside class="preview">
+          <div class="pv-head">
+            <span class="rec" aria-hidden="true"></span>
+            <span><%= locale.editor["preview-label"] %></span>
+            <input class="address" value="https://preview.local" readonly />
+          </div>
+          <div class="pv-body">
+            <iframe id="previewFrame" class="frame" sandbox="allow-scripts"></iframe>
+          </div>
+        </aside>
+      </div>
+
+      <div class="statusbar">
+        <span class="pill" id="cursorInfo">Ln 1, Col 1</span>
+        <span class="pill">UTF-8</span>
+        <span class="pill">LF</span>
+        <span class="pill" id="autosave">Autosave On</span>
+        <span style="margin-left:auto" class="pill">Tip: ⌘B Sidebar | ⌘K Palette</span>
       </div>
     </div>
+  </div>
 
-    <%- include('partials/scripts') %>
+  <!-- Command Palette -->
+  <div class="kbar" id="kbar" aria-modal="true" role="dialog">
+    <div class="kcard">
+      <div class="khead"><input id="kinput" placeholder="Type a command… (Run, Toggle Theme, Toggle Sidebar)"/></div>
+      <div class="klist" id="klist"></div>
+    </div>
+  </div>
 
-    <style>
-      .preview-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  font-size: 1rem;
-}
+  <%- include('partials/scripts') %>
+  <script>
+    // ===== Tabs + Files sync =====
+    const tabs = [...document.querySelectorAll('.tab')];
+    const files = [...document.querySelectorAll('.file')];
+    const panes = {
+      html: document.getElementById('editor-html'),
+      css: document.getElementById('editor-css'),
+      js: document.getElementById('editor-js')
+    };
+    const textareas = {
+      html: document.getElementById('code-html'),
+      css: document.getElementById('code-css'),
+      js: document.getElementById('code-js')
+    };
 
-.record-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: red;
-  box-shadow: 0 0 5px red;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-    .code-preview-title {
-  font-weight: 300;
-  font-size: 1.8rem;
-  text-align: left;
-  margin-bottom: 20px;
-}
-
-      .code-preview-tabs {
-        display: flex;
-        justify-content: center;
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 15px;
-      }
-
-      .code-preview-tab {
-        flex: 1;
-        padding: 12px;
-        text-align: center;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-        transition: 0.2s ease;
-      }
-
-      .code-preview-editors {
-        width: 100%;
-      }
-
-      .code-preview-editor {
-        display: none;
-      }
-
-      .code-preview-editor.active {
-        display: block;
-      }
-
-      textarea {
-        width: 100%;
-        height: 220px;
-        border: none;
-        padding: 12px;
-        font-family: monospace;
-        font-size: 14px;
-        resize: vertical;
-        border-radius: 10px;
-        outline: none;
-        transition: background 0.3s, color 0.3s;
-      }
-
-      @media screen and (min-width: 1024px) {
-  textarea {
-    height: 700px;
-  }
-}
-
-      .fake-browser {
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        border: 1px solid #ccc;
-        overflow: hidden;
-        background: white;
-      }
-
-      .fake-browser-header {
-        display: flex;
-        align-items: center;
-        background: #f5f5f7;
-        padding: 8px 12px;
-        border-bottom: 1px solid #ddd;
-        font-size: 14px;
-        font-family: 'Gowun Dodum', sans-serif;
-      }
-
-      .fake-browser-dots {
-        display: flex;
-        gap: 6px;
-        margin-right: 12px;
-      }
-
-      .fake-browser-dots .dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        display: inline-block;
-      }
-
-      .dot.red { background: #ff5f57; }
-      .dot.yellow { background: #ffbd2e; }
-      .dot.green { background: #28c840; }
-
-      .fake-browser-address {
-        flex: 1;
-        background: #fff;
-        padding: 4px 10px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        color: #666;
-        font-size: 12px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-
-      #code-preview-frame {
-        width: 100%;
-        height: 400px;
-        border: none;
-      }
-
-      .preview-label {
-        text-align: center;
-        font-weight: bold;
-        margin: 20px 0 10px;
-      }
-
-      /* Layout for desktop only */
-      @media screen and (min-width: 1024px) {
-        .code-preview-body {
-          display: flex;
-          gap: 30px;
-          align-items: centor;
-        }
-
-        .code-preview-left {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .code-preview-right {
-          flex: 1;
-          min-width: 0;
-        }
-
-        .code-preview-tabs {
-          justify-content: flex-start;
-        }
-
-        .preview-label {
-          margin-top: 0;
-        }
-
-        .fake-browser {
-          margin-top: 0;
-        }
-
-      }
-
-      /* Light/Dark Theme Styles 유지 */
-      html:not(.dark) .code-preview-wrapper {
-        background: rgba(255, 255, 255, 0.9);
-        color: #222;
-      }
-
-      html:not(.dark) .code-preview-tabs {
-        background: #e0e0e0;
-      }
-
-      html:not(.dark) .code-preview-tab {
-        background: #e0e0e0;
-        color: #333;
-      }
-
-      html:not(.dark) .code-preview-tab.active {
-        background: #ccc;
-        color: #3366cc;
-      }
-
-      html:not(.dark) textarea {
-        background: #f9f9f9;
-        color: #222;
-      }
-
-      html:not(.dark) .fake-browser {
-        background: #fff;
-        border-color: #ccc;
-      }
-
-      html.dark .code-preview-wrapper {
-        background: rgba(30, 30, 30, 0.6);
-        color: white;
-      }
-
-      html.dark .code-preview-tabs {
-        background: #333;
-      }
-
-      html.dark .code-preview-tab {
-        background: #333;
-        color: #ccc;
-      }
-
-      html.dark .code-preview-tab.active {
-        background: #222;
-        color: #00f5d4;
-      }
-
-      html.dark textarea {
-        background: #111;
-        color: #0ff;
-      }
-
-      html.dark .fake-browser {
-        background: #1e1e1e;
-        border-color: #444;
-      }
-
-      html.dark .fake-browser-header {
-        background: #2c2c2c;
-        border-bottom: 1px solid #444;
-      }
-
-      html.dark .fake-browser-address {
-        background: #1a1a1a;
-        border: 1px solid #444;
-        color: #bbb;
-      }
-
-      html.dark #code-preview-frame {
-        background: #1e1e1e;
-      }
-
-      .code-preview-wrapper {
-  width: 100%;
-  height: 100%;
-  margin-top: 50px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-
-    </style>
-
-    <script>
-      const codeTabs = document.querySelectorAll('.code-preview-tab');
-      const codeEditors = document.querySelectorAll('.code-preview-editor');
-      const htmlInput = document.getElementById('code-preview-html-code');
-      const cssInput = document.getElementById('code-preview-css-code');
-      const jsInput = document.getElementById('code-preview-js-code');
-      const preview = document.getElementById('code-preview-frame');
-
-      codeTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          codeTabs.forEach(t => t.classList.remove('active'));
-          codeEditors.forEach(e => e.classList.remove('active'));
-          tab.classList.add('active');
-          document.getElementById(`code-preview-${tab.dataset.tab}`).classList.add('active');
-        });
+    function activate(tab){
+      tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
+      files.forEach(f=>f.classList.toggle('active', f.dataset.tab===tab));
+      Object.entries(panes).forEach(([k,el])=>{
+        if(k===tab){ el.style.display='block'; } else { el.style.display='none'; }
       });
-
-      function updatePreview() {
-  const html = htmlInput.value;
-  const cssContent = cssInput.value + `
-    @media screen and (max-width: 768px) {
-      body {
-        font-size: 80% !important;
-      }
-      h1, h2, h3, h4, h5, h6, p, li, nav, footer, main, section {
-        transform: scale(0.95);
-        transform-origin: top center;
-      }
+      updateCursorInfo(textareas[tab]);
     }
-  `;
-  const css = `<style>${cssContent}</style>`;
-  const js = `<script>${jsInput.value}<\/script>`;
-  const fullDoc = `${html}\n${css}\n${js}`;
-  preview.srcdoc = fullDoc;
-}
 
-      htmlInput.addEventListener('input', updatePreview);
-      cssInput.addEventListener('input', updatePreview);
-      jsInput.addEventListener('input', updatePreview);
-      window.addEventListener('DOMContentLoaded', updatePreview);
-    </script>
+    tabs.forEach(t=> t.addEventListener('click', ()=> activate(t.dataset.tab)));
+    files.forEach(f=> f.addEventListener('click', ()=> activate(f.dataset.tab)));
 
-    
-  </body>
+    // ===== Resizers =====
+    const sep1=document.getElementById('sep1');
+    const sep2=document.getElementById('sep2');
+    const main=document.querySelector('.main');
+    let dragging=null;
+    function startDrag(e, which){ dragging={which, startX:e.clientX}; document.body.style.cursor='col-resize'; }
+    function onDrag(e){ if(!dragging) return; const dx=e.clientX-dragging.startX; dragging.startX=e.clientX;
+      const cols=getComputedStyle(main).gridTemplateColumns.split(' ');
+      if(dragging.which===1){ // sidebar width
+        let w=parseFloat(cols[0]); w = Math.max(160, Math.min(420, w + dx)); cols[0]=w+'px';
+      } else if(dragging.which===2){ // preview width (last column)
+        let w=parseFloat(cols[4]); w = Math.max(380, Math.min(860, w - dx)); cols[4]=w+'px';
+      }
+      main.style.gridTemplateColumns=cols.join(' ');
+    }
+    function endDrag(){ dragging=null; document.body.style.cursor='default'; }
+    sep1.addEventListener('mousedown', e=> startDrag(e,1));
+    sep2.addEventListener('mousedown', e=> startDrag(e,2));
+    window.addEventListener('mousemove', onDrag);
+    window.addEventListener('mouseup', endDrag);
+
+    // ===== Preview =====
+    const frame=document.getElementById('previewFrame');
+    function build(){
+      const cssExtra = `\n<style>@media (max-width:768px){ body{font-size:80%!important;} h1,h2,h3,h4,h5,h6,p,li,nav,footer,main,section{ transform:scale(.95); transform-origin:top center; } }</style>`;
+      const html=textareas.html.value;
+      const css=`<style>${textareas.css.value}</style>`;
+      const js=`<script>${textareas.js.value}<\/script>`;
+      frame.srcdoc = `${html}\n${css}${cssExtra}\n${js}`;
+    }
+
+    // Run button + autosave build
+    const runBtn=document.getElementById('runBtn');
+    runBtn.addEventListener('click', build);
+    Object.values(textareas).forEach(ta=> ta.addEventListener('input', build));
+    window.addEventListener('DOMContentLoaded', build);
+
+    // ===== Cursor info =====
+    const cursorInfo=document.getElementById('cursorInfo');
+    function updateCursorInfo(ta){
+      const start = ta.selectionStart || 0;
+      const textBefore = ta.value.slice(0, start);
+      const line = (textBefore.match(/\n/g)||[]).length + 1;
+      const col = start - textBefore.lastIndexOf('\n');
+      cursorInfo.textContent = `Ln ${line}, Col ${col}`;
+    }
+    Object.values(textareas).forEach(ta=>{
+      ta.addEventListener('keyup', ()=>updateCursorInfo(ta));
+      ta.addEventListener('click', ()=>updateCursorInfo(ta));
+    });
+
+    // ===== Keyboard shortcuts =====
+    const isMac = navigator.platform.toUpperCase().includes('MAC');
+    window.addEventListener('keydown', (e)=>{
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if(mod && e.key.toLowerCase()==='enter'){ e.preventDefault(); build(); }
+      if(mod && e.key.toLowerCase()==='b'){ e.preventDefault(); toggleSidebar(); }
+      if(mod && e.key.toLowerCase()==='k'){ e.preventDefault(); openPalette(); }
+    });
+
+    // ===== Sidebar toggle =====
+    function toggleSidebar(){
+      const cols=getComputedStyle(main).gridTemplateColumns.split(' ');
+      cols[0] = cols[0]==='0px' ? '240px' : '0px';
+      cols[1] = cols[0]==='0px' ? '0px' : '8px';
+      main.style.gridTemplateColumns=cols.join(' ');
+    }
+
+    // ===== Theme toggle =====
+    const themeBtn=document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', ()=>{
+      document.documentElement.classList.toggle('dark');
+    });
+
+    // ===== Command Palette =====
+    const kbar=document.getElementById('kbar');
+    const kinput=document.getElementById('kinput');
+    const klist=document.getElementById('klist');
+    const paletteBtn=document.getElementById('paletteBtn');
+    const commands=[
+      {label:'Run (Build Preview)', action: build},
+      {label:'Toggle Theme', action: ()=>document.documentElement.classList.toggle('dark')},
+      {label:'Toggle Sidebar', action: toggleSidebar},
+    ];
+    function openPalette(){ kbar.classList.add('active'); kinput.value=''; renderCmds(''); kinput.focus(); }
+    function closePalette(){ kbar.classList.remove('active'); }
+    function renderCmds(q){
+      klist.innerHTML='';
+      commands.filter(c=> c.label.toLowerCase().includes(q.toLowerCase()))
+        .forEach(c=>{
+          const div=document.createElement('div');
+          div.className='kitem';
+          div.textContent=c.label;
+          div.addEventListener('click', ()=>{ c.action(); closePalette(); });
+          klist.appendChild(div);
+        });
+    }
+    paletteBtn.addEventListener('click', openPalette);
+    kbar.addEventListener('click', (e)=>{ if(e.target===kbar) closePalette(); });
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closePalette(); });
+    kinput.addEventListener('input', ()=> renderCmds(kinput.value));
+
+    // ===== Share (download a gist-like html) =====
+    document.getElementById('shareBtn').addEventListener('click', ()=>{
+      const blob = new Blob([frame.srcdoc], {type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'preview.html'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    });
+  </script>
+</body>
 </html>
