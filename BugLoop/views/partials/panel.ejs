@@ -1,124 +1,113 @@
 <style>
-      :root { --header-h: 64px; } /* 헤더 높이에 맞춰 */
-  #mini-lecture-panel{
-    position: sticky; top: var(--header-h);
-    /* 드래그된 높이를 적용: 없으면 내용 높이대로 */
-    height: var(--panel-h, auto);
-    overflow: auto; /* 내용 스크롤 */
-    z-index: 40;
-  }
-
-  /* 리사이저 바 */
-  #panel-resizer{
-    position: sticky; top: calc(var(--header-h) + var(--panel-h, 0px));
-    height: 8px;
-    cursor: ns-resize;
-    z-index: 41;
-    background:
-      linear-gradient(#0000,#0000) padding-box,
-      radial-gradient(circle at 50% 50%, #999 2px, #0000 3px) 50% 50%/24px 4px no-repeat;
-    /* 어두운 테마에 맞춰 약한 경계 */
-    border-top: 1px solid #333;
-  }
-
-  /* 드래그 중 선택 방지 */
-  body.resizing { user-select: none; }
-
-    /* 패널 전체에만 적용되게 스코프 */
-    #mini-lecture-panel {
-      position: sticky; top: 30px; z-index: 40;
+    :root { --header-h: 64px; --panel-h: 240px; } /* 필요시 헤더 높이 조정 */
+  
+    /* 패널 컨테이너: 패널+리사이저를 한 덩어리로 */
+    #mini-lecture{
+      position: sticky; top: var(--header-h); z-index: 40;
+      height: var(--panel-h);
+      display: grid; grid-template-rows: 1fr 8px; /* 내용 + 리사이저바 */
+      border-radius: 14px;
+      overflow: hidden; /* 모서리 일체감 */
     }
-    #mini-lecture-panel .panel-card {
+  
+    /* 패널(검은 테마) */
+    #mini-lecture .panel-card{
       background: #111; color: #eee;
-      border: 1px solid #333; border-radius: 14px;
+      border: 1px solid #333; border-bottom: 0; /* 바와 이어지게 */
       box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      padding: 16px;
+      overflow: auto; /* 내용 스크롤 */
     }
-    #mini-lecture-panel .connector {
-      background: #000; color: #fff; border: 1px solid #333; border-bottom: 0;
+    #mini-lecture .connector{
+      display:inline-block; margin-bottom:8px;
+      background:#000; color:#fff;
+      border:1px solid #333; border-bottom:0;
+      border-radius:10px; padding:4px 10px; font-size:12px; font-weight:700;
     }
-    #mini-lecture-panel .chip {
-      background: #1a1a1a; color:#ddd; border:1px solid #333;
+    #mini-lecture .chip{
+      display:inline-block; margin-top:8px; margin-right:6px;
+      background:#1a1a1a; color:#ddd; border:1px solid #333;
+      border-radius:999px; padding:6px 10px; font-size:12px;
     }
+  
+    /* 리사이저 바: 컨테이너 안 바닥 행 */
+    #panel-resizer{
+      grid-row: 2;
+      height: 8px;
+      cursor: ns-resize;
+      background:
+        linear-gradient(#0000,#0000) padding-box,
+        radial-gradient(circle at 50% 50%, #999 2px, #0000 3px) 50% 50%/24px 4px no-repeat;
+      border: 1px solid #333; border-top: 0;
+    }
+  
+    /* 드래그 중 선택 방지 */
+    body.resizing { user-select: none; }
   </style>
   
-  <div id="mini-lecture-panel">
+  <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
     <div class="panel-card">
-      <div class="connector">선택한 메뉴</div>
-      <h3>제목</h3>
-      <p>간략 강의가 여기 표시됩니다.</p>
+      <span class="connector">선택한 메뉴</span>
+      <h3 style="margin:0 0 6px 0">제목</h3>
+      <p style="margin:0;opacity:.9">간략 강의가 여기 표시됩니다.</p>
       <div class="tips">
         <span class="chip">예: HTML 구조</span>
       </div>
     </div>
+  
+    <div id="panel-resizer"
+         role="separator"
+         aria-orientation="horizontal"
+         aria-label="패널 높이 조절"
+         aria-valuemin="120"
+         aria-valuemax="600"
+         aria-valuenow="240"></div>
   </div>
   
-  <div id="panel-resizer"
-     role="separator"
-     aria-orientation="horizontal"
-     aria-label="패널 높이 조절"
-     aria-valuemin="120"
-     aria-valuemax="600"
-     aria-valuenow="240"></div>
-
-     <script>
-        (function(){
-          const panel = document.getElementById('mini-lecture-panel');
-          const resizer = document.getElementById('panel-resizer');
-          if(!panel || !resizer) return;
-        
-          const KEY = 'miniPanelH';
-          const MIN = 120, MAX = 600; // px
-        
-          // 초기값 복원
-          const saved = parseInt(localStorage.getItem(KEY), 10);
-          if(!Number.isNaN(saved)) {
-            document.documentElement.style.setProperty('--panel-h', saved + 'px');
-            resizer.setAttribute('aria-valuenow', String(saved));
-          } else {
-            // 기본 높이(선택): 240
-            document.documentElement.style.setProperty('--panel-h', '240px');
-            resizer.setAttribute('aria-valuenow', '240');
-          }
-        
-          let startY = 0, startH = 0, dragging = false;
-        
-          const onPointerMove = (e) => {
-            if(!dragging) return;
-            const y = e.touches ? e.touches[0].clientY : e.clientY;
-            const delta = y - startY;
-            let h = Math.max(MIN, Math.min(MAX, startH + delta));
-            document.documentElement.style.setProperty('--panel-h', h + 'px');
-            resizer.setAttribute('aria-valuenow', String(h));
-          };
-        
-          const onPointerUp = () => {
-            if(!dragging) return;
-            dragging = false;
-            document.body.classList.remove('resizing');
-            const val = getComputedStyle(document.documentElement).getPropertyValue('--panel-h').trim();
-            const h = parseInt(val, 10);
-            if(!Number.isNaN(h)) localStorage.setItem(KEY, String(h));
-            window.removeEventListener('mousemove', onPointerMove);
-            window.removeEventListener('mouseup', onPointerUp);
-            window.removeEventListener('touchmove', onPointerMove);
-            window.removeEventListener('touchend', onPointerUp);
-          };
-        
-          const onPointerDown = (e) => {
-            dragging = true;
-            document.body.classList.add('resizing');
-            startY = e.touches ? e.touches[0].clientY : e.clientY;
-            const val = getComputedStyle(document.documentElement).getPropertyValue('--panel-h').trim();
-            startH = parseInt(val, 10) || 240;
-            window.addEventListener('mousemove', onPointerMove);
-            window.addEventListener('mouseup', onPointerUp);
-            window.addEventListener('touchmove', onPointerMove, {passive:false});
-            window.addEventListener('touchend', onPointerUp);
-            e.preventDefault();
-          };
-        
-          resizer.addEventListener('mousedown', onPointerDown);
-          resizer.addEventListener('touchstart', onPointerDown, {passive:false});
-        })();
-        </script>
-        
+  <script>
+  (function(){
+    const root = document.documentElement;
+    const resizer = document.getElementById('panel-resizer');
+    if(!resizer) return;
+  
+    const KEY='miniPanelH', MIN=120, MAX=600;
+    const saved = parseInt(localStorage.getItem(KEY),10);
+    root.style.setProperty('--panel-h', (Number.isNaN(saved)?240:saved)+'px');
+    resizer.setAttribute('aria-valuenow', String(Number.isNaN(saved)?240:saved));
+  
+    let startY=0, startH=0, dragging=false;
+  
+    function move(e){
+      if(!dragging) return;
+      const y = (e.touches?e.touches[0].clientY:e.clientY);
+      let h = Math.max(MIN, Math.min(MAX, startH + (y - startY)));
+      root.style.setProperty('--panel-h', h+'px');
+      resizer.setAttribute('aria-valuenow', String(h));
+      e.preventDefault?.();
+    }
+    function up(){
+      if(!dragging) return;
+      dragging=false; document.body.classList.remove('resizing');
+      const h = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10);
+      if(!Number.isNaN(h)) localStorage.setItem(KEY,String(h));
+      window.removeEventListener('mousemove',move);
+      window.removeEventListener('mouseup',up);
+      window.removeEventListener('touchmove',move);
+      window.removeEventListener('touchend',up);
+    }
+    function down(e){
+      dragging=true; document.body.classList.add('resizing');
+      startY = (e.touches?e.touches[0].clientY:e.clientY);
+      startH = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
+      window.addEventListener('mousemove',move);
+      window.addEventListener('mouseup',up);
+      window.addEventListener('touchmove',move,{passive:false});
+      window.addEventListener('touchend',up);
+      e.preventDefault?.();
+    }
+  
+    resizer.addEventListener('mousedown',down);
+    resizer.addEventListener('touchstart',down,{passive:false});
+  })();
+  </script>
+  
