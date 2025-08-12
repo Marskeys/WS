@@ -1,4 +1,29 @@
 <style>
+      :root { --header-h: 64px; } /* 헤더 높이에 맞춰 */
+  #mini-lecture-panel{
+    position: sticky; top: var(--header-h);
+    /* 드래그된 높이를 적용: 없으면 내용 높이대로 */
+    height: var(--panel-h, auto);
+    overflow: auto; /* 내용 스크롤 */
+    z-index: 40;
+  }
+
+  /* 리사이저 바 */
+  #panel-resizer{
+    position: sticky; top: calc(var(--header-h) + var(--panel-h, 0px));
+    height: 8px;
+    cursor: ns-resize;
+    z-index: 41;
+    background:
+      linear-gradient(#0000,#0000) padding-box,
+      radial-gradient(circle at 50% 50%, #999 2px, #0000 3px) 50% 50%/24px 4px no-repeat;
+    /* 어두운 테마에 맞춰 약한 경계 */
+    border-top: 1px solid #333;
+  }
+
+  /* 드래그 중 선택 방지 */
+  body.resizing { user-select: none; }
+
     /* 패널 전체에만 적용되게 스코프 */
     #mini-lecture-panel {
       position: sticky; top: 30px; z-index: 40;
@@ -27,3 +52,73 @@
     </div>
   </div>
   
+  <div id="panel-resizer"
+     role="separator"
+     aria-orientation="horizontal"
+     aria-label="패널 높이 조절"
+     aria-valuemin="120"
+     aria-valuemax="600"
+     aria-valuenow="240"></div>
+
+     <script>
+        (function(){
+          const panel = document.getElementById('mini-lecture-panel');
+          const resizer = document.getElementById('panel-resizer');
+          if(!panel || !resizer) return;
+        
+          const KEY = 'miniPanelH';
+          const MIN = 120, MAX = 600; // px
+        
+          // 초기값 복원
+          const saved = parseInt(localStorage.getItem(KEY), 10);
+          if(!Number.isNaN(saved)) {
+            document.documentElement.style.setProperty('--panel-h', saved + 'px');
+            resizer.setAttribute('aria-valuenow', String(saved));
+          } else {
+            // 기본 높이(선택): 240
+            document.documentElement.style.setProperty('--panel-h', '240px');
+            resizer.setAttribute('aria-valuenow', '240');
+          }
+        
+          let startY = 0, startH = 0, dragging = false;
+        
+          const onPointerMove = (e) => {
+            if(!dragging) return;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            const delta = y - startY;
+            let h = Math.max(MIN, Math.min(MAX, startH + delta));
+            document.documentElement.style.setProperty('--panel-h', h + 'px');
+            resizer.setAttribute('aria-valuenow', String(h));
+          };
+        
+          const onPointerUp = () => {
+            if(!dragging) return;
+            dragging = false;
+            document.body.classList.remove('resizing');
+            const val = getComputedStyle(document.documentElement).getPropertyValue('--panel-h').trim();
+            const h = parseInt(val, 10);
+            if(!Number.isNaN(h)) localStorage.setItem(KEY, String(h));
+            window.removeEventListener('mousemove', onPointerMove);
+            window.removeEventListener('mouseup', onPointerUp);
+            window.removeEventListener('touchmove', onPointerMove);
+            window.removeEventListener('touchend', onPointerUp);
+          };
+        
+          const onPointerDown = (e) => {
+            dragging = true;
+            document.body.classList.add('resizing');
+            startY = e.touches ? e.touches[0].clientY : e.clientY;
+            const val = getComputedStyle(document.documentElement).getPropertyValue('--panel-h').trim();
+            startH = parseInt(val, 10) || 240;
+            window.addEventListener('mousemove', onPointerMove);
+            window.addEventListener('mouseup', onPointerUp);
+            window.addEventListener('touchmove', onPointerMove, {passive:false});
+            window.addEventListener('touchend', onPointerUp);
+            e.preventDefault();
+          };
+        
+          resizer.addEventListener('mousedown', onPointerDown);
+          resizer.addEventListener('touchstart', onPointerDown, {passive:false});
+        })();
+        </script>
+        
