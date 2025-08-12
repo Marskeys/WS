@@ -160,6 +160,27 @@
     .preview-addr{ flex:1; border:1px solid var(--border); background:var(--panel-2); padding:6px 10px; border-radius:8px; font-size:12px; color:var(--ink-2) }
     #code-preview-frame{ width:100%; height:420px; border:0; background:var(--panel-2) }
 
+    /* 🔴 깜빡이는 빨간 점 */
+.rec-dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff4747;
+  box-shadow: 0 0 6px rgba(255,71,71,0.8);
+  animation: blink-rec 1s infinite;
+}
+@keyframes blink-rec {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 6px rgba(255,71,71,0.8);
+  }
+  50% {
+    opacity: 0.4;
+    box-shadow: 0 0 2px rgba(255,71,71,0.4);
+  }
+}
+
+
     /* 상태바 */
     .statusbar{
       margin-top:12px; background:var(--panel); border:1px solid var(--border);
@@ -279,10 +300,12 @@ footer {
 
       <!-- 우측: 프리뷰 -->
       <section class="preview-card">
-        <div class="preview-bar">
-          <span class="studio-badge">Live Preview</span>
-          <div class="preview-addr">bugloop://preview</div>
-        </div>
+      <!-- 프리뷰 헤더 -->
+<div class="preview-bar">
+  <span class="rec-dot" title="Live"></span>
+  <span class="studio-badge">Live Preview</span>
+  <div class="preview-addr">bugloop://preview</div>
+</div>
         <iframe id="code-preview-frame" sandbox="allow-scripts allow-forms"></iframe>
       </section>
     </div>
