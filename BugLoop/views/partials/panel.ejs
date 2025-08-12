@@ -1,0 +1,29 @@
+<style>
+    /* 패널 전체에만 적용되게 스코프 */
+    #mini-lecture-panel {
+      position: sticky; top: 64px; z-index: 40;
+    }
+    #mini-lecture-panel .panel-card {
+      background: #111; color: #eee;
+      border: 1px solid #333; border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    }
+    #mini-lecture-panel .connector {
+      background: #000; color: #fff; border: 1px solid #333; border-bottom: 0;
+    }
+    #mini-lecture-panel .chip {
+      background: #1a1a1a; color:#ddd; border:1px solid #333;
+    }
+  </style>
+  
+  <div id="mini-lecture-panel">
+    <div class="panel-card">
+      <div class="connector">선택한 메뉴</div>
+      <h3>제목</h3>
+      <p>간략 강의가 여기 표시됩니다.</p>
+      <div class="tips">
+        <span class="chip">예: HTML 구조</span>
+      </div>
+    </div>
+  </div>
+  
