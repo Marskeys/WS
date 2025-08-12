@@ -113,14 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const isSearch = path.includes('/search') || searchParams.has('q');
   const isFiltered = searchParams.has('category');
 
-  if (isHome && !isSearch && !isFiltered) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        openTab('profile');
-      }, 10);
-    });
-  }
+  // ❌ 프로필 자동 오픈 제거 (기존 isHome 블록 삭제)
 
+  // ✅ 검색/필터일 때만 자동 오픈 유지
   if (isSearch || isFiltered) {
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -129,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ✅ 글쓰기 컨텍스트일 때만 검색 탭 열기
   if (typeof isWrite !== 'undefined' && isWrite) {
     requestAnimationFrame(() => {
       setTimeout(() => {
