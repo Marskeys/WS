@@ -145,6 +145,107 @@
 
     /* 가시성 유틸 */
     .hidden{ display:none !important; }
+
+    /* === App 상단 여백 (헤더 피해서) === */
+.app-shell{
+  padding-top: calc(50px + 16px); /* 기존 16px에 +50px 추가 */
+}
+@media (min-width:1024px){
+  .app-shell{
+    padding: 16px 16px 16px calc(var(--chrome-gap-desktop) + 16px);
+    padding-top: calc(50px + 16px); /* 데스크탑에서도 상단 여백 고정 */
+  }
+}
+
+/* === Sidebar: 예쁜 VSCode 감성 복구 === */
+.selector{
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)) , var(--panel);
+  border:1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow, 0 10px 30px rgba(0,0,0,.35));
+}
+
+.selector-header{
+  position: sticky; top: 0;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,0));
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.selector-list{
+  display: flex; flex-direction: column;
+  padding: 6px;
+  gap: 6px;               /* 카드 사이 공간 */
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+}
+
+/* 파일 아이템 카드 스타일 */
+.selector-item{
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--panel-2);
+  color: var(--ink-2);
+  transition: border-color .15s ease, background .15s ease, color .15s ease, transform .05s;
+}
+.selector-item:hover{
+  border-color: var(--border);
+  color: var(--ink);
+}
+.selector-item:active{ transform: translateY(1px); }
+
+/* 좌측 포커스/액티브 인디케이터 */
+.selector-item.active{
+  color: var(--ink);
+  background: linear-gradient(180deg, rgba(124,158,255,.08), transparent), var(--panel-2);
+  border-color: var(--accent);
+  position: relative;
+}
+.selector-item.active::before{
+  content: "";
+  position: absolute; left: -6px; top: 8px; bottom: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+/* 파일명/뱃지 정돈 */
+.selector-item strong{
+  font-weight: 700; letter-spacing: .2px;
+}
+.selector-item .tag{
+  margin-left: auto;
+  font-size: .72rem;
+  border: 1px solid var(--border);
+  background: rgba(127,127,127,.08);
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--ink-2);
+}
+
+/* 키보드 포커스 가시성 */
+.selector-item:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 라이트 모드 미세 톤 보정 */
+html:not(.dark) .selector{
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+}
+html:not(.dark) .selector-item{
+  background: #fafafd;
+}
+html:not(.dark) .selector-item.active{
+  background: linear-gradient(180deg, rgba(60,109,240,.08), transparent), #fff;
+}
+
   </style>
 </head>
 
