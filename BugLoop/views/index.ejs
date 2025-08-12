@@ -4,180 +4,201 @@
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= locale.editor["editor-title"] %> — App Mode</title>
+  <title>Bug Loop · Online HTML Editor</title>
   <style>
-    /* ===== Desktop-App Shell ===== */
     :root{
-      --bg: #0f1115;           /* canvas */
-      --panel: #151923;        /* panels */
-      --panel-2: #0d1016;      /* deeper */
-      --border: #232838;       
-      --text: #e6e8ef;
-      --muted: #9aa4b2;
-      --accent: #00f5d4;
-      --accent-2: #7c9eff;
-      --danger: #ff5f57;
-      --warn: #ffbd2e;
-      --ok: #28c840;
-      --shadow: 0 10px 30px rgba(0,0,0,.45);
-      --radius: 16px;
+      --chrome-gap-desktop:50px; /* 좌측 VSCode 사이드바 여백 */
+      --panel-gap:16px;
+      --radius:12px;
+      --border:#2b2b2b;
+      --bg:#1b1b1b;
+      --panel:#121212;
+      --panel-2:#0e0e0e;
+      --ink:#eaeaea;
+      --ink-2:#b7b7b7;
+      --accent:#00f5d4;
     }
     html:not(.dark){
-      --bg: #eef2f6;
-      --panel: #ffffff;
-      --panel-2: #f7f9fb;
-      --border: #dfe6ef;
-      --text: #1f2430;
-      --muted: #556174;
-      --accent: #0066ff;
-      --accent-2: #7c9eff;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --border:#d9d9d9;
+      --bg:#f6f6f8;
+      --panel:#ffffff;
+      --panel-2:#f3f3f6;
+      --ink:#1f1f1f;
+      --ink-2:#5a5a5a;
+      --accent:#3c6df0;
+    }
+    /* 앱 쉘 */
+    body.light, body.dark { background: var(--bg); color: var(--ink); }
+    .app-shell{
+      padding: 16px;
+    }
+    @media (min-width:1024px){
+      .app-shell{ padding: 16px 16px 16px calc(var(--chrome-gap-desktop) + 16px); }
     }
 
-    html,body{height:100%;}
-    body{
-      margin:0; background: radial-gradient(1200px 700px at 70% -10%,rgba(0,245,212,.08),transparent 50%),
-                               radial-gradient(900px 600px at -10% 110%,rgba(124,158,255,.08),transparent 50%),
-                               var(--bg);
-      color:var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-      overflow:hidden; /* app */
+    .studio-bar{
+      display:flex; align-items:center; gap:10px;
+      background:var(--panel); border:1px solid var(--border);
+      border-radius: var(--radius); padding:10px 12px; margin-bottom:12px;
+    }
+    .studio-title{ font-weight:700; letter-spacing:.3px }
+    .studio-spacer{ flex:1 }
+    .studio-btn{
+      border:1px solid var(--border); background:var(--panel-2);
+      border-radius:10px; padding:8px 12px; font-weight:600; cursor:pointer
+    }
+    .studio-btn:hover{ filter: brightness(1.05) }
+    .studio-btn.primary{ border-color: transparent; background: var(--accent); color:#000; }
+    .studio-badge{ font-size:.82rem; color:var(--ink-2) }
+
+    /* 레이아웃 */
+    .workbench{
+      display:grid; gap: var(--panel-gap);
+      grid-template-columns: 1fr;
+    }
+    @media (min-width:1024px){
+      .workbench{
+        grid-template-columns: 320px minmax(0,1fr) minmax(0,1fr);
+        align-items: stretch;
+      }
     }
 
-    /* Preloader keep (hidden in app mode) */
-    #preloader{display:none}
+    /* 좌측 선택창 (데스크탑 전용) */
+    .selector{
+      display:none;
+      background:var(--panel); border:1px solid var(--border); border-radius: var(--radius);
+      overflow:hidden;
+    }
+    @media (min-width:1024px){ .selector{ display:block } }
+    .selector-header{
+      padding:10px 12px; border-bottom:1px solid var(--border); font-weight:700
+    }
+    .selector-list{ display:flex; flex-direction:column }
+    .selector-item{
+      display:flex; align-items:center; gap:10px; padding:12px;
+      border-bottom:1px dashed var(--border); cursor:pointer
+    }
+    .selector-item:last-child{ border-bottom:none }
+    .selector-item.active{ background:rgba(127,127,127,.08) }
 
-    /* ===== App Window ===== */
-    .app-wrap{height:100%; display:grid; place-items:center; padding:20px; box-sizing:border-box;}
-    .window{width:min(1400px,calc(100vw - 40px)); height:min(860px,calc(100vh - 40px));
-      background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)) , var(--panel);
-      border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
-      display:grid; grid-template-rows: 44px auto 26px; overflow:hidden; position:relative;
+    /* 상단 탭 (모바일 전용) */
+    .mobile-tabs{ display:flex; gap:6px; margin-bottom:10px }
+    .mobile-tab{
+      flex:1; border:1px solid var(--border); background:var(--panel); padding:10px; border-radius:10px; font-weight:600
+    }
+    .mobile-tab.active{ outline:2px solid var(--accent) }
+    @media (min-width:1024px){ .mobile-tabs{ display:none } }
+
+    /* 에디터 카드 */
+    .editor-card{
+      background:var(--panel); border:1px solid var(--border); border-radius: var(--radius);
+      padding:12px; display:flex; flex-direction:column; gap:8px; min-height: 0;
+    }
+    .editor-tabs{ display:none } /* 데스크탑에선 숨김 */
+    @media (max-width:1023.98px){ .editor-tabs{ display:flex; gap:6px } } /* 모바일에서만 보일 수 있지만, 실제 선택은 mobile-tabs에서 함 */
+
+    .code-area{
+      flex:1; min-height:240px;
+    }
+    textarea.code{
+      width:100%; height:100%; border:1px solid var(--border); background:var(--panel-2);
+      border-radius:10px; padding:12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:14px; color:var(--ink); outline:none; resize:vertical;
+    }
+    @media (min-width:1024px){
+      textarea.code{ min-height: 620px; resize: none; }
     }
 
-    /* Titlebar (macOS style) */
-    .titlebar{
-      height:44px; display:flex; align-items:center; gap:10px; padding:0 14px; border-bottom:1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
-      -webkit-app-region: drag; /* feel */
+    /* 프리뷰 카드(가짜 브라우저 헤더 제거) */
+    .preview-card{
+      background:var(--panel); border:1px solid var(--border); border-radius: var(--radius);
+      overflow:hidden; display:flex; flex-direction:column;
     }
-    .traffic{display:flex; gap:8px;}
-    .dot{width:12px;height:12px;border-radius:50%;}
-    .dot.red{background:var(--danger)}
-    .dot.yellow{background:var(--warn)}
-    .dot.green{background:var(--ok)}
-    .title{font-weight:600; letter-spacing:.2px; opacity:.9}
-    .actions{margin-left:auto; display:flex; align-items:center; gap:8px;}
-    .tb-btn{ -webkit-app-region: no-drag; padding:8px 10px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); border-radius:10px; font-size:.85rem; cursor:pointer}
-    .tb-btn:hover{border-color:var(--accent-2)}
-
-    /* ===== Main area: sidebar | editors | preview ===== */
-    .main{display:grid; grid-template-columns: 240px 8px 1fr 8px min(46%, 640px); height:100%;}
-
-    .sidebar{background:var(--panel-2); border-right:1px solid var(--border); display:flex; flex-direction:column;}
-    .side-top{padding:14px; display:flex; gap:8px;}
-    .chip{font-size:.78rem; padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:transparent; color:var(--muted); cursor:pointer}
-    .chip.active{color:var(--text); border-color:var(--accent-2)}
-
-    .files{padding:6px 10px 12px; overflow:auto;}
-    .file{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--muted)}
-    .file.active{background:var(--panel); color:var(--text); border:1px solid var(--border)}
-
-    .separator{background:linear-gradient(180deg,transparent, rgba(124,158,255,.25), transparent); cursor:col-resize}
-
-    .editors{display:flex; flex-direction:column; background:var(--panel)}
-    .tabbar{display:flex; gap:2px; padding:8px; border-bottom:1px solid var(--border); background:var(--panel-2)}
-    .tab{padding:8px 12px; border-radius:8px; border:1px solid transparent; color:var(--muted); cursor:pointer}
-    .tab.active{color:var(--text); background:var(--panel); border-color:var(--border)}
-
-    .editor-wrap{position:relative; flex:1; overflow:hidden}
-    .editor{position:absolute; inset:0; padding:14px; overflow:auto}
-    .editor textarea{width:100%; height:100%; resize:none; background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding", monospace; font-size:13.5px; line-height:1.55; outline:none}
-
-    /* Preview */
-    .preview{background:var(--panel-2); border-left:1px solid var(--border); display:grid; grid-template-rows: 36px 1fr}
-    .pv-head{display:flex; align-items:center; gap:10px; padding:6px 10px; border-bottom:1px solid var(--border)}
-    .rec{width:8px;height:8px;border-radius:50%; background:#ff4747; box-shadow:0 0 8px #ff4747;}
-    .address{flex:1; border:1px solid var(--border); border-radius:8px; padding:4px 10px; font-size:.8rem; color:var(--muted); background:var(--panel)}
-    .pv-body{position:relative}
-    .frame{position:absolute; inset:0; width:100%; height:100%; border:0; background:var(--panel)}
-
-    /* Statusbar */
-    .statusbar{height:26px; display:flex; align-items:center; gap:14px; padding:0 10px; border-top:1px solid var(--border); background:var(--panel-2); font-size:.8rem; color:var(--muted)}
-    .statusbar .pill{padding:3px 8px; border:1px solid var(--border); border-radius:999px}
-
-    /* Command Palette */
-    .kbar{position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.45)}
-    .kbar.active{display:grid}
-    .kcard{width:min(720px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow)}
-    .khead{padding:12px; border-bottom:1px solid var(--border)}
-    .khead input{width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); outline:none}
-    .klist{max-height:320px; overflow:auto}
-    .kitem{padding:10px 14px; border-bottom:1px dashed var(--border); cursor:pointer}
-    .kitem:hover{background:var(--panel-2)}
-
-    /* Responsiveness: collapse preview below 980px */
-    @media (max-width: 980px){
-      .main{grid-template-columns: 0 0 1fr 0 0}
-      .preview{display:none}
-      body{overflow:auto}
+    .preview-bar{
+      display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--border);
     }
+    .preview-addr{
+      flex:1; border:1px solid var(--border); background:var(--panel-2);
+      padding:6px 10px; border-radius:8px; font-size:12px; color:var(--ink-2)
+    }
+    #code-preview-frame{ width:100%; height:420px; border:0; background:var(--panel-2); }
+
+    /* 상태바 */
+    .statusbar{
+      margin-top:12px; background:var(--panel); border:1px solid var(--border);
+      border-radius: var(--radius); padding:8px 12px; display:flex; gap:12px; color:var(--ink-2); font-size:.9rem;
+    }
+
+    /* Assets 모달 */
+    .modal-backdrop{
+      position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index: 9999;
+    }
+    .modal{
+      width:min(680px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px;
+    }
+    .modal h3{ margin:0 0 8px 0 }
+    .modal form{ display:grid; grid-template-columns: 1fr 110px 120px; gap:8px; align-items:center }
+    .asset-list{ margin-top:10px; border-top:1px dashed var(--border); padding-top:10px; max-height: 40vh; overflow:auto }
+    .asset-pill{ display:flex; gap:10px; align-items:center; border:1px solid var(--border); background:var(--panel-2); padding:8px 10px; border-radius:10px; margin-bottom:8px }
+    .asset-pill code{ font-size:.85rem; color:var(--ink-2) }
+    .tag{ font-size:.75rem; border:1px solid var(--border); padding:2px 6px; border-radius:999px }
+
+    /* 가시성 유틸 */
+    .hidden{ display:none !important; }
   </style>
 </head>
+
 <body class="light">
-  <!-- Optional global header remains but visually hidden in app mode -->
+  <div id="preloader"><div class="spinner"></div></div>
   <%- include('partials/header') %>
 
-  <div class="app-wrap">
-    <div class="window" role="application" aria-label="Code Editor App">
-      <div class="titlebar">
-        <div class="traffic" aria-hidden="true">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
+  <div class="app-shell">
+    <!-- 상단 앱 바 -->
+    <div class="studio-bar">
+      <div class="studio-title">Bug Loop · Online HTML Editor</div>
+      <span class="studio-badge">Desktop-like UI</span>
+      <div class="studio-spacer"></div>
+      <button id="btn-run" class="studio-btn primary">Run ⏎</button>
+      <button id="btn-assets" class="studio-btn">Assets</button>
+      <button id="btn-theme" class="studio-btn">Theme</button>
+      <button id="btn-download" class="studio-btn">Export</button>
+    </div>
+
+    <!-- 모바일 상단 탭 (모바일 전용) -->
+    <div class="mobile-tabs" id="mobileTabs">
+      <button class="mobile-tab active" data-tab="html">HTML</button>
+      <button class="mobile-tab" data-tab="css">CSS</button>
+      <button class="mobile-tab" data-tab="js">JS</button>
+    </div>
+
+    <!-- 작업영역 -->
+    <div class="workbench">
+      <!-- 좌측 선택창 (데스크탑 전용) -->
+      <aside class="selector" id="desktopSelector">
+        <div class="selector-header">Files</div>
+        <div class="selector-list" role="tablist" aria-label="Editor files">
+          <button class="selector-item active" data-tab="html"><strong>index.html</strong><span class="tag">HTML</span></button>
+          <button class="selector-item" data-tab="css"><strong>styles.css</strong><span class="tag">CSS</span></button>
+          <button class="selector-item" data-tab="js"><strong>app.js</strong><span class="tag">JS</span></button>
         </div>
-        <div class="title">BlindlyLove Studio — <%= locale.editor["editor-title"] %></div>
-        <div class="actions">
-          <button class="tb-btn" id="runBtn">Run ▷ (Cmd/Ctrl+Enter)</button>
-          <button class="tb-btn" id="shareBtn">Share</button>
-          <button class="tb-btn" id="paletteBtn">⌘K</button>
-          <button class="tb-btn" id="themeBtn">Theme</button>
-        </div>
-      </div>
+      </aside>
 
-      <div class="main">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-          <div class="side-top">
-            <button class="chip active" id="filesChip">Files</button>
-            <button class="chip" id="assetsChip">Assets</button>
-          </div>
-          <div class="files" id="fileList">
-            <div class="file active" data-tab="html">📄 index.html</div>
-            <div class="file" data-tab="css">🎨 styles.css</div>
-            <div class="file" data-tab="js">⚙️ app.js</div>
-          </div>
-        </aside>
+      <!-- 가운데: 에디터 -->
+      <section class="editor-card">
+        <h1 class="code-preview-title"><%= locale.editor["editor-title"] %></h1>
 
-        <div class="separator" id="sep1" title="Drag to resize"></div>
-
-        <!-- Editors -->
-        <section class="editors">
-          <div class="tabbar">
-            <button class="tab active" data-tab="html">HTML</button>
-            <button class="tab" data-tab="css">CSS</button>
-            <button class="tab" data-tab="js">JS</button>
-          </div>
-          <div class="editor-wrap">
-            <div class="editor" id="editor-html">
-<textarea id="code-html">
+        <div class="code-area">
+          <!-- 에디터 3종 -->
+          <div id="code-editor-html" class="editor-pane">
+            <textarea id="code-preview-html-code" class="code">
 <header>
   <%= locale.editor["example-html"] %>
 </header>
-</textarea>
-            </div>
-            <div class="editor" id="editor-css" style="display:none">
-<textarea id="code-css">body {
+            </textarea>
+          </div>
+
+          <div id="code-editor-css" class="editor-pane hidden">
+            <textarea id="code-preview-css-code" class="code">body {
   background: #fff;
   color: #222;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -191,193 +212,284 @@ header {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 header h1 { margin: 0; color: #3366cc; }
-nav ul { list-style: none; padding: 0; margin: 10px 0 0; display: flex; justify-content: center; gap: 20px; }
+nav ul {
+  list-style: none; padding: 0; margin: 10px 0 0;
+  display: flex; justify-content: center; gap: 20px;
+}
 nav li { font-weight: bold; color: #444; }
 main { padding: 40px 20px; }
 section { margin-bottom: 40px; }
 h2 { color: #444; margin-bottom: 10px; }
 ul { list-style: none; padding: 0; }
 ul li { margin: 5px 0; font-size: 1.1rem; }
-footer { background: #f9f9f9; padding: 20px 0; font-size: 0.9rem; color: #888; border-top: 1px solid #eee; }
-</textarea>
-            </div>
-            <div class="editor" id="editor-js" style="display:none">
-<textarea id="code-js">document.body.style.transform = 'scale(1.02)';</textarea>
-            </div>
+footer {
+  background: #f9f9f9; padding: 20px 0; font-size: .9rem;
+  color: #888; border-top: 1px solid #eee;
+}
+            </textarea>
           </div>
-        </section>
 
-        <div class="separator" id="sep2" title="Drag to resize"></div>
-
-        <!-- Preview -->
-        <aside class="preview">
-          <div class="pv-head">
-            <span class="rec" aria-hidden="true"></span>
-            <span><%= locale.editor["preview-label"] %></span>
-            <input class="address" value="https://preview.local" readonly />
+          <div id="code-editor-js" class="editor-pane hidden">
+            <textarea id="code-preview-js-code" class="code">document.body.style.transform = 'scale(1.02)';</textarea>
           </div>
-          <div class="pv-body">
-            <iframe id="previewFrame" class="frame" sandbox="allow-scripts"></iframe>
-          </div>
-        </aside>
-      </div>
+        </div>
+      </section>
 
-      <div class="statusbar">
-        <span class="pill" id="cursorInfo">Ln 1, Col 1</span>
-        <span class="pill">UTF-8</span>
-        <span class="pill">LF</span>
-        <span class="pill" id="autosave">Autosave On</span>
-        <span style="margin-left:auto" class="pill">Tip: ⌘B Sidebar | ⌘K Palette</span>
-      </div>
+      <!-- 우측: 프리뷰 -->
+      <section class="preview-card">
+        <div class="preview-bar">
+          <span class="studio-badge">Live Preview</span>
+          <div class="preview-addr">bugloop://preview</div>
+        </div>
+        <iframe id="code-preview-frame" sandbox="allow-scripts allow-forms"></iframe>
+      </section>
+    </div>
+
+    <!-- 상태바 -->
+    <div class="statusbar">
+      <span id="status-msg">Ready</span>
+      <span>⌘/Ctrl+Enter: Run</span>
+      <span>⌘/Ctrl+B: Toggle Sidebar</span>
     </div>
   </div>
 
-  <!-- Command Palette -->
-  <div class="kbar" id="kbar" aria-modal="true" role="dialog">
-    <div class="kcard">
-      <div class="khead"><input id="kinput" placeholder="Type a command… (Run, Toggle Theme, Toggle Sidebar)"/></div>
-      <div class="klist" id="klist"></div>
+  <!-- Assets 모달 -->
+  <div class="modal-backdrop" id="assetsModal">
+    <div class="modal">
+      <h3>Assets</h3>
+      <p class="studio-badge">CSS/JS를 추가하면 프리뷰 head에 자동 주입됩니다.</p>
+      <form id="assetForm">
+        <input id="assetUrl" type="url" placeholder="https://cdn.example.com/library.min.js 또는 .css" />
+        <select id="assetType">
+          <option value="js">JS</option>
+          <option value="css">CSS</option>
+        </select>
+        <button type="submit" class="studio-btn primary">Add URL</button>
+      </form>
+      <div style="margin-top:8px; display:flex; gap:8px; align-items:center">
+        <input type="file" id="assetFile" />
+        <select id="assetFileType">
+          <option value="js">JS</option>
+          <option value="css">CSS</option>
+        </select>
+        <button id="assetAddFile" class="studio-btn">Add File</button>
+        <div class="studio-spacer"></div>
+        <button id="assetClose" class="studio-btn">Close</button>
+      </div>
+      <div class="asset-list" id="assetList"></div>
     </div>
   </div>
 
   <%- include('partials/scripts') %>
   <script>
-    // ===== Tabs + Files sync =====
-    const tabs = [...document.querySelectorAll('.tab')];
-    const files = [...document.querySelectorAll('.file')];
-    const panes = {
-      html: document.getElementById('editor-html'),
-      css: document.getElementById('editor-css'),
-      js: document.getElementById('editor-js')
-    };
-    const textareas = {
-      html: document.getElementById('code-html'),
-      css: document.getElementById('code-css'),
-      js: document.getElementById('code-js')
-    };
+    // ====== 요소 참조
+    const htmlInput = document.getElementById('code-preview-html-code');
+    const cssInput  = document.getElementById('code-preview-css-code');
+    const jsInput   = document.getElementById('code-preview-js-code');
+    const preview   = document.getElementById('code-preview-frame');
 
-    function activate(tab){
-      tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
-      files.forEach(f=>f.classList.toggle('active', f.dataset.tab===tab));
-      Object.entries(panes).forEach(([k,el])=>{
-        if(k===tab){ el.style.display='block'; } else { el.style.display='none'; }
+    const desktopSelector = document.getElementById('desktopSelector');
+    const selectorItems = desktopSelector.querySelectorAll('.selector-item');
+
+    const mobileTabs = document.getElementById('mobileTabs');
+    const mobileTabButtons = mobileTabs.querySelectorAll('.mobile-tab');
+
+    const btnRun = document.getElementById('btn-run');
+    const btnTheme = document.getElementById('btn-theme');
+    const btnDownload = document.getElementById('btn-download');
+
+    const btnAssets = document.getElementById('btn-assets');
+    const assetsModal = document.getElementById('assetsModal');
+    const assetForm = document.getElementById('assetForm');
+    const assetUrlEl = document.getElementById('assetUrl');
+    const assetTypeEl = document.getElementById('assetType');
+    const assetFileEl = document.getElementById('assetFile');
+    const assetFileTypeEl = document.getElementById('assetFileType');
+    const assetAddFileBtn = document.getElementById('assetAddFile');
+    const assetListEl = document.getElementById('assetList');
+    const assetClose = document.getElementById('assetClose');
+
+    const statusMsg = document.getElementById('status-msg');
+
+    // ====== 상태
+    let currentTab = 'html'; // html | css | js
+    const assets = []; // {id, type:'js'|'css', src, label, isBlob}
+
+    // ====== 탭 전환 (데스크탑 선택창)
+    selectorItems.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        selectorItems.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        setTab(btn.dataset.tab);
       });
-      updateCursorInfo(textareas[tab]);
-    }
-
-    tabs.forEach(t=> t.addEventListener('click', ()=> activate(t.dataset.tab)));
-    files.forEach(f=> f.addEventListener('click', ()=> activate(f.dataset.tab)));
-
-    // ===== Resizers =====
-    const sep1=document.getElementById('sep1');
-    const sep2=document.getElementById('sep2');
-    const main=document.querySelector('.main');
-    let dragging=null;
-    function startDrag(e, which){ dragging={which, startX:e.clientX}; document.body.style.cursor='col-resize'; }
-    function onDrag(e){ if(!dragging) return; const dx=e.clientX-dragging.startX; dragging.startX=e.clientX;
-      const cols=getComputedStyle(main).gridTemplateColumns.split(' ');
-      if(dragging.which===1){ // sidebar width
-        let w=parseFloat(cols[0]); w = Math.max(160, Math.min(420, w + dx)); cols[0]=w+'px';
-      } else if(dragging.which===2){ // preview width (last column)
-        let w=parseFloat(cols[4]); w = Math.max(380, Math.min(860, w - dx)); cols[4]=w+'px';
-      }
-      main.style.gridTemplateColumns=cols.join(' ');
-    }
-    function endDrag(){ dragging=null; document.body.style.cursor='default'; }
-    sep1.addEventListener('mousedown', e=> startDrag(e,1));
-    sep2.addEventListener('mousedown', e=> startDrag(e,2));
-    window.addEventListener('mousemove', onDrag);
-    window.addEventListener('mouseup', endDrag);
-
-    // ===== Preview =====
-    const frame=document.getElementById('previewFrame');
-    function build(){
-      const cssExtra = `\n<style>@media (max-width:768px){ body{font-size:80%!important;} h1,h2,h3,h4,h5,h6,p,li,nav,footer,main,section{ transform:scale(.95); transform-origin:top center; } }</style>`;
-      const html=textareas.html.value;
-      const css=`<style>${textareas.css.value}</style>`;
-      const js=`<script>${textareas.js.value}<\/script>`;
-      frame.srcdoc = `${html}\n${css}${cssExtra}\n${js}`;
-    }
-
-    // Run button + autosave build
-    const runBtn=document.getElementById('runBtn');
-    runBtn.addEventListener('click', build);
-    Object.values(textareas).forEach(ta=> ta.addEventListener('input', build));
-    window.addEventListener('DOMContentLoaded', build);
-
-    // ===== Cursor info =====
-    const cursorInfo=document.getElementById('cursorInfo');
-    function updateCursorInfo(ta){
-      const start = ta.selectionStart || 0;
-      const textBefore = ta.value.slice(0, start);
-      const line = (textBefore.match(/\n/g)||[]).length + 1;
-      const col = start - textBefore.lastIndexOf('\n');
-      cursorInfo.textContent = `Ln ${line}, Col ${col}`;
-    }
-    Object.values(textareas).forEach(ta=>{
-      ta.addEventListener('keyup', ()=>updateCursorInfo(ta));
-      ta.addEventListener('click', ()=>updateCursorInfo(ta));
     });
 
-    // ===== Keyboard shortcuts =====
-    const isMac = navigator.platform.toUpperCase().includes('MAC');
+    // ====== 모바일 탭
+    mobileTabButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        mobileTabButtons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        setTab(btn.dataset.tab);
+        // 모바일에서 에디터만 보이므로 OK
+      });
+    });
+
+    function setTab(tab){
+      currentTab = tab;
+      document.getElementById('code-editor-html').classList.toggle('hidden', tab!=='html');
+      document.getElementById('code-editor-css').classList.toggle('hidden',  tab!=='css');
+      document.getElementById('code-editor-js').classList.toggle('hidden',   tab!=='js');
+      status('Editing ' + tab.toUpperCase());
+    }
+
+    // ====== 미리보기 빌드
+    function buildSrcDoc(){
+      const html = htmlInput.value;
+      const cssContent = cssInput.value + `
+@media screen and (max-width: 768px) {
+  body { font-size: 80% !important; }
+  h1, h2, h3, h4, h5, h6, p, li, nav, footer, main, section {
+    transform: scale(0.95); transform-origin: top center;
+  }
+}
+`;
+      const cssTag = `<style>${cssContent.replace(/<\/style>/g,'<\\/style>')}</style>`;
+      const jsTag  = `<script>${jsInput.value.replace(/<\/script>/g,'<\\/script>')}<\/script>`;
+
+      // 자산 주입
+      const assetTags = assets.map(a=>{
+        if(a.type==='css'){
+          return `<link rel="stylesheet" href="${a.src}">`;
+        }else{
+          return `<script src="${a.src}"><\/script>`;
+        }
+      }).join('\n');
+
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+${assetTags}
+${cssTag}
+</head>
+<body>
+${html}
+${jsTag}
+</body>
+</html>`;
+    }
+
+    function updatePreview(){
+      preview.srcdoc = buildSrcDoc();
+      status('Preview updated');
+    }
+
+    // 입력 변경 → 자동 미리보기
+    [htmlInput, cssInput, jsInput].forEach(el=> el.addEventListener('input', throttle(updatePreview, 250)));
+    window.addEventListener('DOMContentLoaded', updatePreview);
+
+    // ====== 단축키
     window.addEventListener('keydown', (e)=>{
-      const mod = isMac ? e.metaKey : e.ctrlKey;
-      if(mod && e.key.toLowerCase()==='enter'){ e.preventDefault(); build(); }
-      if(mod && e.key.toLowerCase()==='b'){ e.preventDefault(); toggleSidebar(); }
-      if(mod && e.key.toLowerCase()==='k'){ e.preventDefault(); openPalette(); }
+      const cmd = e.metaKey || e.ctrlKey;
+      if(cmd && e.key.toLowerCase()==='enter'){ e.preventDefault(); updatePreview(); }
+      if(cmd && e.key.toLowerCase()==='b'){ e.preventDefault(); document.querySelector('.selector')?.classList.toggle('hidden'); }
     });
 
-    // ===== Sidebar toggle =====
-    function toggleSidebar(){
-      const cols=getComputedStyle(main).gridTemplateColumns.split(' ');
-      cols[0] = cols[0]==='0px' ? '240px' : '0px';
-      cols[1] = cols[0]==='0px' ? '0px' : '8px';
-      main.style.gridTemplateColumns=cols.join(' ');
-    }
-
-    // ===== Theme toggle =====
-    const themeBtn=document.getElementById('themeBtn');
-    themeBtn.addEventListener('click', ()=>{
-      document.documentElement.classList.toggle('dark');
+    // ====== Theme 토글
+    btnTheme.addEventListener('click', ()=>{
+      const html = document.documentElement;
+      html.classList.toggle('dark');
+      status(html.classList.contains('dark') ? 'Theme: Dark' : 'Theme: Light');
     });
 
-    // ===== Command Palette =====
-    const kbar=document.getElementById('kbar');
-    const kinput=document.getElementById('kinput');
-    const klist=document.getElementById('klist');
-    const paletteBtn=document.getElementById('paletteBtn');
-    const commands=[
-      {label:'Run (Build Preview)', action: build},
-      {label:'Toggle Theme', action: ()=>document.documentElement.classList.toggle('dark')},
-      {label:'Toggle Sidebar', action: toggleSidebar},
-    ];
-    function openPalette(){ kbar.classList.add('active'); kinput.value=''; renderCmds(''); kinput.focus(); }
-    function closePalette(){ kbar.classList.remove('active'); }
-    function renderCmds(q){
-      klist.innerHTML='';
-      commands.filter(c=> c.label.toLowerCase().includes(q.toLowerCase()))
-        .forEach(c=>{
-          const div=document.createElement('div');
-          div.className='kitem';
-          div.textContent=c.label;
-          div.addEventListener('click', ()=>{ c.action(); closePalette(); });
-          klist.appendChild(div);
-        });
-    }
-    paletteBtn.addEventListener('click', openPalette);
-    kbar.addEventListener('click', (e)=>{ if(e.target===kbar) closePalette(); });
-    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closePalette(); });
-    kinput.addEventListener('input', ()=> renderCmds(kinput.value));
-
-    // ===== Share (download a gist-like html) =====
-    document.getElementById('shareBtn').addEventListener('click', ()=>{
-      const blob = new Blob([frame.srcdoc], {type:'text/html'});
+    // ====== Export (현재 프리뷰를 단일 HTML로 다운로드)
+    btnDownload.addEventListener('click', ()=>{
+      const blob = new Blob([buildSrcDoc()], {type:'text/html'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = 'preview.html'; a.click();
-      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      a.href = url; a.download = 'bugloop_preview.html'; a.click();
+      URL.revokeObjectURL(url);
+      status('Exported bugloop_preview.html');
     });
+
+    // ====== Assets: 모달 열기/닫기
+    btnAssets.addEventListener('click', ()=> assetsModal.style.display='flex');
+    assetClose.addEventListener('click', ()=> assetsModal.style.display='none');
+    assetsModal.addEventListener('click', (e)=>{ if(e.target===assetsModal) assetsModal.style.display='none'; });
+
+    // ====== Assets: URL 추가
+    assetForm.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const url = assetUrlEl.value.trim();
+      const type = assetTypeEl.value;
+      if(!url) return;
+      addAsset({type, src:url, label:url, isBlob:false});
+      assetUrlEl.value='';
+    });
+
+    // ====== Assets: 파일 추가 (Blob URL)
+    assetAddFileBtn.addEventListener('click', ()=>{
+      const f = assetFileEl.files?.[0];
+      if(!f) return;
+      const type = assetFileTypeEl.value;
+      const url = URL.createObjectURL(f);
+      addAsset({type, src:url, label:f.name, isBlob:true});
+      assetFileEl.value='';
+    });
+
+    function addAsset(a){
+      const id = 'asset_'+Math.random().toString(36).slice(2,9);
+      assets.push({...a, id});
+      renderAssetList();
+      updatePreview();
+      status(`Asset added: ${a.label}`);
+    }
+
+    function removeAsset(id){
+      const idx = assets.findIndex(x=>x.id===id);
+      if(idx>=0){
+        const a = assets[idx];
+        if(a.isBlob) try{ URL.revokeObjectURL(a.src); }catch{}
+        assets.splice(idx,1);
+        renderAssetList();
+        updatePreview();
+        status('Asset removed');
+      }
+    }
+
+    function renderAssetList(){
+      assetListEl.innerHTML = '';
+      assets.forEach(a=>{
+        const row = document.createElement('div');
+        row.className='asset-pill';
+        row.innerHTML = `
+          <span class="tag">${a.type.toUpperCase()}</span>
+          <code title="${a.label}">${a.label}</code>
+          <div class="studio-spacer"></div>
+          <button class="studio-btn" data-id="${a.id}">Remove</button>
+        `;
+        row.querySelector('button').addEventListener('click', ()=> removeAsset(a.id));
+        assetListEl.appendChild(row);
+      });
+      if(!assets.length){
+        const empty = document.createElement('div');
+        empty.className='studio-badge';
+        empty.textContent = 'No assets added yet.';
+        assetListEl.appendChild(empty);
+      }
+    }
+
+    // ====== 유틸
+    function throttle(fn, wait){
+      let t=0; return function(...args){
+        const now=Date.now(); if(now-t>wait){ t=now; fn.apply(this,args); }
+      }
+    }
+    function status(msg){ statusMsg.textContent = msg; }
+
+    // ====== 반응형 정책
+    // 모바일: 상단 탭으로만 전환(이미 CSS로 좌측 selector 숨김). 데스크탑: selector만 사용.
+    // setTab은 양쪽 입력에 공통 적용되니 로직은 그대로 둔다.
   </script>
 </body>
 </html>
