@@ -1,3 +1,74 @@
-<h3>Frontend / HTML (fr)</h3>
-<p>Exemple de contenu HTML en français.</p>
-<div class="tips"><span class="chip">Ex : balises sémantiques</span></div>
+<h3>프론트엔드 / HTML — 기초부터 탄탄하게</h3>
+<p>HTML은 웹 문서의 <b>구조(Semantics)</b>를 정의하는 마크업 언어야. CSS가 “모양”, JS가 “행동”이라면, HTML은 “뼈대와 의미”를 만든다.</p>
+
+<h4>1) 최소 골격</h4>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang="ko"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;
+    &lt;title&gt;문서 제목&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    콘텐츠...
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h4>2) 시맨틱 태그 핵심</h4>
+<ul>
+  <li><code>&lt;header&gt;</code> 페이지/섹션의 머리말</li>
+  <li><code>&lt;nav&gt;</code> 내비게이션 메뉴</li>
+  <li><code>&lt;main&gt;</code> 문서의 고유 핵심 콘텐츠(페이지당 1개)</li>
+  <li><code>&lt;section&gt;</code> 주제별 구획, 보통 제목 동반</li>
+  <li><code>&lt;article&gt;</code> 독립 배포 가능한 글(게시글/뉴스 등)</li>
+  <li><code>&lt;aside&gt;</code> 보조/사이드 정보</li>
+  <li><code>&lt;footer&gt;</code> 꼬리말(저작권/연락처 등)</li>
+</ul>
+
+<h4>3) 문서 예시(시맨틱 + 접근성)</h4>
+<pre><code>&lt;main id="content"&gt;
+  &lt;article aria-labelledby="post-title"&gt;
+    &lt;h1 id="post-title"&gt;HTML 입문&lt;/h1&gt;
+    &lt;p&gt;HTML은 웹의 뼈대입니다.&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+</code></pre>
+
+<h4>4) 텍스트 &amp; 링크 &amp; 미디어</h4>
+<ul>
+  <li><b>텍스트</b>: <code>&lt;h1~h6&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code></li>
+  <li><b>링크</b>: <code>&lt;a href="/path" rel="noopener"&gt;…&lt;/a&gt;</code></li>
+  <li><b>이미지</b>: <code>&lt;img src="…" alt="대체텍스트"&gt;</code> (의미 있는 이미지는 alt 필수)</li>
+  <li><b>비디오</b>: <code>&lt;video controls&gt;&lt;source src="movie.mp4"&gt;&lt;/video&gt;</code></li>
+</ul>
+
+<h4>5) 폼(기본)</h4>
+<pre><code>&lt;form action="/signup" method="post"&gt;
+  &lt;label for="email"&gt;이메일&lt;/label&gt;
+  &lt;input id="email" name="email" type="email" required /&gt;
+  &lt;button type="submit"&gt;제출&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+
+<h4>6) 표(테이블) — 캡션과 헤더</h4>
+<pre><code>&lt;table&gt;
+  &lt;caption&gt;월간 방문자 수&lt;/caption&gt;
+  &lt;thead&gt;&lt;tr&gt;&lt;th scope="col"&gt;월&lt;/th&gt;&lt;th scope="col"&gt;방문자&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+  &lt;tbody&gt;&lt;tr&gt;&lt;th scope="row"&gt;1월&lt;/th&gt;&lt;td&gt;12,400&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;
+&lt;/table&gt;
+</code></pre>
+
+<h4>7) 접근성 체크리스트(아주 중요)</h4>
+<ul>
+  <li>이미지에 <code>alt</code> 제공(장식용은 <code>alt=""</code>)</li>
+  <li>헤딩 레벨 순서 유지(<code>h1 → h2 → h3…</code>)</li>
+  <li>양식 컨트롤은 <code>&lt;label for&gt;</code>로 연결</li>
+  <li>색만으로 정보 전달하지 않기(텍스트/아이콘 병행)</li>
+  <li>대체 키보드 포커스 가능(기본 HTML 컨트롤 활용)</li>
+</ul>
+
+<h4>8) SEO 기본</h4>
+<ul>
+  <li><code>&lt;title&gt;</code>, <code>&lt;meta name="description"&gt;</code> 적절히 작성</li>
+  <li>핵
