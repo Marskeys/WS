@@ -44,6 +44,25 @@ app.get('/:lang/:section/:topic', (req, res) => {
   return res.render('index', { lang, panelData, locale, currentPath }); // ⭐ 전달
 });
 
+// ⭐ app.use(express.static(...)) 보다 위에!
+app.use((req, res, next) => {
+  // 언어
+  const paramLang = (req.params && req.params.lang) || req.query.lang || 'ko';
+  res.locals.lang = String(paramLang).toLowerCase();
+
+  // 현재 경로
+  res.locals.currentPath = req.path;
+
+  // 지원 언어 목록
+  res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+
+  // locale 기본값 (이미 다른 미들웨어가 채우면 그대로 둠)
+  if (!res.locals.locale) {
+    res.locals.locale = { meta: { title: 'Bug Loop · Online HTML Editor' } };
+  }
+  next();
+});
+
 // 정적 파일 제공 설정
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'public')));
