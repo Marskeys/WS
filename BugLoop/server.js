@@ -8,7 +8,7 @@ const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 const app = express();
 const PORT = process.env.PORT || 3002;
 const allLocales = require('./locales/all.json');
-
+const { map: slugMap } = require('./slugMap');
 
 app.use((req, res, next) => {
   if (req.headers.host.startsWith('www.')) {
@@ -1324,6 +1324,14 @@ res.render('index', {
     res.status(500).send('메인 페이지 로드 중 오류 발생');
   }
 });
+
+// EJS에서 slug 변환 함수 쓰게 하기
+app.locals.slug = function(label, lang) {
+  lang = (lang || 'ko').toLowerCase();
+  const hit = slugMap[lang]?.[label];
+  if (hit) return hit;
+  return String(label).toLowerCase().replace(/\s+/g, '-');
+};
 
 
 // DB 연결 확인
