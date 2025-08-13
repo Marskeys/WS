@@ -91,15 +91,24 @@ app.use((req, res, next) => {
 });
 
 function buildPanel({ lang, section, topic }) {
-  const filePath = path.join(__dirname, 'content', lang, section, `${topic}.html`);
+  const filePath = path.join(__dirname, 'content', String(lang).toLowerCase(),
+                             String(section).toLowerCase(), `${String(topic).toLowerCase()}.html`);
   try {
+    if (!fs.existsSync(filePath)) {
+      console.error('[PANEL] not found:', filePath);
+      return {
+        title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
+        body: `${lang} 콘텐츠 파일이 아직 없어요: ${filePath}`,
+        chips: []
+      };
+    }
     const html = fs.readFileSync(filePath, 'utf8');
-    return { html }; // ← 파일이 있으면 원시 HTML로 반환
+    return { html };
   } catch (e) {
-    // 파일 없을 때만 임시 텍스트로 fallback
+    console.error('[PANEL] read error:', filePath, e?.code || e);
     return {
       title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
-      body: `${lang} 콘텐츠 파일이 아직 없어요: ${filePath}`,
+      body: `${lang} 파일 읽기 오류: ${filePath} (${e?.code || e})`,
       chips: []
     };
   }
