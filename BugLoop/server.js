@@ -34,13 +34,14 @@ function buildPanel({ lang, section, topic }) {
 app.get('/:lang/:section/:topic', (req, res) => {
   const { lang, section, topic } = req.params;
   const panelData = buildPanel({ lang, section, topic });
-
   const locale = res.locals.locale || { meta: { title: 'Bug Loop · Online HTML Editor' } };
+
+  const currentPath = req.path; // ⭐ 추가
 
   if (req.query.partial === '1') {
     return res.render('partials/panel', { lang, panelData, locale });
   }
-  return res.render('index', { lang, panelData, locale });
+  return res.render('index', { lang, panelData, locale, currentPath }); // ⭐ 전달
 });
 
 // 정적 파일 제공 설정
