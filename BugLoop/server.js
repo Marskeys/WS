@@ -56,6 +56,8 @@ app.use((req, res, next) => {
       chips: []
     };
   }
+
+  res.locals.user = req.user || req.session?.user || null;  // 유저 기본값 추가
   next();
 });
 
