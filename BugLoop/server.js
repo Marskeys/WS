@@ -35,10 +35,12 @@ app.get('/:lang/:section/:topic', (req, res) => {
   const { lang, section, topic } = req.params;
   const panelData = buildPanel({ lang, section, topic });
 
+  const locale = res.locals.locale || { meta: { title: 'Bug Loop · Online HTML Editor' } };
+
   if (req.query.partial === '1') {
-    return res.render('partials/panel', { lang, panelData });
+    return res.render('partials/panel', { lang, panelData, locale });
   }
-  return res.render('index', { lang, panelData });
+  return res.render('index', { lang, panelData, locale });
 });
 
 // 정적 파일 제공 설정
