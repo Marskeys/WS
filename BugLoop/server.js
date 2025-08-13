@@ -1333,6 +1333,11 @@ app.locals.slug = function(label, lang) {
   return String(label).toLowerCase().replace(/\s+/g, '-');
 };
 
+app.get('/_slugtest', (req, res) => {
+  const { lang = 'ko', label = '' } = req.query;
+  const out = app.locals.slug(label, lang);
+  res.type('text').send(out);
+});
 
 // DB 연결 확인
 db.query('SELECT NOW()')
