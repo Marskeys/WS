@@ -65,7 +65,7 @@ app.use((req, res, next) => {
       profile: {
         'profile-name': 'Bug Loop',
         'profile-bio': '',
-        // 필요하면 다른 키도 여기 기본값 추가
+        'profile-tags': []            // ⭐ 추가
       }
     };
     res.locals.locale = Object.assign({}, defaultLocale, res.locals.locale || {});
@@ -80,7 +80,7 @@ app.use((req, res, next) => {
       body: '초기 패널입니다.',
       chips: []
     };
-    
+
   next();
 });
 
