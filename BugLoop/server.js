@@ -91,28 +91,33 @@ app.use((req, res, next) => {
 });
 
 function buildPanel({ lang, section, topic }) {
-  const filePath = path.join(__dirname, 'content', String(lang).toLowerCase(),
-                             String(section).toLowerCase(), `${String(topic).toLowerCase()}.html`);
+  const L = String(lang).toLowerCase();
+  const S = String(section).toLowerCase();
+  const T = String(topic).toLowerCase();
+  const filePath = path.join(__dirname, 'content', L, S, `${T}.html`);
+
+  const exists = fs.existsSync(filePath);
+  console.log('[PANEL]', { L, S, T, filePath, exists, cwd: process.cwd(), dir: __dirname });
+
+  if (!exists) {
+    return {
+      title: `${S.toUpperCase()} / ${T.toUpperCase()}`,
+      body: `${L} 콘텐츠 파일이 아직 없어요: ${filePath}`,
+      chips: []
+    };
+  }
   try {
-    if (!fs.existsSync(filePath)) {
-      console.error('[PANEL] not found:', filePath);
-      return {
-        title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
-        body: `${lang} 콘텐츠 파일이 아직 없어요: ${filePath}`,
-        chips: []
-      };
-    }
     const html = fs.readFileSync(filePath, 'utf8');
     return { html };
   } catch (e) {
     console.error('[PANEL] read error:', filePath, e?.code || e);
-    return {
-      title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
-      body: `${lang} 파일 읽기 오류: ${filePath} (${e?.code || e})`,
-      chips: []
-    };
+    return { title: '읽기 오류', body: `${filePath} (${e?.code || e})`, chips: [] };
   }
 }
+
+app.get('/_paneldebug/:lang/:section/:topic', (req, res) => {
+  res.json(buildPanel(req.params));
+});
 
 // 패널 전용 URL (SSR 전체 or partial)
 app.get('/:lang/:section/:topic', (req, res) => {
