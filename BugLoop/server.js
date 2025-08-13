@@ -25,6 +25,12 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// 정적 파일 제공 설정
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
+
+
 // ⭐ 공통 locals 미들웨어 (라우트보다 위)
 app.use((req, res, next) => {
   // 언어
@@ -76,10 +82,6 @@ app.get('/:lang/:section/:topic', (req, res) => {
   return res.render('index'); // panelData/locale/lang/currentPath 모두 locals에서 참조
 });
 
-// 정적 파일 제공 설정
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
