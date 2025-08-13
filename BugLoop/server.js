@@ -58,6 +58,29 @@ app.use((req, res, next) => {
   }
 
   res.locals.user = req.user || req.session?.user || null;  // 유저 기본값 추가
+
+    // locale 기본값(깊게 채움)
+    const defaultLocale = {
+      meta: { title: 'Bug Loop · Online HTML Editor', description: '' },
+      profile: {
+        'profile-name': 'Bug Loop',
+        'profile-bio': '',
+        // 필요하면 다른 키도 여기 기본값 추가
+      }
+    };
+    res.locals.locale = Object.assign({}, defaultLocale, res.locals.locale || {});
+    if (!res.locals.locale.profile) res.locals.locale.profile = defaultLocale.profile;
+  
+    // user 기본값
+    res.locals.user = req.user || req.session?.user || null;
+  
+    // panelData 기본값
+    res.locals.panelData = res.locals.panelData || {
+      title: '패널',
+      body: '초기 패널입니다.',
+      chips: []
+    };
+    
   next();
 });
 
