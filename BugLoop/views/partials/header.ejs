@@ -292,5 +292,23 @@
   </aside>
 </div>
 
+<script>
+  (function(){
+    // 현재 경로 (마지막 슬래시 제거)
+    var path = location.pathname.replace(/\/$/, '');
+  
+    // 동일 경로인 링크에 active 클래스 부여
+    document.querySelectorAll('.submenu a').forEach(function(a){
+      var href = (a.getAttribute('href') || '').replace(/\/$/, '');
+      if (href === path) {
+        a.classList.add('active');
+        var label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
+        if (label) label.classList.add('active-label');
+      }
+    });
+  })();
+  </script>
+
+
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
