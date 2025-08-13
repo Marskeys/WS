@@ -21,6 +21,26 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// 아주 간단한 패널 데이터 (임시)
+function buildPanel({ lang, section, topic }) {
+  return {
+    title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
+    body: `${lang} 언어의 ${section}/${topic} 튜토리얼(테스트)`,
+    chips: ['예: HTML 구조']
+  };
+}
+
+// 패널 전용 URL (SSR 전체 or partial)
+app.get('/:lang/:section/:topic', (req, res) => {
+  const { lang, section, topic } = req.params;
+  const panelData = buildPanel({ lang, section, topic });
+
+  if (req.query.partial === '1') {
+    return res.render('partials/panel', { lang, panelData });
+  }
+  return res.render('index', { lang, panelData });
+});
+
 // 정적 파일 제공 설정
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -1325,25 +1345,7 @@ res.render('index', {
   }
 });
 
-// 아주 간단한 패널 데이터 (임시)
-function buildPanel({ lang, section, topic }) {
-  return {
-    title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
-    body: `${lang} 언어의 ${section}/${topic} 튜토리얼(테스트)`,
-    chips: ['예: HTML 구조']
-  };
-}
 
-// 패널 전용 URL (SSR 전체 or partial)
-app.get('/:lang/:section/:topic', (req, res) => {
-  const { lang, section, topic } = req.params;
-  const panelData = buildPanel({ lang, section, topic });
-
-  if (req.query.partial === '1') {
-    return res.render('partials/panel', { lang, panelData });
-  }
-  return res.render('index', { lang, panelData });
-});
 
 // EJS에서 slug 변환 함수 쓰게 하기
 app.locals.slug = function(label, lang) {
