@@ -90,13 +90,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// 아주 간단한 패널 데이터 (임시)
 function buildPanel({ lang, section, topic }) {
-  return {
-    title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
-    body: `${lang} 언어의 ${section}/${topic} 튜토리얼(테스트)`,
-    chips: ['예: HTML 구조']
-  };
+  const filePath = path.join(__dirname, 'content', lang, section, `${topic}.html`);
+  try {
+    const html = fs.readFileSync(filePath, 'utf8');
+    return { html }; // ← 파일이 있으면 원시 HTML로 반환
+  } catch (e) {
+    // 파일 없을 때만 임시 텍스트로 fallback
+    return {
+      title: `${section.toUpperCase()} / ${topic.toUpperCase()}`,
+      body: `${lang} 콘텐츠 파일이 아직 없어요: ${filePath}`,
+      chips: []
+    };
+  }
 }
 
 // 패널 전용 URL (SSR 전체 or partial)
