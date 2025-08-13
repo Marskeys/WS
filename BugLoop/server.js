@@ -65,9 +65,15 @@ app.use((req, res, next) => {
       profile: {
         'profile-name': 'Bug Loop',
         'profile-bio': '',
-        'profile-tags': []            // ⭐ 추가
+        'profile-tags': []
+      },
+      editor: {                            // ⭐ 추가
+        'editor-title': 'Online HTML Editor'
       }
     };
+    res.locals.locale = Object.assign({}, defaultLocale, res.locals.locale || {});
+    if (!res.locals.locale.profile) res.locals.locale.profile = defaultLocale.profile;
+    if (!res.locals.locale.editor)  res.locals.locale.editor  = defaultLocale.editor;
     res.locals.locale = Object.assign({}, defaultLocale, res.locals.locale || {});
     if (!res.locals.locale.profile) res.locals.locale.profile = defaultLocale.profile;
   
