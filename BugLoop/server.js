@@ -11,8 +11,12 @@ const allLocales = require('./locales/all.json');
 const { map: slugMap } = require('./slugMap');
 
 app.use((req, res, next) => {
+  // www → non-www 리다이렉트
   if (req.headers.host.startsWith('www.')) {
-    return res.redirect(301, `https://${req.headers.host.replace('www.', '')}${req.url}`);
+    return res.redirect(
+      301,
+      `https://${req.headers.host.replace('www.', '')}${req.url}`
+    );
   }
   next();
 });
@@ -20,6 +24,34 @@ app.use((req, res, next) => {
 // EJS 템플릿 엔진 설정
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// ⭐ 공통 locals 미들웨어 (라우트보다 위)
+app.use((req, res, next) => {
+  // 언어
+  const paramLang = (req.params && req.params.lang) || req.query.lang || 'ko';
+  res.locals.lang = String(paramLang).toLowerCase();
+
+  // 현재 경로
+  res.locals.currentPath = req.path;
+
+  // 지원 언어 목록
+  res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+
+  // locale 기본값
+  if (!res.locals.locale) {
+    res.locals.locale = { meta: { title: 'Bug Loop · Online HTML Editor' } };
+  }
+
+  // panelData 기본값
+  if (!res.locals.panelData) {
+    res.locals.panelData = {
+      title: '패널',
+      body: '초기 패널입니다.',
+      chips: []
+    };
+  }
+  next();
+});
 
 // 아주 간단한 패널 데이터 (임시)
 function buildPanel({ lang, section, topic }) {
@@ -34,33 +66,14 @@ function buildPanel({ lang, section, topic }) {
 app.get('/:lang/:section/:topic', (req, res) => {
   const { lang, section, topic } = req.params;
   const panelData = buildPanel({ lang, section, topic });
-  const locale = res.locals.locale || { meta: { title: 'Bug Loop · Online HTML Editor' } };
 
-  const currentPath = req.path; // ⭐ 추가
+  // 기본값 덮어쓰기
+  res.locals.panelData = panelData;
 
   if (req.query.partial === '1') {
-    return res.render('partials/panel', { lang, panelData, locale });
+    return res.render('partials/panel'); // panelData 등은 res.locals에 이미 있음
   }
-  return res.render('index', { lang, panelData, locale, currentPath }); // ⭐ 전달
-});
-
-// ⭐ app.use(express.static(...)) 보다 위에!
-app.use((req, res, next) => {
-  // 언어
-  const paramLang = (req.params && req.params.lang) || req.query.lang || 'ko';
-  res.locals.lang = String(paramLang).toLowerCase();
-
-  // 현재 경로
-  res.locals.currentPath = req.path;
-
-  // 지원 언어 목록
-  res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
-
-  // locale 기본값 (이미 다른 미들웨어가 채우면 그대로 둠)
-  if (!res.locals.locale) {
-    res.locals.locale = { meta: { title: 'Bug Loop · Online HTML Editor' } };
-  }
-  next();
+  return res.render('index'); // panelData/locale/lang/currentPath 모두 locals에서 참조
 });
 
 // 정적 파일 제공 설정
