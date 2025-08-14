@@ -1,214 +1,350 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 완전 정복: 웹의 뼈대를 세우는 기초</title>
-    <style>
-        /* CSS 스타일 시작 */
-        body {
-            background-color: #1a1a1a;
+<style>
+    /* ===== Scoped to .blt (panel-safe) ===== */
+    .blt{--brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae; --code:#0f0f0f; --code-br:rgba(255,255,255,.12)}
+    .blt *{box-sizing:border-box}
+    .blt .blt-toolbar{display:flex; gap:8px; align-items:center; margin-bottom:10px}
+    
+    /* ▼ ここだけ変更：デスクトップでは220pxに、モバイルでは100%に */
+    .blt .blt-search{flex:0 0 220px; min-width:160px;}
+    .blt .blt-search input{
+      width:100%; padding:8px 10px; border-radius:10px; border:1px solid #333;
+      background:#0a0a0a; color:#e5e7eb; font-size:12px; outline:none;
+    }
+    
+    @media (max-width:640px){
+      .blt .blt-search{flex:1 1 auto;}   /* モバイルは全幅に */
+    }
+        /* Tab strip (horizontal, scrollable) */
+        .blt .blt-tabs{display:flex; gap:6px; overflow:auto; padding-bottom:2px}
+        .blt .blt-tab{
+          border:1px solid #333; background:#121212; color:#ddd; padding:6px 10px; border-radius:999px; font-size:12px;
+          cursor:pointer; white-space:nowrap
         }
-
-        .tutorial-container {
-            font-family: 'Noto Sans KR', sans-serif;
-            line-height: 1.65;
-            color: #f0f0f0;
-            padding: 20px;
+        .blt .blt-tab:hover{background:#161616}
+        .blt .blt-tab.is-active{background:var(--brand); border-color:transparent; color:#fff; font-weight:700}
+      
+        /* Panels */
+        .blt .blt-panels{margin-top:10px}
+        .blt .blt-panel{display:none}
+        .blt .blt-panel.is-active{display:block}
+        .blt h2{color:#ffe082; margin:0 0 6px 0; font-size:18px}
+        .blt h3{color:#ffd666; margin:14px 0 6px 0; font-size:15px}
+        .blt p{margin:6px 0; line-height:1.7}
+        .blt ul{margin:6px 0 8px 18px}
+        .blt li{margin:4px 0}
+        .blt .blt-note{background:#0b1220; border:1px solid rgba(255,255,255,.08); padding:8px 10px; border-radius:8px; font-size:12px}
+      
+        /* Code */
+        .blt pre{background:var(--code); border:1px solid var(--code-br); border-radius:10px; padding:12px; overflow:auto; margin:8px 0}
+        .blt code{font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; color:#ffcc80}
+      
+        /* Example runner */
+        .blt .blt-example{border:1px solid var(--code-br); border-radius:10px; overflow:hidden; margin:10px 0}
+        .blt .blt-example .bar{display:flex; gap:8px; align-items:center; padding:8px; background:#0a0a0a; border-bottom:1px solid var(--code-br)}
+        .blt .blt-example .title{font-weight:800; color:#e5e7eb; font-size:12px; flex:1}
+        .blt .blt-example .btn{border:0; background:#374151; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer}
+        .blt .blt-example .btn.run{background:var(--brand)}
+        .blt .blt-example .grid{display:grid; grid-template-columns:1fr 1fr}
+        .blt .blt-example textarea{
+          width:100%; min-height:150px; background:#0c0c0c; color:#e5e7eb; border:0; border-right:1px solid var(--code-br);
+          padding:10px; font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; outline:none; resize:vertical
         }
-
-        .tutorial-container h1 {
-            color: #ffeb3b; /* 강조색 */
-            text-align: center;
-            font-size: 2.5em;
-            font-weight: 900;
-            margin-bottom: 0.5em;
+        .blt .blt-example iframe{width:100%; min-height:150px; border:0; background:#fff}
+      
+        /* Chips */
+        .blt .blt-chips{margin-top:6px}
+        .blt .blt-chip{display:inline-block; padding:4px 8px; border:1px solid #333; background:#161616; color:#ddd; border-radius:999px; font-size:11px; margin:4px 6px 0 0}
+      
+        /* Compact for small panels */
+        @media (max-width:640px){
+          .blt .blt-example .grid{grid-template-columns:1fr}
         }
-
-        .tutorial-container h2,
-        .tutorial-container h3,
-        .tutorial-container h4 {
-            margin-top: 2em;
-            margin-bottom: 0.5em;
-            color: #ffe082;
-            font-weight: 700;
-        }
-
-        .tutorial-container p {
-            margin-bottom: 1em;
-            font-size: 1em;
-        }
-
-        .tutorial-container code {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9em;
-            color: #ffcc80;
-        }
-
-        .tutorial-container pre {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-size: 0.9em;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tutorial-container ul, .tutorial-container ol {
-            margin: 0.5em 0 1.5em 1.5em;
-            padding: 0;
-        }
-
-        .tutorial-container li {
-            margin-bottom: 0.6em;
-        }
-
-        .highlight {
-            background-color: rgba(255, 235, 59, 0.15);
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-
-        .chip {
-            display: inline-block;
-            background-color: #333;
-            color: #ddd;
-            padding: 5px 12px;
-            margin: 3px 4px 0 0;
-            border-radius: 20px;
-            font-size: 0.85em;
-            border: 1px solid #555;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* 폰트 임포트 */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Fira+Code:wght@400&display=swap');
-    </style>
-</head>
-<body>
-    <div class="tutorial-container">
-        <h1>HTML 완전 정복: 웹 페이지의 뼈대를 세우는 기초</h1>
-        <p>
-            <strong>HTML (HyperText Markup Language)</strong>은 웹 페이지의 <span class="highlight">뼈대</span>이자 <span class="highlight">구조</span>를 정의하는 마크업 언어이다. HTML은 시각적인 디자인이나 동적인 동작을 담당하는 언어가 아니며, 오직 웹 브라우저에게 "이 콘텐츠가 무엇이며, 어떻게 배치되어야 하는지"에 대한 설계도 역할을 수행한다.
-        </p>
-
-        <hr>
-
-        <h2>1. 웹 개발 3요소와 HTML의 지위</h2>
-        <p>
-            웹은 HTML, CSS, JavaScript라는 세 가지 핵심 언어로 구성된다. 이 세 가지 언어는 각각 독립적인 역할을 수행하며, 상호 보완적으로 작용하여 하나의 완전한 웹 페이지를 구성한다.
-        </p>
-        <ul>
-            <li><strong>HTML (HyperText Markup Language)</strong>: 웹 페이지의 <strong>구조</strong>와 <strong>콘텐츠</strong>를 담당한다. 모든 웹 페이지는 HTML을 기반으로 작성된다.</li>
-            <li><strong>CSS (Cascading Style Sheets)</strong>: HTML로 만들어진 구조에 <strong>스타일</strong>과 <strong>디자인</strong>을 입히는 역할을 한다. 색상, 글꼴, 레이아웃 등 시각적 요소를 정의한다.</li>
-            <li><strong>JavaScript</strong>: 웹 페이지에 <strong>동적인 기능</strong>과 <strong>상호작용</strong>을 추가한다. 사용자의 클릭에 반응하거나 콘텐츠를 동적으로 변경하는 등의 기능을 담당한다.</li>
-        </ul>
-
-        <hr>
-
-        <h2>2. HTML 문서의 기본 골격과 필수 요소</h2>
-        <p>
-            모든 HTML 문서는 웹 표준에 따라 정해진 기본 구조를 갖추고 있다. 이 구조는 브라우저가 문서를 올바르게 해석하고 렌더링하는 데 필수적이다.
-        </p>
-        <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang="ko"&gt;
-  &lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;문서 제목&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!-- 실제 화면에 보이는 내용 --&gt;
-    &lt;h1&gt;안녕하세요, HTML!&lt;/h1&gt;
-    &lt;p&gt;이것은 HTML 문서의 예시입니다.&lt;/p&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-        <ul>
-            <li><code>&lt;!DOCTYPE html&gt;</code>: 문서 유형을 선언하는 태그로, 이 문서가 HTML5 표준을 따르고 있음을 브라우저에 알린다.</li>
-            <li><code>&lt;html&gt;</code>: HTML 문서 전체를 감싸는 <strong>루트(Root)</strong> 요소이다. <code>lang</code> 속성은 문서의 언어를 명시하여 접근성과 SEO에 도움을 준다.</li>
-            <li><code>&lt;head&gt;</code>: 문서의 <strong>메타데이터</strong>를 담는 영역이다. 브라우저 화면에 직접 표시되지 않으며, 문서에 대한 정보(제목, 문자 인코딩, 외부 파일 연결 등)를 포함한다.</li>
-            <li><code>&lt;body&gt;</code>: 웹 브라우저 화면에 실제 표시되는 모든 콘텐츠(텍스트, 이미지, 링크 등)를 포함하는 영역이다.</li>
-            <li><code>&lt;meta charset="UTF-8"&gt;</code>: 문서의 문자 인코딩을 지정한다. 한글을 포함한 다양한 문자를 올바르게 표시하기 위해 필수적이다.</li>
-            <li><code>&lt;title&gt;</code>: 브라우저 탭에 표시되는 문서의 제목을 정의한다.</li>
-        </ul>
-
-        <hr>
-
-        <h2>3. 브라우저 렌더링 과정: HTML이 웹 페이지가 되기까지</h2>
-        <p>
-            HTML 파일은 다음의 복잡한 과정을 거쳐 우리가 보는 웹 페이지로 변환된다.
-        </p>
-        <ol>
-            <li><strong>리소스 요청 및 수신</strong>: 사용자가 URL을 입력하면, 브라우저는 웹 서버에 HTML 파일을 요청하고 응답을 받는다.</li>
-            <li><strong>파싱 (Parsing)</strong>: 브라우저의 <strong>HTML 파서</strong>가 HTML 코드를 위에서부터 순서대로 읽어 내려간다.</li>
-            <li><strong>DOM 트리 생성</strong>: 파싱 과정을 통해 브라우저는 HTML 태그들을 계층적 구조의 객체 모델인 <strong>DOM (Document Object Model)</strong> 트리로 변환한다.</li>
-            <li><strong>CSSOM 트리 생성</strong>: HTML에 연결된 CSS 파일을 파싱하여 <strong>CSSOM (CSS Object Model)</strong> 트리를 생성한다.</li>
-            <li><strong>렌더 트리 생성</strong>: DOM 트리와 CSSOM 트리를 결합하여 화면에 표시될 요소와 그 스타일 정보를 모두 담은 <strong>렌더 트리 (Render Tree)</strong>를 만든다.</li>
-            <li><strong>레이아웃 (Layout)</strong>: 렌더 트리를 기반으로 각 요소의 정확한 위치와 크기를 계산한다.</li>
-            <li><strong>페인팅 (Painting)</strong>: 계산된 위치와 크기 정보를 바탕으로 실제 화면에 픽셀을 그리는 작업이다.</li>
-            <li><strong>JavaScript 실행</strong>: JavaScript가 DOM을 조작하여 웹 페이지의 내용을 동적으로 변경하거나 기능을 추가한다.</li>
-        </ol>
-
-        <hr>
-
-        <h2>4. 주요 HTML 태그 목록 및 분류</h2>
-        <p>
-            HTML5에서는 문서의 목적에 맞게 다양한 태그를 제공한다. 다음은 웹 개발에서 자주 사용되는 주요 태그들을 기능별로 분류한 목록이다.
-        </p>
-        <h3>4.1. 문서 구조 및 시맨틱 태그</h3>
-        <ul>
-            <li><code>&lt;header&gt;</code>: 페이지의 머리말이나 탐색 메뉴를 포함한다.</li>
-            <li><code>&lt;nav&gt;</code>: 웹 페이지의 주요 탐색 링크를 포함한다.</li>
-            <li><code>&lt;main&gt;</code>: 문서의 주요 콘텐츠를 포함하며, 페이지당 한 번만 사용해야 한다.</li>
-            <li><code>&lt;article&gt;</code>: 독립적으로 배포되거나 재사용될 수 있는 콘텐츠를 나타낸다 (예: 블로그 게시글).</li>
-            <li><code>&lt;section&gt;</code>: 문서의 독립적인 구획을 나타낸다.</li>
-            <li><code>&lt;aside&gt;</code>: 문서의 주요 콘텐츠와 간접적으로 관련된 콘텐츠를 포함한다. (예: 사이드바).</li>
-            <li><code>&lt;footer&gt;</code>: 페이지의 꼬리말 정보를 담는다.</li>
-        </ul>
-
-        <h3>4.2. 텍스트 콘텐츠 태그</h3>
-        <ul>
-            <li><code>&lt;h1&gt;</code> ~ <code>&lt;h6&gt;</code>: 제목을 나타내는 태그로, 숫자가 작을수록 중요한 제목이다.</li>
-            <li><code>&lt;p&gt;</code>: 하나의 문단을 정의한다.</li>
-            <li><code>&lt;a&gt;</code>: 다른 페이지로 이동하거나 특정 위치로 스크롤하는 <strong>하이퍼링크</strong>를 생성한다.</li>
-            <li><code>&lt;strong&gt;</code>: 텍스트의 중요도를 강조한다. 시각적으로는 굵게 표시된다.</li>
-            <li><code>&lt;em&gt;</code>: 텍스트의 강세를 강조한다. 시각적으로는 기울임꼴로 표시된다.</li>
-            <li><code>&lt;div&gt;</code>: 특별한 의미 없는 일반적인 블록 요소로, 다른 요소를 묶어 스타일을 적용할 때 주로 사용한다.</li>
-            <li><code>&lt;span&gt;</code>: 특별한 의미 없는 일반적인 인라인 요소로, 텍스트의 일부에 스타일을 적용할 때 주로 사용한다.</li>
-        </ul>
-
-        <h3>4.3. 미디어 및 폼 태그</h3>
-        <ul>
-            <li><code>&lt;img&gt;</code>: 웹 페이지에 이미지를 삽입하는 태그이다. <code>src</code> 속성으로 이미지 경로를 지정한다.</li>
-            <li><code>&lt;audio&gt;</code>: 오디오 콘텐츠를 삽입한다.</li>
-            <li><code>&lt;video&gt;</code>: 비디오 콘텐츠를 삽입한다.</li>
-            <li><code>&lt;form&gt;</code>: 사용자 입력을 위한 폼을 생성한다.</li>
-            <li><code>&lt;input&gt;</code>: 사용자로부터 데이터를 입력받는 필드를 생성한다 (텍스트, 비밀번호, 체크박스 등).</li>
-            <li><code>&lt;button&gt;</code>: 클릭 가능한 버튼을 생성한다.</li>
-        </ul>
-
-        <hr>
-
-        <h2>5. HTML의 활용과 미래</h2>
-        <p>
-            HTML은 웹의 가장 근본적인 언어로서 다양한 분야에서 응용된다.
-        </p>
-        <ul>
-            <li><strong>정적 웹페이지 제작</strong>: 가장 기본적인 활용으로, 변경이 거의 없는 간단한 웹 페이지를 만들 때 사용된다.</li>
-            <li><strong>동적 웹 콘텐츠의 기반</strong>: React, Vue와 같은 SPA(Single Page Application) 프레임워크에서 HTML은 컴포넌트의 템플릿 역할을 수행한다.</li>
-            <li><strong>접근성과 웹 표준</strong>: 시맨틱 태그를 사용하여 문서의 의미를 명확히 함으로써, 검색 엔진 최적화(SEO)와 스크린 리더 같은 보조 기술에 도움을 준다.</li>
-        </ul>
-        <div>
-            <span class="chip">구조</span>
-            <span class="chip">브라우저 파싱</span>
-            <span class="chip">태그 분류</span>
-            <span class="chip">응용</span>
+      </style>
+      
+      <div class="blt" data-component="html-tabs">
+        <div class="blt-toolbar" aria-label="HTMLチュートリアル ツールバー">
+          <div class="blt-search"><input type="search" placeholder="チャプターを検索… (links, forms など)" aria-label="タブ検索"></div>
         </div>
-    </div>
-</body>
-</html>
+      
+        <div class="blt-tabs" role="tablist" aria-label="HTMLチュートリアル タブ">
+          <button class="blt-tab is-active" role="tab" aria-selected="true" data-tab="home" aria-controls="blt-home">ホーム</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="intro" aria-controls="blt-intro">はじめに</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="basic" aria-controls="blt-basic">基本</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="elements" aria-controls="blt-elements">要素</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="attributes" aria-controls="blt-attributes">属性</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="headings" aria-controls="blt-headings">見出し</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="paragraphs" aria-controls="blt-paragraphs">段落</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="styles" aria-controls="blt-styles">スタイル</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="links" aria-controls="blt-links">リンク</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="images" aria-controls="blt-images">画像</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="lists" aria-controls="blt-lists">リスト</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="tables" aria-controls="blt-tables">テーブル</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="forms" aria-controls="blt-forms">フォーム</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="semantics" aria-controls="blt-semantics">セマンティクス</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="block-inline" aria-controls="blt-block-inline">ブロック vs インライン</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="id-class" aria-controls="blt-id-class">id vs class</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="head-meta" aria-controls="blt-head-meta">&lt;head&gt; &amp; Meta</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="filepaths" aria-controls="blt-filepaths">ファイルパス</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="entities" aria-controls="blt-entities">文字実体参照 & 絵文字</button>
+          <button class="blt-tab" role="tab" aria-selected="false" data-tab="responsive" aria-controls="blt-responsive">レスポンシブ</button>
+        </div>
+      
+        <div class="blt-panels">
+          <section id="blt-home" class="blt-panel is-active" role="tabpanel">
+            <h2>HTML ホーム</h2>
+            <p>HTMLは、ウェブページの<b>構造</b>と<b>意味</b>を定義するマークアップ言語です。CSS/JSはHTMLの上に構築されます。</p>
+            <pre><code>&lt;!DOCTYPE html&gt;
+      &lt;html lang="ja"&gt;
+      &lt;meta charset="utf-8"&gt;
+      &lt;title&gt;最初のページ&lt;/title&gt;
+      &lt;h1&gt;こんにちは&lt;/h1&gt;
+      &lt;p&gt;HTMLはウェブの設計図です。&lt;/p&gt;</code></pre>
+            <div class="blt-example" data-name="ホームの例">
+              <div class="bar">
+                <div class="title">試してみる</div>
+                <button class="btn run">実行</button>
+                <button class="btn copy">コピー</button>
+              </div>
+              <div class="grid">
+      <textarea>&lt;h1&gt;こんにちは HTML&lt;/h1&gt;
+      &lt;p&gt;これはパネル内で即座に実行されます。&lt;/p&gt;</textarea>
+      <iframe sandbox="allow-scripts"></iframe>
+              </div>
+            </div>
+            <div class="blt-chips">
+              <span class="blt-chip">DOM</span><span class="blt-chip">基本</span><span class="blt-chip">ボイラープレート</span>
+            </div>
+          </section>
+      
+          <section id="blt-intro" class="blt-panel" role="tabpanel">
+            <h2>はじめに</h2>
+            <p class="blt-note">ブラウザはHTMLをパースしてDOMツリーを作成し、CSSを適用してレンダリングツリーを描画します。</p>
+            <ul>
+              <li><b>セマンティック</b>な構造は、SEO/アクセシビリティ/メンテナンスに有利です。</li>
+              <li><b>標準</b>はLiving Standard (WHATWG) に従って更新されます。</li>
+              <li><b>互換性</b>はMDN/Can I useで確認できます。</li>
+            </ul>
+          </section>
+      
+          <section id="blt-basic" class="blt-panel" role="tabpanel">
+            <h2>基本</h2>
+            <ul>
+              <li><code>&lt;!DOCTYPE html&gt;</code>: HTML5の宣言。</li>
+              <li><code>lang</code>, <code>charset</code>, <code>viewport</code>は必須です。</li>
+            </ul>
+            <div class="blt-example" data-name="基本構造">
+              <div class="bar">
+                <div class="title">試してみる</div>
+                <button class="btn run">実行</button>
+                <button class="btn copy">コピー</button>
+              </div>
+              <div class="grid">
+      <textarea>&lt;!DOCTYPE html&gt;
+      &lt;meta charset="utf-8"&gt;
+      &lt;h1&gt;基本構造&lt;/h1&gt;
+      &lt;p&gt;簡単なHTMLでもレンダリングされます。&lt;/p&gt;</textarea>
+      <iframe sandbox="allow-scripts"></iframe>
+              </div>
+            </div>
+          </section>
+      
+          <section id="blt-elements" class="blt-panel" role="tabpanel">
+            <h2>要素</h2>
+            <p>要素 = 開始タグ + 内容 + 終了タグ。空要素には終了タグがありません (例：<code>&lt;img&gt;</code>)。</p>
+            <pre><code>&lt;p&gt;段落&lt;/p&gt;
+      &lt;img src="/path/cat.jpg" alt="猫"&gt;</code></pre>
+          </section>
+      
+          <section id="blt-attributes" class="blt-panel" role="tabpanel">
+            <h2>属性</h2>
+            <pre><code>&lt;a href="/docs" target="_blank" rel="noopener"&gt;ドキュメント&lt;/a&gt;
+      &lt;input type="checkbox" checked&gt; 真偽値属性は値なしで存在すると真</code></pre>
+          </section>
+      
+          <section id="blt-headings" class="blt-panel" role="tabpanel">
+            <h2>見出し</h2>
+            <pre><code>&lt;h1&gt;大見出し&lt;/h1&gt;
+      &lt;h2&gt;中見出し&lt;/h2&gt;
+      &lt;h3&gt;小見出し&lt;/h3&gt;</code></pre>
+          </section>
+      
+          <section id="blt-paragraphs" class="blt-panel" role="tabpanel">
+            <h2>段落</h2>
+            <pre><code>&lt;p&gt;最初の段落&lt;/p&gt;
+      &lt;p&gt;二番目の段落&lt;/p&gt;
+      &lt;hr&gt;
+      &lt;p&gt;三番目&lt;br&gt;改行&lt;/p&gt;</code></pre>
+          </section>
+      
+          <section id="blt-styles" class="blt-panel" role="tabpanel">
+            <h2>スタイル</h2>
+            <pre><code>&lt;p style="color:tomato; font-weight:bold"&gt;警告&lt;/p&gt;</code></pre>
+            <p class="blt-note">インラインスタイルは速いですが、メンテナンス性が低い → CSSを推奨します。</p>
+          </section>
+      
+          <section id="blt-links" class="blt-panel" role="tabpanel">
+            <h2>リンク</h2>
+            <pre><code>&lt;a href="https://example.com" target="_blank" rel="noopener"&gt;外部サイト&lt;/a&gt;
+      &lt;a href="#blt-tables"&gt;同一ドキュメント内移動&lt;/a&gt;</code></pre>
+          </section>
+      
+          <section id="blt-images" class="blt-panel" role="tabpanel">
+            <h2>画像</h2>
+            <pre><code>&lt;img src="/img/photo.jpg" alt="幸せな犬" width="420"&gt;</code></pre>
+            <p class="blt-note"><code>alt</code>はアクセシビリティとSEOの鍵です。</p>
+          </section>
+      
+          <section id="blt-lists" class="blt-panel" role="tabpanel">
+            <h2>リスト</h2>
+            <pre><code>&lt;ul&gt;&lt;li&gt;箇条書き&lt;/li&gt;&lt;li&gt;リスト&lt;/li&gt;&lt;/ul&gt;
+      &lt;ol&gt;&lt;li&gt;番号付き&lt;/li&gt;&lt;li&gt;リスト&lt;/li&gt;&lt;/ol&gt;
+      &lt;dl&gt;&lt;dt&gt;用語&lt;/dt&gt;&lt;dd&gt;説明&lt;/dd&gt;&lt;/dl&gt;</code></pre>
+          </section>
+      
+          <section id="blt-tables" class="blt-panel" role="tabpanel">
+            <h2>テーブル</h2>
+            <pre><code>&lt;table&gt;
+        &lt;caption&gt;月別売上&lt;/caption&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th&gt;月&lt;/th&gt;&lt;th&gt;売上&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody&gt;
+          &lt;tr&gt;&lt;td&gt;1月&lt;/td&gt;&lt;td&gt;100&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;2月&lt;/td&gt;&lt;td&gt;150&lt;/td&gt;&lt;/tr&gt;
+        &lt;/tbody&gt;
+      &lt;/table&gt;</code></pre>
+          </section>
+      
+          <section id="blt-forms" class="blt-panel" role="tabpanel">
+            <h2>フォーム</h2>
+            <pre><code>&lt;form action="/submit" method="post"&gt;
+        &lt;label for="email"&gt;Eメール&lt;/label&gt;
+        &lt;input id="email" name="email" type="email" required&gt;
+        &lt;button type="submit"&gt;送信&lt;/button&gt;
+      &lt;/form&gt;</code></pre>
+            <p class="blt-note"><code>label[for]</code> ↔ <code>input[id]</code> の紐付けはアクセシビリティに必須です。</p>
+          </section>
+      
+          <section id="blt-semantics" class="blt-panel" role="tabpanel">
+            <h2>セマンティクス</h2>
+            <pre><code>&lt;header&gt;ヘッダー&lt;/header&gt;
+      &lt;nav&gt;ナビ&lt;/nav&gt;
+      &lt;main&gt;&lt;article&gt;記事&lt;/article&gt;&lt;/main&gt;
+      &lt;aside&gt;サイドバー&lt;/aside&gt;
+      &lt;footer&gt;フッター&lt;/footer&gt;</code></pre>
+          </section>
+      
+          <section id="blt-block-inline" class="blt-panel" role="tabpanel">
+            <h2>ブロック vs インライン</h2>
+            <ul>
+              <li><b>ブロック (Block)</b>: 1行全体を占有します (例：<code>div, p, h1</code>)。</li>
+              <li><b>インライン (Inline)</b>: 内容分の幅だけ占有します (例：<code>span, a, img</code>)。</li>
+            </ul>
+          </section>
+      
+          <section id="blt-id-class" class="blt-panel" role="tabpanel">
+            <h2>id vs class</h2>
+            <pre><code>&lt;div id="hero"&gt;固有、ページに1つだけ&lt;/div&gt;
+      &lt;div class="tag"&gt;複数の要素で共通&lt;/div&gt;</code></pre>
+          </section>
+      
+          <section id="blt-head-meta" class="blt-panel" role="tabpanel">
+            <h2>&lt;head&gt; &amp; Meta</h2>
+            <pre><code>&lt;meta name="description" content="要約"&gt;
+      &lt;meta property="og:title" content="SNSのタイトル"&gt;
+      &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</code></pre>
+          </section>
+      
+          <section id="blt-filepaths" class="blt-panel" role="tabpanel">
+            <h2>ファイルパス</h2>
+            <pre><code>./img/cat.jpg    (現在のフォルダ)
+      ../assets/a.js  (親フォルダ)
+      https://cdn.example.com/lib.css (絶対パス)</code></pre>
+          </section>
+      
+          <section id="blt-entities" class="blt-panel" role="tabpanel">
+            <h2>文字実体参照 & 絵文字</h2>
+            <pre><code>&amp;lt; &amp;gt; &amp;amp; &amp;nbsp;
+      😀 😍 👍 — UTF-8が指定されていれば、そのまま使えます。</code></pre>
+          </section>
+      
+          <section id="blt-responsive" class="blt-panel" role="tabpanel">
+            <h2>レスポンシブ</h2>
+            <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></pre>
+            <p class="blt-note">パネルは高さのみ変更すればよいので、横幅は既存のレイアウトに従います。</p>
+          </section>
+        </div>
+      </div>
+      
+      <script>
+      /* ===== panel-safe init (no globals) ===== */
+      (function(){
+        const root = document.querySelector('.blt[data-component="html-tabs"]');
+        if(!root) return;
+      
+        const tabs   = Array.from(root.querySelectorAll('.blt-tab'));
+        const panels = Array.from(root.querySelectorAll('.blt-panel'));
+        const search = root.querySelector('.blt-search input');
+        const LS_KEY = 'blt:html:last:' + location.pathname;
+      
+        function openTab(id, remember=true){
+          panels.forEach(p => p.classList.toggle('is-active', p.id === 'blt-' + id));
+          tabs.forEach(t => {
+            const on = t.dataset.tab === id;
+            t.classList.toggle('is-active', on);
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+            if(on) t.scrollIntoView({block:'nearest', inline:'nearest'});
+          });
+          if(remember){ try{ localStorage.setItem(LS_KEY, id); }catch(e){} }
+        }
+      
+        tabs.forEach(t=>{
+          t.addEventListener('click', ()=> openTab(t.dataset.tab));
+          t.addEventListener('keydown', (e)=>{
+            if(e.key==='Enter' || e.key===' ') { e.preventDefault(); openTab(t.dataset.tab); }
+            if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
+              const dir = e.key==='ArrowRight' ? 1 : -1;
+              const i = tabs.indexOf(t);
+              const next = tabs[(i+dir+tabs.length)%tabs.length];
+              next.focus();
+            }
+          });
+        });
+      
+        // Restore last tab
+        const last = (()=>{
+          try{ return localStorage.getItem(LS_KEY) }catch(e){ return null }
+        })();
+        if(last && root.querySelector('#blt-' + last)) openTab(last, false);
+        else openTab('home', false);
+      
+        // Filter tabs
+        function applyFilter(){
+          const q = (search.value||'').trim().toLowerCase();
+          tabs.forEach(t=>{
+            const show = t.textContent.toLowerCase().includes(q);
+            t.style.display = show ? '' : 'none';
+          });
+        }
+        search.addEventListener('input', applyFilter);
+      
+        // Example runner + copy (scoped)
+        root.querySelectorAll('.blt-example').forEach(box=>{
+          const ta   = box.querySelector('textarea');
+          const frame= box.querySelector('iframe');
+          const run  = box.querySelector('.btn.run');
+          const copy = box.querySelector('.btn.copy');
+      
+          function doRun(){
+            const doc = frame.contentDocument || frame.contentWindow.document;
+            doc.open(); doc.write(ta.value); doc.close();
+          }
+          run.addEventListener('click', doRun);
+          setTimeout(doRun, 0);
+      
+          copy.addEventListener('click', async ()=>{
+            try{ await navigator.clipboard.writeText(ta.value);
+              copy.textContent = 'コピーしました'; setTimeout(()=>copy.textContent='コピー', 1200);
+            }catch(e){ alert('コピーに失敗しました：' + e); }
+          });
+        });
+      })();
+      </script>
