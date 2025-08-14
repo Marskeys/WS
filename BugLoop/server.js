@@ -190,7 +190,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     merged.search   = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
     merged.profile  = { 'profile-name': '', 'profile-bio': '', 'profile-tags': [], ...(merged.profile || {}) };
     merged.tabs     = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-    // ✅ table.ejs 헤더 키 기본값 보강
+    // ✅ table.ejs에서 필요한 헤더 키 기본값 보강
     merged.tableHeaders = {
       number: '번호',
       title: '제목',
@@ -250,7 +250,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       return p;
     });
 
-    // ✅ 핵심: 모든 글에 translated_categories_display 부착
+    // ✅ 모든 글에 translated_categories_display 부착 (공용 헬퍼 사용)
     const postsWithCats = await attachTranslatedCategoriesToPosts(filteredPosts, safeLang);
     res.locals.posts = postsWithCats;
 
@@ -312,6 +312,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     return res.status(500).send('서버 오류');
   }
 });
+
 
 
 
