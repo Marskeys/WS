@@ -121,19 +121,24 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     const { lang, section, topic } = req.params;
 
     // 공통 locals
-    res.locals.lang = res.locals.lang || lang;          // 미들웨어에서 세팅된 값 우선
+    res.locals.lang = res.locals.lang || lang;
     res.locals.currentPath = req.path;
-    res.locals.user = req.session?.user || req.user || null;
-    // locale은 기존 미들웨어에서 넣어준 res.locals.locale 그대로 사용
 
-    // ✅ index / editor와 동일한 사이드바 데이터 구성 로직
-    const safeLang = res.locals.lang;                   // 네 코드가 이렇게 씀
+    // ✅ 세션/유저 안전하게 추출
+    const sessionUser = req.session?.user;
+    const currentUser = sessionUser || req.user || null;
+    res.locals.user = currentUser;
+
+    // locale은 기존 미들웨어 값 사용(없으면 빈 객체)
+    res.locals.locale = res.locals.locale || {};
+
+    // 사이드바용 데이터 (index/editor와 동일 로직)
+    const safeLang = res.locals.lang;
     const categoryQueryParam = req.query.category || 'all';
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
 
-    // 게시글 목록 쿼리 (네 파일의 baseQuery 패턴과 동일)
     let postsBaseQuery = `
       SELECT
           p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
@@ -150,7 +155,6 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     const postsQueryParams = [safeLang];
     const postsCountParams = [];
 
-    // 카테고리 필터 (원본 카테고리명 기준)
     if (categoryQueryParam !== 'all') {
       postsBaseQuery  += ` WHERE FIND_IN_SET(?, p.categories)`;
       postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
@@ -164,12 +168,11 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     `;
     postsQueryParams.push(limit, offset);
 
-    // 쿼리 실행
     const [postRows] = await db.query(postsBaseQuery, postsQueryParams);
 
-    // 비공개 필터링(네 코드 방식과 동일)
-    const userId = req.session.user?.id;
-    const isAdmin = req.session.user?.is_admin === 1;
+    // ✅ 비공개 필터링: 세션 없을 때도 안전
+    const userId  = currentUser?.id || null;
+    const isAdmin = currentUser?.is_admin === 1;
     const filteredPosts = postRows.map(post => {
       if (post.is_private && post.user_id !== userId && !isAdmin) {
         return { ...post, content: '이 글은 비공개로 설정되어 있습니다.' };
@@ -177,12 +180,12 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       return post;
     });
 
-    // 전체 개수 → 페이지네이션
+    // 페이지네이션
     const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
 
-    // 카테고리 목록(원본+번역) — 네가 쓰는 numbers 테이블 기법 그대로
+    // 카테고리(원본+번역)
     const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
     const [allCategoryRows] = await db.query(`
       SELECT
@@ -209,14 +212,13 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       translated: row.translated_category_name
     }));
 
-    // 선택 카테고리 번역 이름
     let translatedSelectedCategory = null;
     if (categoryQueryParam !== 'all') {
       const found = allCategories.find(cat => cat.original === categoryQueryParam);
       if (found) translatedSelectedCategory = found.translated;
     }
 
-    // EJS에 넣는 값들 (index.ejs / table.ejs가 기대하는 키 그대로)
+    // EJS에서 기대하는 키 전부 세팅
     res.locals.posts = filteredPosts;
     res.locals.categories = allCategories;
     res.locals.isSearch = false;
@@ -229,11 +231,11 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       range: paginationRange
     };
 
-    // 패널 데이터(네가 이미 쓰고 있던 함수 유지)
+    // 패널 데이터
     const panelData = buildPanel({ lang: safeLang, section, topic });
     res.locals.panelData = panelData;
 
-    // partial 또는 전체 렌더
+    // 렌더
     if (req.query.partial === '1') {
       return res.render('partials/panel');
     }
@@ -244,6 +246,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     return res.status(500).send('서버 오류');
   }
 });
+
 
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
