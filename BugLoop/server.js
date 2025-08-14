@@ -153,77 +153,81 @@ function buildPanel({ lang, section, topic }) {
 }
 
 // 패널 전용 URL (SSR 전체 or partial)
-app.get('/:lang/:section/:topic', async (req, res, next) => {
-  const { lang, section, topic } = req.params;
-
-  // ✅ if this is actually a post detail path, do not handle here; pass to next routes
-  if (section === 'post' && /^\d+$/.test(topic)) {
-    return next();
-  }
-
-  // ★ 기본 locals 설정
-  res.locals.lang = lang;
-  res.locals.currentPath = req.path;
-
-  // ★ 공통 데이터 세팅
-  res.locals.user = (req.session && req.session.user) || req.user || null;
-  res.locals.locale = mergeLocaleWithDefaults(lang);
-
-  // ✅ 사이드바 탭(검색/프로필)이 안전하게 렌더되도록 posts 제공 (간단 목록)
+app.get('/:section/:topic', async (req, res, next) => {
   try {
-    const [postRows] = await db.query(`
-      SELECT
-        p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
-        p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-        COALESCE(pt.title, p.title) AS title,
-        COALESCE(pt.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt
-        ON p.id = pt.post_id AND pt.lang_code = ?
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-      LIMIT 10`, [lang]);
+    const { section, topic } = req.params;
+    const lang = res.locals.lang;
 
-    // 비공개 마스킹
-    const u = res.locals.user;
-    const uid = u?.id || null;
-    const isAdmin = u?.is_admin === 1;
-    const masked = postRows.map(p => {
-      if (p.is_private && p.user_id !== uid && !isAdmin) {
-        return { ...p, content: '이 글은 비공개로 설정되어 있습니다.' };
-      }
-      return p;
-    });
-
-    // 카테고리 번역 이름 붙이기
-    const catCol = (lang === 'ko') ? 'name' : `name_${lang}`;
-    for (const p of masked) {
-      const arr = (p.categories || '').split(',').map(s => s.trim()).filter(Boolean);
-      if (arr.length === 0) { p.translated_categories_display = []; continue; }
-      const placeholders = arr.map(() => '?').join(',');
-      const [names] = await db.query(`SELECT COALESCE(${catCol}, name) AS name FROM categories WHERE name IN (${placeholders})`, arr);
-      p.translated_categories_display = names.map(r => r.name);
+    // ✅ post 상세는 패널이 처리하지 않음 → 아래 /post/:id 라우트로 넘김
+    if (section === 'post' && /^\d+$/.test(topic)) {
+      return next();
     }
 
-    res.locals.posts = masked;
-  } catch (e) {
-    console.error('[panel posts] error:', e?.message || e);
-    res.locals.posts = [];
+    // (선택) 사이드바 검색 탭에서 보여줄 간단 목록 10개
+    // 이미 넣어두셨으면 이 블록은 유지/생략 아무거나 OK
+    let masked = [];
+    try {
+      const [postRows] = await db.query(`
+        SELECT p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
+               p.is_private, p.is_pinned, IFNULL(p.views,0) AS views,
+               COALESCE(pt.title, p.title)   AS title,
+               COALESCE(pt.content, p.content) AS content
+        FROM posts p
+        LEFT JOIN post_translations pt
+          ON p.id = pt.post_id AND pt.lang_code = ?
+        ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+        LIMIT 10
+      `, [lang]);
+
+      const u = res.locals.user, uid = u?.id || null, isAdmin = u?.is_admin === 1;
+      masked = postRows.map(p => (p.is_private && p.user_id !== uid && !isAdmin)
+        ? { ...p, content: '이 글은 비공개로 설정되어 있습니다.' }
+        : p);
+
+      // translated_categories_display 안전 부착
+      const col = lang === 'ko' ? 'name' : `name_${lang}`;
+      for (const p of masked) {
+        const arr = (p.categories || '').split(',').map(s => s.trim()).filter(Boolean);
+        if (arr.length === 0) { p.translated_categories_display = []; continue; }
+        const placeholders = arr.map(()=>'?').join(',');
+        const [names] = await db.query(
+          `SELECT COALESCE(${col}, name) AS name FROM categories WHERE name IN (${placeholders})`, arr
+        );
+        p.translated_categories_display = names.map(r => r.name);
+      }
+
+      // 👉 posts를 세팅하면 header.ejs가 table.ejs를 include하므로,
+      //    table.ejs가 필요로 하는 모든 변수의 "안전 기본값"을 같이 넣는다!
+      res.locals.posts = masked;
+      res.locals.isSearch = false;
+      res.locals.searchKeyword = '';
+      res.locals.selectedCategory = null;
+      res.locals.pagination = { current: 1, total: 1, range: [1] };
+      res.locals.categories = []; // 필요시 진짜 카테고리 목록으로 교체 가능
+    } catch (e) {
+      console.error('[panel posts] error:', e?.message || e);
+      // 그래도 안전 기본값은 넣어줌
+      res.locals.posts = [];
+      res.locals.isSearch = false;
+      res.locals.searchKeyword = '';
+      res.locals.selectedCategory = null;
+      res.locals.pagination = { current: 1, total: 1, range: [1] };
+      res.locals.categories = [];
+    }
+
+    // 패널 HTML 로드
+    const panelData = buildPanel({ lang, section, topic });
+    res.locals.panelData = panelData;
+    res.locals.currentPath = `/${lang}/${section}/${topic}`;
+
+    if (req.query.partial === '1') {
+      return res.render('partials/panel');
+    }
+    return res.render('index');
+  } catch (err) {
+    console.error('패널 라우트 오류:', err);
+    return res.status(500).send('서버 오류');
   }
-
-  res.locals.isSearch = false;
-  res.locals.searchKeyword = '';
-
-  // ★ 기존 panelData 로직
-  const panelData = buildPanel({ lang, section, topic });
-  res.locals.panelData = panelData;
-
-  // partial 요청이면 panel.ejs만 렌더
-  if (req.query.partial === '1') {
-    return res.render('partials/panel');
-  }
-
-  // 전체 페이지 렌더
-  return res.render('index');
 });
 
 // 미들웨어 설정
