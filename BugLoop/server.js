@@ -148,58 +148,17 @@ async function handlePanelRoute(req, res, next) {
       return next();
     }
 
-    // (선택) 사이드바 검색 탭에서 보여줄 간단 목록 10개
-    let masked = [];
-    try {
-      const [postRows] = await db.query(`
-        SELECT p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
-               p.is_private, p.is_pinned, IFNULL(p.views,0) AS views,
-               COALESCE(pt.title, p.title)   AS title,
-               COALESCE(pt.content, p.content) AS content
-        FROM posts p
-        LEFT JOIN post_translations pt
-          ON p.id = pt.post_id AND pt.lang_code = ?
-        ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-        LIMIT 10
-      `, [lang]);
-
-      const u = res.locals.user, uid = u?.id || null, isAdmin = u?.is_admin === 1;
-      masked = postRows.map(p => (p.is_private && p.user_id !== uid && !isAdmin)
-        ? { ...p, content: '이 글은 비공개로 설정되어 있습니다.' }
-        : p);
-
-      // translated_categories_display 안전 부착
-      const col = lang === 'ko' ? 'name' : `name_${lang}`;
-      for (const p of masked) {
-        const arr = (p.categories || '').split(',').map(s => s.trim()).filter(Boolean);
-        if (arr.length === 0) { p.translated_categories_display = []; continue; }
-        const placeholders = arr.map(() => '?').join(',');
-        const [names] = await db.query(
-          `SELECT COALESCE(${col}, name) AS name FROM categories WHERE name IN (${placeholders})`, arr
-        );
-        p.translated_categories_display = names.map(r => r.name);
-      }
-
-      res.locals.posts = masked;
-      res.locals.isSearch = false;
-      res.locals.searchKeyword = '';
-      res.locals.selectedCategory = null;
-      res.locals.pagination = { current: 1, total: 1, range: [1] };
-      res.locals.categories = [];
-    } catch (e) {
-      console.error('[panel posts] error:', e?.message || e);
-      res.locals.posts = [];
-      res.locals.isSearch = false;
-      res.locals.searchKeyword = null;
-      res.locals.selectedCategory = null;
-      res.locals.pagination = { current: 1, total: 1, range: [1] };
-      res.locals.categories = [];
-    }
+    // 💡 getSidebarData를 호출하여 사이드바 데이터를 일관되게 가져옵니다.
+    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
 
     const panelData = buildPanel({ lang, section, topic });
     res.locals.panelData = panelData;
-    res.locals.currentPath = `/${lang}/${section}/${topic}`;
-    res.locals.locale = mergeLocaleWithDefaults(lang);
+    res.locals.posts = postsForSidebar;
+    res.locals.categories = allCategories; // 💡 카테고리 데이터 추가
+    res.locals.selectedCategory = translatedSelectedCategory;
+    res.locals.pagination = { current: 1, total: 1, range: [1] }; // 패널 페이지는 고정된 값 사용
+    res.locals.isSearch = false;
+    res.locals.searchKeyword = '';
 
     const wantsPartial =
       (typeof req.query.partial !== 'undefined' &&
