@@ -119,54 +119,76 @@ function buildPanel({ lang, section, topic }) {
 app.get('/:lang/:section/:topic', async (req, res) => {
   try {
     const { lang, section, topic } = req.params;
-    const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
 
-    res.locals.lang = lang;
+    // 공통 locals
+    res.locals.lang = res.locals.lang || lang;          // 미들웨어에서 세팅된 값 우선
     res.locals.currentPath = req.path;
-    res.locals.user = req.user || req.session?.user || null;
-    res.locals.locale = allLocales[lang] || {};
+    res.locals.user = req.session?.user || req.user || null;
+    // locale은 기존 미들웨어에서 넣어준 res.locals.locale 그대로 사용
 
-    // 카테고리 파라미터
+    // ✅ index / editor와 동일한 사이드바 데이터 구성 로직
+    const safeLang = res.locals.lang;                   // 네 코드가 이렇게 씀
     const categoryQueryParam = req.query.category || 'all';
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
 
-    // --- postsBaseQuery (index 라우트와 동일) ---
+    // 게시글 목록 쿼리 (네 파일의 baseQuery 패턴과 동일)
     let postsBaseQuery = `
       SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
+          p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+          COALESCE(pt_req.title, pt_ko.title, p.title)   AS title,
           COALESCE(pt_req.content, pt_ko.content, p.content) AS content
       FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      LEFT JOIN post_translations pt_req
+        ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko
+        ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
     `;
-    let postsCountQuery = `SELECT COUNT(*) as count FROM posts`;
+    let postsCountQuery = `SELECT COUNT(*) AS count FROM posts`;
     const postsQueryParams = [safeLang];
     const postsCountParams = [];
 
+    // 카테고리 필터 (원본 카테고리명 기준)
     if (categoryQueryParam !== 'all') {
-      postsBaseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
+      postsBaseQuery  += ` WHERE FIND_IN_SET(?, p.categories)`;
       postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
       postsQueryParams.push(categoryQueryParam);
       postsCountParams.push(categoryQueryParam);
     }
 
-    postsBaseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
+    postsBaseQuery += `
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
+    `;
     postsQueryParams.push(limit, offset);
 
-    // 게시글 목록
+    // 쿼리 실행
     const [postRows] = await db.query(postsBaseQuery, postsQueryParams);
-    res.locals.posts = postRows;
 
-    // --- categories (index 라우트와 동일) ---
-    const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    // 비공개 필터링(네 코드 방식과 동일)
+    const userId = req.session.user?.id;
+    const isAdmin = req.session.user?.is_admin === 1;
+    const filteredPosts = postRows.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return { ...post, content: '이 글은 비공개로 설정되어 있습니다.' };
+      }
+      return post;
+    });
+
+    // 전체 개수 → 페이지네이션
+    const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
+    const totalPages = Math.ceil(count / limit);
+    const paginationRange = generatePagination(page, totalPages);
+
+    // 카테고리 목록(원본+번역) — 네가 쓰는 numbers 테이블 기법 그대로
+    const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
     const [allCategoryRows] = await db.query(`
       SELECT
         TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
         MAX(p.created_at) AS latest,
-        COALESCE(c.${categoryColumn}, c.name) AS translated_category_name
+        COALESCE(c.${categoryColumnForDisplay}, c.name) AS translated_category_name
       FROM posts p
       JOIN (
         SELECT a.N + b.N * 10 + 1 AS n
@@ -175,8 +197,9 @@ app.get('/:lang/:section/:topic', async (req, res) => {
              (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
               UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
       ) numbers
-      ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
-      JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
+        ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
+      JOIN categories c
+        ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
       GROUP BY original_category, translated_category_name
       ORDER BY latest DESC
     `);
@@ -185,33 +208,40 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       original: row.original_category,
       translated: row.translated_category_name
     }));
-    res.locals.categories = allCategories;
 
-    // 선택된 카테고리 번역
+    // 선택 카테고리 번역 이름
     let translatedSelectedCategory = null;
     if (categoryQueryParam !== 'all') {
-      const foundCategory = allCategories.find(cat => cat.original === categoryQueryParam);
-      if (foundCategory) {
-        translatedSelectedCategory = foundCategory.translated;
-      }
+      const found = allCategories.find(cat => cat.original === categoryQueryParam);
+      if (found) translatedSelectedCategory = found.translated;
     }
-    res.locals.selectedCategory = translatedSelectedCategory;
 
+    // EJS에 넣는 값들 (index.ejs / table.ejs가 기대하는 키 그대로)
+    res.locals.posts = filteredPosts;
+    res.locals.categories = allCategories;
     res.locals.isSearch = false;
     res.locals.searchKeyword = '';
+    res.locals.selectedCategory = translatedSelectedCategory;
+    res.locals.lang = safeLang;
+    res.locals.pagination = {
+      current: page,
+      total: totalPages,
+      range: paginationRange
+    };
 
-    // panelData
-    const panelData = buildPanel({ lang, section, topic });
+    // 패널 데이터(네가 이미 쓰고 있던 함수 유지)
+    const panelData = buildPanel({ lang: safeLang, section, topic });
     res.locals.panelData = panelData;
 
+    // partial 또는 전체 렌더
     if (req.query.partial === '1') {
       return res.render('partials/panel');
     }
     return res.render('index');
 
   } catch (err) {
-    console.error('패널 로드 오류:', err);
-    res.status(500).send('패널 로드 중 오류 발생');
+    console.error('패널 라우트 오류:', err);
+    return res.status(500).send('서버 오류');
   }
 });
 
