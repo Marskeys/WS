@@ -125,7 +125,22 @@ app.get('/:lang/:section/:topic', async (req, res) => {
   res.locals.user = req.user || req.session?.user || null;
   res.locals.locale = allLocales[lang] || {};
 
-  // ✅ 기존 방식 그대로 posts 불러오기
+  // safeLang 설정
+  const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
+
+  // ✅ 기존 postsBaseQuery 그대로 사용
+  const postsBaseQuery = `
+    SELECT
+        p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+        COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+        COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+    FROM posts p
+    LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+    LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+    ORDER BY p.created_at DESC
+  `;
+  const postsQueryParams = [safeLang];
+
   const [posts] = await db.query(postsBaseQuery, postsQueryParams);
   res.locals.posts = posts;
 
