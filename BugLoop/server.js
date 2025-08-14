@@ -9,6 +9,43 @@ const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 const app = express();
 const PORT = process.env.PORT || 3002;
 const allLocales = require('./locales/all.json');
+// === Helper: merge locale with safe defaults ===
+function mergeLocaleWithDefaults(lang) {
+  const base = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
+  const cur  = (allLocales && allLocales[lang]) ? allLocales[lang] : {};
+  const merged = { ...base, ...cur };
+  merged.search = {
+    placeholder: '검색어를 입력하세요',
+    resultsFor: '"%s" 검색결과',
+    ...(merged.search || {})
+  };
+  merged.profile = {
+    'profile-name': '',
+    'profile-bio': '',
+    'profile-tags': [],
+    ...(merged.profile || {})
+  };
+  merged.tabs = {
+    allPosts: '전체글',
+    searchResults: '검색결과',
+    ...(merged.tabs || {})
+  };
+  merged.tableHeaders = {
+    number:   '번호',
+    title:    '제목',
+    author:   '작성자',
+    category: '카테고리',
+    date:     '작성일',
+    views:    '조회수',
+    ...(merged.tableHeaders || {})
+  };
+  merged.ui = {
+    tocButton: '목차',
+    ...(merged.ui || {})
+  };
+  return merged;
+}
+
 const { map: slugMap } = require('./slugMap');
 
 app.use((req, res, next) => {
@@ -116,23 +153,63 @@ function buildPanel({ lang, section, topic }) {
 }
 
 // 패널 전용 URL (SSR 전체 or partial)
-app.get('/:lang/:section/:topic', async (req, res) => {
+app.get('/:lang/:section/:topic', async (req, res, next) => {
   const { lang, section, topic } = req.params;
-  // 🚫 보호막: post 상세는 패널이 처리하지 않도록 전체 페이지로 리다이렉트
-  if (section === 'post' && /^\d+$/.test(String(topic))) {
-    const target = `/${lang}/post/${topic}`;
-    return res.redirect(302, target);
-  }
 
+  // ✅ if this is actually a post detail path, do not handle here; pass to next routes
+  if (section === 'post' && /^\d+$/.test(topic)) {
+    return next();
+  }
 
   // ★ 기본 locals 설정
   res.locals.lang = lang;
   res.locals.currentPath = req.path;
 
   // ★ 공통 데이터 세팅
-  res.locals.user = req.user || null;
-  res.locals.locale = allLocales[lang] || {};
-  res.locals.posts = await getPostsForUser(req.user); // 네가 쓰는 함수로 교체
+  res.locals.user = (req.session && req.session.user) || req.user || null;
+  res.locals.locale = mergeLocaleWithDefaults(lang);
+
+  // ✅ 사이드바 탭(검색/프로필)이 안전하게 렌더되도록 posts 제공 (간단 목록)
+  try {
+    const [postRows] = await db.query(`
+      SELECT
+        p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
+        p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+        COALESCE(pt.title, p.title) AS title,
+        COALESCE(pt.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt
+        ON p.id = pt.post_id AND pt.lang_code = ?
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT 10`, [lang]);
+
+    // 비공개 마스킹
+    const u = res.locals.user;
+    const uid = u?.id || null;
+    const isAdmin = u?.is_admin === 1;
+    const masked = postRows.map(p => {
+      if (p.is_private && p.user_id !== uid && !isAdmin) {
+        return { ...p, content: '이 글은 비공개로 설정되어 있습니다.' };
+      }
+      return p;
+    });
+
+    // 카테고리 번역 이름 붙이기
+    const catCol = (lang === 'ko') ? 'name' : `name_${lang}`;
+    for (const p of masked) {
+      const arr = (p.categories || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (arr.length === 0) { p.translated_categories_display = []; continue; }
+      const placeholders = arr.map(() => '?').join(',');
+      const [names] = await db.query(`SELECT COALESCE(${catCol}, name) AS name FROM categories WHERE name IN (${placeholders})`, arr);
+      p.translated_categories_display = names.map(r => r.name);
+    }
+
+    res.locals.posts = masked;
+  } catch (e) {
+    console.error('[panel posts] error:', e?.message || e);
+    res.locals.posts = [];
+  }
+
   res.locals.isSearch = false;
   res.locals.searchKeyword = '';
 
@@ -177,7 +254,7 @@ app.use((req, res, next) => {
     res.locals.lang = 'ko'; // 기본 언어
   }
 
-  res.locals.locale = allLocales[res.locals.lang] || allLocales['ko'];
+  res.locals.locale = mergeLocaleWithDefaults(res.locals.lang);
 
   res.locals.supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
   next();
@@ -853,21 +930,6 @@ app.get('/post/:id', async (req, res) => {
   try {
     const postId = req.params.id;
     const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
-    {
-      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
-      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
-      const merged    = { ...koBase, ...curLocale };
-      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-      merged.tableHeaders = {
-        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
-        ...(merged.tableHeaders || {})
-      };
-      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
-      res.locals.locale = merged;
-    }
-
 
     // 조회수 중복 방지용 세션 초기화
     if (!req.session.viewedPosts) {
@@ -1083,21 +1145,6 @@ app.get('/post/:id', async (req, res) => {
 // 카테고리 전체 가져오기 API (기존과 동일하지만, DB 쿼리에서 lang을 사용)
 app.get('/api/categories', async (req, res) => {
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
-    {
-      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
-      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
-      const merged    = { ...koBase, ...curLocale };
-      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-      merged.tableHeaders = {
-        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
-        ...(merged.tableHeaders || {})
-      };
-      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
-      res.locals.locale = merged;
-    }
-
   const column = (safeLang === 'ko') ? 'name' : `COALESCE(name_${safeLang}, '')`;
 
   try {
@@ -1156,22 +1203,7 @@ app.get('/search', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
-    {
-      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
-      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
-      const merged    = { ...koBase, ...curLocale };
-      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-      merged.tableHeaders = {
-        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
-        ...(merged.tableHeaders || {})
-      };
-      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
-      res.locals.locale = merged;
-    }
-
+  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용 및 오타 수정
 
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -1285,21 +1317,6 @@ app.get('/api/search', async (req, res) => {
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
-    {
-      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
-      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
-      const merged    = { ...koBase, ...curLocale };
-      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-      merged.tableHeaders = {
-        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
-        ...(merged.tableHeaders || {})
-      };
-      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
-      res.locals.locale = merged;
-    }
-
 
   try {
     // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
@@ -1390,21 +1407,6 @@ app.get('/', async (req, res) => {
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
-    {
-      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
-      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
-      const merged    = { ...koBase, ...curLocale };
-      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-      merged.tableHeaders = {
-        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
-        ...(merged.tableHeaders || {})
-      };
-      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
-      res.locals.locale = merged;
-    }
-
 
   try {
     let baseQuery = `
