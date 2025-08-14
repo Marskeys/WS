@@ -38,19 +38,6 @@
         .blt pre{background:var(--code); border:1px solid var(--code-br); border-radius:10px; padding:12px; overflow:auto; margin:8px 0}
         .blt code{font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; color:#ffcc80}
       
-        /* Example runner */
-        .blt .blt-example{border:1px solid var(--code-br); border-radius:10px; overflow:hidden; margin:10px 0}
-        .blt .blt-example .bar{display:flex; gap:8px; align-items:center; padding:8px; background:#0a0a0a; border-bottom:1px solid var(--code-br)}
-        .blt .blt-example .title{font-weight:800; color:#e5e7eb; font-size:12px; flex:1}
-        .blt .blt-example .btn{border:0; background:#374151; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer}
-        .blt .blt-example .btn.run{background:var(--brand)}
-        .blt .blt-example .grid{display:grid; grid-template-columns:1fr 1fr}
-        .blt .blt-example textarea{
-          width:100%; min-height:150px; background:#0c0c0c; color:#e5e7eb; border:0; border-right:1px solid var(--code-br);
-          padding:10px; font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; outline:none; resize:vertical
-        }
-        .blt .blt-example iframe{width:100%; min-height:150px; border:0; background:#fff}
-      
         /* Chips */
         .blt .blt-chips{margin-top:6px}
         .blt .blt-chip{display:inline-block; padding:4px 8px; border:1px solid #333; background:#161616; color:#ddd; border-radius:999px; font-size:11px; margin:4px 6px 0 0}
@@ -99,18 +86,6 @@
       &lt;title&gt;我的第一页&lt;/title&gt;
       &lt;h1&gt;你好&lt;/h1&gt;
       &lt;p&gt;HTML是网页的蓝图。&lt;/p&gt;</code></pre>
-            <div class="blt-example" data-name="主页示例">
-              <div class="bar">
-                <div class="title">试一试</div>
-                <button class="btn run">运行</button>
-                <button class="btn copy">复制</button>
-              </div>
-              <div class="grid">
-      <textarea>&lt;h1&gt;你好 HTML&lt;/h1&gt;
-      &lt;p&gt;这将在面板内立即运行。&lt;/p&gt;</textarea>
-      <iframe sandbox="allow-scripts"></iframe>
-              </div>
-            </div>
             <div class="blt-chips">
               <span class="blt-chip">DOM</span><span class="blt-chip">基础</span><span class="blt-chip">样板代码</span>
             </div>
@@ -132,20 +107,10 @@
               <li><code>&lt;!DOCTYPE html&gt;</code>: HTML5声明。</li>
               <li><code>lang</code>, <code>charset</code>, <code>viewport</code>是必须的。</li>
             </ul>
-            <div class="blt-example" data-name="基础结构">
-              <div class="bar">
-                <div class="title">试一试</div>
-                <button class="btn run">运行</button>
-                <button class="btn copy">复制</button>
-              </div>
-              <div class="grid">
-      <textarea>&lt;!DOCTYPE html&gt;
+            <pre><code>&lt;!DOCTYPE html&gt;
       &lt;meta charset="utf-8"&gt;
       &lt;h1&gt;基础结构&lt;/h1&gt;
-      &lt;p&gt;简单的HTML也能渲染。&lt;/p&gt;</textarea>
-      <iframe sandbox="allow-scripts"></iframe>
-              </div>
-            </div>
+      &lt;p&gt;简单的HTML也能渲染。&lt;/p&gt;</code></pre>
           </section>
       
           <section id="blt-elements" class="blt-panel" role="tabpanel">

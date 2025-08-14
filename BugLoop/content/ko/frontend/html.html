@@ -1,20 +1,14 @@
-<!-- ▼▼ panel.ejs 안, panel-card 내부에 그대로 붙여넣기 ▼▼ -->
 <style>
-/* ===== Scoped to .blt (panel-safe) ===== */
-.blt{--brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae; --code:#0f0f0f; --code-br:rgba(255,255,255,.12)}
-.blt *{box-sizing:border-box}
-.blt .blt-toolbar{display:flex; gap:8px; align-items:center; margin-bottom:10px}
-
-/* ▼ 여기만 변경: 데스크톱에선 220px로 줄이고, 모바일에선 100% */
-.blt .blt-search{flex:0 0 220px; min-width:160px;}
-.blt .blt-search input{
-  width:100%; padding:8px 10px; border-radius:10px; border:1px solid #333;
-  background:#0a0a0a; color:#e5e7eb; font-size:12px; outline:none;
-}
-
-@media (max-width:640px){
-  .blt .blt-search{flex:1 1 auto;}   /* 모바일은 꽉 차게 */
-}
+    /* ===== Scoped to .blt (panel-safe) ===== */
+    .blt{--brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae; --code:#0f0f0f; --code-br:rgba(255,255,255,.12)}
+    .blt *{box-sizing:border-box}
+    .blt .blt-toolbar{display:flex; gap:8px; align-items:center; margin-bottom:10px}
+    .blt .blt-search{flex:1; min-width:120px}
+    .blt .blt-search input{
+      width:100%; padding:8px 10px; border-radius:10px; border:1px solid #333; background:#0a0a0a; color:#e5e7eb;
+      font-size:12px; outline:none;
+    }
+  
     /* Tab strip (horizontal, scrollable) */
     .blt .blt-tabs{display:flex; gap:6px; overflow:auto; padding-bottom:2px}
     .blt .blt-tab{
@@ -39,19 +33,6 @@
     .blt pre{background:var(--code); border:1px solid var(--code-br); border-radius:10px; padding:12px; overflow:auto; margin:8px 0}
     .blt code{font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; color:#ffcc80}
   
-    /* Example runner */
-    .blt .blt-example{border:1px solid var(--code-br); border-radius:10px; overflow:hidden; margin:10px 0}
-    .blt .blt-example .bar{display:flex; gap:8px; align-items:center; padding:8px; background:#0a0a0a; border-bottom:1px solid var(--code-br)}
-    .blt .blt-example .title{font-weight:800; color:#e5e7eb; font-size:12px; flex:1}
-    .blt .blt-example .btn{border:0; background:#374151; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer}
-    .blt .blt-example .btn.run{background:var(--brand)}
-    .blt .blt-example .grid{display:grid; grid-template-columns:1fr 1fr}
-    .blt .blt-example textarea{
-      width:100%; min-height:150px; background:#0c0c0c; color:#e5e7eb; border:0; border-right:1px solid var(--code-br);
-      padding:10px; font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; outline:none; resize:vertical
-    }
-    .blt .blt-example iframe{width:100%; min-height:150px; border:0; background:#fff}
-  
     /* Chips */
     .blt .blt-chips{margin-top:6px}
     .blt .blt-chip{display:inline-block; padding:4px 8px; border:1px solid #333; background:#161616; color:#ddd; border-radius:999px; font-size:11px; margin:4px 6px 0 0}
@@ -68,7 +49,6 @@
     </div>
   
     <div class="blt-tabs" role="tablist" aria-label="HTML Tutorial Tabs">
-      <!-- 필요한 만큼 추가/정렬 가능 -->
       <button class="blt-tab is-active" role="tab" aria-selected="true" data-tab="home" aria-controls="blt-home">HOME</button>
       <button class="blt-tab" role="tab" aria-selected="false" data-tab="intro" aria-controls="blt-intro">Introduction</button>
       <button class="blt-tab" role="tab" aria-selected="false" data-tab="basic" aria-controls="blt-basic">Basic</button>
@@ -92,7 +72,6 @@
     </div>
   
     <div class="blt-panels">
-      <!-- HOME -->
       <section id="blt-home" class="blt-panel is-active" role="tabpanel">
         <h2>HTML HOME</h2>
         <p>HTML은 웹 페이지의 <b>구조</b>와 <b>의미</b>를 정의하는 마크업 언어다. CSS/JS는 HTML 위에 올라탄다.</p>
@@ -102,24 +81,11 @@
   &lt;title&gt;첫 페이지&lt;/title&gt;
   &lt;h1&gt;안녕하세요&lt;/h1&gt;
   &lt;p&gt;HTML은 웹의 설계도입니다.&lt;/p&gt;</code></pre>
-        <div class="blt-example" data-name="HOME 예제">
-          <div class="bar">
-            <div class="title">Try it</div>
-            <button class="btn run">실행</button>
-            <button class="btn copy">복사</button>
-          </div>
-          <div class="grid">
-  <textarea>&lt;h1&gt;Hello HTML&lt;/h1&gt;
-  &lt;p&gt;이건 패널 내부에서 즉시 실행돼요.&lt;/p&gt;</textarea>
-  <iframe sandbox="allow-scripts"></iframe>
-          </div>
-        </div>
         <div class="blt-chips">
           <span class="blt-chip">DOM</span><span class="blt-chip">기본</span><span class="blt-chip">보일러플레이트</span>
         </div>
       </section>
   
-      <!-- INTRO -->
       <section id="blt-intro" class="blt-panel" role="tabpanel">
         <h2>Introduction</h2>
         <p class="blt-note">브라우저는 HTML을 파싱하여 DOM 트리를 만들고, CSS를 적용해 렌더 트리로 그린다.</p>
@@ -130,30 +96,18 @@
         </ul>
       </section>
   
-      <!-- BASIC -->
       <section id="blt-basic" class="blt-panel" role="tabpanel">
         <h2>Basic</h2>
         <ul>
           <li><code>&lt;!DOCTYPE html&gt;</code>: HTML5 선언</li>
           <li><code>lang</code>, <code>charset</code>, <code>viewport</code>는 필수</li>
         </ul>
-        <div class="blt-example" data-name="기본 구조">
-          <div class="bar">
-            <div class="title">Try it</div>
-            <button class="btn run">실행</button>
-            <button class="btn copy">복사</button>
-          </div>
-          <div class="grid">
-  <textarea>&lt;!DOCTYPE html&gt;
+        <pre><code>&lt;!DOCTYPE html&gt;
   &lt;meta charset="utf-8"&gt;
   &lt;h1&gt;기본 구조&lt;/h1&gt;
-  &lt;p&gt;간단한 HTML도 렌더링됩니다.&lt;/p&gt;</textarea>
-  <iframe sandbox="allow-scripts"></iframe>
-          </div>
-        </div>
+  &lt;p&gt;간단한 HTML도 렌더링됩니다.&lt;/p&gt;</code></pre>
       </section>
   
-      <!-- ELEMENTS -->
       <section id="blt-elements" class="blt-panel" role="tabpanel">
         <h2>Elements</h2>
         <p>요소 = 시작 태그 + 내용 + 종료 태그. 빈 요소는 종료 태그 없음(<code>&lt;img&gt;</code> 등).</p>
@@ -161,14 +115,12 @@
   &lt;img src="/path/cat.jpg" alt="고양이"&gt;</code></pre>
       </section>
   
-      <!-- ATTRIBUTES -->
       <section id="blt-attributes" class="blt-panel" role="tabpanel">
         <h2>Attributes</h2>
         <pre><code>&lt;a href="/docs" target="_blank" rel="noopener"&gt;문서&lt;/a&gt;
   &lt;input type="checkbox" checked&gt; 불리언 속성은 값 없이 존재=참</code></pre>
       </section>
   
-      <!-- HEADINGS -->
       <section id="blt-headings" class="blt-panel" role="tabpanel">
         <h2>Headings</h2>
         <pre><code>&lt;h1&gt;대제목&lt;/h1&gt;
@@ -176,7 +128,6 @@
   &lt;h3&gt;소제목&lt;/h3&gt;</code></pre>
       </section>
   
-      <!-- PARAGRAPHS -->
       <section id="blt-paragraphs" class="blt-panel" role="tabpanel">
         <h2>Paragraphs</h2>
         <pre><code>&lt;p&gt;첫 문단&lt;/p&gt;
@@ -185,28 +136,24 @@
   &lt;p&gt;셋째&lt;br&gt;줄바꿈&lt;/p&gt;</code></pre>
       </section>
   
-      <!-- STYLES -->
       <section id="blt-styles" class="blt-panel" role="tabpanel">
         <h2>Styles</h2>
         <pre><code>&lt;p style="color:tomato; font-weight:bold"&gt;경고&lt;/p&gt;</code></pre>
         <p class="blt-note">인라인 스타일은 빠르지만 유지보수성이 낮음 → CSS 권장</p>
       </section>
   
-      <!-- LINKS -->
       <section id="blt-links" class="blt-panel" role="tabpanel">
         <h2>Links</h2>
         <pre><code>&lt;a href="https://example.com" target="_blank" rel="noopener"&gt;외부&lt;/a&gt;
   &lt;a href="#blt-tables"&gt;같은 문서 내 이동&lt;/a&gt;</code></pre>
       </section>
   
-      <!-- IMAGES -->
       <section id="blt-images" class="blt-panel" role="tabpanel">
         <h2>Images</h2>
         <pre><code>&lt;img src="/img/photo.jpg" alt="행복한 강아지" width="420"&gt;</code></pre>
         <p class="blt-note"><code>alt</code>는 접근성과 SEO 핵심</p>
       </section>
   
-      <!-- LISTS -->
       <section id="blt-lists" class="blt-panel" role="tabpanel">
         <h2>Lists</h2>
         <pre><code>&lt;ul&gt;&lt;li&gt;불릿&lt;/li&gt;&lt;li&gt;리스트&lt;/li&gt;&lt;/ul&gt;
@@ -214,7 +161,6 @@
   &lt;dl&gt;&lt;dt&gt;용어&lt;/dt&gt;&lt;dd&gt;설명&lt;/dd&gt;&lt;/dl&gt;</code></pre>
       </section>
   
-      <!-- TABLES -->
       <section id="blt-tables" class="blt-panel" role="tabpanel">
         <h2>Tables</h2>
         <pre><code>&lt;table&gt;
@@ -227,7 +173,6 @@
   &lt;/table&gt;</code></pre>
       </section>
   
-      <!-- FORMS -->
       <section id="blt-forms" class="blt-panel" role="tabpanel">
         <h2>Forms</h2>
         <pre><code>&lt;form action="/submit" method="post"&gt;
@@ -238,7 +183,6 @@
         <p class="blt-note"><code>label[for]</code> ↔ <code>input[id]</code> 연결은 접근성 필수</p>
       </section>
   
-      <!-- SEMANTICS -->
       <section id="blt-semantics" class="blt-panel" role="tabpanel">
         <h2>Semantics</h2>
         <pre><code>&lt;header&gt;머리말&lt;/header&gt;
@@ -248,7 +192,6 @@
   &lt;footer&gt;꼬리말&lt;/footer&gt;</code></pre>
       </section>
   
-      <!-- BLOCK vs INLINE -->
       <section id="blt-block-inline" class="blt-panel" role="tabpanel">
         <h2>Block vs Inline</h2>
         <ul>
@@ -257,14 +200,12 @@
         </ul>
       </section>
   
-      <!-- ID vs CLASS -->
       <section id="blt-id-class" class="blt-panel" role="tabpanel">
         <h2>id vs class</h2>
         <pre><code>&lt;div id="hero"&gt;고유 1개&lt;/div&gt;
   &lt;div class="tag"&gt;여러 요소에 공통&lt;/div&gt;</code></pre>
       </section>
   
-      <!-- HEAD & META -->
       <section id="blt-head-meta" class="blt-panel" role="tabpanel">
         <h2>&lt;head&gt; &amp; Meta</h2>
         <pre><code>&lt;meta name="description" content="요약"&gt;
@@ -272,7 +213,6 @@
   &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</code></pre>
       </section>
   
-      <!-- FILE PATHS -->
       <section id="blt-filepaths" class="blt-panel" role="tabpanel">
         <h2>File Paths</h2>
         <pre><code>./img/cat.jpg    (현재 폴더)
@@ -280,14 +220,12 @@
   https://cdn.example.com/lib.css (절대)</code></pre>
       </section>
   
-      <!-- ENTITIES -->
       <section id="blt-entities" class="blt-panel" role="tabpanel">
         <h2>Entities & Emojis</h2>
         <pre><code>&amp;lt; &amp;gt; &amp;amp; &amp;nbsp;
   😀 😍 👍 — UTF-8이면 그대로 사용 가능</code></pre>
       </section>
   
-      <!-- RESPONSIVE -->
       <section id="blt-responsive" class="blt-panel" role="tabpanel">
         <h2>Responsive</h2>
         <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></pre>
@@ -370,5 +308,3 @@
     });
   })();
   </script>
-  <!-- ▲▲ 여기까지가 panel.ejs용 탭 튜토리얼 ▲▲ -->
-  
