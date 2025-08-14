@@ -124,9 +124,9 @@ app.get('/:lang/:section/:topic', async (req, res) => {
   res.locals.currentPath = req.path;
 
   // ★ 공통 데이터 세팅
-  res.locals.user = req.user || null; // 로그인한 유저 정보
-  res.locals.locale = await getLocale(lang); // 언어별 locale 데이터
-  res.locals.posts = await getPostsForUser(req.user); // 유저 글 목록
+  res.locals.user = req.user || null;
+  res.locals.locale = allLocales[lang] || {};
+  res.locals.posts = await getPostsForUser(req.user); // 네가 쓰는 함수로 교체
   res.locals.isSearch = false;
   res.locals.searchKeyword = '';
 
