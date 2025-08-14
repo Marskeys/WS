@@ -163,35 +163,3 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-document.querySelectorAll('.sidebar-icon[data-tab]').forEach(icon => {
-  icon.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    const tabName = this.dataset.tab; // e.g. "profile" or "search"
-    const currentLang = document.documentElement.lang || 'ko'; 
-    const indexUrl = `/${currentLang}/`; // your index page URL
-
-    // 1️⃣ Fetch the full index HTML
-    fetch(indexUrl)
-      .then(res => res.text())
-      .then(html => {
-        // 2️⃣ Parse HTML string into a document
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-
-        // 3️⃣ Find the tab-content for the clicked tab in the new HTML
-        const newTabContent = doc.querySelector(`.tab-content[data-tab="${tabName}"]`);
-
-        if (newTabContent) {
-          // 4️⃣ Replace the current tab-content with the fresh one
-          const currentTabContent = document.querySelector(`.tab-content[data-tab="${tabName}"]`);
-          currentTabContent.innerHTML = newTabContent.innerHTML;
-
-          // 5️⃣ Show the tab (optional — depends on your tab switching logic)
-          document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
-          currentTabContent.style.display = 'block';
-        }
-      })
-      .catch(err => console.error('Tab reload error:', err));
-  });
-});
