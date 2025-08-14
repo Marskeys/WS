@@ -1,17 +1,20 @@
 <!-- ▼▼ panel.ejs 안, panel-card 내부에 그대로 붙여넣기 ▼▼ -->
 <style>
-    /* ===== Scoped to .blt (panel-safe) ===== */
-    .blt{--brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae; --code:#0f0f0f; --code-br:rgba(255,255,255,.12)}
-    .blt *{box-sizing:border-box}
-/* 검색바 폭 줄이기 (데스크톱 고정, 모바일은 100%) */
-.blt .blt-toolbar{ justify-content: space-between; }
-.blt .blt-search{ flex: 0 0 220px; }        /* ← 여기만 바꾸면 됨 */
-.blt .blt-search input{ width: 100%; }
+/* ===== Scoped to .blt (panel-safe) ===== */
+.blt{--brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae; --code:#0f0f0f; --code-br:rgba(255,255,255,.12)}
+.blt *{box-sizing:border-box}
+.blt .blt-toolbar{display:flex; gap:8px; align-items:center; margin-bottom:10px}
 
-@media (max-width: 640px){
-  .blt .blt-search{ flex: 1 1 auto; }       /* 모바일은 꽉 차게 */
+/* ▼ 여기만 변경: 데스크톱에선 220px로 줄이고, 모바일에선 100% */
+.blt .blt-search{flex:0 0 220px; min-width:160px;}
+.blt .blt-search input{
+  width:100%; padding:8px 10px; border-radius:10px; border:1px solid #333;
+  background:#0a0a0a; color:#e5e7eb; font-size:12px; outline:none;
 }
-  
+
+@media (max-width:640px){
+  .blt .blt-search{flex:1 1 auto;}   /* 모바일은 꽉 차게 */
+}
     /* Tab strip (horizontal, scrollable) */
     .blt .blt-tabs{display:flex; gap:6px; overflow:auto; padding-bottom:2px}
     .blt .blt-tab{
