@@ -137,14 +137,13 @@ function buildPanel({ lang, section, topic }) {
   }
 }
 
-// ⭐ 패널 전용 URL (SSR 전체 or partial)
-// :lang 파라미터를 명시적으로 추가하여 /ko/frontend/html 경로를 처리합니다.
-app.get('/:lang/:section/:topic', async (req, res, next) => {
+// ⭐ 패널 라우팅 핸들러를 위한 헬퍼 함수
+async function handlePanelRoute(req, res, next) {
   try {
     const { lang, section, topic } = req.params;
     res.locals.lang = lang;
 
-    // ✅ post 상세는 패널이 처리하지 않음 → 아래 /post/:id 라우트로 넘김
+    // post 상세는 패널이 처리하지 않음 → 아래 /post/:id 라우트로 넘김
     if (section === 'post' && /^\d+$/.test(topic)) {
       return next();
     }
@@ -216,6 +215,15 @@ app.get('/:lang/:section/:topic', async (req, res, next) => {
     console.error('패널 라우트 오류:', err);
     return res.status(500).send('서버 오류');
   }
+}
+
+// ⭐ 패널 전용 URL (언어 코드 포함)
+app.get('/:lang/:section/:topic', handlePanelRoute);
+
+// ⭐ 패널 전용 URL (언어 코드 미포함, 기본값 'ko'로 처리)
+app.get('/:section/:topic', (req, res, next) => {
+  req.params.lang = 'ko';
+  handlePanelRoute(req, res, next);
 });
 
 app.get('/sitemap.xml', async (req, res) => {
@@ -966,16 +974,8 @@ function generatePagination(current, total) {
 }
 
 
-// ⭐ 메인 페이지 라우트
-// :lang 접두사를 명시적으로 처리하는 라우트를 먼저 정의하고,
-// 언어 코드가 없는 기본 경로(/)를 나중에 정의합니다.
-app.get('/:lang', async (req, res, next) => {
-  const { lang } = req.params;
-  if (!supportedLangs.includes(lang)) {
-    // 언어 코드가 아닌 경우, 다음 미들웨어로 전달
-    return next();
-  }
-  
+// ⭐ 메인 페이지 라우트 핸들러를 위한 헬퍼 함수
+async function handleMainPage(req, res) {
   const category = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -983,7 +983,7 @@ app.get('/:lang', async (req, res, next) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang;
+  const safeLang = req.params.lang || 'ko';
   res.locals.lang = safeLang;
 
   try {
@@ -1092,23 +1092,22 @@ app.get('/:lang', async (req, res, next) => {
     console.error('메인 페이지 로드 오류:', err);
     res.status(500).send('메인 페이지 로드 중 오류 발생');
   }
+}
+
+// ⭐ 메인 페이지 라우트 (언어 코드 포함)
+app.get('/:lang', (req, res, next) => {
+  const { lang } = req.params;
+  if (!supportedLangs.includes(lang)) {
+    // 언어 코드가 아닌 경우, 다음 미들웨어로 전달
+    return next();
+  }
+  handleMainPage(req, res);
 });
 
-// ✅ 언어 코드가 없는 기본 경로(/) 처리
-app.get('/', async (req, res) => {
+// ⭐ 메인 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
+app.get('/', (req, res) => {
   req.params.lang = 'ko'; // 기본 언어 'ko'로 설정
-  return app.get('/:lang')(req, res);
-});
-
-
-// ⭐ 범용 라우트(`/:section/:topic`)를 마지막에 배치하여
-// 명시적으로 정의된 라우트들(예: /ko/post/123)이 먼저 처리되도록 합니다.
-// 이 라우트는 이제 언어 코드가 없는 URL만 처리합니다.
-app.get('/:section/:topic', async (req, res, next) => {
-  // 언어 코드가 없는 URL은 기본값 'ko'로 처리합니다.
-  req.params.lang = 'ko';
-  res.locals.lang = 'ko';
-  return app.get('/:lang/:section/:topic')(req, res, next);
+  handleMainPage(req, res);
 });
 
 
