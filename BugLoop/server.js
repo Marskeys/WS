@@ -119,27 +119,29 @@ function buildPanel({ lang, section, topic }) {
 app.get('/:lang/:section/:topic', async (req, res) => {
   const { lang, section, topic } = req.params;
 
-  // ★ 기본 locals 설정
+  // 기본 locals
   res.locals.lang = lang;
   res.locals.currentPath = req.path;
-
-  // ★ 공통 데이터 세팅
-  res.locals.user = req.user || null;
+  res.locals.user = req.user || req.session?.user || null;
   res.locals.locale = allLocales[lang] || {};
-  res.locals.posts = await getPostsForUser(req.user); // 네가 쓰는 함수로 교체
+
+  // ✅ posts 가져오기 (기존 쿼리 방식 사용)
+  const [posts] = await db.query(
+    'SELECT * FROM posts WHERE lang = ? ORDER BY created_at DESC',
+    [lang]
+  );
+  res.locals.posts = posts;
+
   res.locals.isSearch = false;
   res.locals.searchKeyword = '';
 
-  // ★ 기존 panelData 로직
+  // 기존 panelData
   const panelData = buildPanel({ lang, section, topic });
   res.locals.panelData = panelData;
 
-  // partial 요청이면 panel.ejs만 렌더
   if (req.query.partial === '1') {
     return res.render('partials/panel');
   }
-
-  // 전체 페이지 렌더
   return res.render('index');
 });
 
