@@ -146,6 +146,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
 
   res.locals.isSearch = false;
   res.locals.searchKeyword = '';
+  res.locals.selectedCategory = null; // 또는 네 기존 로직 따라 설정
 
   // 기존 panelData
   const panelData = buildPanel({ lang, section, topic });
