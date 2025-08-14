@@ -308,7 +308,7 @@ const handlePostViewRoute = async (req, res) => {
     if (!translation && safeLang !== 'ko') {
       console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
       [translations] = await db.query(
-        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
+        'SELECT title, content FROM post_translations WHERE post_id = ? AND pt_ko.lang_code = "ko"',
         [postId]
       );
       translation = translations[0];
@@ -375,11 +375,19 @@ const handlePostViewRoute = async (req, res) => {
   }
 };
 
-// ⭐ 로그아웃 라우트 (패널 라우트보다 위에 위치)
+// ⭐ 로그아웃 라우트 (언어 코드 포함)
+app.get('/:lang/logout', (req, res) => {
+  req.session.destroy(() => {
+    // 세션 파괴 후 리다이렉트
+    res.redirect(`/${req.params.lang}/`);
+  });
+});
+
+// ⭐ 로그아웃 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     // 세션 파괴 후 리다이렉트
-    res.redirect(`/${res.locals.lang}/`);
+    res.redirect(`/ko/`);
   });
 });
 
