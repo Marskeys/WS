@@ -118,17 +118,18 @@ function buildPanel({ lang, section, topic }) {
 // 패널 전용 URL (SSR 전체 or partial)
 app.get('/:lang/:section/:topic', (req, res) => {
   const { lang, section, topic } = req.params;
-  const panelData = buildPanel({ lang, section, topic });
 
-  // 기본값 덮어쓰기
+  res.locals.lang = lang; // ★ 현재 언어를 locals에 지정
+  res.locals.currentPath = req.path; // ★ 현재 전체 경로 저장
+
+  const panelData = buildPanel({ lang, section, topic });
   res.locals.panelData = panelData;
 
   if (req.query.partial === '1') {
-    return res.render('partials/panel'); // panelData 등은 res.locals에 이미 있음
+    return res.render('partials/panel');
   }
-  return res.render('index'); // panelData/locale/lang/currentPath 모두 locals에서 참조
+  return res.render('index');
 });
-
 
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
