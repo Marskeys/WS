@@ -125,11 +125,8 @@ app.get('/:lang/:section/:topic', async (req, res) => {
   res.locals.user = req.user || req.session?.user || null;
   res.locals.locale = allLocales[lang] || {};
 
-  // ✅ posts 가져오기 (기존 쿼리 방식 사용)
-  const [posts] = await db.query(
-    'SELECT * FROM posts WHERE lang = ? ORDER BY created_at DESC',
-    [lang]
-  );
+  // ✅ 기존 방식 그대로 posts 불러오기
+  const [posts] = await db.query(postsBaseQuery, postsQueryParams);
   res.locals.posts = posts;
 
   res.locals.isSearch = false;
