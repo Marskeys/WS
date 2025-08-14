@@ -116,18 +116,30 @@ function buildPanel({ lang, section, topic }) {
 }
 
 // 패널 전용 URL (SSR 전체 or partial)
-app.get('/:lang/:section/:topic', (req, res) => {
+app.get('/:lang/:section/:topic', async (req, res) => {
   const { lang, section, topic } = req.params;
 
-  res.locals.lang = lang; // ★ 현재 언어를 locals에 지정
-  res.locals.currentPath = req.path; // ★ 현재 전체 경로 저장
+  // ★ 기본 locals 설정
+  res.locals.lang = lang;
+  res.locals.currentPath = req.path;
 
+  // ★ 공통 데이터 세팅
+  res.locals.user = req.user || null; // 로그인한 유저 정보
+  res.locals.locale = await getLocale(lang); // 언어별 locale 데이터
+  res.locals.posts = await getPostsForUser(req.user); // 유저 글 목록
+  res.locals.isSearch = false;
+  res.locals.searchKeyword = '';
+
+  // ★ 기존 panelData 로직
   const panelData = buildPanel({ lang, section, topic });
   res.locals.panelData = panelData;
 
+  // partial 요청이면 panel.ejs만 렌더
   if (req.query.partial === '1') {
     return res.render('partials/panel');
   }
+
+  // 전체 페이지 렌더
   return res.render('index');
 });
 
