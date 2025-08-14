@@ -1,0 +1,351 @@
+<style>
+    /* ===== Scoped to .blc (panel-safe) ===== */
+    .blc {
+      --brand: #10b981;
+      --brand2: #0ea373;
+      --muted: #9aa4ae;
+      --code: #0f0f0f;
+      --code-br: rgba(255, 255, 255, .12);
+    }
+  
+    .blc * {
+      box-sizing: border-box
+    }
+  
+    .blc .blc-toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px
+    }
+  
+    /* 搜索栏：桌面端固定宽度，移动端占满 */
+    .blc .blc-search {
+      flex: 0 0 220px;
+      min-width: 160px
+    }
+  
+    .blc .blc-search input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #0a0a0a;
+      color: #e5e7eb;
+      font-size: 12px;
+      outline: none;
+    }
+  
+    /* 标签页 (横向滚动) */
+    .blc .blc-tabs {
+      display: flex;
+      gap: 6px;
+      overflow: auto;
+      padding-bottom: 2px
+    }
+  
+    .blc .blc-tab {
+      border: 1px solid #333;
+      background: #121212;
+      color: #ddd;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap
+    }
+  
+    .blc .blc-tab:hover {
+      background: #161616
+    }
+  
+    .blc .blc-tab.is-active {
+      background: var(--brand);
+      border-color: transparent;
+      color: #fff;
+      font-weight: 700
+    }
+  
+    /* 面板 */
+    .blc .blc-panels {
+      margin-top: 10px
+    }
+  
+    .blc .blc-panel {
+      display: none
+    }
+  
+    .blc .blc-panel.is-active {
+      display: block
+    }
+  
+    .blc h2 {
+      color: #ffe082;
+      margin: 0 0 6px 0;
+      font-size: 18px
+    }
+  
+    .blc h3 {
+      color: #ffd666;
+      margin: 14px 0 6px 0;
+      font-size: 15px
+    }
+  
+    .blc p {
+      margin: 6px 0;
+      line-height: 1.7
+    }
+  
+    .blc ul {
+      margin: 6px 0 8px 18px
+    }
+  
+    .blc li {
+      margin: 4px 0
+    }
+  
+    .blc .blc-note {
+      background: #0b1220;
+      border: 1px solid rgba(255, 255, 255, .08);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px
+    }
+  
+    /* 代码 & 示例 */
+    .blc pre {
+      background: var(--code);
+      border: 1px solid var(--code-br);
+      border-radius: 10px;
+      padding: 12px;
+      overflow: auto;
+      margin: 8px 0
+    }
+  
+    .blc code {
+      font-family: 'Fira Code', ui-monospace, Consolas, monospace;
+      font-size: .9rem;
+      color: #ffcc80
+    }
+  
+    /* 标签 */
+    .blc .blc-chips {
+      margin-top: 6px
+    }
+  
+    .blc .blc-chip {
+      display: inline-block;
+      padding: 4px 8px;
+      border: 1px solid #333;
+      background: #161616;
+      color: #ddd;
+      border-radius: 999px;
+      font-size: 11px;
+      margin: 4px 6px 0 0
+    }
+  
+    @media (max-width:640px) {
+      .blc .blc-search {
+        flex: 1 1 auto
+      }
+  
+      /* 移动端搜索栏占满 */
+    }
+  </style>
+  
+  <div class="blc" data-component="css-tabs">
+    <div class="blc-toolbar" aria-label="CSS 教程工具栏">
+      <div class="blc-search"><input type="search" placeholder="搜索章节... (flex, grid, box, etc.)" aria-label="搜索标签"></div>
+    </div>
+  
+    <div class="blc-tabs" role="tablist" aria-label="CSS 教程标签页">
+      <button class="blc-tab is-active" role="tab" aria-selected="true" data-tab="basics" aria-controls="blc-basics">基础</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="selectors" aria-controls="blc-selectors">选择器</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="cascade" aria-controls="blc-cascade">层叠与特异性</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="box" aria-controls="blc-box">盒模型</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="display" aria-controls="blc-display">显示/可见性</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="position" aria-controls="blc-position">定位</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="flex" aria-controls="blc-flex">弹性盒</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="grid" aria-controls="blc-grid">网格</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="type" aria-controls="blc-type">排版与单位</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="colors" aria-controls="blc-colors">颜色与变量</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="bg" aria-controls="blc-bg">背景/边框</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="motion" aria-controls="blc-motion">变换/过渡</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="anim" aria-controls="blc-anim">动画</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="responsive" aria-controls="blc-responsive">媒体查询</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="pseudo" aria-controls="blc-pseudo">伪类与组合器</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="arch" aria-controls="blc-arch">最佳实践</button>
+    </div>
+  
+    <div class="blc-panels">
+      <section id="blc-basics" class="blc-panel is-active" role="tabpanel">
+        <h2>CSS 基础</h2>
+        <p>CSS 为<b>选择器</b>指向的元素应用<b>属性:值</b>。</p>
+        <pre><code>h1 { color: #10b981; font-weight: 800; }</code></pre>
+        <div class="blc-chips"><span class="blc-chip">选择器</span><span class="blc-chip">声明</span><span class="blc-chip">规则</span></div>
+      </section>
+  
+      <section id="blc-selectors" class="blc-panel" role="tabpanel">
+        <h2>选择器</h2>
+        <ul>
+          <li>基本：标签 (<code>p</code>)、类 (<code>.card</code>)、ID (<code>#hero</code>)</li>
+          <li>属性：<code>a[target="_blank"]</code>、<code>input[type="email"]</code></li>
+          <li>组合器：子元素 <code>nav &gt; a</code>、兄弟元素 <code>h2 + p</code></li>
+          <li>函数：<code>:not(.disabled)</code>、<code>:is(header, footer)</code></li>
+        </ul>
+      </section>
+  
+      <section id="blc-cascade" class="blc-panel" role="tabpanel">
+        <h2>层叠与特异性</h2>
+        <p>优先级：<b>重要性</b>(!important) → <b>特异性</b> → <b>源码顺序</b>。特异性计算：<code>id &gt; 类/属性/伪类 &gt; 标签</code>。</p>
+        <div class="blc-note">尽量避免使用 <code>!important</code>，通过更好的选择器结构来解决问题。</div>
+      </section>
+  
+      <section id="blc-box" class="blc-panel" role="tabpanel">
+        <h2>盒模型</h2>
+        <p>元素尺寸 = <code>内容 + 内边距 + 边框 + 外边距</code>。布局时推荐使用 <code>box-sizing: border-box</code>。</p>
+      </section>
+  
+      <section id="blc-display" class="blc-panel" role="tabpanel">
+        <h2>显示 / 可见性</h2>
+        <ul>
+          <li><code>block</code>, <code>inline</code>, <code>inline-block</code>, <code>none</code></li>
+          <li><code>visibility:hidden</code> 隐藏但占用空间，<code>display:none</code> 则完全移除</li>
+        </ul>
+      </section>
+  
+      <section id="blc-position" class="blc-panel" role="tabpanel">
+        <h2>定位</h2>
+        <p><code>absolute</code> 相对于 <code>relative</code> 的父元素定位，<code>fixed</code> 相对于视口，<code>sticky</code> 在滚动时固定。</p>
+      </section>
+  
+      <section id="blc-flex" class="blc-panel" role="tabpanel">
+        <h2>弹性盒</h2>
+        <ul>
+          <li>一维布局。核心：<code>display:flex</code>, <code>gap</code>, <code>justify-content</code>, <code>align-items</code></li>
+        </ul>
+      </section>
+  
+      <section id="blc-grid" class="blc-panel" role="tabpanel">
+        <h2>网格</h2>
+        <p>二维布局。使用 <code>repeat()</code>, <code>auto-fit</code>, <code>minmax()</code> 轻松实现响应式设计。</p>
+      </section>
+  
+      <section id="blc-type" class="blc-panel" role="tabpanel">
+        <h2>排版与单位</h2>
+        <ul>
+          <li>单位：<code>px</code>, <code>rem</code> (根元素基准), <code>em</code> (父/自身字体基准), <code>%</code>, <code>vw/vh</code>, <code>ch</code></li>
+          <li>响应式尺寸：<code>clamp(min, preferred, max)</code></li>
+        </ul>
+      </section>
+  
+      <section id="blc-colors" class="blc-panel" role="tabpanel">
+        <h2>颜色与 CSS 变量</h2>
+        <p>颜色：推荐使用 <code>hsl()</code>。通过自定义属性（变量）来管理主题。</p>
+      </section>
+  
+      <section id="blc-bg" class="blc-panel" role="tabpanel">
+        <h2>背景与边框</h2>
+        <pre><code>background: linear-gradient(135deg, #0ea5e9, #10b981);
+  border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.2);</code></pre>
+      </section>
+  
+      <section id="blc-motion" class="blc-panel" role="tabpanel">
+        <h2>变换与过渡</h2>
+      </section>
+  
+      <section id="blc-anim" class="blc-panel" role="tabpanel">
+        <h2>动画</h2>
+      </section>
+  
+      <section id="blc-responsive" class="blc-panel" role="tabpanel">
+        <h2>媒体查询</h2>
+        <p><code>@media (max-width: 600px){ ... }</code> / 基于环境：<code>prefers-color-scheme</code>, <code>reduced-motion</code></p>
+      </section>
+  
+      <section id="blc-pseudo" class="blc-panel" role="tabpanel">
+        <h2>伪类与元素</h2>
+        <ul>
+          <li><code>:hover</code>, <code>:focus-visible</code>, <code>:disabled</code>, <code>:nth-child()</code></li>
+          <li>使用 <code>::before</code>, <code>::after</code> 添加装饰/图标</li>
+        </ul>
+      </section>
+  
+      <section id="blc-arch" class="blc-panel" role="tabpanel">
+        <h2>最佳实践</h2>
+        <ul>
+          <li><b>BEM</b> 命名：<code>.card</code> / <code>.card__title</code> / <code>.card--primary</code></li>
+          <li>全局应用 <b>box-sizing</b>，<b>分层</b> (reset → base → components → utilities)</li>
+          <li><b>可访问性</b>：保持焦点样式，尊重 <code>prefers-reduced-motion</code></li>
+          <li><b>性能</b>：避免滥用大阴影/模糊效果，动画主要使用 transforms/opacity</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  
+  <script>
+    /* ===== panel-safe init for CSS tabs (.blc) ===== */
+    (function() {
+      const root = document.querySelector('.blc[data-component="css-tabs"]');
+      if (!root) return;
+  
+      const tabs = Array.from(root.querySelectorAll('.blc-tab'));
+      const panels = Array.from(root.querySelectorAll('.blc-panel'));
+      const search = root.querySelector('.blc-search input');
+      const LS_KEY = 'blc:css:last:' + location.pathname;
+  
+      function openTab(id, remember = true) {
+        panels.forEach(p => p.classList.toggle('is-active', p.id === 'blc-' + id));
+        tabs.forEach(t => {
+          const on = t.dataset.tab === id;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          if (on) t.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest'
+          });
+        });
+        if (remember) {
+          try {
+            localStorage.setItem(LS_KEY, id);
+          } catch (e) {}
+        }
+      }
+  
+      tabs.forEach(t => {
+        t.addEventListener('click', () => openTab(t.dataset.tab));
+        t.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openTab(t.dataset.tab);
+          }
+          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+            const dir = e.key === 'ArrowRight' ? 1 : -1;
+            const i = tabs.indexOf(t);
+            tabs[(i + dir + tabs.length) % tabs.length].focus();
+          }
+        });
+      });
+  
+      // Restore last tab or default to Basics
+      const last = (() => {
+        try {
+          return localStorage.getItem(LS_KEY)
+        } catch (e) {
+          return null
+        }
+      })();
+      if (last && root.querySelector('#blc-' + last)) openTab(last, false);
+      else openTab('basics', false);
+  
+      // Filter tabs
+      function applyFilter() {
+        const q = (search.value || '').trim().toLowerCase();
+        tabs.forEach(t => {
+          const show = t.textContent.toLowerCase().includes(q);
+          t.style.display = show ? '' : 'none';
+        });
+      }
+      search.addEventListener('input', applyFilter);
+    })();
+  </script>
