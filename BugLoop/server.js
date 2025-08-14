@@ -124,16 +124,22 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     res.locals.lang = res.locals.lang || lang;
     res.locals.currentPath = req.path;
 
-    // ✅ 세션/유저 안전하게 추출
+    // ✅ 세션/유저 안전
     const sessionUser = req.session?.user;
     const currentUser = sessionUser || req.user || null;
     res.locals.user = currentUser;
 
-    // locale은 기존 미들웨어 값 사용(없으면 빈 객체)
-    res.locals.locale = res.locals.locale || {};
-
-    // 사이드바용 데이터 (index/editor와 동일 로직)
+    // ✅ locale 확실히 세팅 (placeholder 등 기본값 포함)
     const safeLang = res.locals.lang;
+    const koBase = (typeof allLocales !== 'undefined' && allLocales['ko']) ? allLocales['ko'] : {};
+    const curLocale = (typeof allLocales !== 'undefined' && allLocales[safeLang]) ? allLocales[safeLang] : {};
+    res.locals.locale = { ...koBase, ...curLocale };
+    // 중첩 키 기본값 보강
+    res.locals.locale.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(res.locals.locale.search || {}) };
+    res.locals.locale.profile = { 'profile-name':'', 'profile-bio':'', 'profile-tags': [], ...(res.locals.locale.profile || {}) };
+    res.locals.locale.tabs    = { allPosts: '전체글', ...(res.locals.locale.tabs || {}) };
+
+    // 사이드바용 데이터 (index/editor와 동일)
     const categoryQueryParam = req.query.category || 'all';
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -170,7 +176,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
 
     const [postRows] = await db.query(postsBaseQuery, postsQueryParams);
 
-    // ✅ 비공개 필터링: 세션 없을 때도 안전
+    // 비공개 필터링
     const userId  = currentUser?.id || null;
     const isAdmin = currentUser?.is_admin === 1;
     const filteredPosts = postRows.map(post => {
@@ -218,27 +224,20 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       if (found) translatedSelectedCategory = found.translated;
     }
 
-    // EJS에서 기대하는 키 전부 세팅
+    // EJS용 locals
     res.locals.posts = filteredPosts;
     res.locals.categories = allCategories;
     res.locals.isSearch = false;
     res.locals.searchKeyword = '';
     res.locals.selectedCategory = translatedSelectedCategory;
-    res.locals.lang = safeLang;
-    res.locals.pagination = {
-      current: page,
-      total: totalPages,
-      range: paginationRange
-    };
+    res.locals.pagination = { current: page, total: totalPages, range: paginationRange };
 
     // 패널 데이터
     const panelData = buildPanel({ lang: safeLang, section, topic });
     res.locals.panelData = panelData;
 
     // 렌더
-    if (req.query.partial === '1') {
-      return res.render('partials/panel');
-    }
+    if (req.query.partial === '1') return res.render('partials/panel');
     return res.render('index');
 
   } catch (err) {
