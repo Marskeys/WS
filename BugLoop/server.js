@@ -176,8 +176,8 @@ async function handlePanelRoute(req, res, next) {
   }
 }
 
-// ⭐ 글쓰기 페이지 라우트 (패널 라우트보다 위에 위치)
-app.get('/:lang/write', async (req, res) => {
+
+const handleWriteRoute = async (req, res) => {
   if (!req.session.user || req.session.user.is_admin !== 1) {
     return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
   }
@@ -208,10 +208,9 @@ app.get('/:lang/write', async (req, res) => {
     console.error('글쓰기 페이지 로드 오류:', err);
     res.status(500).send('글쓰기 페이지 로드 중 오류 발생');
   }
-});
+};
 
-// ⭐ 글 수정 페이지 라우트 (패널 라우트보다 위에 위치)
-app.get('/:lang/edit/:id', async (req, res) => {
+const handleEditRoute = async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id;
   const safeLang = req.params.lang || 'ko';
@@ -270,10 +269,9 @@ app.get('/:lang/edit/:id', async (req, res) => {
     console.error('수정 페이지 로드 오류:', err);
     res.status(500).send('서버 오류');
   }
-});
+};
 
-// ⭐ 글 상세 페이지 라우트 (패널 라우트보다 위에 위치)
-app.get('/:lang/post/:id', async (req, res) => {
+const handlePostViewRoute = async (req, res) => {
   try {
     const postId = req.params.id;
     const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
@@ -375,6 +373,34 @@ app.get('/:lang/post/:id', async (req, res) => {
     console.error('🌐 다국어 글 보기 오류:', err);
     res.status(500).render('error', { message: '서버 오류로 글을 불러올 수 없습니다.', user: req.session.user });
   }
+};
+
+// ⭐ 글쓰기 페이지 라우트 (언어 코드 포함)
+app.get('/:lang/write', handleWriteRoute);
+
+// ⭐ 글쓰기 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
+app.get('/write', (req, res, next) => {
+  req.params.lang = 'ko';
+  handleWriteRoute(req, res);
+});
+
+
+// ⭐ 글 수정 페이지 라우트 (언어 코드 포함)
+app.get('/:lang/edit/:id', handleEditRoute);
+
+// ⭐ 글 수정 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
+app.get('/edit/:id', (req, res, next) => {
+  req.params.lang = 'ko';
+  handleEditRoute(req, res);
+});
+
+// ⭐ 글 상세 페이지 라우트 (언어 코드 포함)
+app.get('/:lang/post/:id', handlePostViewRoute);
+
+// ⭐ 글 상세 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
+app.get('/post/:id', (req, res) => {
+  req.params.lang = 'ko'; // 기본 언어 'ko'로 설정
+  handlePostViewRoute(req, res);
 });
 
 
