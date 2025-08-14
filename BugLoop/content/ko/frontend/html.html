@@ -1,214 +1,173 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 완전 정복: 웹의 뼈대를 세우는 기초</title>
-    <style>
-        /* CSS 스타일 시작 */
-        body {
-            background-color: #1a1a1a;
-        }
-
-        .tutorial-container {
-            font-family: 'Noto Sans KR', sans-serif;
-            line-height: 1.65;
-            color: #f0f0f0;
-            padding: 20px;
-        }
-
-        .tutorial-container h1 {
-            color: #ffeb3b; /* 강조색 */
-            text-align: center;
-            font-size: 2.5em;
-            font-weight: 900;
-            margin-bottom: 0.5em;
-        }
-
-        .tutorial-container h2,
-        .tutorial-container h3,
-        .tutorial-container h4 {
-            margin-top: 2em;
-            margin-bottom: 0.5em;
-            color: #ffe082;
-            font-weight: 700;
-        }
-
-        .tutorial-container p {
-            margin-bottom: 1em;
-            font-size: 1em;
-        }
-
-        .tutorial-container code {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9em;
-            color: #ffcc80;
-        }
-
-        .tutorial-container pre {
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-size: 0.9em;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tutorial-container ul, .tutorial-container ol {
-            margin: 0.5em 0 1.5em 1.5em;
-            padding: 0;
-        }
-
-        .tutorial-container li {
-            margin-bottom: 0.6em;
-        }
-
-        .highlight {
-            background-color: rgba(255, 235, 59, 0.15);
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-
-        .chip {
-            display: inline-block;
-            background-color: #333;
-            color: #ddd;
-            padding: 5px 12px;
-            margin: 3px 4px 0 0;
-            border-radius: 20px;
-            font-size: 0.85em;
-            border: 1px solid #555;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* 폰트 임포트 */
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Fira+Code:wght@400&display=swap');
-    </style>
-</head>
-<body>
-    <div class="tutorial-container">
-        <h1>HTML 완전 정복: 웹 페이지의 뼈대를 세우는 기초</h1>
-        <p>
-            <strong>HTML (HyperText Markup Language)</strong>은 웹 페이지의 <span class="highlight">뼈대</span>이자 <span class="highlight">구조</span>를 정의하는 마크업 언어이다. HTML은 시각적인 디자인이나 동적인 동작을 담당하는 언어가 아니며, 오직 웹 브라우저에게 "이 콘텐츠가 무엇이며, 어떻게 배치되어야 하는지"에 대한 설계도 역할을 수행한다.
-        </p>
-
-        <hr>
-
-        <h2>1. 웹 개발 3요소와 HTML의 지위</h2>
-        <p>
-            웹은 HTML, CSS, JavaScript라는 세 가지 핵심 언어로 구성된다. 이 세 가지 언어는 각각 독립적인 역할을 수행하며, 상호 보완적으로 작용하여 하나의 완전한 웹 페이지를 구성한다.
-        </p>
-        <ul>
-            <li><strong>HTML (HyperText Markup Language)</strong>: 웹 페이지의 <strong>구조</strong>와 <strong>콘텐츠</strong>를 담당한다. 모든 웹 페이지는 HTML을 기반으로 작성된다.</li>
-            <li><strong>CSS (Cascading Style Sheets)</strong>: HTML로 만들어진 구조에 <strong>스타일</strong>과 <strong>디자인</strong>을 입히는 역할을 한다. 색상, 글꼴, 레이아웃 등 시각적 요소를 정의한다.</li>
-            <li><strong>JavaScript</strong>: 웹 페이지에 <strong>동적인 기능</strong>과 <strong>상호작용</strong>을 추가한다. 사용자의 클릭에 반응하거나 콘텐츠를 동적으로 변경하는 등의 기능을 담당한다.</li>
-        </ul>
-
-        <hr>
-
-        <h2>2. HTML 문서의 기본 골격과 필수 요소</h2>
-        <p>
-            모든 HTML 문서는 웹 표준에 따라 정해진 기본 구조를 갖추고 있다. 이 구조는 브라우저가 문서를 올바르게 해석하고 렌더링하는 데 필수적이다.
-        </p>
-        <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang="ko"&gt;
-  &lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;문서 제목&lt;/title&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!-- 실제 화면에 보이는 내용 --&gt;
-    &lt;h1&gt;안녕하세요, HTML!&lt;/h1&gt;
-    &lt;p&gt;이것은 HTML 문서의 예시입니다.&lt;/p&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-        <ul>
-            <li><code>&lt;!DOCTYPE html&gt;</code>: 문서 유형을 선언하는 태그로, 이 문서가 HTML5 표준을 따르고 있음을 브라우저에 알린다.</li>
-            <li><code>&lt;html&gt;</code>: HTML 문서 전체를 감싸는 <strong>루트(Root)</strong> 요소이다. <code>lang</code> 속성은 문서의 언어를 명시하여 접근성과 SEO에 도움을 준다.</li>
-            <li><code>&lt;head&gt;</code>: 문서의 <strong>메타데이터</strong>를 담는 영역이다. 브라우저 화면에 직접 표시되지 않으며, 문서에 대한 정보(제목, 문자 인코딩, 외부 파일 연결 등)를 포함한다.</li>
-            <li><code>&lt;body&gt;</code>: 웹 브라우저 화면에 실제 표시되는 모든 콘텐츠(텍스트, 이미지, 링크 등)를 포함하는 영역이다.</li>
-            <li><code>&lt;meta charset="UTF-8"&gt;</code>: 문서의 문자 인코딩을 지정한다. 한글을 포함한 다양한 문자를 올바르게 표시하기 위해 필수적이다.</li>
-            <li><code>&lt;title&gt;</code>: 브라우저 탭에 표시되는 문서의 제목을 정의한다.</li>
-        </ul>
-
-        <hr>
-
-        <h2>3. 브라우저 렌더링 과정: HTML이 웹 페이지가 되기까지</h2>
-        <p>
-            HTML 파일은 다음의 복잡한 과정을 거쳐 우리가 보는 웹 페이지로 변환된다.
-        </p>
-        <ol>
-            <li><strong>리소스 요청 및 수신</strong>: 사용자가 URL을 입력하면, 브라우저는 웹 서버에 HTML 파일을 요청하고 응답을 받는다.</li>
-            <li><strong>파싱 (Parsing)</strong>: 브라우저의 <strong>HTML 파서</strong>가 HTML 코드를 위에서부터 순서대로 읽어 내려간다.</li>
-            <li><strong>DOM 트리 생성</strong>: 파싱 과정을 통해 브라우저는 HTML 태그들을 계층적 구조의 객체 모델인 <strong>DOM (Document Object Model)</strong> 트리로 변환한다.</li>
-            <li><strong>CSSOM 트리 생성</strong>: HTML에 연결된 CSS 파일을 파싱하여 <strong>CSSOM (CSS Object Model)</strong> 트리를 생성한다.</li>
-            <li><strong>렌더 트리 생성</strong>: DOM 트리와 CSSOM 트리를 결합하여 화면에 표시될 요소와 그 스타일 정보를 모두 담은 <strong>렌더 트리 (Render Tree)</strong>를 만든다.</li>
-            <li><strong>레이아웃 (Layout)</strong>: 렌더 트리를 기반으로 각 요소의 정확한 위치와 크기를 계산한다.</li>
-            <li><strong>페인팅 (Painting)</strong>: 계산된 위치와 크기 정보를 바탕으로 실제 화면에 픽셀을 그리는 작업이다.</li>
-            <li><strong>JavaScript 실행</strong>: JavaScript가 DOM을 조작하여 웹 페이지의 내용을 동적으로 변경하거나 기능을 추가한다.</li>
-        </ol>
-
-        <hr>
-
-        <h2>4. 주요 HTML 태그 목록 및 분류</h2>
-        <p>
-            HTML5에서는 문서의 목적에 맞게 다양한 태그를 제공한다. 다음은 웹 개발에서 자주 사용되는 주요 태그들을 기능별로 분류한 목록이다.
-        </p>
-        <h3>4.1. 문서 구조 및 시맨틱 태그</h3>
-        <ul>
-            <li><code>&lt;header&gt;</code>: 페이지의 머리말이나 탐색 메뉴를 포함한다.</li>
-            <li><code>&lt;nav&gt;</code>: 웹 페이지의 주요 탐색 링크를 포함한다.</li>
-            <li><code>&lt;main&gt;</code>: 문서의 주요 콘텐츠를 포함하며, 페이지당 한 번만 사용해야 한다.</li>
-            <li><code>&lt;article&gt;</code>: 독립적으로 배포되거나 재사용될 수 있는 콘텐츠를 나타낸다 (예: 블로그 게시글).</li>
-            <li><code>&lt;section&gt;</code>: 문서의 독립적인 구획을 나타낸다.</li>
-            <li><code>&lt;aside&gt;</code>: 문서의 주요 콘텐츠와 간접적으로 관련된 콘텐츠를 포함한다. (예: 사이드바).</li>
-            <li><code>&lt;footer&gt;</code>: 페이지의 꼬리말 정보를 담는다.</li>
-        </ul>
-
-        <h3>4.2. 텍스트 콘텐츠 태그</h3>
-        <ul>
-            <li><code>&lt;h1&gt;</code> ~ <code>&lt;h6&gt;</code>: 제목을 나타내는 태그로, 숫자가 작을수록 중요한 제목이다.</li>
-            <li><code>&lt;p&gt;</code>: 하나의 문단을 정의한다.</li>
-            <li><code>&lt;a&gt;</code>: 다른 페이지로 이동하거나 특정 위치로 스크롤하는 <strong>하이퍼링크</strong>를 생성한다.</li>
-            <li><code>&lt;strong&gt;</code>: 텍스트의 중요도를 강조한다. 시각적으로는 굵게 표시된다.</li>
-            <li><code>&lt;em&gt;</code>: 텍스트의 강세를 강조한다. 시각적으로는 기울임꼴로 표시된다.</li>
-            <li><code>&lt;div&gt;</code>: 특별한 의미 없는 일반적인 블록 요소로, 다른 요소를 묶어 스타일을 적용할 때 주로 사용한다.</li>
-            <li><code>&lt;span&gt;</code>: 특별한 의미 없는 일반적인 인라인 요소로, 텍스트의 일부에 스타일을 적용할 때 주로 사용한다.</li>
-        </ul>
-
-        <h3>4.3. 미디어 및 폼 태그</h3>
-        <ul>
-            <li><code>&lt;img&gt;</code>: 웹 페이지에 이미지를 삽입하는 태그이다. <code>src</code> 속성으로 이미지 경로를 지정한다.</li>
-            <li><code>&lt;audio&gt;</code>: 오디오 콘텐츠를 삽입한다.</li>
-            <li><code>&lt;video&gt;</code>: 비디오 콘텐츠를 삽입한다.</li>
-            <li><code>&lt;form&gt;</code>: 사용자 입력을 위한 폼을 생성한다.</li>
-            <li><code>&lt;input&gt;</code>: 사용자로부터 데이터를 입력받는 필드를 생성한다 (텍스트, 비밀번호, 체크박스 등).</li>
-            <li><code>&lt;button&gt;</code>: 클릭 가능한 버튼을 생성한다.</li>
-        </ul>
-
-        <hr>
-
-        <h2>5. HTML의 활용과 미래</h2>
-        <p>
-            HTML은 웹의 가장 근본적인 언어로서 다양한 분야에서 응용된다.
-        </p>
-        <ul>
-            <li><strong>정적 웹페이지 제작</strong>: 가장 기본적인 활용으로, 변경이 거의 없는 간단한 웹 페이지를 만들 때 사용된다.</li>
-            <li><strong>동적 웹 콘텐츠의 기반</strong>: React, Vue와 같은 SPA(Single Page Application) 프레임워크에서 HTML은 컴포넌트의 템플릿 역할을 수행한다.</li>
-            <li><strong>접근성과 웹 표준</strong>: 시맨틱 태그를 사용하여 문서의 의미를 명확히 함으로써, 검색 엔진 최적화(SEO)와 스크린 리더 같은 보조 기술에 도움을 준다.</li>
-        </ul>
-        <div>
-            <span class="chip">구조</span>
-            <span class="chip">브라우저 파싱</span>
-            <span class="chip">태그 분류</span>
-            <span class="chip">응용</span>
-        </div>
+<style>
+    .tutorial-container {
+      font-family: 'Noto Sans KR', sans-serif;
+      line-height: 1.65;
+      color: #f0f0f0;
+    }
+    .tutorial-container h2, 
+    .tutorial-container h3, 
+    .tutorial-container h4 {
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      color: #ffe082;
+      font-weight: 700;
+    }
+    .tutorial-container p {
+      margin-bottom: 1em;
+    }
+    .tutorial-container code {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+      color: #ffcc80;
+    }
+    .tutorial-container pre {
+      background: #1e1e1e;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.9em;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .tutorial-container ul {
+      margin: 0.5em 0 1em 1.2em;
+    }
+    .tutorial-container li {
+      margin-bottom: 0.4em;
+    }
+    .chip {
+      display: inline-block;
+      background-color: #333;
+      color: #ddd;
+      padding: 4px 10px;
+      margin: 3px 4px 0 0;
+      border-radius: 20px;
+      font-size: 0.8em;
+      border: 1px solid #555;
+    }
+    .highlight {
+      background-color: rgba(255, 235, 59, 0.15);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+  </style>
+  
+  <div class="tutorial-container">
+    <h2>HTML 완전정복: 구조부터 실전 활용까지</h2>
+    <p>
+      <strong>HTML(HyperText Markup Language)</strong>은 웹의 기초 설계도다.<br>
+      CSS가 외형(색, 크기, 배치), JavaScript가 동작(이벤트, 데이터 처리)을 맡는다면,  
+      HTML은 그 위에 얹히는 모든 요소의 <span class="highlight">위치·역할·의미</span>를 정의한다.<br>
+      브라우저는 HTML 문서를 읽어 <em>DOM(Document Object Model)</em>이라는 트리 구조로 변환한 뒤, CSS와 합쳐 화면에 렌더링한다.
+    </p>
+  
+    <h3>1. HTML의 본질</h3>
+    <ul>
+      <li><b>구조화</b>: 제목, 본문, 이미지, 표 등을 논리적 계층으로 나눈다.</li>
+      <li><b>의미 부여</b>: 시맨틱 태그를 사용해 콘텐츠의 목적을 명확히 한다.</li>
+      <li><b>브라우저와의 약속</b>: HTML 태그와 속성은 브라우저가 해석하는 표준 규칙을 따른다.</li>
+    </ul>
+  
+    <h4>1.1 기본 문서 구조</h4>
+    <pre><code>&lt;!DOCTYPE html&gt;
+  &lt;html lang="ko"&gt;
+    &lt;head&gt;
+      &lt;meta charset="UTF-8"&gt;
+      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+      &lt;title&gt;문서 제목&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;h1&gt;안녕하세요&lt;/h1&gt;
+      &lt;p&gt;이것은 HTML 예제입니다.&lt;/p&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+  </code></pre>
+    <p><b>TIP:</b> <code>&lt;!DOCTYPE html&gt;</code>은 HTML5 표준 문서임을 선언하는 필수 문구다.</p>
+  
+    <h3>2. 시맨틱 태그와 의미</h3>
+    <p>시맨틱 태그는 단순히 화면에 보여주기 위한 게 아니라, 콘텐츠의 목적과 역할을 검색엔진·보조기기에 전달한다.</p>
+    <ul>
+      <li><code>&lt;header&gt;</code> - 페이지나 섹션의 머리말</li>
+      <li><code>&lt;nav&gt;</code> - 내비게이션 링크 집합</li>
+      <li><code>&lt;main&gt;</code> - 문서의 핵심 콘텐츠(한 번만 사용)</li>
+      <li><code>&lt;section&gt;</code> - 주제별 구획</li>
+      <li><code>&lt;article&gt;</code> - 독립적인 콘텐츠 블록</li>
+      <li><code>&lt;aside&gt;</code> - 부가 정보</li>
+      <li><code>&lt;footer&gt;</code> - 꼬리말</li>
+    </ul>
+  
+    <h3>3. 텍스트와 링크</h3>
+    <pre><code>&lt;h1&gt;제목&lt;/h1&gt;
+  &lt;p&gt;단락 내용.&lt;/p&gt;
+  &lt;a href="https://example.com" target="_blank" rel="noopener"&gt;외부 링크&lt;/a&gt;
+  </code></pre>
+    <p><b>TIP:</b> 외부 링크에 <code>rel="noopener"</code>를 붙이면 보안과 성능이 향상된다.</p>
+  
+    <h3>4. 이미지와 미디어</h3>
+    <pre><code>&lt;img src="cat.jpg" alt="고양이 사진" width="400"&gt;
+  </code></pre>
+    <pre><code>&lt;video controls width="400"&gt;
+    &lt;source src="movie.mp4" type="video/mp4"&gt;
+    브라우저가 video 태그를 지원하지 않습니다.
+  &lt;/video&gt;
+  </code></pre>
+    <p><b>TIP:</b> <code>alt</code> 속성은 시각장애인용 스크린 리더와 SEO 모두에 중요하다.</p>
+  
+    <h3>5. 폼 요소</h3>
+    <pre><code>&lt;form action="/submit" method="post"&gt;
+    &lt;label for="email"&gt;이메일&lt;/label&gt;
+    &lt;input type="email" id="email" name="email" required&gt;
+    &lt;button type="submit"&gt;제출&lt;/button&gt;
+  &lt;/form&gt;
+  </code></pre>
+  
+    <h3>6. 테이블</h3>
+    <pre><code>&lt;table&gt;
+    &lt;caption&gt;월별 판매량&lt;/caption&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;&lt;th&gt;월&lt;/th&gt;&lt;th&gt;판매량&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;&lt;td&gt;1월&lt;/td&gt;&lt;td&gt;100&lt;/td&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;2월&lt;/td&gt;&lt;td&gt;150&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+  </code></pre>
+  
+    <h3>7. 접근성(A11y) 원칙</h3>
+    <ul>
+      <li>이미지에 대체 텍스트 제공</li>
+      <li>폼 요소와 <code>&lt;label&gt;</code> 연결</li>
+      <li>헤딩 계층 구조 유지</li>
+      <li>색상만으로 정보 전달하지 않기</li>
+    </ul>
+  
+    <h3>8. SEO 최적화</h3>
+    <ul>
+      <li><code>&lt;title&gt;</code>과 <code>&lt;meta name="description"&gt;</code>를 페이지별로 정확히 작성</li>
+      <li>핵심 콘텐츠를 <code>&lt;main&gt;</code>에 배치</li>
+      <li>의미 있는 URL 구조 사용</li>
+    </ul>
+  
+    <h3>9. 성능 최적화</h3>
+    <ul>
+      <li>이미지 용량 최소화 + <code>loading="lazy"</code></li>
+      <li>스크립트에 <code>defer</code> 또는 <code>async</code></li>
+    </ul>
+  
+    <h3>10. 실수 방지</h3>
+    <ul>
+      <li><code>&lt;div&gt;</code> 남용 대신 시맨틱 태그 활용</li>
+      <li>잘못된 속성·중첩 방지</li>
+    </ul>
+  
+    <div>
+      <span class="chip">시맨틱 태그</span>
+      <span class="chip">접근성</span>
+      <span class="chip">SEO</span>
+      <span class="chip">성능 최적화</span>
     </div>
-</body>
-</html>
+  </div>
+  
