@@ -9,6 +9,7 @@ const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
 const app = express();
 const PORT = process.env.PORT || 3002;
 const allLocales = require('./locales/all.json');
+
 // === Helper: merge locale with safe defaults ===
 function mergeLocaleWithDefaults(lang) {
   const base = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
@@ -190,7 +191,7 @@ app.get('/:lang/:section/:topic', async (req, res, next) => {
       console.error('[panel posts] error:', e?.message || e);
       res.locals.posts = [];
       res.locals.isSearch = false;
-      res.locals.searchKeyword = '';
+      res.locals.searchKeyword = null;
       res.locals.selectedCategory = null;
       res.locals.pagination = { current: 1, total: 1, range: [1] };
       res.locals.categories = [];
@@ -966,8 +967,15 @@ function generatePagination(current, total) {
 
 
 // ⭐ 메인 페이지 라우트
-// :lang 접두사를 추가하여 URL을 명확히 처리합니다.
-app.get('/:lang?', async (req, res) => {
+// :lang 접두사를 명시적으로 처리하는 라우트를 먼저 정의하고,
+// 언어 코드가 없는 기본 경로(/)를 나중에 정의합니다.
+app.get('/:lang', async (req, res, next) => {
+  const { lang } = req.params;
+  if (!supportedLangs.includes(lang)) {
+    // 언어 코드가 아닌 경우, 다음 미들웨어로 전달
+    return next();
+  }
+  
   const category = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -975,7 +983,7 @@ app.get('/:lang?', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang || 'ko';
+  const safeLang = req.params.lang;
   res.locals.lang = safeLang;
 
   try {
@@ -1084,6 +1092,12 @@ app.get('/:lang?', async (req, res) => {
     console.error('메인 페이지 로드 오류:', err);
     res.status(500).send('메인 페이지 로드 중 오류 발생');
   }
+});
+
+// ✅ 언어 코드가 없는 기본 경로(/) 처리
+app.get('/', async (req, res) => {
+  req.params.lang = 'ko'; // 기본 언어 'ko'로 설정
+  return app.get('/:lang')(req, res);
 });
 
 
