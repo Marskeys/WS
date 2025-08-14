@@ -1171,7 +1171,7 @@ app.get('/search', async (req, res) => {
       merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
       res.locals.locale = merged;
     }
- 및 오타 수정
+
 
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
