@@ -117,45 +117,102 @@ function buildPanel({ lang, section, topic }) {
 
 // 패널 전용 URL (SSR 전체 or partial)
 app.get('/:lang/:section/:topic', async (req, res) => {
-  const { lang, section, topic } = req.params;
+  try {
+    const { lang, section, topic } = req.params;
+    const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
 
-  // 기본 locals
-  res.locals.lang = lang;
-  res.locals.currentPath = req.path;
-  res.locals.user = req.user || req.session?.user || null;
-  res.locals.locale = allLocales[lang] || {};
+    res.locals.lang = lang;
+    res.locals.currentPath = req.path;
+    res.locals.user = req.user || req.session?.user || null;
+    res.locals.locale = allLocales[lang] || {};
 
-  // safeLang 설정
-  const safeLang = supportedLangs.includes(lang) ? lang : 'ko';
+    // 카테고리 파라미터
+    const categoryQueryParam = req.query.category || 'all';
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
 
-  // ✅ 기존 postsBaseQuery 그대로 사용
-  const postsBaseQuery = `
-    SELECT
-        p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-        COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-        COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-    FROM posts p
-    LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-    LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-    ORDER BY p.created_at DESC
-  `;
-  const postsQueryParams = [safeLang];
+    // --- postsBaseQuery (index 라우트와 동일) ---
+    let postsBaseQuery = `
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+    `;
+    let postsCountQuery = `SELECT COUNT(*) as count FROM posts`;
+    const postsQueryParams = [safeLang];
+    const postsCountParams = [];
 
-  const [posts] = await db.query(postsBaseQuery, postsQueryParams);
-  res.locals.posts = posts;
+    if (categoryQueryParam !== 'all') {
+      postsBaseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
+      postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
+      postsQueryParams.push(categoryQueryParam);
+      postsCountParams.push(categoryQueryParam);
+    }
 
-  res.locals.isSearch = false;
-  res.locals.searchKeyword = '';
-  res.locals.selectedCategory = null; // 또는 네 기존 로직 따라 설정
+    postsBaseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
+    postsQueryParams.push(limit, offset);
 
-  // 기존 panelData
-  const panelData = buildPanel({ lang, section, topic });
-  res.locals.panelData = panelData;
+    // 게시글 목록
+    const [postRows] = await db.query(postsBaseQuery, postsQueryParams);
+    res.locals.posts = postRows;
 
-  if (req.query.partial === '1') {
-    return res.render('partials/panel');
+    // --- categories (index 라우트와 동일) ---
+    const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    const [allCategoryRows] = await db.query(`
+      SELECT
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
+        MAX(p.created_at) AS latest,
+        COALESCE(c.${categoryColumn}, c.name) AS translated_category_name
+      FROM posts p
+      JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+             (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+      ) numbers
+      ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
+      JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
+      GROUP BY original_category, translated_category_name
+      ORDER BY latest DESC
+    `);
+
+    const allCategories = allCategoryRows.map(row => ({
+      original: row.original_category,
+      translated: row.translated_category_name
+    }));
+    res.locals.categories = allCategories;
+
+    // 선택된 카테고리 번역
+    let translatedSelectedCategory = null;
+    if (categoryQueryParam !== 'all') {
+      const foundCategory = allCategories.find(cat => cat.original === categoryQueryParam);
+      if (foundCategory) {
+        translatedSelectedCategory = foundCategory.translated;
+      }
+    }
+    res.locals.selectedCategory = translatedSelectedCategory;
+
+    res.locals.isSearch = false;
+    res.locals.searchKeyword = '';
+
+    // panelData
+    const panelData = buildPanel({ lang, section, topic });
+    res.locals.panelData = panelData;
+
+    if (req.query.partial === '1') {
+      return res.render('partials/panel');
+    }
+    return res.render('index');
+
+  } catch (err) {
+    console.error('패널 로드 오류:', err);
+    res.status(500).send('패널 로드 중 오류 발생');
   }
-  return res.render('index');
 });
 
 // 미들웨어 설정
