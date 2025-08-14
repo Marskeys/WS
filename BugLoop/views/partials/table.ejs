@@ -69,7 +69,7 @@
         <td><%= post.id %></td>
         <td>
           <div class="post-title-and-actions">
-            <!-- ✅ 패널 가로채기 방지 data-panel="off" -->
+            <!-- ✅ 패널 가로채기 방지 -->
             <a href="/<%= lang %>/post/<%= post.id %>" data-panel="off"
               class="post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
               data-post-id="<%= post.id %>"
@@ -113,7 +113,7 @@
         </td>
         <td><%= post.author %></td>
         <% 
-          // ✅ translated_categories_display가 없을 때도 안전하게
+          // ✅ 안전 가드: 배열 보장
           const displayCats = Array.isArray(post.translated_categories_display)
             ? post.translated_categories_display
             : (post.categories ? post.categories.split(',').map(c => c.trim()).filter(Boolean) : []);
@@ -162,7 +162,7 @@
   <% posts.forEach(post => { %>
     <div class="mobile-post-item">
       <div class="post-title-and-actions">
-        <!-- ✅ 패널 가로채기 방지 data-panel="off" -->
+        <!-- ✅ 패널 가로채기 방지 -->
         <a href="/<%= lang %>/post/<%= post.id %>" data-panel="off"
           class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
           data-post-id="<%= post.id %>"
@@ -301,23 +301,24 @@
     const currentUserId = currentUser ? currentUser.id : null;
     const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
 
-    // ✅ 포스트 링크는 전역 패널 핸들러에 가로채지 않도록 "캡처 단계"에서 처리하고,
-    //    전체 페이지 이동을 강제한다.
+    // ✅ 기존 로직 유지 + 하드 네비게이션 강제 (캡처 단계)
     postDetailLinks.forEach(link => {
       link.addEventListener('click', (event) => {
         const isPrivate = event.currentTarget.dataset.isPrivate === '1';
         const postUserId = event.currentTarget.dataset.postUserId;
+
         if (isPrivate && postUserId !== currentUserId && !isAdmin) {
           event.preventDefault();
           event.stopImmediatePropagation();
           showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
           return;
         }
-        // 비공개가 아니면: 패널 가로채기 방지하고 하드 네비게이션
+
+        // 비공개가 아니면: SPA 패널 가로채기 막고 전체 페이지 이동
         event.preventDefault();
         event.stopImmediatePropagation();
         window.location.href = link.href;
-      }, true); // ← 캡처 단계로 등록!
+      }, true); // ← 캡처 단계!
     });
 
     // 현재 페이지의 언어를 가져옵니다. (EJS 템플릿 변수를 사용)
