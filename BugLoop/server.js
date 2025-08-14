@@ -143,8 +143,8 @@ async function handlePanelRoute(req, res, next) {
     const { lang, section, topic } = req.params;
     res.locals.lang = lang;
 
-    // post 상세는 패널이 처리하지 않음 → 아래 /post/:id 라우트로 넘김
-    if (section === 'post' && /^\d+$/.test(topic)) {
+    // ✅ 특정 라우트는 패널 처리를 스킵하고 다음 미들웨어/라우트로 넘깁니다.
+    if (section === 'write' || section === 'edit' || (section === 'post' && /^\d+$/.test(topic))) {
       return next();
     }
 
@@ -175,6 +175,208 @@ async function handlePanelRoute(req, res, next) {
     return res.status(500).send('서버 오류');
   }
 }
+
+// ⭐ 글쓰기 페이지 라우트 (패널 라우트보다 위에 위치)
+app.get('/:lang/write', async (req, res) => {
+  if (!req.session.user || req.session.user.is_admin !== 1) {
+    return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
+  }
+
+  const safeLang = req.params.lang || 'ko';
+  res.locals.lang = safeLang;
+  try {
+    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
+
+    res.render('editor', {
+      user: req.session.user,
+      post: null,
+      isEdit: false,
+      posts: postsForSidebar,
+      categories: allCategories,
+      isSearch: false,
+      searchKeyword: '',
+      selectedCategory: translatedSelectedCategory,
+      locale: res.locals.locale,
+      lang: safeLang,
+      pagination: {
+        current: parseInt(req.query.page) || 1,
+        total: Math.ceil((await getPostCount(req)) / 10),
+        range: paginationRange
+      }
+    });
+  } catch (err) {
+    console.error('글쓰기 페이지 로드 오류:', err);
+    res.status(500).send('글쓰기 페이지 로드 중 오류 발생');
+  }
+});
+
+// ⭐ 글 수정 페이지 라우트 (패널 라우트보다 위에 위치)
+app.get('/:lang/edit/:id', async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.session.user?.id;
+  const safeLang = req.params.lang || 'ko';
+  res.locals.lang = safeLang;
+
+  try {
+    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    if (basePostRows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
+
+    const basePost = basePostRows[0];
+    if (basePost.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
+      return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
+    }
+
+    const [translationsRows] = await db.query(
+      'SELECT lang_code, title, content FROM post_translations WHERE post_id = ?',
+      [postId]
+    );
+
+    const postForEjs = {
+      id: basePost.id,
+      categories: basePost.categories,
+      is_private: basePost.is_private,
+      is_pinned: basePost.is_pinned,
+      author: basePost.author,
+      user_id: basePost.user_id,
+    };
+
+    translationsRows.forEach(row => {
+      postForEjs[row.lang_code] = {
+        title: row.title,
+        content: row.content,
+      };
+    });
+
+    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
+
+    res.render('editor', {
+      user: req.session.user,
+      post: postForEjs,
+      isEdit: true,
+      posts: postsForSidebar,
+      categories: allCategories,
+      isSearch: false,
+      searchKeyword: '',
+      selectedCategory: translatedSelectedCategory,
+      locale: res.locals.locale,
+      lang: safeLang,
+      pagination: {
+        current: parseInt(req.query.page) || 1,
+        total: Math.ceil((await getPostCount(req)) / 10),
+        range: paginationRange
+      }
+    });
+  } catch (err) {
+    console.error('수정 페이지 로드 오류:', err);
+    res.status(500).send('서버 오류');
+  }
+});
+
+// ⭐ 글 상세 페이지 라우트 (패널 라우트보다 위에 위치)
+app.get('/:lang/post/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
+    res.locals.lang = safeLang; // locals 업데이트
+
+    if (!req.session.viewedPosts) {
+      req.session.viewedPosts = [];
+    }
+
+    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    if (basePostRows.length === 0) {
+      return res.status(404).render('404');
+    }
+
+    const post = basePostRows[0];
+    const isAdmin = req.session.user?.is_admin === 1;
+    const isAuthor = req.session.user?.id === post.user_id;
+    if (post.is_private && !isAuthor && !isAdmin) {
+      return res.status(403).render('403', { message: '비공개 글입니다.', user: req.session.user });
+    }
+
+    if (!req.session.viewedPosts.includes(postId)) {
+      await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
+      req.session.viewedPosts.push(postId);
+    }
+
+    let [translations] = await db.query(
+      'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
+      [postId, safeLang]
+    );
+
+    let translation = translations[0];
+
+    if (!translation && safeLang !== 'ko') {
+      console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
+      [translations] = await db.query(
+        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
+        [postId]
+      );
+      translation = translations[0];
+    }
+
+    if (!translation) {
+      translation = {
+        title: post.title,
+        content: post.content,
+      };
+    }
+
+    const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+    const translatedCategories = [];
+    if (originalCategories.length > 0) {
+      const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+      const placeholders = originalCategories.map(() => '?').join(',');
+
+      const [categoryNameRows] = await db.query(
+        `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
+        originalCategories
+      );
+      translatedCategories.push(...categoryNameRows.map(row => row.name));
+    }
+
+    const postForView = {
+      ...post,
+      title: translation.title,
+      content: translation.content,
+      categories: translatedCategories,
+      originalCategories: originalCategories
+    };
+
+    const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
+    const alternateLinks = supportedLangs.map(lang => ({
+      lang,
+      href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
+    }));
+
+    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
+
+    res.render('post-view', {
+      post: postForView,
+      posts: postsForSidebar,
+      user: req.session.user,
+      canonicalUrl,
+      alternateLinks,
+      lang: safeLang,
+      isSearch: false,
+      searchKeyword: '',
+      selectedCategory: translatedSelectedCategory,
+      locale: res.locals.locale,
+      categories: allCategories,
+      pagination: {
+        current: parseInt(req.query.page) || 1,
+        total: Math.ceil((await getPostCount(req)) / 10),
+        range: paginationRange
+      }
+    });
+
+  } catch (err) {
+    console.error('🌐 다국어 글 보기 오류:', err);
+    res.status(500).render('error', { message: '서버 오류로 글을 불러올 수 없습니다.', user: req.session.user });
+  }
+});
+
 
 // ⭐ 패널 전용 URL (언어 코드 포함)
 app.get('/:lang/:section/:topic', handlePanelRoute);
@@ -343,39 +545,6 @@ app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
-// ✅ 글쓰기 페이지 라우트
-app.get('/write', async (req, res) => {
-  if (!req.session.user || req.session.user.is_admin !== 1) {
-    return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
-  }
-
-  const safeLang = res.locals.lang;
-  try {
-    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
-
-    res.render('editor', {
-      user: req.session.user,
-      post: null,
-      isEdit: false,
-      posts: postsForSidebar,
-      categories: allCategories,
-      isSearch: false,
-      searchKeyword: '',
-      selectedCategory: translatedSelectedCategory,
-      locale: res.locals.locale,
-      lang: safeLang,
-      pagination: {
-        current: parseInt(req.query.page) || 1,
-        total: Math.ceil((await getPostCount(req)) / 10),
-        range: paginationRange
-      }
-    });
-  } catch (err) {
-    console.error('글쓰기 페이지 로드 오류:', err);
-    res.status(500).send('글쓰기 페이지 로드 중 오류 발생');
-  }
-});
-
 // ✅ 글 저장 처리 라우트
 app.post('/savePost', async (req, res) => {
   const { categories, is_private, is_pinned, lang_content } = req.body;
@@ -469,68 +638,6 @@ app.post('/delete/:id', async (req, res) => {
 });
 
 
-// ✅ 글 수정 페이지 라우트
-app.get('/edit/:id', async (req, res) => {
-  const postId = req.params.id;
-  const userId = req.session.user?.id;
-  const safeLang = res.locals.lang;
-
-  try {
-    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-    if (basePostRows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
-
-    const basePost = basePostRows[0];
-    if (basePost.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
-      return res.status(403).send('글 작성자 또는 관리자만 수정할 수 있습니다.');
-    }
-
-    const [translationsRows] = await db.query(
-      'SELECT lang_code, title, content FROM post_translations WHERE post_id = ?',
-      [postId]
-    );
-
-    const postForEjs = {
-      id: basePost.id,
-      categories: basePost.categories,
-      is_private: basePost.is_private,
-      is_pinned: basePost.is_pinned,
-      author: basePost.author,
-      user_id: basePost.user_id,
-    };
-
-    translationsRows.forEach(row => {
-      postForEjs[row.lang_code] = {
-        title: row.title,
-        content: row.content,
-      };
-    });
-
-    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
-
-    res.render('editor', {
-      user: req.session.user,
-      post: postForEjs,
-      isEdit: true,
-      posts: postsForSidebar,
-      categories: allCategories,
-      isSearch: false,
-      searchKeyword: '',
-      selectedCategory: translatedSelectedCategory,
-      locale: res.locals.locale,
-      lang: safeLang,
-      pagination: {
-        current: parseInt(req.query.page) || 1,
-        total: Math.ceil((await getPostCount(req)) / 10),
-        range: paginationRange
-      }
-    });
-  } catch (err) {
-    console.error('수정 페이지 로드 오류:', err);
-    res.status(500).send('서버 오류');
-  }
-});
-
-
 // ✅ 글 수정 처리 라우트
 app.post('/edit/:id', async (req, res) => {
   const postId = req.params.id;
@@ -603,113 +710,6 @@ app.post('/edit/:id', async (req, res) => {
   } catch (err) {
     console.error('수정 처리 오류:', err);
     res.status(500).json({ success: false, error: '서버 오류로 글을 수정할 수 없습니다.' });
-  }
-});
-
-
-// ⭐ 글 상세 페이지 라우트
-// :lang 접두사를 추가하여 URL을 명확히 처리합니다.
-app.get('/:lang/post/:id', async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
-    res.locals.lang = safeLang; // locals 업데이트
-
-    if (!req.session.viewedPosts) {
-      req.session.viewedPosts = [];
-    }
-
-    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-    if (basePostRows.length === 0) {
-      return res.status(404).render('404');
-    }
-
-    const post = basePostRows[0];
-    const isAdmin = req.session.user?.is_admin === 1;
-    const isAuthor = req.session.user?.id === post.user_id;
-    if (post.is_private && !isAuthor && !isAdmin) {
-      return res.status(403).render('403', { message: '비공개 글입니다.', user: req.session.user });
-    }
-
-    if (!req.session.viewedPosts.includes(postId)) {
-      await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
-      req.session.viewedPosts.push(postId);
-    }
-
-    let [translations] = await db.query(
-      'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
-      [postId, safeLang]
-    );
-
-    let translation = translations[0];
-
-    if (!translation && safeLang !== 'ko') {
-      console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
-      [translations] = await db.query(
-        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
-        [postId]
-      );
-      translation = translations[0];
-    }
-
-    if (!translation) {
-      translation = {
-        title: post.title,
-        content: post.content,
-      };
-    }
-
-    const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-    const translatedCategories = [];
-    if (originalCategories.length > 0) {
-      const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-      const placeholders = originalCategories.map(() => '?').join(',');
-
-      const [categoryNameRows] = await db.query(
-        `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
-        originalCategories
-      );
-      translatedCategories.push(...categoryNameRows.map(row => row.name));
-    }
-
-    const postForView = {
-      ...post,
-      title: translation.title,
-      content: translation.content,
-      categories: translatedCategories,
-      originalCategories: originalCategories
-    };
-
-    const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
-    const alternateLinks = supportedLangs.map(lang => ({
-      lang,
-      href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
-    }));
-
-    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
-
-    res.render('post-view', {
-      post: postForView,
-      posts: postsForSidebar,
-      user: req.session.user,
-      canonicalUrl,
-      alternateLinks,
-      lang: safeLang,
-      isSearch: false,
-      searchKeyword: '',
-      selectedCategory: translatedSelectedCategory,
-      locale: res.locals.locale,
-      categories: allCategories,
-      pagination: {
-        current: parseInt(req.query.page) || 1,
-        total: Math.ceil((await getPostCount(req)) / 10),
-        range: paginationRange
-      }
-    });
-
-  } catch (err) {
-    console.error('🌐 다국어 글 보기 오류:', err);
-    res.status(500).render('error', { message: '서버 오류로 글을 불러올 수 없습니다.', user: req.session.user });
   }
 });
 
