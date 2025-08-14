@@ -184,12 +184,22 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     res.locals.user = currentUser;
 
     // locale 병합(기본값 보강)
-    const koBase   = (typeof allLocales !== 'undefined' && allLocales['ko']) ? allLocales['ko'] : {};
-    const curLocale= (typeof allLocales !== 'undefined' && allLocales[safeLang]) ? allLocales[safeLang] : {};
-    const merged   = { ...koBase, ...curLocale };
-    merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-    merged.profile = { 'profile-name': '', 'profile-bio': '', 'profile-tags': [], ...(merged.profile || {}) };
-    merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+    const koBase    = (typeof allLocales !== 'undefined' && allLocales['ko']) ? allLocales['ko'] : {};
+    const curLocale = (typeof allLocales !== 'undefined' && allLocales[safeLang]) ? allLocales[safeLang] : {};
+    const merged    = { ...koBase, ...curLocale };
+    merged.search   = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
+    merged.profile  = { 'profile-name': '', 'profile-bio': '', 'profile-tags': [], ...(merged.profile || {}) };
+    merged.tabs     = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+    // ✅ table.ejs 헤더 키 기본값 보강
+    merged.tableHeaders = {
+      number: '번호',
+      title: '제목',
+      author: '작성자',
+      category: '카테고리',
+      date: '작성일',
+      views: '조회수',
+      ...(merged.tableHeaders || {})
+    };
     res.locals.locale = merged;
 
     // 파라미터
@@ -302,6 +312,7 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     return res.status(500).send('서버 오류');
   }
 });
+
 
 
 
