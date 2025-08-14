@@ -1,173 +1,369 @@
+<!-- ▼▼ panel.ejs 안, panel-card 내부에 그대로 붙여넣기 ▼▼ -->
 <style>
-    .tutorial-container {
-      font-family: 'Noto Sans KR', sans-serif;
-      line-height: 1.65;
-      color: #f0f0f0;
+    /* ===== Scoped to .blt (panel-safe) ===== */
+    .blt{--brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae; --code:#0f0f0f; --code-br:rgba(255,255,255,.12)}
+    .blt *{box-sizing:border-box}
+    .blt .blt-toolbar{display:flex; gap:8px; align-items:center; margin-bottom:10px}
+    .blt .blt-search{flex:1; min-width:120px}
+    .blt .blt-search input{
+      width:100%; padding:8px 10px; border-radius:10px; border:1px solid #333; background:#0a0a0a; color:#e5e7eb;
+      font-size:12px; outline:none;
     }
-    .tutorial-container h2, 
-    .tutorial-container h3, 
-    .tutorial-container h4 {
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
-      color: #ffe082;
-      font-weight: 700;
+  
+    /* Tab strip (horizontal, scrollable) */
+    .blt .blt-tabs{display:flex; gap:6px; overflow:auto; padding-bottom:2px}
+    .blt .blt-tab{
+      border:1px solid #333; background:#121212; color:#ddd; padding:6px 10px; border-radius:999px; font-size:12px;
+      cursor:pointer; white-space:nowrap
     }
-    .tutorial-container p {
-      margin-bottom: 1em;
+    .blt .blt-tab:hover{background:#161616}
+    .blt .blt-tab.is-active{background:var(--brand); border-color:transparent; color:#fff; font-weight:700}
+  
+    /* Panels */
+    .blt .blt-panels{margin-top:10px}
+    .blt .blt-panel{display:none}
+    .blt .blt-panel.is-active{display:block}
+    .blt h2{color:#ffe082; margin:0 0 6px 0; font-size:18px}
+    .blt h3{color:#ffd666; margin:14px 0 6px 0; font-size:15px}
+    .blt p{margin:6px 0; line-height:1.7}
+    .blt ul{margin:6px 0 8px 18px}
+    .blt li{margin:4px 0}
+    .blt .blt-note{background:#0b1220; border:1px solid rgba(255,255,255,.08); padding:8px 10px; border-radius:8px; font-size:12px}
+  
+    /* Code */
+    .blt pre{background:var(--code); border:1px solid var(--code-br); border-radius:10px; padding:12px; overflow:auto; margin:8px 0}
+    .blt code{font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; color:#ffcc80}
+  
+    /* Example runner */
+    .blt .blt-example{border:1px solid var(--code-br); border-radius:10px; overflow:hidden; margin:10px 0}
+    .blt .blt-example .bar{display:flex; gap:8px; align-items:center; padding:8px; background:#0a0a0a; border-bottom:1px solid var(--code-br)}
+    .blt .blt-example .title{font-weight:800; color:#e5e7eb; font-size:12px; flex:1}
+    .blt .blt-example .btn{border:0; background:#374151; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer}
+    .blt .blt-example .btn.run{background:var(--brand)}
+    .blt .blt-example .grid{display:grid; grid-template-columns:1fr 1fr}
+    .blt .blt-example textarea{
+      width:100%; min-height:150px; background:#0c0c0c; color:#e5e7eb; border:0; border-right:1px solid var(--code-br);
+      padding:10px; font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; outline:none; resize:vertical
     }
-    .tutorial-container code {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.9em;
-      color: #ffcc80;
-    }
-    .tutorial-container pre {
-      background: #1e1e1e;
-      padding: 12px;
-      border-radius: 6px;
-      overflow-x: auto;
-      font-size: 0.9em;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .tutorial-container ul {
-      margin: 0.5em 0 1em 1.2em;
-    }
-    .tutorial-container li {
-      margin-bottom: 0.4em;
-    }
-    .chip {
-      display: inline-block;
-      background-color: #333;
-      color: #ddd;
-      padding: 4px 10px;
-      margin: 3px 4px 0 0;
-      border-radius: 20px;
-      font-size: 0.8em;
-      border: 1px solid #555;
-    }
-    .highlight {
-      background-color: rgba(255, 235, 59, 0.15);
-      padding: 2px 4px;
-      border-radius: 4px;
+    .blt .blt-example iframe{width:100%; min-height:150px; border:0; background:#fff}
+  
+    /* Chips */
+    .blt .blt-chips{margin-top:6px}
+    .blt .blt-chip{display:inline-block; padding:4px 8px; border:1px solid #333; background:#161616; color:#ddd; border-radius:999px; font-size:11px; margin:4px 6px 0 0}
+  
+    /* Compact for small panels */
+    @media (max-width:640px){
+      .blt .blt-example .grid{grid-template-columns:1fr}
     }
   </style>
   
-  <div class="tutorial-container">
-    <h2>HTML 완전정복: 구조부터 실전 활용까지</h2>
-    <p>
-      <strong>HTML(HyperText Markup Language)</strong>은 웹의 기초 설계도다.<br>
-      CSS가 외형(색, 크기, 배치), JavaScript가 동작(이벤트, 데이터 처리)을 맡는다면,  
-      HTML은 그 위에 얹히는 모든 요소의 <span class="highlight">위치·역할·의미</span>를 정의한다.<br>
-      브라우저는 HTML 문서를 읽어 <em>DOM(Document Object Model)</em>이라는 트리 구조로 변환한 뒤, CSS와 합쳐 화면에 렌더링한다.
-    </p>
+  <div class="blt" data-component="html-tabs">
+    <div class="blt-toolbar" aria-label="HTML 튜토리얼 툴바">
+      <div class="blt-search"><input type="search" placeholder="챕터 검색… (links, forms 등)" aria-label="탭 검색"></div>
+    </div>
   
-    <h3>1. HTML의 본질</h3>
-    <ul>
-      <li><b>구조화</b>: 제목, 본문, 이미지, 표 등을 논리적 계층으로 나눈다.</li>
-      <li><b>의미 부여</b>: 시맨틱 태그를 사용해 콘텐츠의 목적을 명확히 한다.</li>
-      <li><b>브라우저와의 약속</b>: HTML 태그와 속성은 브라우저가 해석하는 표준 규칙을 따른다.</li>
-    </ul>
+    <div class="blt-tabs" role="tablist" aria-label="HTML Tutorial Tabs">
+      <!-- 필요한 만큼 추가/정렬 가능 -->
+      <button class="blt-tab is-active" role="tab" aria-selected="true" data-tab="home" aria-controls="blt-home">HOME</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="intro" aria-controls="blt-intro">Introduction</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="basic" aria-controls="blt-basic">Basic</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="elements" aria-controls="blt-elements">Elements</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="attributes" aria-controls="blt-attributes">Attributes</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="headings" aria-controls="blt-headings">Headings</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="paragraphs" aria-controls="blt-paragraphs">Paragraphs</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="styles" aria-controls="blt-styles">Styles</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="links" aria-controls="blt-links">Links</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="images" aria-controls="blt-images">Images</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="lists" aria-controls="blt-lists">Lists</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="tables" aria-controls="blt-tables">Tables</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="forms" aria-controls="blt-forms">Forms</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="semantics" aria-controls="blt-semantics">Semantics</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="block-inline" aria-controls="blt-block-inline">Block vs Inline</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="id-class" aria-controls="blt-id-class">id vs class</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="head-meta" aria-controls="blt-head-meta">&lt;head&gt; &amp; Meta</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="filepaths" aria-controls="blt-filepaths">File Paths</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="entities" aria-controls="blt-entities">Entities & Emojis</button>
+      <button class="blt-tab" role="tab" aria-selected="false" data-tab="responsive" aria-controls="blt-responsive">Responsive</button>
+    </div>
   
-    <h4>1.1 기본 문서 구조</h4>
-    <pre><code>&lt;!DOCTYPE html&gt;
+    <div class="blt-panels">
+      <!-- HOME -->
+      <section id="blt-home" class="blt-panel is-active" role="tabpanel">
+        <h2>HTML HOME</h2>
+        <p>HTML은 웹 페이지의 <b>구조</b>와 <b>의미</b>를 정의하는 마크업 언어다. CSS/JS는 HTML 위에 올라탄다.</p>
+        <pre><code>&lt;!DOCTYPE html&gt;
   &lt;html lang="ko"&gt;
-    &lt;head&gt;
-      &lt;meta charset="UTF-8"&gt;
-      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-      &lt;title&gt;문서 제목&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-      &lt;h1&gt;안녕하세요&lt;/h1&gt;
-      &lt;p&gt;이것은 HTML 예제입니다.&lt;/p&gt;
-    &lt;/body&gt;
-  &lt;/html&gt;
-  </code></pre>
-    <p><b>TIP:</b> <code>&lt;!DOCTYPE html&gt;</code>은 HTML5 표준 문서임을 선언하는 필수 문구다.</p>
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;첫 페이지&lt;/title&gt;
+  &lt;h1&gt;안녕하세요&lt;/h1&gt;
+  &lt;p&gt;HTML은 웹의 설계도입니다.&lt;/p&gt;</code></pre>
+        <div class="blt-example" data-name="HOME 예제">
+          <div class="bar">
+            <div class="title">Try it</div>
+            <button class="btn run">실행</button>
+            <button class="btn copy">복사</button>
+          </div>
+          <div class="grid">
+  <textarea>&lt;h1&gt;Hello HTML&lt;/h1&gt;
+  &lt;p&gt;이건 패널 내부에서 즉시 실행돼요.&lt;/p&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+        <div class="blt-chips">
+          <span class="blt-chip">DOM</span><span class="blt-chip">기본</span><span class="blt-chip">보일러플레이트</span>
+        </div>
+      </section>
   
-    <h3>2. 시맨틱 태그와 의미</h3>
-    <p>시맨틱 태그는 단순히 화면에 보여주기 위한 게 아니라, 콘텐츠의 목적과 역할을 검색엔진·보조기기에 전달한다.</p>
-    <ul>
-      <li><code>&lt;header&gt;</code> - 페이지나 섹션의 머리말</li>
-      <li><code>&lt;nav&gt;</code> - 내비게이션 링크 집합</li>
-      <li><code>&lt;main&gt;</code> - 문서의 핵심 콘텐츠(한 번만 사용)</li>
-      <li><code>&lt;section&gt;</code> - 주제별 구획</li>
-      <li><code>&lt;article&gt;</code> - 독립적인 콘텐츠 블록</li>
-      <li><code>&lt;aside&gt;</code> - 부가 정보</li>
-      <li><code>&lt;footer&gt;</code> - 꼬리말</li>
-    </ul>
+      <!-- INTRO -->
+      <section id="blt-intro" class="blt-panel" role="tabpanel">
+        <h2>Introduction</h2>
+        <p class="blt-note">브라우저는 HTML을 파싱하여 DOM 트리를 만들고, CSS를 적용해 렌더 트리로 그린다.</p>
+        <ul>
+          <li><b>시맨틱</b> 구조는 SEO/접근성/유지보수에 유리</li>
+          <li><b>표준</b>은 Living Standard(WHATWG)에 따라 업데이트</li>
+          <li><b>호환성</b>은 MDN/Can I use로 확인</li>
+        </ul>
+      </section>
   
-    <h3>3. 텍스트와 링크</h3>
-    <pre><code>&lt;h1&gt;제목&lt;/h1&gt;
-  &lt;p&gt;단락 내용.&lt;/p&gt;
-  &lt;a href="https://example.com" target="_blank" rel="noopener"&gt;외부 링크&lt;/a&gt;
-  </code></pre>
-    <p><b>TIP:</b> 외부 링크에 <code>rel="noopener"</code>를 붙이면 보안과 성능이 향상된다.</p>
+      <!-- BASIC -->
+      <section id="blt-basic" class="blt-panel" role="tabpanel">
+        <h2>Basic</h2>
+        <ul>
+          <li><code>&lt;!DOCTYPE html&gt;</code>: HTML5 선언</li>
+          <li><code>lang</code>, <code>charset</code>, <code>viewport</code>는 필수</li>
+        </ul>
+        <div class="blt-example" data-name="기본 구조">
+          <div class="bar">
+            <div class="title">Try it</div>
+            <button class="btn run">실행</button>
+            <button class="btn copy">복사</button>
+          </div>
+          <div class="grid">
+  <textarea>&lt;!DOCTYPE html&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;h1&gt;기본 구조&lt;/h1&gt;
+  &lt;p&gt;간단한 HTML도 렌더링됩니다.&lt;/p&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
   
-    <h3>4. 이미지와 미디어</h3>
-    <pre><code>&lt;img src="cat.jpg" alt="고양이 사진" width="400"&gt;
-  </code></pre>
-    <pre><code>&lt;video controls width="400"&gt;
-    &lt;source src="movie.mp4" type="video/mp4"&gt;
-    브라우저가 video 태그를 지원하지 않습니다.
-  &lt;/video&gt;
-  </code></pre>
-    <p><b>TIP:</b> <code>alt</code> 속성은 시각장애인용 스크린 리더와 SEO 모두에 중요하다.</p>
+      <!-- ELEMENTS -->
+      <section id="blt-elements" class="blt-panel" role="tabpanel">
+        <h2>Elements</h2>
+        <p>요소 = 시작 태그 + 내용 + 종료 태그. 빈 요소는 종료 태그 없음(<code>&lt;img&gt;</code> 등).</p>
+        <pre><code>&lt;p&gt;문단&lt;/p&gt;
+  &lt;img src="/path/cat.jpg" alt="고양이"&gt;</code></pre>
+      </section>
   
-    <h3>5. 폼 요소</h3>
-    <pre><code>&lt;form action="/submit" method="post"&gt;
-    &lt;label for="email"&gt;이메일&lt;/label&gt;
-    &lt;input type="email" id="email" name="email" required&gt;
-    &lt;button type="submit"&gt;제출&lt;/button&gt;
-  &lt;/form&gt;
-  </code></pre>
+      <!-- ATTRIBUTES -->
+      <section id="blt-attributes" class="blt-panel" role="tabpanel">
+        <h2>Attributes</h2>
+        <pre><code>&lt;a href="/docs" target="_blank" rel="noopener"&gt;문서&lt;/a&gt;
+  &lt;input type="checkbox" checked&gt; 불리언 속성은 값 없이 존재=참</code></pre>
+      </section>
   
-    <h3>6. 테이블</h3>
-    <pre><code>&lt;table&gt;
+      <!-- HEADINGS -->
+      <section id="blt-headings" class="blt-panel" role="tabpanel">
+        <h2>Headings</h2>
+        <pre><code>&lt;h1&gt;대제목&lt;/h1&gt;
+  &lt;h2&gt;중제목&lt;/h2&gt;
+  &lt;h3&gt;소제목&lt;/h3&gt;</code></pre>
+      </section>
+  
+      <!-- PARAGRAPHS -->
+      <section id="blt-paragraphs" class="blt-panel" role="tabpanel">
+        <h2>Paragraphs</h2>
+        <pre><code>&lt;p&gt;첫 문단&lt;/p&gt;
+  &lt;p&gt;둘째 문단&lt;/p&gt;
+  &lt;hr&gt;
+  &lt;p&gt;셋째&lt;br&gt;줄바꿈&lt;/p&gt;</code></pre>
+      </section>
+  
+      <!-- STYLES -->
+      <section id="blt-styles" class="blt-panel" role="tabpanel">
+        <h2>Styles</h2>
+        <pre><code>&lt;p style="color:tomato; font-weight:bold"&gt;경고&lt;/p&gt;</code></pre>
+        <p class="blt-note">인라인 스타일은 빠르지만 유지보수성이 낮음 → CSS 권장</p>
+      </section>
+  
+      <!-- LINKS -->
+      <section id="blt-links" class="blt-panel" role="tabpanel">
+        <h2>Links</h2>
+        <pre><code>&lt;a href="https://example.com" target="_blank" rel="noopener"&gt;외부&lt;/a&gt;
+  &lt;a href="#blt-tables"&gt;같은 문서 내 이동&lt;/a&gt;</code></pre>
+      </section>
+  
+      <!-- IMAGES -->
+      <section id="blt-images" class="blt-panel" role="tabpanel">
+        <h2>Images</h2>
+        <pre><code>&lt;img src="/img/photo.jpg" alt="행복한 강아지" width="420"&gt;</code></pre>
+        <p class="blt-note"><code>alt</code>는 접근성과 SEO 핵심</p>
+      </section>
+  
+      <!-- LISTS -->
+      <section id="blt-lists" class="blt-panel" role="tabpanel">
+        <h2>Lists</h2>
+        <pre><code>&lt;ul&gt;&lt;li&gt;불릿&lt;/li&gt;&lt;li&gt;리스트&lt;/li&gt;&lt;/ul&gt;
+  &lt;ol&gt;&lt;li&gt;순서&lt;/li&gt;&lt;li&gt;리스트&lt;/li&gt;&lt;/ol&gt;
+  &lt;dl&gt;&lt;dt&gt;용어&lt;/dt&gt;&lt;dd&gt;설명&lt;/dd&gt;&lt;/dl&gt;</code></pre>
+      </section>
+  
+      <!-- TABLES -->
+      <section id="blt-tables" class="blt-panel" role="tabpanel">
+        <h2>Tables</h2>
+        <pre><code>&lt;table&gt;
     &lt;caption&gt;월별 판매량&lt;/caption&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;&lt;th&gt;월&lt;/th&gt;&lt;th&gt;판매량&lt;/th&gt;&lt;/tr&gt;
-    &lt;/thead&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th&gt;월&lt;/th&gt;&lt;th&gt;판매량&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
     &lt;tbody&gt;
       &lt;tr&gt;&lt;td&gt;1월&lt;/td&gt;&lt;td&gt;100&lt;/td&gt;&lt;/tr&gt;
       &lt;tr&gt;&lt;td&gt;2월&lt;/td&gt;&lt;td&gt;150&lt;/td&gt;&lt;/tr&gt;
     &lt;/tbody&gt;
-  &lt;/table&gt;
-  </code></pre>
+  &lt;/table&gt;</code></pre>
+      </section>
   
-    <h3>7. 접근성(A11y) 원칙</h3>
-    <ul>
-      <li>이미지에 대체 텍스트 제공</li>
-      <li>폼 요소와 <code>&lt;label&gt;</code> 연결</li>
-      <li>헤딩 계층 구조 유지</li>
-      <li>색상만으로 정보 전달하지 않기</li>
-    </ul>
+      <!-- FORMS -->
+      <section id="blt-forms" class="blt-panel" role="tabpanel">
+        <h2>Forms</h2>
+        <pre><code>&lt;form action="/submit" method="post"&gt;
+    &lt;label for="email"&gt;이메일&lt;/label&gt;
+    &lt;input id="email" name="email" type="email" required&gt;
+    &lt;button type="submit"&gt;제출&lt;/button&gt;
+  &lt;/form&gt;</code></pre>
+        <p class="blt-note"><code>label[for]</code> ↔ <code>input[id]</code> 연결은 접근성 필수</p>
+      </section>
   
-    <h3>8. SEO 최적화</h3>
-    <ul>
-      <li><code>&lt;title&gt;</code>과 <code>&lt;meta name="description"&gt;</code>를 페이지별로 정확히 작성</li>
-      <li>핵심 콘텐츠를 <code>&lt;main&gt;</code>에 배치</li>
-      <li>의미 있는 URL 구조 사용</li>
-    </ul>
+      <!-- SEMANTICS -->
+      <section id="blt-semantics" class="blt-panel" role="tabpanel">
+        <h2>Semantics</h2>
+        <pre><code>&lt;header&gt;머리말&lt;/header&gt;
+  &lt;nav&gt;내비&lt;/nav&gt;
+  &lt;main&gt;&lt;article&gt;글&lt;/article&gt;&lt;/main&gt;
+  &lt;aside&gt;보조&lt;/aside&gt;
+  &lt;footer&gt;꼬리말&lt;/footer&gt;</code></pre>
+      </section>
   
-    <h3>9. 성능 최적화</h3>
-    <ul>
-      <li>이미지 용량 최소화 + <code>loading="lazy"</code></li>
-      <li>스크립트에 <code>defer</code> 또는 <code>async</code></li>
-    </ul>
+      <!-- BLOCK vs INLINE -->
+      <section id="blt-block-inline" class="blt-panel" role="tabpanel">
+        <h2>Block vs Inline</h2>
+        <ul>
+          <li><b>Block</b>: 한 줄 전체 차지 (예: <code>div, p, h1</code>)</li>
+          <li><b>Inline</b>: 내용만큼 (예: <code>span, a, img</code>)</li>
+        </ul>
+      </section>
   
-    <h3>10. 실수 방지</h3>
-    <ul>
-      <li><code>&lt;div&gt;</code> 남용 대신 시맨틱 태그 활용</li>
-      <li>잘못된 속성·중첩 방지</li>
-    </ul>
+      <!-- ID vs CLASS -->
+      <section id="blt-id-class" class="blt-panel" role="tabpanel">
+        <h2>id vs class</h2>
+        <pre><code>&lt;div id="hero"&gt;고유 1개&lt;/div&gt;
+  &lt;div class="tag"&gt;여러 요소에 공통&lt;/div&gt;</code></pre>
+      </section>
   
-    <div>
-      <span class="chip">시맨틱 태그</span>
-      <span class="chip">접근성</span>
-      <span class="chip">SEO</span>
-      <span class="chip">성능 최적화</span>
+      <!-- HEAD & META -->
+      <section id="blt-head-meta" class="blt-panel" role="tabpanel">
+        <h2>&lt;head&gt; &amp; Meta</h2>
+        <pre><code>&lt;meta name="description" content="요약"&gt;
+  &lt;meta property="og:title" content="SNS 제목"&gt;
+  &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</code></pre>
+      </section>
+  
+      <!-- FILE PATHS -->
+      <section id="blt-filepaths" class="blt-panel" role="tabpanel">
+        <h2>File Paths</h2>
+        <pre><code>./img/cat.jpg    (현재 폴더)
+  ../assets/a.js  (상위 폴더)
+  https://cdn.example.com/lib.css (절대)</code></pre>
+      </section>
+  
+      <!-- ENTITIES -->
+      <section id="blt-entities" class="blt-panel" role="tabpanel">
+        <h2>Entities & Emojis</h2>
+        <pre><code>&amp;lt; &amp;gt; &amp;amp; &amp;nbsp;
+  😀 😍 👍 — UTF-8이면 그대로 사용 가능</code></pre>
+      </section>
+  
+      <!-- RESPONSIVE -->
+      <section id="blt-responsive" class="blt-panel" role="tabpanel">
+        <h2>Responsive</h2>
+        <pre><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code></pre>
+        <p class="blt-note">패널은 높이만 바꾸면 되므로, 가로 폭은 기존 레이아웃에 따름.</p>
+      </section>
     </div>
   </div>
+  
+  <script>
+  /* ===== panel-safe init (no globals) ===== */
+  (function(){
+    const root = document.querySelector('.blt[data-component="html-tabs"]');
+    if(!root) return;
+  
+    const tabs   = Array.from(root.querySelectorAll('.blt-tab'));
+    const panels = Array.from(root.querySelectorAll('.blt-panel'));
+    const search = root.querySelector('.blt-search input');
+    const LS_KEY = 'blt:html:last:' + location.pathname;
+  
+    function openTab(id, remember=true){
+      panels.forEach(p => p.classList.toggle('is-active', p.id === 'blt-' + id));
+      tabs.forEach(t => {
+        const on = t.dataset.tab === id;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        if(on) t.scrollIntoView({block:'nearest', inline:'nearest'});
+      });
+      if(remember){ try{ localStorage.setItem(LS_KEY, id); }catch(e){} }
+    }
+  
+    tabs.forEach(t=>{
+      t.addEventListener('click', ()=> openTab(t.dataset.tab));
+      t.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' || e.key===' ') { e.preventDefault(); openTab(t.dataset.tab); }
+        if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
+          const dir = e.key==='ArrowRight' ? 1 : -1;
+          const i = tabs.indexOf(t);
+          const next = tabs[(i+dir+tabs.length)%tabs.length];
+          next.focus();
+        }
+      });
+    });
+  
+    // Restore last tab
+    const last = (()=>{
+      try{ return localStorage.getItem(LS_KEY) }catch(e){ return null }
+    })();
+    if(last && root.querySelector('#blt-' + last)) openTab(last, false);
+    else openTab('home', false);
+  
+    // Filter tabs
+    function applyFilter(){
+      const q = (search.value||'').trim().toLowerCase();
+      tabs.forEach(t=>{
+        const show = t.textContent.toLowerCase().includes(q);
+        t.style.display = show ? '' : 'none';
+      });
+    }
+    search.addEventListener('input', applyFilter);
+  
+    // Example runner + copy (scoped)
+    root.querySelectorAll('.blt-example').forEach(box=>{
+      const ta   = box.querySelector('textarea');
+      const frame= box.querySelector('iframe');
+      const run  = box.querySelector('.btn.run');
+      const copy = box.querySelector('.btn.copy');
+  
+      function doRun(){
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        doc.open(); doc.write(ta.value); doc.close();
+      }
+      run.addEventListener('click', doRun);
+      setTimeout(doRun, 0);
+  
+      copy.addEventListener('click', async ()=>{
+        try{ await navigator.clipboard.writeText(ta.value);
+          copy.textContent = '복사됨'; setTimeout(()=>copy.textContent='복사', 1200);
+        }catch(e){ alert('복사 실패: ' + e); }
+      });
+    });
+  })();
+  </script>
+  <!-- ▲▲ 여기까지가 panel.ejs용 탭 튜토리얼 ▲▲ -->
   
