@@ -375,11 +375,19 @@ const handlePostViewRoute = async (req, res) => {
   }
 };
 
+// ⭐ 로그아웃 라우트 (패널 라우트보다 위에 위치)
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    // 세션 파괴 후 리다이렉트
+    res.redirect(`/${res.locals.lang}/`);
+  });
+});
+
 // ⭐ 글쓰기 페이지 라우트 (언어 코드 포함)
 app.get('/:lang/write', handleWriteRoute);
 
 // ⭐ 글쓰기 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/write', (req, res, next) => {
+app.get('/write', (req, res) => {
   req.params.lang = 'ko';
   handleWriteRoute(req, res);
 });
@@ -389,7 +397,7 @@ app.get('/write', (req, res, next) => {
 app.get('/:lang/edit/:id', handleEditRoute);
 
 // ⭐ 글 수정 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/edit/:id', (req, res, next) => {
+app.get('/edit/:id', (req, res) => {
   req.params.lang = 'ko';
   handleEditRoute(req, res);
 });
@@ -518,12 +526,6 @@ app.post('/login', async (req, res) => {
     console.error('로그인 오류:', err);
     res.redirect('/login-fail');
   }
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect(`/${res.locals.lang}/`);
-  });
 });
 
 app.get('/api/check-id', async (req, res) => {
