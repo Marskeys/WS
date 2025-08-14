@@ -308,22 +308,7 @@
     });
   })();
 
-  document.addEventListener('click', function (e) {
-  const a = e.target.closest('a[href]');
-  if (!a) return;
-  const href = a.getAttribute('href') || '';
-
-  // ✅ 포스트 상세는 절대 가로채지 않음
-  if (
-    a.matches('.post-detail-link, [data-panel="off"], .no-panel') ||
-    /^\/[a-z]{2}\/post\/\d+/.test(href)
-  ) {
-    return; // 기본 동작(문서 전체 네비게이션)
-  }
-
-  // (그 외 내부 링크만 panel로 교체…)
-  // e.preventDefault(); loadPanel(href + (href.includes('?') ? '&' : '?') + 'partial=1');
-}, true); // ← 가능하면 캡처 단계에서 등록
+  
   </script>
 
 

@@ -1,57 +1,3 @@
-/**
- * 모든 게시글에 translated_categories_display(배열)를 부착한다.
- * - posts: [{ id, categories, ... }]
- * - lang: 'ko' | 'en' | ...
- * 결과: [{ ...post, translated_categories_display: string[] }]
- */
-async function attachTranslatedCategoriesToPosts(posts, lang) {
-  if (!Array.isArray(posts) || posts.length === 0) {
-    return posts?.map(p => ({ ...p, translated_categories_display: [] })) || [];
-  }
-
-  // 1) 전체 글에서 고유 카테고리 수집
-  const uniq = new Set();
-  for (const p of posts) {
-    if (p && typeof p.categories === 'string' && p.categories.trim()) {
-      p.categories
-        .split(',')
-        .map(c => c.trim())
-        .filter(Boolean)
-        .forEach(c => uniq.add(c));
-    }
-  }
-  const originalList = Array.from(uniq);
-
-  // 2) 번역 맵 한 번에 조회
-  const col = (lang === 'ko') ? 'name' : `name_${lang}`;
-  const translateMap = new Map();
-
-  if (originalList.length > 0) {
-    const placeholders = originalList.map(() => '?').join(',');
-    const [rows] = await db.query(
-      `SELECT name AS original, COALESCE(${col}, name) AS translated
-         FROM categories
-        WHERE name IN (${placeholders})`,
-      originalList
-    );
-    for (const r of rows) {
-      translateMap.set(r.original, r.translated);
-    }
-  }
-
-  // 3) 각 글에 배열 부착(항상 배열 보장)
-  return posts.map(p => {
-    const arr = (p && typeof p.categories === 'string' && p.categories.trim())
-      ? p.categories
-          .split(',')
-          .map(c => c.trim())
-          .filter(Boolean)
-          .map(c => translateMap.get(c) || c)
-      : [];
-    return { ...p, translated_categories_display: arr };
-  });
-}
-
 const { format } = require('date-fns');
 const express = require('express');
 const path = require('path');
@@ -169,368 +115,39 @@ function buildPanel({ lang, section, topic }) {
   }
 }
 
-app.get('/post/:id', async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
-
-    // 조회수 중복 방지용 세션 초기화
-    if (!req.session.viewedPosts) {
-      req.session.viewedPosts = [];
-    }
-
-    // 1. `posts` 테이블에서 기본 게시글 정보 (메타데이터 및 is_private 등)
-    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-    if (basePostRows.length === 0) {
-      return res.status(404).render('404');
-    }
-
-    const post = basePostRows[0]; // post는 기본 정보와 한국어 제목/내용을 포함
-
-    // 비공개 글 필터링
-    const isAdmin = req.session.user?.is_admin === 1;
-    const isAuthor = req.session.user?.id === post.user_id;
-    if (post.is_private && !isAuthor && !isAdmin) {
-      return res.status(403).render('403', { message: '비공개 글입니다.', user: req.session.user });
-    }
-
-    // 중복 조회 방지
-    if (!req.session.viewedPosts.includes(postId)) {
-      await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
-      req.session.viewedPosts.push(postId);
-    }
-
-    // 2. `post_translations` 테이블에서 해당 언어의 번역된 콘텐츠 가져오기
-    let [translations] = await db.query(
-      'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
-      [postId, safeLang]
-    );
-
-    let translation = translations[0];
-
-    // 요청된 언어의 번역이 없는 경우, 한국어(ko) 버전으로 fallback
-    if (!translation && safeLang !== 'ko') {
-      console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
-      [translations] = await db.query(
-        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
-        [postId]
-      );
-      translation = translations[0];
-    }
-    
-    // 만약 한국어 버전도 없다면 (매우 드문 경우, 새 글 작성 시 한국어는 필수로 저장하므로)
-    if (!translation) {
-        translation = {
-            title: post.title,
-            content: post.content,
-        };
-    }
-
-    // 3. 게시글의 원본 카테고리(쉼표로 구분된 문자열)를 파싱하고, 각 카테고리의 번역된 이름을 조회
-    const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-    const translatedCategories = [];
-    if (originalCategories.length > 0) {
-      const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-      const placeholders = originalCategories.map(() => '?').join(','); // IN 절에 사용될 ? 플레이스홀더 생성
-
-      const [categoryNameRows] = await db.query(
-        `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
-        originalCategories // originalCategories 배열을 파라미터로 전달
-      );
-      translatedCategories.push(...categoryNameRows.map(row => row.name));
-    }
-
-
-    // `post-view.ejs`에 전달할 최종 `post` 객체 구성
-    const postForView = {
-        ...post, // posts 테이블의 기본 데이터 (author, user_id, is_private, is_pinned 등)
-        title: translation.title, // 요청된 언어 또는 fallback 언어의 제목
-        content: translation.content, // 요청된 언어 또는 fallback 언어의 내용
-        categories: translatedCategories, // 번역된 카테고리 이름 배열
-        originalCategories: originalCategories // (선택 사항) 필요하다면 원본 카테고리도 전달
-    };
-
-    const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`; // 다국어 URL 포함
-    const alternateLinks = supportedLangs.map(lang => ({
-      lang,
-      href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
-    }));
-
-   // --- 여기부터 index 페이지와 동일한 로직을 적용하여 `posts`와 `categories`를 가져옵니다 ---
-    const categoryQueryParam = req.query.category || 'all'; // post-view에서 category 쿼리 파라미터를 받을 수 있도록
-    const page = parseInt(req.query.page) || 1; // post-view에서도 페이지네이션 쿼리 파라미터를 받을 수 있도록
-    const limit = 10; // 한 페이지에 표시할 게시글 수 (사이드바에 보여줄 개수)
-    const offset = (page - 1) * limit;
-
-    let postsBaseQuery = `
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-    `;
-    let postsCountQuery = `SELECT COUNT(*) as count FROM posts`;
-    const postsQueryParams = [safeLang];
-    const postsCountParams = [];
-
-    // 카테고리 필터링 (사이드바 게시글 목록에도 적용)
-    if (categoryQueryParam !== 'all') {
-      postsBaseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
-      postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
-      postsQueryParams.push(categoryQueryParam);
-      postsCountParams.push(categoryQueryParam);
-    }
-
-    postsBaseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
-    postsQueryParams.push(limit, offset);
-
-    // 사이드바에 표시할 게시글 목록 조회
-    const [postsForSidebar] = await db.query(postsBaseQuery, postsQueryParams);
-
-    // 비공개 글 필터링 (사이드바 게시글 목록에도 적용)
-    const filteredPostsForSidebar = postsForSidebar.map(sidebarPost => {
-      if (sidebarPost.is_private && sidebarPost.user_id !== req.session.user?.id && !req.session.user?.is_admin === 1) {
-        return {
-          ...sidebarPost,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return sidebarPost;
-    });
-
-    // 각 사이드바 게시글의 카테고리 번역 추가
-    for (const sidebarPost of filteredPostsForSidebar) {
-        const originalSidebarCategories = sidebarPost.categories ? sidebarPost.categories.split(',').map(c => c.trim()) : [];
-        const translatedSidebarCategories = [];
-        if (originalSidebarCategories.length > 0) {
-            const sidebarCategoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-            const placeholders = originalSidebarCategories.map(() => '?').join(',');
-            const [sidebarCategoryNames] = await db.query(
-                `SELECT COALESCE(${sidebarCategoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-                originalSidebarCategories
-            );
-            translatedSidebarCategories.push(...sidebarCategoryNames.map(row => row.name));
-        }
-        sidebarPost.translated_categories_display = translatedSidebarCategories;
-    }
-
-    // 전체 게시글 개수 (사이드바 페이지네이션을 위해)
-    const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
-    const totalPages = Math.ceil(count / limit);
-    const paginationRange = generatePagination(page, totalPages);
-
-    // 모든 카테고리 목록 가져오기 (index 페이지와 동일)
-    const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-    const [allCategoryRows] = await db.query(`
-      SELECT
-        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
-        MAX(p.created_at) AS latest,
-        COALESCE(c.${categoryColumn}, c.name) AS translated_category_name
-      FROM posts p
-      JOIN (
-        SELECT a.N + b.N * 10 + 1 AS n
-        FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-         (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
-      ) numbers
-      ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
-      JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-      GROUP BY original_category, translated_category_name
-      ORDER BY latest DESC
-    `);
-
-    // 모든 카테고리를 원본 이름과 번역된 이름 객체 배열로 구성
-    const allCategories = allCategoryRows.map(row => ({
-        original: row.original_category,
-        translated: row.translated_category_name
-    }));
-
-    // 현재 선택된 카테고리를 번역된 이름으로 변환 (사이드바 카테고리 탭 활성화를 위해)
-    let translatedSelectedCategory = null;
-    if (categoryQueryParam !== 'all') {
-        const foundCategory = allCategories.find(cat => cat.original === categoryQueryParam);
-        if (foundCategory) {
-            translatedSelectedCategory = foundCategory.translated;
-        }
-    }
-    // --- index 페이지와 동일한 로직 끝 ---
-
-
-    res.render('post-view', {
-      post: postForView, // 단일 게시글 정보
-      posts: filteredPostsForSidebar, // 사이드바에 표시할 게시글 목록
-      user: req.session.user,
-      canonicalUrl,
-      alternateLinks,
-      lang: safeLang,
-      isSearch: false, // post-view에서는 검색 상태가 아님
-      searchKeyword: '', // 검색 키워드 없음
-      selectedCategory: translatedSelectedCategory, // 사이드바 카테고리 선택 상태
-      locale: res.locals.locale,
-      categories: allCategories, // 모든 카테고리 목록
-      pagination: { // 사이드바 페이지네이션을 위해 필요한 정보
-        current: page,
-        total: totalPages,
-        range: paginationRange
-      }
-    });
-
-  } catch (err) {
-    console.error('🌐 다국어 글 보기 오류:', err);
-    res.status(500).render('error', { message: '서버 오류로 글을 불러올 수 없습니다.', user: req.session.user });
-  }
-});
-
 // 패널 전용 URL (SSR 전체 or partial)
 app.get('/:lang/:section/:topic', async (req, res) => {
-  try {
-    const { lang, section, topic } = req.params;
-
-    // 공통 locals
-    const supported = (typeof supportedLangs !== 'undefined' && Array.isArray(supportedLangs)) ? supportedLangs : [];
-    const safeLang = supported.includes(lang) ? lang : (res.locals.lang || 'ko');
-    res.locals.lang = safeLang;
-    res.locals.currentPath = req.path;
-
-    const currentUser = (req.session && req.session.user) ? req.session.user : (req.user || null);
-    res.locals.user = currentUser;
-
-    // locale 병합(기본값 보강)
-    const koBase    = (typeof allLocales !== 'undefined' && allLocales['ko']) ? allLocales['ko'] : {};
-    const curLocale = (typeof allLocales !== 'undefined' && allLocales[safeLang]) ? allLocales[safeLang] : {};
-    const merged    = { ...koBase, ...curLocale };
-    merged.search   = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
-    merged.profile  = { 'profile-name': '', 'profile-bio': '', 'profile-tags': [], ...(merged.profile || {}) };
-    merged.tabs     = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
-    // ✅ table.ejs에서 필요한 헤더 키 기본값 보강
-    merged.tableHeaders = {
-      number: '번호',
-      title: '제목',
-      author: '작성자',
-      category: '카테고리',
-      date: '작성일',
-      views: '조회수',
-      ...(merged.tableHeaders || {})
-    };
-    res.locals.locale = merged;
-
-    // 파라미터
-    const categoryQueryParam = req.query.category || 'all';
-    const page   = parseInt(req.query.page) || 1;
-    const limit  = 10;
-    const offset = (page - 1) * limit;
-
-    // 게시글 목록
-    let postsBaseQuery = `
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
-          p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-          COALESCE(pt_req.title,   pt_ko.title,   p.title)   AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req
-        ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko
-        ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-    `;
-    let postsCountQuery = `SELECT COUNT(*) AS count FROM posts`;
-    const postsQueryParams = [safeLang];
-    const postsCountParams = [];
-
-    if (categoryQueryParam !== 'all') {
-      postsBaseQuery  += ` WHERE FIND_IN_SET(?, p.categories)`;
-      postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
-      postsQueryParams.push(categoryQueryParam);
-      postsCountParams.push(categoryQueryParam);
-    }
-
-    postsBaseQuery += `
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-      LIMIT ? OFFSET ?
-    `;
-    postsQueryParams.push(limit, offset);
-
-    const [postRows] = await db.query(postsBaseQuery, postsQueryParams);
-
-    // 비공개 필터
-    const userId  = currentUser?.id || null;
-    const isAdmin = currentUser?.is_admin === 1;
-    const filteredPosts = postRows.map(p => {
-      if (p.is_private && p.user_id !== userId && !isAdmin) {
-        return { ...p, content: '이 글은 비공개로 설정되어 있습니다.' };
-      }
-      return p;
-    });
-
-    // ✅ 모든 글에 translated_categories_display 부착 (공용 헬퍼 사용)
-    const postsWithCats = await attachTranslatedCategoriesToPosts(filteredPosts, safeLang);
-    res.locals.posts = postsWithCats;
-
-    // 페이지네이션
-    const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
-    const totalPages = Math.ceil(count / limit);
-    const paginationRange = generatePagination(page, totalPages);
-    res.locals.pagination = { current: page, total: totalPages, range: paginationRange };
-
-    // 카테고리 탭용 목록(원본+번역)
-    const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-    const [allCategoryRows] = await db.query(`
-      SELECT
-        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
-        MAX(p.created_at) AS latest,
-        COALESCE(c.${categoryColumnForDisplay}, c.name) AS translated_category_name
-      FROM posts p
-      JOIN (
-        SELECT a.N + b.N * 10 + 1 AS n
-        FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-             (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
-      ) numbers
-        ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
-      JOIN categories c
-        ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-      GROUP BY original_category, translated_category_name
-      ORDER BY latest DESC
-    `);
-
-    const allCategories = allCategoryRows.map(row => ({
-      original: row.original_category,
-      translated: row.translated_category_name
-    }));
-    res.locals.categories = allCategories;
-
-    // 선택 카테고리 번역명
-    let translatedSelectedCategory = null;
-    if (categoryQueryParam !== 'all') {
-      const found = allCategories.find(cat => cat.original === categoryQueryParam);
-      if (found) translatedSelectedCategory = found.translated;
-    }
-    res.locals.selectedCategory = translatedSelectedCategory;
-
-    // 검색 플래그
-    res.locals.isSearch = false;
-    res.locals.searchKeyword = '';
-
-    // 패널 데이터
-    const panelData = buildPanel({ lang: safeLang, section, topic });
-    res.locals.panelData = panelData;
-
-    // 렌더
-    if (req.query.partial === '1') return res.render('partials/panel');
-    return res.render('index');
-  } catch (err) {
-    console.error('패널 라우트 오류:', err);
-    return res.status(500).send('서버 오류');
+  const { lang, section, topic } = req.params;
+  // 🚫 보호막: post 상세는 패널이 처리하지 않도록 전체 페이지로 리다이렉트
+  if (section === 'post' && /^\d+$/.test(String(topic))) {
+    const target = `/${lang}/post/${topic}`;
+    return res.redirect(302, target);
   }
+
+
+  // ★ 기본 locals 설정
+  res.locals.lang = lang;
+  res.locals.currentPath = req.path;
+
+  // ★ 공통 데이터 세팅
+  res.locals.user = req.user || null;
+  res.locals.locale = allLocales[lang] || {};
+  res.locals.posts = await getPostsForUser(req.user); // 네가 쓰는 함수로 교체
+  res.locals.isSearch = false;
+  res.locals.searchKeyword = '';
+
+  // ★ 기존 panelData 로직
+  const panelData = buildPanel({ lang, section, topic });
+  res.locals.panelData = panelData;
+
+  // partial 요청이면 panel.ejs만 렌더
+  if (req.query.partial === '1') {
+    return res.render('partials/panel');
+  }
+
+  // 전체 페이지 렌더
+  return res.render('index');
 });
-
-
-
-
 
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
@@ -1232,12 +849,255 @@ app.post('/edit/:id', async (req, res) => {
 });
 
 
+app.get('/post/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
+    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
+    {
+      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
+      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
+      const merged    = { ...koBase, ...curLocale };
+      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
+      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+      merged.tableHeaders = {
+        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
+        ...(merged.tableHeaders || {})
+      };
+      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
+      res.locals.locale = merged;
+    }
 
+
+    // 조회수 중복 방지용 세션 초기화
+    if (!req.session.viewedPosts) {
+      req.session.viewedPosts = [];
+    }
+
+    // 1. `posts` 테이블에서 기본 게시글 정보 (메타데이터 및 is_private 등)
+    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    if (basePostRows.length === 0) {
+      return res.status(404).render('404');
+    }
+
+    const post = basePostRows[0]; // post는 기본 정보와 한국어 제목/내용을 포함
+
+    // 비공개 글 필터링
+    const isAdmin = req.session.user?.is_admin === 1;
+    const isAuthor = req.session.user?.id === post.user_id;
+    if (post.is_private && !isAuthor && !isAdmin) {
+      return res.status(403).render('403', { message: '비공개 글입니다.', user: req.session.user });
+    }
+
+    // 중복 조회 방지
+    if (!req.session.viewedPosts.includes(postId)) {
+      await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
+      req.session.viewedPosts.push(postId);
+    }
+
+    // 2. `post_translations` 테이블에서 해당 언어의 번역된 콘텐츠 가져오기
+    let [translations] = await db.query(
+      'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
+      [postId, safeLang]
+    );
+
+    let translation = translations[0];
+
+    // 요청된 언어의 번역이 없는 경우, 한국어(ko) 버전으로 fallback
+    if (!translation && safeLang !== 'ko') {
+      console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
+      [translations] = await db.query(
+        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
+        [postId]
+      );
+      translation = translations[0];
+    }
+    
+    // 만약 한국어 버전도 없다면 (매우 드문 경우, 새 글 작성 시 한국어는 필수로 저장하므로)
+    if (!translation) {
+        translation = {
+            title: post.title,
+            content: post.content,
+        };
+    }
+
+    // 3. 게시글의 원본 카테고리(쉼표로 구분된 문자열)를 파싱하고, 각 카테고리의 번역된 이름을 조회
+    const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+    const translatedCategories = [];
+    if (originalCategories.length > 0) {
+      const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+      const placeholders = originalCategories.map(() => '?').join(','); // IN 절에 사용될 ? 플레이스홀더 생성
+
+      const [categoryNameRows] = await db.query(
+        `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
+        originalCategories // originalCategories 배열을 파라미터로 전달
+      );
+      translatedCategories.push(...categoryNameRows.map(row => row.name));
+    }
+
+
+    // `post-view.ejs`에 전달할 최종 `post` 객체 구성
+    const postForView = {
+        ...post, // posts 테이블의 기본 데이터 (author, user_id, is_private, is_pinned 등)
+        title: translation.title, // 요청된 언어 또는 fallback 언어의 제목
+        content: translation.content, // 요청된 언어 또는 fallback 언어의 내용
+        categories: translatedCategories, // 번역된 카테고리 이름 배열
+        originalCategories: originalCategories // (선택 사항) 필요하다면 원본 카테고리도 전달
+    };
+
+    const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`; // 다국어 URL 포함
+    const alternateLinks = supportedLangs.map(lang => ({
+      lang,
+      href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
+    }));
+
+   // --- 여기부터 index 페이지와 동일한 로직을 적용하여 `posts`와 `categories`를 가져옵니다 ---
+    const categoryQueryParam = req.query.category || 'all'; // post-view에서 category 쿼리 파라미터를 받을 수 있도록
+    const page = parseInt(req.query.page) || 1; // post-view에서도 페이지네이션 쿼리 파라미터를 받을 수 있도록
+    const limit = 10; // 한 페이지에 표시할 게시글 수 (사이드바에 보여줄 개수)
+    const offset = (page - 1) * limit;
+
+    let postsBaseQuery = `
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+    `;
+    let postsCountQuery = `SELECT COUNT(*) as count FROM posts`;
+    const postsQueryParams = [safeLang];
+    const postsCountParams = [];
+
+    // 카테고리 필터링 (사이드바 게시글 목록에도 적용)
+    if (categoryQueryParam !== 'all') {
+      postsBaseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
+      postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
+      postsQueryParams.push(categoryQueryParam);
+      postsCountParams.push(categoryQueryParam);
+    }
+
+    postsBaseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
+    postsQueryParams.push(limit, offset);
+
+    // 사이드바에 표시할 게시글 목록 조회
+    const [postsForSidebar] = await db.query(postsBaseQuery, postsQueryParams);
+
+    // 비공개 글 필터링 (사이드바 게시글 목록에도 적용)
+    const filteredPostsForSidebar = postsForSidebar.map(sidebarPost => {
+      if (sidebarPost.is_private && sidebarPost.user_id !== req.session.user?.id && !req.session.user?.is_admin === 1) {
+        return {
+          ...sidebarPost,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return sidebarPost;
+    });
+
+    // 각 사이드바 게시글의 카테고리 번역 추가
+    for (const sidebarPost of filteredPostsForSidebar) {
+        const originalSidebarCategories = sidebarPost.categories ? sidebarPost.categories.split(',').map(c => c.trim()) : [];
+        const translatedSidebarCategories = [];
+        if (originalSidebarCategories.length > 0) {
+            const sidebarCategoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+            const placeholders = originalSidebarCategories.map(() => '?').join(',');
+            const [sidebarCategoryNames] = await db.query(
+                `SELECT COALESCE(${sidebarCategoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+                originalSidebarCategories
+            );
+            translatedSidebarCategories.push(...sidebarCategoryNames.map(row => row.name));
+        }
+        sidebarPost.translated_categories_display = translatedSidebarCategories;
+    }
+
+    // 전체 게시글 개수 (사이드바 페이지네이션을 위해)
+    const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
+    const totalPages = Math.ceil(count / limit);
+    const paginationRange = generatePagination(page, totalPages);
+
+    // 모든 카테고리 목록 가져오기 (index 페이지와 동일)
+    const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    const [allCategoryRows] = await db.query(`
+      SELECT
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
+        MAX(p.created_at) AS latest,
+        COALESCE(c.${categoryColumn}, c.name) AS translated_category_name
+      FROM posts p
+      JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+         (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+          UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+      ) numbers
+      ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
+      JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
+      GROUP BY original_category, translated_category_name
+      ORDER BY latest DESC
+    `);
+
+    // 모든 카테고리를 원본 이름과 번역된 이름 객체 배열로 구성
+    const allCategories = allCategoryRows.map(row => ({
+        original: row.original_category,
+        translated: row.translated_category_name
+    }));
+
+    // 현재 선택된 카테고리를 번역된 이름으로 변환 (사이드바 카테고리 탭 활성화를 위해)
+    let translatedSelectedCategory = null;
+    if (categoryQueryParam !== 'all') {
+        const foundCategory = allCategories.find(cat => cat.original === categoryQueryParam);
+        if (foundCategory) {
+            translatedSelectedCategory = foundCategory.translated;
+        }
+    }
+    // --- index 페이지와 동일한 로직 끝 ---
+
+
+    res.render('post-view', {
+      post: postForView, // 단일 게시글 정보
+      posts: filteredPostsForSidebar, // 사이드바에 표시할 게시글 목록
+      user: req.session.user,
+      canonicalUrl,
+      alternateLinks,
+      lang: safeLang,
+      isSearch: false, // post-view에서는 검색 상태가 아님
+      searchKeyword: '', // 검색 키워드 없음
+      selectedCategory: translatedSelectedCategory, // 사이드바 카테고리 선택 상태
+      locale: res.locals.locale,
+      categories: allCategories, // 모든 카테고리 목록
+      pagination: { // 사이드바 페이지네이션을 위해 필요한 정보
+        current: page,
+        total: totalPages,
+        range: paginationRange
+      }
+    });
+
+  } catch (err) {
+    console.error('🌐 다국어 글 보기 오류:', err);
+    res.status(500).render('error', { message: '서버 오류로 글을 불러올 수 없습니다.', user: req.session.user });
+  }
+});
 
 
 // 카테고리 전체 가져오기 API (기존과 동일하지만, DB 쿼리에서 lang을 사용)
 app.get('/api/categories', async (req, res) => {
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
+    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
+    {
+      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
+      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
+      const merged    = { ...koBase, ...curLocale };
+      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
+      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+      merged.tableHeaders = {
+        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
+        ...(merged.tableHeaders || {})
+      };
+      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
+      res.locals.locale = merged;
+    }
+
   const column = (safeLang === 'ko') ? 'name' : `COALESCE(name_${safeLang}, '')`;
 
   try {
@@ -1296,7 +1156,22 @@ app.get('/search', async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용 및 오타 수정
+  const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
+    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
+    {
+      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
+      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
+      const merged    = { ...koBase, ...curLocale };
+      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
+      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+      merged.tableHeaders = {
+        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
+        ...(merged.tableHeaders || {})
+      };
+      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
+      res.locals.locale = merged;
+    }
+ 및 오타 수정
 
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -1410,6 +1285,21 @@ app.get('/api/search', async (req, res) => {
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
+    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
+    {
+      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
+      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
+      const merged    = { ...koBase, ...curLocale };
+      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
+      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+      merged.tableHeaders = {
+        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
+        ...(merged.tableHeaders || {})
+      };
+      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
+      res.locals.locale = merged;
+    }
+
 
   try {
     // 모든 관련 글을 가져옵니다 (비공개 여부와 상관없이)
@@ -1500,6 +1390,21 @@ app.get('/', async (req, res) => {
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
   const safeLang = res.locals.lang; // req.query.lang 대신 res.locals.lang 사용
+    // ✅ locale 기본값 보강: post-view.ejs가 header/table을 include하므로 필수 키 보장
+    {
+      const koBase    = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
+      const curLocale = (allLocales && allLocales[safeLang]) ? allLocales[safeLang] : {};
+      const merged    = { ...koBase, ...curLocale };
+      merged.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(merged.search  || {}) };
+      merged.tabs    = { allPosts: '전체글', searchResults: '검색결과', ...(merged.tabs    || {}) };
+      merged.tableHeaders = {
+        number:'번호', title:'제목', author:'작성자', category:'카테고리', date:'작성일', views:'조회수',
+        ...(merged.tableHeaders || {})
+      };
+      merged.ui = { tocButton: '목차', ...(merged.ui || {}) };
+      res.locals.locale = merged;
+    }
+
 
   try {
     let baseQuery = `
