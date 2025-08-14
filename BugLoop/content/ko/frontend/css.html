@@ -1,0 +1,508 @@
+<!-- ▼▼ panel.ejs 내부(예: .panel-card 안) 그대로 붙여넣기 ▼▼ -->
+<style>
+    /* ===== Scoped to .blc (panel-safe) ===== */
+    .blc{
+      --brand:#10b981; --brand2:#0ea373; --muted:#9aa4ae;
+      --code:#0f0f0f; --code-br:rgba(255,255,255,.12);
+    }
+    .blc *{box-sizing:border-box}
+  
+    .blc .blc-toolbar{display:flex; gap:8px; align-items:center; margin-bottom:10px}
+    /* 검색바: 데스크톱 고정폭, 모바일은 꽉 */
+    .blc .blc-search{flex:0 0 220px; min-width:160px}
+    .blc .blc-search input{
+      width:100%; padding:8px 10px; border-radius:10px; border:1px solid #333;
+      background:#0a0a0a; color:#e5e7eb; font-size:12px; outline:none;
+    }
+  
+    /* Tabs (가로 스크롤) */
+    .blc .blc-tabs{display:flex; gap:6px; overflow:auto; padding-bottom:2px}
+    .blc .blc-tab{
+      border:1px solid #333; background:#121212; color:#ddd; padding:6px 10px; border-radius:999px; font-size:12px;
+      cursor:pointer; white-space:nowrap
+    }
+    .blc .blc-tab:hover{background:#161616}
+    .blc .blc-tab.is-active{background:var(--brand); border-color:transparent; color:#fff; font-weight:700}
+  
+    /* Panels */
+    .blc .blc-panels{margin-top:10px}
+    .blc .blc-panel{display:none}
+    .blc .blc-panel.is-active{display:block}
+    .blc h2{color:#ffe082; margin:0 0 6px 0; font-size:18px}
+    .blc h3{color:#ffd666; margin:14px 0 6px 0; font-size:15px}
+    .blc p{margin:6px 0; line-height:1.7}
+    .blc ul{margin:6px 0 8px 18px}
+    .blc li{margin:4px 0}
+    .blc .blc-note{background:#0b1220; border:1px solid rgba(255,255,255,.08); padding:8px 10px; border-radius:8px; font-size:12px}
+  
+    /* Code & example */
+    .blc pre{background:var(--code); border:1px solid var(--code-br); border-radius:10px; padding:12px; overflow:auto; margin:8px 0}
+    .blc code{font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; color:#ffcc80}
+    .blc .blc-example{border:1px solid var(--code-br); border-radius:10px; overflow:hidden; margin:10px 0}
+    .blc .blc-example .bar{display:flex; gap:8px; align-items:center; padding:8px; background:#0a0a0a; border-bottom:1px solid var(--code-br)}
+    .blc .blc-example .title{font-weight:800; color:#e5e7eb; font-size:12px; flex:1}
+    .blc .blc-example .btn{border:0; background:#374151; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; cursor:pointer}
+    .blc .blc-example .btn.run{background:var(--brand)}
+    .blc .blc-example .grid{display:grid; grid-template-columns:1fr 1fr}
+    .blc .blc-example textarea{
+      width:100%; min-height:160px; background:#0c0c0c; color:#e5e7eb; border:0; border-right:1px solid var(--code-br);
+      padding:10px; font-family:'Fira Code',ui-monospace,Consolas,monospace; font-size:.9rem; outline:none; resize:vertical
+    }
+    .blc .blc-example iframe{width:100%; min-height:160px; border:0; background:#fff}
+  
+    /* Chips */
+    .blc .blc-chips{margin-top:6px}
+    .blc .blc-chip{display:inline-block; padding:4px 8px; border:1px solid #333; background:#161616; color:#ddd; border-radius:999px; font-size:11px; margin:4px 6px 0 0}
+  
+    @media (max-width:640px){
+      .blc .blc-search{flex:1 1 auto}          /* 모바일은 검색창 꽉 */
+      .blc .blc-example .grid{grid-template-columns:1fr}
+    }
+  </style>
+  
+  <div class="blc" data-component="css-tabs">
+    <div class="blc-toolbar" aria-label="CSS 튜토리얼 툴바">
+      <div class="blc-search"><input type="search" placeholder="챕터 검색… (flex, grid, box 등)" aria-label="탭 검색"></div>
+    </div>
+  
+    <div class="blc-tabs" role="tablist" aria-label="CSS Tutorial Tabs">
+      <button class="blc-tab is-active" role="tab" aria-selected="true" data-tab="basics"   aria-controls="blc-basics">Basics</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="selectors" aria-controls="blc-selectors">Selectors</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="cascade"   aria-controls="blc-cascade">Cascade & Specificity</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="box"       aria-controls="blc-box">Box Model</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="display"   aria-controls="blc-display">Display/Visibility</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="position"  aria-controls="blc-position">Positioning</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="flex"      aria-controls="blc-flex">Flexbox</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="grid"      aria-controls="blc-grid">Grid</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="type"      aria-controls="blc-type">Typography & Units</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="colors"    aria-controls="blc-colors">Colors & Variables</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="bg"        aria-controls="blc-bg">Backgrounds/Borders</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="motion"    aria-controls="blc-motion">Transforms/Transitions</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="anim"      aria-controls="blc-anim">Animations</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="responsive"aria-controls="blc-responsive">Media Queries</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="pseudo"    aria-controls="blc-pseudo">Pseudo & Combinators</button>
+      <button class="blc-tab" role="tab" aria-selected="false" data-tab="arch"      aria-controls="blc-arch">Best Practices</button>
+    </div>
+  
+    <div class="blc-panels">
+      <!-- BASICS -->
+      <section id="blc-basics" class="blc-panel is-active" role="tabpanel">
+        <h2>CSS Basics</h2>
+        <p>CSS는 <b>선택자</b>가 가리키는 요소에 <b>속성:값</b>을 적용한다.</p>
+        <pre><code>h1 { color: #10b981; font-weight: 800; }</code></pre>
+        <div class="blc-example" data-name="기본 문법">
+          <div class="bar">
+            <div class="title">Try it</div>
+            <button class="btn run">실행</button><button class="btn copy">복사</button>
+          </div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  h1 { color:#10b981; font-weight:800; }
+  p  { color:#374151; }
+  &lt;/style&gt;
+  
+  &lt;h1&gt;CSS 시작!&lt;/h1&gt;
+  &lt;p&gt;선택자 { 속성:값; } 구조를 익혀봐요.&lt;/p&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+        <div class="blc-chips"><span class="blc-chip">선택자</span><span class="blc-chip">선언</span><span class="blc-chip">규칙</span></div>
+      </section>
+  
+      <!-- SELECTORS -->
+      <section id="blc-selectors" class="blc-panel" role="tabpanel">
+        <h2>Selectors</h2>
+        <ul>
+          <li>기본: 태그(<code>p</code>), 클래스(<code>.card</code>), 아이디(<code>#hero</code>)</li>
+          <li>속성: <code>a[target="_blank"]</code>, <code>input[type="email"]</code></li>
+          <li>조합자: 자식 <code>nav &gt; a</code>, 형제 <code>h2 + p</code></li>
+          <li>함수: <code>:not(.disabled)</code>, <code>:is(header, footer)</code></li>
+        </ul>
+        <div class="blc-example" data-name="선택자 예제">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  a[target="_blank"]{ color:#ef4444; }
+  .list &gt; li:first-child{ font-weight:700; }
+  h2 + p{ margin-top:0; color:#6b7280; }
+  &lt;/style&gt;
+  
+  &lt;h2&gt;선택자 테스트&lt;/h2&gt;
+  &lt;p&gt;바로 뒤의 문단은 회색이 됩니다.&lt;/p&gt;
+  &lt;ul class="list"&gt;&lt;li&gt;첫째&lt;/li&gt;&lt;li&gt;둘째&lt;/li&gt;&lt;/ul&gt;
+  &lt;p&gt;&lt;a href="https://example.com" target="_blank"&gt;새 창 링크&lt;/a&gt;&lt;/p&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- CASCADE & SPECIFICITY -->
+      <section id="blc-cascade" class="blc-panel" role="tabpanel">
+        <h2>Cascade & Specificity</h2>
+        <p>우선순위: <b>중요도</b>(!important) → <b>명시도</b> → <b>소스 순서</b>. 명시도 계산: <code>id &gt; class/속성/가상 &gt; 태그</code>.</p>
+        <div class="blc-note">가능하면 <code>!important</code>는 피하고, 더 좋은 선택자 구조로 해결해요.</div>
+        <div class="blc-example" data-name="우선순위">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  p{ color:#6b7280; }             /* 태그 */
+  .note{ color:#0ea5e9; }         /* 클래스 (더 셈) */
+  #vip{ color:#ef4444; }          /* 아이디 (가장 셈) */
+  &lt;/style&gt;
+  
+  &lt;p&gt;기본&lt;/p&gt;
+  &lt;p class="note"&gt;클래스가 이김&lt;/p&gt;
+  &lt;p id="vip" class="note"&gt;아이디가 최종 승&lt;/p&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- BOX MODEL -->
+      <section id="blc-box" class="blc-panel" role="tabpanel">
+        <h2>Box Model</h2>
+        <p>요소 크기 = <code>content + padding + border + margin</code>. 레이아웃엔 <code>box-sizing: border-box</code> 권장.</p>
+        <div class="blc-example" data-name="박스 모델">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  *{ box-sizing:border-box }
+  .card{ width:240px; padding:16px; border:4px solid #10b981; margin:8px; background:#ecfeff }
+  &lt;/style&gt;
+  
+  &lt;div class="card"&gt;패딩+보더 포함 240px 카드&lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- DISPLAY -->
+      <section id="blc-display" class="blc-panel" role="tabpanel">
+        <h2>Display / Visibility</h2>
+        <ul>
+          <li><code>block</code>, <code>inline</code>, <code>inline-block</code>, <code>none</code></li>
+          <li><code>visibility:hidden</code>은 자리 차지, <code>display:none</code>은 아예 제거</li>
+        </ul>
+        <div class="blc-example" data-name="디스플레이">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .box{ display:inline-block; width:80px; height:40px; background:#fde68a; margin:4px }
+  .hide{ display:none }
+  &lt;/style&gt;
+  
+  &lt;div class="box"&gt;A&lt;/div&gt;&lt;div class="box hide"&gt;B&lt;/div&gt;&lt;div class="box"&gt;C&lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- POSITION -->
+      <section id="blc-position" class="blc-panel" role="tabpanel">
+        <h2>Positioning</h2>
+        <p><code>relative</code>를 기준으로 <code>absolute</code> 위치, <code>fixed</code>는 뷰포트 기준, <code>sticky</code>는 스크롤 고정.</p>
+        <div class="blc-example" data-name="포지셔닝">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .wrap{ position:relative; height:140px; background:#f1f5f9 }
+  .box{ position:absolute; right:10px; bottom:10px; background:#10b981; color:#fff; padding:6px 10px; }
+  &lt;/style&gt;
+  
+  &lt;div class="wrap"&gt;relative 컨테이너
+    &lt;div class="box"&gt;absolute&lt;/div&gt;
+  &lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- FLEXBOX -->
+      <section id="blc-flex" class="blc-panel" role="tabpanel">
+        <h2>Flexbox</h2>
+        <ul><li>1차원 레이아웃. 핵심: <code>display:flex</code>, <code>gap</code>, <code>justify-content</code>, <code>align-items</code></li></ul>
+        <div class="blc-example" data-name="플렉스">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .nav{ display:flex; gap:8px; background:#0ea5e9; padding:8px }
+  .nav a{ background:#fff; padding:6px 10px; border-radius:8px; text-decoration:none; color:#111 }
+  .nav{ justify-content:space-between; align-items:center }
+  &lt;/style&gt;
+  
+  &lt;div class="nav"&gt;
+    &lt;a href="#"&gt;홈&lt;/a&gt; &lt;a href="#"&gt;강의&lt;/a&gt; &lt;a href="#"&gt;자료&lt;/a&gt; &lt;a href="#"&gt;문의&lt;/a&gt;
+  &lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- GRID -->
+      <section id="blc-grid" class="blc-panel" role="tabpanel">
+        <h2>Grid</h2>
+        <p>2차원 레이아웃. <code>repeat()</code>, <code>auto-fit</code>, <code>minmax()</code>로 반응형 쉽게.</p>
+        <div class="blc-example" data-name="그리드">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .grid{
+    display:grid; gap:10px;
+    grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+  }
+  .item{ background:#fef08a; padding:12px; border-radius:8px; text-align:center; }
+  &lt;/style&gt;
+  
+  &lt;div class="grid"&gt;
+    &lt;div class="item"&gt;1&lt;/div&gt;&lt;div class="item"&gt;2&lt;/div&gt;&lt;div class="item"&gt;3&lt;/div&gt;&lt;div class="item"&gt;4&lt;/div&gt;
+  &lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- TYPOGRAPHY & UNITS -->
+      <section id="blc-type" class="blc-panel" role="tabpanel">
+        <h2>Typography & Units</h2>
+        <ul>
+          <li>단위: <code>px</code>, <code>rem</code>(루트 기준), <code>em</code>(부모/자기 폰트 기준), <code>%</code>, <code>vw/vh</code>, <code>ch</code></li>
+          <li>반응형 크기: <code>clamp(min, preferred, max)</code></li>
+        </ul>
+        <div class="blc-example" data-name="타이포/단위">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  :root{ font-size:16px }
+  h1{ font-size:clamp(1.2rem, 3vw, 2.2rem); line-height:1.2 }
+  p{ font-size:1rem }
+  .small{ font-size:.875rem; color:#6b7280 }
+  &lt;/style&gt;
+  
+  &lt;h1&gt;반응형 타이포&lt;/h1&gt;
+  &lt;p&gt;clamp로 크기를 안전하게 조절.&lt;/p&gt;
+  &lt;p class="small"&gt;작은 텍스트&lt;/p&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- COLORS & VARIABLES -->
+      <section id="blc-colors" class="blc-panel" role="tabpanel">
+        <h2>Colors & CSS Variables</h2>
+        <p>색상: <code>hsl()</code> 권장. 커스텀 프로퍼티(변수)로 테마 관리.</p>
+        <div class="blc-example" data-name="변수/색상">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  :root{ --brand-h:160; --brand-s:72%; --brand-l:42% }
+  .button{
+    --c: hsl(var(--brand-h) var(--brand-s) var(--brand-l));
+    background:var(--c); color:#fff; padding:8px 12px; border-radius:10px; border:0;
+  }
+  .button.alt{ --brand-l:30% } /* 변수 재정의 */
+  &lt;/style&gt;
+  
+  &lt;button class="button"&gt;기본&lt;/button&gt;
+  &lt;button class="button alt"&gt;진한 톤&lt;/button&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- BACKGROUNDS / BORDERS -->
+      <section id="blc-bg" class="blc-panel" role="tabpanel">
+        <h2>Backgrounds & Borders</h2>
+        <pre><code>background: linear-gradient(135deg, #0ea5e9, #10b981);
+  border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.2);</code></pre>
+        <div class="blc-example" data-name="배경/경계">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .card{
+    padding:18px; color:#fff;
+    background:linear-gradient(135deg,#0ea5e9,#10b981);
+    border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  &lt;/style&gt;
+  
+  &lt;div class="card"&gt;그라디언트 카드&lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- TRANSFORMS / TRANSITIONS -->
+      <section id="blc-motion" class="blc-panel" role="tabpanel">
+        <h2>Transforms & Transitions</h2>
+        <div class="blc-example" data-name="호버 모션">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .card{
+    width:160px; padding:16px; border-radius:12px; background:#fef3c7;
+    transform:translateY(0); transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{ transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,.25) }
+  &lt;/style&gt;
+  
+  &lt;div class="card"&gt;호버하면 떠요&lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- ANIMATIONS -->
+      <section id="blc-anim" class="blc-panel" role="tabpanel">
+        <h2>Animations</h2>
+        <div class="blc-example" data-name="키프레임">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  @keyframes pulse{
+    0%,100%{ transform:scale(1) } 50%{ transform:scale(1.06) }
+  }
+  .badge{
+    display:inline-block; padding:8px 12px; border-radius:999px; color:#fff; background:#ef4444;
+    animation:pulse 1.2s ease-in-out infinite;
+  }
+  &lt;/style&gt;
+  
+  &lt;span class="badge"&gt;NEW&lt;/span&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- MEDIA QUERIES -->
+      <section id="blc-responsive" class="blc-panel" role="tabpanel">
+        <h2>Media Queries</h2>
+        <p><code>@media (max-width: 600px){ ... }</code> / 환경기반: <code>prefers-color-scheme</code>, <code>reduced-motion</code></p>
+        <div class="blc-example" data-name="반응형 카드">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .grid{ display:grid; gap:10px; grid-template-columns:repeat(3,1fr) }
+  .card{ background:#e2e8f0; padding:10px; border-radius:8px }
+  @media (max-width:600px){
+    .grid{ grid-template-columns:1fr }
+  }
+  &lt;/style&gt;
+  
+  &lt;div class="grid"&gt;&lt;div class="card"&gt;1&lt;/div&gt;&lt;div class="card"&gt;2&lt;/div&gt;&lt;div class="card"&gt;3&lt;/div&gt;&lt;/div&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- PSEUDO & COMBINATORS -->
+      <section id="blc-pseudo" class="blc-panel" role="tabpanel">
+        <h2>Pseudo-classes & Elements</h2>
+        <ul>
+          <li><code>:hover</code>, <code>:focus-visible</code>, <code>:disabled</code>, <code>:nth-child()</code></li>
+          <li><code>::before</code>, <code>::after</code>로 장식/아이콘 추가</li>
+        </ul>
+        <div class="blc-example" data-name="가상 선택자">
+          <div class="bar"><div class="title">Try it</div><button class="btn run">실행</button><button class="btn copy">복사</button></div>
+          <div class="grid">
+  <textarea>&lt;style&gt;
+  .btn{ position:relative; padding:8px 12px 8px 28px; background:#111; color:#fff; border-radius:8px }
+  .btn::before{ content:"★"; position:absolute; left:8px; top:50%; transform:translateY(-50%); color:#fbbf24 }
+  .btn:hover{ background:#27272a }
+  .btn:focus-visible{ outline:2px solid #22d3ee; outline-offset:2px }
+  .list li:nth-child(odd){ background:#f1f5f9 }
+  &lt;/style&gt;
+  
+  &lt;button class="btn"&gt;Starred&lt;/button&gt;
+  &lt;ul class="list"&gt;&lt;li&gt;1&lt;/li&gt;&lt;li&gt;2&lt;/li&gt;&lt;li&gt;3&lt;/li&gt;&lt;/ul&gt;</textarea>
+  <iframe sandbox="allow-scripts"></iframe>
+          </div>
+        </div>
+      </section>
+  
+      <!-- ARCHITECTURE / BEST PRACTICES -->
+      <section id="blc-arch" class="blc-panel" role="tabpanel">
+        <h2>Best Practices</h2>
+        <ul>
+          <li><b>BEM</b> 네이밍: <code>.card</code> / <code>.card__title</code> / <code>.card--primary</code></li>
+          <li><b>box-sizing</b> 전역 적용, <b>레이어링</b>(reset → base → components → utilities)</li>
+          <li><b>접근성</b>: 포커스 스타일 유지, <code>prefers-reduced-motion</code> 존중</li>
+          <li><b>성능</b>: 큰 그림자/블러 남발 금지, 애니메이션은 transforms/opacity 위주</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+  
+  <script>
+  /* ===== panel-safe init for CSS tabs (.blc) ===== */
+  (function(){
+    const root = document.querySelector('.blc[data-component="css-tabs"]');
+    if(!root) return;
+  
+    const tabs   = Array.from(root.querySelectorAll('.blc-tab'));
+    const panels = Array.from(root.querySelectorAll('.blc-panel'));
+    const search = root.querySelector('.blc-search input');
+    const LS_KEY = 'blc:css:last:' + location.pathname;
+  
+    function openTab(id, remember=true){
+      panels.forEach(p => p.classList.toggle('is-active', p.id === 'blc-' + id));
+      tabs.forEach(t => {
+        const on = t.dataset.tab === id;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        if(on) t.scrollIntoView({block:'nearest', inline:'nearest'});
+      });
+      if(remember){ try{ localStorage.setItem(LS_KEY, id); }catch(e){} }
+    }
+  
+    tabs.forEach(t=>{
+      t.addEventListener('click', ()=> openTab(t.dataset.tab));
+      t.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' || e.key===' ') { e.preventDefault(); openTab(t.dataset.tab); }
+        if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
+          const dir = e.key==='ArrowRight' ? 1 : -1;
+          const i = tabs.indexOf(t);
+          tabs[(i+dir+tabs.length)%tabs.length].focus();
+        }
+      });
+    });
+  
+    // Restore last tab or default to Basics
+    const last = (()=>{ try{ return localStorage.getItem(LS_KEY) }catch(e){ return null } })();
+    if(last && root.querySelector('#blc-' + last)) openTab(last, false);
+    else openTab('basics', false);
+  
+    // Filter tabs
+    function applyFilter(){
+      const q = (search.value||'').trim().toLowerCase();
+      tabs.forEach(t=>{
+        const show = t.textContent.toLowerCase().includes(q);
+        t.style.display = show ? '' : 'none';
+      });
+    }
+    search.addEventListener('input', applyFilter);
+  
+    // Example runner + copy (scoped)
+    root.querySelectorAll('.blc-example').forEach(box=>{
+      const ta   = box.querySelector('textarea');
+      const frame= box.querySelector('iframe');
+      const run  = box.querySelector('.btn.run');
+      const copy = box.querySelector('.btn.copy');
+  
+      function doRun(){
+        const doc = frame.contentDocument || frame.contentWindow.document;
+        doc.open(); doc.write(ta.value); doc.close();
+      }
+      run.addEventListener('click', doRun);
+      setTimeout(doRun, 0);
+  
+      copy.addEventListener('click', async ()=>{
+        try{
+          await navigator.clipboard.writeText(ta.value);
+          copy.textContent = '복사됨'; setTimeout(()=>copy.textContent='복사', 1200);
+        }catch(e){ alert('복사 실패: ' + e); }
+      });
+    });
+  })();
+  </script>
+  <!-- ▲▲ 여기까지 panel.ejs용 CSS 강의 (탭/예제/검색) ▲▲ -->
+  
