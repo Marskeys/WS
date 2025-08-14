@@ -170,3 +170,12 @@
   })();
   </script>
   
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const activeMenu = document.querySelector('.submenu a.active');
+      const connector = document.querySelector('#mini-lecture .connector');
+      if (activeMenu && connector) {
+        connector.textContent = activeMenu.textContent.trim();
+      }
+    });
+    </script>
