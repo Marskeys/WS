@@ -220,10 +220,20 @@ app.get('/:section/:topic', async (req, res, next) => {
     res.locals.panelData = panelData;
     res.locals.currentPath = `/${lang}/${section}/${topic}`;
 
-    if (req.query.partial === '1') {
-      return res.render('partials/panel');
-    }
-    return res.render('index');
+// 부분 렌더를 더 유연하게 감지
+const wantsPartial =
+  // 쿼리스트링이 존재하기만 해도 부분 렌더로 취급 (0/false는 제외)
+  (typeof req.query.partial !== 'undefined' &&
+    !['0', 'false', 'no', 'off'].includes(String(req.query.partial).toLowerCase()))
+  // XHR/fetch 요청 헤더
+  || req.get('X-Requested-With') === 'XMLHttpRequest'
+  // text/fragment 등 프래그먼트 수락
+  || (req.headers.accept && req.headers.accept.includes('text/fragment'));
+
+if (wantsPartial) {
+  return res.render('partials/panel');
+}
+return res.render('index');
   } catch (err) {
     console.error('패널 라우트 오류:', err);
     return res.status(500).send('서버 오류');
