@@ -120,36 +120,36 @@ app.get('/:lang/:section/:topic', async (req, res) => {
   try {
     const { lang, section, topic } = req.params;
 
-    // 공통 locals
-    res.locals.lang = res.locals.lang || lang;
+    // 기본값/안전값
+    const safeLang = res.locals.lang || lang || 'ko';
+    res.locals.lang = safeLang;
     res.locals.currentPath = req.path;
 
-    // ✅ 세션/유저 안전
-    const sessionUser = req.session?.user;
-    const currentUser = sessionUser || req.user || null;
+    // 유저(세션 안전)
+    const currentUser = (req.session && req.session.user) ? req.session.user : (req.user || null);
     res.locals.user = currentUser;
 
-    // ✅ locale 확실히 세팅 (placeholder 등 기본값 포함)
-    const safeLang = res.locals.lang;
-    const koBase = (typeof allLocales !== 'undefined' && allLocales['ko']) ? allLocales['ko'] : {};
-    const curLocale = (typeof allLocales !== 'undefined' && allLocales[safeLang]) ? allLocales[safeLang] : {};
-    res.locals.locale = { ...koBase, ...curLocale };
-    // 중첩 키 기본값 보강
-    res.locals.locale.search  = { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(res.locals.locale.search || {}) };
-    res.locals.locale.profile = { 'profile-name':'', 'profile-bio':'', 'profile-tags': [], ...(res.locals.locale.profile || {}) };
-    res.locals.locale.tabs    = { allPosts: '전체글', ...(res.locals.locale.tabs || {}) };
+    // locale 기본키 보강 (placeholder 등)
+    const loc = res.locals.locale || {};
+    res.locals.locale = {
+      ...loc,
+      search:  { placeholder: '검색어를 입력하세요', resultsFor: '"%s" 검색결과', ...(loc.search || {}) },
+      profile: { 'profile-name': '', 'profile-bio': '', 'profile-tags': [], ...(loc.profile || {}) },
+      tabs:    { allPosts: '전체글', ...(loc.tabs || {}) }
+    };
 
-    // 사이드바용 데이터 (index/editor와 동일)
+    // 쿼리 파라미터(사이드바 테이블용)
     const categoryQueryParam = req.query.category || 'all';
-    const page = parseInt(req.query.page) || 1;
-    const limit = 10;
+    const page   = parseInt(req.query.page) || 1;
+    const limit  = 10;
     const offset = (page - 1) * limit;
 
+    // 게시글 목록 + 번역 조인
     let postsBaseQuery = `
       SELECT
           p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
           p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-          COALESCE(pt_req.title, pt_ko.title, p.title)   AS title,
+          COALESCE(pt_req.title,   pt_ko.title,   p.title)   AS title,
           COALESCE(pt_req.content, pt_ko.content, p.content) AS content
       FROM posts p
       LEFT JOIN post_translations pt_req
@@ -158,8 +158,8 @@ app.get('/:lang/:section/:topic', async (req, res) => {
         ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
     `;
     let postsCountQuery = `SELECT COUNT(*) AS count FROM posts`;
-    const postsQueryParams = [safeLang];
-    const postsCountParams = [];
+    const postsQueryParams  = [safeLang];
+    const postsCountParams  = [];
 
     if (categoryQueryParam !== 'all') {
       postsBaseQuery  += ` WHERE FIND_IN_SET(?, p.categories)`;
@@ -174,24 +174,51 @@ app.get('/:lang/:section/:topic', async (req, res) => {
     `;
     postsQueryParams.push(limit, offset);
 
+    // 실행
     const [postRows] = await db.query(postsBaseQuery, postsQueryParams);
 
-    // 비공개 필터링
+    // 비공개 필터(세션 없어도 안전)
     const userId  = currentUser?.id || null;
     const isAdmin = currentUser?.is_admin === 1;
-    const filteredPosts = postRows.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return { ...post, content: '이 글은 비공개로 설정되어 있습니다.' };
+    const filteredPosts = postRows.map(p => {
+      if (p.is_private && p.user_id !== userId && !isAdmin) {
+        return { ...p, content: '이 글은 비공개로 설정되어 있습니다.' };
       }
-      return post;
+      return p;
     });
 
-    // 페이지네이션
+    // 각 게시글의 카테고리 번역 배열 붙이기 (table.ejs에서 .join() 사용)
+    const filteredPostsForSidebar = [];
+    for (const p of filteredPosts) {
+      const originalCatList = p.categories
+        ? p.categories.split(',').map(c => c.trim()).filter(Boolean)
+        : [];
+
+      let translated = [];
+      if (originalCatList.length > 0) {
+        const catCol = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCatList.map(() => '?').join(',');
+        const [rows] = await db.query(
+          `SELECT COALESCE(${catCol}, name) AS name
+             FROM categories
+            WHERE name IN (${placeholders})`,
+          originalCatList
+        );
+        translated = rows.map(r => r.name);
+      }
+
+      filteredPostsForSidebar.push({
+        ...p,
+        translated_categories_display: translated // 항상 배열 보장
+      });
+    }
+
+    // 총 개수/페이지네이션
     const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
 
-    // 카테고리(원본+번역)
+    // 카테고리 목록(원본+번역) — 최신 글 기준 정렬
     const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
     const [allCategoryRows] = await db.query(`
       SELECT
@@ -218,33 +245,34 @@ app.get('/:lang/:section/:topic', async (req, res) => {
       translated: row.translated_category_name
     }));
 
+    // 선택 카테고리의 번역 표시명
     let translatedSelectedCategory = null;
     if (categoryQueryParam !== 'all') {
       const found = allCategories.find(cat => cat.original === categoryQueryParam);
       if (found) translatedSelectedCategory = found.translated;
     }
 
-    // EJS용 locals
-    res.locals.posts = filteredPosts;
+    // EJS에서 기대하는 키들
+    res.locals.posts = filteredPostsForSidebar;
     res.locals.categories = allCategories;
     res.locals.isSearch = false;
     res.locals.searchKeyword = '';
     res.locals.selectedCategory = translatedSelectedCategory;
     res.locals.pagination = { current: page, total: totalPages, range: paginationRange };
 
-    // 패널 데이터
+    // 패널 데이터 (기존 함수)
     const panelData = buildPanel({ lang: safeLang, section, topic });
     res.locals.panelData = panelData;
 
     // 렌더
     if (req.query.partial === '1') return res.render('partials/panel');
     return res.render('index');
-
   } catch (err) {
     console.error('패널 라우트 오류:', err);
     return res.status(500).send('서버 오류');
   }
 });
+
 
 
 // 미들웨어 설정
