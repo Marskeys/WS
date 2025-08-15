@@ -8,10 +8,9 @@
       z-index: 40;
       margin-left: 50px;
       height: var(--panel-h);
-      /* 논리 최소높이 = .panel-card min(182) + 리사이저 14 */
-      min-height: calc(182px + 14px);
+      min-height: 10px; /* ✅ 전체 최소 10px */
       display: grid;
-      grid-template-rows: minmax(0, 1fr) 14px; /* 1행이 0까지 줄 수 있게 */
+      grid-template-rows: minmax(0, 1fr) 10px; /* ✅ 리사이저 10px, 위 행은 0까지 접힘 */
       overflow: hidden;
       padding-left: 50px;
     }
@@ -35,7 +34,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,.4);
       padding: 16px;
       overflow: auto;
-      min-height: 182px; /* 이 값과 스크립트의 PANEL_MIN이 동기화됨 */
+      min-height: 0; /* ✅ 0까지 허용 (완전 접힘) */
     }
   
     #mini-lecture .connector{
@@ -65,21 +64,20 @@
     /* 리사이저 */
     #panel-resizer{
       grid-row: 2;
-      height: 14px;
+      height: 10px;           /* ✅ 리사이저 자체 10px */
+      border: 0;              /* ✅ 총 높이 보정 */
       cursor: ns-resize;
       background: #121212;
-      border: 1px solid #333;
-      border-top: 0;
       transition: background .15s ease, box-shadow .15s ease;
       position: relative;
-      touch-action: none; /* 터치 스크롤 방지 */
+      touch-action: none;     /* 터치 스크롤 방지 */
     }
     #panel-resizer::before{
       content: "";
       position: absolute;
       left: 50%; top: 50%;
       transform: translate(-50%, -50%);
-      width: 78px; height: 4px; border-radius: 999px;
+      width: 70px; height: 2px; border-radius: 999px; /* ✅ 10px 내에 맞춤 */
       background: linear-gradient(90deg, #777, #aaa, #777);
       opacity: .9;
     }
@@ -88,7 +86,7 @@
       position: absolute;
       left: 50%; top: 50%;
       transform: translate(-50%, -50%);
-      width: 78px; height: 12px;
+      width: 70px; height: 10px; /* ✅ 핸들 패턴 높이도 10px */
       pointer-events: none;
       color: #666;
       opacity: .55;
@@ -105,11 +103,11 @@
       transform: translate(-50%, -50%) scaleX(1.08);
     }
   
-    /* 모바일 최소높이도 동일 보장 */
+    /* 모바일 동일 보장 */
     @media (max-width: 640px){
       #mini-lecture{
         height: var(--panel-h);
-        min-height: calc(182px + 14px);
+        min-height: 10px; /* ✅ 모바일도 10px까지 접힘 */
       }
     }
   
@@ -131,7 +129,7 @@
          role="separator"
          aria-orientation="horizontal"
          aria-label="패널 높이 조절"
-         aria-valuemin="196"
+         aria-valuemin="10"   <!-- ✅ -->
          aria-valuemax="800"
          aria-valuenow="500"
          tabindex="0"
@@ -144,9 +142,9 @@
     const resizer = document.getElementById('panel-resizer');
     if(!resizer) return;
   
-    const PANEL_MIN = 182;        // .panel-card의 min-height와 동일
-    const RESIZER_H = 14;         // 리사이저 높이
-    const MIN = PANEL_MIN + RESIZER_H; // 196
+    const PANEL_MIN = 0;          // ✅ 패널 0까지
+    const RESIZER_H = 10;         // ✅ 리사이저 10px
+    const MIN = 10;               // ✅ 전체 최소 10px
     const MAX = 800, STEP = 16, BIG = 64;
     const KEY = 'miniPanelH';
   
@@ -205,7 +203,7 @@
       const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10) || 500;
       if(e.key === 'ArrowUp'){ setH(cur - (e.shiftKey ? BIG : STEP), true); e.preventDefault(); }
       else if(e.key === 'ArrowDown'){ setH(cur + (e.shiftKey ? BIG : STEP), true); e.preventDefault(); }
-      else if(e.key === 'Home'){ setH(MIN, true); e.preventDefault(); }
+      else if(e.key === 'Home'){ setH(MIN, true); e.preventDefault(); } // ✅ 10px로
       else if(e.key === 'End'){ setH(MAX, true); e.preventDefault(); }
       else if(e.key === 'Enter' || e.key === ' '){ setH(500, true); e.preventDefault(); }
     });
