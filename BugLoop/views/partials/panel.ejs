@@ -3,49 +3,99 @@
   
     /* 컨테이너: 패널+리사이저 한 덩어리 */
     #mini-lecture{
-      position: sticky; top: var(--header-h); z-index: 40; 
+      position: sticky;
+      top: var(--header-h);
+      z-index: 40; 
       margin-left: 50px;
       height: var(--panel-h);
-      display: grid; grid-template-rows: 1fr 14px; /* 내용 + 리사이저바 */
+      display: grid;
+      grid-template-rows: 1fr 14px; /* 내용 + 리사이저바 */
       overflow: hidden; /* 일체감 */
+    }
+
+    /* 패널 전체 래퍼 (왼쪽 박스 + 패널 내용) */
+    #mini-lecture .panel-wrapper {
+      display: flex;
+      height: 100%;
+    }
+
+    /* 왼쪽 까만 상자 */
+    #mini-lecture .left-box {
+      width: 80px; /* 원하는 너비 */
+      background: #000;
+      flex-shrink: 0;
     }
   
     /* 패널(다크 테마) */
     #mini-lecture .panel-card{
-      background:#2a5d06; color:#eee;
-      border:1px solid #333; border-bottom:0;
+      flex: 1;
+      background:#2a5d06;
+      color:#eee;
+      border:1px solid #333;
+      border-bottom:0;
       box-shadow:0 10px 30px rgba(0,0,0,.4);
-      padding:16px; overflow:auto;
+      padding:16px;
+      overflow:auto;
     }
+
     #mini-lecture .connector{
-      display:inline-block; margin-bottom:8px;
-      background:#000; color:#fff;
-      border:1px solid #333; border-bottom:0;
-      border-radius:10px; padding:4px 10px; font-size:12px; font-weight:700;
+      display:inline-block;
+      margin-bottom:8px;
+      background:#000;
+      color:#fff;
+      border:1px solid #333;
+      border-bottom:0;
+      border-radius:10px;
+      padding:4px 10px;
+      font-size:12px;
+      font-weight:700;
     }
+
     #mini-lecture .chip{
-      display:inline-block; margin-top:8px; margin-right:6px;
-      background:#1a1a1a; color:#ddd; border:1px solid #333;
-      padding:6px 10px; font-size:12px;
+      display:inline-block;
+      margin-top:8px;
+      margin-right:6px;
+      background:#1a1a1a;
+      color:#ddd;
+      border:1px solid #333;
+      padding:6px 10px;
+      font-size:12px;
     }
   
-    /* 리사이저바: 큼직+그립바+호버/포커스 강조 */
+    /* 리사이저바 */
     #panel-resizer{
-      position:relative; grid-row:2; height:14px; cursor:ns-resize;
-      background:#121212; border:1px solid #333; border-top:0;
+      position:relative;
+      grid-row:2;
+      height:14px;
+      cursor:ns-resize;
+      background:#121212;
+      border:1px solid #333;
+      border-top:0;
       transition:background .15s ease, box-shadow .15s ease;
     }
     #panel-resizer::before{
-      content:""; position:absolute; left:50%; top:50%;
-      width:78px; height:4px; border-radius:999px;
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:78px;
+      height:4px;
+      border-radius:999px;
       transform:translate(-50%,-50%);
       background:linear-gradient(90deg,#777,#aaa,#777);
       opacity:.9;
     }
     #panel-resizer::after{
-      content:""; position:absolute; left:50%; top:50%;
-      width:78px; height:12px; transform:translate(-50%,-50%);
-      pointer-events:none; color:#666; opacity:.55;
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:78px;
+      height:12px;
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+      color:#666;
+      opacity:.55;
       background:radial-gradient(currentColor 1px, transparent 2px) 0 50%/10px 8px repeat-x;
     }
     #panel-resizer:hover,
@@ -59,26 +109,28 @@
       transform:translate(-50%,-50%) scaleX(1.08);
     }
   
-    /* 모바일: 터치 타깃 확대 */
+    /* 모바일 */
     @media (max-width:640px){
       #mini-lecture{ grid-template-rows: 1fr 18px; }
       #panel-resizer{ height:18px; }
     }
   
     body.resizing{ user-select:none; }
-  </style>
+</style>
   
-  <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
-    <div class="panel-card">
-        <span class="connector">Welcome</span>
-      
-        <% if (panelData && panelData.html) { %>
-          <div class="panel-body"><%- panelData.html %></div>  <!-- 원시 HTML 삽입 -->
-        <% } else { %>
-          <h3 style="margin:0 0 6px 0"><%= panelData.title %></h3>
-          <p style="margin:0;opacity:.9"><%= panelData.body %></p>
-        <% } %>
-      </div>
+<div id="mini-lecture" role="region" aria-label="미니 강의 패널">
+    <div class="panel-wrapper">
+        <div class="left-box"></div> <!-- 항상 붙어 있는 까만 상자 -->
+        <div class="panel-card">
+            <span class="connector">Welcome</span>
+            <% if (panelData && panelData.html) { %>
+              <div class="panel-body"><%- panelData.html %></div>
+            <% } else { %>
+              <h3 style="margin:0 0 6px 0"><%= panelData.title %></h3>
+              <p style="margin:0;opacity:.9"><%= panelData.body %></p>
+            <% } %>
+        </div>
+    </div>
   
     <div id="panel-resizer"
          role="separator"
@@ -89,22 +141,22 @@
          aria-valuenow="240"
          tabindex="0"
          title="드래그하거나 ↑/↓ 키로 높이 조절"></div>
-  </div>
+</div>
   
-  <script>
-  (function(){
+<script>
+(function(){
     const root = document.documentElement;
     const resizer = document.getElementById('panel-resizer');
     if(!resizer) return;
-  
+
     const KEY='miniPanelH', MIN=120, MAX=600, STEP=16, BIG=64;
     const saved = parseInt(localStorage.getItem(KEY),10);
     const start = Number.isNaN(saved)?240:saved;
     root.style.setProperty('--panel-h', start+'px');
     resizer.setAttribute('aria-valuenow', String(start));
-  
+
     let startY=0, startH=0, dragging=false;
-  
+
     const clamp = v => Math.max(MIN, Math.min(MAX, v));
     const setH = (h, save=false) => {
       h = clamp(h);
@@ -112,7 +164,7 @@
       resizer.setAttribute('aria-valuenow', String(h));
       if(save) localStorage.setItem(KEY, String(h));
     };
-  
+
     function move(e){
       if(!dragging) return;
       const y = (e.touches?e.touches[0].clientY:e.clientY);
@@ -139,10 +191,10 @@
       window.addEventListener('touchend',up);
       e.preventDefault?.();
     }
-  
+
     resizer.addEventListener('mousedown',down);
     resizer.addEventListener('touchstart',down,{passive:false});
-  
+
     // 키보드 접근성
     resizer.addEventListener('keydown', (e)=>{
       const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
@@ -152,8 +204,8 @@
       else if(e.key==='End'){ setH(MAX, true); e.preventDefault(); }
       else if(e.key==='Enter' || e.key===' '){ setH(240, true); e.preventDefault(); }
     });
-  
-    // 첫 방문 코칭 버블(한 번만)
+
+    // 첫 방문 코칭 버블
     if(!localStorage.getItem('miniPanelHint')){
       const hint = document.createElement('div');
       hint.textContent = '드래그해서 높이를 조절할 수 있어요';
@@ -167,15 +219,15 @@
       setTimeout(()=>{ hint.style.opacity='0'; setTimeout(()=>hint.remove(), 300); }, 2600);
       localStorage.setItem('miniPanelHint','1');
     }
-  })();
-  </script>
+})();
+</script>
   
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const activeMenu = document.querySelector('.submenu a.active');
-      const connector = document.querySelector('#mini-lecture .connector');
-      if (activeMenu && connector) {
-        connector.textContent = activeMenu.textContent.trim();
-      }
-    });
-    </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const activeMenu = document.querySelector('.submenu a.active');
+    const connector = document.querySelector('#mini-lecture .connector');
+    if (activeMenu && connector) {
+      connector.textContent = activeMenu.textContent.trim();
+    }
+});
+</script>
