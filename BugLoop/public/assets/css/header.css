@@ -48,10 +48,20 @@
   text-decoration: none;
   z-index: 9999;
 }
+.sidebar-icon:hover,
 .sidebar-icon.active {
   color: var(--highlight-color, #fff);
   background: transparent;
 }
+
+/* hover는 데스크탑 넓이 이상일 때만 */
+@media (min-width: 769px) {
+  .sidebar-icon:hover {
+    color: var(--highlight-color, #fff);
+    background: transparent;
+  }
+}
+
 .sidebar-icon i {
   background: none !important;
   outline: none;
