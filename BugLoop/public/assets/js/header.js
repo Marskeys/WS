@@ -163,3 +163,56 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+// 간단 포탈 유틸 (언제든 붙여써)
+(function () {
+  const dd = document.querySelector('.language-dropdown');
+  if (!dd) return;
+  const menu = dd.querySelector('.lang-menu');
+  if (!menu) return;
+
+  let inBody = false;
+  let origParent = menu.parentNode;
+  let placeholder = document.createComment('menu-placeholder');
+
+  function place() {
+    const r = dd.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.top = (r.bottom) + 'px';
+    menu.style.left = (r.right - menu.offsetWidth) + 'px'; // 오른쪽 정렬
+    menu.style.zIndex = '2147483000'; // 정말 크게
+    menu.style.pointerEvents = 'auto';
+  }
+
+  function open() {
+    if (inBody) return;
+    origParent.replaceChild(placeholder, menu);
+    document.body.appendChild(menu);
+    inBody = true;
+    place();
+    window.addEventListener('scroll', place, { passive: true });
+    window.addEventListener('resize', place);
+  }
+
+  function close() {
+    if (!inBody) return;
+    placeholder.parentNode.replaceChild(menu, placeholder);
+    inBody = false;
+    window.removeEventListener('scroll', place);
+    window.removeEventListener('resize', place);
+    menu.removeAttribute('style');
+  }
+
+  // 트리거(네가 쓰는 상태 클래스/aria에 맞춰 조정)
+  dd.addEventListener('click', (e) => {
+    const expanded = dd.getAttribute('aria-expanded') === 'true';
+    dd.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    (expanded ? close : open)();
+  });
+
+  // 바깥 클릭 닫기
+  document.addEventListener('mousedown', (e) => {
+    if (!inBody) return;
+    if (!menu.contains(e.target) && !dd.contains(e.target)) close();
+  });
+})();
