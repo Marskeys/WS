@@ -492,8 +492,13 @@
 }
 .light-switch[aria-checked="true"] .switch-handle {
   left: calc(100% - 2px - 15px);
-  background: linear-gradient(to bottom, #eee, #f67e7e);
+  background: linear-gradient(to bottom, #eee, #bbb);
 }
+
+.light-switch[aria-checked="true"] .switch-label {
+  background-color: #f68080;
+}
+
 
 .language-dropdown {
   position: relative;
