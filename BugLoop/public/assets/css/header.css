@@ -641,3 +641,9 @@ html.dark .lang-option:hover { background-color: #333; }
 
 /* 혹시 헤더가 내용 잘라먹으면 대비 */
 .header-top { overflow: visible !important; }
+
+/* SETTINGS ICON ACTIVE LOOK (minimal) */
+.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
+.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
+  color: #fff !important; /* 원래처럼 하얀색 */
+}
