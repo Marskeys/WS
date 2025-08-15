@@ -795,7 +795,7 @@ html.dark .lang-option:hover {
     width: 100%;
   }
 
-  /* 첫째 줄: vscode-sidebar */
+  /* 첫째 줄: vscode-sidebar -> Now the second line. */
   .vscode-sidebar {
     position: static !important;
     width: 100% !important;
@@ -805,13 +805,15 @@ html.dark .lang-option:hover {
     align-items: center;
     padding: 0 10px;
     background-color: #1e1e1e;
-    order: 1;
+    /* ❗ 변경: 순서를 2로 바꿔서 아래로 이동 */
+    order: 2;
     z-index: 100;
   }
 
-  /* 둘째 줄: 원래 메뉴 */
+  /* 둘째 줄: 원래 메뉴 -> Now the first line. */
   .header-menu {
-    order: 2;
+    /* ❗ 변경: 순서를 1로 바꿔서 위로 이동 */
+    order: 1;
     width: 100%;
     overflow-x: auto;
     background-color: black;
