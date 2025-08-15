@@ -603,7 +603,7 @@ html.dark .lang-option:hover { background-color: #333; }
     padding: 0 10px;
     position: static !important;
     gap: 6px;
-    z-index: 100;
+    z-index: 0;
   }
 
   /* 아이콘: 1칸씩 균등 분배 */
