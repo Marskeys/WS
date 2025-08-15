@@ -36,6 +36,7 @@
     /* 패널 내용 */
     #mini-lecture .panel-card {
       flex: 1;
+      min-width: 0; /* flex 줄어듦 허용 */
       background: #2a5d06;
       color: #eee;
       border: 1px solid #333;
@@ -84,6 +85,7 @@
       justify-content: center;
       align-items: center;
       min-height: 14px;
+      position: relative;
     }
     #panel-resizer::before {
       content: "";
@@ -129,7 +131,7 @@
       #mini-lecture .left-box {
         width: 100%;
         height: auto;
-        min-height: 200px;
+        min-height: 250px; /* 모바일 블랙박스 높이 확대 */
       }
       #panel-resizer {
         order: 3;
