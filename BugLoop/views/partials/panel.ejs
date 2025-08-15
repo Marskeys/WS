@@ -1,5 +1,5 @@
 <style>
-    :root { --header-h: 30px; --panel-h: 240px; }
+    :root { --header-h: 30px; --panel-h: 400px; } /* 기본 패널 높이 400px */
 
     /* 컨테이너 */
     #mini-lecture{
@@ -8,6 +8,7 @@
       z-index: 40; 
       margin-left: 50px;
       height: var(--panel-h);
+      min-height: 400px; /* 최소 높이 보장 */
       display: grid;
       grid-template-rows: 1fr 14px;
       overflow: hidden;
@@ -21,10 +22,9 @@
 
     /* 까만 상자 */
     #mini-lecture .left-box {
-      width: 400px; /* 데스크탑 폭 */
+      width: 400px; /* 기본 폭 400px */
       background: #000;
       flex-shrink: 0;
-   
     }
   
     /* 패널 내용 */
@@ -73,6 +73,7 @@
       border:1px solid #333;
       border-top:0;
       transition:background .15s ease, box-shadow .15s ease;
+      align-self: end; /* 항상 아래쪽 유지 */
     }
     #panel-resizer::before{
       content:"";
@@ -142,9 +143,9 @@
          role="separator"
          aria-orientation="horizontal"
          aria-label="패널 높이 조절"
-         aria-valuemin="120"
+         aria-valuemin="400"
          aria-valuemax="600"
-         aria-valuenow="240"
+         aria-valuenow="400"
          tabindex="0"
          title="드래그하거나 ↑/↓ 키로 높이 조절"></div>
 </div>
@@ -155,9 +156,9 @@
     const resizer = document.getElementById('panel-resizer');
     if(!resizer) return;
 
-    const KEY='miniPanelH', MIN=120, MAX=600, STEP=16, BIG=64;
+    const KEY='miniPanelH', MIN=400, MAX=600, STEP=16, BIG=64;
     const saved = parseInt(localStorage.getItem(KEY),10);
-    const start = Number.isNaN(saved)?240:saved;
+    const start = Number.isNaN(saved)?400:saved;
     root.style.setProperty('--panel-h', start+'px');
     resizer.setAttribute('aria-valuenow', String(start));
 
@@ -190,7 +191,7 @@
     function down(e){
       dragging=true; document.body.classList.add('resizing');
       startY = (e.touches?e.touches[0].clientY:e.clientY);
-      startH = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
+      startH = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||400;
       window.addEventListener('mousemove',move);
       window.addEventListener('mouseup',up);
       window.addEventListener('touchmove',move,{passive:false});
@@ -203,12 +204,12 @@
 
     // 키보드 접근성
     resizer.addEventListener('keydown', (e)=>{
-      const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||240;
+      const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||400;
       if(e.key==='ArrowUp'){ setH(cur - (e.shiftKey?BIG:STEP), true); e.preventDefault(); }
       else if(e.key==='ArrowDown'){ setH(cur + (e.shiftKey?BIG:STEP), true); e.preventDefault(); }
       else if(e.key==='Home'){ setH(MIN, true); e.preventDefault(); }
       else if(e.key==='End'){ setH(MAX, true); e.preventDefault(); }
-      else if(e.key==='Enter' || e.key===' '){ setH(240, true); e.preventDefault(); }
+      else if(e.key==='Enter' || e.key===' '){ setH(400, true); e.preventDefault(); }
     });
 
     // 첫 방문 코칭 버블
