@@ -471,3 +471,33 @@ html.dark .lang-option:hover { background-color: #333; }
   outline-offset: 2px;
   border-radius: 6px;
 }
+
+/* ============================================
+   🔁 Restore original active look (white) 
+   — append at file end
+============================================ */
+
+/* 0) 바 내부에만 하이라이트 변수를 흰색으로 고정 (옵션: 안전)
+   → 기존 규칙의 var(--highlight-color, …)가 전부 흰색 fallback처럼 작동 */
+   .vscode-sidebar { --highlight-color: #fff; }
+
+   /* 1) VSCode 바 아이콘 활성화: 그냥 '하얀색' */
+   .vscode-sidebar .sidebar-icon.active,
+   .vscode-sidebar .sidebar-icon[aria-current="page"],
+   .vscode-sidebar .sidebar-icon[aria-selected="true"] {
+     color: #fff !important;
+   }
+   
+   /* 2) 내가 추가했던 파란 밑줄/하이라이트 제거 */
+   .vscode-sidebar .sidebar-icon.active::after,
+   .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
+   .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
+     content: none !important;
+   }
+   
+   /* 3) 토글 버튼도 동일하게 흰색 유지 (덮어쓰기 정리) */
+   .vscode-sidebar .sidebar-icon.toggle-extension.active,
+   .vscode-sidebar .sidebar-icon.toggle-extension:focus {
+     color: #fff !important;
+     background: none !important;
+   }
