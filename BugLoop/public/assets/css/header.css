@@ -776,7 +776,8 @@ html.dark .lang-option:hover {
     width: 100% !important;
     height: 50px !important;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
+    /* Use 'space-between' to push icons to the edges for a full-width look. */
     align-items: center;
     padding: 0 10px;
   }
