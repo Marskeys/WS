@@ -71,6 +71,8 @@
  🔹 사이드 패널 레이아웃
 ====================== */
 .side-panel.main-panel-only {
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
   position: fixed;
   top: 0;
   left: 0;
@@ -741,12 +743,12 @@ html.dark .lang-option:hover {
   display: flex;
 }
 
-/* 📱 모바일에서 사이드바를 상단바로 변경 */
+/* 📱 모바일 레이아웃 수정 */
 @media (max-width: 768px) {
   /*
-  1. The main fix: Make the full header a vertical flexbox.
-     This ensures that the two main sections (.side-panel and .header-top)
-     stack on top of each other and can be reordered.
+  1. 가장 중요한 변경 사항: 전체 헤더 컨테이너를 수직 flexbox로 만듭니다.
+     이렇게 해야 두 메인 섹션(.side-panel과 .header-top)이
+     정확하게 쌓이고 순서를 바꿀 수 있습니다.
   */
   .full-header-container {
     display: flex;
@@ -759,12 +761,24 @@ html.dark .lang-option:hover {
   }
   
   /*
-  2. The side panel contains the vscode-sidebar.
-     We need to make this the first row on mobile.
-     Set its order to 1 and remove any conflicting positioning.
+  2. .header-top은 메뉴를 포함하므로, 첫 번째 줄이 되도록 순서를 지정합니다.
+     기존에 충돌을 일으켰던 position: fixed를 제거합니다.
+  */
+  .header-top {
+    order: 1;
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    background: black;
+    z-index: 1;
+  }
+  
+  /*
+  3. .side-panel은 vscode-sidebar를 포함하므로, 두 번째 줄이 되도록 순서를 지정합니다.
   */
   .side-panel.main-panel-only {
-    order: 1;
+    order: 2;
     position: static;
     width: 100%;
     height: auto;
@@ -774,26 +788,12 @@ html.dark .lang-option:hover {
     z-index: 100;
   }
   
-  /*
-  3. The header-top contains the menu.
-     We'll make this the second row.
-  */
-  .header-top {
-    order: 2;
-    position: static;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    background: black;
-    z-index: 1;
-  }
-
-  /* 4. Ensure the vscode-sidebar is a horizontal row that fills its parent. */
+  /* 4. vscode-sidebar가 가로로 꽉 차도록 스타일을 조정합니다. */
   .vscode-sidebar {
     width: 100% !important;
     height: 50px !important;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-between; /* 아이콘을 양 끝으로 밀어내어 꽉 찬 느낌을 줍니다. */
     align-items: center;
     padding: 0 10px;
     background-color: #1e1e1e;
@@ -801,21 +801,21 @@ html.dark .lang-option:hover {
     z-index: 100;
   }
 
-  /* 5. Fix the inner menu layout to be horizontal as well. */
+  /* 5. 메뉴 내부의 레이아웃도 가로로 정렬합니다. */
   .top-controls {
     flex-direction: row;
     align-items: center;
     width: 100%;
   }
 
-  /* 6. Fix the extension panel position to open below the new header. */
+  /* 6. 확장 패널이 두 줄 헤더 아래에서 열리도록 위치를 재조정합니다. */
   .sidebar-extension-panel {
     top: 90px;
     height: calc(100vh - 90px);
     width: 100vw;
   }
 
-  /* Other mobile-specific styles */
+  /* 그 외 모바일 전용 스타일 */
   .left-controls {
     display: none;
   }
