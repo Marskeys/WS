@@ -22,7 +22,6 @@
   position: relative;
   z-index: 1000001 !important;
   pointer-events: auto;
-  height: 10px;
 }
 #right-controls.is-active { display: flex !important; }
 
@@ -500,6 +499,8 @@
   position: relative;
   display: inline-block;
   flex-shrink: 0;
+  /* 드롭다운 메뉴를 위한 새로운 스태킹 컨텍스트 생성 */
+  z-index: 99991; /* vscode-sidebar보다 높게 설정 */
 }
 .lang-btn {
   background: none;
@@ -525,13 +526,13 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000000;
+  /* 부모 요소가 z-index를 갖게 되므로 1로 충분 */
+  z-index: 1;
   min-width: 120px;
   padding: 5px 0;
   list-style: none;
 }
 .lang-menu.show { display: block; }
-.lang-menu { z-index: 1000002; } /* right-controls 위에 */
 .lang-option {
   display: flex;
   align-items: center;
@@ -671,8 +672,8 @@ html.dark .lang-option:hover { background-color: #333; }
   }
 }
 
+/* 670px 이하에서 메뉴 라인에 블러 필터 적용 */
 @media (max-width: 670px) {
-  /* 여기에 CSS 코드를 넣으세요 */
   .header-top {
     position: relative;
     overflow: hidden;
