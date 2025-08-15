@@ -23,56 +23,32 @@
   color: #ccc;
   cursor: pointer;
 }
-
-.sidebar-icon.toggle-extension:hover {
-  background: #333;
-  color: white;
-}
-
+.sidebar-icon.toggle-extension:hover { background: #333; color: #fff; }
 .sidebar-icon.toggle-extension.active,
-.sidebar-icon.toggle-extension:focus {
-  background: none !important;
-  color: #ffffff !important;
-}
+.sidebar-icon.toggle-extension:focus { background: none !important; color: #fff !important; }
 
 .sidebar-icon:hover,
-.sidebar-icon.active {
-  color: var(--highlight-color, #ffffff);
-  background: transparent;
-}
+.sidebar-icon.active { color: var(--highlight-color, #fff); background: transparent; }
 
-.sidebar-icon i {
-  background: none !important;
-  outline: none;
-  box-shadow: none;
-}
+.sidebar-icon i { background: none !important; outline: none; box-shadow: none; }
 
 /* ======================
  🔹 탭 컨텐츠 전환
 ====================== */
-.tab-content {
-  display: none;
-}
-
-.tab-content[style*="display: block"] {
-  display: block !important;
-}
+.tab-content { display: none; }
+.tab-content[style*="display: block"] { display: block !important; }
 
 /* ======================
  🔹 반응형 (모바일)
 ====================== */
 @media (max-width: 640px) {
-  .desktop-menu {
-    display: none;
-  }
+  .desktop-menu { display: none; }
 }
 
 /* ======================
- 🔹 사이드 패널 레이아웃
+ 🔹 사이드 패널 레이아웃 (기본)
 ====================== */
 .side-panel.main-panel-only {
-  /* This is a crucial change for mobile.
-     We will handle the mobile positioning inside the media query. */
   position: fixed;
   top: 0;
   left: 0;
@@ -81,19 +57,11 @@
   height: auto;
   width: auto;
   z-index: 30;
-}
-
-.side-panel.main-panel-only {
   pointer-events: none;
 }
+.side-panel.main-panel-only.open { pointer-events: auto; }
 
-.side-panel.main-panel-only.open {
-  pointer-events: auto;
-}
-
-.vscode-sidebar {
-  pointer-events: auto !important;
-}
+.vscode-sidebar { pointer-events: auto !important; }
 
 .sidebar-wrapper {
   display: flex;
@@ -101,7 +69,9 @@
   height: 100%;
 }
 
-/* Desktop Styles for the Sidebar */
+/* ======================
+ 🔹 VSCode 사이드바 (데스크톱 기본)
+====================== */
 .vscode-sidebar {
   width: 50px;
   background-color: #1e1e1e;
@@ -114,7 +84,7 @@
 }
 
 /* ======================
- 🔹 확장 패널
+ 🔹 확장 패널 (데스크톱 기본)
 ====================== */
 .sidebar-extension-panel {
   position: relative;
@@ -124,7 +94,7 @@
   width: 360px;
   min-width: 360px;
   max-width: 360px;
-  background-color: rgb(0, 0, 0);
+  background-color: #000;
   color: rgb(210, 210, 210);
   padding: 10px 16px;
   border-right: 1px solid #444;
@@ -140,52 +110,18 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
-.sidebar-extension-panel::-webkit-scrollbar {
-  display: none;
-}
-
+.sidebar-extension-panel::-webkit-scrollbar { display: none; }
 .sidebar-extension-panel.open {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
 }
 
-@media (max-width: 768px) {
-  .sidebar-extension-panel {
-    width: 100vw;
-    min-width: 0px;
-  }
-
-  .sidebar-extension-panel.open {
-    transform: translateX(0);
-  }
-}
-
-.sidebar-extension-panel h3 {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.sidebar-extension-panel ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar-extension-panel li {
-  margin: 5px 0;
-}
-
-.sidebar-extension-panel a {
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.sidebar-extension-panel a:hover {
-  text-decoration: underline;
-}
+.sidebar-extension-panel h3 { font-size: 14px; margin-bottom: 10px; }
+.sidebar-extension-panel ul { list-style: none; padding: 0; margin: 0; }
+.sidebar-extension-panel li { margin: 5px 0; }
+.sidebar-extension-panel a { color: #fff; text-decoration: none; font-size: 14px; }
+.sidebar-extension-panel a:hover { text-decoration: underline; }
 
 /* ======================
  🔹 panel-footer 하단 고정
@@ -199,7 +135,6 @@
   flex-direction: column;
   gap: 12px;
 }
-
 .real-footer {
   text-align: center;
   font-size: 0.75rem;
@@ -209,10 +144,7 @@
   margin-bottom: 20px;
   padding-top: 8px;
 }
-
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
 /* ======================
  🔹 auth 버튼들
@@ -226,22 +158,10 @@
   box-sizing: border-box;
   width: 100%;
 }
-
 @media (max-width: 640px) {
-  .auth-buttons {
-    gap: 8px;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .auth-btn.write-post,
-  .auth-btn.logout {
-    margin-left: 0 !important;
-  }
-
-  .auth-btn.logout {
-    margin-right: 0 !important;
-  }
+  .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
+  .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
+  .auth-btn.logout { margin-right: 0 !important; }
 }
 
 .auth-btn {
@@ -253,679 +173,220 @@
   font-weight: 600;
   box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
   background-color: transparent;
-  color: white;
-  border: 1px solid white;
+  color: #fff;
+  border: 1px solid #fff;
   padding: 10px;
   border-radius: 6px;
 }
-
-.auth-btn.login {
-  border-radius: 999px;
-  font-size: 1.2rem;
-}
-
+.auth-btn.login { border-radius: 999px; font-size: 1.2rem; }
 .auth-btn.login:hover {
   background-color: rgba(255, 255, 200, 0.05);
-  color: white;
+  color: #fff;
   border-color: rgba(255, 255, 180, 0.8);
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
-
 .auth-btn.signup {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 0.9rem;
-  padding: 6px 4px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  box-shadow: none;
+  background: none; border: none; color: #fff; font-size: 0.9rem; padding: 6px 4px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35); box-shadow: none;
 }
-
-.auth-btn.signup:hover {
-  color: lightblue;
-  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-}
-
+.auth-btn.signup:hover { color: lightblue; text-shadow: 0 0 10px rgba(255,230,120,0.8); }
 .auth-btn.write-post {
-  margin-left: 10px;
-  font-size: 0.85rem;
-  padding: 4px 10px !important;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  background-color: black;
+  margin-left: 10px; font-size: 0.85rem; padding: 4px 10px !important; border-radius: 4px;
+  display: inline-flex; align-items: center; gap: 5px; text-shadow: 0 0 5px rgba(255,255,255,0.35);
+  background-color: #000;
 }
-
 .auth-btn.write-post:hover {
-  color: lightblue;
-  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-  background-color: rgba(255, 255, 200, 0.05);
-  border-color: rgba(255, 255, 180, 0.8);
+  color: lightblue; text-shadow: 0 0 10px rgba(255,230,120,0.8);
+  background-color: rgba(255,255,200,0.05); border-color: rgba(255,255,180,0.8);
 }
-
-.auth-btn.logout {
-  font-size: 0.85rem;
-  border-radius: 999px;
-  padding: 8px 10px;
-}
-
+.auth-btn.logout { font-size: 0.85rem; border-radius: 999px; padding: 8px 10px; }
 .auth-btn.logout:hover {
-  background-color: rgba(255, 255, 200, 0.05);
-  color: white;
-  border-color: rgba(255, 255, 180, 0.8);
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+  background-color: rgba(255,255,200,0.05); color: #fff;
+  border-color: rgba(255,255,180,0.8); box-shadow: 0 0 12px rgba(255,230,100,0.8);
 }
 
 /* ======================
- 🔹 ...로그인 폼 (버튼 클릭 시 등장)
+ 🔹 로그인 폼
 ====================== */
-.login-form-container {
-  margin-top: 10px;
-  padding: 10px;
-  border-top: 1px solid #555;
-}
-
-#login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
+.login-form-container { margin-top: 10px; padding: 10px; border-top: 1px solid #555; }
+#login-form { display: flex; flex-direction: column; gap: 10px; }
 #login-form input {
-  padding: 10px;
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  color: white;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  padding: 10px; background-color: #1e1e1e; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 0.9rem;
 }
-
 #login-form button {
-  padding: 10px;
-  background-color: #641df1;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  padding: 10px; background-color: #641df1; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background-color 0.2s ease;
 }
-
-#login-form button:hover {
-  background-color: #4c16b9;
-}
+#login-form button:hover { background-color: #4c16b9; }
 
 /* ==================================
- 🔹 헤더 & 메뉴 레이아웃 (재수정)
+ 🔹 헤더 & 메뉴 레이아웃 (데스크톱)
 ================================== */
 .header-top {
   width: 100%;
   height: 30px;
-  padding: 0px 23px;
+  padding: 0 23px;
   box-sizing: border-box;
   display: flex;
   justify-content: flex-end;
-  align-items: centor;
+  align-items: center; /* fix */
   position: fixed;
   top: 0;
   left: 13px;
   z-index: 1;
   transition: background 0.4s ease;
-  background: black;
+  background: #000;
 }
 
 @media (max-width: 640px) {
-  .main-menu {
-    font-size: 8px;
-  }
+  .main-menu { font-size: 8px; }
 }
 
-.top-controls {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.left-controls {
-  flex-shrink: 0;
-  padding-right: 15px;
-}
-
-.header-menu {
-  flex-grow: 1;
-  min-width: 0;
-  flex-shrink: 1;
-}
+.top-controls { display: flex; align-items: center; width: 100%; }
+.left-controls { flex-shrink: 0; padding-right: 15px; }
+.header-menu { flex-grow: 1; min-width: 0; flex-shrink: 1; }
 
 .main-menu-container {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  height: 100%;
+  list-style: none; display: flex; margin: 0; padding: 0;
+  white-space: nowrap; overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none; -ms-overflow-style: none; height: 100%;
 }
+.main-menu-container::-webkit-scrollbar { display: none; }
 
-.main-menu-container::-webkit-scrollbar {
-  display: none;
-}
-
-.menu-item-wrapper {
-  display: flex;
-  flex-shrink: 0;
-  gap: 10px;
-  align-items: center;
-}
+.menu-item-wrapper { display: flex; flex-shrink: 0; gap: 10px; align-items: center; }
 
 .menu-label {
-  position: sticky;
-  left: 0;
-  top: 0;
-  z-index: 10;
-  background-color: black;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #fff;
-  white-space: nowrap;
-  padding: 5px 12px;
-  cursor: pointer;
+  position: sticky; left: 0; top: 0; z-index: 10; background-color: #000;
+  font-size: 0.95rem; font-weight: 500; color: #fff; white-space: nowrap; padding: 5px 12px; cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .submenu {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 10px;
-  white-space: nowrap;
+  display: flex; list-style: none; padding: 0; margin: 0; gap: 10px; white-space: nowrap;
 }
-
-.submenu li a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 0.85rem;
-  transition: color 0.2s ease;
-}
-
-.submenu li a:hover {
-  color: #007BFF;
-}
+.submenu li a { text-decoration: none; color: #fff; font-size: 0.85rem; transition: color 0.2s ease; }
+.submenu li a:hover { color: #007BFF; }
 
 .header-top.scrolled .menu-label,
-.header-top.scrolled .submenu li a {
-  color: white;
-}
+.header-top.scrolled .submenu li a { color: #fff; }
 
 .right-controls {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  z-index: 1000;
-  flex-basis: 100px;
-  padding-left: 5px;
-  flex-shrink: 0;
-  margin-left: auto;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+  display: flex; align-items: center; gap: 5px; z-index: 1000; flex-basis: 100px; padding-left: 5px;
+  flex-shrink: 0; margin-left: auto; box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
 }
 
 /* ==================================
  🔹 라이트 모드 & 언어 선택
 ================================== */
 .light-switch {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 20px;
-  cursor: pointer;
-  border-top: none;
-  margin-top: 0;
-  padding: 0;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; width: 36px; height: 20px; cursor: pointer;
+  border-top: none; margin-top: 0; padding: 0; flex-shrink: 0;
 }
-
 .light-switch .switch-label {
-  width: 36px;
-  height: 20px;
-  background-color: #888;
-  border-radius: 999px;
-  position: relative;
-  transition: background-color 0.3s ease;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+  width: 36px; height: 20px; background-color: #888; border-radius: 999px; position: relative;
+  transition: background-color 0.3s ease; box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
 }
-
 .light-switch .switch-handle {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 15px;
-  height: 15px;
-  background: linear-gradient(to bottom, #ffffff, #cccccc);
-  border-radius: 50%;
-  transition: left 0.3s ease, background 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  position: absolute; top: 2px; left: 2px; width: 15px; height: 15px;
+  background: linear-gradient(to bottom, #fff, #ccc); border-radius: 50%;
+  transition: left 0.3s ease, background 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
-
 .light-switch[aria-checked="true"] .switch-handle {
   left: calc(100% - 2px - 15px);
-  background: linear-gradient(to bottom, #eeeeee, #bbbbbb);
+  background: linear-gradient(to bottom, #eee, #bbb);
 }
 
-.language-dropdown {
-  position: relative;
-  display: inline-block;
-  flex-shrink: 0;
-}
-
+.language-dropdown { position: relative; display: inline-block; flex-shrink: 0; }
 .lang-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 5px 10px;
+  background: none; border: none; color: #fff; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; padding: 5px 10px;
 }
-
-.lang-btn .fi {
-  width: 1.5rem;
-  height: 1.2rem;
-}
+.lang-btn .fi { width: 1.5rem; height: 1.2rem; }
 
 .lang-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 5px);
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000000;
-  min-width: 120px;
-  padding: 5px 0;
-  list-style: none;
+  display: none; position: absolute; top: calc(100% + 5px); right: 0; background: #fff; border: 1px solid #ddd; border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000000; min-width: 120px; padding: 5px 0; list-style: none;
 }
-
-.lang-menu.show {
-  display: block;
-}
-
+.lang-menu.show { display: block; }
 .lang-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 8px 12px;
-  color: #333;
-  text-decoration: none;
-  white-space: nowrap;
+  display: flex; align-items: center; gap: 0.5rem; padding: 8px 12px; color: #333; text-decoration: none; white-space: nowrap;
 }
+.lang-option:hover { background-color: #f5f5f5; }
+.lang-option.active-lang { font-weight: bold; color: var(--highlight-color, #00adb5); }
 
-.lang-option:hover {
-  background-color: #f5f5f5;
-}
+html.dark .lang-menu { background: #222; border-color: #444; box-shadow: 2px 2px 6px rgba(255,255,255,0.05); }
+html.dark .lang-option { color: #eee; }
+html.dark .lang-option:hover { background-color: #333; }
 
-.lang-option.active-lang {
-  font-weight: bold;
-  color: var(--highlight-color, #00adb5);
-}
-
-html.dark .lang-menu {
-  background: #222;
-  border-color: #444;
-  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
-}
-
-html.dark .lang-option {
-  color: #eee;
-}
-
-html.dark .lang-option:hover {
-  background-color: #333;
-}
-
-/* ======================
- 🔹 프로필 탭
-====================== */
-.profile-tab {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  text-align: center;
-  margin-top: 30px;
-}
-
-.profile-avatar {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  margin-bottom: 5px;
-  margin-left: 25px;
-  opacity: 0;
-  animation: fadeIn 0.2s ease 0.1s forwards;
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}
-
-.sidebar-extension-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 155px;
-  background-image: url('/assets/images/room.webp');
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
-  z-index: 0;
-  opacity: 1;
-  pointer-events: none;
-  border-bottom: 2px solid rgba(255, 255, 255, 1);
-}
-
-.profile-info {
-  max-width: 260px;
-  margin-top: -50px;
-}
-
-.profile-name {
-  font-family: 'Noto Sans', sans-serif;
-  font-weight: 800;
-  font-size: 1.2em;
-  margin: 5px 0;
-  color: rgb(251, 251, 251);
-  text-align: left;
-}
-
-.profile-bio {
-  font-size: 0.85em;
-  color: #c7c7c7;
-  margin: 10px 0;
-  text-align: left;
-}
-
-.profile-social {
-  margin-top: 20px;
-}
-
-.profile-social a {
-  color: inherit;
-  margin: 0px 8px;
-  font-size: 1.4em;
-  transition: color 0.2s ease;
-}
-
-.profile-social a:hover {
-  color: var(--highlight-color, #ff4081);
-}
-
-.profile-tags {
-  margin-top: 20px;
-}
-
-.profile-tags span {
-  display: inline-block;
-  background-color: #eee;
-  color: #333;
-  padding: 4px 10px;
-  margin: 3px;
-  border-radius: 20px;
-  font-size: 0.8em;
-}
-
-@keyframes icon-pulse-sway {
-  0%,
-  100% {
-    transform: scale(1) translateX(0);
-    color: #ffffff;
-  }
-
-  25% {
-    transform: scale(1.5) translateX(-0.6px);
-    color: #f0f0f0;
-  }
-
-  50% {
-    transform: scale(0.9) translateX(0.6px);
-    color: #eaeaea;
-  }
-
-  75% {
-    transform: scale(1.2) translateX(-0.3px);
-    color: #f5f5f5;
-  }
-}
-
-.blink-highlight {
-  animation: icon-pulse-sway 2s ease-in-out infinite !important;
-}
-
-.menu-label {
-  background-color: #272d30;
-  color: white;
-  padding: 6px 12px;
-  font-weight: 500;
-  display: inline-block;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submenu {
-  padding-right: 50px;
-}
-
-/* 기본적으로 숨기기 */
-#right-controls {
-  display: none;
-}
-
-/* is-active 클래스가 추가되었을 때 보이게 하기 */
-#right-controls.is-active {
-  display: flex;
-}
-
-/* 📱 모바일 레이아웃 수정 */
+/* ==================================
+ 🔹 📱 모바일 레이아웃 (<=768px) — 통합본
+================================== */
 @media (max-width: 768px) {
+  /* 헤더 컨테이너 */
   .full-header-container {
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     z-index: 20000;
   }
 
-  /* 메뉴를 첫 번째 줄에 배치 */
+  /* 1) 메뉴 줄 */
   .header-top {
     order: 1;
     position: static;
     width: 100%;
     height: auto;
     padding: 0;
-    background: black;
+    background: #000;
     z-index: 1;
+    left: 0; /* 데스크톱 left 오프셋 제거 */
+    align-items: center; /* 오타 보정 */
   }
-  
-  /* 사이드 패널을 두 번째 줄에 배치 */
+
+  /* 2) 사이드바 줄 */
   .side-panel.main-panel-only {
     order: 2;
-    position: static;
-    width: 100%; /* 부모 컨테이너에 100% 너비 적용 */
+    position: relative;       /* 오버레이 기준점 */
+    left: 0; right: 0;
+    width: 100%;
     height: auto;
     pointer-events: auto;
     display: flex;
     flex-direction: row;
     z-index: 100;
-    box-sizing: border-box; /* 패딩과 보더를 너비에 포함 */
+    box-sizing: border-box;
   }
 
+  .sidebar-wrapper { width: 100%; }
+
   .vscode-sidebar {
-    width: 100% !important; /* 화면 너비를 꽉 채우도록 수정 */
+    width: 100% !important;
     height: 50px !important;
+    display: flex;
     flex-direction: row;
-    justify-content: space-between; /* 아이콘을 양 끝으로 밀어내어 꽉 찬 느낌을 줍니다. */
+    justify-content: space-between;  /* flex:1과 함께 OK */
     align-items: center;
     padding: 0 10px;
     background-color: #1e1e1e;
     position: static !important;
     z-index: 100;
+    box-sizing: border-box;
+    gap: 6px;
   }
 
-  .top-controls {
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-  }
-
-  .sidebar-extension-panel {
-    top: 90px;
-    height: calc(100vh - 90px);
-    width: 100vw;
-  }
-
-  .left-controls {
-    display: none;
-  }
-  
-  .header-menu {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-
-  .right-controls {
-    display: flex;
-    flex-shrink: 0;
-  }
-
-  .sidebar-icon {
-    flex: 1;
-    padding: 0;
-    height: 100%;
-  }
-
-  .main-menu-container {
-    padding: 0 10px;
-  }
-}
-
-/* ============================================
-   ✅ MOBILE FIX OVERRIDES — append at file end
-   기존 829라인 유지, 아래만 추가하세요.
-============================================ */
-@media (max-width: 768px) {
-  /* 헤더 좌측 오프셋 제거 + 오타 보정 */
-  .header-top {
-    left: 0 !important;
-    align-items: center !important; /* 'centor' → 'center' */
-  }
-
-  /* 상단 사이드바 줄(아이콘 바) */
-  .side-panel.main-panel-only {
-    position: relative !important; /* 오버레이 기준점 */
-    width: 100% !important;
-    height: auto !important;
-    pointer-events: auto !important;
-    box-sizing: border-box !important;
-  }
-
-  .vscode-sidebar {
-    width: 100% !important;      /* 가로 꽉 채우기 */
-    height: 50px !important;
-    position: static !important;  /* 고정 해제 */
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 0 10px !important;
-    box-sizing: border-box !important;
-  }
-
-  /* 🔥 핵심: 확장패널을 '닫힘'일 때 레이아웃에서 빼기 */
-  .sidebar-extension-panel {
-    position: absolute !important;    /* flex 흐름에서 제거 */
-    top: 50px !important;             /* 상단바 높이에 맞춤 */
-    left: 0 !important;
-    width: 100% !important;           /* 100vw 대신 100% */
-    height: calc(100vh - 50px) !important;
-    transform: translateX(-100%) !important; /* 화면 밖 */
-    opacity: 0 !important;
-    pointer-events: none !important;
-    min-width: 0 !important;          /* 데스크톱 min/max 무력화 */
-    max-width: none !important;
-    border-right: none !important;     /* 모바일 오버레이면 보더 불필요 */
-  }
-
-  .sidebar-extension-panel.open {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-}
-
-/* ============================================
-   ✅ MOBILE FIX #2 — append at file end
-============================================ */
-@media (max-width: 768px) {
-  /* 0) 헤더 정렬 오타 보정 */
-  .header-top { align-items: center !important; }
-
-  /* 1) 상단으로 올라간 사이드바 래퍼가 레이아웃 전체를 잡도록 */
-  .side-panel.main-panel-only {
-    position: relative !important;
-    left: 0 !important;
-    right: 0 !important;         /* ← 고정/상태 변화에도 전체 폭 보장 */
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  .sidebar-wrapper { width: 100% !important; }
-
-  /* 2) 가로 아이콘바에서 '아이콘 하나당 100% 폭'을 해제 */
+  /* 아이콘: 1칸씩 균등 분배 */
   .vscode-sidebar .sidebar-icon {
-    width: auto !important;      /* ← 이것 때문에 좁아졌던 거 */
-    flex: 1 1 0 !important;      /* 모두 같은 비율로 나눠먹기 */
+    width: auto !important;
+    flex: 1 1 0 !important;
     min-width: 0 !important;
     padding: 0 !important;
     height: 100% !important;
   }
 
-  /* 3) 아이콘바 자체는 전체 폭 채우고 간격만 살짝 */
-  .vscode-sidebar {
-    width: 100% !important;
-    height: 50px !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: space-between !important; /* flex:1이라도 OK */
-    gap: 6px !important;
-    padding: 0 10px !important;
-    box-sizing: border-box !important;
-    position: static !important;
-  }
-
-  /* 4) 확장패널은 닫혀 있을 때 레이아웃 차지 X (오버레이) */
+  /* 3) 확장 패널: 닫힘일 때 레이아웃 비점유 (오버레이) */
   .sidebar-extension-panel {
     position: absolute !important;
-    top: 50px !important;
+    top: 50px !important;       /* 상단 바 높이 */
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
@@ -942,4 +403,11 @@ html.dark .lang-option:hover {
     opacity: 1 !important;
     pointer-events: auto !important;
   }
+
+  /* 기타 모바일 헤더 내부 */
+  .top-controls { flex-direction: row; align-items: center; width: 100%; }
+  .left-controls { display: none; }
+  .header-menu { flex-wrap: nowrap; overflow-x: auto; }
+  .right-controls { display: flex; flex-shrink: 0; }
+  .main-menu-container { padding: 0 10px; }
 }
