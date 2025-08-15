@@ -38,19 +38,7 @@ padding-left: 13px;
   }
 }
 
-:root{
-  --top-strip: 50px;
-  --page-bg: #fff; /* 나머지 배경색 */
-}
 
-/* html 배경을 그라디언트로: 위 50px만 #000 */
-html{
-  background:
-    linear-gradient(to bottom,
-      #000 0, #000 var(--top-strip),
-      var(--page-bg) var(--top-strip), var(--page-bg) 100%);
-  background-attachment: fixed; /* 스크롤해도 항상 상단 50px 고정 */
-}
 
 /* ======================
    ✅ 기본 설정
@@ -67,6 +55,19 @@ html, body {
   background-color: white;
 }
 
+:root{
+  --top-strip: 50px;
+  --page-bg: #fff; /* 나머지 배경색 */
+}
+
+/* html 배경을 그라디언트로: 위 50px만 #000 */
+body{
+  background:
+    linear-gradient(to bottom,
+      #000 0, #000 var(--top-strip),
+      var(--page-bg) var(--top-strip), var(--page-bg) 100%);
+  background-attachment: fixed; /* 스크롤해도 항상 상단 50px 고정 */
+}
 
 /* ======================
    🔹 반응형 (모바일)
