@@ -48,26 +48,9 @@
   text-decoration: none;
   z-index: 9999;
 }
-/* 1) active 상태는 모든 기기에서 유지 */
 .sidebar-icon.active {
   color: var(--highlight-color, #fff);
   background: transparent;
-}
-
-/* 2) hover 효과는 '진짜 호버 가능한' 기기(마우스)에서만 */
-@media (any-hover: hover) and (any-pointer: fine) {
-  .sidebar-icon:hover {
-    color: var(--highlight-color, #fff);
-    background: transparent;
-  }
-}
-
-/* (옵션) 혹시 모를 고스트 호버 확실히 차단 */
-@media (any-hover: none) {
-  .sidebar-icon:hover {
-    color: inherit;
-    background: none;
-  }
 }
 .sidebar-icon i {
   background: none !important;
