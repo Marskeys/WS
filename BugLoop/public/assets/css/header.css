@@ -772,43 +772,50 @@ html.dark .lang-option:hover {
 
 /* 📱 모바일에서 사이드바를 상단바로 변경 */
 @media (max-width: 768px) {
-  /* 사이드바 전체를 화면 상단에 */
+  /* 상단 전체를 세로로 쌓기 */
+  .header-top {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding: 0;
+  }
+
+  /* 사이드바를 가로로 변경해서 header-top의 첫 줄에 배치 */
   .vscode-sidebar {
     width: 100%;
-    height: 50px; /* 원하는 높이 */
-    flex-direction: row; /* 가로 배치 */
+    height: 50px;
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
     padding: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9999;
+    background-color: #1e1e1e;
+    order: 1; /* 첫 줄 */
   }
 
-  /* 아이콘 스타일 조정 */
+  /* 메뉴를 바로 두 번째 줄로 */
+  .header-menu {
+    order: 2;
+    width: 100%;
+    overflow-x: auto;
+    background-color: black;
+    padding: 5px 0;
+  }
+
+  /* 아이콘 스타일 */
   .sidebar-icon {
     flex: 1;
     padding: 0;
     height: 100%;
   }
 
-  /* 확장 패널 위치 조정 */
-  .sidebar-extension-panel {
-    position: fixed;
-    top: 50px; /* 상단바 높이만큼 아래 */
-    left: 0;
-    height: calc(100vh - 50px);
-  }
-
-  /* 상단바가 차지한 만큼 헤더/메인 내용 아래로 */
+  /* 본문이 가려지지 않게 */
   .full-header-container {
-    padding-top: 50px; /* 사이드바 높이만큼 */
+    padding-top: 0; /* header-top 높이에 맞춰서 조정 */
   }
-}
 
-@media (max-width: 768px) {
-  .header-top {
-    padding-top: 60px; /* 상단바 50px + 메뉴 높이 50px */
+  /* 확장 패널이 상단바 + 메뉴 밑으로 열리게 */
+  .sidebar-extension-panel {
+    top: calc(50px + 40px); /* 상단바 높이 + 메뉴 높이 */
+    height: calc(100vh - 90px);
   }
 }
