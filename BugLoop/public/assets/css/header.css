@@ -691,37 +691,63 @@ html.dark .lang-option:hover { background-color: #333; }
   }
 }
 
-/* 모바일에서 헤더가 사이드패널보다 위 레이어로 올라가게 */
+/* === 0) 공통 z-index 토큰 === */
+:root{
+  --z-header: 20000;
+  --z-head-inner: 3;
+}
+html.dark{
+  /* 다크에서 한 단계 더 높게 */
+  --z-header: 40000;
+  --z-head-inner: 10;
+}
+
+/* === 1) 모바일 헤더를 최상위 레이어로 (라이트/다크 공용) === */
 @media (max-width: 768px) {
   .full-header-container {
-    position: fixed;        /* 이미 있으나, 스택 분리를 확실히 */
-    z-index: 20000;
-    isolation: isolate;     /* 자식들 스택을 외부와 분리 (안전장치) */
+    position: fixed;
+    z-index: var(--z-header);
+    isolation: isolate; /* 자식 스택 분리 */
   }
 
   .header-top {
-    position: relative;     /* z-index가 먹도록 포지셔닝 */
-    z-index: 3;             /* side-panel보다 높게 */
-    overflow: visible !important; /* 잘림 방지 */
-  }
-
-  .side-panel.main-panel-only {
     position: relative;
-    z-index: 1;             /* 헤더보다 낮게 */
+    z-index: var(--z-head-inner);
+    overflow: visible !important;
   }
 
+  .side-panel.main-panel-only,
   .vscode-sidebar {
     position: relative;
-    z-index: 1;             /* 혹시 모를 아이콘 z-index 영향 차단 */
+    z-index: 1;
   }
 
   /* 드롭다운 자체 레이어 */
-  .language-dropdown { position: relative; z-index: 4; }
-  .lang-menu { z-index: 5; }  /* header-top 위에서 안전하게 */
+  .language-dropdown { position: relative; z-index: calc(var(--z-head-inner) + 1); }
+  .lang-menu { position: absolute; z-index: calc(var(--z-head-inner) + 2); }
 }
 
-/* 670px 이하 블러 오버레이 클릭 간섭/가림 방지 */
+/* === 2) 670px 이하: 블러/오버레이 간섭 방지 === */
 @media (max-width: 670px) {
   .header-top { overflow: visible !important; }
   .header-top::before { pointer-events: none; }
+}
+
+/* === 3) 다크모드 전용: 헤더 오버레이가 있으면 뒤로 물리기 === */
+@media (max-width: 768px) {
+  html.dark .header-top::before {
+    z-index: 0 !important;
+    pointer-events: none;
+  }
+}
+
+/* === 4) 안전장치: 메뉴 열릴 때는 완전 고정(fixed)로 최상위 탈출 === */
+/* (open 클래스나 aria-expanded를 쓰고 있다면 둘 중 하나만 남겨도 됨) */
+.language-dropdown.open .lang-menu,
+.language-dropdown[aria-expanded="true"] .lang-menu{
+  position: fixed;              /* 다크모드에서 transform/blur 스택 피하기 */
+  top: var(--header-h, 30px);
+  right: 12px;
+  left: auto;
+  z-index: calc(var(--z-header) + 10);
 }
