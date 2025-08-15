@@ -739,86 +739,55 @@ html.dark .lang-option:hover {
   display: flex;
 }
 
-/* 모바일 화면에서만 적용되도록 미디어 쿼리 추가 */
+/* 📱 모바일에서 사이드바를 상단바로 변경 */
 @media (max-width: 768px) {
-  #right-controls.is-active {
-      /* 모바일 화면에 맞게 스타일 조정 */
+  /* 헤더 전체를 세로로 쌓기 */
+  .header-top {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding: 0;
+    background: black;
+  }
+
+  /* 첫째 줄: vscode-sidebar */
+  .vscode-sidebar {
+    position: relative !important; /* fixed 해제 */
+    width: 100% !important;
+    height: 50px !important;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    background-color: #1e1e1e;
+    order: 1;
+  }
+
+  /* 둘째 줄: 원래 메뉴 */
+  .header-menu {
+    order: 2;
+    width: 100%;
+    overflow-x: auto;
+    background-color: black;
+    padding: 5px 0;
+  }
+
+  /* 아이콘 가로 배열 */
+  .sidebar-icon {
+    flex: 1;
+    padding: 0;
+    height: 100%;
+  }
+
+  /* 확장 패널이 메뉴 아래에서 열리도록 */
+  .sidebar-extension-panel {
+    position: fixed;
+    top: 90px; /* 첫째줄(50px) + 둘째줄(40px) */
+    height: calc(100vh - 90px);
+  }
+
+  /* 본문이 가려지지 않게 */
+  .full-header-container {
+    padding-top: 0;
   }
 }
-
-
-/* 기본 상태: 어두운 회색 */
-.sidebar-icon[data-tab="settings"] {
-  color: #a0a0a0; /* 어두운 회색 (예시) */
-  transition: color 0.3s ease; /* 색상 변화에 애니메이션 효과 추가 */
-}
-
-/* 활성화 상태: 하얀색 */
-.sidebar-icon[data-tab="settings"].is-active {
-  color: #ffffff; /* 하얀색 */
-}
-
-/* 활성화 표시 */
-.submenu a.active {
-  color: var(--highlight-color, #00adb5);
-  font-weight: 700;
-  text-decoration: underline;
-}
-.menu-label.active-label {
-  background-color: #000000;
-  color: #c0e5ff; /* 파랑에 가까운 푸른색 */
-
-}
-
-/* 📱 모바일에서 사이드바를 상단바로 변경 */@media (max-width: 768px) {
-  @media (max-width: 768px) {
-    /* 헤더 전체를 세로로 쌓기 */
-    .header-top {
-      flex-direction: column;
-      align-items: stretch;
-      height: auto;
-      padding: 0;
-      background: black;
-    }
-  
-    /* 첫째 줄: vscode-sidebar */
-    .vscode-sidebar {
-      position: relative;  /* fixed 아님 */
-      width: 100%;
-      height: 50px;
-      flex-direction: row;
-      justify-content: space-around;
-      align-items: center;
-      padding: 0;
-      background-color: #1e1e1e;
-      order: 1;
-    }
-  
-    /* 둘째 줄: 원래 메뉴 */
-    .header-menu {
-      order: 2;
-      width: 100%;
-      overflow-x: auto;
-      background-color: black;
-      padding: 5px 0;
-    }
-  
-    /* 아이콘 가로 배열 */
-    .sidebar-icon {
-      flex: 1;
-      padding: 0;
-      height: 100%;
-    }
-  
-    /* 확장 패널이 메뉴 아래에서 열리도록 */
-    .sidebar-extension-panel {
-      position: fixed;
-      top: 90px; /* 첫째줄(50px) + 둘째줄(40px) */
-      height: calc(100vh - 90px);
-    }
-  
-    /* 본문이 가려지지 않게 */
-    .full-header-container {
-      padding-top: 0;
-    }
-  }
