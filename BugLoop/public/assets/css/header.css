@@ -555,12 +555,9 @@ html.dark .lang-option { color: #eee; }
 html.dark .lang-option:hover { background-color: #333; }
 
 /* 모바일↓ */
-@media (max-width:480px){
-  .lang-menu{ font-size:12px; }
+@media (max-width:670px){
+  .lang-menu{ font-size:13px; }
 }
-
-/* 자식들이 rem/px로 덮어쓰지 않게 상속 유도 */
-.lang-menu *{ font-size:inherit; }
 
 /* ==================================
    🔹 반응형 (모바일)
