@@ -61,7 +61,7 @@ html, body {
 }
 
 /* html 배경을 그라디언트로: 위 50px만 #000 */
-body{
+html{
   background:
     linear-gradient(to bottom,
       #000 0, #000 var(--top-strip),
