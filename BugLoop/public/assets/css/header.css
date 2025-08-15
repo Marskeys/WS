@@ -827,3 +827,57 @@ html.dark .lang-option:hover {
     padding: 0 10px;
   }
 }
+
+/* ============================================
+   ✅ MOBILE FIX OVERRIDES — append at file end
+   기존 829라인 유지, 아래만 추가하세요.
+============================================ */
+@media (max-width: 768px) {
+  /* 헤더 좌측 오프셋 제거 + 오타 보정 */
+  .header-top {
+    left: 0 !important;
+    align-items: center !important; /* 'centor' → 'center' */
+  }
+
+  /* 상단 사이드바 줄(아이콘 바) */
+  .side-panel.main-panel-only {
+    position: relative !important; /* 오버레이 기준점 */
+    width: 100% !important;
+    height: auto !important;
+    pointer-events: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .vscode-sidebar {
+    width: 100% !important;      /* 가로 꽉 채우기 */
+    height: 50px !important;
+    position: static !important;  /* 고정 해제 */
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 🔥 핵심: 확장패널을 '닫힘'일 때 레이아웃에서 빼기 */
+  .sidebar-extension-panel {
+    position: absolute !important;    /* flex 흐름에서 제거 */
+    top: 50px !important;             /* 상단바 높이에 맞춤 */
+    left: 0 !important;
+    width: 100% !important;           /* 100vw 대신 100% */
+    height: calc(100vh - 50px) !important;
+    transform: translateX(-100%) !important; /* 화면 밖 */
+    opacity: 0 !important;
+    pointer-events: none !important;
+    min-width: 0 !important;          /* 데스크톱 min/max 무력화 */
+    max-width: none !important;
+    border-right: none !important;     /* 모바일 오버레이면 보더 불필요 */
+  }
+
+  .sidebar-extension-panel.open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
