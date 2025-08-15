@@ -806,3 +806,9 @@ html.dark .lang-option:hover {
     padding-top: 50px; /* 사이드바 높이만큼 */
   }
 }
+
+@media (max-width: 768px) {
+  .full-header-container {
+    padding-top: 100px; /* 상단바 50px + 메뉴 높이 50px */
+  }
+}
