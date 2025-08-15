@@ -690,3 +690,38 @@ html.dark .lang-option:hover { background-color: #333; }
     z-index: 1;
   }
 }
+
+/* 모바일에서 헤더가 사이드패널보다 위 레이어로 올라가게 */
+@media (max-width: 768px) {
+  .full-header-container {
+    position: fixed;        /* 이미 있으나, 스택 분리를 확실히 */
+    z-index: 20000;
+    isolation: isolate;     /* 자식들 스택을 외부와 분리 (안전장치) */
+  }
+
+  .header-top {
+    position: relative;     /* z-index가 먹도록 포지셔닝 */
+    z-index: 3;             /* side-panel보다 높게 */
+    overflow: visible !important; /* 잘림 방지 */
+  }
+
+  .side-panel.main-panel-only {
+    position: relative;
+    z-index: 1;             /* 헤더보다 낮게 */
+  }
+
+  .vscode-sidebar {
+    position: relative;
+    z-index: 1;             /* 혹시 모를 아이콘 z-index 영향 차단 */
+  }
+
+  /* 드롭다운 자체 레이어 */
+  .language-dropdown { position: relative; z-index: 4; }
+  .lang-menu { z-index: 5; }  /* header-top 위에서 안전하게 */
+}
+
+/* 670px 이하 블러 오버레이 클릭 간섭/가림 방지 */
+@media (max-width: 670px) {
+  .header-top { overflow: visible !important; }
+  .header-top::before { pointer-events: none; }
+}
