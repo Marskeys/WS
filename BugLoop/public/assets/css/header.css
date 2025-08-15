@@ -71,6 +71,8 @@
  🔹 사이드 패널 레이아웃
 ====================== */
 .side-panel.main-panel-only {
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
   position: fixed;
   top: 0;
   left: 0;
@@ -151,7 +153,8 @@
 
 @media (max-width: 768px) {
   .sidebar-extension-panel {
-    width: 100vw;
+    width: calc(100vw - 50px);
+    transform: translateX(-100%);
     min-width: 0px;
   }
 
@@ -414,6 +417,7 @@
   display: none;
 }
 
+/* ✨ 이 부분을 수정했습니다. flex-direction: column을 제거하고, 라벨과 서브메뉴가 가로로 나열되도록 했습니다. */
 .menu-item-wrapper {
   display: flex;
   flex-shrink: 0;
@@ -426,7 +430,9 @@
   left: 0;
   top: 0;
   z-index: 10;
+  /* 부모 컨테이너와 동일한 배경색을 설정하여 라벨이 고정되었을 때 자연스럽게 보이도록 합니다. */
   background-color: black;
+  /* 라벨 자체의 스타일 */
   font-size: 0.95rem;
   font-weight: 500;
   color: #fff;
@@ -470,6 +476,7 @@
   padding-left: 5px;
   flex-shrink: 0;
   margin-left: auto;
+  /* 이 한 줄을 추가합니다. */
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
@@ -719,12 +726,17 @@ html.dark .lang-option:hover {
 
 .menu-label {
   background-color: #272d30;
+  /* 밝은 초록색 */
   color: white;
+  /* 글씨는 흰색 */
   padding: 6px 12px;
+  /* 버튼 느낌을 주는 패딩 */
   font-weight: 500;
+  /* 약간 두껍게 */
   display: inline-block;
+  /* 텍스트만큼 영역 차지 */
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  /* 마우스 올리면 버튼 느낌 */
 }
 
 .submenu {
@@ -741,93 +753,93 @@ html.dark .lang-option:hover {
   display: flex;
 }
 
-/* 📱 Mobile Layout Fixes */
+/* 📱 모바일에서 사이드바를 상단바로 변경 */
 @media (max-width: 768px) {
-  /*
-  1. Make the entire header container a column-based flexbox.
-  This is the key to stacking the side panel and top header.
-  */
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
   .full-header-container {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    position: relative;
     z-index: 20000;
   }
 
   /*
-  2. The side panel now represents the first line of the header.
-  Use 'order: 1' to place it at the top and remove its fixed position.
-  */
+    * This is a crucial change for mobile.
+    * We will handle the mobile positioning inside the media query.
+    */
+  .header-top {
+    flex-direction: column;
+    height: auto;
+    padding: 0;
+    position: static;
+    background: black;
+    z-index: 1;
+  }
+
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
   .side-panel.main-panel-only {
-    order: 1;
     position: static;
     width: 100%;
     height: auto;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+    z-index: 100;
   }
 
-  /*
-  3. Change the 'vscode-sidebar' from a column to a horizontal row.
-  */
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
+  .top-controls {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* 첫째 줄: vscode-sidebar */
   .vscode-sidebar {
     position: static !important;
     width: 100% !important;
     height: 50px !important;
     flex-direction: row;
-    justify-content: space-between;
-    /* Use 'space-between' to push icons to the edges for a full-width look. */
+    justify-content: space-around;
     align-items: center;
     padding: 0 10px;
+    background-color: #1e1e1e;
+    order: 1;
+    z-index: 100;
   }
 
-  /*
-  4. The top header now represents the second line.
-  Use 'order: 2' to place it below the side panel.
-  */
-  .header-top {
-    order: 2;
-    position: static;
-    width: 100%;
-    height: auto;
-  }
-
-  /*
-  5. Correct the main menu line by making its container a horizontal flexbox.
-  This puts the menu and the right-side controls on the same line.
-  */
-  .top-controls {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  /* Ensure the left controls (logo) don't take up space when empty. */
-  .left-controls {
-    display: none;
-  }
-
-  /* Prevent the main menu from breaking into multiple lines. */
+  /* 둘째 줄: 원래 메뉴 */
   .header-menu {
-    flex-wrap: nowrap;
+    order: 2;
+    width: 100%;
     overflow-x: auto;
+    background-color: black;
+    padding: 5px 0;
   }
 
-  /* Allow the right controls to be on the same line. */
-  .right-controls {
-    display: flex;
-    flex-shrink: 0;
+  /* 아이콘 가로 배열 */
+  .sidebar-icon {
+    flex: 1;
+    padding: 0;
+    height: 100%;
   }
 
-  /*
-  6. Reposition the sidebar extension panel to open below the new, two-line header.
-  Adjust the 'top' value to match the combined height of the two header rows.
-  (In this case, 50px for the sidebar + ~40px for the menu).
-  */
+  /* 확장 패널이 메뉴 아래에서 열리도록 */
   .sidebar-extension-panel {
+    position: fixed;
     top: 90px;
+    /* 첫째줄(50px) + 둘째줄(40px) */
     height: calc(100vh - 90px);
     width: 100vw;
+  }
+
+  /* 본문이 가려지지 않게 */
+  .full-header-container {
+    padding-top: 0;
+  }
+
+  .main-menu-container {
+    padding: 0 10px;
   }
 }
