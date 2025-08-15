@@ -89,6 +89,10 @@
     }
     #panel-resizer::before {
       content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       width: 78px;
       height: 4px;
       border-radius: 999px;
@@ -98,6 +102,9 @@
     #panel-resizer::after {
       content: "";
       position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       width: 78px;
       height: 12px;
       pointer-events: none;
@@ -113,7 +120,7 @@
     }
     #panel-resizer:hover::before,
     #panel-resizer:focus-visible::before {
-      transform: scaleX(1.08);
+      transform: translate(-50%, -50%) scaleX(1.08);
     }
     
     /* 모바일 */
