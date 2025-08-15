@@ -446,10 +446,10 @@
 .right-controls {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
   z-index: 1000;
   flex-basis: 100px;
-  padding-left: 5px;
+  padding-left: 3px;
   flex-shrink: 0;
   margin-left: auto;
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
