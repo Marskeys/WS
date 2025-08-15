@@ -446,10 +446,10 @@
 .right-controls {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 1px;
   z-index: 1000;
   flex-basis: 100px;
-  padding-left: 3px;
+  padding-left: 2px;
   flex-shrink: 0;
   margin-left: auto;
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
@@ -492,7 +492,7 @@
 }
 .light-switch[aria-checked="true"] .switch-handle {
   left: calc(100% - 2px - 15px);
-  background: linear-gradient(to bottom, #eee, #bbb);
+  background: linear-gradient(to bottom, #eee, #f67e7e);
 }
 
 .language-dropdown {
