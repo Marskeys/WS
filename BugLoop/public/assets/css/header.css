@@ -63,7 +63,7 @@
 ====================== */
 @media (max-width: 640px) {
   .desktop-menu {
-      display: none;
+    display: none;
   }
 }
 
@@ -71,6 +71,8 @@
  🔹 사이드 패널 레이아웃
 ====================== */
 .side-panel.main-panel-only {
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
   position: fixed;
   top: 0;
   left: 0;
@@ -84,6 +86,7 @@
 .side-panel.main-panel-only {
   pointer-events: none;
 }
+
 .side-panel.main-panel-only.open {
   pointer-events: auto;
 }
@@ -98,6 +101,7 @@
   height: 100%;
 }
 
+/* Desktop Styles for the Sidebar */
 .vscode-sidebar {
   width: 50px;
   background-color: #1e1e1e;
@@ -114,7 +118,7 @@
 ====================== */
 .sidebar-extension-panel {
   position: relative;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   top: 0;
   left: 0;
   width: 360px;
@@ -149,12 +153,13 @@
 
 @media (max-width: 768px) {
   .sidebar-extension-panel {
-      width: calc(100vw - 50px);
-      transform: translateX(-100%);
-      min-width: 0px;
+    width: calc(100vw - 50px);
+    transform: translateX(-100%);
+    min-width: 0px;
   }
+
   .sidebar-extension-panel.open {
-      transform: translateX(0);
+    transform: translateX(0);
   }
 }
 
@@ -225,16 +230,18 @@
 
 @media (max-width: 640px) {
   .auth-buttons {
-      gap: 8px;
-      flex-direction: column;
-      width: 100%;
+    gap: 8px;
+    flex-direction: column;
+    width: 100%;
   }
+
   .auth-btn.write-post,
   .auth-btn.logout {
-      margin-left: 0 !important;
+    margin-left: 0 !important;
   }
+
   .auth-btn.logout {
-      margin-right: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
@@ -423,10 +430,8 @@
   left: 0;
   top: 0;
   z-index: 10;
-  
   /* 부모 컨테이너와 동일한 배경색을 설정하여 라벨이 고정되었을 때 자연스럽게 보이도록 합니다. */
   background-color: black;
-  
   /* 라벨 자체의 스타일 */
   font-size: 0.95rem;
   font-weight: 500;
@@ -471,7 +476,6 @@
   padding-left: 5px;
   flex-shrink: 0;
   margin-left: auto;
-  
   /* 이 한 줄을 추가합니다. */
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
@@ -622,7 +626,7 @@ html.dark .lang-option:hover {
 
 @keyframes fadeIn {
   to {
-      opacity: 1;
+    opacity: 1;
   }
 }
 
@@ -694,21 +698,25 @@ html.dark .lang-option:hover {
 }
 
 @keyframes icon-pulse-sway {
-  0%, 100% {
-      transform: scale(1) translateX(0);
-      color: #ffffff;
+  0%,
+  100% {
+    transform: scale(1) translateX(0);
+    color: #ffffff;
   }
+
   25% {
-      transform: scale(1.5) translateX(-0.6px);
-      color: #f0f0f0;
+    transform: scale(1.5) translateX(-0.6px);
+    color: #f0f0f0;
   }
+
   50% {
-      transform: scale(0.9) translateX(0.6px);
-      color: #eaeaea;
+    transform: scale(0.9) translateX(0.6px);
+    color: #eaeaea;
   }
+
   75% {
-      transform: scale(1.2) translateX(-0.3px);
-      color: #f5f5f5;
+    transform: scale(1.2) translateX(-0.3px);
+    color: #f5f5f5;
   }
 }
 
@@ -717,12 +725,18 @@ html.dark .lang-option:hover {
 }
 
 .menu-label {
-  background-color: #272d30; /* 밝은 초록색 */
-  color: white; /* 글씨는 흰색 */
-  padding: 6px 12px; /* 버튼 느낌을 주는 패딩 */
-  font-weight: 500; /* 약간 두껍게 */
-  display: inline-block; /* 텍스트만큼 영역 차지 */
-  cursor: pointer; /* 마우스 올리면 버튼 느낌 */
+  background-color: #272d30;
+  /* 밝은 초록색 */
+  color: white;
+  /* 글씨는 흰색 */
+  padding: 6px 12px;
+  /* 버튼 느낌을 주는 패딩 */
+  font-weight: 500;
+  /* 약간 두껍게 */
+  display: inline-block;
+  /* 텍스트만큼 영역 차지 */
+  cursor: pointer;
+  /* 마우스 올리면 버튼 느낌 */
 }
 
 .submenu {
@@ -741,26 +755,58 @@ html.dark .lang-option:hover {
 
 /* 📱 모바일에서 사이드바를 상단바로 변경 */
 @media (max-width: 768px) {
-  /* 헤더 전체를 세로로 쌓기 */
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
+  .full-header-container {
+    position: relative;
+    z-index: 20000;
+  }
+
+  /*
+    * This is a crucial change for mobile.
+    * We will handle the mobile positioning inside the media query.
+    */
   .header-top {
     flex-direction: column;
-    align-items: stretch;
     height: auto;
     padding: 0;
+    position: static;
     background: black;
+    z-index: 1;
+  }
+
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
+  .side-panel.main-panel-only {
+    position: static;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+    z-index: 100;
+  }
+
+  /* This is a crucial change for mobile.
+     We will handle the mobile positioning inside the media query. */
+  .top-controls {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
   }
 
   /* 첫째 줄: vscode-sidebar */
   .vscode-sidebar {
-    position: relative !important; /* fixed 해제 */
+    position: static !important;
     width: 100% !important;
     height: 50px !important;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    padding: 0;
+    padding: 0 10px;
     background-color: #1e1e1e;
     order: 1;
+    z-index: 100;
   }
 
   /* 둘째 줄: 원래 메뉴 */
@@ -782,12 +828,18 @@ html.dark .lang-option:hover {
   /* 확장 패널이 메뉴 아래에서 열리도록 */
   .sidebar-extension-panel {
     position: fixed;
-    top: 90px; /* 첫째줄(50px) + 둘째줄(40px) */
+    top: 90px;
+    /* 첫째줄(50px) + 둘째줄(40px) */
     height: calc(100vh - 90px);
+    width: 100vw;
   }
 
   /* 본문이 가려지지 않게 */
   .full-header-container {
     padding-top: 0;
+  }
+
+  .main-menu-container {
+    padding: 0 10px;
   }
 }
