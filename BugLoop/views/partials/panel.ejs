@@ -8,7 +8,7 @@
       z-index: 40;
       margin-left: 50px;
       height: var(--panel-h);
-      min-height: 314px; /* 블랙박스+내용+리사이저 최소 높이 */
+      min-height: 314px;
       display: grid;
       grid-template-rows: 1fr 14px;
       overflow: hidden;
@@ -36,7 +36,7 @@
     /* 패널 내용 */
     #mini-lecture .panel-card {
       flex: 1;
-      min-width: 0; /* flex 줄어듦 허용 */
+      min-width: 0;
       background: #2a5d06;
       color: #eee;
       border: 1px solid #333;
@@ -131,7 +131,7 @@
       #mini-lecture .left-box {
         width: 100%;
         height: auto;
-        min-height: 250px; /* 모바일 블랙박스 높이 확대 */
+        min-height: 300px;
       }
       #panel-resizer {
         order: 3;
