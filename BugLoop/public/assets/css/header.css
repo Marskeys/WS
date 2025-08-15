@@ -604,28 +604,3 @@ html.dark .lang-option:hover { background-color: #333; }
 }
 
 
-/* ============================================
-   🔁 MOBILE ORDER FIX — sidebar ↑ / menu ↓
-   (append at end)
-============================================ */
-@media (max-width: 768px) {
-  /* 바 높이 한 곳에서 관리 */
-  .full-header-container { --vscodebar-h: 50px; }
-
-  /* 1) 순서 뒤집기: 사이드바(상단), 메뉴(하단) */
-  .side-panel.main-panel-only { order: 1 !important; }
-  .header-top { order: 2 !important; left: 0 !important; position: static !important; }
-
-  /* 2) 사이드바 높이 & 레이아웃 유지 */
-  .vscode-sidebar {
-    height: var(--vscodebar-h) !important;
-    width: 100% !important;
-    position: static !important;
-  }
-
-  /* 3) 확장 패널 오버레이 위치도 바 높이에 맞춰 재계산 */
-  .sidebar-extension-panel {
-    top: var(--vscodebar-h) !important;
-    height: calc(100vh - var(--vscodebar-h)) !important;
-  }
-}
