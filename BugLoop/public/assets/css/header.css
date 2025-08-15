@@ -411,3 +411,63 @@ html.dark .lang-option:hover { background-color: #333; }
   .right-controls { display: flex; flex-shrink: 0; }
   .main-menu-container { padding: 0 10px; }
 }
+
+/* =================================================
+   ✅ ACTIVE STATE RESTORE — append at file end
+   (덮어쓴 !important와 특이성 정리)
+================================================= */
+
+/* 1) 사이드바 아이콘 활성화 색상 (데스크톱+모바일) */
+.vscode-sidebar .sidebar-icon { position: relative; }
+
+.vscode-sidebar .sidebar-icon.active,
+.vscode-sidebar .sidebar-icon[aria-current="page"],
+.vscode-sidebar .sidebar-icon[aria-selected="true"] {
+  color: var(--highlight-color, #00adb5) !important;
+}
+
+/* 1-1) 모바일 상단바에서 활성화 바(underline) 표시 */
+@media (max-width: 768px) {
+  .vscode-sidebar .sidebar-icon.active::after,
+  .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
+  .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+}
+
+/* 2) 헤더 메뉴 활성화 (메뉴 라벨/하위 링크 모두 대응) */
+.menu-label.active,
+.menu-label[aria-current="true"],
+.menu-label[aria-expanded="true"] {
+  color: var(--highlight-color, #00adb5) !important;
+  background-color: #111;
+}
+
+.submenu a.active,
+.submenu a[aria-current="page"],
+.submenu li.active > a {
+  color: var(--highlight-color, #00adb5) !important;
+  font-weight: 700;
+  border-bottom: 2px solid currentColor;
+}
+
+/* 3) 충돌 방지: 토글 버튼이 active일 때 흰색 강제 덮는 규칙 정리 */
+.vscode-sidebar .sidebar-icon.toggle-extension.active {
+  color: var(--highlight-color, #00adb5) !important;
+}
+
+/* 4) 키보드 접근성: 포커스 링 */
+.sidebar-icon:focus-visible,
+.submenu a:focus-visible,
+.menu-label:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
