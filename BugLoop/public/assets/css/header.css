@@ -22,6 +22,7 @@
   position: relative;
   z-index: 1000001 !important;
   pointer-events: auto;
+  padding: 10px 0;
 }
 #right-controls.is-active { display: flex !important; }
 
