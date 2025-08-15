@@ -554,3 +554,51 @@ html.dark .lang-option:hover { background-color: #333; }
     z-index: 1000 !important;      /* 상단 아이콘바보다 위에 */
   }
 }
+
+/* =================================================
+   🔁 HERO OVERLAP RESTORE — append at file end
+   (탭 상단 배경 위로 프로필/검색 UI가 반쯤 겹치도록 복구)
+================================================= */
+
+/* 0) 조절값 (원래 히어로 155px 기준) */
+:root {
+  --panel-hero-height: 155px;  /* 상단 배경 이미지 높이 */
+  --hero-overlap: 50px;        /* 컨텐츠가 이미지 위로 겹칠 양 */
+  --avatar-overlap: 35px;      /* 아바타만 별도 튜닝하고 싶으면 */
+}
+
+/* 1) 기존에 넣었던 '히어로 전체 아래로 밀기' 규칙 무력화 → 겹침 허용 */
+.sidebar-extension-panel .tab-content,
+.sidebar-extension-panel .profile-tab,
+.sidebar-extension-panel .search-tab {
+  /* 히어로 높이에서 겹칠 양만 빼서 '반쯤 걸치게' */
+  padding-top: calc(var(--panel-hero-height) - var(--hero-overlap)) !important;
+}
+
+/* 2) 이미지 위에 올라올 요소는 z-index 올려서 확실히 위로 */
+.sidebar-extension-panel > * { position: relative; z-index: 1; }
+.profile-tab, .search-tab { position: relative; z-index: 1; }
+
+/* 3) 프로필 영역 겹침 복구 (원래 profile-info가 위로 올라오던 효과) */
+.profile-info {
+  margin-top: calc(var(--hero-overlap) * -1) !important; /* 예: -50px */
+  position: relative;
+  z-index: 2; /* 배경 위 */
+}
+
+/* 4) 아바타도 살짝 겹치게 (원래 반쯤 걸치던 느낌) */
+.profile-avatar {
+  margin-top: calc(var(--avatar-overlap) * -1) !important; /* 예: -35px */
+  position: relative;
+  z-index: 2;
+}
+
+/* 5) 검색 탭에서도 검색창이 배경 위로 겹치도록 (클래스 이름 다양성 커버) */
+.search-tab .search-bar,
+.search-tab .search-box,
+.search-tab input[type="search"],
+.search-tab .search-input {
+  margin-top: calc(var(--hero-overlap) * -1) !important;
+  position: relative;
+  z-index: 2;
+}
