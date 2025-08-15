@@ -164,55 +164,115 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// 간단 포탈 유틸 (언제든 붙여써)
+// lang-menu 포탈: 중복 초기화/헤더 교체/다크 전환까지 안정화
 (function () {
-  const dd = document.querySelector('.language-dropdown');
-  if (!dd) return;
-  const menu = dd.querySelector('.lang-menu');
-  if (!menu) return;
+  if (window.__langPortalInit) return; // 중복 방지
+  window.__langPortalInit = true;
 
-  let inBody = false;
-  let origParent = menu.parentNode;
-  let placeholder = document.createComment('menu-placeholder');
+  let dd, menu, placeholder = null, inBody = false;
 
+  const qs = (s, r = document) => r.querySelector(s);
+  const find = () => {
+    dd = qs('.language-dropdown');
+    menu = dd && qs('.lang-menu', dd);
+    return !!(dd && menu);
+  };
+
+  // 위치 계산(두 번의 rAF로 레이아웃 안정 후 측정)
+  const raf2 = cb => requestAnimationFrame(() => requestAnimationFrame(cb));
   function place() {
+    if (!dd || !menu) return;
     const r = dd.getBoundingClientRect();
+    // 메뉴가 body로 나간 뒤 처음엔 width가 0일 수 있어 숨긴 채 측정
+    menu.style.visibility = 'hidden';
+    menu.style.display = 'block';
+    const mw = menu.offsetWidth || 220; // 최소 가정
+    const vw = document.documentElement.clientWidth;
+
+    let left = Math.round(r.right - mw); // 오른쪽 정렬
+    if (left < 8) left = Math.min(Math.round(r.left), vw - mw - 8); // 화면 밖 방지
+
     menu.style.position = 'fixed';
-    menu.style.top = (r.bottom) + 'px';
-    menu.style.left = (r.right - menu.offsetWidth) + 'px'; // 오른쪽 정렬
-    menu.style.zIndex = '2147483000'; // 정말 크게
+    menu.style.top = Math.round(r.bottom) + 'px';
+    menu.style.left = left + 'px';
+    menu.style.zIndex = '2147483000';       // 최상단
     menu.style.pointerEvents = 'auto';
+    menu.style.visibility = 'visible';
   }
 
   function open() {
-    if (inBody) return;
-    origParent.replaceChild(placeholder, menu);
+    if (inBody || !menu) return;
+    placeholder = document.createComment('lang-menu-placeholder');
+    dd.replaceChild(placeholder, menu);
     document.body.appendChild(menu);
     inBody = true;
-    place();
+    raf2(place);
     window.addEventListener('scroll', place, { passive: true });
     window.addEventListener('resize', place);
   }
 
   function close() {
-    if (!inBody) return;
-    placeholder.parentNode.replaceChild(menu, placeholder);
+    if (!inBody || !menu || !placeholder) return;
+    placeholder.parentNode && placeholder.parentNode.replaceChild(menu, placeholder);
     inBody = false;
+    menu.removeAttribute('style'); // 원복
     window.removeEventListener('scroll', place);
     window.removeEventListener('resize', place);
-    menu.removeAttribute('style');
   }
 
-  // 트리거(네가 쓰는 상태 클래스/aria에 맞춰 조정)
-  dd.addEventListener('click', (e) => {
+  function toggle(toOpen) { (toOpen ? open : close)(); }
+
+  // 트리거(캡쳐 단계로 한 번만 받기)
+  function onTrigger(e) {
+    if (!dd) return;
+    // 메뉴 내부 클릭은 무시
+    if (menu && menu.contains(e.target)) return;
+    if (!dd.contains(e.target)) return;
+
     const expanded = dd.getAttribute('aria-expanded') === 'true';
     dd.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-    (expanded ? close : open)();
-  });
+    toggle(!expanded);
+  }
 
-  // 바깥 클릭 닫기
-  document.addEventListener('mousedown', (e) => {
+  function outside(e) {
     if (!inBody) return;
-    if (!menu.contains(e.target) && !dd.contains(e.target)) close();
+    if (menu.contains(e.target) || dd.contains(e.target)) return;
+    dd.setAttribute('aria-expanded', 'false');
+    close();
+  }
+
+  // 바인딩/재바인딩
+  function bind() {
+    document.removeEventListener('click', onTrigger, true);
+    document.removeEventListener('mousedown', outside, true);
+    if (!find()) return;
+    document.addEventListener('click', onTrigger, true);
+    document.addEventListener('mousedown', outside, true);
+  }
+
+  bind();
+
+  // 헤더 교체/다크 전환 감지 → 재바인딩/재배치
+  const mo = new MutationObserver((muts) => {
+    let needRebind = false, needPlace = false;
+    for (const m of muts) {
+      if (m.type === 'childList') {
+        // 헤더가 교체되면 dd/menu 참조가 끊김 → 리바인딩
+        if (!document.contains(dd) || !document.contains(menu)) {
+          close();
+          needRebind = true;
+          break;
+        }
+      } else if (m.type === 'attributes' &&
+                 m.target === document.documentElement &&
+                 m.attributeName === 'class') {
+        // html.dark 토글 시 위치 재계산
+        if (inBody) needPlace = true;
+      }
+    }
+    if (needRebind) bind();
+    if (needPlace) raf2(place);
   });
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  mo.observe(document.body, { childList: true, subtree: true });
 })();
