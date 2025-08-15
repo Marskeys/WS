@@ -105,13 +105,17 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.currentPath = req.path;
   res.locals.supportedLangs = supportedLangs;
-  res.locals.panelData = res.locals.panelData || {
-    title: '패널',
-    body: '초기 패널입니다.',
-    chips: []
-  };
+
+  // ✅ panelData를 allLocales에서 불러오기
+  if (allLocales[res.locals.lang] && allLocales[res.locals.lang].panel) {
+    res.locals.panelData = allLocales[res.locals.lang].panel;
+  } else {
+    res.locals.panelData = allLocales['ko'].panel; // 기본값
+  }
+
   next();
 });
+
 
 function buildPanel({ lang, section, topic }) {
   const filePath = path.join(__dirname, 'content', String(lang).toLowerCase(),

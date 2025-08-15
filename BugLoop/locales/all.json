@@ -31,7 +31,11 @@
       "editor-title": "온라인 HTML 편집기",
       "preview-label": "실시간 미리보기",
       "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다.</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n      <li>자기랑 놀기 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 마씨의 블로그</p>\n</footer>"
-
+    },
+    "panel": {
+      "title": "패널",
+      "body": "메뉴에서 항목을 누르면 이 패널에 해당 튜토리얼이 표시되고, 아래에는 직접 실습할 수 있는 HTML 에디터가 있습니다.",
+      "chips": []
     }
   },
   "en": {
@@ -66,7 +70,11 @@
       "editor-title": "Online HTML Editor",
       "preview-label": "Live Preview",
       "example-html": "<header>\n  <h1>My First Web Page</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a very basic HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Love</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n      <li>Playing with you 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 Mr. Ma's Blog</p>\n</footer>"
-
+    },
+    "panel": {
+      "title": "Panel",
+      "body": "When you click a menu item, its tutorial will appear in this panel, and below you can try it yourself in the HTML editor.",
+      "chips": []
     }
   },
   "fr": {
@@ -101,7 +109,11 @@
       "editor-title": "Éditeur HTML en ligne",
       "preview-label": "Aperçu en direct",
       "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un exemple très simple en HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j'aime</h2>\n    <ul>\n      <li>Chats</li>\n      <li>Coder</li>\n      <li>Jouer avec toi 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 Le blog de M. Ma</p>\n</footer>"
-
+    },
+    "panel": {
+      "title": "Panneau",
+      "body": "En cliquant sur un élément du menu, son tutoriel s’affiche dans ce panneau, et en dessous vous pouvez l’essayer dans l’éditeur HTML.",
+      "chips": []
     }
   },
   "zh": {
@@ -136,7 +148,11 @@
       "editor-title": "在线 HTML 编辑器",
       "preview-label": "实时预览",
       "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个非常基础的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的东西</h2>\n    <ul>\n      <li>猫咪</li>\n      <li>编程</li>\n      <li>和你玩耍 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 马先生的博客</p>\n</footer>"
-
+    },
+    "panel": {
+      "title": "面板",
+      "body": "点击菜单项时，其教程会显示在此面板中，下方有可供练习的HTML编辑器。",
+      "chips": []
     }
   },
   "ja": {
@@ -171,7 +187,11 @@
       "editor-title": "オンライン HTML エディタ",
       "preview-label": "ライブプレビュー",
       "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>連絡先</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これはとても基本的な HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>私の好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n      <li>あなたと遊ぶこと 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 マ氏のブログ</p>\n</footer>"
-
+    },
+    "panel": {
+      "title": "パネル",
+      "body": "メニュー項目をクリックすると、このパネルにチュートリアルが表示され、下には練習できるHTMLエディターがあります。",
+      "chips": []
     }
   }
 }
