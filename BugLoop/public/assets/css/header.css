@@ -765,7 +765,7 @@ html.dark .lang-option:hover {
   text-decoration: underline;
 }
 .menu-label.active-label {
-  background-color: #4a4b4a;
-  color: #00e5ff; /* 밝은 푸른색 글자 */
-  text-shadow: 0 0 5px #00e5ff, 0 0 10px #00e5ff, 0 0 20px #00e5ff;
+  background-color: #323432;
+  color: #3fa9f5; /* 파랑에 가까운 푸른색 */
+  text-shadow: 0 0 2px #3fa9f5, 0 0 4px rgba(63, 169, 245, 0.6);
 }
