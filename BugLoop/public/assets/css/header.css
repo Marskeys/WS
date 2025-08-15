@@ -769,3 +769,40 @@ html.dark .lang-option:hover {
   color: #c0e5ff; /* 파랑에 가까운 푸른색 */
 
 }
+
+/* 📱 모바일에서 사이드바를 상단바로 변경 */
+@media (max-width: 768px) {
+  /* 사이드바 전체를 화면 상단에 */
+  .vscode-sidebar {
+    width: 100%;
+    height: 50px; /* 원하는 높이 */
+    flex-direction: row; /* 가로 배치 */
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+  }
+
+  /* 아이콘 스타일 조정 */
+  .sidebar-icon {
+    flex: 1;
+    padding: 0;
+    height: 100%;
+  }
+
+  /* 확장 패널 위치 조정 */
+  .sidebar-extension-panel {
+    position: fixed;
+    top: 50px; /* 상단바 높이만큼 아래 */
+    left: 0;
+    height: calc(100vh - 50px);
+  }
+
+  /* 상단바가 차지한 만큼 헤더/메인 내용 아래로 */
+  .full-header-container {
+    padding-top: 50px; /* 사이드바 높이만큼 */
+  }
+}
