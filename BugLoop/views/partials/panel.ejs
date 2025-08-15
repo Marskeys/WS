@@ -147,7 +147,7 @@
       const resizer = document.getElementById('panel-resizer');
       if(!resizer) return;
     
-      const MIN = 50, MAX = 800, STEP = 16, BIG = 64;
+      const MIN = 150, MAX = 1800, STEP = 16, BIG = 64;
       const KEY = 'miniPanelH';
       const saved = parseInt(localStorage.getItem(KEY),10);
       const start = Number.isNaN(saved) ? 500 : saved;
