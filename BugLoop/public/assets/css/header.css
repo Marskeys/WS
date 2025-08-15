@@ -1,5 +1,36 @@
+/* ======================================================================
+   ✨ VSCode 테마 사이드바 & 메뉴 스타일
+   ====================================================================== */
+
 /* ======================
-   🔹 공통 아이콘 스타일
+   🔹 전역 변수
+====================== */
+:root {
+  --highlight-color: #00adb5;
+  --panel-hero-height: 155px;
+  --hero-overlap: 50px;
+  --avatar-overlap: 35px;
+}
+
+/* ======================
+   🔹 공통 스타일 & 유틸리티
+====================== */
+/* 숨김 처리 */
+.hidden { display: none; }
+#right-controls {
+  display: none !important;
+  position: relative;
+  z-index: 1000001 !important;
+  pointer-events: auto;
+}
+#right-controls.is-active { display: flex !important; }
+
+/* 탭 컨텐츠 전환 */
+.tab-content { display: none; }
+.tab-content[style*="display: block"] { display: block !important; }
+
+/* ======================
+   🔹 사이드바 아이콘
 ====================== */
 .sidebar-icon {
   display: flex;
@@ -17,36 +48,50 @@
   text-decoration: none;
   z-index: 9999;
 }
+.sidebar-icon:hover,
+.sidebar-icon.active {
+  color: var(--highlight-color, #fff);
+  background: transparent;
+}
+.sidebar-icon i {
+  background: none !important;
+  outline: none;
+  box-shadow: none;
+}
+.sidebar-icon:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
 
+/* 토글 확장 버튼 */
 .sidebar-icon.toggle-extension {
   background: none !important;
   color: #ccc;
   cursor: pointer;
 }
-.sidebar-icon.toggle-extension:hover { background: #333; color: #fff; }
+.sidebar-icon.toggle-extension:hover {
+  background: #333;
+  color: #fff;
+}
 .sidebar-icon.toggle-extension.active,
-.sidebar-icon.toggle-extension:focus { background: none !important; color: #fff !important; }
+.sidebar-icon.toggle-extension:focus {
+  background: none !important;
+  color: #fff !important;
+}
 
-.sidebar-icon:hover,
-.sidebar-icon.active { color: var(--highlight-color, #fff); background: transparent; }
-
-.sidebar-icon i { background: none !important; outline: none; box-shadow: none; }
-
-/* ======================
- 🔹 탭 컨텐츠 전환
-====================== */
-.tab-content { display: none; }
-.tab-content[style*="display: block"] { display: block !important; }
-
-/* ======================
- 🔹 반응형 (모바일)
-====================== */
-@media (max-width: 640px) {
-  .desktop-menu { display: none; }
+/* VSCode 사이드바 내부 아이콘 활성화 (원래 흰색 유지) */
+.vscode-sidebar { --highlight-color: #fff; }
+.vscode-sidebar .sidebar-icon.active,
+.vscode-sidebar .sidebar-icon[aria-current="page"],
+.vscode-sidebar .sidebar-icon[aria-selected="true"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
+.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
+  color: #fff !important;
 }
 
 /* ======================
- 🔹 사이드 패널 레이아웃 (기본)
+   🔹 사이드 패널 레이아웃
 ====================== */
 .side-panel.main-panel-only {
   position: fixed;
@@ -60,18 +105,11 @@
   pointer-events: none;
 }
 .side-panel.main-panel-only.open { pointer-events: auto; }
-
-.vscode-sidebar { pointer-events: auto !important; }
-
 .sidebar-wrapper {
   display: flex;
   flex-direction: row;
   height: 100%;
 }
-
-/* ======================
- 🔹 VSCode 사이드바 (데스크톱 기본)
-====================== */
 .vscode-sidebar {
   width: 50px;
   background-color: #1e1e1e;
@@ -81,13 +119,10 @@
   padding-top: 10px;
   height: 100vh;
   z-index: 99990;
+  pointer-events: auto !important;
 }
-
-/* ======================
- 🔹 확장 패널 (데스크톱 기본)
-====================== */
 .sidebar-extension-panel {
-  position: relative;
+  position: relative !important;
   box-sizing: border-box;
   top: 0;
   left: 0;
@@ -117,15 +152,33 @@
   pointer-events: auto;
 }
 
+/* 패널 상단 배경 이미지 */
+.sidebar-extension-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0; left: 0; right: 0;
+  height: var(--panel-hero-height);
+  background: url('/assets/images/room.webp') top center / cover no-repeat !important;
+  border-bottom: 2px solid rgba(255,255,255,1);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1 !important;
+}
+.sidebar-extension-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ======================
+   🔹 확장 패널 내부 컨텐츠
+====================== */
 .sidebar-extension-panel h3 { font-size: 14px; margin-bottom: 10px; }
 .sidebar-extension-panel ul { list-style: none; padding: 0; margin: 0; }
 .sidebar-extension-panel li { margin: 5px 0; }
 .sidebar-extension-panel a { color: #fff; text-decoration: none; font-size: 14px; }
 .sidebar-extension-panel a:hover { text-decoration: underline; }
 
-/* ======================
- 🔹 panel-footer 하단 고정
-====================== */
+/* 패널 푸터 (하단 고정) */
 .panel-footer {
   margin-top: auto;
   flex-shrink: 0;
@@ -144,10 +197,37 @@
   margin-bottom: 20px;
   padding-top: 8px;
 }
-.hidden { display: none; }
+
+/* 탭 컨텐츠 상단 여백 (이미지 겹침) */
+.sidebar-extension-panel .tab-content,
+.sidebar-extension-panel .profile-tab,
+.sidebar-extension-panel .search-tab {
+  padding-top: calc(var(--panel-hero-height) - var(--hero-overlap)) !important;
+}
+
+/* 프로필/검색 탭 겹침 복구 */
+.profile-tab, .search-tab { position: relative; z-index: 1; }
+.profile-info {
+  margin-top: calc(var(--hero-overlap) * -1) !important;
+  position: relative;
+  z-index: 2;
+}
+.profile-avatar {
+  margin-top: calc(var(--avatar-overlap) * -1) !important;
+  position: relative;
+  z-index: 2;
+}
+.search-tab .search-bar,
+.search-tab .search-box,
+.search-tab input[type="search"],
+.search-tab .search-input {
+  margin-top: calc(var(--hero-overlap) * -1) !important;
+  position: relative;
+  z-index: 2;
+}
 
 /* ======================
- 🔹 auth 버튼들
+   🔹 인증 버튼 (로그인, 가입 등)
 ====================== */
 .auth-buttons {
   display: flex;
@@ -158,12 +238,6 @@
   box-sizing: border-box;
   width: 100%;
 }
-@media (max-width: 640px) {
-  .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
-  .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
-  .auth-btn.logout { margin-right: 0 !important; }
-}
-
 .auth-btn {
   width: 100%;
   text-align: center;
@@ -178,7 +252,10 @@
   padding: 10px;
   border-radius: 6px;
 }
-.auth-btn.login { border-radius: 999px; font-size: 1.2rem; }
+.auth-btn.login {
+  border-radius: 999px;
+  font-size: 1.2rem;
+}
 .auth-btn.login:hover {
   background-color: rgba(255, 255, 200, 0.05);
   color: #fff;
@@ -186,40 +263,82 @@
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 .auth-btn.signup {
-  background: none; border: none; color: #fff; font-size: 0.9rem; padding: 6px 4px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35); box-shadow: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 6px 4px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+  box-shadow: none;
 }
-.auth-btn.signup:hover { color: lightblue; text-shadow: 0 0 10px rgba(255,230,120,0.8); }
+.auth-btn.signup:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+}
 .auth-btn.write-post {
-  margin-left: 10px; font-size: 0.85rem; padding: 4px 10px !important; border-radius: 4px;
-  display: inline-flex; align-items: center; gap: 5px; text-shadow: 0 0 5px rgba(255,255,255,0.35);
+  margin-left: 10px;
+  font-size: 0.85rem;
+  padding: 4px 10px !important;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
   background-color: #000;
 }
 .auth-btn.write-post:hover {
-  color: lightblue; text-shadow: 0 0 10px rgba(255,230,120,0.8);
-  background-color: rgba(255,255,200,0.05); border-color: rgba(255,255,180,0.8);
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+  background-color: rgba(255, 255, 200, 0.05);
+  border-color: rgba(255, 255, 180, 0.8);
 }
-.auth-btn.logout { font-size: 0.85rem; border-radius: 999px; padding: 8px 10px; }
+.auth-btn.logout {
+  font-size: 0.85rem;
+  border-radius: 999px;
+  padding: 8px 10px;
+}
 .auth-btn.logout:hover {
-  background-color: rgba(255,255,200,0.05); color: #fff;
-  border-color: rgba(255,255,180,0.8); box-shadow: 0 0 12px rgba(255,230,100,0.8);
+  background-color: rgba(255, 255, 200, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
 /* ======================
- 🔹 로그인 폼
+   🔹 로그인 폼
 ====================== */
-.login-form-container { margin-top: 10px; padding: 10px; border-top: 1px solid #555; }
-#login-form { display: flex; flex-direction: column; gap: 10px; }
+.login-form-container {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #555;
+}
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 #login-form input {
-  padding: 10px; background-color: #1e1e1e; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 0.9rem;
+  padding: 10px;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.9rem;
 }
 #login-form button {
-  padding: 10px; background-color: #641df1; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background-color 0.2s ease;
+  padding: 10px;
+  background-color: #641df1;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 #login-form button:hover { background-color: #4c16b9; }
 
 /* ==================================
- 🔹 헤더 & 메뉴 레이아웃 (데스크톱)
+   🔹 헤더 & 메뉴 레이아웃
 ================================== */
 .header-top {
   width: 100%;
@@ -228,98 +347,220 @@
   box-sizing: border-box;
   display: flex;
   justify-content: flex-end;
-  align-items: center; /* fix */
+  align-items: center;
   position: fixed;
   top: 0;
   left: 13px;
   z-index: 1;
   transition: background 0.4s ease;
   background: #000;
+  overflow: visible !important;
 }
-
-@media (max-width: 640px) {
-  .main-menu { font-size: 8px; }
+.top-controls {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
-
-.top-controls { display: flex; align-items: center; width: 100%; }
-.left-controls { flex-shrink: 0; padding-right: 15px; }
-.header-menu { flex-grow: 1; min-width: 0; flex-shrink: 1; }
-
+.left-controls {
+  flex-shrink: 0;
+  padding-right: 15px;
+}
+.header-menu {
+  flex-grow: 1;
+  min-width: 0;
+  flex-shrink: 1;
+}
 .main-menu-container {
-  list-style: none; display: flex; margin: 0; padding: 0;
-  white-space: nowrap; overflow-x: auto; overflow-y: hidden;
-  scrollbar-width: none; -ms-overflow-style: none; height: 100%;
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100%;
 }
 .main-menu-container::-webkit-scrollbar { display: none; }
-
-.menu-item-wrapper { display: flex; flex-shrink: 0; gap: 10px; align-items: center; }
-
+.menu-item-wrapper {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
+}
 .menu-label {
-  position: sticky; left: 0; top: 0; z-index: 10; background-color: #000;
-  font-size: 0.95rem; font-weight: 500; color: #fff; white-space: nowrap; padding: 5px 12px; cursor: pointer;
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  background-color: #000;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  padding: 5px 12px;
+  cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
-.submenu {
-  display: flex; list-style: none; padding: 0; margin: 0; gap: 10px; white-space: nowrap;
+.menu-label.active,
+.menu-label[aria-current="true"],
+.menu-label[aria-expanded="true"] {
+  color: var(--highlight-color, #00adb5) !important;
+  background-color: #111;
 }
-.submenu li a { text-decoration: none; color: #fff; font-size: 0.85rem; transition: color 0.2s ease; }
+.menu-label:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.submenu {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 10px;
+  white-space: nowrap;
+}
+.submenu li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+}
 .submenu li a:hover { color: #007BFF; }
-
+.submenu a:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.submenu a.active,
+.submenu a[aria-current="page"],
+.submenu li.active > a {
+  color: var(--highlight-color, #00adb5) !important;
+  font-weight: 700;
+  border-bottom: 2px solid currentColor;
+}
 .header-top.scrolled .menu-label,
 .header-top.scrolled .submenu li a { color: #fff; }
-
 .right-controls {
-  display: flex; align-items: center; gap: 5px; z-index: 1000; flex-basis: 100px; padding-left: 5px;
-  flex-shrink: 0; margin-left: auto; box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 1000;
+  flex-basis: 100px;
+  padding-left: 5px;
+  flex-shrink: 0;
+  margin-left: auto;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* ==================================
- 🔹 라이트 모드 & 언어 선택
+   🔹 라이트 모드 & 언어 선택
 ================================== */
 .light-switch {
-  display: flex; align-items: center; justify-content: center; width: 36px; height: 20px; cursor: pointer;
-  border-top: none; margin-top: 0; padding: 0; flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  border-top: none;
+  margin-top: 0;
+  padding: 0;
+  flex-shrink: 0;
 }
 .light-switch .switch-label {
-  width: 36px; height: 20px; background-color: #888; border-radius: 999px; position: relative;
-  transition: background-color 0.3s ease; box-shadow: inset 0 0 4px rgba(0,0,0,0.3);
+  width: 36px;
+  height: 20px;
+  background-color: #888;
+  border-radius: 999px;
+  position: relative;
+  transition: background-color 0.3s ease;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
 }
 .light-switch .switch-handle {
-  position: absolute; top: 2px; left: 2px; width: 15px; height: 15px;
-  background: linear-gradient(to bottom, #fff, #ccc); border-radius: 50%;
-  transition: left 0.3s ease, background 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  background: linear-gradient(to bottom, #fff, #ccc);
+  border-radius: 50%;
+  transition: left 0.3s ease, background 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .light-switch[aria-checked="true"] .switch-handle {
   left: calc(100% - 2px - 15px);
   background: linear-gradient(to bottom, #eee, #bbb);
 }
 
-.language-dropdown { position: relative; display: inline-block; flex-shrink: 0; }
-.lang-btn {
-  background: none; border: none; color: #fff; display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; padding: 5px 10px;
+.language-dropdown {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
 }
-.lang-btn .fi { width: 1.5rem; height: 1.2rem; }
-
+.lang-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.lang-btn .fi {
+  width: 1.5rem;
+  height: 1.2rem;
+}
 .lang-menu {
-  display: none; position: absolute; top: calc(100% + 5px); right: 0; background: #fff; border: 1px solid #ddd; border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000000; min-width: 120px; padding: 5px 0; list-style: none;
+  display: none;
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000000;
+  min-width: 120px;
+  padding: 5px 0;
+  list-style: none;
 }
 .lang-menu.show { display: block; }
+.lang-menu { z-index: 1000002; } /* right-controls 위에 */
 .lang-option {
-  display: flex; align-items: center; gap: 0.5rem; padding: 8px 12px; color: #333; text-decoration: none; white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
 }
 .lang-option:hover { background-color: #f5f5f5; }
-.lang-option.active-lang { font-weight: bold; color: var(--highlight-color, #00adb5); }
-
-html.dark .lang-menu { background: #222; border-color: #444; box-shadow: 2px 2px 6px rgba(255,255,255,0.05); }
+.lang-option.active-lang {
+  font-weight: bold;
+  color: var(--highlight-color, #00adb5);
+}
+html.dark .lang-menu {
+  background: #222;
+  border-color: #444;
+  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
+}
 html.dark .lang-option { color: #eee; }
 html.dark .lang-option:hover { background-color: #333; }
 
 /* ==================================
- 🔹 📱 모바일 레이아웃 (<=768px) — 통합본
+   🔹 반응형 (모바일)
 ================================== */
 @media (max-width: 768px) {
+  /* 데스크톱 전용 메뉴 숨김 */
+  .desktop-menu { display: none; }
+  .main-menu { font-size: 8px; }
+
   /* 헤더 컨테이너 */
   .full-header-container {
     display: flex;
@@ -330,48 +571,38 @@ html.dark .lang-option:hover { background-color: #333; }
     z-index: 20000;
   }
 
-  /* 1) 메뉴 줄 */
+  /* 헤더 상단바 (메뉴 줄) */
   .header-top {
     order: 1;
     position: static;
     width: 100%;
     height: auto;
     padding: 0;
-    background: #000;
-    z-index: 1;
-    left: 0; /* 데스크톱 left 오프셋 제거 */
-    align-items: center; /* 오타 보정 */
+    left: 0;
+    align-items: center;
   }
 
-  /* 2) 사이드바 줄 */
+  /* 사이드바 줄 */
   .side-panel.main-panel-only {
     order: 2;
-    position: relative;       /* 오버레이 기준점 */
+    position: relative;
     left: 0; right: 0;
     width: 100%;
     height: auto;
     pointer-events: auto;
-    display: flex;
-    flex-direction: row;
-    z-index: 100;
-    box-sizing: border-box;
   }
-
   .sidebar-wrapper { width: 100%; }
 
+  /* VSCode 사이드바 (가로형) */
   .vscode-sidebar {
     width: 100% !important;
     height: 50px !important;
-    display: flex;
     flex-direction: row;
-    justify-content: space-between;  /* flex:1과 함께 OK */
-    align-items: center;
+    justify-content: space-between;
     padding: 0 10px;
-    background-color: #1e1e1e;
     position: static !important;
-    z-index: 100;
-    box-sizing: border-box;
     gap: 6px;
+    z-index: 100;
   }
 
   /* 아이콘: 1칸씩 균등 분배 */
@@ -383,20 +614,24 @@ html.dark .lang-option:hover { background-color: #333; }
     height: 100% !important;
   }
 
-  /* 3) 확장 패널: 닫힘일 때 레이아웃 비점유 (오버레이) */
+  /* 모바일 상단바에서 활성화 바(underline) 표시 */
+  .vscode-sidebar .sidebar-icon.active::after,
+  .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
+  .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
+    content: none !important; /* 원래 흰색으로 덮는 규칙으로 인해 제거 */
+  }
+
+  /* 확장 패널 (모바일 오버레이) */
   .sidebar-extension-panel {
     position: absolute !important;
-    top: 50px !important;       /* 상단 바 높이 */
-    left: 0 !important;
-    right: 0 !important;
+    top: 50px !important;
+    left: 0 !important; right: 0 !important;
     width: 100% !important;
     height: calc(100vh - 50px) !important;
-    transform: translateX(-100%) !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
     min-width: 0 !important;
     max-width: none !important;
     border-right: none !important;
+    z-index: 1000 !important;
   }
   .sidebar-extension-panel.open {
     transform: translateX(0) !important;
@@ -405,245 +640,32 @@ html.dark .lang-option:hover { background-color: #333; }
   }
 
   /* 기타 모바일 헤더 내부 */
-  .top-controls { flex-direction: row; align-items: center; width: 100%; }
+  .top-controls {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
   .left-controls { display: none; }
-  .header-menu { flex-wrap: nowrap; overflow-x: auto; }
-  .right-controls { display: flex; flex-shrink: 0; }
+  .header-menu {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
   .main-menu-container { padding: 0 10px; }
-}
-
-/* =================================================
-   ✅ ACTIVE STATE RESTORE — append at file end
-   (덮어쓴 !important와 특이성 정리)
-================================================= */
-
-/* 1) 사이드바 아이콘 활성화 색상 (데스크톱+모바일) */
-.vscode-sidebar .sidebar-icon { position: relative; }
-
-.vscode-sidebar .sidebar-icon.active,
-.vscode-sidebar .sidebar-icon[aria-current="page"],
-.vscode-sidebar .sidebar-icon[aria-selected="true"] {
-  color: var(--highlight-color, #00adb5) !important;
-}
-
-/* 1-1) 모바일 상단바에서 활성화 바(underline) 표시 */
-@media (max-width: 768px) {
-  .vscode-sidebar .sidebar-icon.active::after,
-  .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
-  .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-    right: 10%;
-    height: 2px;
-    background: currentColor;
-    border-radius: 2px;
-  }
-}
-
-/* 2) 헤더 메뉴 활성화 (메뉴 라벨/하위 링크 모두 대응) */
-.menu-label.active,
-.menu-label[aria-current="true"],
-.menu-label[aria-expanded="true"] {
-  color: var(--highlight-color, #00adb5) !important;
-  background-color: #111;
-}
-
-.submenu a.active,
-.submenu a[aria-current="page"],
-.submenu li.active > a {
-  color: var(--highlight-color, #00adb5) !important;
-  font-weight: 700;
-  border-bottom: 2px solid currentColor;
-}
-
-/* 3) 충돌 방지: 토글 버튼이 active일 때 흰색 강제 덮는 규칙 정리 */
-.vscode-sidebar .sidebar-icon.toggle-extension.active {
-  color: var(--highlight-color, #00adb5) !important;
-}
-
-/* 4) 키보드 접근성: 포커스 링 */
-.sidebar-icon:focus-visible,
-.submenu a:focus-visible,
-.menu-label:focus-visible {
-  outline: 2px solid var(--highlight-color, #00adb5);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-/* ============================================
-   🔁 Restore original active look (white) 
-   — append at file end
-============================================ */
-
-/* 0) 바 내부에만 하이라이트 변수를 흰색으로 고정 (옵션: 안전)
-   → 기존 규칙의 var(--highlight-color, …)가 전부 흰색 fallback처럼 작동 */
-   .vscode-sidebar { --highlight-color: #fff; }
-
-   /* 1) VSCode 바 아이콘 활성화: 그냥 '하얀색' */
-   .vscode-sidebar .sidebar-icon.active,
-   .vscode-sidebar .sidebar-icon[aria-current="page"],
-   .vscode-sidebar .sidebar-icon[aria-selected="true"] {
-     color: #fff !important;
-   }
-   
-   /* 2) 내가 추가했던 파란 밑줄/하이라이트 제거 */
-   .vscode-sidebar .sidebar-icon.active::after,
-   .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
-   .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
-     content: none !important;
-   }
-   
-   /* 3) 토글 버튼도 동일하게 흰색 유지 (덮어쓰기 정리) */
-   .vscode-sidebar .sidebar-icon.toggle-extension.active,
-   .vscode-sidebar .sidebar-icon.toggle-extension:focus {
-     color: #fff !important;
-     background: none !important;
-   }
-
-   /* =================================================
-   🔁 TAB VISUALS RESTORE — append at file end
-   (프로필/검색 탭 상단 배경 이미지 및 레이아웃 복구)
-================================================= */
-
-/* 0) 이미지 높이를 변수로 관리(원래 155px 사용했으니 그대로) */
-:root { --panel-hero-height: 155px; }
-
-/* 1) 패널은 항상 상대 위치 (모바일에서 absolute여도 OK) */
-.sidebar-extension-panel {
-  position: relative !important; /* ::before가 기준 삼을 수 있게 */
-  background-color: #000;        /* 원래 배경 유지 */
-  overflow-y: auto;              /* 스크롤 유지 */
-}
-
-/* 2) 상단 배경 이미지 복구 (+ 우선순위 보장) */
-.sidebar-extension-panel::before {
-  content: "" !important;
-  position: absolute !important;
-  top: 0; left: 0; right: 0;
-  height: var(--panel-hero-height);
-  background: url('/assets/images/room.webp') top center / cover no-repeat !important;
-  border-bottom: 2px solid rgba(255,255,255,1);
-  pointer-events: none;
-  z-index: 0;                    /* 이미지 레이어 */
-  opacity: 1 !important;         /* 혹시라도 0으로 덮였을 대비 */
-}
-
-/* 3) 패널 내부 실제 컨텐츠는 이미지 위로 */
-.sidebar-extension-panel > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* 4) 탭 컨텐츠 상단 여백(이미지 높이만큼) */
-.sidebar-extension-panel .tab-content,
-.sidebar-extension-panel .profile-tab,
-.sidebar-extension-panel .search-tab {
-  padding-top: calc(var(--panel-hero-height) + 16px) !important;
-}
-
-/* 5) (모바일 전용) 오버레이 위치는 유지하되 z-index만 살짝 올려 충돌 방지 */
-@media (max-width: 768px) {
-  .side-panel.main-panel-only { position: relative !important; }
-  .sidebar-extension-panel {
-    position: absolute !important;
-    top: 50px !important;          /* 상단바 높이 */
-    left: 0 !important; right: 0 !important;
-    height: calc(100vh - 50px) !important;
-    z-index: 1000 !important;      /* 상단 아이콘바보다 위에 */
-  }
-}
-
-/* =================================================
-   🔁 HERO OVERLAP RESTORE — append at file end
-   (탭 상단 배경 위로 프로필/검색 UI가 반쯤 겹치도록 복구)
-================================================= */
-
-/* 0) 조절값 (원래 히어로 155px 기준) */
-:root {
-  --panel-hero-height: 155px;  /* 상단 배경 이미지 높이 */
-  --hero-overlap: 50px;        /* 컨텐츠가 이미지 위로 겹칠 양 */
-  --avatar-overlap: 35px;      /* 아바타만 별도 튜닝하고 싶으면 */
-}
-
-/* 1) 기존에 넣었던 '히어로 전체 아래로 밀기' 규칙 무력화 → 겹침 허용 */
-.sidebar-extension-panel .tab-content,
-.sidebar-extension-panel .profile-tab,
-.sidebar-extension-panel .search-tab {
-  /* 히어로 높이에서 겹칠 양만 빼서 '반쯤 걸치게' */
-  padding-top: calc(var(--panel-hero-height) - var(--hero-overlap)) !important;
-}
-
-/* 2) 이미지 위에 올라올 요소는 z-index 올려서 확실히 위로 */
-.sidebar-extension-panel > * { position: relative; z-index: 1; }
-.profile-tab, .search-tab { position: relative; z-index: 1; }
-
-/* 3) 프로필 영역 겹침 복구 (원래 profile-info가 위로 올라오던 효과) */
-.profile-info {
-  margin-top: calc(var(--hero-overlap) * -1) !important; /* 예: -50px */
-  position: relative;
-  z-index: 2; /* 배경 위 */
-}
-
-/* 4) 아바타도 살짝 겹치게 (원래 반쯤 걸치던 느낌) */
-.profile-avatar {
-  margin-top: calc(var(--avatar-overlap) * -1) !important; /* 예: -35px */
-  position: relative;
-  z-index: 2;
-}
-
-/* 5) 검색 탭에서도 검색창이 배경 위로 겹치도록 (클래스 이름 다양성 커버) */
-.search-tab .search-bar,
-.search-tab .search-box,
-.search-tab input[type="search"],
-.search-tab .search-input {
-  margin-top: calc(var(--hero-overlap) * -1) !important;
-  position: relative;
-  z-index: 2;
-}
-
-
-
-
-/* 기본은 숨김 */
-#right-controls {
-  display: none !important;
-  position: relative;           /* 드롭다운 겹침 안전 */
-  z-index: 1000001 !important;  /* 다른 레이어 위 */
-  pointer-events: auto;
-}
-
-/* is-active 붙을 때만 보임 */
-#right-controls.is-active {
-  display: flex !important;
-}
-
-/* 혹시 남아 있는 .right-controls 강제 표시 규칙 무력화 (모바일 포함) */
-@media (max-width: 768px) {
-  .right-controls {             /* class 기반 강제 표시였던 규칙 무효화 */
-    display: none !important;
+  .right-controls {
+    display: none !important; /* #right-controls 규칙을 따르도록 함 */
   }
   #right-controls.is-active {
     display: flex !important;
   }
-}
-
-/* 언어 드롭다운은 기존 show 클래스만으로 열리게 (겹침 보장) */
-.language-dropdown .lang-menu {
-  display: none;
-  position: absolute;
-  z-index: 1000002;             /* right-controls 위 */
-}
-.language-dropdown .lang-menu.show {
-  display: block;
-}
-
-/* 혹시 헤더가 내용 잘라먹으면 대비 */
-.header-top { overflow: visible !important; }
-
-/* SETTINGS ICON ACTIVE LOOK (minimal) */
-.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
-.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
-  color: #fff !important; /* 원래처럼 하얀색 */
+  .auth-buttons {
+    gap: 8px;
+    flex-direction: column;
+    width: 100%;
+  }
+  .auth-btn.write-post, .auth-btn.logout {
+    margin-left: 0 !important;
+  }
+  .auth-btn.logout {
+    margin-right: 0 !important;
+  }
 }
