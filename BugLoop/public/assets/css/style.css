@@ -1,3 +1,9 @@
+body {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
 body.panel-open {
  padding-left: 360px;
   transition: padding 0.3s ease;
