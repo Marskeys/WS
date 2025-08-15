@@ -501,3 +501,56 @@ html.dark .lang-option:hover { background-color: #333; }
      color: #fff !important;
      background: none !important;
    }
+
+   /* =================================================
+   🔁 TAB VISUALS RESTORE — append at file end
+   (프로필/검색 탭 상단 배경 이미지 및 레이아웃 복구)
+================================================= */
+
+/* 0) 이미지 높이를 변수로 관리(원래 155px 사용했으니 그대로) */
+:root { --panel-hero-height: 155px; }
+
+/* 1) 패널은 항상 상대 위치 (모바일에서 absolute여도 OK) */
+.sidebar-extension-panel {
+  position: relative !important; /* ::before가 기준 삼을 수 있게 */
+  background-color: #000;        /* 원래 배경 유지 */
+  overflow-y: auto;              /* 스크롤 유지 */
+}
+
+/* 2) 상단 배경 이미지 복구 (+ 우선순위 보장) */
+.sidebar-extension-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0; left: 0; right: 0;
+  height: var(--panel-hero-height);
+  background: url('/assets/images/room.webp') top center / cover no-repeat !important;
+  border-bottom: 2px solid rgba(255,255,255,1);
+  pointer-events: none;
+  z-index: 0;                    /* 이미지 레이어 */
+  opacity: 1 !important;         /* 혹시라도 0으로 덮였을 대비 */
+}
+
+/* 3) 패널 내부 실제 컨텐츠는 이미지 위로 */
+.sidebar-extension-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 4) 탭 컨텐츠 상단 여백(이미지 높이만큼) */
+.sidebar-extension-panel .tab-content,
+.sidebar-extension-panel .profile-tab,
+.sidebar-extension-panel .search-tab {
+  padding-top: calc(var(--panel-hero-height) + 16px) !important;
+}
+
+/* 5) (모바일 전용) 오버레이 위치는 유지하되 z-index만 살짝 올려 충돌 방지 */
+@media (max-width: 768px) {
+  .side-panel.main-panel-only { position: relative !important; }
+  .sidebar-extension-panel {
+    position: absolute !important;
+    top: 50px !important;          /* 상단바 높이 */
+    left: 0 !important; right: 0 !important;
+    height: calc(100vh - 50px) !important;
+    z-index: 1000 !important;      /* 상단 아이콘바보다 위에 */
+  }
+}
