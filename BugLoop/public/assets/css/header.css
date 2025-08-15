@@ -881,3 +881,65 @@ html.dark .lang-option:hover {
     pointer-events: auto !important;
   }
 }
+
+/* ============================================
+   ✅ MOBILE FIX #2 — append at file end
+============================================ */
+@media (max-width: 768px) {
+  /* 0) 헤더 정렬 오타 보정 */
+  .header-top { align-items: center !important; }
+
+  /* 1) 상단으로 올라간 사이드바 래퍼가 레이아웃 전체를 잡도록 */
+  .side-panel.main-panel-only {
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;         /* ← 고정/상태 변화에도 전체 폭 보장 */
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .sidebar-wrapper { width: 100% !important; }
+
+  /* 2) 가로 아이콘바에서 '아이콘 하나당 100% 폭'을 해제 */
+  .vscode-sidebar .sidebar-icon {
+    width: auto !important;      /* ← 이것 때문에 좁아졌던 거 */
+    flex: 1 1 0 !important;      /* 모두 같은 비율로 나눠먹기 */
+    min-width: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+  }
+
+  /* 3) 아이콘바 자체는 전체 폭 채우고 간격만 살짝 */
+  .vscode-sidebar {
+    width: 100% !important;
+    height: 50px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important; /* flex:1이라도 OK */
+    gap: 6px !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+    position: static !important;
+  }
+
+  /* 4) 확장패널은 닫혀 있을 때 레이아웃 차지 X (오버레이) */
+  .sidebar-extension-panel {
+    position: absolute !important;
+    top: 50px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 50px) !important;
+    transform: translateX(-100%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    border-right: none !important;
+  }
+  .sidebar-extension-panel.open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
