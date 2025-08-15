@@ -1,6 +1,7 @@
 <style>
-    :root { --header-h: 30px; --panel-h: 500px; }
-  
+    :root { --header-h: 30px;   --panel-h-default: 500px; --panel-h: var(--panel-h-default);}
+
+    
     /* 컨테이너 */
     #mini-lecture{
       position: fixed;
@@ -139,75 +140,95 @@
   </div>
   
   <script>
-  (function(){
-    const root = document.documentElement;
-    const resizer = document.getElementById('panel-resizer');
-    if(!resizer) return;
-  
-    const MIN = 20, MAX = 800, STEP = 16, BIG = 64;
-    const KEY = 'miniPanelH';
-  
-    const clamp = v => Math.max(MIN, Math.min(MAX, v));
-    const setH = (h, save=false) => {
-      h = clamp(h);
-      root.style.setProperty('--panel-h', h + 'px');
-      resizer.setAttribute('aria-valuenow', String(h));
-      if(save) localStorage.setItem(KEY, String(h));
-    };
-  
-    // 초기값: 저장값 있으면 가져오되 즉시 클램프
-    const saved = parseInt(localStorage.getItem(KEY), 10);
-    const start = Number.isNaN(saved) ? 500 : saved;
-    setH(start, false);
-  
-    // ARIA 범위 동기화
-    resizer.setAttribute('aria-valuemin', String(MIN));
-    resizer.setAttribute('aria-valuemax', String(MAX));
-  
-    let startY = 0, startH = 0, dragging = false;
-  
-    function move(e){
-      if(!dragging) return;
-      const y = (e.touches ? e.touches[0].clientY : e.clientY);
-      setH(startH + (y - startY));
-      e.preventDefault?.();
-    }
-    function up(){
-      if(!dragging) return;
-      dragging = false;
-      document.body.classList.remove('resizing');
-      const h = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10);
-      setH(h, true);
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseup', up);
-      window.removeEventListener('touchmove', move);
-      window.removeEventListener('touchend', up);
-    }
-    function down(e){
-      dragging = true;
-      document.body.classList.add('resizing');
-      startY = (e.touches ? e.touches[0].clientY : e.clientY);
-      startH = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10) || 500;
-      window.addEventListener('mousemove', move);
-      window.addEventListener('mouseup', up);
-      window.addEventListener('touchmove', move, { passive:false });
-      window.addEventListener('touchend', up);
-      e.preventDefault?.();
-    }
-  
-    resizer.addEventListener('mousedown', down);
-    resizer.addEventListener('touchstart', down, { passive:false });
-  
-    resizer.addEventListener('keydown', (e)=>{
-      const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10) || 500;
-      if(e.key === 'ArrowUp'){ setH(cur - (e.shiftKey ? BIG : STEP), true); e.preventDefault(); }
-      else if(e.key === 'ArrowDown'){ setH(cur + (e.shiftKey ? BIG : STEP), true); e.preventDefault(); }
-      else if(e.key === 'Home'){ setH(MIN, true); e.preventDefault(); }
-      else if(e.key === 'End'){ setH(MAX, true); e.preventDefault(); }
-      else if(e.key === 'Enter' || e.key === ' '){ setH(500, true); e.preventDefault(); }
-    });
-  })();
-  </script>
+    (function(){
+      const root = document.documentElement;
+      const resizer = document.getElementById('panel-resizer');
+      if(!resizer) return;
+    
+      const MIN = 20, MAX = 800, STEP = 16, BIG = 64;
+      const VAR = '--panel-h';
+      const KEY = 'miniPanelH_session';      // ✅ 세션 저장 (탭 생명주기)
+      
+      // 홈 경로 판단: /, /ko, /en, /ko/ 같은 루트
+      const isHomePath = (p) => p === '/' || /^\/[a-z]{2}\/?$/.test(p);
+    
+      const getDefaultPx = () => {
+        const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
+        return parseInt(v, 10) || 500;
+      };
+    
+      const clamp = v => Math.max(MIN, Math.min(MAX, v|0));
+    
+      const setH = (h, save=false) => {
+        const n = clamp(parseInt(h, 10));
+        root.style.setProperty(VAR, n + 'px');
+        resizer.setAttribute('aria-valuenow', String(n));
+        if (save) sessionStorage.setItem(KEY, n + 'px');
+      };
+    
+      // ===== 초기화: 홈이면 기본값으로 리셋, 아니면 세션 값 적용 =====
+      (function init(){
+        if (isHomePath(location.pathname)) {
+          sessionStorage.removeItem(KEY);           // ✅ 홈 진입 시 리셋
+          root.style.removeProperty(VAR);           //   → --panel-h-default 사용
+          resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
+        } else {
+          const saved = sessionStorage.getItem(KEY);
+          if (saved) setH(saved, false);
+          else root.style.removeProperty(VAR);      // 기본값 사용
+        }
+      })();
+    
+      // ARIA 범위
+      resizer.setAttribute('aria-valuemin', String(MIN));
+      resizer.setAttribute('aria-valuemax', String(MAX));
+    
+      let startY = 0, startH = 0, dragging = false;
+    
+      function move(e){
+        if(!dragging) return;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY);
+        setH(startH + (y - startY));                // 드래그 중 저장 X
+        e.preventDefault?.();
+      }
+      function up(){
+        if(!dragging) return;
+        dragging = false;
+        document.body.classList.remove('resizing');
+        const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+        setH(cur, true);                            // ✅ 드래그 끝날 때만 저장(세션)
+        window.removeEventListener('mousemove', move);
+        window.removeEventListener('mouseup', up);
+        window.removeEventListener('touchmove', move);
+        window.removeEventListener('touchend', up);
+      }
+      function down(e){
+        dragging = true;
+        document.body.classList.add('resizing');
+        startY = (e.touches ? e.touches[0].clientY : e.clientY);
+        startH = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', up);
+        window.addEventListener('touchmove', move, { passive:false });
+        window.addEventListener('touchend', up);
+        e.preventDefault?.();
+      }
+    
+      resizer.addEventListener('mousedown', down);
+      resizer.addEventListener('touchstart', down, { passive:false });
+    
+      // 키보드 조작
+      resizer.addEventListener('keydown', (e)=>{
+        const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+        if(e.key === 'ArrowUp'){    setH(cur - (e.shiftKey ? BIG : STEP), true); e.preventDefault(); }
+        else if(e.key === 'ArrowDown'){ setH(cur + (e.shiftKey ? BIG : STEP), true); e.preventDefault(); }
+        else if(e.key === 'Home'){  setH(MIN, true); e.preventDefault(); }
+        else if(e.key === 'End'){   setH(MAX, true); e.preventDefault(); }
+        else if(e.key === 'Enter' || e.key === ' '){ setH(getDefaultPx(), true); e.preventDefault(); }
+      });
+    })();
+    </script>
+    
   
   <script>
   document.addEventListener('DOMContentLoaded', () => {
