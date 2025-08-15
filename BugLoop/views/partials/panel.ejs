@@ -1,5 +1,5 @@
 <style>
-    :root { --header-h: 30px; --panel-h: 400px; } /* 기본 패널 높이 400px */
+    :root { --header-h: 30px; --panel-h: 400px; } /* 기본 패널 높이 */
 
     /* 컨테이너 */
     #mini-lecture{
@@ -8,7 +8,7 @@
       z-index: 40; 
       margin-left: 50px;
       height: var(--panel-h);
-      min-height: 400px; /* 최소 높이 보장 */
+      min-height: 120px; /* 너무 줄이면 깨지니까 */
       display: grid;
       grid-template-rows: 1fr 14px;
       overflow: hidden;
@@ -22,9 +22,13 @@
 
     /* 까만 상자 */
     #mini-lecture .left-box {
-      width: 400px; /* 기본 폭 400px */
+      width: 400px;
       background: #000;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
     }
   
     /* 패널 내용 */
@@ -52,7 +56,7 @@
       font-weight:700;
     }
 
-    #mini-lecture .chip{
+    .chip{
       display:inline-block;
       margin-top:8px;
       margin-right:6px;
@@ -73,7 +77,7 @@
       border:1px solid #333;
       border-top:0;
       transition:background .15s ease, box-shadow .15s ease;
-      align-self: end; /* 항상 아래쪽 유지 */
+      align-self: end;
     }
     #panel-resizer::before{
       content:"";
@@ -111,13 +115,13 @@
       transform:translate(-50%,-50%) scaleX(1.08);
     }
 
-    /* 좁은 화면(모바일)일 때 세로 배치 + 리사이저 항상 보이게 */
+    /* 모바일 */
     @media (max-width: 640px) {
       #mini-lecture {
         display: flex;
         flex-direction: column;
-        height: auto; /* 고정 높이 해제 */
-        min-height: auto; /* 최소 높이 해제 */
+        height: var(--panel-h); /* 리사이저 변수 유지 */
+        min-height: 120px;
       }
       #mini-lecture .panel-wrapper {
         flex-direction: column;
@@ -125,10 +129,12 @@
       }
       #mini-lecture .left-box {
         width: 100%;
-        height: 400px; /* 모바일에서 까만 박스 높이 */
+        flex-shrink: 0;
+        height: auto; /* 패널 높이에 맞춰 줄어듦 */
+        min-height: 60px;
       }
       #panel-resizer {
-        order: 3; /* 항상 맨 아래 */
+        order: 3;
       }
     }
   
@@ -137,7 +143,7 @@
   
 <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
     <div class="panel-wrapper">
-        <div class="left-box"></div> <!-- 까만 상자 -->
+        <div class="left-box">BLACK BOX</div>
         <div class="panel-card">
             <span class="connector">Welcome</span>
             <% if (panelData && panelData.html) { %>
@@ -153,7 +159,7 @@
          role="separator"
          aria-orientation="horizontal"
          aria-label="패널 높이 조절"
-         aria-valuemin="400"
+         aria-valuemin="120"
          aria-valuemax="600"
          aria-valuenow="400"
          tabindex="0"
@@ -166,7 +172,7 @@
     const resizer = document.getElementById('panel-resizer');
     if(!resizer) return;
 
-    const KEY='miniPanelH', MIN=400, MAX=600, STEP=16, BIG=64;
+    const KEY='miniPanelH', MIN=120, MAX=600, STEP=16, BIG=64;
     const saved = parseInt(localStorage.getItem(KEY),10);
     const start = Number.isNaN(saved)?400:saved;
     root.style.setProperty('--panel-h', start+'px');
@@ -212,7 +218,6 @@
     resizer.addEventListener('mousedown',down);
     resizer.addEventListener('touchstart',down,{passive:false});
 
-    // 키보드 접근성
     resizer.addEventListener('keydown', (e)=>{
       const cur = parseInt(getComputedStyle(root).getPropertyValue('--panel-h'),10)||400;
       if(e.key==='ArrowUp'){ setH(cur - (e.shiftKey?BIG:STEP), true); e.preventDefault(); }
@@ -222,7 +227,6 @@
       else if(e.key==='Enter' || e.key===' '){ setH(400, true); e.preventDefault(); }
     });
 
-    // 첫 방문 코칭 버블
     if(!localStorage.getItem('miniPanelHint')){
       const hint = document.createElement('div');
       hint.textContent = '드래그해서 높이를 조절할 수 있어요';
