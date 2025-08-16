@@ -7,11 +7,10 @@ body {
 }
 
 body.panel-open {
- padding-left: 360px;
+  padding-left: 360px;
   transition: padding 0.3s ease;
-  width: calc(100%);
+  width: calc(100% - 40px);
 }
-
 body.panel-open .left-controls {
   padding-left: 360px;
 }
