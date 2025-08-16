@@ -423,24 +423,37 @@ app.get('/post/:id', (req, res) => {
   handlePostViewRoute(req, res);
 });
 
-const wantsFragment =
-  req.get('X-Panel-Only') === '1' ||
-  (req.headers.accept || '').includes('text/fragment') ||
-  req.query._fragment === 'panel';
-
-if (wantsFragment) {
-  return res.render('partials/panel', ctx);   // 패널만
+// 헬퍼(선택)
+function isPanelRequest(req) {
+  return req.get('X-Panel-Only') === '1' ||
+         (req.headers.accept || '').includes('text/fragment') ||
+         req.query._fragment === 'panel';
 }
-return res.render('index', ctx);               // 전체
 
-// ⭐ 패널 전용 URL (언어 코드 포함)
+// 공통 핸들러
+function handlePanelRoute(req, res, next) {
+  try {
+    // lang 기본값
+    const supported = ['ko','en','fr','zh','ja'];
+    const lang = supported.includes(req.params.lang) ? req.params.lang : 'ko';
+
+    // 컨텍스트 만들기 (네 기존 로직으로 채워)
+    const ctx = buildPanelContext(req, { lang });
+
+    // 🔸 여기서만 req 사용
+    if (isPanelRequest(req)) {
+      return res.render('partials/panel', ctx);   // 패널만
+    }
+    return res.render('index', ctx);              // 전체
+  } catch (e) {
+    next(e);
+  }
+}
+
+// 라우트 선언 (req.params.lang 없으면 핸들러에서 ko로 처리)
 app.get('/:lang/:section/:topic', handlePanelRoute);
-
-// ⭐ 패널 전용 URL (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/:section/:topic', (req, res, next) => {
-  req.params.lang = 'ko';
-  handlePanelRoute(req, res, next);
-});
+app.get('/:section/:topic',        handlePanelRoute);
+app.get('/:lang/',                 handlePanelRoute);   // 홈도 패널 교체 원하면
 
 app.get('/sitemap.xml', async (req, res) => {
   try {
