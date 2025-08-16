@@ -13,9 +13,9 @@ body.panel-open {
 }
 
 body.panel-open #mini-lecture {
-  width: calc((100vw - 360px) * 0.8);
-  margin-left: calc((100vw - 360px) * 0.1);
-  margin-right: calc((100vw - 360px) * 0.1);
+  width: calc((100vw - 360px) * 0.9);
+  margin-left: calc((100vw - 360px) * 0.05);
+  margin-right: calc((100vw - 360px) * 0.05);
 }
 
 body.panel-open .left-controls {
