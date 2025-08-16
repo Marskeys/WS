@@ -323,7 +323,7 @@
       setHomeActive(isHomePath(pn));
     });
   
-    // 히스토리 이동
+    // 뒤로/앞으로 이동 시 반영
     window.addEventListener('popstate', sync);
   
     // SPA 네비게이션 훅킹 (pushState/replaceState 시그널)
@@ -337,6 +337,60 @@
     });
     window.addEventListener('panel:navigated', sync);
   })();
-  </script>
+</script>
+
+<!-- ✅ 추가: 탭 로직 분리 & 패널 닫힘 시 탭 active 해제 (홈은 경로 기준 유지) -->
+<script>
+  (() => {
+    // 홈 상태를 "경로 기준"으로만 다시 보정하는 함수 (다른 스크립트와 동일한 기준)
+    function syncHomeByLocation() {
+      const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
+      const raw = location.pathname.replace(/[#?].*$/, '');
+      const noLang = raw.replace(/^\/(ko|en|fr|zh|ja)(?:\/|$)/, '');
+      const norm = noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
+      const isHome = (norm === '/');
+      homeEls.forEach(el => {
+        el.classList.toggle('active', isHome);
+        el.querySelector('i')?.classList.toggle('active', isHome);
+      });
+    }
+
+    // 홈을 제외한 탭들만 아이콘 active를 관리
+    const tabSelector = '.vscode-sidebar .sidebar-icon[data-tab]:not([data-tab="home"]):not(.toggle-extension):not([data-tab="write"])';
+    const tabIcons = Array.from(document.querySelectorAll(tabSelector));
+    const sideBar = document.querySelector('.vscode-sidebar');
+
+    function activateOnlyThisTabIcon(target){
+      tabIcons.forEach(i => i.classList.toggle('active', i === target));
+    }
+
+    // 탭 클릭 시: 해당 탭만 active로, 홈은 경로 기준으로 재보정(홈이면 계속 켜짐)
+    sideBar?.addEventListener('click', (e) => {
+      const icon = e.target.closest(tabSelector);
+      if (!icon) return;
+      activateOnlyThisTabIcon(icon);
+      // header.js 등이 다른 토글을 건드릴 수 있어 다음 틱에 홈 보정
+      setTimeout(syncHomeByLocation, 0);
+    });
+
+    // 화살표 토글로 패널 닫히면: 탭 active 전부 해제 (홈은 경로 기준 유지)
+    const toggleBtn = document.querySelector('.vscode-sidebar .toggle-extension');
+    const extensionPanel = document.querySelector('.sidebar-extension-panel');
+    let panelOpen = extensionPanel ? (getComputedStyle(extensionPanel).display !== 'none' && !extensionPanel.classList.contains('hidden')) : false;
+
+    toggleBtn?.addEventListener('click', () => {
+      // header.js가 DOM을 건드린 뒤 상태를 확인하기 위해 다음 틱에서 판정
+      setTimeout(() => {
+        const nowOpen = extensionPanel ? (getComputedStyle(extensionPanel).display !== 'none' && !extensionPanel.classList.contains('hidden')) : !panelOpen;
+        if (!nowOpen) {
+          tabIcons.forEach(i => i.classList.remove('active')); // 프로필/검색/설정 등 끄기
+          syncHomeByLocation();                                 // 홈은 경로대로 유지
+        }
+        panelOpen = nowOpen;
+      }, 0);
+    });
+  })();
+</script>
+
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
