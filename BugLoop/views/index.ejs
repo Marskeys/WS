@@ -205,6 +205,14 @@
     .tag{ font-size:.75rem; border:1px solid var(--border); padding:2px 6px; border-radius:999px }
 
     .hidden{ display:none !important; }
+
+    /* Panel fade-in */
+    .panel-fade-enter { opacity: 0; transform: translateY(4px); }
+    .panel-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity .2s ease, transform .2s ease; }
+     @media (prefers-reduced-motion: reduce){
+      .panel-fade-enter { opacity: 1; transform: none; }
+      .panel-fade-enter-active { transition: none; }
+    }
   </style>
 </head>
 
@@ -558,11 +566,12 @@ ${jsTag}
   </script>
 
   <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + .connector 동기화 포함) -->
-  <script>
+  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + 페이드인 + .connector 동기화) -->
+<script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
     const preloader = document.getElementById('preloader');
-
+  
     /* ---------- 히스토리 패치 ---------- */
     (function patchHistory(){
       const _ps = history.pushState, _rs = history.replaceState;
@@ -570,7 +579,7 @@ ${jsTag}
       history.replaceState = function(...args){ const r = _rs.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
       window.addEventListener('popstate', ()=> window.dispatchEvent(new Event('locationchange')));
     })();
-
+  
     /* ---------- 메뉴 클릭 가로채기 (캡처 단계) ---------- */
     document.addEventListener('click', onDocClick, true);
     function onDocClick(e){
@@ -581,51 +590,53 @@ ${jsTag}
       if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const url = new URL(a.href, location.origin);
       if (url.origin !== location.origin || url.hash) return;
-
+  
       e.preventDefault();
-      // 헤더의 .connector를 즉시 업데이트 (지각감 향상)
-      updateConnector(a.href);
-      // 우리 쪽에서 네비게이션 트리거
+      // ❌ 예전: updateConnector(a.href) ← 바로 갱신하던 라인 제거!
       navigateAndSwap(a.href, /*push=*/true);
     }
-
+  
     /* ---------- location 변경 시 패널 교체 ---------- */
     window.addEventListener('locationchange', () => {
       swapPanel(location.href);
     });
-
+  
     async function navigateAndSwap(url, push) {
       if (push) history.pushState({panel:true}, '', url);
       else history.replaceState(history.state, '', url);
       // 실제 교체는 locationchange 리스너에서 수행
     }
-
+  
     async function swapPanel(url) {
       try {
         setLoading(true);
-
-        // 서버가 프래그먼트 분기할 수 있게 살짝 힌트
+  
+        // 서버 프래그먼트 힌트 (있어도 되고 없어도 됨)
         const fURL = new URL(url, location.origin);
         fURL.searchParams.set('partial', '1');
-
+  
         const res = await fetch(fURL.toString(), {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'text/fragment, text/html;q=0.9'
-          },
+          headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/fragment, text/html;q=0.9' },
           credentials: 'same-origin',
           cache: 'no-cache'
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-
+  
         const html = await res.text();
         const frag = extractPanel(html);
         if (!frag) { location.replace(url); return; }
-
-        panelRoot.replaceChildren(frag);
+  
+        // ✅ 페이드 인: 새 내용 래핑 후 교체
+        const holder = document.createElement('div');
+        holder.className = 'panel-fade-enter';
+        while (frag.firstChild) holder.appendChild(frag.firstChild);
+        panelRoot.replaceChildren(holder);
+        // 다음 프레임에 활성 클래스로 전환 → transition 발동
+        requestAnimationFrame(() => holder.classList.add('panel-fade-enter-active'));
+  
         runScripts(panelRoot);
         updateActiveMenu(url);
-        updateConnector(url); // ✅ 패널 교체 후 헤더 라벨 동기화
+        updateConnector(url); // ✅ 패널이 들어온 '뒤'에 헤더 라벨 동기화
       } catch (err) {
         console.error('[PJAX] swapPanel error:', err);
         location.replace(url);
@@ -633,7 +644,7 @@ ${jsTag}
         setLoading(false);
       }
     }
-
+  
     /* ---------- 도우미: 패널 추출/스크립트 실행 ---------- */
     function extractPanel(html) {
       if (!/<\/?html[\s>]/i.test(html)) {
@@ -651,7 +662,7 @@ ${jsTag}
       node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
       return df;
     }
-
+  
     function runScripts(root) {
       root.querySelectorAll('script').forEach(old => {
         const s = document.createElement('script');
@@ -660,7 +671,7 @@ ${jsTag}
         old.replaceWith(s);
       });
     }
-
+  
     /* ---------- 메뉴 active 처리 ---------- */
     function updateActiveMenu(url) {
       const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
@@ -672,47 +683,41 @@ ${jsTag}
         if (label) label.classList.toggle('active-label', is);
       });
     }
-
-    /* ---------- ✅ 헤더 .connector 라벨 동기화 ---------- */
+  
+    /* ---------- 헤더 .connector 라벨 동기화 ---------- */
     function updateConnector(url) {
       try {
         const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
-        // 1) 메뉴 링크에서 현재 항목 텍스트 찾기
         let activeLink = document.querySelector(`.submenu a[href="${path}"]`);
         if (!activeLink) {
           activeLink = Array.from(document.querySelectorAll('.submenu a'))
             .find(a => (a.getAttribute('href') || '').replace(/\/$/, '') === path);
         }
         let label = (activeLink?.textContent || '').trim();
-
-        // 2) 메뉴에서 못 찾으면, 패널이 넘겨준 메타로 폴백 (선택 구현)
         if (!label) {
           const meta = document.querySelector('#panel-root #panel-meta');
           label = meta?.dataset?.panelTitle?.trim();
         }
-
-        // 3) 그래도 없으면 최종 기본값
         if (!label) label = 'Welcome';
-
-        // 여러 개의 .connector 지원
         document.querySelectorAll('.connector').forEach(el => { el.textContent = label; });
       } catch (e) {
         document.querySelectorAll('.connector').forEach(el => { el.textContent = 'Welcome'; });
       }
     }
-
+  
     function setLoading(on) {
       if (!preloader) return;
       preloader.style.display = on ? 'block' : 'none';
     }
-
+  
     // 초기 진입 시 동기화
     window.addEventListener('DOMContentLoaded', () => {
       updateActiveMenu(location.href);
-      updateConnector(location.href); // ✅ 첫 로드에서도 헤더 라벨 맞추기
+      updateConnector(location.href);
     });
   })();
   </script>
+  
 
 </body>
 </html>
