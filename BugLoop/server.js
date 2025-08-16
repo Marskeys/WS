@@ -1121,7 +1121,7 @@ app.get('/_slugtest', (req, res) => {
 
 // Sidebar Data를 가져오는 공통 함수로 리팩토링
 async function getSidebarData(req) {
-  const safeLang = req.params.lang || res.locals.lang || 'ko';
+  const safeLang = (req.params && req.params.lang) ? req.params.lang : 'ko';
   const categoryQueryParam = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -1153,7 +1153,11 @@ async function getSidebarData(req) {
   const [postsForSidebar] = await db.query(postsBaseQuery, postsQueryParams);
 
   const filteredPostsForSidebar = postsForSidebar.map(sidebarPost => {
-    if (sidebarPost.is_private && sidebarPost.user_id !== req.session.user?.id && !req.session.user?.is_admin === 1) {
+    if (
+      sidebarPost.is_private &&
+      sidebarPost.user_id !== req.session.user?.id &&
+      !(req.session.user?.is_admin === 1)
+    ) {
       return {
         ...sidebarPost,
         content: '이 글은 비공개로 설정되어 있습니다.'
