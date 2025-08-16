@@ -42,11 +42,11 @@
     }
 
     @media (max-width: 640px){
-  .app-shell{
-    padding-left: 16px;
-    margin-top: 250px;
-  }
-}
+      .app-shell{
+        padding-left: 16px;
+        margin-top: 250px;
+      }
+    }
 
     /* 상단 바 */
     .studio-bar{
@@ -169,25 +169,24 @@
     #code-preview-frame{ width:100%; height:420px; border:0; background:var(--panel-2) }
 
     /* 🔴 깜빡이는 빨간 점 */
-.rec-dot{
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #ff4747;
-  box-shadow: 0 0 6px rgba(255,71,71,0.8);
-  animation: blink-rec 1s infinite;
-}
-@keyframes blink-rec {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 0 0 6px rgba(255,71,71,0.8);
-  }
-  50% {
-    opacity: 0.4;
-    box-shadow: 0 0 2px rgba(255,71,71,0.4);
-  }
-}
-
+    .rec-dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ff4747;
+      box-shadow: 0 0 6px rgba(255,71,71,0.8);
+      animation: blink-rec 1s infinite;
+    }
+    @keyframes blink-rec {
+      0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 6px rgba(255,71,71,0.8);
+      }
+      50% {
+        opacity: 0.4;
+        box-shadow: 0 0 2px rgba(255,71,71,0.4);
+      }
+    }
 
     /* 상태바 */
     .statusbar{
@@ -211,12 +210,16 @@
 
 <body class="light">
   <div id="preloader"><div class="spinner"></div></div>
+
+  <!-- 고정 헤더 -->
   <%- include('partials/header') %>
 
-  <div id="panel-root"></div>
-  <%- include('partials/panel') %>
-</div>
+  <!-- ✅ 패널만 교체되는 영역 -->
+  <div id="panel-root" data-pjax-scope>
+    <%- include('partials/panel') %>
+  </div>
 
+  <!-- 아래부터는 에디터/프리뷰 앱 영역 (고정) -->
   <div class="app-shell">
     <!-- 상단 앱 바 -->
     <div class="studio-bar">
@@ -312,12 +315,11 @@ footer {
 
       <!-- 우측: 프리뷰 -->
       <section class="preview-card">
-      <!-- 프리뷰 헤더 -->
-<div class="preview-bar">
-  <span class="rec-dot" title="Live"></span>
-  <span class="studio-badge">Live Preview</span>
-  <div class="preview-addr">bugloop://preview</div>
-</div>
+        <div class="preview-bar">
+          <span class="rec-dot" title="Live"></span>
+          <span class="studio-badge">Live Preview</span>
+          <div class="preview-addr">bugloop://preview</div>
+        </div>
         <iframe id="code-preview-frame" sandbox="allow-scripts allow-forms"></iframe>
       </section>
     </div>
@@ -359,6 +361,7 @@ footer {
   </div>
 
   <%- include('partials/scripts') %>
+
   <script>
     // ====== 요소 참조
     const htmlInput = document.getElementById('code-preview-html-code');
@@ -556,11 +559,12 @@ ${jsTag}
     window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
   </script>
 
-<script>
+  <!-- ✅ PJAX: 패널만 교체 -->
+  <script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
     const preloader = document.getElementById('preloader');
-  
+
     // 메뉴 클릭 가로채기
     document.addEventListener('click', (e) => {
       const a = e.target.closest('a[data-panel-link]');
@@ -569,18 +573,18 @@ ${jsTag}
       e.preventDefault();
       loadPanel(a.href, true);
     });
-  
+
     // 뒤로/앞으로
     window.addEventListener('popstate', () => loadPanel(location.href, false));
-  
+
     async function loadPanel(url, push) {
       try {
         setLoading(true);
-  
+
         // 서버가 fragment를 확실히 인지하도록: 헤더 + 쿼리파라미터 둘 다
         const fURL = new URL(url, location.origin);
         fURL.searchParams.set('_fragment', 'panel'); // 서버가 지원하면 이걸로 분기
-  
+
         const res = await fetch(fURL.toString(), {
           headers: {
             'X-Panel-Only': '1',                                 // 커스텀 헤더 트리거
@@ -589,10 +593,10 @@ ${jsTag}
           credentials: 'same-origin',
           cache: 'no-cache'
         });
-  
+
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const html = await res.text();
-  
+
         // 조각 또는 전체 HTML 모두 처리
         const frag = extractPanel(html);
         if (!frag) {
@@ -600,11 +604,11 @@ ${jsTag}
           location.href = url;
           return;
         }
-  
+
         panelRoot.replaceChildren(frag);
         runScripts(panelRoot);
         updateActiveMenu(url);
-  
+
         if (push) history.pushState({ panel: true }, '', url);
       } catch (err) {
         console.error('[PJAX] loadPanel error:', err);
@@ -613,7 +617,7 @@ ${jsTag}
         setLoading(false);
       }
     }
-  
+
     // 서버가 fragment만 주면 그대로 쓰고,
     // 전체 HTML이면 DOMParser로 #panel-root(or data-panel-fragment)만 뽑아옴
     function extractPanel(html) {
@@ -631,7 +635,7 @@ ${jsTag}
       node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
       return df;
     }
-  
+
     // 새로 삽입된 <script> 실행
     function runScripts(root) {
       root.querySelectorAll('script').forEach(old => {
@@ -641,7 +645,7 @@ ${jsTag}
         old.replaceWith(s);
       });
     }
-  
+
     // 메뉴 active 상태 업데이트
     function updateActiveMenu(url) {
       const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
@@ -652,16 +656,17 @@ ${jsTag}
           a.closest('.menu-item-wrapper')?.querySelector('.menu-label')?.classList.add('active-label');
         } else {
           a.classList.remove('active');
+          a.closest('.menu-item-wrapper')?.querySelector('.menu-label')?.classList.remove('active-label');
         }
       });
     }
-  
+
     function setLoading(on) {
       if (!preloader) return;
       preloader.style.display = on ? 'block' : 'none';
     }
   })();
   </script>
-  
+
 </body>
 </html>
