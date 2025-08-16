@@ -76,6 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
     history[fn](state, '', newUrl);
   }
 
+  // ==== (추가) 탭 활성화 유틸: 홈은 건드리지 않기 ====
+  // 홈/글쓰기/토글은 제외하고 탭 active를 관리
+  const isNonHomeTabIcon = (el) =>
+    el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
+
+  function clearNonHomeTabActives() {
+    icons.forEach(i => { if (isNonHomeTabIcon(i)) i.classList.remove('active'); });
+  }
+
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
     if (!extensionPanel?.classList.contains('open')) {
@@ -102,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
     }
 
-    icons.forEach(i => i.classList.remove('active'));
+    // ⬇️ 수정: 홈 아이콘은 건드리지 않고, "탭"만 리셋
+    clearNonHomeTabActives(); // [MOD]
     const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
     selectedIcon?.classList.add('active');
   }
@@ -259,6 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.remove('panel-open');
       sidePanel?.classList.remove('open');
       sidePanel?.style.setProperty('pointer-events', 'none');
+
+      // ⬇️ 추가: 패널을 "집어넣는" 순간, 홈을 제외한 탭 active 모두 해제
+      clearNonHomeTabActives(); // [ADD]
     }
   });
 
