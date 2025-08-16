@@ -2,6 +2,28 @@
    ✨ VSCode 테마 사이드바 & 메뉴 스타일
    ====================================================================== */
 
+   /* === Sidebar Logo === */
+.vscode-sidebar .sidebar-icon.logo {
+  padding: 10px 0;             /* 다른 아이콘이랑 수직 간격 맞춤 */
+}
+
+.vscode-sidebar .sidebar-icon.logo img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+  transition: transform .15s ease, opacity .15s ease, filter .15s ease;
+}
+
+/* 호버/활성 시 살짝 강조 */
+.vscode-sidebar .sidebar-icon.logo:hover img,
+.vscode-sidebar .sidebar-icon.logo.active img {
+  transform: scale(1.06);
+  opacity: 0.95;
+}
+
 /* ======================
    🔹 전역 변수
 ====================== */
