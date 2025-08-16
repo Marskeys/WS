@@ -212,7 +212,11 @@
 <body class="light">
   <div id="preloader"><div class="spinner"></div></div>
   <%- include('partials/header') %>
+
+  <div id="panel-root"></div>
   <%- include('partials/panel') %>
+</div>
+
   <div class="app-shell">
     <!-- 상단 앱 바 -->
     <div class="studio-bar">
@@ -551,5 +555,60 @@ ${jsTag}
     // 초기 탭 상태
     window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
   </script>
+
+<script>
+  (() => {
+    const panelRoot = document.getElementById('panel-root');
+    const preloader = document.getElementById('preloader');
+  
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-panel-link]');
+      if (!a) return;
+      if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      loadPanel(a.href, true);
+    });
+  
+    window.addEventListener('popstate', () => loadPanel(location.href, false));
+  
+    async function loadPanel(url, push) {
+      try {
+        setLoading(true);
+        const res = await fetch(url, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',   // ✅ 서버가 panel만 렌더하게 트리거
+            'Accept': 'text/fragment'               // (보조 신호)
+          }
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const html = await res.text();
+        panelRoot.innerHTML = html;
+        runScripts(panelRoot);
+        if (push) history.pushState({ panel: true }, '', url);
+      } catch (e) {
+        // 실패 시 전체 내비게이션 폴백
+        location.href = url;
+      } finally {
+        setLoading(false);
+      }
+    }
+  
+    function runScripts(root) {
+      root.querySelectorAll('script').forEach(old => {
+        const s = document.createElement('script');
+        [...old.attributes].forEach(attr => s.setAttribute(attr.name, attr.value));
+        s.textContent = old.textContent;
+        old.replaceWith(s);
+      });
+    }
+  
+    function setLoading(on) {
+      if (!preloader) return;
+      preloader.style.display = on ? 'block' : 'none';
+    }
+  })();
+  </script>
+
+
 </body>
 </html>

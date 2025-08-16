@@ -9,133 +9,128 @@
                         pathWithoutLang.startsWith('/edit');
         %>
         <% if (showLogo) { %>
-          <a href="/<%= lang %>/" class="logo-link">
-
-          </a>
+          <!-- ✅ 홈은 패널만 교체 -->
+          <a href="/<%= lang %>/" class="logo-link" data-panel-link></a>
         <% } %>
       </div>
-      
-    
-      
+
       <nav class="header-menu">
         <ul class="main-menu-container">
           <li class="menu-item-wrapper">
             <span class="menu-label">프론트엔드</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/frontend/html">HTML</a></li>
-              <li><a href="/<%= lang %>/frontend/css">CSS</a></li>
-              <li><a href="/<%= lang %>/frontend/javascript">JavaScript</a></li>
-              <li><a href="/<%= lang %>/frontend/react">React</a></li>
-              <li><a href="/<%= lang %>/frontend/vue">Vue</a></li>
-              <li><a href="/<%= lang %>/frontend/angular">Angular</a></li>
-              <li><a href="/<%= lang %>/frontend/svelte">Svelte</a></li>
-              <li><a href="/<%= lang %>/frontend/tailwind">Tailwind</a></li>
-              <li><a href="/<%= lang %>/frontend/bootstrap">Bootstrap</a></li>
-              <li><a href="/<%= lang %>/frontend/webpack">Webpack</a></li>
-              <li><a href="/<%= lang %>/frontend/vite">Vite</a></li>
-              <li><a href="/<%= lang %>/frontend/pwa">PWA</a></li>
+              <li><a href="/<%= lang %>/frontend/html"        data-panel-link>HTML</a></li>
+              <li><a href="/<%= lang %>/frontend/css"         data-panel-link>CSS</a></li>
+              <li><a href="/<%= lang %>/frontend/javascript"  data-panel-link>JavaScript</a></li>
+              <li><a href="/<%= lang %>/frontend/react"       data-panel-link>React</a></li>
+              <li><a href="/<%= lang %>/frontend/vue"         data-panel-link>Vue</a></li>
+              <li><a href="/<%= lang %>/frontend/angular"     data-panel-link>Angular</a></li>
+              <li><a href="/<%= lang %>/frontend/svelte"      data-panel-link>Svelte</a></li>
+              <li><a href="/<%= lang %>/frontend/tailwind"    data-panel-link>Tailwind</a></li>
+              <li><a href="/<%= lang %>/frontend/bootstrap"   data-panel-link>Bootstrap</a></li>
+              <li><a href="/<%= lang %>/frontend/webpack"     data-panel-link>Webpack</a></li>
+              <li><a href="/<%= lang %>/frontend/vite"        data-panel-link>Vite</a></li>
+              <li><a href="/<%= lang %>/frontend/pwa"         data-panel-link>PWA</a></li>
             </ul>
           </li>
-      
+
           <li class="menu-item-wrapper">
             <span class="menu-label">백엔드</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/backend/nodejs">Node.js</a></li>
-              <li><a href="/<%= lang %>/backend/express">Express</a></li>
-              <li><a href="/<%= lang %>/backend/django">Django</a></li>
-              <li><a href="/<%= lang %>/backend/flask">Flask</a></li>
-              <li><a href="/<%= lang %>/backend/fastapi">FastAPI</a></li>
-              <li><a href="/<%= lang %>/backend/spring">Spring</a></li>
-              <li><a href="/<%= lang %>/backend/php">PHP</a></li>
-              <li><a href="/<%= lang %>/backend/laravel">Laravel</a></li>
-              <li><a href="/<%= lang %>/backend/rails">Rails</a></li>
-              <li><a href="/<%= lang %>/backend/go">Go</a></li>
-              <li><a href="/<%= lang %>/backend/restapi">REST API</a></li>
-              <li><a href="/<%= lang %>/backend/graphql">GraphQL</a></li>
+              <li><a href="/<%= lang %>/backend/nodejs"       data-panel-link>Node.js</a></li>
+              <li><a href="/<%= lang %>/backend/express"      data-panel-link>Express</a></li>
+              <li><a href="/<%= lang %>/backend/django"       data-panel-link>Django</a></li>
+              <li><a href="/<%= lang %>/backend/flask"        data-panel-link>Flask</a></li>
+              <li><a href="/<%= lang %>/backend/fastapi"      data-panel-link>FastAPI</a></li>
+              <li><a href="/<%= lang %>/backend/spring"       data-panel-link>Spring</a></li>
+              <li><a href="/<%= lang %>/backend/php"          data-panel-link>PHP</a></li>
+              <li><a href="/<%= lang %>/backend/laravel"      data-panel-link>Laravel</a></li>
+              <li><a href="/<%= lang %>/backend/rails"        data-panel-link>Rails</a></li>
+              <li><a href="/<%= lang %>/backend/go"           data-panel-link>Go</a></li>
+              <li><a href="/<%= lang %>/backend/restapi"      data-panel-link>REST API</a></li>
+              <li><a href="/<%= lang %>/backend/graphql"      data-panel-link>GraphQL</a></li>
             </ul>
           </li>
-      
+
           <li class="menu-item-wrapper">
             <span class="menu-label">데이터베이스</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/database/mysql">MySQL</a></li>
-              <li><a href="/<%= lang %>/database/postgresql">PostgreSQL</a></li>
-              <li><a href="/<%= lang %>/database/mongodb">MongoDB</a></li>
-              <li><a href="/<%= lang %>/database/redis">Redis</a></li>
-              <li><a href="/<%= lang %>/database/oracle">Oracle</a></li>
-              <li><a href="/<%= lang %>/database/sqlite">SQLite</a></li>
-              <li><a href="/<%= lang %>/database/elasticsearch">ElasticSearch</a></li>
-              <li><a href="/<%= lang %>/database/influxdb">InfluxDB</a></li>
-              <li><a href="/<%= lang %>/database/timescaledb">TimescaleDB</a></li>
+              <li><a href="/<%= lang %>/database/mysql"        data-panel-link>MySQL</a></li>
+              <li><a href="/<%= lang %>/database/postgresql"   data-panel-link>PostgreSQL</a></li>
+              <li><a href="/<%= lang %>/database/mongodb"      data-panel-link>MongoDB</a></li>
+              <li><a href="/<%= lang %>/database/redis"        data-panel-link>Redis</a></li>
+              <li><a href="/<%= lang %>/database/oracle"       data-panel-link>Oracle</a></li>
+              <li><a href="/<%= lang %>/database/sqlite"       data-panel-link>SQLite</a></li>
+              <li><a href="/<%= lang %>/database/elasticsearch"data-panel-link>ElasticSearch</a></li>
+              <li><a href="/<%= lang %>/database/influxdb"     data-panel-link>InfluxDB</a></li>
+              <li><a href="/<%= lang %>/database/timescaledb"  data-panel-link>TimescaleDB</a></li>
             </ul>
           </li>
-      
+
           <li class="menu-item-wrapper">
             <span class="menu-label">네트워크/인프라</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/network/http">HTTP</a></li>
-              <li><a href="/<%= lang %>/network/https">HTTPS</a></li>
-              <li><a href="/<%= lang %>/network/dns">DNS</a></li>
-              <li><a href="/<%= lang %>/network/tcpip">TCP/IP</a></li>
-              <li><a href="/<%= lang %>/network/websocket">WebSocket</a></li>
-              <li><a href="/<%= lang %>/network/cdn">CDN</a></li>
-              <li><a href="/<%= lang %>/network/docker">Docker</a></li>
-              <li><a href="/<%= lang %>/network/kubernetes">Kubernetes</a></li>
-              <li><a href="/<%= lang %>/network/aws">AWS</a></li>
-              <li><a href="/<%= lang %>/network/gcp">GCP</a></li>
-              <li><a href="/<%= lang %>/network/azure">Azure</a></li>
-              <li><a href="/<%= lang %>/network/nginx">Nginx</a></li>
-              <li><a href="/<%= lang %>/network/apache">Apache</a></li>
+              <li><a href="/<%= lang %>/network/http"        data-panel-link>HTTP</a></li>
+              <li><a href="/<%= lang %>/network/https"       data-panel-link>HTTPS</a></li>
+              <li><a href="/<%= lang %>/network/dns"         data-panel-link>DNS</a></li>
+              <li><a href="/<%= lang %>/network/tcpip"       data-panel-link>TCP/IP</a></li>
+              <li><a href="/<%= lang %>/network/websocket"   data-panel-link>WebSocket</a></li>
+              <li><a href="/<%= lang %>/network/cdn"         data-panel-link>CDN</a></li>
+              <li><a href="/<%= lang %>/network/docker"      data-panel-link>Docker</a></li>
+              <li><a href="/<%= lang %>/network/kubernetes"  data-panel-link>Kubernetes</a></li>
+              <li><a href="/<%= lang %>/network/aws"         data-panel-link>AWS</a></li>
+              <li><a href="/<%= lang %>/network/gcp"         data-panel-link>GCP</a></li>
+              <li><a href="/<%= lang %>/network/azure"       data-panel-link>Azure</a></li>
+              <li><a href="/<%= lang %>/network/nginx"       data-panel-link>Nginx</a></li>
+              <li><a href="/<%= lang %>/network/apache"      data-panel-link>Apache</a></li>
             </ul>
           </li>
-      
+
           <li class="menu-item-wrapper">
             <span class="menu-label">보안</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/security/jwt">JWT</a></li>
-              <li><a href="/<%= lang %>/security/oauth2">OAuth2</a></li>
-              <li><a href="/<%= lang %>/security/xss">XSS</a></li>
-              <li><a href="/<%= lang %>/security/csrf">CSRF</a></li>
-              <li><a href="/<%= lang %>/security/sqlinjection">SQL Injection</a></li>
-              <li><a href="/<%= lang %>/security/https">HTTPS</a></li>
-              <li><a href="/<%= lang %>/security/tls">TLS</a></li>
-              <li><a href="/<%= lang %>/security/waf">WAF</a></li>
-              <li><a href="/<%= lang %>/security/vpn">VPN</a></li>
-              <li><a href="/<%= lang %>/security/ddos">DDoS</a></li>
-              <li><a href="/<%= lang %>/security/owasptop10">OWASP Top 10</a></li>
+              <li><a href="/<%= lang %>/security/jwt"          data-panel-link>JWT</a></li>
+              <li><a href="/<%= lang %>/security/oauth2"       data-panel-link>OAuth2</a></li>
+              <li><a href="/<%= lang %>/security/xss"          data-panel-link>XSS</a></li>
+              <li><a href="/<%= lang %>/security/csrf"         data-panel-link>CSRF</a></li>
+              <li><a href="/<%= lang %>/security/sqlinjection" data-panel-link>SQL Injection</a></li>
+              <li><a href="/<%= lang %>/security/https"        data-panel-link>HTTPS</a></li>
+              <li><a href="/<%= lang %>/security/tls"          data-panel-link>TLS</a></li>
+              <li><a href="/<%= lang %>/security/waf"          data-panel-link>WAF</a></li>
+              <li><a href="/<%= lang %>/security/vpn"          data-panel-link>VPN</a></li>
+              <li><a href="/<%= lang %>/security/ddos"         data-panel-link>DDoS</a></li>
+              <li><a href="/<%= lang %>/security/owasptop10"   data-panel-link>OWASP Top 10</a></li>
             </ul>
           </li>
-      
+
           <li class="menu-item-wrapper">
             <span class="menu-label">DevOps/운영</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/devops/git">Git</a></li>
-              <li><a href="/<%= lang %>/devops/githubactions">GitHub Actions</a></li>
-              <li><a href="/<%= lang %>/devops/jenkins">Jenkins</a></li>
-              <li><a href="/<%= lang %>/devops/cicd">CI/CD</a></li>
-              <li><a href="/<%= lang %>/devops/prometheus">Prometheus</a></li>
-              <li><a href="/<%= lang %>/devops/grafana">Grafana</a></li>
-              <li><a href="/<%= lang %>/devops/elkstack">ELK Stack</a></li>
-              <li><a href="/<%= lang %>/devops/bluegreen">Blue-Green</a></li>
+              <li><a href="/<%= lang %>/devops/git"            data-panel-link>Git</a></li>
+              <li><a href="/<%= lang %>/devops/githubactions"  data-panel-link>GitHub Actions</a></li>
+              <li><a href="/<%= lang %>/devops/jenkins"        data-panel-link>Jenkins</a></li>
+              <li><a href="/<%= lang %>/devops/cicd"           data-panel-link>CI/CD</a></li>
+              <li><a href="/<%= lang %>/devops/prometheus"     data-panel-link>Prometheus</a></li>
+              <li><a href="/<%= lang %>/devops/grafana"        data-panel-link>Grafana</a></li>
+              <li><a href="/<%= lang %>/devops/elkstack"       data-panel-link>ELK Stack</a></li>
+              <li><a href="/<%= lang %>/devops/bluegreen"      data-panel-link>Blue-Green</a></li>
             </ul>
           </li>
-      
+
           <li class="menu-item-wrapper">
             <span class="menu-label">기타</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/etc/webperformance">웹 성능 최적화</a></li>
-              <li><a href="/<%= lang %>/etc/lighthouse">Lighthouse</a></li>
-              <li><a href="/<%= lang %>/etc/corewebvitals">Core Web Vitals</a></li>
-              <li><a href="/<%= lang %>/etc/aria">ARIA</a></li>
-              <li><a href="/<%= lang %>/etc/webassembly">WebAssembly</a></li>
-              <li><a href="/<%= lang %>/etc/electron">Electron</a></li>
-              <li><a href="/<%= lang %>/etc/reactnative">React Native</a></li>
+              <li><a href="/<%= lang %>/etc/webperformance"   data-panel-link>웹 성능 최적화</a></li>
+              <li><a href="/<%= lang %>/etc/lighthouse"       data-panel-link>Lighthouse</a></li>
+              <li><a href="/<%= lang %>/etc/corewebvitals"    data-panel-link>Core Web Vitals</a></li>
+              <li><a href="/<%= lang %>/etc/aria"             data-panel-link>ARIA</a></li>
+              <li><a href="/<%= lang %>/etc/webassembly"      data-panel-link>WebAssembly</a></li>
+              <li><a href="/<%= lang %>/etc/electron"         data-panel-link>Electron</a></li>
+              <li><a href="/<%= lang %>/etc/reactnative"      data-panel-link>React Native</a></li>
             </ul>
           </li>
         </ul>
       </nav>
-      
-      
 
       <div class="right-controls" id="right-controls">
         <div class="language-dropdown">
@@ -160,6 +155,7 @@
             %>
             <% supportedLangs.forEach(langCode => { %>
               <li>
+                <!-- 🔸 언어 변경은 전체 새로고침 유지 (data-panel-link 추가 안 함) -->
                 <a href="/<%= langCode %><%= currentPathWithoutLang %>"
                   class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
                   <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
@@ -191,16 +187,16 @@
 
         <% if (user) { %>
           <% if (Number(user.is_admin) === 1) { %>
+            <!-- 🔸 글쓰기는 전체뷰가 안전 -->
             <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기">
               <i class="fas fa-pen"></i>
             </a>
           <% } %>
-    
         <% } %>
 
         <a href="#" class="sidebar-icon" data-tab="settings" title="설정">
           <i class="fas fa-cog"></i>
-      </a>
+        </a>
       </nav>
 
       <div class="sidebar-extension-panel">
@@ -208,17 +204,14 @@
         <div class="tab-content" data-tab="profile" style="display: none;">
           <div class="profile-tab">
             <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
-            
             <div class="profile-info">
               <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
               <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
-              
               <div class="profile-tags">
                 <% locale.profile["profile-tags"].forEach(tag => { %>
                   <span><%= tag %></span>
                 <% }) %>
               </div>
-
               <div class="profile-social">
                 <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="" target="_blank"><i class="fab fa-github"></i></a>
@@ -231,20 +224,16 @@
         <% if (typeof posts !== 'undefined') { %>
           <div class="tab-content" data-tab="search" style="display: none;">
             <div class="search-container">
-              <a href="/<%= lang %>/">
-              </a>
-          
+              <a href="/<%= lang %>/"></a>
               <div class="search-wrapper">
                 <form method="get" action="/<%= lang %>/search" class="search-form">
                   <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
-          
                   <button type="submit" class="icon-submit-btn">
                     <i class="fas fa-search"></i>
                   </button>
                 </form>
               </div>
             </div>
-          
             <% if (isSearch && searchKeyword) { %>
               <%
                 const searchWord = `${searchKeyword}`;
@@ -252,7 +241,6 @@
               %>
               <p class="search-result-msg"><%= resultLine %></p>
             <% } %>
-            
             <%- include('table') %>
           </div>
         <% } %>
@@ -266,15 +254,15 @@
           <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
             <div class="auth-buttons">
               <% if (user) { %>
+                <!-- 🔸 로그아웃은 전체 내비게이션 유지 -->
                 <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
               <% } else { %>
                 <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
-
                 <button class="auth-btn login" id="login" type="button">로그인</button>
               <% } %>
             </div>
           <% } %>
-      
+
           <div id="login-form-container" class="login-form-container hidden">
             <form id="login-form" method="POST" action="/login">
               <input type="text" name="id" placeholder="아이디" required />
@@ -282,7 +270,7 @@
               <button type="submit">로그인</button>
             </form>
           </div>
-      
+
           <div class="real-footer">
             <small>© 2025 Bug Loop</small>
           </div>
@@ -296,7 +284,6 @@
   (function(){
     // 현재 경로 (마지막 슬래시 제거)
     var path = location.pathname.replace(/\/$/, '');
-  
     // 동일 경로인 링크에 active 클래스 부여
     document.querySelectorAll('.submenu a').forEach(function(a){
       var href = (a.getAttribute('href') || '').replace(/\/$/, '');
@@ -307,10 +294,7 @@
       }
     });
   })();
-
-  
-  </script>
-
+</script>
 
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
