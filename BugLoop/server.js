@@ -423,6 +423,11 @@ app.get('/post/:id', (req, res) => {
   handlePostViewRoute(req, res);
 });
 
+// (Removed duplicate isPanelRequest and handlePanelRoute)
+app.get('/:lang/:section/:topic', handlePanelRoute);
+app.get('/:section/:topic',        handlePanelRoute);
+app.get('/:lang/',                 handlePanelRoute);   // 홈도 패널 교체 원하면
+
 app.get('/sitemap.xml', async (req, res) => {
   try {
     const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
@@ -1116,7 +1121,7 @@ app.get('/_slugtest', (req, res) => {
 
 // Sidebar Data를 가져오는 공통 함수로 리팩토링
 async function getSidebarData(req) {
-  const safeLang = req.params.lang || 'ko';
+  const safeLang = req.params.lang || res.locals.lang || 'ko';
   const categoryQueryParam = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
