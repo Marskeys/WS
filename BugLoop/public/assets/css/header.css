@@ -1,27 +1,51 @@
-/* ======================================================================
-   ✨ VSCode 테마 사이드바 & 메뉴 스타일
-   ====================================================================== */
+/* ======================
+   🔹 Sidebar Logo: 모바일 전용
+   - 데스크톱: 완전 숨김(공간 0)
+   - 모바일(<=640px): 보이기
+====================== */
 
-/* === Sidebar Logo === */
-.vscode-sidebar .sidebar-icon.logo {
-  padding: 10px 0;             /* 다른 아이콘이랑 수직 간격 맞춤 */
-}
-
+/* 기본값: 전부 숨김(공간도 없음) */
+.vscode-sidebar .sidebar-icon.logo,
 .vscode-sidebar .sidebar-icon.logo img {
-  width: 80px;
-  height: 80px;
-  display: none;
-  margin: 0 auto;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  transition: transform .15s ease, opacity .15s ease, filter .15s ease;
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
 }
 
+/* 모바일에서만 표시 */
 @media (max-width: 640px) {
   .vscode-sidebar .sidebar-icon.logo {
-    display:block;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    /* 모바일 바가 50px 높이니까 패딩/마진 제거 */
+    padding: 0 !important;
+    margin: 0 !important;
+    /* 아이콘들과 폭을 맞추려면 ↓ 유지 (같이 1/n 분배) */
+    flex: 1 1 0 !important;
+    /* 만약 로고 폭을 고정하고 싶으면 위 한 줄 대신:
+       flex: 0 0 56px !important;  */
+  }
+  .vscode-sidebar .sidebar-icon.logo img {
+    display: block !important;
+    height: 32px;     /* 50px 바 안에 보기 좋은 크기 */
+    width: auto;      /* 가로는 비율 유지 */
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    transition: transform .15s ease, opacity .15s ease, filter .15s ease;
   }
 }
+
+/* 데스크톱 호버 효과는 모바일에 영향 없도록 그대로 유지(선택) */
+@media (min-width: 769px) {
+  .vscode-sidebar .sidebar-icon.logo:hover img,
+  .vscode-sidebar .sidebar-icon.logo.active img {
+    transform: scale(1.06);
+    opacity: 0.95;
+  }
+}
+
 
 @media (min-width: 769px) {
   /* 호버/활성 시 살짝 강조 */
