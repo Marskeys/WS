@@ -31,16 +31,28 @@ body.panel-open #mini-lecture{
   right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
 }
   
-    @media (max-width: 768px){
-      #mini-lecture{
-        top: 77px;
-        margin-bottom: 50px;
-        padding-left: 0;
-        margin-right: 15px;
-        margin-left: 15px;
-        width: calc(100% - 30px);
-      }
-    }
+@media (max-width: 768px){
+  :root{
+    --ide-w: 0px;     /* 모바일에선 좌측 IDE 없음 */
+    --panel-w: 0px;   /* 확장 패널도 좌측이 아니라 상단이라 0 취급 */
+  }
+
+  /* 본문 밀림 제거 (데스크탑 규칙 무효화) */
+  body,
+  body.panel-open{
+    padding-left: 0 !important;
+  }
+
+  /* ✅ fixed 패널은 모바일에서 left/right만 쓰고 width/margin 제거 */
+  #mini-lecture{
+    top: 77px;
+    left: 15px !important;
+    right: 15px !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+  }
+}
   
     /* 패널 내용 */
     #mini-lecture .panel-card{
