@@ -7,16 +7,23 @@
   padding: 10px 0;             /* 다른 아이콘이랑 수직 간격 맞춤 */
 }
 
+
 .vscode-sidebar .sidebar-icon.logo img {
   width: 80px;
   height: 80px;
-  display: block;
+  display: none;
   margin: 0 auto;
   object-fit: contain;
   image-rendering: -webkit-optimize-contrast;
   transition: transform .15s ease, opacity .15s ease, filter .15s ease;
 }
 
+@media (max-width: 640px) {
+  .vscode-sidebar .sidebar-icon.logo {
+    display:block;
+  }
+  }
+  
 @media (min-width: 769px) {
 /* 호버/활성 시 살짝 강조 */
 .vscode-sidebar .sidebar-icon.logo:hover img,
