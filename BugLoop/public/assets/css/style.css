@@ -1,5 +1,3 @@
-:root { --panel-w: 360px; }
-
 html, body {
   overscroll-behavior: none; /* 크롬, 파이어폭스 계열 */
 }
@@ -14,11 +12,7 @@ body.panel-open {
   width: calc(100%);
 }
 
-/* 열림 상태 → 남은 영역(100vw - 패널) 기준으로 양옆 10% */
-body.panel-open #mini-lecture{
-  left:  calc(var(--panel-w) + (100vw - var(--panel-w)) * 0.1);
-  right: calc((100vw - var(--panel-w)) * 0.1);
-}
+
 
 body.panel-open .left-controls {
   padding-left: 360px;

@@ -1,25 +1,35 @@
 <style>
     :root { --header-h: 30px;   --panel-h-default: 150px; --panel-h: var(--panel-h-default);}
-
+    :root { --panel-w: 360px; }
+    
     @media (max-width: 768px){
         :root {--panel-h-default: 220px; --panel-h: var(--panel-h-default);}
     }
     
     /* 컨테이너 */
     #mini-lecture{
-      position: fixed;
-      top: var(--header-h);
-      z-index: 40;
-      width: calc(100% - 80px);
-      margin-left: 40px;
-      margin-right: 40px;
-      height: var(--panel-h);
-      min-height: 20px; /* ✅ 전체 최소 높이를 리사이저 높이와 동일하게 */
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) 20px; /* ✅ 리사이저 20px */
-      overflow: hidden;
-      padding-left: 50px;
-    }
+  position: fixed;
+  top: var(--header-h);
+  z-index: 40;
+
+  /* 닫힘 상태: 가운데 95% (양옆 2.5%) */
+  left: 2.5vw;
+  right: 2.5vw;
+
+  height: var(--panel-h);
+  min-height: 20px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 20px;
+  overflow: hidden;
+
+  /* ⛔ 기존의 width / margin-left / margin-right / padding-left 제거 */
+}
+
+/* 열림 상태: (100vw - 패널폭) 기준으로 양옆 2.5% */
+body.panel-open #mini-lecture{
+  left:  calc(var(--panel-w) + (100vw - var(--panel-w)) * 0.025);
+  right: calc((100vw - var(--panel-w)) * 0.025);
+}
   
     @media (max-width: 768px){
       #mini-lecture{
