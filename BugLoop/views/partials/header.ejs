@@ -221,8 +221,11 @@
           </div>
         </div>
 
+        <% if (typeof posts !== 'undefined') { %>
+          <div class="tab-content" data-tab="search" style="display: none;">
             <%- include('table') %>
-      
+          </div>
+        <% } %>
 
         <div class="panel-footer">
           <% if (user) { %>
