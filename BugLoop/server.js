@@ -423,6 +423,15 @@ app.get('/post/:id', (req, res) => {
   handlePostViewRoute(req, res);
 });
 
+const wantsFragment =
+  req.get('X-Panel-Only') === '1' ||
+  (req.headers.accept || '').includes('text/fragment') ||
+  req.query._fragment === 'panel';
+
+if (wantsFragment) {
+  return res.render('partials/panel', ctx);   // 패널만
+}
+return res.render('index', ctx);               // 전체
 
 // ⭐ 패널 전용 URL (언어 코드 포함)
 app.get('/:lang/:section/:topic', handlePanelRoute);
