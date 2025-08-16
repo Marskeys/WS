@@ -16,6 +16,7 @@ body.panel-open #mini-lecture {
   width: 60%;          /* 전체 남은 공간 중 80%만 차지 */
   margin: 0 auto;      /* 좌우 여백 균등 분배 */
   padding: 0 20px;     /* 안쪽 여백 (콘텐츠 여백) */
+  padding-left: 380px;
   box-sizing: border-box;
 }
 
