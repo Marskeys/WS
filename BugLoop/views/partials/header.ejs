@@ -201,6 +201,7 @@
 
       <div class="sidebar-extension-panel">
         <div class="tab-container"></div>
+
         <div class="tab-content" data-tab="profile" style="display: none;">
           <div class="profile-tab">
             <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
@@ -223,6 +224,7 @@
 
         <% if (typeof posts !== 'undefined') { %>
           <div class="tab-content" data-tab="search" style="display: none;">
+            <!-- ✅ 숨겨진 템플릿: header.js가 클론 후 #sidebar-table로 이름 바꿔 사용 -->
             <div id="sidebar-table-template" data-lang="<%= lang %>">
               <%- include('table') %>
             </div>
