@@ -343,7 +343,6 @@ footer {
           <option value="js">JS</option>
           <option value="css">CSS</option>
         </select>
-        <!-- Add URL 버튼도 밝은 초록 -->
         <button type="submit" class="btn primary">Add URL</button>
       </form>
       <div style="margin-top:8px; display:flex; gap:8px; align-items:center">
@@ -476,7 +475,7 @@ ${jsTag}
     assetClose.addEventListener('click', ()=> assetsModal.style.display='none');
     assetsModal.addEventListener('click', (e)=>{ if(e.target===assetsModal) assetsModal.style.display='none'; });
 
-    // ====== Assets: URL 추가 (Run과 같은 밝은 초록 스타일은 CSS로 적용됨)
+    // ====== Assets: URL 추가
     assetForm.addEventListener('submit', (e)=>{
       e.preventDefault();
       const url = assetUrlEl.value.trim();
@@ -484,7 +483,6 @@ ${jsTag}
       if(!url) return;
       addAsset({type, src:url, label:url, isBlob:false});
       assetUrlEl.value='';
-      // Assets 추가만으로는 미리보기에 즉시 반영 안 함: Run 눌러서 갱신 철학 유지
     });
 
     // ====== Assets: 파일 추가 (Blob URL)
@@ -537,7 +535,7 @@ ${jsTag}
       }
     }
 
-    // ====== Download files (디스크 버튼)
+    // ====== Download files
     btnDownloadAll.addEventListener('click', ()=>{
       downloadFile('index.html', htmlInput.value.trim());
       downloadFile('styles.css', cssInput.value.trim());
@@ -559,58 +557,57 @@ ${jsTag}
     window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
   </script>
 
-  <!-- ✅ PJAX: 패널만 교체 -->
-  <!-- ✅ PJAX: 패널만 교체 (헤더 스크립트와 충돌 방지 버전) -->
-<script>
+  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + .connector 동기화 포함) -->
+  <script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
     const preloader = document.getElementById('preloader');
-  
-    // 0) 히스토리 패치: 누가 pushState/replaceState를 호출해도 "locationchange" 이벤트 발생
+
+    /* ---------- 히스토리 패치 ---------- */
     (function patchHistory(){
       const _ps = history.pushState, _rs = history.replaceState;
       history.pushState = function(...args){ const r = _ps.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
       history.replaceState = function(...args){ const r = _rs.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
       window.addEventListener('popstate', ()=> window.dispatchEvent(new Event('locationchange')));
     })();
-  
-    // 1) 메뉴 클릭 가로채기 (캡처 단계! -> 다른 스크립트보다 먼저 잡음)
+
+    /* ---------- 메뉴 클릭 가로채기 (캡처 단계) ---------- */
     document.addEventListener('click', onDocClick, true);
     function onDocClick(e){
-      const a = e.target.closest('a[data-panel-link]');
+      // data-panel-link 또는 .submenu a 둘 다 지원
+      const a = e.target.closest('a[data-panel-link], .submenu a');
       if (!a) return;
-      // 새창/수정키/외부도메인/해시 이동은 통과
+      // 새창/수정키/외부/해시는 통과
       if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const url = new URL(a.href, location.origin);
       if (url.origin !== location.origin || url.hash) return;
-  
+
       e.preventDefault();
-      // 우리 쪽에서 직접 네비게이션 + 교체
+      // 헤더의 .connector를 즉시 업데이트 (지각감 향상)
+      updateConnector(a.href);
+      // 우리 쪽에서 네비게이션 트리거
       navigateAndSwap(a.href, /*push=*/true);
     }
-  
-    // 2) 히스토리 변경이 발생하면(다른 스크립트가 pushState를 하더라도) 패널 교체
+
+    /* ---------- location 변경 시 패널 교체 ---------- */
     window.addEventListener('locationchange', () => {
       swapPanel(location.href);
     });
-  
-    // 3) 뒤로/앞으로도 동일 처리 (위에서 locationchange로 합류)
-    // window.addEventListener('popstate', ...) 는 위 patchHistory에서 이미 연결됨
-  
+
     async function navigateAndSwap(url, push) {
-      if (push) history.pushState({panel:true}, '', url); // push → locationchange 이벤트가 올라옴
-      else history.replaceState(history.state, '', url);  // replace도 동일
-      // 실제 교체는 locationchange 리스너에서 처리
+      if (push) history.pushState({panel:true}, '', url);
+      else history.replaceState(history.state, '', url);
+      // 실제 교체는 locationchange 리스너에서 수행
     }
-  
+
     async function swapPanel(url) {
       try {
         setLoading(true);
-  
-        // 서버가 fragment를 줄 수 있게 힌트(있어도 되고 없어도 됨)
+
+        // 서버가 프래그먼트 분기할 수 있게 살짝 힌트
         const fURL = new URL(url, location.origin);
         fURL.searchParams.set('partial', '1');
-  
+
         const res = await fetch(fURL.toString(), {
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
@@ -620,18 +617,15 @@ ${jsTag}
           cache: 'no-cache'
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-  
+
         const html = await res.text();
         const frag = extractPanel(html);
-        if (!frag) {
-          // 패널을 못 찾으면 안전하게 풀 네비게이션
-          location.replace(url);
-          return;
-        }
-  
+        if (!frag) { location.replace(url); return; }
+
         panelRoot.replaceChildren(frag);
         runScripts(panelRoot);
         updateActiveMenu(url);
+        updateConnector(url); // ✅ 패널 교체 후 헤더 라벨 동기화
       } catch (err) {
         console.error('[PJAX] swapPanel error:', err);
         location.replace(url);
@@ -639,20 +633,17 @@ ${jsTag}
         setLoading(false);
       }
     }
-  
-    // 전체 HTML이든 프래그먼트든 #panel-root만 뽑기
+
+    /* ---------- 도우미: 패널 추출/스크립트 실행 ---------- */
     function extractPanel(html) {
       if (!/<\/?html[\s>]/i.test(html)) {
-        // 프래그먼트로 보임
         const wrap = document.createElement('div');
         wrap.innerHTML = html;
-        // 서버가 panel만 주면 그대로 사용하고, 아니라면 #panel-root가 있으면 그쪽 우선
         const node = wrap.querySelector('#panel-root, [data-panel-fragment], .panel-root') || wrap;
         const df = document.createDocumentFragment();
         node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
         return df;
       }
-      // 전체 문서
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const node = doc.querySelector('#panel-root, [data-panel-fragment], .panel-root');
       if (!node) return null;
@@ -660,7 +651,7 @@ ${jsTag}
       node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
       return df;
     }
-  
+
     function runScripts(root) {
       root.querySelectorAll('script').forEach(old => {
         const s = document.createElement('script');
@@ -669,7 +660,8 @@ ${jsTag}
         old.replaceWith(s);
       });
     }
-  
+
+    /* ---------- 메뉴 active 처리 ---------- */
     function updateActiveMenu(url) {
       const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
       document.querySelectorAll('.submenu a').forEach(a => {
@@ -680,19 +672,47 @@ ${jsTag}
         if (label) label.classList.toggle('active-label', is);
       });
     }
-  
+
+    /* ---------- ✅ 헤더 .connector 라벨 동기화 ---------- */
+    function updateConnector(url) {
+      try {
+        const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
+        // 1) 메뉴 링크에서 현재 항목 텍스트 찾기
+        let activeLink = document.querySelector(`.submenu a[href="${path}"]`);
+        if (!activeLink) {
+          activeLink = Array.from(document.querySelectorAll('.submenu a'))
+            .find(a => (a.getAttribute('href') || '').replace(/\/$/, '') === path);
+        }
+        let label = (activeLink?.textContent || '').trim();
+
+        // 2) 메뉴에서 못 찾으면, 패널이 넘겨준 메타로 폴백 (선택 구현)
+        if (!label) {
+          const meta = document.querySelector('#panel-root #panel-meta');
+          label = meta?.dataset?.panelTitle?.trim();
+        }
+
+        // 3) 그래도 없으면 최종 기본값
+        if (!label) label = 'Welcome';
+
+        // 여러 개의 .connector 지원
+        document.querySelectorAll('.connector').forEach(el => { el.textContent = label; });
+      } catch (e) {
+        document.querySelectorAll('.connector').forEach(el => { el.textContent = 'Welcome'; });
+      }
+    }
+
     function setLoading(on) {
       if (!preloader) return;
       preloader.style.display = on ? 'block' : 'none';
     }
-  
-    // 초기에 현재 URL에 맞춰 한 번 동기화(새로고침 후 첫 진입 시)
+
+    // 초기 진입 시 동기화
     window.addEventListener('DOMContentLoaded', () => {
       updateActiveMenu(location.href);
+      updateConnector(location.href); // ✅ 첫 로드에서도 헤더 라벨 맞추기
     });
   })();
   </script>
-  
 
 </body>
 </html>
