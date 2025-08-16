@@ -432,6 +432,308 @@ app.get('/post/:id', (req, res) => {
 });
 
 // (Removed duplicate isPanelRequest and handlePanelRoute)
+app.get('/:lang/search', async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) return res.redirect(`/${req.params.lang}/`);
+
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+  const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
+  res.locals.lang = safeLang;
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  try {
+    const [allPosts] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      WHERE
+          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
+          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
+          OR p.categories LIKE ?
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+
+
+    const filteredAll = allPosts.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return post;
+    });
+
+    const total = filteredAll.length;
+    const totalPages = Math.ceil(total / limit);
+    const paginationRange = generatePagination(page, totalPages);
+
+    const { allCategories } = await getSidebarData(req);
+
+    for (const post of filteredAll) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.translated_categories_display = translatedCategories;
+    }
+
+    const paginatedPosts = filteredAll.slice(offset, offset + limit);
+
+    const wantsPanelOnly = (req.query.panel === '1' || String(req.query.panel).toLowerCase() === 'true');
+    const viewData = {
+      posts: paginatedPosts,
+      categories: allCategories,
+      isSearch: true,
+      searchKeyword: keyword,
+      currentPath: req.path,
+      pagination: {
+        current: page,
+        total: totalPages,
+        range: paginationRange
+      },
+      selectedCategory: null,
+      user: req.session.user,
+      lang: safeLang,
+      locale: res.locals.locale
+    };
+    if (wantsPanelOnly) {
+      return res.render('partials/table', viewData);
+    }
+    return res.render('index', viewData);
+  } catch (err) {
+    console.error('검색 오류:', err);
+    res.status(500).send('검색 중 오류 발생');
+  }
+});
+
+// ✅ AJAX 검색 API 라우트
+app.get('/api/search', async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) return res.json({ posts: [] });
+
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+  const safeLang = res.locals.lang;
+
+  try {
+    const [posts] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      WHERE
+          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
+          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
+          OR p.categories LIKE ?
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+
+    const filteredPosts = posts.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return post;
+    });
+
+    for (const post of filteredPosts) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.categories = translatedCategories;
+    }
+
+    res.json({ posts: filteredPosts });
+  } catch (err) {
+    console.error('AJAX 검색 오류:', err);
+    res.status(500).json({ error: '검색 중 오류 발생' });
+  }
+});
+
+function generatePagination(current, total) {
+  const delta = 2;
+  const range = [];
+  const rangeWithDots = [];
+  let l;
+
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (let i of range) {
+    if (l) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (i - l > 2) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(i);
+    l = i;
+  }
+  return rangeWithDots;
+}
+
+
+// ⭐ 메인 페이지 라우트 핸들러를 위한 헬퍼 함수
+async function handleMainPage(req, res) {
+  const category = req.query.category || 'all';
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+  const safeLang = req.params.lang || 'ko';
+  res.locals.lang = safeLang;
+
+  try {
+    let baseQuery = `
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+    `;
+    let countQuery = `SELECT COUNT(*) as count FROM posts`;
+    const params = [safeLang];
+    const countParams = [];
+
+    if (category !== 'all') {
+      baseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
+      countQuery += ` WHERE FIND_IN_SET(?, categories)`;
+      params.push(category);
+      countParams.push(category);
+    }
+
+    baseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+
+    const [posts] = await db.query(baseQuery, params);
+
+    const filteredPosts = posts.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return post;
+    });
+
+    for (const post of filteredPosts) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.translated_categories_display = translatedCategories;
+    }
+
+    const [[{ count }]] = await db.query(countQuery, countParams);
+    const totalPages = Math.ceil(count / limit);
+    const paginationRange = generatePagination(page, totalPages);
+
+    const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+    const [categoryRows] = await db.query(`
+      SELECT
+        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
+        MAX(p.created_at) AS latest,
+        COALESCE(c.${categoryColumnForDisplay}, c.name) AS translated_category_name
+      FROM posts p
+      JOIN (
+        SELECT a.N + b.N * 10 + 1 AS n
+        FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+             (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+      ) numbers
+      ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
+      JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
+      GROUP BY original_category, translated_category_name
+      ORDER BY latest DESC
+    `);
+
+    const allCategories = categoryRows.map(row => ({
+      original: row.original_category,
+      translated: row.translated_category_name
+    }));
+
+    let translatedSelectedCategory = null;
+    if (category !== 'all') {
+      const foundCategory = allCategories.find(cat => cat.original === category);
+      if (foundCategory) {
+        translatedSelectedCategory = foundCategory.translated;
+      }
+    }
+
+    const wantsPanelOnly = (req.query.panel === '1' || String(req.query.panel).toLowerCase() === 'true');
+    const viewData = {
+      posts: filteredPosts,
+      categories: allCategories,
+      isSearch: false,
+      searchKeyword: '',
+      currentPath: req.path,
+      selectedCategory: category,
+      selectedCategoryLabel: translatedSelectedCategory,
+      pagination: {
+        current: page,
+        total: totalPages,
+        range: paginationRange
+      },
+      lang: safeLang
+    };
+    if (wantsPanelOnly) {
+      return res.render('partials/table', viewData);
+    }
+    return res.render('index', viewData);
+  } catch (err) {
+    console.error('메인 페이지 로드 오류:', err);
+    res.status(500).send('메인 페이지 로드 중 오류 발생');
+  }
+}
+
+// ⭐ 메인 페이지 라우트 (언어 코드 포함)
+
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic',        handlePanelRoute);
 app.get('/:lang/',                 handleMainPage);     // 홈은 메인 핸들러
@@ -807,307 +1109,7 @@ app.delete('/api/categories/:name', async (req, res) => {
 
 // ✅ 검색 결과 페이지 라우트
 // :lang 접두사를 추가하여 URL을 명확히 처리합니다.
-app.get('/:lang/search', async (req, res) => {
-  const keyword = req.query.q?.trim();
-  if (!keyword) return res.redirect(`/${req.params.lang}/`);
 
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
-  res.locals.lang = safeLang;
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = 10;
-  const offset = (page - 1) * limit;
-
-  try {
-    const [allPosts] = await db.query(`
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-      WHERE
-          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
-          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
-          OR p.categories LIKE ?
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
-
-
-    const filteredAll = allPosts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return post;
-    });
-
-    const total = filteredAll.length;
-    const totalPages = Math.ceil(total / limit);
-    const paginationRange = generatePagination(page, totalPages);
-
-    const { allCategories } = await getSidebarData(req);
-
-    for (const post of filteredAll) {
-      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-      const translatedCategories = [];
-      if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-          originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
-      }
-      post.translated_categories_display = translatedCategories;
-    }
-
-    const paginatedPosts = filteredAll.slice(offset, offset + limit);
-
-    const wantsPanelOnly = (req.query.panel === '1' || String(req.query.panel).toLowerCase() === 'true');
-    const viewData = {
-      posts: paginatedPosts,
-      categories: allCategories,
-      isSearch: true,
-      searchKeyword: keyword,
-      currentPath: req.path,
-      pagination: {
-        current: page,
-        total: totalPages,
-        range: paginationRange
-      },
-      selectedCategory: null,
-      user: req.session.user,
-      lang: safeLang,
-      locale: res.locals.locale
-    };
-    if (wantsPanelOnly) {
-      return res.render('partials/table', viewData);
-    }
-    return res.render('index', viewData);
-  } catch (err) {
-    console.error('검색 오류:', err);
-    res.status(500).send('검색 중 오류 발생');
-  }
-});
-
-// ✅ AJAX 검색 API 라우트
-app.get('/api/search', async (req, res) => {
-  const keyword = req.query.q?.trim();
-  if (!keyword) return res.json({ posts: [] });
-
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = res.locals.lang;
-
-  try {
-    const [posts] = await db.query(`
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-      WHERE
-          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
-          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
-          OR p.categories LIKE ?
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
-
-    const filteredPosts = posts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return post;
-    });
-
-    for (const post of filteredPosts) {
-      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-      const translatedCategories = [];
-      if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-          `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
-          originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
-      }
-      post.categories = translatedCategories;
-    }
-
-    res.json({ posts: filteredPosts });
-  } catch (err) {
-    console.error('AJAX 검색 오류:', err);
-    res.status(500).json({ error: '검색 중 오류 발생' });
-  }
-});
-
-function generatePagination(current, total) {
-  const delta = 2;
-  const range = [];
-  const rangeWithDots = [];
-  let l;
-
-  for (let i = 1; i <= total; i++) {
-    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
-      range.push(i);
-    }
-  }
-
-  for (let i of range) {
-    if (l) {
-      if (i - l === 2) {
-        rangeWithDots.push(l + 1);
-      } else if (i - l > 2) {
-        rangeWithDots.push('...');
-      }
-    }
-    rangeWithDots.push(i);
-    l = i;
-  }
-  return rangeWithDots;
-}
-
-
-// ⭐ 메인 페이지 라우트 핸들러를 위한 헬퍼 함수
-async function handleMainPage(req, res) {
-  const category = req.query.category || 'all';
-  const page = parseInt(req.query.page) || 1;
-  const limit = 10;
-  const offset = (page - 1) * limit;
-
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang || 'ko';
-  res.locals.lang = safeLang;
-
-  try {
-    let baseQuery = `
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-    `;
-    let countQuery = `SELECT COUNT(*) as count FROM posts`;
-    const params = [safeLang];
-    const countParams = [];
-
-    if (category !== 'all') {
-      baseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
-      countQuery += ` WHERE FIND_IN_SET(?, categories)`;
-      params.push(category);
-      countParams.push(category);
-    }
-
-    baseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
-    params.push(limit, offset);
-
-    const [posts] = await db.query(baseQuery, params);
-
-    const filteredPosts = posts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return post;
-    });
-
-    for (const post of filteredPosts) {
-      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-      const translatedCategories = [];
-      if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-          originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
-      }
-      post.translated_categories_display = translatedCategories;
-    }
-
-    const [[{ count }]] = await db.query(countQuery, countParams);
-    const totalPages = Math.ceil(count / limit);
-    const paginationRange = generatePagination(page, totalPages);
-
-    const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-    const [categoryRows] = await db.query(`
-      SELECT
-        TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
-        MAX(p.created_at) AS latest,
-        COALESCE(c.${categoryColumnForDisplay}, c.name) AS translated_category_name
-      FROM posts p
-      JOIN (
-        SELECT a.N + b.N * 10 + 1 AS n
-        FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-             (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-              UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
-      ) numbers
-      ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
-      JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-      GROUP BY original_category, translated_category_name
-      ORDER BY latest DESC
-    `);
-
-    const allCategories = categoryRows.map(row => ({
-      original: row.original_category,
-      translated: row.translated_category_name
-    }));
-
-    let translatedSelectedCategory = null;
-    if (category !== 'all') {
-      const foundCategory = allCategories.find(cat => cat.original === category);
-      if (foundCategory) {
-        translatedSelectedCategory = foundCategory.translated;
-      }
-    }
-
-    const wantsPanelOnly = (req.query.panel === '1' || String(req.query.panel).toLowerCase() === 'true');
-    const viewData = {
-      posts: filteredPosts,
-      categories: allCategories,
-      isSearch: false,
-      searchKeyword: '',
-      currentPath: req.path,
-      selectedCategory: category,
-      selectedCategoryLabel: translatedSelectedCategory,
-      pagination: {
-        current: page,
-        total: totalPages,
-        range: paginationRange
-      },
-      lang: safeLang
-    };
-    if (wantsPanelOnly) {
-      return res.render('partials/table', viewData);
-    }
-    return res.render('index', viewData);
-  } catch (err) {
-    console.error('메인 페이지 로드 오류:', err);
-    res.status(500).send('메인 페이지 로드 중 오류 발생');
-  }
-}
-
-// ⭐ 메인 페이지 라우트 (언어 코드 포함)
 app.get('/:lang', (req, res, next) => {
   const { lang } = req.params;
   if (!supportedLangs.includes(lang)) {

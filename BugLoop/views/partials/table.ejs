@@ -4,7 +4,7 @@
   </div>
 <% } else { %>
   <div class="search-container">
-    <form method="get" action="/<%= lang %>/search" class="search-form">
+    <form method="get" action="/<%= lang %>/search" class="search-form" data-panel-search="1">
       <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
       <button type="submit" class="icon-submit-btn"><i class="fas fa-search"></i></button>
     </form>
