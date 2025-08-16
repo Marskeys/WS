@@ -9,8 +9,13 @@ body {
 body.panel-open {
   padding-left: 360px;
   transition: padding 0.3s ease;
-  width: calc(100% - 40px);
+  width: calc(100%);
 }
+
+body.panel-open #mini-lecture {
+  width: 500px;
+}
+
 body.panel-open .left-controls {
   padding-left: 360px;
 }
