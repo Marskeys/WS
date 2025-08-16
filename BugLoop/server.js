@@ -423,38 +423,6 @@ app.get('/post/:id', (req, res) => {
   handlePostViewRoute(req, res);
 });
 
-// 헬퍼(선택)
-function isPanelRequest(req) {
-  return req.get('X-Panel-Only') === '1' ||
-         (req.headers.accept || '').includes('text/fragment') ||
-         req.query._fragment === 'panel';
-}
-
-// 공통 핸들러
-function handlePanelRoute(req, res, next) {
-  try {
-    // lang 기본값
-    const supported = ['ko','en','fr','zh','ja'];
-    const lang = supported.includes(req.params.lang) ? req.params.lang : 'ko';
-
-    // 컨텍스트 만들기 (네 기존 로직으로 채워)
-    const ctx = buildPanelContext(req, { lang });
-
-    // 🔸 여기서만 req 사용
-    if (isPanelRequest(req)) {
-      return res.render('partials/panel', ctx);   // 패널만
-    }
-    return res.render('index', ctx);              // 전체
-  } catch (e) {
-    next(e);
-  }
-}
-
-// 라우트 선언 (req.params.lang 없으면 핸들러에서 ko로 처리)
-app.get('/:lang/:section/:topic', handlePanelRoute);
-app.get('/:section/:topic',        handlePanelRoute);
-app.get('/:lang/',                 handlePanelRoute);   // 홈도 패널 교체 원하면
-
 app.get('/sitemap.xml', async (req, res) => {
   try {
     const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
@@ -1148,7 +1116,7 @@ app.get('/_slugtest', (req, res) => {
 
 // Sidebar Data를 가져오는 공통 함수로 리팩토링
 async function getSidebarData(req) {
-  const safeLang = req.params.lang || res.locals.lang || 'ko';
+  const safeLang = req.params.lang || 'ko';
   const categoryQueryParam = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
