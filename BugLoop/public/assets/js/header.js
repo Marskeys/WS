@@ -1,3 +1,4 @@
+// ===== header.js (patched) =====
 document.addEventListener('DOMContentLoaded', () => {
   // ==== 요소 선택 ====
   const icons = document.querySelectorAll('.sidebar-icon[data-tab]');
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let blinkRemoved = false;
 
   // ✅ sidePanel 초기 처리 (처음부터 열려 있을 수 있으므로)
-  if (extensionPanel.classList.contains('open')) {
+  if (extensionPanel?.classList.contains('open')) {
     sidePanel?.classList.add('open');
     sidePanel?.style.setProperty('pointer-events', 'auto');
   } else {
@@ -24,32 +25,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==== 언어 드롭다운 이벤트 바인딩 함수 ====
   function bindLangDropdown(context = document) {
-    const langToggle = context.getElementById
-      ? context.getElementById('langToggle')
-      : context.querySelector('#langToggle');
-    const langMenu = context.getElementById
-      ? context.getElementById('langMenu')
-      : context.querySelector('#langMenu');
-
+    const $ = (sel, root = context) => root.querySelector(sel);
+    const langToggle = $('#langToggle');
+    const langMenu = $('#langMenu');
     if (langToggle && langMenu) {
-      langToggle.addEventListener('click', (e) => {
-        console.log('🟣 langToggle clicked');
+      const onToggle = (e) => {
         e.preventDefault();
         langMenu.classList.toggle('show');
-      });
-
-      document.addEventListener('click', (e) => {
+      };
+      const onDoc = (e) => {
         if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
           langMenu.classList.remove('show');
         }
-      });
+      };
+      langToggle.addEventListener('click', onToggle);
+      document.addEventListener('click', onDoc);
     }
   }
 
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
-    if (!extensionPanel.classList.contains('open')) {
-      extensionPanel.classList.add('open');
+    if (!extensionPanel?.classList.contains('open')) {
+      extensionPanel?.classList.add('open');
       document.body.classList.add('panel-open');
       toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
       sidePanel?.classList.add('open');
@@ -57,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
-    if (original) {
+    if (original && container) {
       const clone = original.cloneNode(true);
       clone.style.display = 'block';
       container.replaceChildren(clone);
@@ -69,12 +66,156 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedIcon?.classList.add('active');
   }
 
-  // ==== 탭 클릭 ====
+  // ==== 패널 전용 상태(URL 쿼리) 관리 ====
+  const PANEL_QS_CATEGORY = 'p_category'; // 패널 전용 쿼리 (경로는 유지)
+  const PANEL_QS_Q        = 'p_q';
+  const PANEL_QS_PAGE     = 'p_page';
+
+  function getPanelStateFromURL() {
+    const usp = new URLSearchParams(location.search);
+    const state = {
+      category: usp.get(PANEL_QS_CATEGORY),
+      q:        usp.get(PANEL_QS_Q),
+      page:     parseInt(usp.get(PANEL_QS_PAGE) || '1', 10)
+    };
+    if (!state.category && !state.q) return null;
+    if (!Number.isFinite(state.page) || state.page < 1) state.page = 1;
+    return state;
+  }
+
+  function pushPanelStateToURL(state, replace = false) {
+    const usp = new URLSearchParams(location.search);
+    // 기존 패널 키 제거
+    usp.delete(PANEL_QS_CATEGORY);
+    usp.delete(PANEL_QS_Q);
+    usp.delete(PANEL_QS_PAGE);
+
+    if (state.category) usp.set(PANEL_QS_CATEGORY, state.category);
+    if (state.q)        usp.set(PANEL_QS_Q, state.q);
+    if (state.page && state.page > 1) usp.set(PANEL_QS_PAGE, String(state.page));
+
+    const newUrl = location.pathname + (usp.toString() ? `?${usp.toString()}` : '') + location.hash;
+    const fn = replace ? 'replaceState' : 'pushState';
+    history[fn](state, '', newUrl);
+  }
+
+  // ==== 패널 HTML 부분 렌더 로더 ====
+  async function loadPanelHTML(state) {
+    try {
+      // 검색/카테고리 전용 탭 시각화
+      openTab('search');
+
+      // 탭 DOM이 열린 뒤 사이드바 테이블 컨테이너 획득
+      const sidebarTable = document.getElementById('sidebar-table');
+      if (!sidebarTable) return;
+
+      const lang = sidebarTable.dataset.lang || location.pathname.split('/').filter(Boolean)[0] || 'ko';
+      const base = state.q
+        ? `/${lang}/search?panel=1&q=${encodeURIComponent(state.q)}`
+        : `/${lang}/?panel=1&category=${encodeURIComponent(state.category || 'all')}`;
+      const url = state.page && state.page > 1 ? `${base}&page=${state.page}` : base;
+
+      // 패널 열림 보장
+      if (!extensionPanel?.classList.contains('open')) {
+        extensionPanel?.classList.add('open');
+        document.body.classList.add('panel-open');
+        sidePanel?.classList.add('open');
+        sidePanel?.style.setProperty('pointer-events', 'auto');
+      }
+
+      const res = await fetch(url, { headers: { 'X-Requested-With': 'fetch' } });
+      if (!res.ok) throw new Error(`panel fetch failed: ${res.status}`);
+      const html = await res.text();
+      sidebarTable.innerHTML = html;
+
+      // 새 DOM 이벤트 바인딩
+      bindPanelInnerEvents();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // ==== 패널 내부 이벤트 가로채기 (탭/검색/페이지네이션) ====
+  function bindPanelInnerEvents() {
+    const root = document.getElementById('sidebar-table');
+    if (!root) return;
+
+    // 카테고리 탭 (권장: data-panel-link="category")
+    root.querySelectorAll('a[data-panel-link="category"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
+        e.preventDefault();
+        const cat = a.getAttribute('data-category') || new URL(a.href).searchParams.get('category') || 'all';
+        const state = { category: cat, q: null, page: 1 };
+        pushPanelStateToURL(state);
+        loadPanelHTML(state);
+      }, { once: true });
+    });
+
+    // 폴백: href만 있는 경우 (data-attr 없을 때)
+    root.querySelectorAll('.tabs a[href*="?category="]:not([data-panel-link="category"])').forEach(a => {
+      a.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey || e.button === 1) return;
+        e.preventDefault();
+        const cat = new URL(a.href).searchParams.get('category') || 'all';
+        const state = { category: cat, q: null, page: 1 };
+        pushPanelStateToURL(state);
+        loadPanelHTML(state);
+      }, { once: true });
+    });
+
+    // 검색 폼 (권장: data-panel-search="1")
+    root.querySelectorAll('form[data-panel-search="1"]').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const q = (fd.get('q') || '').toString().trim();
+        if (!q) return;
+        const state = { q, category: null, page: 1 };
+        pushPanelStateToURL(state);
+        loadPanelHTML(state);
+      }, { once: true });
+    });
+
+    // 폴백: 일반 검색 폼
+    root.querySelectorAll('form.search-form:not([data-panel-search="1"])').forEach(form => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const q = (fd.get('q') || '').toString().trim();
+        if (!q) return;
+        const state = { q, category: null, page: 1 };
+        pushPanelStateToURL(state);
+        loadPanelHTML(state);
+      }, { once: true });
+    });
+
+    // 페이지네이션
+    root.querySelectorAll('.pagination a.page-link').forEach(a => {
+      a.addEventListener('click', (e) => {
+        if (e.ctrlKey || e.metaKey || e.button === 1) return;
+        e.preventDefault();
+        const u = new URL(a.href, location.origin);
+        const page = parseInt(u.searchParams.get('page') || '1', 10);
+
+        const cur = getPanelStateFromURL() || {};
+        const state = {
+          q: cur.q || null,
+          category: cur.category || (cur.q ? null : 'all'),
+          page: Number.isFinite(page) && page > 1 ? page : 1
+        };
+        pushPanelStateToURL(state);
+        loadPanelHTML(state);
+      }, { once: true });
+    });
+  }
+
+  // ==== 탭 클릭 (기존 동작 유지) ====
   icons.forEach(icon => {
     icon.addEventListener('click', (e) => {
       const selectedTab = icon.dataset.tab;
       if (selectedTab === 'write' || selectedTab === 'home' || selectedTab === 'settings') {
-        return; 
+        return;
       }
       if (icon.classList.contains('toggle-extension')) return;
       e.preventDefault();
@@ -85,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==== 패널 토글 ====
   toggleExtensionBtn?.addEventListener('click', (e) => {
     e.preventDefault();
-    const isNowOpen = extensionPanel.classList.toggle('open');
+    const isNowOpen = extensionPanel?.classList.toggle('open');
     toggleIcon?.classList.toggle('fa-chevron-left');
     toggleIcon?.classList.toggle('fa-chevron-right');
 
@@ -108,40 +249,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==== URL 기반 탭 초기 열기 ====
   const path = location.pathname;
   const searchParams = new URLSearchParams(location.search);
-
   const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
-  const isSearch = path.includes('/search') || searchParams.has('q');
+  const isSearch = path.includes('/search') || searchParams.has('q');       // 전체 페이지 검색 경로(폴백)
   const isFiltered = searchParams.has('category');
 
-  // ❌ 프로필 자동 오픈 제거 (기존 isHome 블록 삭제)
-
-  // ✅ 검색/필터일 때만 자동 오픈 유지
+  // ✅ 검색/필터일 때 자동 오픈(기존 로직 유지)
   if (isSearch || isFiltered) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        openTab('search');
-      }, 10);
-    });
+    requestAnimationFrame(() => setTimeout(() => openTab('search'), 10));
+  }
+  // ✅ 글쓰기 컨텍스트일 때만 검색 탭 열기 (전역 isWrite가 있을 경우)
+  if (typeof isWrite !== 'undefined' && isWrite) {
+    requestAnimationFrame(() => setTimeout(() => openTab('search'), 10));
   }
 
-  // ✅ 글쓰기 컨텍스트일 때만 검색 탭 열기
-  if (typeof isWrite !== 'undefined' && isWrite) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        openTab('search');
-      }, 10);
-    });
+  // ✅ 패널 전용 상태 있을 경우: 그 상태대로 부분 렌더 로드
+  const initialState = getPanelStateFromURL();
+  if (initialState) {
+    // 히스토리 정합성 위해 replaceState로 반영 후 로드
+    pushPanelStateToURL(initialState, true);
+    loadPanelHTML(initialState);
+  } else {
+    // 초기 DOM 바인딩(서버가 렌더해준 기본 테이블)
+    bindPanelInnerEvents();
   }
 
   // ==== 로그인 버튼 ====
   if (loginBtn && loginFormContainer) {
-    console.log('✅ 로그인 버튼 활성화됨');
     loginBtn.addEventListener('click', () => {
-      console.log('🟣 로그인 버튼 눌림');
       loginFormContainer.classList.toggle('hidden');
     });
-  } else {
-    console.log('❌ 로그인 요소 못 찾음');
   }
 
   // ✅ 최초 바인딩
@@ -153,18 +289,26 @@ document.addEventListener('DOMContentLoaded', () => {
     rightControls.classList.add('is-active');
     settingsIcon.classList.add('is-active');
   }
-
   settingsIcon?.addEventListener('click', function(event) {
-    event.preventDefault(); // 링크 이동 방지
-    
-    // rightControls의 is-active 클래스 토글
+    event.preventDefault();
     rightControls?.classList.toggle('is-active');
     settingsIcon?.classList.toggle('is-active');
+  });
+
+  // ==== 히스토리 뒤/앞으로 ====
+  window.addEventListener('popstate', () => {
+    const st = getPanelStateFromURL();
+    if (st) {
+      loadPanelHTML(st);
+    } else {
+      // 패널 상태가 사라지면 현재 DOM에 이벤트만 재바인딩
+      bindPanelInnerEvents();
+    }
   });
 });
 
 
-// lang-menu 포탈: 중복 초기화/헤더 교체/다크 전환까지 안정화
+// ===== lang-menu 포탈: 중복 초기화/헤더 교체/다크 전환까지 안정화 =====
 (function () {
   if (window.__langPortalInit) return; // 중복 방지
   window.__langPortalInit = true;

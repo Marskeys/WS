@@ -223,7 +223,9 @@
 
         <% if (typeof posts !== 'undefined') { %>
           <div class="tab-content" data-tab="search" style="display: none;">
-            <%- include('table') %>
+            <div id="sidebar-table-template" data-lang="<%= lang %>">
+              <%- include('table') %>
+            </div>
           </div>
         <% } %>
 
