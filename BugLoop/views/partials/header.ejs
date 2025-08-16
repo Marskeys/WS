@@ -182,7 +182,9 @@
         <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" data-panel-link title="BugLoop 홈" aria-label="BugLoop 홈">
           <img src="/assets/images/BugLoop.png" alt="BugLoop">
         </a>
-        <a href="https://www.bugloop.dev" class="sidebar-icon active" data-tab="home" title="홈"><i class="fas fa-home"></i></a>
+        <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" data-panel-link title="홈">
+          <i class="fas fa-home"></i>
+        </a>
 
         <a href="#" class="sidebar-icon" data-tab="profile" title="프로필"><i class="fas fa-user"></i></a>
         <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
@@ -284,5 +286,36 @@
   })();
 </script>
 
+<script>
+  (() => {
+    const homeIcon = document.querySelector('.vscode-sidebar [data-tab="home"]');
+  
+    const stripLang = (p) => (p || location.pathname).replace(/^\/(ko|en|fr|zh|ja)(?=\/|$)/, '') || '/';
+    const isHomePath = (p) => stripLang(p) === '/';
+  
+    function syncHomeActive(pathname) {
+      if (!homeIcon) return;
+      homeIcon.classList.toggle('active', isHomePath(pathname || location.pathname));
+    }
+  
+    // 초기 진입 시 경로 기준으로 동기화
+    document.addEventListener('DOMContentLoaded', () => syncHomeActive());
+  
+    // 패널 네비게이션 링크 클릭 시 즉시 반영
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-panel-link]');
+      if (!a) return;
+      const href = a.getAttribute('href') || '';
+      homeIcon?.classList.toggle('active', isHomePath(href));
+    });
+  
+    // 뒤로/앞으로 이동 시 반영
+    window.addEventListener('popstate', () => syncHomeActive());
+  
+    // 너의 패널 로더가 커스텀 이벤트를 쏜다면 이것도 켜두면 좋음
+    window.addEventListener('panel:navigated', () => syncHomeActive());
+  })();
+  </script>
+  
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
