@@ -313,16 +313,32 @@ document.addEventListener('DOMContentLoaded', () => {
   bindLangDropdown(document);
 
   // ==== 설정 아이콘 & right-controls ====
-  // ✅ 초기 상태 설정 (데스크톱만 활성화)
-  if (settingsIcon && rightControls && window.innerWidth >= 1024) {
-    rightControls.classList.add('is-active');
-    settingsIcon.classList.add('is-active');
-  }
-  settingsIcon?.addEventListener('click', function(event) {
-    event.preventDefault();
-    rightControls?.classList.toggle('is-active');
-    settingsIcon?.classList.toggle('is-active');
-  });
+  // ==== 설정 아이콘 & right-controls ====
+function syncSettingsVisual() {
+  const open = rightControls?.classList.contains('is-active');
+  settingsIcon?.classList.toggle('is-active', open); // 색상은 이 클래스로만
+  settingsIcon?.classList.remove('active');          // 탭용 active 잔존 제거
+  settingsIcon?.setAttribute('aria-pressed', open ? 'true' : 'false');
+  if (!open) settingsIcon?.blur();                   // :focus로 흰색 남는 경우 방지
+}
+
+// ⭕ 데스크톱 초기값: 켜두기(기존 의도 유지)
+if (settingsIcon && rightControls && window.innerWidth >= 1024) {
+  rightControls.classList.add('is-active');
+  syncSettingsVisual();
+}
+
+settingsIcon?.addEventListener('click', (e) => {
+  e.preventDefault();
+  rightControls?.classList.toggle('is-active');
+  syncSettingsVisual();
+});
+
+// 외부 스크립트/리사이즈 등으로 rightControls 클래스가 바뀌어도 동기화
+if (settingsIcon && rightControls) {
+  const mo = new MutationObserver(() => syncSettingsVisual());
+  mo.observe(rightControls, { attributes: true, attributeFilter: ['class'] });
+}
 
   // ==== 히스토리 뒤/앞으로 ====
   window.addEventListener('popstate', () => {
@@ -450,21 +466,3 @@ document.addEventListener('DOMContentLoaded', () => {
   mo.observe(document.body, { childList: true, subtree: true });
 })();
 
-// ====== 설정 탭 active 동기화 ======
-const settingsIcon = document.querySelector('.vscode-sidebar .sidebar-icon[data-tab="settings"]');
-const rightControls = document.querySelector('.right-controls');
-
-// settings 버튼 눌렀을 때 토글
-settingsIcon?.addEventListener('click', () => {
-  const isOpen = rightControls?.classList.toggle('open'); // 네가 쓰는 open/close 클래스명 확인
-  settingsIcon.classList.toggle('active', isOpen);
-});
-
-// 혹시 외부에서 right-controls를 닫는 로직이 있을 때도 active 꺼지게
-const observer = new MutationObserver(() => {
-  const isOpen = rightControls?.classList.contains('open');
-  settingsIcon?.classList.toggle('active', isOpen);
-});
-if (rightControls) {
-  observer.observe(rightControls, { attributes: true, attributeFilter: ['class'] });
-}
