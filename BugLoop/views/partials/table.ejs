@@ -10,11 +10,15 @@
     </form>
   </div>
   
-  <div class="tabs-container"  data-allposts="<%= locale.tabs.allPosts %>"> 
+  <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
     <div class="tabs-wrapper">
       <div class="tabs <%= isSearch && searchKeyword ? 'searching' : '' %>">
         <div class="tab-spacer"></div>
-        <a href="/<%= lang %>/?category=all" class="tab <%= !selectedCategory && !isSearch ? 'active' : '' %>">
+
+        <!-- ✅ 전체글 탭: 패널 링크 속성 + 활성 조건 보강 -->
+        <a href="/<%= lang %>/?category=all"
+           data-panel-link="category" data-category="all"
+           class="tab <%= (!isSearch && (!selectedCategory || selectedCategory === 'all' || selectedCategory === locale.tabs.allPosts)) ? 'active' : '' %>">
           <%= locale.tabs.allPosts %>
         </a>
         
@@ -24,8 +28,11 @@
           </div>
         <% } %>
 
+        <!-- ✅ 카테고리 탭: 원본키/번역명 모두 대응 + 패널 링크 속성 -->
         <% categories.forEach(category => { %>
-          <a href="/<%= lang %>/?category=<%= category.original %>" class="tab <%= selectedCategory === category.translated ? 'active' : '' %>">
+          <a href="/<%= lang %>/?category=<%= category.original %>"
+             data-panel-link="category" data-category="<%= category.original %>"
+             class="tab <%= (!isSearch && (selectedCategory === category.original || selectedCategory === category.translated)) ? 'active' : '' %>">
             <%= category.translated %>
           </a>
         <% }) %>
@@ -43,22 +50,21 @@
             data-is-private="<%= post.is_private ? '1' : '0' %>"
             data-post-user-id="<%= post.user_id %>">
             <%
-            const now = new Date();
-            const createdAt = new Date(post.created_at);
-            const updatedAt = new Date(post.updated_at);
+              const now = new Date();
+              const createdAt = new Date(post.created_at);
+              const updatedAt = new Date(post.updated_at);
+              const oneDay = 1000 * 60 * 60 * 24;
+              const isNew = (now - createdAt) < oneDay;
+              const isEdited = !isNew && (updatedAt > createdAt);
+            %>
           
-            const oneDay = 1000 * 60 * 60 * 24;
-            const isNew = (now - createdAt) < oneDay;
-            const isEdited = !isNew && (updatedAt > createdAt);
-          %>
-          
-          <% if (isNew) { %>
-            <span class="label-icon new-icon"></span>
-          <% } else if (isEdited) { %>
-            <span class="label-icon edited-icon"></span>
-          <% } %>
+            <% if (isNew) { %>
+              <span class="label-icon new-icon"></span>
+            <% } else if (isEdited) { %>
+              <span class="label-icon edited-icon"></span>
+            <% } %>
   
-          <% if (post.is_pinned) { %><span>📌</span><% } %>
+            <% if (post.is_pinned) { %><span>📌</span><% } %>
             <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
           </a>
   
@@ -93,7 +99,9 @@
   <% if (pagination.total > 1) { %>
     <div class="pagination pagination-mobile mobile-only">
       <%
-        const paginationBaseUrlMobile = isSearch ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}` : `/${lang}/?category=${selectedCategory || 'all'}`;
+        const paginationBaseUrlMobile = isSearch
+          ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`
+          : `/${lang}/?category=${selectedCategory || 'all'}`;
       %>
       <% if (pagination.current > 1) { %>
         <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
