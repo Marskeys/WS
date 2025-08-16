@@ -6,19 +6,16 @@ body {
   -webkit-overflow-scrolling: auto; /* iOS 튕김 방지 */
 }
 
-/* 패널 열리며 본문만 부드럽게 밀기 */
 body.panel-open {
   padding-left: 360px;
-  transition: padding-left 0.3s ease;
+  transition: padding 0.3s ease;
+  width: calc(100%);
 }
 
-/* 남은 영역의 가운데 95% 사용 (양옆 2.5%씩) */
-body.panel-open #mini-lecture {
-  width: 95%;
-  margin-left: 2.5%;
-  margin-right: 2.5%;
-  /* 필요 시 내부 여백만 추가 */
-  /* padding: 0 20px; box-sizing: border-box; */
+/* 열림 상태 → 남은 영역(100vw - 패널) 기준으로 양옆 10% */
+body.panel-open #mini-lecture{
+  left:  calc(var(--panel-w) + (100vw - var(--panel-w)) * 0.1);
+  right: calc((100vw - var(--panel-w)) * 0.1);
 }
 
 body.panel-open .left-controls {
