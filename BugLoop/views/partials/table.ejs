@@ -19,7 +19,9 @@
         </a>
         
         <% if (isSearch) { %>
-          <div class="tab active"><%= locale.tabs.searchResults %></div>
+          <div class="tab active" id="search-result-label" aria-live="polite">
+            <%= (locale.search.resultsFor || '').replace('%s', searchKeyword || '') %>
+          </div>
         <% } %>
 
         <% categories.forEach(category => { %>
