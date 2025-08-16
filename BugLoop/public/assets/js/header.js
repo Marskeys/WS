@@ -92,13 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.style.display = 'block';
       container.replaceChildren(clone);
 
-      // 🔧 핵심 추가 1: 템플릿 id → 런타임 id로 교체 (초클릭부터 반드시 잡히게)
+      // ★ 핵심 추가 1: 템플릿 id → 런타임 id로 교체 (초클릭부터 반드시 잡히게)
       const tmpl = clone.querySelector('#sidebar-table-template');
       if (tmpl) tmpl.id = 'sidebar-table';
 
       bindLangDropdown(clone);
 
-      // 🔧 핵심 추가 2: 복제 직후 새 DOM에 즉시 바인딩 (첫 클릭 폴백 방지)
+      // ★ 핵심 추가 2: 복제 직후 새 DOM에 즉시 바인딩 (첫 제출 폴백 방지)
       if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
     }
 
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 검색/카테고리 전용 탭 시각화
       openTab('search');
 
-      // 🔧 핵심 추가 3: 컨테이너 내부에서 대상 탐색 + 템플릿 id fallback
+      // ★ 핵심 추가 3: 컨테이너 내부에서 대상 탐색 + 템플릿 id fallback
       let sidebarTable =
         document.querySelector('.tab-container #sidebar-table') ||
         document.querySelector('.tab-container #sidebar-table-template');
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==== 패널 내부 이벤트 가로채기 (탭/검색/페이지네이션) ====
   function bindPanelInnerEvents() {
-    // 🔧 핵심 추가 4: 컨테이너 내부에서 대상 탐색 + 템플릿 fallback
+    // ★ 핵심 추가 4: 컨테이너 내부에서 대상 탐색 + 템플릿 fallback
     const root =
       document.querySelector('.tab-container #sidebar-table') ||
       document.querySelector('.tab-container #sidebar-table-template');
@@ -225,6 +225,46 @@ document.addEventListener('DOMContentLoaded', () => {
       }, { once: true });
     });
   }
+
+  // ⭐⭐ 위임 이벤트(최후의 안전망): 폼 submit/링크 click이 개별 바인딩 전에 와도 가로챈다
+  container?.addEventListener('submit', (e) => {
+    const form = e.target.closest('form');
+    if (!form) return;
+    if (!form.matches('form[data-panel-search="1"], form.search-form')) return;
+    e.preventDefault();
+    const fd = new FormData(form);
+    const q = (fd.get('q') || '').toString().trim();
+    if (!q) return;
+    const state = { q, category: null, page: 1 };
+    pushPanelStateToURL(state);
+    loadPanelHTML(state);
+  });
+  container?.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    if (e.ctrlKey || e.metaKey || e.button === 1) return;
+    if (a.matches('a[data-panel-link="category"], .tabs a[href*="?category="]')) {
+      e.preventDefault();
+      const cat = a.getAttribute('data-category') || new URL(a.href, location.origin).searchParams.get('category') || 'all';
+      const state = { category: cat, q: null, page: 1 };
+      pushPanelStateToURL(state);
+      loadPanelHTML(state);
+      return;
+    }
+    if (a.matches('.pagination a.page-link')) {
+      e.preventDefault();
+      const page = parseInt(new URL(a.href, location.origin).searchParams.get('page') || '1', 10);
+      const cur = getPanelStateFromURL() || {};
+      const state = {
+        q: cur.q || null,
+        category: cur.category || (cur.q ? null : 'all'),
+        page: Number.isFinite(page) && page > 1 ? page : 1
+      };
+      pushPanelStateToURL(state);
+      loadPanelHTML(state);
+      return;
+    }
+  });
 
   // ==== 탭 클릭 (기존 동작 유지) ====
   icons.forEach(icon => {
