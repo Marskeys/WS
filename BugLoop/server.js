@@ -145,6 +145,10 @@ function buildPanel({ lang, section, topic }) {
 async function handlePanelRoute(req, res, next) {
   try {
     const { lang, section, topic } = req.params;
+    // /:lang/ 처럼 section/topic 없는 홈 진입은 메인 핸들러로 넘김
+if (!section && !topic) {
+return handleMainPage(req, res);
+}
     res.locals.lang = lang;
 
     // ✅ 특정 라우트는 패널 처리를 스킵하고 다음 미들웨어/라우트로 넘깁니다.
@@ -426,7 +430,7 @@ app.get('/post/:id', (req, res) => {
 // (Removed duplicate isPanelRequest and handlePanelRoute)
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic',        handlePanelRoute);
-app.get('/:lang/',                 handlePanelRoute);   // 홈도 패널 교체 원하면
+app.get('/:lang/',                 handleMainPage);   
 
 app.get('/sitemap.xml', async (req, res) => {
   try {
