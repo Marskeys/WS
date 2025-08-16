@@ -342,7 +342,7 @@
 <!-- ✅ 추가: 탭 로직 분리 & 패널 닫힘 시 탭 active 해제 (홈은 경로 기준 유지) -->
 <script>
   (() => {
-    // 홈 상태를 "경로 기준"으로만 다시 보정하는 함수 (다른 스크립트와 동일한 기준)
+    // 홈을 경로 기준으로만 재보정
     function syncHomeByLocation() {
       const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
       const raw = location.pathname.replace(/[#?].*$/, '');
@@ -355,7 +355,7 @@
       });
     }
 
-    // 홈을 제외한 탭들만 아이콘 active를 관리
+    // 홈 제외 탭들
     const tabSelector = '.vscode-sidebar .sidebar-icon[data-tab]:not([data-tab="home"]):not(.toggle-extension):not([data-tab="write"])';
     const tabIcons = Array.from(document.querySelectorAll(tabSelector));
     const sideBar = document.querySelector('.vscode-sidebar');
@@ -364,30 +364,76 @@
       tabIcons.forEach(i => i.classList.toggle('active', i === target));
     }
 
-    // 탭 클릭 시: 해당 탭만 active로, 홈은 경로 기준으로 재보정(홈이면 계속 켜짐)
+    // 탭 클릭 시 해당 탭만 active, 홈은 경로 기준 유지
     sideBar?.addEventListener('click', (e) => {
       const icon = e.target.closest(tabSelector);
       if (!icon) return;
       activateOnlyThisTabIcon(icon);
-      // header.js 등이 다른 토글을 건드릴 수 있어 다음 틱에 홈 보정
       setTimeout(syncHomeByLocation, 0);
     });
 
-    // 화살표 토글로 패널 닫히면: 탭 active 전부 해제 (홈은 경로 기준 유지)
+    // ===== 패널 닫힘을 "확실히" 감지: 클릭, 전환, 뮤테이션 모두 커버 =====
     const toggleBtn = document.querySelector('.vscode-sidebar .toggle-extension');
     const extensionPanel = document.querySelector('.sidebar-extension-panel');
-    let panelOpen = extensionPanel ? (getComputedStyle(extensionPanel).display !== 'none' && !extensionPanel.classList.contains('hidden')) : false;
+    const wrapper = document.querySelector('.sidebar-wrapper');
 
+    // 실제 열림 여부 판단(가시성 기준)
+    function isPanelOpen() {
+      if (!extensionPanel) return false;
+      const style = getComputedStyle(extensionPanel);
+      if (style.display === 'none' || style.visibility === 'hidden') return false;
+      // offsetWidth/Height가 0이면 접힌 상태로 간주
+      if (extensionPanel.offsetWidth === 0 || extensionPanel.offsetHeight === 0) return false;
+      // position상 화면에서 제외된 경우
+      if (extensionPanel.offsetParent === null) return false;
+      return true;
+    }
+
+    function clearTabsIfClosed(prevOpen) {
+      const nowOpen = isPanelOpen();
+      if (prevOpen && !nowOpen) {
+        tabIcons.forEach(i => i.classList.remove('active')); // 프로필/검색/설정 등 끄기
+        syncHomeByLocation(); // 홈은 경로 기준 유지
+      }
+      lastOpen = nowOpen;
+    }
+
+    // 최초 상태
+    let lastOpen = isPanelOpen();
+
+    // 1) 토글 버튼 클릭 시: 레이아웃 적용 이후 상태 확인
     toggleBtn?.addEventListener('click', () => {
-      // header.js가 DOM을 건드린 뒤 상태를 확인하기 위해 다음 틱에서 판정
-      setTimeout(() => {
-        const nowOpen = extensionPanel ? (getComputedStyle(extensionPanel).display !== 'none' && !extensionPanel.classList.contains('hidden')) : !panelOpen;
-        if (!nowOpen) {
-          tabIcons.forEach(i => i.classList.remove('active')); // 프로필/검색/설정 등 끄기
-          syncHomeByLocation();                                 // 홈은 경로대로 유지
-        }
-        panelOpen = nowOpen;
-      }, 0);
+      // 두 프레임 뒤에 확인하면 트랜지션/클래스 토글 반영됨
+      requestAnimationFrame(() => requestAnimationFrame(() => clearTabsIfClosed(lastOpen)));
+    });
+
+    // 2) 전환 종료(transitionend) 시점에도 확인
+    ['transitionend','animationend'].forEach(evt => {
+      extensionPanel?.addEventListener(evt, () => clearTabsIfClosed(lastOpen));
+      wrapper?.addEventListener(evt, () => clearTabsIfClosed(lastOpen));
+    });
+
+    // 3) 클래스/스타일 변경을 관찰(뮤테이션) — header.js가 클래스로 접을 때 커버
+    const observerTargets = [extensionPanel, wrapper].filter(Boolean);
+    observerTargets.forEach(el => {
+      const mo = new MutationObserver(() => clearTabsIfClosed(lastOpen));
+      mo.observe(el, { attributes: true, attributeFilter: ['class','style'] });
+    });
+
+    // 4) 윈도우 리사이즈로 접힘 상태가 바뀌는 테마도 커버
+    window.addEventListener('resize', () => clearTabsIfClosed(lastOpen));
+
+    // 5) 혹시 외부에서 패널을 프로그램적으로 닫는 커스텀 이벤트가 있다면 커버
+    window.addEventListener('panel:closed', () => {
+      lastOpen = true; // 직전엔 열려있었다고 가정하여 아래 로직 트리거
+      clearTabsIfClosed(lastOpen);
+    });
+
+    // 상단 메뉴로 라우팅될 때 홈 재보정
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-panel-link]');
+      if (!a) return;
+      setTimeout(syncHomeByLocation, 0);
     });
   })();
 </script>
