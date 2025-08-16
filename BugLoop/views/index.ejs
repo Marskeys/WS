@@ -206,13 +206,21 @@
 
     .hidden{ display:none !important; }
 
-/* Panel content only fade-in */
-.pjax-fade-enter { opacity: 0; transform: translateY(4px); }
-.pjax-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity .22s ease, transform .22s ease; }
-@media (prefers-reduced-motion: reduce){
-  .pjax-fade-enter { opacity: 1; transform: none; }
-  .pjax-fade-enter-active { transition: none; }
-}
+    /* Panel content only: slide-up + fade-in */
+    .pjax-fade-enter {
+      opacity: 0;
+      transform: translateY(20px); /* ↓ 시작 위치: 아래에서 출발 */
+      will-change: transform, opacity;
+    }
+    .pjax-fade-enter-active {
+      opacity: 1;
+      transform: translateY(0);
+      transition: transform .28s cubic-bezier(.22,1,.36,1), opacity .28s ease;
+    }
+    @media (prefers-reduced-motion: reduce){
+      .pjax-fade-enter { opacity: 1; transform: none; }
+      .pjax-fade-enter-active { transition: none; }
+    }
   </style>
 </head>
 
@@ -252,7 +260,6 @@
         <div class="selector-header">
           Files
           <div class="selector-actions">
-            <!-- 디스크 아이콘(저장/다운로드) -->
             <button id="btn-download-all" class="icon-btn" title="Download files">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
                 <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -565,12 +572,12 @@ ${jsTag}
     window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
   </script>
 
-  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + 컨텐츠만 페이드 + .connector 동기화) -->
-<script>
+  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + 컨텐츠만 슬라이드업 페이드 + .connector 동기화) -->
+  <script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
     const preloader = document.getElementById('preloader');
-  
+
     /* ---------- 히스토리 패치 ---------- */
     (function patchHistory(){
       const _ps = history.pushState, _rs = history.replaceState;
@@ -578,7 +585,7 @@ ${jsTag}
       history.replaceState = function(...args){ const r = _rs.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
       window.addEventListener('popstate', ()=> window.dispatchEvent(new Event('locationchange')));
     })();
-  
+
     /* ---------- 메뉴 클릭 가로채기 (캡처 단계) ---------- */
     document.addEventListener('click', onDocClick, true);
     function onDocClick(e){
@@ -587,59 +594,59 @@ ${jsTag}
       if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const url = new URL(a.href, location.origin);
       if (url.origin !== location.origin || url.hash) return;
-  
+
       e.preventDefault();
       navigateAndSwap(a.href, /*push=*/true);
     }
-  
+
     /* ---------- location 변경 시 패널 교체 ---------- */
     window.addEventListener('locationchange', () => {
       swapPanel(location.href);
     });
-  
+
     async function navigateAndSwap(url, push) {
       if (push) history.pushState({panel:true}, '', url);
       else history.replaceState(history.state, '', url);
       // 실제 교체는 locationchange 리스너에서 수행
     }
-  
+
     async function swapPanel(url) {
       try {
         setLoading(true);
-  
+
         // 서버 프래그먼트 힌트(옵션)
         const fURL = new URL(url, location.origin);
         fURL.searchParams.set('partial', '1');
-  
+
         const res = await fetch(fURL.toString(), {
           headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/fragment, text/html;q=0.9' },
           credentials: 'same-origin',
           cache: 'no-cache'
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-  
+
         const html = await res.text();
         const frag = extractPanel(html);
         if (!frag) { location.replace(url); return; }
-  
+
         // 🔁 새 패널 DOM 주입
         panelRoot.replaceChildren(frag);
         runScripts(panelRoot);
-  
-        // 🎯 "컨텐츠 영역"만 페이드 인 (배경/프레임은 그대로)
+
+        // 🎯 "컨텐츠 영역"만 슬라이드 업 페이드 (배경/프레임은 그대로)
         const fadeTarget =
-          panelRoot.querySelector('[data-panel-fade-target]') ||              // 가장 확실: 훅이 있으면 우선
+          panelRoot.querySelector('[data-panel-fade-target]') ||              // 권장 훅
           panelRoot.querySelector('.sidebar-extension-panel .tab-content.active') ||
           panelRoot.querySelector('.sidebar-extension-panel .tab-container') ||
-          panelRoot.querySelector('.sidebar-extension-panel') ||               // 없으면 안쪽 프레임
-          panelRoot.querySelector('.panel-body, main, .content, section') ||   // 일반적인 본문 후보
+          panelRoot.querySelector('.sidebar-extension-panel') ||               // 없으면 프레임
+          panelRoot.querySelector('.panel-body, main, .content, section') ||   // 일반 문서 구조
           panelRoot.firstElementChild;                                         // 최후 폴백
-  
+
         if (fadeTarget) {
           fadeTarget.classList.add('pjax-fade-enter');
           requestAnimationFrame(() => fadeTarget.classList.add('pjax-fade-enter-active'));
         }
-  
+
         updateActiveMenu(url);
         updateConnector(url); // 패널 들어온 뒤 헤더 라벨 동기화
       } catch (err) {
@@ -649,7 +656,7 @@ ${jsTag}
         setLoading(false);
       }
     }
-  
+
     /* ---------- 도우미: 패널 추출/스크립트 실행 ---------- */
     function extractPanel(html) {
       if (!/<\/?html[\s>]/i.test(html)) {
@@ -667,7 +674,7 @@ ${jsTag}
       node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
       return df;
     }
-  
+
     function runScripts(root) {
       root.querySelectorAll('script').forEach(old => {
         const s = document.createElement('script');
@@ -676,7 +683,7 @@ ${jsTag}
         old.replaceWith(s);
       });
     }
-  
+
     /* ---------- 메뉴 active 처리 ---------- */
     function updateActiveMenu(url) {
       const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
@@ -688,7 +695,7 @@ ${jsTag}
         if (label) label.classList.toggle('active-label', is);
       });
     }
-  
+
     /* ---------- 헤더 .connector 라벨 동기화 ---------- */
     function updateConnector(url) {
       try {
@@ -709,12 +716,12 @@ ${jsTag}
         document.querySelectorAll('.connector').forEach(el => { el.textContent = 'Welcome'; });
       }
     }
-  
+
     function setLoading(on) {
       if (!preloader) return;
       preloader.style.display = on ? 'block' : 'none';
     }
-  
+
     // 초기 진입 시 동기화
     window.addEventListener('DOMContentLoaded', () => {
       updateActiveMenu(location.href);
@@ -722,8 +729,5 @@ ${jsTag}
     });
   })();
   </script>
-  
-  
-
 </body>
 </html>
