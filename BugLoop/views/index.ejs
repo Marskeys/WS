@@ -206,13 +206,13 @@
 
     .hidden{ display:none !important; }
 
-    /* Panel fade-in */
-    .panel-fade-enter { opacity: 0; transform: translateY(4px); }
-    .panel-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity .2s ease, transform .2s ease; }
-     @media (prefers-reduced-motion: reduce){
-      .panel-fade-enter { opacity: 1; transform: none; }
-      .panel-fade-enter-active { transition: none; }
-    }
+/* Panel content only fade-in */
+.pjax-fade-enter { opacity: 0; transform: translateY(4px); }
+.pjax-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity .22s ease, transform .22s ease; }
+@media (prefers-reduced-motion: reduce){
+  .pjax-fade-enter { opacity: 1; transform: none; }
+  .pjax-fade-enter-active { transition: none; }
+}
   </style>
 </head>
 
@@ -565,8 +565,7 @@ ${jsTag}
     window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
   </script>
 
-  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + .connector 동기화 포함) -->
-  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + 페이드인 + .connector 동기화) -->
+  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + 컨텐츠만 페이드 + .connector 동기화) -->
 <script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
@@ -583,16 +582,13 @@ ${jsTag}
     /* ---------- 메뉴 클릭 가로채기 (캡처 단계) ---------- */
     document.addEventListener('click', onDocClick, true);
     function onDocClick(e){
-      // data-panel-link 또는 .submenu a 둘 다 지원
       const a = e.target.closest('a[data-panel-link], .submenu a');
       if (!a) return;
-      // 새창/수정키/외부/해시는 통과
       if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const url = new URL(a.href, location.origin);
       if (url.origin !== location.origin || url.hash) return;
   
       e.preventDefault();
-      // ❌ 예전: updateConnector(a.href) ← 바로 갱신하던 라인 제거!
       navigateAndSwap(a.href, /*push=*/true);
     }
   
@@ -611,7 +607,7 @@ ${jsTag}
       try {
         setLoading(true);
   
-        // 서버 프래그먼트 힌트 (있어도 되고 없어도 됨)
+        // 서버 프래그먼트 힌트(옵션)
         const fURL = new URL(url, location.origin);
         fURL.searchParams.set('partial', '1');
   
@@ -626,17 +622,26 @@ ${jsTag}
         const frag = extractPanel(html);
         if (!frag) { location.replace(url); return; }
   
-        // ✅ 페이드 인: 새 내용 래핑 후 교체
-        const holder = document.createElement('div');
-        holder.className = 'panel-fade-enter';
-        while (frag.firstChild) holder.appendChild(frag.firstChild);
-        panelRoot.replaceChildren(holder);
-        // 다음 프레임에 활성 클래스로 전환 → transition 발동
-        requestAnimationFrame(() => holder.classList.add('panel-fade-enter-active'));
-  
+        // 🔁 새 패널 DOM 주입
+        panelRoot.replaceChildren(frag);
         runScripts(panelRoot);
+  
+        // 🎯 "컨텐츠 영역"만 페이드 인 (배경/프레임은 그대로)
+        const fadeTarget =
+          panelRoot.querySelector('[data-panel-fade-target]') ||              // 가장 확실: 훅이 있으면 우선
+          panelRoot.querySelector('.sidebar-extension-panel .tab-content.active') ||
+          panelRoot.querySelector('.sidebar-extension-panel .tab-container') ||
+          panelRoot.querySelector('.sidebar-extension-panel') ||               // 없으면 안쪽 프레임
+          panelRoot.querySelector('.panel-body, main, .content, section') ||   // 일반적인 본문 후보
+          panelRoot.firstElementChild;                                         // 최후 폴백
+  
+        if (fadeTarget) {
+          fadeTarget.classList.add('pjax-fade-enter');
+          requestAnimationFrame(() => fadeTarget.classList.add('pjax-fade-enter-active'));
+        }
+  
         updateActiveMenu(url);
-        updateConnector(url); // ✅ 패널이 들어온 '뒤'에 헤더 라벨 동기화
+        updateConnector(url); // 패널 들어온 뒤 헤더 라벨 동기화
       } catch (err) {
         console.error('[PJAX] swapPanel error:', err);
         location.replace(url);
@@ -717,6 +722,7 @@ ${jsTag}
     });
   })();
   </script>
+  
   
 
 </body>
