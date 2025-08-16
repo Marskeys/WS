@@ -288,34 +288,55 @@
 
 <script>
   (() => {
-    const homeIcon = document.querySelector('.vscode-sidebar [data-tab="home"]');
+    // 집 아이콘/로고 둘 다 잡되, 토글버튼은 제외
+    const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
   
-    const stripLang = (p) => (p || location.pathname).replace(/^\/(ko|en|fr|zh|ja)(?=\/|$)/, '') || '/';
+    const stripLang = (p) => {
+      const path = (p || location.pathname).replace(/[#?].*$/, ''); // 해시/쿼리 제거
+      const noLang = path.replace(/^\/(ko|en|fr|zh|ja)(?:\/|$)/, '');
+      return noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
+    };
     const isHomePath = (p) => stripLang(p) === '/';
   
-    function syncHomeActive(pathname) {
-      if (!homeIcon) return;
-      homeIcon.classList.toggle('active', isHomePath(pathname || location.pathname));
+    const setHomeActive = (flag) => {
+      homeEls.forEach(el => {
+        el.classList.toggle('active', flag);
+        // 혹시 CSS가 <i>에 직접 걸려있을 경우 대비
+        el.querySelector('i')?.classList.toggle('active', flag);
+      });
+    };
+  
+    const sync = () => setHomeActive(isHomePath(location.pathname));
+  
+    // 초기 동기화 (DOMContentLoaded 전/후 모두 커버)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', sync, { once: true });
+    } else {
+      sync();
     }
   
-    // 초기 진입 시 경로 기준으로 동기화
-    document.addEventListener('DOMContentLoaded', () => syncHomeActive());
-  
-    // 패널 네비게이션 링크 클릭 시 즉시 반영
+    // 패널 네비(부분 로드) 클릭 시 즉시 반영
     document.addEventListener('click', (e) => {
       const a = e.target.closest('a[data-panel-link]');
       if (!a) return;
-      const href = a.getAttribute('href') || '';
-      homeIcon?.classList.toggle('active', isHomePath(href));
+      const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
+      setHomeActive(isHomePath(pn));
     });
   
-    // 뒤로/앞으로 이동 시 반영
-    window.addEventListener('popstate', () => syncHomeActive());
+    // 히스토리 이동
+    window.addEventListener('popstate', sync);
   
-    // 너의 패널 로더가 커스텀 이벤트를 쏜다면 이것도 켜두면 좋음
-    window.addEventListener('panel:navigated', () => syncHomeActive());
+    // SPA 네비게이션 훅킹 (pushState/replaceState 시그널)
+    ['pushState','replaceState'].forEach(fn => {
+      const orig = history[fn];
+      history[fn] = function(...args){
+        const ret = orig.apply(this, args);
+        window.dispatchEvent(new Event('panel:navigated'));
+        return ret;
+      };
+    });
+    window.addEventListener('panel:navigated', sync);
   })();
   </script>
-  
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
