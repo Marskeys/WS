@@ -2,11 +2,10 @@
    ✨ VSCode 테마 사이드바 & 메뉴 스타일
    ====================================================================== */
 
-   /* === Sidebar Logo === */
+/* === Sidebar Logo === */
 .vscode-sidebar .sidebar-icon.logo {
   padding: 10px 0;             /* 다른 아이콘이랑 수직 간격 맞춤 */
 }
-
 
 .vscode-sidebar .sidebar-icon.logo img {
   width: 80px;
@@ -22,15 +21,15 @@
   .vscode-sidebar .sidebar-icon.logo {
     display:block;
   }
-  }
-  
-@media (min-width: 769px) {
-/* 호버/활성 시 살짝 강조 */
-.vscode-sidebar .sidebar-icon.logo:hover img,
-.vscode-sidebar .sidebar-icon.logo.active img {
-  transform: scale(1.06);
-  opacity: 0.95;
 }
+
+@media (min-width: 769px) {
+  /* 호버/활성 시 살짝 강조 */
+  .vscode-sidebar .sidebar-icon.logo:hover img,
+  .vscode-sidebar .sidebar-icon.logo.active img {
+    transform: scale(1.06);
+    opacity: 0.95;
+  }
 }
 
 /* ======================
@@ -128,6 +127,48 @@
 .vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
 .vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
   color: #fff !important;
+}
+
+/* ======================================================================
+   ✅ PATCH: 설정 아이콘 시각 상태를 'is-active'로만 제어
+   - 닫힘 상태에서는 hover/active/focus/aria-*에 영향받지 않고 회색 고정
+   - 열림(is-active)일 때만 흰색
+   ====================================================================== */
+.sidebar-icon[data-tab="settings"] {
+  --settings-idle: rgba(255, 255, 255, 0.626);
+  color: var(--settings-idle);
+}
+
+/* 열림 상태: 흰색 */
+.sidebar-icon[data-tab="settings"].is-active {
+  color: #fff !important;
+  background: transparent !important;
+}
+
+/* 닫힘 상태: 어떤 상호작용/속성에도 흰색으로 변하지 않도록 강제 */
+.sidebar-icon[data-tab="settings"]:not(.is-active),
+.sidebar-icon[data-tab="settings"]:not(.is-active).active,
+.sidebar-icon[data-tab="settings"]:not(.is-active):hover,
+.sidebar-icon[data-tab="settings"]:not(.is-active):focus,
+.sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
+.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
+.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
+.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
+  color: var(--settings-idle) !important;
+  background: none !important;
+}
+
+/* VSCode 컨테이너 안에서도 동일하게 무력화(우선순위 보강) */
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active),
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active).active,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):hover,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
+  color: var(--settings-idle) !important;
+  background: none !important;
 }
 
 /* ======================
@@ -540,7 +581,6 @@
   background-color: #50504b;
 }
 
-
 .language-dropdown {
   position: relative;
   display: inline-block;
@@ -573,7 +613,7 @@
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 100000;
-max-width: 120px;
+  max-width: 120px;
   padding: 5px 0;
   list-style: none;
 }
