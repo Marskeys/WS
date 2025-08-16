@@ -449,3 +449,22 @@ document.addEventListener('DOMContentLoaded', () => {
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
   mo.observe(document.body, { childList: true, subtree: true });
 })();
+
+// ====== 설정 탭 active 동기화 ======
+const settingsIcon = document.querySelector('.vscode-sidebar .sidebar-icon[data-tab="settings"]');
+const rightControls = document.querySelector('.right-controls');
+
+// settings 버튼 눌렀을 때 토글
+settingsIcon?.addEventListener('click', () => {
+  const isOpen = rightControls?.classList.toggle('open'); // 네가 쓰는 open/close 클래스명 확인
+  settingsIcon.classList.toggle('active', isOpen);
+});
+
+// 혹시 외부에서 right-controls를 닫는 로직이 있을 때도 active 꺼지게
+const observer = new MutationObserver(() => {
+  const isOpen = rightControls?.classList.contains('open');
+  settingsIcon?.classList.toggle('active', isOpen);
+});
+if (rightControls) {
+  observer.observe(rightControls, { attributes: true, attributeFilter: ['class'] });
+}
