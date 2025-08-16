@@ -1,4 +1,4 @@
-// ===== header.js (patched) =====
+// ===== header.js (patched, FINAL) =====
 document.addEventListener('DOMContentLoaded', () => {
   // ==== 요소 선택 ====
   const icons = document.querySelectorAll('.sidebar-icon[data-tab]');
@@ -43,29 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ==== 탭 열기 함수 ====
-  function openTab(selectedTab) {
-    if (!extensionPanel?.classList.contains('open')) {
-      extensionPanel?.classList.add('open');
-      document.body.classList.add('panel-open');
-      toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
-      sidePanel?.classList.add('open');
-      sidePanel?.style.setProperty('pointer-events', 'auto');
-    }
-
-    const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
-    if (original && container) {
-      const clone = original.cloneNode(true);
-      clone.style.display = 'block';
-      container.replaceChildren(clone);
-      bindLangDropdown(clone);
-    }
-
-    icons.forEach(i => i.classList.remove('active'));
-    const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
-    selectedIcon?.classList.add('active');
-  }
-
   // ==== 패널 전용 상태(URL 쿼리) 관리 ====
   const PANEL_QS_CATEGORY = 'p_category'; // 패널 전용 쿼리 (경로는 유지)
   const PANEL_QS_Q        = 'p_q';
@@ -99,15 +76,51 @@ document.addEventListener('DOMContentLoaded', () => {
     history[fn](state, '', newUrl);
   }
 
+  // ==== 탭 열기 함수 ====
+  function openTab(selectedTab) {
+    if (!extensionPanel?.classList.contains('open')) {
+      extensionPanel?.classList.add('open');
+      document.body.classList.add('panel-open');
+      toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
+      sidePanel?.classList.add('open');
+      sidePanel?.style.setProperty('pointer-events', 'auto');
+    }
+
+    const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
+    if (original && container) {
+      const clone = original.cloneNode(true);
+      clone.style.display = 'block';
+      container.replaceChildren(clone);
+
+      // 🔧 핵심 추가 1: 템플릿 id → 런타임 id로 교체 (초클릭부터 반드시 잡히게)
+      const tmpl = clone.querySelector('#sidebar-table-template');
+      if (tmpl) tmpl.id = 'sidebar-table';
+
+      bindLangDropdown(clone);
+
+      // 🔧 핵심 추가 2: 복제 직후 새 DOM에 즉시 바인딩 (첫 클릭 폴백 방지)
+      if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
+    }
+
+    icons.forEach(i => i.classList.remove('active'));
+    const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
+    selectedIcon?.classList.add('active');
+  }
+
   // ==== 패널 HTML 부분 렌더 로더 ====
   async function loadPanelHTML(state) {
     try {
       // 검색/카테고리 전용 탭 시각화
       openTab('search');
 
-      // 탭 DOM이 열린 뒤 사이드바 테이블 컨테이너 획득
-      const sidebarTable = document.getElementById('sidebar-table');
+      // 🔧 핵심 추가 3: 컨테이너 내부에서 대상 탐색 + 템플릿 id fallback
+      let sidebarTable =
+        document.querySelector('.tab-container #sidebar-table') ||
+        document.querySelector('.tab-container #sidebar-table-template');
       if (!sidebarTable) return;
+      if (sidebarTable.id === 'sidebar-table-template') {
+        sidebarTable.id = 'sidebar-table';
+      }
 
       const lang = sidebarTable.dataset.lang || location.pathname.split('/').filter(Boolean)[0] || 'ko';
       const base = state.q
@@ -137,7 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==== 패널 내부 이벤트 가로채기 (탭/검색/페이지네이션) ====
   function bindPanelInnerEvents() {
-    const root = document.getElementById('sidebar-table');
+    // 🔧 핵심 추가 4: 컨테이너 내부에서 대상 탐색 + 템플릿 fallback
+    const root =
+      document.querySelector('.tab-container #sidebar-table') ||
+      document.querySelector('.tab-container #sidebar-table-template');
     if (!root) return;
 
     // 카테고리 탭 (권장: data-panel-link="category")
@@ -145,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       a.addEventListener('click', (e) => {
         if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
         e.preventDefault();
-        const cat = a.getAttribute('data-category') || new URL(a.href).searchParams.get('category') || 'all';
+        const cat = a.getAttribute('data-category') || new URL(a.href, location.origin).searchParams.get('category') || 'all';
         const state = { category: cat, q: null, page: 1 };
         pushPanelStateToURL(state);
         loadPanelHTML(state);
@@ -157,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
       a.addEventListener('click', (e) => {
         if (e.ctrlKey || e.metaKey || e.button === 1) return;
         e.preventDefault();
-        const cat = new URL(a.href).searchParams.get('category') || 'all';
+        const cat = new URL(a.href, location.origin).searchParams.get('category') || 'all';
         const state = { category: cat, q: null, page: 1 };
         pushPanelStateToURL(state);
         loadPanelHTML(state);
