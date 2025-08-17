@@ -31,5 +31,69 @@
         </nav>
       </div>
     </div>
+
+    <div class="profile-card" role="region" aria-label="프로필">
+        <div class="avatar-col">
+          <figure class="avatar-frame" aria-hidden="true">
+            <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
+          </figure>
+        </div>
+    
+        <div class="info-col">
+          <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
+          <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
+    
+          <ul class="profile-tags" aria-label="태그">
+            <% (locale.profile["profile-tags"] || []).forEach(tag => { %>
+              <li><span class="tag-pill"><%= tag %></span></li>
+            <% }) %>
+          </ul>
+    
+          <nav class="profile-social" aria-label="소셜 링크">
+            <% const social = (locale.profile && locale.profile.social) || {}; %>
+            <% if (social.instagram) { %>
+              <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <% } %>
+            <% if (social.github) { %>
+              <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <% } %>
+            <% if (social.email) { %>
+              <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <% } %>
+          </nav>
+        </div>
+      </div>
+
+      <div class="profile-card" role="region" aria-label="프로필">
+        <div class="avatar-col">
+          <figure class="avatar-frame" aria-hidden="true">
+            <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
+          </figure>
+        </div>
+    
+        <div class="info-col">
+          <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
+          <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
+    
+          <ul class="profile-tags" aria-label="태그">
+            <% (locale.profile["profile-tags"] || []).forEach(tag => { %>
+              <li><span class="tag-pill"><%= tag %></span></li>
+            <% }) %>
+          </ul>
+    
+          <nav class="profile-social" aria-label="소셜 링크">
+            <% const social = (locale.profile && locale.profile.social) || {}; %>
+            <% if (social.instagram) { %>
+              <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <% } %>
+            <% if (social.github) { %>
+              <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <% } %>
+            <% if (social.email) { %>
+              <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <% } %>
+          </nav>
+        </div>
+      </div>
   </section>
   
