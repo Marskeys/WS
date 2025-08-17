@@ -7,7 +7,7 @@
   <title>Bug Loop · Online HTML Editor</title>
   <style>
     :root{
-      --chrome-gap:50px; /* 좌측 VSCode 사이드바 여백(모바일도 적용) */
+      --chrome-gap:50px;
       --panel-gap:16px;
       --radius:12px;
       --border:#2b2b2b;
@@ -16,8 +16,8 @@
       --panel-2:#0e0e0e;
       --ink:#eaeaea;
       --ink-2:#b7b7b7;
-      --accent:#00f5d4;     /* 포인트 */
-      --primary:#20c67e;    /* 밝은 초록 (Run, Assets-URL 버튼) */
+      --accent:#00f5d4;
+      --primary:#20c67e;
       --primary-ink:#ffffff;
     }
     html:not(.dark){
@@ -37,7 +37,7 @@
     /* 앱 쉘: 모바일도 좌측 50px 여백 */
     .app-shell{
       padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
-      padding-top: calc(50px + 16px); /* 상단에도 50px 메뉴 여백 */
+      padding-top: calc(50px + 16px);
       margin-top: 150px;
     }
 
@@ -86,7 +86,6 @@
       border:1px solid var(--border);
       border-radius: 14px;
       overflow: hidden;
-      box-shadow: var(--shadow, 0 10px 30px rgba(0,0,0,.35));
     }
     @media (min-width:1024px){ .selector{ display:block } }
 
@@ -153,7 +152,7 @@
       border-radius:10px; padding:12px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding", monospace;
       font-size:14px; color:var(--ink); outline:none; resize:vertical;
-      min-height: 360px; /* 모바일도 넉넉하게 */
+      min-height: 360px;
     }
     @media (min-width:1024px){
       textarea.code{ min-height: 620px; resize: none; }
@@ -174,18 +173,11 @@
       height: 10px;
       border-radius: 50%;
       background-color: #ff4747;
-      box-shadow: 0 0 6px rgba(255,71,71,0.8);
       animation: blink-rec 1s infinite;
     }
     @keyframes blink-rec {
-      0%, 100% {
-        opacity: 1;
-        box-shadow: 0 0 6px rgba(255,71,71,0.8);
-      }
-      50% {
-        opacity: 0.4;
-        box-shadow: 0 0 2px rgba(255,71,71,0.4);
-      }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     /* 상태바 */
@@ -209,7 +201,7 @@
     /* Panel content only: slide-up + fade-in */
     .pjax-fade-enter {
       opacity: 0;
-      transform: translateY(20px); /* ↓ 시작 위치: 아래에서 출발 */
+      transform: translateY(20px);
       will-change: transform, opacity;
     }
     .pjax-fade-enter-active {
@@ -227,17 +219,13 @@
 <body class="light">
   <div id="preloader"><div class="spinner"></div></div>
 
-  <!-- 고정 헤더 -->
   <%- include('partials/header') %>
 
-  <!-- ✅ 패널만 교체되는 영역 -->
   <div id="panel-root" data-pjax-scope>
     <%- include('partials/panel') %>
   </div>
 
-  <!-- 아래부터는 에디터/프리뷰 앱 영역 (고정) -->
   <div class="app-shell">
-    <!-- 상단 앱 바 -->
     <div class="studio-bar">
       <div class="studio-title">Bug Loop · Online HTML Editor</div>
       <span class="studio-badge"></span>
@@ -246,16 +234,13 @@
       <button id="btn-assets" class="btn">Assets</button>
     </div>
 
-    <!-- 모바일 상단 탭 (모바일 전용) -->
     <div class="mobile-tabs" id="mobileTabs">
       <button class="mobile-tab active" data-tab="html">HTML</button>
       <button class="mobile-tab" data-tab="css">CSS</button>
       <button class="mobile-tab" data-tab="js">JS</button>
     </div>
 
-    <!-- 작업영역 -->
     <div class="workbench">
-      <!-- 좌측 선택창 (데스크탑 전용) -->
       <aside class="selector" id="desktopSelector">
         <div class="selector-header">
           Files
@@ -276,12 +261,10 @@
         </div>
       </aside>
 
-      <!-- 가운데: 에디터 -->
       <section class="editor-card">
         <h1 class="code-preview-title"><%= locale.editor["editor-title"] %></h1>
 
         <div class="code-area">
-          <!-- 에디터 3종 -->
           <div id="code-editor-html" class="editor-pane">
             <textarea id="code-preview-html-code" class="code">
 <header>
@@ -302,7 +285,6 @@
 header {
   background-color: #f0f4ff;
   padding: 20px 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 header h1 { margin: 0; color: #3366cc; }
 nav ul {
@@ -328,7 +310,6 @@ footer {
         </div>
       </section>
 
-      <!-- 우측: 프리뷰 -->
       <section class="preview-card">
         <div class="preview-bar">
           <span class="rec-dot" title="Live"></span>
@@ -339,7 +320,6 @@ footer {
       </section>
     </div>
 
-    <!-- 상태바 -->
     <div class="statusbar">
       <span id="status-msg">Ready — Press Run to update preview</span>
       <span>⌘/Ctrl+Enter: Run</span>
@@ -347,7 +327,6 @@ footer {
     </div>
   </div>
 
-  <!-- Assets 모달 -->
   <div class="modal-backdrop" id="assetsModal">
     <div class="modal">
       <h3>Assets</h3>
@@ -407,8 +386,8 @@ footer {
     const statusMsg = document.getElementById('status-msg');
 
     // ====== 상태
-    let currentTab = 'html'; // html | css | js
-    const assets = []; // {id, type:'js'|'css', src, label, isBlob}
+    let currentTab = 'html';
+    const assets = [];
 
     // ====== 탭 전환 (데스크탑 선택창)
     selectorItems.forEach(btn=>{
@@ -572,7 +551,6 @@ ${jsTag}
     window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
   </script>
 
-  <!-- ✅ PJAX: 패널만 교체 (히스토리 패치 + 컨텐츠만 슬라이드업 페이드 + .connector 동기화) -->
   <script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
@@ -635,12 +613,12 @@ ${jsTag}
 
         // 🎯 "컨텐츠 영역"만 슬라이드 업 페이드 (배경/프레임은 그대로)
         const fadeTarget =
-          panelRoot.querySelector('[data-panel-fade-target]') ||              // 권장 훅
+          panelRoot.querySelector('[data-panel-fade-target]') ||
           panelRoot.querySelector('.sidebar-extension-panel .tab-content.active') ||
           panelRoot.querySelector('.sidebar-extension-panel .tab-container') ||
-          panelRoot.querySelector('.sidebar-extension-panel') ||               // 없으면 프레임
-          panelRoot.querySelector('.panel-body, main, .content, section') ||   // 일반 문서 구조
-          panelRoot.firstElementChild;                                         // 최후 폴백
+          panelRoot.querySelector('.sidebar-extension-panel') ||
+          panelRoot.querySelector('.panel-body, main, .content, section') ||
+          panelRoot.firstElementChild;
 
         if (fadeTarget) {
           fadeTarget.classList.add('pjax-fade-enter');
@@ -648,7 +626,7 @@ ${jsTag}
         }
 
         updateActiveMenu(url);
-        updateConnector(url); // 패널 들어온 뒤 헤더 라벨 동기화
+        updateConnector(url);
       } catch (err) {
         console.error('[PJAX] swapPanel error:', err);
         location.replace(url);
