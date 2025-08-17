@@ -987,3 +987,18 @@ html.dark .lang-option:hover { background-color: #333; }
   left: auto;
   z-index: calc(var(--z-header) + 10);
 }
+
+/* 패널 로고 영역: 가운데 정렬 */
+.sidebar-extension-panel .panel-logo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+/* 로고 이미지: 너무 크지 않게 */
+.sidebar-extension-panel .panel-logo img{
+  display: block;
+  width: min(60%, 180px); /* 컨테이너의 60% 또는 180px 중 작은 값 */
+  height: auto;           /* 비율 유지 */
+}
