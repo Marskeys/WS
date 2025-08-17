@@ -92,7 +92,7 @@
       font-size: 12px;
     }
   
-    /* 리사이저 */
+    /* 리사이저 (모바일 터치 안전 설정 포함) */
     #panel-resizer{
       grid-row: 2;
       height: 16px;
@@ -101,7 +101,19 @@
       background: #313131;
       transition: background .15s ease, box-shadow .15s ease;
       position: relative;
+  
+      /* 터치 제스처/선택 끔 */
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
     }
+    /* 손가락 히트영역 살짝 확대 */
+    @media (pointer: coarse){
+      #panel-resizer{ height: 24px; }
+    }
+  
     #panel-resizer::before{
       content: "";
       position: absolute;
@@ -137,7 +149,7 @@
       #mini-lecture{ height: var(--panel-h); min-height: 20px; }
     }
   
-    body.resizing{ user-select: none; }
+    body.resizing{ user-select: none; overflow: hidden; }
   </style>
   
   <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
@@ -162,164 +174,179 @@
   </div>
   
   <script>
-    /* ===== 패널 리사이저 ===== */
-    (function(){
-      const root = document.documentElement;
-      const resizer = document.getElementById('panel-resizer');
-      if(!resizer) return;
+  /* ===== 패널 리사이저 (Pointer Events 통일) ===== */
+  (function(){
+    const root = document.documentElement;
+    const resizer = document.getElementById('panel-resizer');
+    if(!resizer) return;
   
-      const MIN = parseInt(resizer.getAttribute('aria-valuemin'), 10) || 20;
-      const MAX = parseInt(resizer.getAttribute('aria-valuemax'), 10) || 800;
-      const STEP = 16, BIG = 64;
-      const VAR = '--panel-h';
-      const KEY = 'miniPanelH_session';
+    const MIN = parseInt(resizer.getAttribute('aria-valuemin'), 10) || 20;
+    const MAX = parseInt(resizer.getAttribute('aria-valuemax'), 10) || 800;
+    const STEP = 16, BIG = 64;
+    const VAR = '--panel-h';
+    const KEY = 'miniPanelH_session';
   
-      const isHomePath = (p) => p === '/' || /^\/[a-z]{2}\/?$/.test(p);
+    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(p);
   
-      const getDefaultPx = () => {
-        const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
-        return parseInt(v, 10) || 500;
-      };
+    const getDefaultPx = () => {
+      const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
+      return parseInt(v, 10) || 500;
+    };
   
-      const clamp = v => Math.max(MIN, Math.min(MAX, v|0));
+    const clamp = v => Math.max(MIN, Math.min(MAX, v|0));
   
-      const setH = (h, save=false) => {
-        const n = clamp(parseInt(h, 10));
-        root.style.setProperty(VAR, n + 'px');
-        resizer.setAttribute('aria-valuenow', String(n));
-        if (save) sessionStorage.setItem(KEY, n + 'px');
-        window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
-      };
+    const setH = (h, save=false) => {
+      const n = clamp(parseInt(h, 10));
+      root.style.setProperty(VAR, n + 'px');
+      resizer.setAttribute('aria-valuenow', String(n));
+      if (save) sessionStorage.setItem(KEY, n + 'px');
+      window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
+    };
   
-      (function init(){
-        if (isHomePath(location.pathname)) {
-          sessionStorage.removeItem(KEY);
-          root.style.removeProperty(VAR);
-          resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
-        } else {
-          const saved = sessionStorage.getItem(KEY);
-          if (saved) setH(saved, false);
-          else root.style.removeProperty(VAR);
-        }
-      })();
-  
-      let startY = 0, startH = 0, dragging = false;
-  
-      function move(e){
-        if(!dragging) return;
-        const y = (e.touches ? e.touches[0].clientY : e.clientY);
-        setH(startH + (y - startY));
-        e.preventDefault?.();
+    (function init(){
+      if (isHomePath(location.pathname)) {
+        sessionStorage.removeItem(KEY);
+        root.style.removeProperty(VAR);
+        resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
+      } else {
+        const saved = sessionStorage.getItem(KEY);
+        if (saved) setH(saved, false);
+        else root.style.removeProperty(VAR);
       }
-      function up(){
-        if(!dragging) return;
-        dragging = false;
-        document.body.classList.remove('resizing');
-        const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
-        setH(cur, true);
-        window.removeEventListener('mousemove', move);
-        window.removeEventListener('mouseup', up);
-        window.removeEventListener('touchmove', move);
-        window.removeEventListener('touchend', up);
-      }
-      function down(e){
-        dragging = true;
-        document.body.classList.add('resizing');
-        startY = (e.touches ? e.touches[0].clientY : e.clientY);
-        startH = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
-        window.addEventListener('mousemove', move);
-        window.addEventListener('mouseup', up);
-        window.addEventListener('touchmove', move, { passive:false });
-        window.addEventListener('touchend', up);
-        e.preventDefault?.();
-      }
-  
-      resizer.addEventListener('mousedown', down);
-      resizer.addEventListener('touchstart', down, { passive:false });
     })();
+  
+    let startY = 0, startH = 0, dragging = false, pid = null;
+  
+    const onPointerDown = (e) => {
+      e.preventDefault();
+      dragging = true;
+      pid = e.pointerId;
+      resizer.setPointerCapture?.(pid);
+      document.body.classList.add('resizing');
+      startY = e.clientY;
+      startH = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+    };
+  
+    const onPointerMove = (e) => {
+      if(!dragging) return;
+      if(pid != null && e.pointerId != null && e.pointerId !== pid) return;
+      const h = startH + (e.clientY - startY);
+      setH(h);
+    };
+  
+    const endDrag = () => {
+      if(!dragging) return;
+      dragging = false;
+      try { resizer.releasePointerCapture?.(pid); } catch {}
+      pid = null;
+      document.body.classList.remove('resizing');
+      const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+      setH(cur, true);
+    };
+  
+    resizer.addEventListener('pointerdown', onPointerDown);
+    resizer.addEventListener('pointermove', onPointerMove);
+    resizer.addEventListener('pointerup', endDrag);
+    resizer.addEventListener('pointercancel', endDrag);
+  
+    /* 키보드 접근성 */
+    resizer.addEventListener('keydown', (e) => {
+      let delta = 0;
+      if (e.key === 'ArrowUp')   delta = -STEP;
+      if (e.key === 'ArrowDown') delta =  STEP;
+      if (e.key === 'PageUp')    delta = -BIG;
+      if (e.key === 'PageDown')  delta =  BIG;
+      if (delta !== 0) {
+        e.preventDefault();
+        const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+        setH(cur + delta, true);
+      }
+    });
+  })();
   </script>
   
   <script>
-    /* ===== 패널 내부에서만 스크롤 캡처(고정 동작) ===== */
-    (function(){
-      let scroller, panel, resizer;
-      let touchY = 0;
+  /* ===== 패널 내부 스크롤 캡처 (리사이징 중에는 비간섭) ===== */
+  (function(){
+    let scroller, panel;
+    let touchY = 0;
   
-      function ref(){
-        panel   = document.getElementById('mini-lecture');
-        scroller= panel?.querySelector('.panel-card') || null;
-        resizer = document.getElementById('panel-resizer');
-      }
+    function ref(){
+      panel   = document.getElementById('mini-lecture');
+      scroller= panel?.querySelector('.panel-card') || null;
+    }
   
-      function onPanelWheel(e){
-        if (!panel || !scroller) return;
-        /* 패널 영역이면 항상 기본 스크롤 막고, 내부로 전달 */
-        e.preventDefault();
-        e.stopPropagation();
-        // deltaX도 있으면 같이 전달
-        scroller.scrollTop  += e.deltaY;
-        scroller.scrollLeft += e.deltaX || 0;
-      }
+    function onPanelWheel(e){
+      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
+      if (!panel || !scroller) return;
+      e.preventDefault();
+      e.stopPropagation();
+      scroller.scrollTop  += e.deltaY;
+      scroller.scrollLeft += e.deltaX || 0;
+    }
   
-      function onPanelTouchStart(e){
-        if (!panel || !scroller) return;
-        touchY = e.touches[0].clientY;
-      }
-      function onPanelTouchMove(e){
-        if (!panel || !scroller) return;
-        const y = e.touches[0].clientY;
-        const delta = touchY - y;
-        touchY = y;
-        e.preventDefault();
-        e.stopPropagation();
-        scroller.scrollTop += delta;
-      }
+    function onPanelTouchStart(e){
+      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
+      if (!panel || !scroller) return;
+      touchY = e.touches[0].clientY;
+    }
+    function onPanelTouchMove(e){
+      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
+      if (!panel || !scroller) return;
+      const y = e.touches[0].clientY;
+      const delta = touchY - y;
+      touchY = y;
+      e.preventDefault();
+      e.stopPropagation();
+      scroller.scrollTop += delta;
+    }
   
-      function bind(){
-        ref();
-        if (!panel || !scroller) return;
+    function bind(){
+      ref();
+      if (!panel || !scroller) return;
   
-        /* 패널 전체에서 캡처 단계로 wheel/touch 가로채기 */
-        panel.addEventListener('wheel', onPanelWheel, { passive:false, capture:true });
-        panel.addEventListener('touchstart', onPanelTouchStart, { passive:true,  capture:true });
-        panel.addEventListener('touchmove',  onPanelTouchMove,  { passive:false, capture:true });
+      panel.addEventListener('wheel', onPanelWheel, { passive:false, capture:true });
+      panel.addEventListener('touchstart', onPanelTouchStart, { passive:true,  capture:true });
+      panel.addEventListener('touchmove',  onPanelTouchMove,  { passive:false, capture:true });
   
-        /* 내용 교체/리렌더 감지 → 스크롤러 참조 갱신 */
-        const mo = new MutationObserver(() => {
-          const cur = panel.querySelector('.panel-card');
-          if (cur !== scroller) { unbind(); bind(); }
-        });
-        mo.observe(panel, { childList:true, subtree:true });
+      /* 내용 교체 감지 → 참조 갱신 */
+      const mo = new MutationObserver(() => {
+        const cur = panel.querySelector('.panel-card');
+        if (cur !== scroller) { unbind(); bind(); }
+      });
+      mo.observe(panel, { childList:true, subtree:true });
   
-        /* 리사이즈(리사이저/윈도)나 SPA 내 네비 뒤에도 유지 */
-        const reb = () => { unbind(); bind(); };
-        window.addEventListener('mini-panel-resized', reb);
-        window.addEventListener('resize', reb);
-        const _ps = history.pushState, _rs = history.replaceState;
-        history.pushState   = function(){ const r=_ps.apply(this, arguments); setTimeout(reb,0); return r; };
-        history.replaceState= function(){ const r=_rs.apply(this, arguments); setTimeout(reb,0); return r; };
-        window.addEventListener('popstate', () => setTimeout(reb,0));
+      /* 리사이즈/라우팅 후에도 유지 */
+      const reb = () => { unbind(); bind(); };
+      window.addEventListener('mini-panel-resized', reb);
+      window.addEventListener('resize', reb);
+      const _ps = history.pushState, _rs = history.replaceState;
+      history.pushState    = function(){ const r=_ps.apply(this, arguments); setTimeout(reb,0); return r; };
+      history.replaceState = function(){ const r=_rs.apply(this, arguments); setTimeout(reb,0); return r; };
+      window.addEventListener('popstate', () => setTimeout(reb,0));
   
-        // 저장해두기
-        panel.__trap_cleanup = () => {
-          try{
-            panel.removeEventListener('wheel', onPanelWheel, { capture:true });
-            panel.removeEventListener('touchstart', onPanelTouchStart, { capture:true });
-            panel.removeEventListener('touchmove', onPanelTouchMove, { capture:true });
-            mo.disconnect();
-            window.removeEventListener('mini-panel-resized', reb);
-            window.removeEventListener('resize', reb);
-            window.removeEventListener('popstate', reb);
-          }catch(e){}
-        };
-      }
+      panel.__trap_cleanup = () => {
+        try{
+          panel.removeEventListener('wheel', onPanelWheel, { capture:true });
+          panel.removeEventListener('touchstart', onPanelTouchStart, { capture:true });
+          panel.removeEventListener('touchmove', onPanelTouchMove, { capture:true });
+          mo.disconnect();
+          window.removeEventListener('mini-panel-resized', reb);
+          window.removeEventListener('resize', reb);
+        }catch(e){}
+      };
+    }
   
-      function unbind(){
-        if (panel?.__trap_cleanup) panel.__trap_cleanup();
-        panel = scroller = resizer = null;
-      }
+    function unbind(){
+      if (panel?.__trap_cleanup) panel.__trap_cleanup();
+      panel = scroller = null;
+    }
   
-      document.addEventListener('DOMContentLoaded', bind);
-    })();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bind, { once:true });
+    } else {
+      bind();
+    }
+  })();
   </script>
   
