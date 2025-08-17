@@ -51,8 +51,8 @@
      font-weight: 600; /* 기본 두툼 */
    }
    h1 { font-size: clamp(24px, 2.4rem, 40px); }
-   h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 700; }
-   h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 600; }
+   h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 600; }
+   h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 500; }
    
    /* 본문 기본 */
    p, li, input, textarea, button { font-weight: 400; }
@@ -64,7 +64,7 @@
    }
    
    /* (선택) 제목 계열은 좀 더 두껍게 */
-   h1, h2, h3 { font-weight: 600; }
+   h1, h2, h3 { font-weight: 500; }
    
    /* 다국어 폴백 (Asta Sans 제거) */
    :lang(zh), .lang-zh {
@@ -86,7 +86,7 @@
    /* 소제목/오버라인 스타일(넥슨식 카테고리 라벨 톤) */
    .overline {
      font-size: 12px;
-     font-weight: 700;
+     font-weight: 600;
      letter-spacing: 0.06em;
      text-transform: uppercase;
      opacity: .8;
