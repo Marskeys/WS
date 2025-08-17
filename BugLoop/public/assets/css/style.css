@@ -48,11 +48,11 @@
      line-height: var(--lh-heading);
      letter-spacing: -0.01em;
      margin: 0 0 0.5em;
-     font-weight: 800; /* 기본 두툼 */
+     font-weight: 600; /* 기본 두툼 */
    }
    h1 { font-size: clamp(24px, 2.4rem, 40px); }
-   h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 800; }
-   h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 700; }
+   h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 700; }
+   h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 600; }
    
    /* 본문 기본 */
    p, li, input, textarea, button { font-weight: 400; }
