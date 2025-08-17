@@ -12,7 +12,7 @@
     }
     
     /* 컨테이너 */
- #mini-lecture{
+    #mini-lecture{
   position: fixed;
   top: var(--header-h, 0);
   z-index: 40;
@@ -23,7 +23,17 @@
   display: grid;
   grid-template-rows: minmax(0, 1fr) 20px;
   overflow: hidden;
+
+  /* 엄청 쎈 멀티 레이어 섀도우 */
+  box-shadow:
+    0 60px 140px -30px rgba(0,0,0,.70),
+    0 30px  70px -20px rgba(0,0,0,.60),
+    0 14px  30px -10px rgba(0,0,0,.50),
+    0  2px   8px  -2px rgba(0,0,0,.45),
+    0  0     0   1px  rgba(0,0,0,.28); /* 가장자리 정리용 */
+  border-radius: 14px; /* 선택: 모서리 둥글면 더 자연스러움 */
 }
+
 
 /* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
 body.panel-open #mini-lecture{
