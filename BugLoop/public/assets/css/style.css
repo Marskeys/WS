@@ -109,9 +109,9 @@
    .tnum { font-variant-numeric: tabular-nums; }
    
    /* 유틸리티(원할 때 골라 쓰기) */
-   .tracking-xxs { letter-spacing: -0.0015em; } /* 거의 무감 */
-   .tracking-xs  { letter-spacing: -0.0020em; }
-   .tracking-s   { letter-spacing: -0.0030em; } /* 기본권장값과 동일 */
+   .tracking-xxs { letter-spacing: -0.0020em; } /* 거의 무감 */
+   .tracking-xs  { letter-spacing: -0.0025em; }
+   .tracking-s   { letter-spacing: -0.0035em; } /* 기본권장값과 동일 */
    
    /* ------- 필요 시 다크모드 대비(선택) -------
    html.dark, [data-theme="dark"] body {
