@@ -1,125 +1,127 @@
 /* =========================================================
-   Fonts: Noto Sans KR (+ JP/SC 폴백)  — Nexon-ish tone
+   Fonts: Pretendard (KR 기본) + JP/SC 폴백 — Nexon-ish tone
    ========================================================= */
-   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap');
-   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
-   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
-   
-   /* ===== Global font family ===== */
-   :root{
-     /* 메인: Noto Sans KR */
-     --font-sans: "Noto Sans KR",
-                  -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-                  "Noto Sans", sans-serif;
-   
-     /* 넥슨 톤 + 초미세 자간 */
-     --tracking-body: -0.003em;  /* 본문: 아주 미세하게 조임 */
-     --tracking-ui:    0.012em;  /* UI/라벨: 살짝만 펼침 */
-     --lh-body:        1.55;     /* 본문 줄간 */
-     --lh-heading:     1.25;     /* 헤딩 줄간 */
-   }
-   
-   /* 기본 적용 + 베이스 레이아웃 (중복 통합) */
-   html, body {
-     font-family: var(--font-sans);
-     letter-spacing: var(--tracking-body);
-     line-height: var(--lh-body);
-     -webkit-font-smoothing: antialiased;
-     -moz-osx-font-smoothing: grayscale;
-     text-rendering: optimizeLegibility;
-     font-variant-numeric: tabular-nums; /* 숫자 정렬 안정감 */
-     scroll-behavior: smooth;
-     margin: 0;
-     padding: 0;
-     display: flex;
-     flex-direction: column;
-     box-sizing: border-box;
-     overflow-x: hidden;           /* 가로 스크롤 방지 */
-     overscroll-behavior: none;    /* 크롬, 파이어폭스 튕김 방지 */
-     background-color: #fff;
-   }
-   
-   /* iOS 튕김 방지 */
-   body { -webkit-overflow-scrolling: auto; }
-   
-   /* 헤딩: 굵고 또렷(넥슨 톤) */
-   h1, h2, h3, h4, h5, h6 {
-     font-family: var(--font-sans);
-     line-height: var(--lh-heading);
-     letter-spacing: -0.01em;
-     margin: 0 0 0.5em;
-     font-weight: 600; /* 기본 두툼 */
-   }
-   h1 { font-size: clamp(24px, 2.4rem, 40px); }
-   h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 600; }
-   h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 500; }
-   
-   /* 본문 기본 */
-   p, li, input, textarea, button { font-weight: 400; }
-   
-   /* UI 라벨/탭/네비: 살짝 펼친 자간 + 묵직한 두께 */
-   nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
-     letter-spacing: var(--tracking-ui);
-     font-weight: 600;
-   }
-   
-   /* (선택) 제목 계열은 좀 더 두껍게 */
-   h1, h2, h3 { font-weight: 500; }
-   
-   /* 다국어 폴백 (Asta Sans 제거) */
-   :lang(zh), .lang-zh {
-     font-family: "Noto Sans SC",
-                  -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-                  "Noto Sans", sans-serif;
-   }
-   :lang(ja), .lang-ja {
-     font-family: "Noto Sans JP",
-                  -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-                  "Noto Sans", sans-serif;
-   }
-   
-   /* 🇰🇷 한국어 페이지에서 '초미세' 자간: html lang="ko" 기준 */
-   :lang(ko), .lang-ko {
-     letter-spacing: -0.0020em; /* 글로벌(-0.003em)보다 한 단계 더 미세 */
-   }
-   
-   /* 소제목/오버라인 스타일(넥슨식 카테고리 라벨 톤) */
-   .overline {
-     font-size: 12px;
-     font-weight: 600;
-     letter-spacing: 0.06em;
-     text-transform: uppercase;
-     opacity: .8;
-   }
-   
-   /* 작은 캡션/보조텍스트 */
-   .caption {
-     font-size: 12.5px;
-     letter-spacing: 0;
-     opacity: .85;
-   }
-   
-   /* 폼/버튼 텍스트 톤 정리 */
-   button, .btn {
-     font-weight: 600;
-     letter-spacing: var(--tracking-ui);
-   }
-   
-   /* 옵션: 숫자 중심 UI에서 더 촘촘한 숫자 */
-   .tnum { font-variant-numeric: tabular-nums; }
-   
-   /* 유틸리티(원할 때 골라 쓰기) */
-   .tracking-xxs { letter-spacing: -0.0020em; } /* 거의 무감 */
-   .tracking-xs  { letter-spacing: -0.0025em; }
-   .tracking-s   { letter-spacing: -0.0035em; } /* 기본권장값과 동일 */
-   
-   /* ------- 필요 시 다크모드 대비(선택) -------
-   html.dark, [data-theme="dark"] body {
-     background-color: #0b0b0d;
-     color: #e9e9ee;
-   }
-   */
-   
+/* ✅ Pretendard Variable: 모든 굵기 포함 + font-display: swap */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
+
+/* ✅ 일본어/중국어(Simple) 폴백 유지 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+/* ===== Global font family ===== */
+:root{
+  /* 메인: Pretendard → 실패 시 KR 폴백 순서 */
+  --font-sans: "Pretendard Variable", "Pretendard",
+               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+               "Noto Sans KR", "Noto Sans", sans-serif;
+
+  /* 넥슨 톤 + 초미세 자간 */
+  --tracking-body: -0.003em;  /* 본문: 아주 미세하게 조임 */
+  --tracking-ui:    0.012em;  /* UI/라벨: 살짝만 펼침 */
+  --lh-body:        1.55;     /* 본문 줄간 */
+  --lh-heading:     1.25;     /* 헤딩 줄간 */
+}
+
+/* 기본 적용 + 베이스 레이아웃 (중복 통합) */
+html, body {
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums; /* 숫자 정렬 안정감 */
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-x: hidden;           /* 가로 스크롤 방지 */
+  overscroll-behavior: none;    /* 크롬, 파이어폭스 튕김 방지 */
+  background-color: #fff;
+}
+
+/* iOS 튕김 방지 */
+body { -webkit-overflow-scrolling: auto; }
+
+/* 헤딩: 굵고 또렷(넥슨 톤) */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+  font-weight: 600; /* 기본 두툼 */
+}
+h1 { font-size: clamp(24px, 2.4rem, 40px); }
+h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 600; }
+h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 500; }
+
+/* 본문 기본 */
+p, li, input, textarea, button { font-weight: 400; }
+
+/* UI 라벨/탭/네비: 살짝 펼친 자간 + 묵직한 두께 */
+nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
+  letter-spacing: var(--tracking-ui);
+  font-weight: 600;
+}
+
+/* (선택) 제목 계열은 좀 더 두껍게 */
+h1, h2, h3 { font-weight: 500; }
+
+/* 다국어 폴백 (Asta Sans 제거) */
+:lang(zh), .lang-zh {
+  font-family: "Noto Sans SC",
+               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+               "Noto Sans", sans-serif;
+}
+:lang(ja), .lang-ja {
+  font-family: "Noto Sans JP",
+               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+               "Noto Sans", sans-serif;
+}
+
+/* 🇰🇷 한국어 페이지에서 '초미세' 자간: html lang="ko" 기준 */
+:lang(ko), .lang-ko {
+  letter-spacing: -0.0020em; /* 글로벌(-0.003em)보다 한 단계 더 미세 */
+}
+
+/* 소제목/오버라인 스타일(넥슨식 카테고리 라벨 톤) */
+.overline {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: .8;
+}
+
+/* 작은 캡션/보조텍스트 */
+.caption {
+  font-size: 12.5px;
+  letter-spacing: 0;
+  opacity: .85;
+}
+
+/* 폼/버튼 텍스트 톤 정리 */
+button, .btn {
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui);
+}
+
+/* 옵션: 숫자 중심 UI에서 더 촘촘한 숫자 */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* 유틸리티(원할 때 골라 쓰기) */
+.tracking-xxs { letter-spacing: -0.0020em; } /* 거의 무감 */
+.tracking-xs  { letter-spacing: -0.0025em; }
+.tracking-s   { letter-spacing: -0.0035em; } /* 기본권장값과 동일 */
+
+/* ------- 필요 시 다크모드 대비(선택) -------
+html.dark, [data-theme="dark"] body {
+  background-color: #0b0b0d;
+  color: #e9e9ee;
+}
+*/
 
 /* ===== 패널 오픈 시 레이아웃 ===== */
 body.panel-open {
