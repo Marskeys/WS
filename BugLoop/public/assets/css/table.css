@@ -130,10 +130,9 @@ margin-top: 0rem;
 }
 
 .tab {
-  margin-top: 2rem;
   padding: 0.3rem 0.6rem;
   border: 1px solid #d0cce6;
-  background: black;
+  background: rgb(154, 68, 68);
   cursor: pointer;
   border-radius: 999px;
   font-size: 0.75rem !important;
@@ -238,7 +237,7 @@ margin-top: 0rem;
   
   .mobile-post-item .post-info {
     font-size: 0.7rem;
-    color: #b7b7b7;
+    color: #ede7e7;
   }
   
   @media (max-width: 640px) {
