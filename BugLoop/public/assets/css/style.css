@@ -294,3 +294,6 @@ body.panel-open .panel-backdrop{
   pointer-events: auto;       /* 클릭 닫기용 */
 }
 
+
+/* 10초짜리 확인용 — 보이면 폰트는 잘 로드된 것 */
+html { font-family: "Pretendard Variable","Pretendard",sans-serif !important; }
