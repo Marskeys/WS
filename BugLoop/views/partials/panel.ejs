@@ -39,7 +39,10 @@
     }
   
     @media (max-width: 768px){
-      :root{ --ide-w: 0px; --panel-w: 0px; }
+      :root{
+        --ide-w: 0px;
+        --panel-w: 0px;
+      }
       body, body.panel-open{ padding-left: 0 !important; }
       #mini-lecture{
         top: 77px;
@@ -186,7 +189,6 @@
         root.style.setProperty(VAR, n + 'px');
         resizer.setAttribute('aria-valuenow', String(n));
         if (save) sessionStorage.setItem(KEY, n + 'px');
-        /* 크기 변경 이벤트(스크롤 트랩이 참고) */
         window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
       };
   
@@ -207,7 +209,7 @@
       function move(e){
         if(!dragging) return;
         const y = (e.touches ? e.touches[0].clientY : e.clientY);
-        setH(startH + (y - startY)); // 드래그 중 저장 X
+        setH(startH + (y - startY));
         e.preventDefault?.();
       }
       function up(){
@@ -215,7 +217,7 @@
         dragging = false;
         document.body.classList.remove('resizing');
         const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
-        setH(cur, true); // 드래그 종료 시 저장
+        setH(cur, true);
         window.removeEventListener('mousemove', move);
         window.removeEventListener('mouseup', up);
         window.removeEventListener('touchmove', move);
@@ -239,89 +241,86 @@
   </script>
   
   <script>
-    /* ===== 현재 활성 서브메뉴 → 패널 상단 라벨 반영 ===== */
-    document.addEventListener('DOMContentLoaded', () => {
-      const activeMenu = document.querySelector('.submenu a.active');
-      const connector = document.querySelector('#mini-lecture .connector');
-      if (activeMenu && connector) connector.textContent = activeMenu.textContent.trim();
-    });
-  </script>
-  
-  <script>
-    /* ===== 패널 내부에서만 스크롤 캡처 (리사이저 후에도 유지) ===== */
+    /* ===== 패널 내부에서만 스크롤 캡처(고정 동작) ===== */
     (function(){
-      function bindScrollTrap(){
-        const panel = document.getElementById('mini-lecture');
-        const scroller = panel?.querySelector('.panel-card');
-        const resizer  = document.getElementById('panel-resizer');
-        if (!panel || !scroller) return;
+      let scroller, panel, resizer;
+      let touchY = 0;
   
-        const canScroll = () => (scroller.scrollHeight - scroller.clientHeight) > 1;
-  
-        /* 패널 본문 영역 스크롤 제어 */
-        const onWheel = (e) => {
-          e.stopPropagation();
-          if (!canScroll()) { e.preventDefault(); return; }        // 내용이 짧아 스크롤 불가 → 배경 차단
-          const max = scroller.scrollHeight - scroller.clientHeight;
-          const top = scroller.scrollTop;
-          if ((e.deltaY < 0 && top <= 0) || (e.deltaY > 0 && top >= max)) {
-            e.preventDefault();                                    // 바운스 시 배경 차단
-          }
-        };
-        let startY = 0;
-        const onTouchStart = (e) => { startY = e.touches[0].clientY; };
-        const onTouchMove  = (e) => {
-          e.stopPropagation();
-          const delta = startY - e.touches[0].clientY;
-          if (!canScroll()) { e.preventDefault(); return; }
-          const max = scroller.scrollHeight - scroller.clientHeight;
-          const top = scroller.scrollTop;
-          if ((delta < 0 && top <= 0) || (delta > 0 && top >= max)) {
-            e.preventDefault();
-          }
-        };
-  
-        scroller.addEventListener('wheel', onWheel, { passive: false });
-        scroller.addEventListener('touchstart', onTouchStart, { passive: true });
-        scroller.addEventListener('touchmove', onTouchMove, { passive: false });
-  
-        /* 리사이저 위에서 휠 → 스크롤러로 포워딩 (배경 스크롤 방지) */
-        if (resizer) {
-          const onResizerWheel = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            scroller.scrollTop += e.deltaY;
-          };
-          resizer.addEventListener('wheel', onResizerWheel, { passive: false });
-  
-          // 정리 함수
-          const cleanup = () => {
-            scroller.removeEventListener('wheel', onWheel);
-            scroller.removeEventListener('touchstart', onTouchStart);
-            scroller.removeEventListener('touchmove', onTouchMove);
-            resizer.removeEventListener('wheel', onResizerWheel);
-            window.removeEventListener('mini-panel-resized', reb); // 아래에서 정의
-            window.removeEventListener('resize', reb);
-          };
-  
-          /* 리바인드(크기 변경/윈도 리사이즈/SPA 네비 이후) */
-          const reb = () => { cleanup(); requestAnimationFrame(bindScrollTrap); };
-          window.addEventListener('mini-panel-resized', reb);
-          window.addEventListener('resize', reb);
-  
-          /* SPA 네비게이션 대비 */
-          const _ps = history.pushState, _rs = history.replaceState;
-          history.pushState = function(){ const r=_ps.apply(this, arguments); reb(); return r; };
-          history.replaceState = function(){ const r=_rs.apply(this, arguments); reb(); return r; };
-          window.addEventListener('popstate', reb);
-          document.addEventListener('click', (e)=>{
-            const a = e.target.closest('a');
-            if (a && (a.matches('[data-panel-link], [data-panel], nav a, .submenu a'))) setTimeout(()=>reb(),0);
-          }, true);
-        }
+      function ref(){
+        panel   = document.getElementById('mini-lecture');
+        scroller= panel?.querySelector('.panel-card') || null;
+        resizer = document.getElementById('panel-resizer');
       }
   
-      document.addEventListener('DOMContentLoaded', bindScrollTrap);
+      function onPanelWheel(e){
+        if (!panel || !scroller) return;
+        /* 패널 영역이면 항상 기본 스크롤 막고, 내부로 전달 */
+        e.preventDefault();
+        e.stopPropagation();
+        // deltaX도 있으면 같이 전달
+        scroller.scrollTop  += e.deltaY;
+        scroller.scrollLeft += e.deltaX || 0;
+      }
+  
+      function onPanelTouchStart(e){
+        if (!panel || !scroller) return;
+        touchY = e.touches[0].clientY;
+      }
+      function onPanelTouchMove(e){
+        if (!panel || !scroller) return;
+        const y = e.touches[0].clientY;
+        const delta = touchY - y;
+        touchY = y;
+        e.preventDefault();
+        e.stopPropagation();
+        scroller.scrollTop += delta;
+      }
+  
+      function bind(){
+        ref();
+        if (!panel || !scroller) return;
+  
+        /* 패널 전체에서 캡처 단계로 wheel/touch 가로채기 */
+        panel.addEventListener('wheel', onPanelWheel, { passive:false, capture:true });
+        panel.addEventListener('touchstart', onPanelTouchStart, { passive:true,  capture:true });
+        panel.addEventListener('touchmove',  onPanelTouchMove,  { passive:false, capture:true });
+  
+        /* 내용 교체/리렌더 감지 → 스크롤러 참조 갱신 */
+        const mo = new MutationObserver(() => {
+          const cur = panel.querySelector('.panel-card');
+          if (cur !== scroller) { unbind(); bind(); }
+        });
+        mo.observe(panel, { childList:true, subtree:true });
+  
+        /* 리사이즈(리사이저/윈도)나 SPA 내 네비 뒤에도 유지 */
+        const reb = () => { unbind(); bind(); };
+        window.addEventListener('mini-panel-resized', reb);
+        window.addEventListener('resize', reb);
+        const _ps = history.pushState, _rs = history.replaceState;
+        history.pushState   = function(){ const r=_ps.apply(this, arguments); setTimeout(reb,0); return r; };
+        history.replaceState= function(){ const r=_rs.apply(this, arguments); setTimeout(reb,0); return r; };
+        window.addEventListener('popstate', () => setTimeout(reb,0));
+  
+        // 저장해두기
+        panel.__trap_cleanup = () => {
+          try{
+            panel.removeEventListener('wheel', onPanelWheel, { capture:true });
+            panel.removeEventListener('touchstart', onPanelTouchStart, { capture:true });
+            panel.removeEventListener('touchmove', onPanelTouchMove, { capture:true });
+            mo.disconnect();
+            window.removeEventListener('mini-panel-resized', reb);
+            window.removeEventListener('resize', reb);
+            window.removeEventListener('popstate', reb);
+          }catch(e){}
+        };
+      }
+  
+      function unbind(){
+        if (panel?.__trap_cleanup) panel.__trap_cleanup();
+        panel = scroller = resizer = null;
+      }
+  
+      document.addEventListener('DOMContentLoaded', bind);
     })();
   </script>
   
