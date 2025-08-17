@@ -277,7 +277,7 @@ body.panel-open .left-controls {
 .panel-backdrop{
   position: fixed;
   inset: 0;                   /* 화면 전체 */
-  background: rgba(0,0,0,.35);/* 진하기는 여기서 조절 */
+  background: rgba(0,0,0,.45);/* 진하기는 여기서 조절 */
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
