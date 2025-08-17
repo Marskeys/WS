@@ -253,17 +253,7 @@ html.dark{
 }
 
 /* 패널 상단 배경 이미지 */
-.sidebar-extension-panel::before {
-  content: "" !important;
-  position: absolute !important;
-  top: 0; left: 0; right: 0;
-  height: var(--panel-hero-height);
-  background: url('/assets/images/room.webp') top center / cover no-repeat !important;
-  border-bottom: 2px solid rgba(255,255,255,1);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 1 !important;
-}
+
 .sidebar-extension-panel > * {
   position: relative;
   z-index: 1;
