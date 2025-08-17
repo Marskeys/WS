@@ -71,8 +71,8 @@
       box-shadow: 0 10px 30px rgba(0,0,0,.4);
       padding: 16px;
       overflow: auto;
-      min-height: 0;              /* ✅ 0까지 허용 (완전 접힘) */
-      overscroll-behavior: contain; /* ✅ 스크롤 체이닝 차단 */
+      min-height: 0;                 /* ✅ 0까지 허용 (완전 접힘) */
+      overscroll-behavior: contain;  /* ✅ 스크롤 체이닝 차단 */
       -webkit-overflow-scrolling: touch;
     }
   
@@ -183,13 +183,16 @@
   </div>
   
   <script>
-    /* ===== 패널 리사이저 (기존) ===== */
+    /* ===== 패널 리사이저 ===== */
     (function(){
       const root = document.documentElement;
       const resizer = document.getElementById('panel-resizer');
       if(!resizer) return;
   
-      const MIN = 20, MAX = 600, STEP = 16, BIG = 64;
+      /* ✅ aria와 동기화: HTML의 min/max 값을 그대로 사용 */
+      const MIN = parseInt(resizer.getAttribute('aria-valuemin'), 10) || 20;
+      const MAX = parseInt(resizer.getAttribute('aria-valuemax'), 10) || 800;
+      const STEP = 16, BIG = 64;
       const VAR = '--panel-h';
       const KEY = 'miniPanelH_session';      // ✅ 세션 저장 (탭 생명주기)
   
@@ -223,7 +226,7 @@
         }
       })();
   
-      // ARIA 범위
+      // ARIA 범위(보강)
       resizer.setAttribute('aria-valuemin', String(MIN));
       resizer.setAttribute('aria-valuemax', String(MAX));
   
@@ -285,55 +288,117 @@
   </script>
   
   <script>
-    /* ===== 배경 스크롤 잠금 & 체이닝 완전 차단 ===== */
-    document.addEventListener('DOMContentLoaded', () => {
-      const panel = document.getElementById('mini-lecture');
-      const scroller = panel?.querySelector('.panel-card');
-      if (!panel || !scroller) return;
+    /* ===== 배경 스크롤 잠금 & 체이닝 완전 차단 (URL 변경 후에도 유지) ===== */
+    (function(){
+      let state = { panel: null, scroller: null, cleanups: [] };
   
-      const lock = () => {
+      const addLock = () => {
         document.documentElement.classList.add('lock-scroll');
         document.body.classList.add('lock-scroll');
       };
-      const unlock = () => {
+      const removeLock = () => {
         document.documentElement.classList.remove('lock-scroll');
         document.body.classList.remove('lock-scroll');
       };
+      const cleanupAll = () => {
+        state.cleanups.forEach(fn => { try { fn(); } catch(e){} });
+        state.cleanups = [];
+      };
   
-      /* 포인터/포커스 진입 시 잠금, 이탈 시 해제 */
-      panel.addEventListener('pointerenter', lock);
-      panel.addEventListener('pointerleave', unlock);
-      panel.addEventListener('pointercancel', unlock);
-      panel.addEventListener('focusin', lock);
-      panel.addEventListener('focusout', (e) => {
-        if (!panel.contains(e.relatedTarget)) unlock();
+      function bindScrollTrap(){
+        cleanupAll();
+        removeLock(); // 네비 직후 남아있을 수 있는 락 해제
+  
+        state.panel    = document.getElementById('mini-lecture');
+        state.scroller = state.panel?.querySelector('.panel-card') || null;
+        if (!state.panel || !state.scroller) return;
+  
+        /* 진입/이탈 시 배경 잠금 */
+        const onEnter   = () => addLock();
+        const onLeave   = (e) => { if (!state.panel.contains(e.relatedTarget)) removeLock(); };
+        const onFocusIn = onEnter;
+        const onFocusOut= (e) => { if (!state.panel.contains(e.relatedTarget)) removeLock(); };
+  
+        state.panel.addEventListener('pointerenter', onEnter);
+        state.panel.addEventListener('pointerleave', onLeave);
+        state.panel.addEventListener('focusin', onFocusIn);
+        state.panel.addEventListener('focusout', onFocusOut);
+        state.cleanups.push(() => {
+          state.panel.removeEventListener('pointerenter', onEnter);
+          state.panel.removeEventListener('pointerleave', onLeave);
+          state.panel.removeEventListener('focusin', onFocusIn);
+          state.panel.removeEventListener('focusout', onFocusOut);
+        });
+  
+        /* 사파리 등 바운스 방지 */
+        const onWheel = (e) => {
+          const s = state.scroller;
+          const atTop = s.scrollTop <= 0 && e.deltaY < 0;
+          const atBottom = s.scrollTop + s.clientHeight >= s.scrollHeight && e.deltaY > 0;
+          if (atTop || atBottom) e.preventDefault();
+        };
+        state.scroller.addEventListener('wheel', onWheel, { passive: false });
+        state.cleanups.push(() => state.scroller.removeEventListener('wheel', onWheel));
+  
+        let startY = 0;
+        const onTouchStart = (e) => { startY = e.touches[0].clientY; };
+        const onTouchMove  = (e) => {
+          const s = state.scroller;
+          const curY = e.touches[0].clientY;
+          const delta = startY - curY;
+          const atTop = s.scrollTop <= 0 && delta < 0;
+          const atBottom = s.scrollTop + s.clientHeight >= s.scrollHeight && delta > 0;
+          if (atTop || atBottom) e.preventDefault();
+        };
+        state.scroller.addEventListener('touchstart', onTouchStart, { passive: true });
+        state.scroller.addEventListener('touchmove', onTouchMove, { passive: false });
+        state.cleanups.push(() => {
+          state.scroller.removeEventListener('touchstart', onTouchStart);
+          state.scroller.removeEventListener('touchmove', onTouchMove);
+        });
+  
+        /* 패널 내부 DOM 교체 감지 → 재바인딩 */
+        const mo = new MutationObserver(() => {
+          const cur = state.panel.querySelector('.panel-card');
+          if (cur !== state.scroller) bindScrollTrap();
+        });
+        mo.observe(state.panel, { childList: true, subtree: true });
+        state.cleanups.push(() => mo.disconnect());
+      }
+  
+      function onLocationChange(){
+        // DOM 업데이트가 반영된 뒤 재바인딩
+        requestAnimationFrame(bindScrollTrap);
+      }
+  
+      document.addEventListener('DOMContentLoaded', () => {
+        bindScrollTrap();
+  
+        /* pushState / replaceState 훅 + popstate */
+        const _pushState = history.pushState;
+        const _replaceState = history.replaceState;
+        history.pushState = function(){
+          const ret = _pushState.apply(this, arguments);
+          onLocationChange();
+          return ret;
+        };
+        history.replaceState = function(){
+          const ret = _replaceState.apply(this, arguments);
+          onLocationChange();
+          return ret;
+        };
+        window.addEventListener('popstate', onLocationChange);
+  
+        /* 일반 a 태그(헤더 메뉴 등) 클릭 뒤에도 재바인딩 시도 */
+        document.addEventListener('click', (e) => {
+          const a = e.target.closest('a');
+          if (!a) return;
+          // SPA 내 panel만 교체하거나 data-panel-link로 처리하는 경우도 커버
+          if (a.matches('[data-panel-link], [data-panel], nav a, .submenu a')) {
+            setTimeout(onLocationChange, 0);
+          }
+        }, true);
       });
-  
-      /* 모바일 터치 진입/해제 */
-      panel.addEventListener('touchstart', lock, { passive: true });
-      panel.addEventListener('touchend', unlock);
-  
-      /* ---- Fallback: 사파리/특정 환경에서의 바운스 방지 ---- */
-      // 휠: 상/하단에서 배경으로 전파되는 스크롤 막기
-      scroller.addEventListener('wheel', (e) => {
-        const atTop = scroller.scrollTop <= 0 && e.deltaY < 0;
-        const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight && e.deltaY > 0;
-        if (atTop || atBottom) e.preventDefault();
-      }, { passive: false });
-  
-      // 터치: 상/하단 바운스 시 배경으로 전파 방지
-      let startY = 0;
-      scroller.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-      }, { passive: true });
-  
-      scroller.addEventListener('touchmove', (e) => {
-        const curY = e.touches[0].clientY;
-        const delta = startY - curY; // 양수: 아래로 스크롤, 음수: 위로 스크롤
-        const atTop = scroller.scrollTop <= 0 && delta < 0;
-        const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight && delta > 0;
-        if (atTop || atBottom) e.preventDefault();
-      }, { passive: false });
-    });
+    })();
   </script>
   
