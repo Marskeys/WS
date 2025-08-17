@@ -216,31 +216,7 @@
         <div class="tab-container"></div>
         <!-- ✅ 프로필 탭: 증명사진 느낌 About 카드 -->
         <div class="tab-content" data-tab="profile" style="display: none;">
-          <section class="profile-tab">
-            <div class="profile-card" role="region" aria-label="프로필">
-              <div class="avatar-col">
-                <figure class="avatar-frame" aria-hidden="true">
-                  <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
-                </figure>
-              </div>
-              <div class="info-col">
-                <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
-                <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
-
-                <ul class="profile-tags" aria-label="태그">
-                  <% locale.profile["profile-tags"].forEach(tag => { %>
-                    <li><span class="tag-pill"><%= tag %></span></li>
-                  <% }) %>
-                </ul>
-
-                <nav class="profile-social" aria-label="소셜 링크">
-                  <a href="" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                  <a href="" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                  <a href="" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                </nav>
-              </div>
-            </div>
-          </section>
+          <%- include('partials/profile', { locale }) %>
         </div>
 
         <% if (typeof posts !== 'undefined') { %>
