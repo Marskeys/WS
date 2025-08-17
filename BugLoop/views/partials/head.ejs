@@ -1,59 +1,72 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= locale.meta.title %></title>
-  <meta name="description" content="행복하기 위한 가장 기초 단계, 쉽게 이해하는 복지 정보 블로그">
-  <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128">
-  <link rel="stylesheet" href="/assets/css/header.css">
-  <link rel="stylesheet" href="/assets/css/table.css">
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-  <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif">
-  <link rel="preload" href="/assets/images/room.webp" as="image" type="image/gif">
-  <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-/>
+<title><%= (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'Bug Loop') %></title>
 
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-  <!-- ✅ 최신 CDN (v6.6.6)에서 확실히 작동하는 경로 -->
+<%
+  // ===== Meta description (page override > locale default) =====
+  const rawDesc = (typeof metaDescription === 'string' && metaDescription.trim())
+    ? metaDescription.trim()
+    : (locale?.meta?.description || "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!");
+  const DESC = rawDesc.length > 160 ? (rawDesc.slice(0,157) + '…') : rawDesc;
+
+  // ===== Canonical / OG helpers =====
+  const SITE_ORIGIN = 'https://bugloop.dev';
+  const path = (typeof currentPath === 'string' && currentPath) ? currentPath : '/';
+  const canonicalUrl = (typeof canonical === 'string' && canonical.trim()) ? canonical.trim() : (SITE_ORIGIN + path);
+  const ogImage = (typeof metaImage === 'string' && metaImage.trim()) ? metaImage.trim() : '/assets/logo.png';
+  const OG_IMAGE_ABS = /^https?:\/\//.test(ogImage) ? ogImage : (SITE_ORIGIN + ogImage);
+  const PAGE_TITLE = (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'Bug Loop');
+%>
+
+<meta name="description" content="<%= DESC %>" />
+<meta property="og:title" content="<%= PAGE_TITLE %>" />
+<meta property="og:description" content="<%= DESC %>" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="<%= canonicalUrl %>" />
+<meta property="og:image" content="<%= OG_IMAGE_ABS %>" />
+<meta property="og:image:alt" content="Bug Loop logo" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="<%= PAGE_TITLE %>" />
+<meta name="twitter:description" content="<%= DESC %>" />
+<meta name="twitter:image" content="<%= OG_IMAGE_ABS %>" />
+
+<link rel="canonical" href="<%= canonicalUrl %>" />
+
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+<link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR&display=swap" rel="stylesheet" />
+
+<!-- CSS -->
+<link rel="stylesheet" href="/assets/css/header.css" />
+<link rel="stylesheet" href="/assets/css/style.css" />
+<link rel="stylesheet" href="/assets/css/table.css" />
+<link rel="stylesheet" href="/assets/css/darkmode.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<!-- Preload key images -->
+<link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
+<link rel="preload" href="/assets/images/room.webp" as="image" type="image/webp" />
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-     crossorigin="anonymous"></script>
-     
-  <!-- Open Graph 기본 메타태그 -->
-<meta property="og:title" content="Blindly Love | 복지 정보 블로그">
-<meta property="og:description" content="쉽게 이해하는 복지 정보, 외국인·청년·장애인 복지 안내 블로그">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://bugloop.dev/">
-<meta property="og:image" content="https://bugloop.dev/assets/logo.png"> <!-- 이미지 경로는 수정 필요 -->
+<!-- Apply theme early (avoid FOUC) -->
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('theme-mode');
+      var isDark = !saved || saved === 'dark';
+      document.documentElement.classList.toggle('dark', isDark);
+    } catch (e) {}
+  })();
+</script>
 
-
-  <!-- ✅ 테마를 페이지 렌더 전에 미리 적용 -->
-  <script>
-    (function() {
-      const STORAGE_KEY = 'theme-mode';
-      const savedTheme = localStorage.getItem(STORAGE_KEY);
-      const isDark = !savedTheme || savedTheme === 'dark';
-
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    })();
-  </script>
-
-  <link rel="stylesheet" href="/assets/css/style.css" />
-  <link rel="stylesheet" href="/assets/css/table.css" />
-  <link rel="stylesheet" href="/assets/css/darkmode.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
-
+<!-- Ads / libs -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
