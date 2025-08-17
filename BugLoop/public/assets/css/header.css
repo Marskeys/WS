@@ -327,18 +327,34 @@ html.dark{
   backdrop-filter: blur(4px);
 }
 
-.avatar-col { display: flex; justify-content: center; }
+/* 아바타 컬럼: 중앙 정렬 */
+.avatar-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 프레임 ❌ 제거 — 이미지 자체가 프레임을 가지고 있으므로 불필요 */
 .avatar-frame {
   margin: 0;
   padding: 0;
   width: 100%;
   max-width: 96px;
-  aspect-ratio: 3/4; /* 증명사진 비율 */
-  border-radius: 10px;
-  overflow: hidden;
-  border: 2px solid rgba(255,255,255,0.9);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-  background: #111;
+  /* aspect-ratio, border, shadow 다 제거 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent; /* 배경도 투명 */
+  border: none;
+  box-shadow: none;
+}
+
+/* 실제 이미지: 원형 프레임이 이미지에 있으므로 그냥 100% 채움 */
+.avatar-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0; /* 이미지 자체가 둥글게 되어있으므로 따로 적용 불필요 */
 }
 .profile-avatar {
   display: block;
