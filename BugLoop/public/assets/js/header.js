@@ -14,10 +14,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let blinkRemoved = false;
 
+  // ==== 활성 탭 상태 저장 키 ====
+  const ACTIVE_KEY = 'sidebar.activeTab';
+
+  // ==== 홈/글쓰기/토글 제외한 탭 판단 ====
+  const isNonHomeTabIcon = (el) =>
+    el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
+
+  function clearNonHomeTabActives() {
+    icons.forEach(i => { if (isNonHomeTabIcon(i)) i.classList.remove('active'); });
+  }
+
+  // ==== 현재 보이는 탭 이름 추정 ====
+  function getActiveTabName() {
+    // 1) 래퍼에 저장된 최근 탭
+    const fromDOM = extensionPanel?.dataset.activeTab;
+    if (fromDOM) return fromDOM;
+
+    // 2) 컨테이너의 현재 콘텐츠 루트(.tab-content[data-tab])
+    const fromContainer = container?.querySelector('.tab-content[data-tab]')?.dataset?.tab;
+    if (fromContainer) return fromContainer;
+
+    // 3) 세션 저장값
+    const fromStore = sessionStorage.getItem(ACTIVE_KEY);
+    if (fromStore) return fromStore;
+
+    return null;
+  }
+
+  // ==== 아이콘 활성화 적용(+상태 저장) ====
+  function setActiveIcon(name) {
+    clearNonHomeTabActives();
+    if (!name) return;
+    const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${name}"]`);
+    selectedIcon?.classList.add('active');
+    if (extensionPanel) extensionPanel.dataset.activeTab = name;
+    sessionStorage.setItem(ACTIVE_KEY, name);
+  }
+
+  // ==== 패널 다시 열릴 때 활성 탭 복구 ====
+  function restoreActive() {
+    const name = getActiveTabName();
+    if (name) setActiveIcon(name);
+  }
+
   // ✅ sidePanel 초기 처리 (처음부터 열려 있을 수 있으므로)
   if (extensionPanel?.classList.contains('open')) {
     sidePanel?.classList.add('open');
     sidePanel?.style.setProperty('pointer-events', 'auto');
+    restoreActive(); // 처음부터 열려있다면 아이콘 동기화
   } else {
     sidePanel?.classList.remove('open');
     sidePanel?.style.setProperty('pointer-events', 'none');
@@ -76,15 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
     history[fn](state, '', newUrl);
   }
 
-  // ==== (추가) 탭 활성화 유틸: 홈은 건드리지 않기 ====
-  // 홈/글쓰기/토글은 제외하고 탭 active를 관리
-  const isNonHomeTabIcon = (el) =>
-    el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
-
-  function clearNonHomeTabActives() {
-    icons.forEach(i => { if (isNonHomeTabIcon(i)) i.classList.remove('active'); });
-  }
-
   // ==== 탭 열기 함수 ====
   function openTab(selectedTab) {
     if (!extensionPanel?.classList.contains('open')) {
@@ -101,20 +137,16 @@ document.addEventListener('DOMContentLoaded', () => {
       clone.style.display = 'block';
       container.replaceChildren(clone);
 
-      // 🔧 핵심 추가 1: 템플릿 id → 런타임 id로 교체 (초클릭부터 반드시 잡히게)
+      // 템플릿 id → 런타임 id로 교체
       const tmpl = clone.querySelector('#sidebar-table-template');
       if (tmpl) tmpl.id = 'sidebar-table';
 
       bindLangDropdown(clone);
-
-      // 🔧 핵심 추가 2: 복제 직후 새 DOM에 즉시 바인딩 (첫 클릭 폴백 방지)
       if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
     }
 
-    // ⬇️ 수정: 홈 아이콘은 건드리지 않고, "탭"만 리셋
-    clearNonHomeTabActives(); // [MOD]
-    const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${selectedTab}"]`);
-    selectedIcon?.classList.add('active');
+    // 상태 & 아이콘 활성화 저장
+    setActiveIcon(selectedTab);
   }
 
   // ==== 패널 HTML 부분 렌더 로더 ====
@@ -123,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // 검색/카테고리 전용 탭 시각화
       openTab('search');
 
-      // 🔧 핵심 추가 3: 컨테이너 내부에서 대상 탐색 + 템플릿 id fallback
       let sidebarTable =
         document.querySelector('.tab-container #sidebar-table') ||
         document.querySelector('.tab-container #sidebar-table-template');
@@ -160,13 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==== 패널 내부 이벤트 가로채기 (탭/검색/페이지네이션) ====
   function bindPanelInnerEvents() {
-    // 🔧 핵심 추가 4: 컨테이너 내부에서 대상 탐색 + 템플릿 fallback
     const root =
       document.querySelector('.tab-container #sidebar-table') ||
       document.querySelector('.tab-container #sidebar-table-template');
     if (!root) return;
 
-    // 카테고리 탭 (권장: data-panel-link="category")
+    // 카테고리 탭
     root.querySelectorAll('a[data-panel-link="category"]').forEach(a => {
       a.addEventListener('click', (e) => {
         if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
@@ -178,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, { once: true });
     });
 
-    // 폴백: href만 있는 경우 (data-attr 없을 때)
+    // 폴백: href만 있는 경우
     root.querySelectorAll('.tabs a[href*="?category="]:not([data-panel-link="category"])').forEach(a => {
       a.addEventListener('click', (e) => {
         if (e.ctrlKey || e.metaKey || e.button === 1) return;
@@ -190,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, { once: true });
     });
 
-    // 검색 폼 (권장: data-panel-search="1")
+    // 검색 폼
     root.querySelectorAll('form[data-panel-search="1"]').forEach(form => {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -236,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ==== 탭 클릭 (기존 동작 유지) ====
+  // ==== 탭 클릭 ====
   icons.forEach(icon => {
     icon.addEventListener('click', (e) => {
       const selectedTab = icon.dataset.tab;
@@ -265,41 +295,50 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.add('panel-open');
       sidePanel?.classList.add('open');
       sidePanel?.style.setProperty('pointer-events', 'auto');
+      // 👉 다시 열릴 때 마지막 탭 아이콘 복구
+      restoreActive();
     } else {
       document.body.classList.remove('panel-open');
       sidePanel?.classList.remove('open');
       sidePanel?.style.setProperty('pointer-events', 'none');
-
-      // ⬇️ 추가: 패널을 "집어넣는" 순간, 홈을 제외한 탭 active 모두 해제
-      clearNonHomeTabActives(); // [ADD]
+      // 패널 닫힐 때 아이콘은 지우되, 상태(extensionPanel.dataset.activeTab)는 보존
+      clearNonHomeTabActives();
     }
   });
+
+  // ==== 컨테이너 변경 감지 → 아이콘 동기화 ====
+  if (container) {
+    const mo = new MutationObserver(() => {
+      if (extensionPanel?.classList.contains('open')) {
+        const name = container.querySelector('.tab-content[data-tab]')?.dataset?.tab;
+        if (name) setActiveIcon(name);
+      }
+    });
+    mo.observe(container, { childList: true, subtree: false });
+  }
 
   // ==== URL 기반 탭 초기 열기 ====
   const path = location.pathname;
   const searchParams = new URLSearchParams(location.search);
-  const isHome = path === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(path);
-  const isSearch = path.includes('/search') || searchParams.has('q');       // 전체 페이지 검색 경로(폴백)
+  const isSearch = path.includes('/search') || searchParams.has('q');
   const isFiltered = searchParams.has('category');
 
-  // ✅ 검색/필터일 때 자동 오픈(기존 로직 유지)
+  // 검색/필터일 때 자동 오픈
   if (isSearch || isFiltered) {
     requestAnimationFrame(() => setTimeout(() => openTab('search'), 10));
   }
-  // ✅ 글쓰기 컨텍스트일 때만 검색 탭 열기 (전역 isWrite가 있을 경우)
+  // 글쓰기 컨텍스트일 때(전역 isWrite가 true라면) 검색 탭 열기
   if (typeof isWrite !== 'undefined' && isWrite) {
     requestAnimationFrame(() => setTimeout(() => openTab('search'), 10));
   }
 
-  // ✅ 패널 전용 상태 있을 경우: 그 상태대로 부분 렌더 로드
+  // 패널 전용 상태 있으면 부분 렌더
   const initialState = getPanelStateFromURL();
   if (initialState) {
-    // 히스토리 정합성 위해 replaceState로 반영 후 로드
     pushPanelStateToURL(initialState, true);
     loadPanelHTML(initialState);
   } else {
-    // 초기 DOM 바인딩(서버가 렌더해준 기본 테이블)
-    bindPanelInnerEvents();
+    bindPanelInnerEvents(); // 서버 렌더 기본 테이블에 바인딩
   }
 
   // ==== 로그인 버튼 ====
@@ -309,36 +348,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ 최초 바인딩
+  // ==== 언어 드롭다운 초기 바인딩 ====
   bindLangDropdown(document);
 
   // ==== 설정 아이콘 & right-controls ====
-  // ==== 설정 아이콘 & right-controls ====
-function syncSettingsVisual() {
-  const open = rightControls?.classList.contains('is-active');
-  settingsIcon?.classList.toggle('is-active', open); // 색상은 이 클래스로만
-  settingsIcon?.classList.remove('active');          // 탭용 active 잔존 제거
-  settingsIcon?.setAttribute('aria-pressed', open ? 'true' : 'false');
-  if (!open) settingsIcon?.blur();                   // :focus로 흰색 남는 경우 방지
-}
+  function syncSettingsVisual() {
+    const open = rightControls?.classList.contains('is-active');
+    settingsIcon?.classList.toggle('is-active', open); // 색상은 이 클래스로만
+    settingsIcon?.classList.remove('active');          // 탭용 active 잔존 제거
+    settingsIcon?.setAttribute('aria-pressed', open ? 'true' : 'false');
+    if (!open) settingsIcon?.blur();
+  }
 
-// ⭕ 데스크톱 초기값: 켜두기(기존 의도 유지)
-if (settingsIcon && rightControls && window.innerWidth >= 1024) {
-  rightControls.classList.add('is-active');
-  syncSettingsVisual();
-}
+  // 데스크톱 초기값: 켜두기(기존 의도 유지)
+  if (settingsIcon && rightControls && window.innerWidth >= 1024) {
+    rightControls.classList.add('is-active');
+    syncSettingsVisual();
+  }
 
-settingsIcon?.addEventListener('click', (e) => {
-  e.preventDefault();
-  rightControls?.classList.toggle('is-active');
-  syncSettingsVisual();
-});
+  settingsIcon?.addEventListener('click', (e) => {
+    e.preventDefault();
+    rightControls?.classList.toggle('is-active');
+    syncSettingsVisual();
+  });
 
-// 외부 스크립트/리사이즈 등으로 rightControls 클래스가 바뀌어도 동기화
-if (settingsIcon && rightControls) {
-  const mo = new MutationObserver(() => syncSettingsVisual());
-  mo.observe(rightControls, { attributes: true, attributeFilter: ['class'] });
-}
+  // 외부 스크립트/리사이즈 등으로 클래스 변경 시 동기화
+  if (settingsIcon && rightControls) {
+    const mo = new MutationObserver(() => syncSettingsVisual());
+    mo.observe(rightControls, { attributes: true, attributeFilter: ['class'] });
+  }
 
   // ==== 히스토리 뒤/앞으로 ====
   window.addEventListener('popstate', () => {
@@ -346,8 +384,9 @@ if (settingsIcon && rightControls) {
     if (st) {
       loadPanelHTML(st);
     } else {
-      // 패널 상태가 사라지면 현재 DOM에 이벤트만 재바인딩
       bindPanelInnerEvents();
+      // 패널 상태가 사라졌다면, 현재 보이는 탭 기준으로 아이콘 동기화
+      restoreActive();
     }
   });
 });
@@ -465,4 +504,3 @@ if (settingsIcon && rightControls) {
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
   mo.observe(document.body, { childList: true, subtree: true });
 })();
-
