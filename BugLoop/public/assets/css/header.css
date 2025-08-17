@@ -19,25 +19,21 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-    /* 모바일 바가 50px 높이니까 패딩/마진 제거 */
     padding: 0 !important;
     margin: 0 !important;
-    /* 아이콘들과 폭을 맞추려면 ↓ 유지 (같이 1/n 분배) */
-    flex: 1 1 0 !important;
-    /* 만약 로고 폭을 고정하고 싶으면 위 한 줄 대신:
-       flex: 0 0 56px !important;  */
+    flex: 1 1 0 !important; /* 1/n 분배 */
   }
   .vscode-sidebar .sidebar-icon.logo img {
     display: block !important;
-    height: 45px;     /* 50px 바 안에 보기 좋은 크기 */
-    width: auto;      /* 가로는 비율 유지 */
+    height: 45px;
+    width: auto;
     object-fit: contain;
     image-rendering: -webkit-optimize-contrast;
     transition: transform .15s ease, opacity .15s ease, filter .15s ease;
   }
 }
 
-/* 데스크톱 호버 효과는 모바일에 영향 없도록 그대로 유지(선택) */
+/* 데스크톱 호버 효과 (모바일 영향 X) */
 @media (min-width: 769px) {
   .vscode-sidebar .sidebar-icon.logo:hover img,
   .vscode-sidebar .sidebar-icon.logo.active img {
@@ -46,15 +42,6 @@
   }
 }
 
-
-@media (min-width: 769px) {
-  /* 호버/활성 시 살짝 강조 */
-  .vscode-sidebar .sidebar-icon.logo:hover img,
-  .vscode-sidebar .sidebar-icon.logo.active img {
-    transform: scale(1.06);
-    opacity: 0.95;
-  }
-}
 
 /* ======================
    🔹 전역 변수
@@ -63,14 +50,21 @@
   --highlight-color: #00adb5;
   --panel-hero-height: 155px;
   --hero-overlap: 50px;
-  --avatar-overlap: 35px;
+  --z-header: 20000;
+  --z-head-inner: 3;
 }
+html.dark{
+  /* 다크에서 한 단계 더 높게 */
+  --z-header: 40000;
+  --z-head-inner: 10;
+}
+
 
 /* ======================
    🔹 공통 스타일 & 유틸리티
 ====================== */
-/* 숨김 처리 */
 .hidden { display: none; }
+
 #right-controls {
   display: none !important;
   position: relative;
@@ -82,6 +76,7 @@
 /* 탭 컨텐츠 전환 */
 .tab-content { display: none; }
 .tab-content[style*="display: block"] { display: block !important; }
+
 
 /* ======================
    🔹 사이드바 아이콘
@@ -102,6 +97,16 @@
   text-decoration: none;
   z-index: 9999;
 }
+.sidebar-icon i {
+  background: none !important;
+  outline: none;
+  box-shadow: none;
+}
+.sidebar-icon:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
 
 .sidebar-icon.active {
   color: var(--highlight-color, #fff);
@@ -114,17 +119,6 @@
     color: var(--highlight-color, #fff);
     background: transparent;
   }
-}
-
-.sidebar-icon i {
-  background: none !important;
-  outline: none;
-  box-shadow: none;
-}
-.sidebar-icon:focus-visible {
-  outline: 2px solid var(--highlight-color, #00adb5);
-  outline-offset: 2px;
-  border-radius: 6px;
 }
 
 /* 토글 확장 버튼 */
@@ -162,13 +156,11 @@
   --settings-idle: rgba(255, 255, 255, 0.626);
   color: var(--settings-idle);
 }
-
 /* 열림 상태: 흰색 */
 .sidebar-icon[data-tab="settings"].is-active {
   color: #fff !important;
   background: transparent !important;
 }
-
 /* 닫힘 상태: 어떤 상호작용/속성에도 흰색으로 변하지 않도록 강제 */
 .sidebar-icon[data-tab="settings"]:not(.is-active),
 .sidebar-icon[data-tab="settings"]:not(.is-active).active,
@@ -181,7 +173,6 @@
   color: var(--settings-idle) !important;
   background: none !important;
 }
-
 /* VSCode 컨테이너 안에서도 동일하게 무력화(우선순위 보강) */
 .vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active),
 .vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active).active,
@@ -194,6 +185,7 @@
   color: var(--settings-idle) !important;
   background: none !important;
 }
+
 
 /* ======================
    🔹 사이드 패널 레이아웃
@@ -210,11 +202,13 @@
   pointer-events: none;
 }
 .side-panel.main-panel-only.open { pointer-events: auto; }
+
 .sidebar-wrapper {
   display: flex;
   flex-direction: row;
   height: 100%;
 }
+
 .vscode-sidebar {
   width: 50px;
   background-color: #1e1e1e;
@@ -226,6 +220,7 @@
   z-index: 99990;
   pointer-events: auto !important;
 }
+
 .sidebar-extension-panel {
   position: relative !important;
   box-sizing: border-box;
@@ -274,8 +269,14 @@
   z-index: 1;
 }
 
+/* 패널 컨텐츠 상단 여백 (히어로와 겹침 보정) */
+.sidebar-extension-panel .tab-content {
+  padding-top: calc(var(--panel-hero-height) - var(--hero-overlap)) !important;
+}
+
+
 /* ======================
-   🔹 확장 패널 내부 컨텐츠
+   🔹 확장 패널 내부 공통
 ====================== */
 .sidebar-extension-panel h3 { font-size: 14px; margin-bottom: 10px; }
 .sidebar-extension-panel ul { list-style: none; padding: 0; margin: 0; }
@@ -283,7 +284,10 @@
 .sidebar-extension-panel a { color: #fff; text-decoration: none; font-size: 14px; }
 .sidebar-extension-panel a:hover { text-decoration: underline; }
 
-/* 패널 푸터 (하단 고정) */
+
+/* ======================
+   🔹 패널 푸터 (하단 고정)
+====================== */
 .panel-footer {
   margin-top: auto;
   flex-shrink: 0;
@@ -303,33 +307,184 @@
   padding-top: 8px;
 }
 
-/* 탭 컨텐츠 상단 여백 (이미지 겹침) */
-.sidebar-extension-panel .tab-content,
-.sidebar-extension-panel .profile-tab,
-.sidebar-extension-panel .search-tab {
-  padding-top: calc(var(--panel-hero-height) - var(--hero-overlap)) !important;
+
+/* =========================================================
+   ✅ PROFILE TAB — 증명사진 느낌 About 카드
+   (이 섹션이 기존 프로필 관련 '찌꺼기'를 대체합니다)
+   ========================================================= */
+.profile-tab { position: relative; z-index: 1; }
+
+.profile-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 14px;
+  align-items: start;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
 }
 
-/* 프로필/검색 탭 겹침 복구 */
-.profile-tab, .search-tab { position: relative; z-index: 1; }
-.profile-info {
-  margin-top: calc(var(--hero-overlap) * -1) !important;
-  position: relative;
-  z-index: 2;
+.avatar-col { display: flex; justify-content: center; }
+.avatar-frame {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 96px;
+  aspect-ratio: 3/4; /* 증명사진 비율 */
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.9);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  background: #111;
 }
 .profile-avatar {
-  margin-top: calc(var(--avatar-overlap) * -1) !important;
-  position: relative;
-  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 증명사진 꽉 채우기 */
+  image-rendering: -webkit-optimize-contrast;
 }
-.search-tab .search-bar,
-.search-tab .search-box,
-.search-tab input[type="search"],
-.search-tab .search-input {
-  margin-top: calc(var(--hero-overlap) * -1) !important;
-  position: relative;
-  z-index: 2;
+
+.info-col { min-width: 0; }
+.profile-name {
+  margin: 2px 0 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .2px;
 }
+.profile-bio {
+  margin: 0 0 10px;
+  color: #cfcfcf;
+  line-height: 1.55;
+  font-size: .95rem;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06);
+  color: #eaeaea;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: .8rem;
+  letter-spacing: .1px;
+}
+
+.profile-social {
+  display: flex;
+  gap: 10px;
+}
+.profile-social a {
+  color: #ddd;
+  font-size: 1.05rem;
+  transition: transform .15s ease, color .15s ease, text-shadow .15s ease;
+}
+.profile-social a:hover {
+  color: var(--highlight-color, #00adb5);
+  transform: translateY(-1px);
+  text-shadow: 0 0 12px rgba(0,173,181,0.45);
+}
+
+/* 모바일 정렬 */
+@media (max-width: 480px){
+  .profile-card { grid-template-columns: 80px 1fr; padding: 12px; gap: 12px; }
+  .avatar-frame { max-width: 76px; }
+}
+
+
+/* =========================================================
+   ✅ SEARCH TAB — 상단 검색바 + 테이블
+   (기존 search-tab 마진/포지션 보정 규칙 제거됨)
+   ========================================================= */
+.search-tab { position: relative; z-index: 1; }
+
+/* 상단 고정 검색바 */
+.search-form {
+  position: sticky;   /* 스크롤 내려도 검색바 고정 */
+  top: calc(var(--hero-overlap) - 10px);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 28px 1fr auto; /* 아이콘, 입력, 버튼 */
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #323232;
+  background: #0c0c0c;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+.search-form:focus-within {
+  border-color: var(--highlight-color, #00adb5);
+  box-shadow: 0 0 0 3px rgba(0,173,181,0.15);
+}
+
+.search-icon {
+  color: #a7a7a7;
+  font-size: .95rem;
+  text-align: center;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #f1f1f1;
+  font-size: .95rem;
+  line-height: 1.1;
+}
+.search-input::placeholder { color: #8f8f8f; }
+
+/* 제출 버튼 */
+.search-form .submit-btn {
+  border: 1px solid rgba(255,255,255,0.25);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.search-form .submit-btn:hover {
+  border-color: rgba(255,255,255,0.45);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
+  transform: translateY(-1px);
+}
+
+/* 테이블 템플릿 여백 */
+#sidebar-table-template, #sidebar-table {
+  margin-top: 8px;
+}
+
+/* 모바일: 검색바 여백/크기 조정 */
+@media (max-width: 670px){
+  .search-form { grid-template-columns: 24px 1fr auto; padding: 8px 10px; gap: 8px; }
+  .search-form .submit-btn { padding: 7px 10px; border-radius: 8px; font-size: .85rem; }
+}
+
+/* VSCode 사이드바 아이콘 미세조정(프로필/검색) */
+.vscode-sidebar .sidebar-icon[data-tab="profile"].active,
+.vscode-sidebar .sidebar-icon[data-tab="search"].active {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(255,255,255,0.35);
+}
+
 
 /* ======================
    🔹 인증 버튼 (로그인, 가입 등)
@@ -409,6 +564,7 @@
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
+
 /* ======================
    🔹 로그인 폼
 ====================== */
@@ -441,6 +597,7 @@
   transition: background-color 0.2s ease;
 }
 #login-form button:hover { background-color: #4c16b9; }
+
 
 /* ==================================
    🔹 헤더 & 메뉴 레이아웃
@@ -560,6 +717,7 @@
   box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
+
 /* ==================================
    🔹 라이트 모드 & 언어 선택
 ================================== */
@@ -600,7 +758,6 @@
   left: calc(100% - 2px - 15px);
   background: linear-gradient(to bottom, #eee, #bbb);
 }
-
 .light-switch[aria-checked="true"] .switch-label {
   background-color: #50504b;
 }
@@ -669,6 +826,7 @@ html.dark .lang-option:hover { background-color: #333; }
   .lang-menu{ font-size:13px; }
 }
 
+
 /* ==================================
    🔹 반응형 (모바일)
 ================================== */
@@ -684,18 +842,21 @@ html.dark .lang-option:hover { background-color: #333; }
     position: fixed;
     top: 0; left: 0;
     width: 100%;
-    z-index: 20000;
+    z-index: var(--z-header);
+    isolation: isolate; /* 자식 스택 분리 */
   }
 
   /* 헤더 상단바 (메뉴 줄) */
   .header-top {
     order: 1;
-    position: static;
+    position: relative;
     width: 100%;
     height: auto;
     padding: 0;
     left: 0;
     align-items: center;
+    z-index: var(--z-head-inner);
+    overflow: visible !important;
   }
 
   /* 사이드바 줄 */
@@ -706,7 +867,9 @@ html.dark .lang-option:hover { background-color: #333; }
     width: 100%;
     height: auto;
     pointer-events: auto;
+    z-index: 1;
   }
+
   .sidebar-wrapper { width: 100%; }
 
   /* VSCode 사이드바 (가로형) */
@@ -730,11 +893,11 @@ html.dark .lang-option:hover { background-color: #333; }
     height: 100% !important;
   }
 
-  /* 모바일 상단바에서 활성화 바(underline) 표시 */
+  /* 모바일 상단바에서 활성화 바(underline) 제거 */
   .vscode-sidebar .sidebar-icon.active::after,
   .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
   .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
-    content: none !important; /* 원래 흰색으로 덮는 규칙으로 인해 제거 */
+    content: none !important;
   }
 
   /* 확장 패널 (모바일 오버레이) */
@@ -767,23 +930,17 @@ html.dark .lang-option:hover { background-color: #333; }
     overflow-x: auto;
   }
   .main-menu-container { padding: 0 10px; }
+
   .right-controls {
     display: none !important; /* #right-controls 규칙을 따르도록 함 */
   }
   #right-controls.is-active {
     display: flex !important;
   }
-  .auth-buttons {
-    gap: 8px;
-    flex-direction: column;
-    width: 100%;
-  }
-  .auth-btn.write-post, .auth-btn.logout {
-    margin-left: 0 !important;
-  }
-  .auth-btn.logout {
-    margin-right: 0 !important;
-  }
+
+  .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
+  .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
+  .auth-btn.logout { margin-right: 0 !important; }
 }
 
 /* 670px 이하에서 메뉴 라인에 블러 필터 적용 */
@@ -792,7 +949,6 @@ html.dark .lang-option:hover { background-color: #333; }
     position: relative;
     overflow: hidden;
   }
-  
   .header-top::before {
     content: '';
     position: absolute;
@@ -806,58 +962,17 @@ html.dark .lang-option:hover { background-color: #333; }
   }
 }
 
-/* === 0) 공통 z-index 토큰 === */
-:root{
-  --z-header: 20000;
-  --z-head-inner: 3;
-}
-html.dark{
-  /* 다크에서 한 단계 더 높게 */
-  --z-header: 40000;
-  --z-head-inner: 10;
-}
-
-/* === 1) 모바일 헤더를 최상위 레이어로 (라이트/다크 공용) === */
-@media (max-width: 768px) {
-  .full-header-container {
-    position: fixed;
-    z-index: var(--z-header);
-    isolation: isolate; /* 자식 스택 분리 */
-  }
-
-  .header-top {
-    position: relative;
-    z-index: var(--z-head-inner);
-    overflow: visible !important;
-  }
-
-  .side-panel.main-panel-only,
-  .vscode-sidebar {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* 드롭다운 자체 레이어 */
-  .language-dropdown { position: relative; z-index: calc(var(--z-head-inner) + 1); }
-  .lang-menu { position: absolute; z-index: calc(var(--z-head-inner) + 2); }
-}
-
-/* === 2) 670px 이하: 블러/오버레이 간섭 방지 === */
-@media (max-width: 670px) {
-  .header-top { overflow: visible !important; }
-  .header-top::before { pointer-events: none; }
-}
-
-/* === 3) 다크모드 전용: 헤더 오버레이가 있으면 뒤로 물리기 === */
+/* === 모바일 헤더 레이어/드롭다운 안전장치 === */
 @media (max-width: 768px) {
   html.dark .header-top::before {
     z-index: 0 !important;
     pointer-events: none;
   }
+  .language-dropdown { position: relative; z-index: calc(var(--z-head-inner) + 1); }
+  .lang-menu { position: absolute; z-index: calc(var(--z-head-inner) + 2); }
 }
 
-/* === 4) 안전장치: 메뉴 열릴 때는 완전 고정(fixed)로 최상위 탈출 === */
-/* (open 클래스나 aria-expanded를 쓰고 있다면 둘 중 하나만 남겨도 됨) */
+/* === 메뉴 열릴 때 최상위 고정 (transform/blur 간섭 방지) === */
 .language-dropdown.open .lang-menu,
 .language-dropdown[aria-expanded="true"] .lang-menu{
   position: fixed;              /* 다크모드에서 transform/blur 스택 피하기 */

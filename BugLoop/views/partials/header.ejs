@@ -3,18 +3,18 @@
     <div class="top-controls">
       <div class="left-controls">
         <%
-        const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-        const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
-                        pathWithoutLang.startsWith('/post') ||
-                        pathWithoutLang.startsWith('/edit');
+          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+                           pathWithoutLang.startsWith('/post') ||
+                           pathWithoutLang.startsWith('/edit');
         %>
         <% if (showLogo) { %>
           <!-- ✅ 홈은 패널만 교체 -->
-          <a href="/<%= lang %>/" class="logo-link" data-panel-link></a>
+          <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
         <% } %>
       </div>
 
-      <nav class="header-menu">
+      <nav class="header-menu" aria-label="주 메뉴">
         <ul class="main-menu-container">
           <li class="menu-item-wrapper">
             <span class="menu-label">프론트엔드</span>
@@ -134,7 +134,7 @@
 
       <div class="right-controls" id="right-controls">
         <div class="language-dropdown">
-          <button id="langToggle" class="lang-btn">
+          <button id="langToggle" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu">
             <%
               let flagCode = lang;
               switch(lang) {
@@ -146,18 +146,19 @@
                 default: flagCode = 'kr';
               }
             %>
-            <span class="fi fi-<%= flagCode %>"></span>
-            <i class="fas fa-caret-down"></i>
+            <span class="fi fi-<%= flagCode %>" aria-hidden="true"></span>
+            <i class="fas fa-caret-down" aria-hidden="true"></i>
           </button>
-          <ul id="langMenu" class="lang-menu">
+          <ul id="langMenu" class="lang-menu" role="menu">
             <%
               const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
             %>
             <% supportedLangs.forEach(langCode => { %>
-              <li>
+              <li role="none">
                 <!-- 🔸 언어 변경은 전체 새로고침 유지 (data-panel-link 추가 안 함) -->
                 <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                  class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
+                   class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
+                   role="menuitem">
                   <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
                   <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
                 </a>
@@ -175,63 +176,91 @@
 
   <aside class="side-panel main-panel-only">
     <div class="sidebar-wrapper">
-      <nav class="vscode-sidebar">
-        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기">
-          <i class="fas fa-chevron-left"></i>
-        </a>
-        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" data-panel-link title="BugLoop 홈" aria-label="BugLoop 홈">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop">
-        </a>
-        <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" data-panel-link title="홈">
-          <i class="fas fa-home"></i>
+      <nav class="vscode-sidebar" aria-label="패널 사이드바" role="tablist">
+        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </a>
 
-        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필"><i class="fas fa-user"></i></a>
-        <a href="#" class="sidebar-icon" data-tab="search" title="검색"><i class="fas fa-search"></i></a>
+        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" data-panel-link title="BugLoop 홈" aria-label="BugLoop 홈" aria-selected="false">
+          <img src="/assets/images/BugLoop.png" alt="BugLoop">
+        </a>
+        <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" data-panel-link title="홈" aria-selected="false">
+          <i class="fas fa-home" aria-hidden="true"></i>
+        </a>
+
+        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필" aria-selected="false" role="tab">
+          <i class="fas fa-user" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="sidebar-icon" data-tab="search" title="검색" aria-selected="false" role="tab">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </a>
 
         <% if (user) { %>
           <% if (Number(user.is_admin) === 1) { %>
             <!-- 🔸 글쓰기는 전체뷰가 안전 -->
-            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기">
-              <i class="fas fa-pen"></i>
+            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
+              <i class="fas fa-pen" aria-hidden="true"></i>
             </a>
           <% } %>
         <% } %>
 
-        <a href="#" class="sidebar-icon" data-tab="settings" title="설정">
-          <i class="fas fa-cog"></i>
+        <a href="#" class="sidebar-icon" data-tab="settings" title="설정" aria-selected="false" aria-pressed="false" role="button">
+          <i class="fas fa-cog" aria-hidden="true"></i>
         </a>
       </nav>
 
       <div class="sidebar-extension-panel">
         <div class="tab-container"></div>
 
+        <!-- ✅ 프로필 탭: 증명사진 느낌 About 카드 -->
         <div class="tab-content" data-tab="profile" style="display: none;">
-          <div class="profile-tab">
-            <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
-            <div class="profile-info">
-              <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
-              <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
-              <div class="profile-tags">
-                <% locale.profile["profile-tags"].forEach(tag => { %>
-                  <span><%= tag %></span>
-                <% }) %>
+          <section class="profile-tab">
+            <div class="profile-card" role="region" aria-label="프로필">
+              <div class="avatar-col">
+                <figure class="avatar-frame" aria-hidden="true">
+                  <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
+                </figure>
               </div>
-              <div class="profile-social">
-                <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="" target="_blank"><i class="fab fa-github"></i></a>
-                <a href=""><i class="fas fa-envelope"></i></a>
+              <div class="info-col">
+                <h3 class="profile-name"><%= locale.profile["profile-name"] %></h3>
+                <p class="profile-bio"><%= locale.profile["profile-bio"] %></p>
+
+                <ul class="profile-tags" aria-label="태그">
+                  <% locale.profile["profile-tags"].forEach(tag => { %>
+                    <li><span class="tag-pill"><%= tag %></span></li>
+                  <% }) %>
+                </ul>
+
+                <nav class="profile-social" aria-label="소셜 링크">
+                  <a href="" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                  <a href="" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                  <a href="" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                </nav>
               </div>
             </div>
-          </div>
+          </section>
         </div>
 
         <% if (typeof posts !== 'undefined') { %>
+          <!-- ✅ 서치 탭: 상단 검색바 + 테이블 템플릿 -->
           <div class="tab-content" data-tab="search" style="display: none;">
-            <!-- ✅ 숨겨진 템플릿: header.js가 클론 후 #sidebar-table로 이름 바꿔 사용 -->
-            <div id="sidebar-table-template" data-lang="<%= lang %>">
-              <%- include('table') %>
-            </div>
+            <section class="search-tab">
+              <form class="search-form" data-panel-search="1" role="search" aria-label="패널 검색">
+                <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                <input
+                  type="search"
+                  name="q"
+                  class="search-input"
+                  placeholder="<%= (locale.search && locale.search.placeholder) || 'Search' %>"
+                  autocomplete="off" />
+                <button type="submit" class="submit-btn">검색</button>
+              </form>
+
+              <!-- 숨겨진 템플릿: header.js가 클론 후 #sidebar-table로 이름 바꿔 사용 -->
+              <div id="sidebar-table-template" data-lang="<%= lang %>">
+                <%- include('table') %>
+              </div>
+            </section>
           </div>
         <% } %>
 
@@ -270,11 +299,10 @@
   </aside>
 </div>
 
+<!-- ===== 상단 메뉴 현재 경로 하이라이트 ===== -->
 <script>
   (function(){
-    // 현재 경로 (마지막 슬래시 제거)
     var path = location.pathname.replace(/\/$/, '');
-    // 동일 경로인 링크에 active 클래스 부여
     document.querySelectorAll('.submenu a').forEach(function(a){
       var href = (a.getAttribute('href') || '').replace(/\/$/, '');
       if (href === path) {
@@ -286,47 +314,38 @@
   })();
 </script>
 
+<!-- ===== 홈 아이콘/로고 활성화: 경로 기준 ===== -->
 <script>
   (() => {
-    // 집 아이콘/로고 둘 다 잡되, 토글버튼은 제외
     const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
-  
     const stripLang = (p) => {
-      const path = (p || location.pathname).replace(/[#?].*$/, ''); // 해시/쿼리 제거
+      const path = (p || location.pathname).replace(/[#?].*$/, '');
       const noLang = path.replace(/^\/(ko|en|fr|zh|ja)(?:\/|$)/, '');
       return noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
     };
     const isHomePath = (p) => stripLang(p) === '/';
-  
     const setHomeActive = (flag) => {
       homeEls.forEach(el => {
         el.classList.toggle('active', flag);
-        // 혹시 CSS가 <i>에 직접 걸려있을 경우 대비
         el.querySelector('i')?.classList.toggle('active', flag);
       });
     };
-  
     const sync = () => setHomeActive(isHomePath(location.pathname));
-  
-    // 초기 동기화 (DOMContentLoaded 전/후 모두 커버)
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', sync, { once: true });
     } else {
       sync();
     }
-  
-    // 패널 네비(부분 로드) 클릭 시 즉시 반영
+
     document.addEventListener('click', (e) => {
       const a = e.target.closest('a[data-panel-link]');
       if (!a) return;
       const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
       setHomeActive(isHomePath(pn));
     });
-  
-    // 뒤로/앞으로 이동 시 반영
     window.addEventListener('popstate', sync);
-  
-    // SPA 네비게이션 훅킹 (pushState/replaceState 시그널)
+
     ['pushState','replaceState'].forEach(fn => {
       const orig = history[fn];
       history[fn] = function(...args){
@@ -339,104 +358,6 @@
   })();
 </script>
 
-<!-- ✅ 추가: 탭 로직 분리 & 패널 닫힘 시 탭 active 해제 (홈은 경로 기준 유지) -->
-<script>
-  (() => {
-    // 홈을 경로 기준으로만 재보정
-    function syncHomeByLocation() {
-      const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
-      const raw = location.pathname.replace(/[#?].*$/, '');
-      const noLang = raw.replace(/^\/(ko|en|fr|zh|ja)(?:\/|$)/, '');
-      const norm = noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
-      const isHome = (norm === '/');
-      homeEls.forEach(el => {
-        el.classList.toggle('active', isHome);
-        el.querySelector('i')?.classList.toggle('active', isHome);
-      });
-    }
-
-    // 홈 제외 탭들
-    const tabSelector = '.vscode-sidebar .sidebar-icon[data-tab]:not([data-tab="home"]):not(.toggle-extension):not([data-tab="write"])';
-    const tabIcons = Array.from(document.querySelectorAll(tabSelector));
-    const sideBar = document.querySelector('.vscode-sidebar');
-
-    function activateOnlyThisTabIcon(target){
-      tabIcons.forEach(i => i.classList.toggle('active', i === target));
-    }
-
-    // 탭 클릭 시 해당 탭만 active, 홈은 경로 기준 유지
-    sideBar?.addEventListener('click', (e) => {
-      const icon = e.target.closest(tabSelector);
-      if (!icon) return;
-      activateOnlyThisTabIcon(icon);
-      setTimeout(syncHomeByLocation, 0);
-    });
-
-    // ===== 패널 닫힘을 "확실히" 감지: 클릭, 전환, 뮤테이션 모두 커버 =====
-    const toggleBtn = document.querySelector('.vscode-sidebar .toggle-extension');
-    const extensionPanel = document.querySelector('.sidebar-extension-panel');
-    const wrapper = document.querySelector('.sidebar-wrapper');
-
-    // 실제 열림 여부 판단(가시성 기준)
-    function isPanelOpen() {
-      if (!extensionPanel) return false;
-      const style = getComputedStyle(extensionPanel);
-      if (style.display === 'none' || style.visibility === 'hidden') return false;
-      // offsetWidth/Height가 0이면 접힌 상태로 간주
-      if (extensionPanel.offsetWidth === 0 || extensionPanel.offsetHeight === 0) return false;
-      // position상 화면에서 제외된 경우
-      if (extensionPanel.offsetParent === null) return false;
-      return true;
-    }
-
-    function clearTabsIfClosed(prevOpen) {
-      const nowOpen = isPanelOpen();
-      if (prevOpen && !nowOpen) {
-        tabIcons.forEach(i => i.classList.remove('active')); // 프로필/검색/설정 등 끄기
-        syncHomeByLocation(); // 홈은 경로 기준 유지
-      }
-      lastOpen = nowOpen;
-    }
-
-    // 최초 상태
-    let lastOpen = isPanelOpen();
-
-    // 1) 토글 버튼 클릭 시: 레이아웃 적용 이후 상태 확인
-    toggleBtn?.addEventListener('click', () => {
-      // 두 프레임 뒤에 확인하면 트랜지션/클래스 토글 반영됨
-      requestAnimationFrame(() => requestAnimationFrame(() => clearTabsIfClosed(lastOpen)));
-    });
-
-    // 2) 전환 종료(transitionend) 시점에도 확인
-    ['transitionend','animationend'].forEach(evt => {
-      extensionPanel?.addEventListener(evt, () => clearTabsIfClosed(lastOpen));
-      wrapper?.addEventListener(evt, () => clearTabsIfClosed(lastOpen));
-    });
-
-    // 3) 클래스/스타일 변경을 관찰(뮤테이션) — header.js가 클래스로 접을 때 커버
-    const observerTargets = [extensionPanel, wrapper].filter(Boolean);
-    observerTargets.forEach(el => {
-      const mo = new MutationObserver(() => clearTabsIfClosed(lastOpen));
-      mo.observe(el, { attributes: true, attributeFilter: ['class','style'] });
-    });
-
-    // 4) 윈도우 리사이즈로 접힘 상태가 바뀌는 테마도 커버
-    window.addEventListener('resize', () => clearTabsIfClosed(lastOpen));
-
-    // 5) 혹시 외부에서 패널을 프로그램적으로 닫는 커스텀 이벤트가 있다면 커버
-    window.addEventListener('panel:closed', () => {
-      lastOpen = true; // 직전엔 열려있었다고 가정하여 아래 로직 트리거
-      clearTabsIfClosed(lastOpen);
-    });
-
-    // 상단 메뉴로 라우팅될 때 홈 재보정
-    document.addEventListener('click', (e) => {
-      const a = e.target.closest('a[data-panel-link]');
-      if (!a) return;
-      setTimeout(syncHomeByLocation, 0);
-    });
-  })();
-</script>
-
+<!-- ✅ 메인 로직: header.js가 패널/탭 상태(복구, a11y 포함)를 전담 -->
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
