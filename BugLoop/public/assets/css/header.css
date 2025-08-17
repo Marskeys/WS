@@ -999,6 +999,6 @@ html.dark .lang-option:hover { background-color: #333; }
 /* 로고 이미지: 너무 크지 않게 */
 .sidebar-extension-panel .panel-logo img{
   display: block;
-  width: min(60%, 180px); /* 컨테이너의 60% 또는 180px 중 작은 값 */
+  width: min(80%, 250px); /* 컨테이너의 60% 또는 180px 중 작은 값 */
   height: auto;           /* 비율 유지 */
 }
