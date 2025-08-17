@@ -261,7 +261,7 @@ html.dark{
 
 /* 패널 컨텐츠 상단 여백 (히어로와 겹침 보정) */
 .sidebar-extension-panel .tab-content {
-  padding-top: calc(var(--panel-hero-height) - var(--hero-overlap)) !important;
+
 }
 
 
