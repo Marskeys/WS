@@ -504,3 +504,19 @@ document.addEventListener('DOMContentLoaded', () => {
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
   mo.observe(document.body, { childList: true, subtree: true });
 })();
+
+// ==== 패널 백드롭 생성 (중복 방지) ====
+let backdrop = document.querySelector('.panel-backdrop');
+if (!backdrop) {
+  backdrop = document.createElement('div');
+  backdrop.className = 'panel-backdrop';
+  document.body.appendChild(backdrop);
+
+  // 딤 영역을 클릭하면 패널 닫기
+  backdrop.addEventListener('click', () => {
+    if (extensionPanel?.classList.contains('open')) {
+      toggleExtensionBtn?.click(); // 기존 토글 로직 재사용
+    }
+  });
+}
+

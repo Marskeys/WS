@@ -272,3 +272,23 @@ body.panel-open .left-controls {
    🔹 기타 유틸리티
 ====================== */
 .spacer { height: 0.5rem; }
+
+/* 메인 화면을 어둡게 만드는 백드롭 */
+.panel-backdrop{
+  position: fixed;
+  inset: 0;                   /* 화면 전체 */
+  background: rgba(0,0,0,.35);/* 진하기는 여기서 조절 */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .18s ease, visibility .18s ease;
+  z-index: 1500;              /* 패널/헤더보다 낮게, 본문보다 높게 */
+}
+
+/* 패널 열렸을 때만 보이기 */
+body.panel-open .panel-backdrop{
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;       /* 클릭 닫기용 */
+}
+
