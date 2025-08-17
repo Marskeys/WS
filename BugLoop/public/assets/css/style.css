@@ -1,33 +1,57 @@
+/* ===== Global font family ===== */
+:root{
+  --font-sans: "Asta Sans",
+               "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
+               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+               "Noto Sans", sans-serif;
+}
+
+/* 기본 적용 + 베이스 레이아웃 (중복 통합) */
 html, body {
-  overscroll-behavior: none; /* 크롬, 파이어폭스 계열 */
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-x: hidden;           /* 가로 스크롤 방지 */
+  overscroll-behavior: none;    /* 크롬, 파이어폭스 튕김 방지 */
+  background-color: white;
 }
 
+/* iOS 튕김 방지 */
 body {
-  -webkit-overflow-scrolling: auto; /* iOS 튕김 방지 */
+  -webkit-overflow-scrolling: auto;
 }
 
+/* (선택) 제목 계열은 좀 더 두껍게 */
+h1, h2, h3 { font-weight: 700; }
+
+/* 다국어 보완: Asta Sans가 KO는 커버하지만
+   중국어/일본어 글립은 부족할 수 있어 세부 언어에 폴백 추가 */
+:lang(zh), .lang-zh {
+  font-family: "Asta Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+:lang(ja), .lang-ja {
+  font-family: "Asta Sans", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", system-ui, sans-serif;
+}
+
+/* ===== 패널 오픈 시 레이아웃 ===== */
 body.panel-open {
   padding-left: 360px;
   transition: padding 0.3s ease;
-  width: calc(100%);
+  width: 100%;
 }
-
-
 
 body.panel-open .left-controls {
   padding-left: 360px;
 }
 
 @media (max-width: 640px) {
-  .left-controls {
-padding-left: 13px;
-  }
-
-  .header-top {
-    padding-left: 10px;
-  }
+  .left-controls { padding-left: 13px; }
+  .header-top { padding-left: 10px; }
 }
-
 
 @media (max-width: 768px) {
   body.panel-open {
@@ -36,40 +60,15 @@ padding-left: 13px;
     width: 100% !important;
     overflow: hidden;
     position: fixed;
-    width: 100%;
   }
-}
-
-
-
-/* ======================
-   ✅ 기본 설정
-====================== */
-html, body {
-  scroll-behavior: smooth;
-  margin: 0;
-  padding: 0;
-  font-family: 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  overflow-x: hidden; /* 가로 스크롤 방지 */
-  background-color: white;
 }
 
 /* ======================
    🔹 반응형 (모바일)
 ====================== */
 @media (max-width: 640px) {
-    .desktop-menu {
-        display: none;
-    }
+  .desktop-menu { display: none; }
 }
-
-
-
-
-
 
 /* ======================
    🔹 로고 스타일
@@ -80,7 +79,7 @@ html, body {
   margin-right: 6rem;
   margin-bottom: 0;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .floating-home-logo:hover {
@@ -90,9 +89,7 @@ html, body {
 
 /* ✅ 데스크탑에서 크기 줄이기 */
 @media (min-width: 640px) {
-  .floating-home-logo {
-    width: 120px
-  }
+  .floating-home-logo { width: 120px; }
 }
 
 @media (max-width: 640px) {
@@ -126,29 +123,25 @@ html, body {
   }
 }
 
-
-
 /* ======================
    ✅ 프리로더
 ====================== */
-/* 프리로더 전체 화면 덮기 */
 #preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #fff; /* 필요하면 배경색 지정 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 15000;
-    transition: opacity 0.2s ease; /* 부드럽게 사라짐 */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff; /* 필요하면 배경색 지정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 15000;
+  transition: opacity 0.2s ease; /* 부드럽게 사라짐 */
 }
 
 #preloader.fade-out {
-    opacity: 0;
-    pointer-events: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* 스피너 애니메이션 */
@@ -164,9 +157,6 @@ html, body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-
-
-
 
 /* ======================
    🔹 모바일 전용 스타일 (삭제될 햄버거 메뉴 관련)
@@ -191,16 +181,10 @@ html, body {
     color: #666;
   }
 
-  /* .header-top {
-    padding-left: 3rem;  햄버거 버튼 삭제로 제거
-  } */ /* 주석 처리 */
+  /* .header-top { padding-left: 3rem; }  햄버거 버튼 삭제로 제거 */
 }
-
-
 
 /* ======================
    🔹 기타 유틸리티
 ====================== */
-.spacer {
-  height: 0.5rem;
-}
+.spacer { height: 0.5rem; }
