@@ -1,121 +1,113 @@
-  
-  
-
-  
 /* ============================
    🔍 검색창 + 캐릭터 위치
 ============================ */
 .search-form {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 40px;
+  padding: 0 0.75rem; /* ✅ 좌우 패딩 줄임 */
+  border: 2px solid #c28383;
+  border-radius: 999px;
+  background-color: white;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden; /* ✅ 넘침 방지 */
+}
 
-    justify-content: space-between;
-    width: 100%;
-    height: 40px;
-    padding: 0 0.75rem; /* ✅ 좌우 패딩 줄임 */
-    border: 2px solid #c28383;
-    border-radius: 999px;
-    background-color: white;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden; /* ✅ 넘침 방지 */
-  }
-  
-  .search-form:focus-within {
-    border-color: #ff8b8b; /* 테두리 색 변화 */
-    box-shadow: 0 0 0 3px rgba(255, 139, 139, 0.3); /* 부드러운 아우라 */
-    background-color: #fffdfd; /* 살짝 밝게 */
-  }
+.search-form:focus-within {
+  border-color: #ff8b8b; /* 테두리 색 변화 */
+  box-shadow: 0 0 0 3px rgba(255, 139, 139, 0.3); /* 부드러운 아우라 */
+  background-color: #fffdfd; /* 살짝 밝게 */
+}
 
-  .search-container {
-    position: relative;
-    z-index: 20000;
-  }
+.search-container {
+  position: relative;
+  z-index: 20000;
+}
+
+.search-wrapper {
+  z-index: 20000;
+  width: 100%;
+  max-width: 100%;         /* ✅ 모바일에서 꽉 채우되 넘치지 않게 */
+  padding: 0 12px;         /* ✅ 좌우 여백 줘서 버튼 붙는 거 방지 */
+  box-sizing: border-box; /* ✅ padding 포함 */
+}
+
+.search-box {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  color: #333;
+  min-width: 0; /* ✅ flex 안에서 overflow 방지 */
+}
+
+.icon-submit-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #9d6bff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  flex-shrink: 0;  /* ✅ 크기 고정 */
+}
+
+.icon-submit-btn i {
+  pointer-events: none;
+  transform: none;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.icon-submit-btn:hover i {
+  color: #caa8ff;
+  transform: scale(1.15);
+}
+
+/* 모바일 대응 */
+@media (max-width: 640px) {
   .search-wrapper {
-    z-index: 20000;
-    width: 100%;
-    max-width: 100%;         /* ✅ 모바일에서 꽉 채우되 넘치지 않게 */
-    padding: 0 12px;         /* ✅ 좌우 여백 줘서 버튼 붙는 거 방지 */
-    box-sizing: border-box; /* ✅ padding 포함 */
-  }
-
-  .search-box {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 0.95rem;
-    padding: 0.4rem 0.5rem;
-    background: transparent;
-    color: #333;
-    min-width: 0; /* ✅ flex 안에서 overflow 방지 */
-  }
-  
-  .icon-submit-btn {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    color: #9d6bff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.4rem;
-    flex-shrink: 0;  /* ✅ 크기 고정 */
-  }
-  
-  .icon-submit-btn i {
-    pointer-events: none;
-    transform: none;
-    font-size: 1.2rem;
-    transition: transform 0.2s ease, color 0.2s ease;
-  }
-  
-  .icon-submit-btn:hover i {
-    color: #caa8ff;
-    transform: scale(1.15);
-  }
-  
-  
-  /* 모바일 대응 */
-  @media (max-width: 640px) {
-    .search-wrapper {
       max-width: 90vw;
-    }
-  
-    .search-box {
-      font-size: 0.9rem;
-    }
   }
-  
+  .search-box {
+      font-size: 0.9rem;
+  }
+}
 
 /* ============================
-   🧾 탭 + 게시판 (데스크탑)
+ 🧾 탭 + 게시판 (데스크탑)
 ============================ */
 .tab-board {
-    width: 100%;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    font-family: 'Noto Sans KR', sans-serif;
-  }
-  
-  .tabs-wrapper {
-    display: block;
-    position: relative;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    padding: 0 0.2rem;
-    margin-bottom: 0.1rem;
-    box-sizing: border-box;
-  }
-  
-  .tabs-container {
-    position: relative;
-    width: 100%;
-  }
-  
-  
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.tabs-wrapper {
+  display: block;
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  padding: 0 0.2rem;
+  margin-bottom: 0.1rem;
+  box-sizing: border-box;
+}
+
+.tabs-container {
+  position: relative;
+  width: 100%;
+}
+
 .tabs {
   display: inline-flex;
   flex-wrap: nowrap;
@@ -126,7 +118,7 @@
 }
 
 .tabs.searching {
-margin-top: 0rem;
+  margin-top: 0rem;
 }
 
 .tab {
@@ -157,188 +149,280 @@ margin-top: 0rem;
   font-weight: bold;
 }
 
-  
-  .tabs::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .tab-spacer {
-    display: inline-block;
-    width: 1rem; /* 원하는 만큼 */
-    height: 1px; /* 높이는 최소 */
-    background: transparent; /* 안 보이게 */
-    flex-shrink: 0; /* 줄어들지 않도록 */
-  }
-  
-  @media (max-width: 640px) {
-    .tabs-wrapper {
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-spacer {
+  display: inline-block;
+  width: 1rem; /* 원하는 만큼 */
+  height: 1px; /* 높이는 최소 */
+  background: transparent; /* 안 보이게 */
+  flex-shrink: 0; /* 줄어들지 않도록 */
+}
+
+@media (max-width: 640px) {
+  .tabs-wrapper {
       max-width: 95vw;
       overflow-x: auto;
       scrollbar-width: none;
-    }
-  
-    .tabs-wrapper::-webkit-scrollbar {
+  }
+  .tabs-wrapper::-webkit-scrollbar {
       display: none;
-    }
-  
-    .tab {
+  }
+  .tab {
       font-size: 0.7rem;
       padding: 0.25rem 0.7rem;
-    }
   }
-  
-  /* 📱 모바일 게시판 (예시용 일부만 포함) */
-  .mobile-board-list {
-    display: block;
-    padding: 0 0.1rem;
-    margin-top: 1rem;
-    width: 100%;
-    overflow-x: hidden;
-    position: relative;
-    z-index: 3;
-  }
-  
-  .mobile-post-item {
-    padding: 0.3rem 0;
-    position: relative;
-    width: 100%;
-  }
-  
-  .mobile-post-item::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 0.5px;
-    background-color: #ffffff;
-  }
-  
-  html.dark .mobile-post-item::after {
-    background-color: #ddd;
-  }
-  
-  .mobile-post-item .post-title {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #ffffff;
-    text-decoration: none;
-    display: block;
-    margin-bottom: 0.1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .mobile-post-item .post-title:hover {
-    color: #b88fff;
-    text-decoration: underline;
-  }
-  
-  .mobile-post-item .post-info {
-    font-size: 0.7rem;
-    color: #ede7e7;
-  }
-  
-  @media (max-width: 640px) {
-    .board-table {
+}
+
+/* 📱 모바일 게시판 (예시용 일부만 포함) */
+.mobile-board-list {
+  display: block;
+  padding: 0 0.1rem;
+  margin-top: 1rem;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 3;
+}
+
+.mobile-post-item {
+  padding: 0.3rem 0;
+  position: relative;
+  width: 100%;
+}
+
+.mobile-post-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.5px;
+  background-color: #ffffff;
+}
+
+.mobile-post-item .post-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-post-item .post-title:hover {
+  color: #b88fff;
+  text-decoration: underline;
+}
+
+.mobile-post-item .post-info {
+  font-size: 0.7rem;
+  color: #ede7e7;
+}
+
+@media (max-width: 640px) {
+  .board-table {
       display: none;
-    }
-  
-    .main-panel {
+  }
+  .main-panel {
       min-width: 320px;
       margin-top: 0.5rem;
-    }
-  
-    .tabs {
+  }
+  .tabs {
       padding: 0 1rem;
       width: max-content;
-    }
   }
-  
-  
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem auto 1rem;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+}
+
+.page-link {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #555;
+  background: #1a1a1a;
+  color: #ddd;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  min-width: 24px;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.page-link:hover {
+  background: #333;
+  color: #fff;
+  border-color: #888;
+}
+
+.page-link.active {
+  background-color: #ff7a7a;
+  color: white;
+  font-weight: bold;
+  border-color: #ff9999;
+}
+
+.page-link.disabled {
+  pointer-events: none;
+  opacity: 0.35;
+  background: #222;
+  color: #aaa;
+  border-color: #444;
+}
+
+.page-ellipsis {
+  padding: 0.25rem 0.5rem;
+  color: #aaa;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.page-link,
+.page-ellipsis {
+  text-decoration: none !important;
+}
+
+@media (max-width: 640px) {
   .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 1.5rem auto 1rem;
-    gap: 0.2rem;
-    flex-wrap: wrap;
-    font-size: 0.75rem;
-  }
-  
-  .page-link {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid #555;
-    background: #1a1a1a;
-    color: #ddd;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    min-width: 24px;
-    text-align: center;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-  
-  .page-link:hover {
-    background: #333;
-    color: #fff;
-    border-color: #888;
-  }
-  
-  .page-link.active {
-    background-color: #ff7a7a;
-    color: white;
-    font-weight: bold;
-    border-color: #ff9999;
-  }
-  
-  .page-link.disabled {
-    pointer-events: none;
-    opacity: 0.35;
-    background: #222;
-    color: #aaa;
-    border-color: #444;
-  }
-  
-  .page-ellipsis {
-    padding: 0.25rem 0.5rem;
-    color: #aaa;
-    font-weight: bold;
-    font-size: 0.75rem;
-  }
-  
-  .page-link,
-  .page-ellipsis {
-    text-decoration: none !important;
-  }
-  
-  @media (max-width: 640px) {
-    .pagination {
       gap: 0.15rem;
       font-size: 0.7rem;
-    }
-  
-    .page-link {
+  }
+  .page-link {
       padding: 0.2rem 0.45rem;
       min-width: 22px;
       font-size: 0.7rem;
-    }
-  
-    .page-ellipsis {
+  }
+  .page-ellipsis {
       padding: 0.2rem 0.45rem;
       font-size: 0.7rem;
-    }
   }
-  
-  .pagination.desktop-only {
-    display: none;
-  }
+}
 
-  .search-result-msg {
-    margin-top: 100px;
-    margin-left: 50px;
-    margin-bottom: 0;
+.pagination.desktop-only {
+  display: none;
+}
+
+.search-result-msg {
+  margin-top: 100px;
+  margin-left: 50px;
+  margin-bottom: 0;
+}
+
+/* ===== Buttons on red background (single theme) ===== */
+.mobile-post-item .post-title-and-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-post-item .post-title-and-actions .post-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-post-item .action-icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 6px;
+}
+
+.mobile-post-item .delete-post-form {
+  display: inline-flex;
+  margin: 0;
+}
+
+/* Palette tuned for red bg */
+:root {
+  --on-red-fg: #fff;
+  --on-red-fg-muted: rgba(255, 255, 255, .9);
+  --on-red-border: rgba(255, 255, 255, .35);
+  --on-red-bg: rgba(255, 255, 255, .08);
+  --on-red-bg-hover: rgba(255, 255, 255, .16);
+  --on-red-shadow: rgba(0, 0, 0, .25);
+  --danger-fg: #ffe2e2; /* delete 아이콘 살짝 핑크톤 */
+}
+
+/* Common icon button */
+.mobile-post-item .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--on-red-border);
+  background: var(--on-red-bg);
+  color: var(--on-red-fg);
+  text-decoration: none;
+  box-shadow: 0 1px 2px var(--on-red-shadow);
+  transition: transform .08s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-post-item .icon-btn i {
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.mobile-post-item .icon-btn:hover {
+  background: var(--on-red-bg-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px var(--on-red-shadow);
+}
+
+.mobile-post-item .icon-btn:active {
+  transform: translateY(0);
+}
+
+.mobile-post-item .icon-btn:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .4);
+}
+
+/* Edit / Delete */
+.mobile-post-item .edit-btn i {
+  color: var(--on-red-fg);
+}
+
+.mobile-post-item .delete-btn i {
+  color: var(--danger-fg);
+}
+
+/* Touch devices: hit area up */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-post-item .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
   }
+  .mobile-post-item .action-icons {
+      gap: 10px;
+  }
+}
+
+/* Lock icon alignment */
+.mobile-post-item .post-title .fa-lock {
+  margin-left: 6px;
+  font-size: .9em;
+  opacity: .95;
+}
