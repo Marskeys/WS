@@ -1,69 +1,68 @@
 <style>
     :root { --header-h: 30px;   --panel-h-default: 150px; --panel-h: var(--panel-h-default);}
-
+  
     :root{
-  --ide-w: 50px;     /* VSCode 사이드바 폭 */
-  --panel-w: 360px;  /* 확장 패널 폭 */
-  --gut: 2.5vw;      /* 양옆 여백 비율 */
-}
-
-    @media (max-width: 768px){
-        :root {--panel-h-default: 220px; --panel-h: var(--panel-h-default);}
+      --ide-w: 50px;     /* VSCode 사이드바 폭 */
+      --panel-w: 360px;  /* 확장 패널 폭 */
+      --gut: 2.5vw;      /* 양옆 여백 비율 */
     }
-    
+  
+    @media (max-width: 768px){
+      :root {--panel-h-default: 220px; --panel-h: var(--panel-h-default);}
+    }
+  
     /* 컨테이너 */
     #mini-lecture{
-  position: fixed;
-  top: var(--header-h, 0);
-  z-index: 40;
-  left:  calc(var(--ide-w) + var(--gut));
-  right: var(--gut);
-  height: var(--panel-h);
-  min-height: 20px;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) 20px;
-  overflow: hidden;
-
-  /* 엄청 쎈 멀티 레이어 섀도우 */
-  box-shadow:
-    0 60px 140px -30px rgba(0,0,0,.70),
-    0 30px  70px -20px rgba(0,0,0,.60),
-    0 14px  30px -10px rgba(0,0,0,.50),
-    0  2px   8px  -2px rgba(0,0,0,.45),
-    0  0     0   1px  rgba(0,0,0,.28); /* 가장자리 정리용 */
-}
-
-
-/* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
-body.panel-open #mini-lecture{
-  left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
-  right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
-}
+      position: fixed;
+      top: var(--header-h, 0);
+      z-index: 40;
+      left:  calc(var(--ide-w) + var(--gut));
+      right: var(--gut);
+      height: var(--panel-h);
+      min-height: 20px;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) 20px;
+      overflow: hidden;
   
-@media (max-width: 768px){
-  :root{
-    --ide-w: 0px;     /* 모바일에선 좌측 IDE 없음 */
-    --panel-w: 0px;   /* 확장 패널도 좌측이 아니라 상단이라 0 취급 */
-  }
-
-  /* 본문 밀림 제거 (데스크탑 규칙 무효화) */
-  body,
-  body.panel-open{
-    padding-left: 0 !important;
-  }
-
-  /* ✅ fixed 패널은 모바일에서 left/right만 쓰고 width/margin 제거 */
-  #mini-lecture{
-    top: 77px;
-    left: 15px !important;
-    right: 15px !important;
-    width: auto !important;
-    margin: 0 !important;
-    padding-left: 0 !important;
-  }
-}
+      /* 엄청 쎈 멀티 레이어 섀도우 */
+      box-shadow:
+        0 60px 140px -30px rgba(0,0,0,.70),
+        0 30px  70px -20px rgba(0,0,0,.60),
+        0 14px  30px -10px rgba(0,0,0,.50),
+        0  2px   8px  -2px rgba(0,0,0,.45),
+        0  0     0   1px  rgba(0,0,0,.28); /* 가장자리 정리용 */
+    }
   
-    /* 패널 내용 */
+    /* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
+    body.panel-open #mini-lecture{
+      left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+      right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+    }
+  
+    @media (max-width: 768px){
+      :root{
+        --ide-w: 0px;     /* 모바일에선 좌측 IDE 없음 */
+        --panel-w: 0px;   /* 확장 패널도 좌측이 아니라 상단이라 0 취급 */
+      }
+  
+      /* 본문 밀림 제거 (데스크탑 규칙 무효화) */
+      body,
+      body.panel-open{
+        padding-left: 0 !important;
+      }
+  
+      /* ✅ fixed 패널은 모바일에서 left/right만 쓰고 width/margin 제거 */
+      #mini-lecture{
+        top: 77px;
+        left: 15px !important;
+        right: 15px !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+      }
+    }
+  
+    /* 패널 내용(자체 스크롤 + 체이닝 차단) */
     #mini-lecture .panel-card{
       background: #2a5d06;
       color: #eee;
@@ -72,7 +71,9 @@ body.panel-open #mini-lecture{
       box-shadow: 0 10px 30px rgba(0,0,0,.4);
       padding: 16px;
       overflow: auto;
-      min-height: 0; /* ✅ 0까지 허용 (완전 접힘) */
+      min-height: 0;              /* ✅ 0까지 허용 (완전 접힘) */
+      overscroll-behavior: contain; /* ✅ 스크롤 체이닝 차단 */
+      -webkit-overflow-scrolling: touch;
     }
   
     #mini-lecture .connector{
@@ -150,6 +151,14 @@ body.panel-open #mini-lecture{
     }
   
     body.resizing{ user-select: none; }
+  
+    /* ✅ 배경 스크롤 잠금 */
+    html.lock-scroll, body.lock-scroll{
+      overflow: hidden !important;
+      height: 100%;
+      touch-action: none;
+      overscroll-behavior: none;
+    }
   </style>
   
   <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
@@ -174,32 +183,33 @@ body.panel-open #mini-lecture{
   </div>
   
   <script>
+    /* ===== 패널 리사이저 (기존) ===== */
     (function(){
       const root = document.documentElement;
       const resizer = document.getElementById('panel-resizer');
       if(!resizer) return;
-    
+  
       const MIN = 20, MAX = 600, STEP = 16, BIG = 64;
       const VAR = '--panel-h';
       const KEY = 'miniPanelH_session';      // ✅ 세션 저장 (탭 생명주기)
-      
+  
       // 홈 경로 판단: /, /ko, /en, /ko/ 같은 루트
       const isHomePath = (p) => p === '/' || /^\/[a-z]{2}\/?$/.test(p);
-    
+  
       const getDefaultPx = () => {
         const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
         return parseInt(v, 10) || 500;
       };
-    
+  
       const clamp = v => Math.max(MIN, Math.min(MAX, v|0));
-    
+  
       const setH = (h, save=false) => {
         const n = clamp(parseInt(h, 10));
         root.style.setProperty(VAR, n + 'px');
         resizer.setAttribute('aria-valuenow', String(n));
         if (save) sessionStorage.setItem(KEY, n + 'px');
       };
-    
+  
       // ===== 초기화: 홈이면 기본값으로 리셋, 아니면 세션 값 적용 =====
       (function init(){
         if (isHomePath(location.pathname)) {
@@ -212,13 +222,13 @@ body.panel-open #mini-lecture{
           else root.style.removeProperty(VAR);      // 기본값 사용
         }
       })();
-    
+  
       // ARIA 범위
       resizer.setAttribute('aria-valuemin', String(MIN));
       resizer.setAttribute('aria-valuemax', String(MAX));
-    
+  
       let startY = 0, startH = 0, dragging = false;
-    
+  
       function move(e){
         if(!dragging) return;
         const y = (e.touches ? e.touches[0].clientY : e.clientY);
@@ -247,10 +257,10 @@ body.panel-open #mini-lecture{
         window.addEventListener('touchend', up);
         e.preventDefault?.();
       }
-    
+  
       resizer.addEventListener('mousedown', down);
       resizer.addEventListener('touchstart', down, { passive:false });
-    
+  
       // 키보드 조작
       resizer.addEventListener('keydown', (e)=>{
         const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
@@ -261,15 +271,69 @@ body.panel-open #mini-lecture{
         else if(e.key === 'Enter' || e.key === ' '){ setH(getDefaultPx(), true); e.preventDefault(); }
       });
     })();
-    </script>
-    
+  </script>
   
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const activeMenu = document.querySelector('.submenu a.active');
-    const connector = document.querySelector('#mini-lecture .connector');
-    if (activeMenu && connector) {
-      connector.textContent = activeMenu.textContent.trim();
-    }
-  });
+    /* ===== 현재 활성 서브메뉴 → 패널 상단 라벨 반영 (기존) ===== */
+    document.addEventListener('DOMContentLoaded', () => {
+      const activeMenu = document.querySelector('.submenu a.active');
+      const connector = document.querySelector('#mini-lecture .connector');
+      if (activeMenu && connector) {
+        connector.textContent = activeMenu.textContent.trim();
+      }
+    });
   </script>
+  
+  <script>
+    /* ===== 배경 스크롤 잠금 & 체이닝 완전 차단 ===== */
+    document.addEventListener('DOMContentLoaded', () => {
+      const panel = document.getElementById('mini-lecture');
+      const scroller = panel?.querySelector('.panel-card');
+      if (!panel || !scroller) return;
+  
+      const lock = () => {
+        document.documentElement.classList.add('lock-scroll');
+        document.body.classList.add('lock-scroll');
+      };
+      const unlock = () => {
+        document.documentElement.classList.remove('lock-scroll');
+        document.body.classList.remove('lock-scroll');
+      };
+  
+      /* 포인터/포커스 진입 시 잠금, 이탈 시 해제 */
+      panel.addEventListener('pointerenter', lock);
+      panel.addEventListener('pointerleave', unlock);
+      panel.addEventListener('pointercancel', unlock);
+      panel.addEventListener('focusin', lock);
+      panel.addEventListener('focusout', (e) => {
+        if (!panel.contains(e.relatedTarget)) unlock();
+      });
+  
+      /* 모바일 터치 진입/해제 */
+      panel.addEventListener('touchstart', lock, { passive: true });
+      panel.addEventListener('touchend', unlock);
+  
+      /* ---- Fallback: 사파리/특정 환경에서의 바운스 방지 ---- */
+      // 휠: 상/하단에서 배경으로 전파되는 스크롤 막기
+      scroller.addEventListener('wheel', (e) => {
+        const atTop = scroller.scrollTop <= 0 && e.deltaY < 0;
+        const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight && e.deltaY > 0;
+        if (atTop || atBottom) e.preventDefault();
+      }, { passive: false });
+  
+      // 터치: 상/하단 바운스 시 배경으로 전파 방지
+      let startY = 0;
+      scroller.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+      }, { passive: true });
+  
+      scroller.addEventListener('touchmove', (e) => {
+        const curY = e.touches[0].clientY;
+        const delta = startY - curY; // 양수: 아래로 스크롤, 음수: 위로 스크롤
+        const atTop = scroller.scrollTop <= 0 && delta < 0;
+        const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight && delta > 0;
+        if (atTop || atBottom) e.preventDefault();
+      }, { passive: false });
+    });
+  </script>
+  
