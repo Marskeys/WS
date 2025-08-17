@@ -64,7 +64,7 @@
    }
    
    /* (선택) 제목 계열은 좀 더 두껍게 */
-   h1, h2, h3 { font-weight: 800; }
+   h1, h2, h3 { font-weight: 700; }
    
    /* 다국어 폴백 (Asta Sans 제거) */
    :lang(zh), .lang-zh {
