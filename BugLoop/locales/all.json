@@ -41,7 +41,7 @@
     "editor": {
       "editor-title": "온라인 HTML 편집기",
       "preview-label": "실시간 미리보기",
-      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다.</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n      <li>자기랑 놀기 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 한동선의 블로그</p>\n</footer>"
+      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다.</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 한동선의 블로그</p>\n</footer>"
     },
     "panel": {
       "title": "학습 패널",
@@ -75,33 +75,33 @@
     },
     "profile": {
       "profile-title": "Instructors",
-      "profile-job1": "Web Developer",
+      "profile-job1": "Web Development",
       "profile-name1": "First Dongsun",
-      "profile-bio1": "A late-in-life student currently majoring in Computer Science and Hacking & Security at Hanyang Cyber University.",
+      "profile-bio1": "A late-in-life student currently majoring in Computer Science and Hacking & Information Security at Hanyang Cyber University.",
       "profile-tags1": ["#WebDev", "#CyberUni", "#FullStack", "#WebDesign"],
-      "profile-job2": "Virtual Instrument & Music",
+      "profile-job2": "Virtual Instruments & Music",
       "profile-name2": "Second Dongsun",
-      "profile-bio2": "After earning a Bachelor's in Composition from Hanyang University, he studied acoustics for two years in the Basic Engineering program at Le Mans University in France.",
+      "profile-bio2": "After earning a B.A. in Composition from Hanyang University, he studied acoustics for two years in the “Sciences pour l’ingénieur” track at Le Mans University (France).",
       "profile-tags2": ["#ElectronicMusic", "#Acoustics"],
       "profile-job3": "Visually Impaired",
       "profile-name3": "Third Dongsun",
-      "profile-bio3": "As a severely visually impaired person, he studied Physics and Sound Design in the undergraduate and graduate programs at Le Mans University and Le Mans Beaux-Arts respectively, but dropped out of both due to difficulties adjusting to the school environment. He now works on the digital marketing team for a beauty company.",
-      "profile-tags3": ["#PanuvealChorioretinalAtrophy", "#SoundDesign", "#Physics", "#VisuallyImpaired", "#Skincare"]
+      "profile-bio3": "Severely visually impaired, he studied Physics and Sound Design at Le Mans University (undergraduate) and Le Mans Beaux-Arts (graduate), but withdrew from both due to difficulty adapting. He now works on the digital marketing team at a beauty company.",
+      "profile-tags3": ["#Choroideremia", "#SoundDesign", "#Physics", "#VisuallyImpaired", "#Skincare"]
     },
     "editor": {
       "editor-title": "Online HTML Editor",
       "preview-label": "Live Preview",
-      "example-html": "<header>\n  <h1>My First Web Page</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a very basic HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Love</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n      <li>Playing with you 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 Dongsun Han's Blog</p>\n</footer>"
+      "example-html": "<header>\n  <h1>My First Web Page</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a very basic HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Love</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 Dongsun Han's Blog</p>\n</footer>"
     },
     "panel": {
       "title": "Study Panel",
-      "body": "When you click a menu item, its tutorial will appear in this panel, and below you can try it yourself in the HTML editor. Drag the resizer handle to adjust the height; push it up to tuck the drawer under the header, then pull it down to bring it back.",
+      "body": "When you click a menu item, its tutorial appears here, and below you can try it yourself in the HTML editor. Drag the bottom handle to resize; push it up to hide the drawer under the header, then pull it down to bring it back.",
       "chips": []
     }
   },
   "fr": {
     "meta": {
-      "title": "Bug Loop | Éditeur HTML en ligne & Blog de dev",
+      "title": "Bug Loop | Éditeur HTML en ligne & blog dev",
       "description": "Blog de développeur web | Tutoriels de développement web et éditeur de code en ligne, avec des perspectives transdisciplinaires — tout au même endroit !"
     },
     "tableHeaders": {
@@ -124,28 +124,28 @@
       "tocButton": "📑 Table des matières"
     },
     "profile": {
-      "profile-title": "Instructeurs",
-      "profile-job1": "Développeur Web",
-      "profile-name1": "Premier Dong-Sun",
-      "profile-bio1": "Actuellement étudiant en reconversion en informatique et en sécurité des réseaux à l'université en ligne Hanyang Cyber University.",
-      "profile-tags1": ["#DévWeb", "#UniEnLigne", "#FullStack", "#WebDesign"],
-      "profile-job2": "Développement de VST & Musique",
-      "profile-name2": "Deuxième Dong-Sun",
-      "profile-bio2": "Après une licence de composition à l'université Hanyang, il a suivi pendant deux ans la formation en acoustique du programme d'ingénierie fondamentale à l'université du Mans, en France.",
+      "profile-title": "Équipe pédagogique",
+      "profile-job1": "Développement Web",
+      "profile-name1": "Premier Dongsun",
+      "profile-bio1": "Étudiant adulte à Hanyang Cyber University, spécialité informatique et sécurité/hacking.",
+      "profile-tags1": ["#DévWeb", "#UnivEnLigne", "#FullStack", "#WebDesign"],
+      "profile-job2": "Instruments virtuels & musique",
+      "profile-name2": "Deuxième Dongsun",
+      "profile-bio2": "Après une licence de composition (Univ. Hanyang), il a étudié l’acoustique pendant deux ans dans le parcours « Sciences pour l’ingénieur » à l’Université du Mans (France).",
       "profile-tags2": ["#MusiqueÉlectronique", "#Acoustique"],
       "profile-job3": "Malvoyant",
-      "profile-name3": "Troisième Dong-Sun",
-      "profile-bio3": "Atteint d'un grave handicap visuel, il a étudié respectivement la physique et le design sonore au niveau de la licence et du master à l'université du Mans et aux Beaux-Arts du Mans, mais a abandonné les deux en raison de difficultés d'adaptation. Il travaille actuellement dans l'équipe de marketing digital d'une entreprise de produits de beauté.",
-      "profile-tags3": ["#AtrophieChorio-rétiniennePanuvéale", "#SoundDesign", "#Physique", "#Malvoyant", "#Skincare"]
+      "profile-name3": "Troisième Dongsun",
+      "profile-bio3": "Atteint d’un handicap visuel sévère, il a étudié la physique et le design sonore à l’Université du Mans (licence) et aux Beaux-Arts du Mans (master), puis a interrompu ces cursus par difficulté d’adaptation. Il travaille désormais dans l’équipe marketing digital d’une entreprise de beauté.",
+      "profile-tags3": ["#Choroïdérémie", "#SoundDesign", "#Physique", "#DéficienceVisuelle", "#Skincare"]
     },
     "editor": {
       "editor-title": "Éditeur HTML en ligne",
       "preview-label": "Aperçu en direct",
-      "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un exemple très simple en HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j'aime</h2>\n    <ul>\n      <li>Chats</li>\n      <li>Coder</li>\n      <li>Jouer avec toi 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 Le blog de Dongsun Han</p>\n</footer>"
+      "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un exemple très simple en HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j'aime</h2>\n    <ul>\n      <li>Chats</li>\n      <li>Coder</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 Le blog de Dongsun Han</p>\n</footer>"
     },
     "panel": {
       "title": "Volet d’apprentissage",
-      "body": "En cliquant sur un élément du menu, son tutoriel s’affiche dans ce panneau, et en dessous vous pouvez l’essayer dans l’éditeur HTML. Faites glisser la poignée de redimensionnement pour ajuster la hauteur ; poussez-la vers le haut pour masquer le volet sous l’en-tête, puis tirez vers le bas pour le faire réapparaître.",
+      "body": "En cliquant sur un élément du menu, le tutoriel s’affiche ici. En dessous, testez-le dans l’éditeur HTML. Faites glisser la poignée inférieure pour ajuster la hauteur ; poussez-la vers le haut pour masquer le volet sous l’en-tête, puis tirez vers le bas pour le faire réapparaître.",
       "chips": []
     }
   },
@@ -176,33 +176,33 @@
     "profile": {
       "profile-title": "师资",
       "profile-job1": "网页开发",
-      "profile-name1": "一东善",
-      "profile-bio1": "目前在汉阳网络大学主修计算机科学与黑客安全，是一名终身学习者。",
+      "profile-name1": "第一东善",
+      "profile-bio1": "现就读于汉阳网络大学，主修计算机科学与黑客/信息安全，是一名成年在读生。",
       "profile-tags1": ["#网页开发", "#网络大学", "#全栈", "#网页设计"],
       "profile-job2": "虚拟乐器开发与音乐",
-      "profile-name2": "二东善",
-      "profile-bio2": "在汉阳大学获得作曲学士学位后，在法国勒芒大学的基础工程专业学习了两年声学课程。",
+      "profile-name2": "第二东善",
+      "profile-bio2": "在汉阳大学获得作曲学士后，于法国勒芒大学“工程科学（Sciences pour l’ingénieur）”方向学习了两年声学。",
       "profile-tags2": ["#电子音乐", "#声学"],
       "profile-job3": "视障人士",
-      "profile-name3": "三东善",
-      "profile-bio3": "作为一名重度视障人士，他分别在勒芒大学本科和勒芒美院硕士课程中主修物理和声音设计，但因无法适应学校氛围而都退学了。目前在一家美容公司的数字营销团队工作。",
-      "profile-tags3": ["#泛脉络막视网膜萎缩", "#声音设计", "#物理学", "#视障", "#护肤"]
+      "profile-name3": "第三东善",
+      "profile-bio3": "重度视障。曾在勒芒大学（本科）与勒芒美院（研究生）分别学习物理与声音设计，但因不适应校园环境而退学；现就职于某美妆公司的数字营销团队。",
+      "profile-tags3": ["#脉络膜萎缩", "#声音设计", "#物理学", "#视障", "#护肤"]
     },
     "editor": {
       "editor-title": "在线 HTML 编辑器",
       "preview-label": "实时预览",
-      "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个非常基础的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的东西</h2>\n    <ul>\n      <li>猫咪</li>\n      <li>编程</li>\n      <li>和你玩耍 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 东善韩的博客</p>\n</footer>"
+      "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个非常基础的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的东西</h2>\n    <ul>\n      <li>猫咪</li>\n      <li>编程</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 东善·韩的博客</p>\n</footer>"
     },
     "panel": {
       "title": "学习抽屉",
-      "body": "点击菜单项时，其教程会显示在此面板中，下方有可供练习的HTML编辑器。拖动底部的调整手柄可改变高度；向上拖拽可将抽屉收起至页眉上方，向下拉即可再次展开。",
+      "body": "点击菜单项后，教程会显示在此面板；下方提供可练习的 HTML 编辑器。拖动底部手柄可调整高度；向上推可将抽屉收起到页眉下，向下拉即可再次展开。",
       "chips": []
     }
   },
   "ja": {
     "meta": {
       "title": "Bug Loop | オンラインHTMLエディタ＆開発ブログ",
-      "description": "Web開発者ブログ | Web開発チュートリアルとオンラインコードエディタ、さらに超学際的なインサイトを一つに！"
+      "description": "Web開発者ブログ | Web開発チュートリアルとオンラインコードエディタ、さらに学際的なインサイトを一つに！"
     },
     "tableHeaders": {
       "number": "番号",
@@ -218,7 +218,7 @@
     },
     "search": {
       "resultsFor": "「%s」の検索結果",
-      "placeholder": "サイト主の日記"
+      "placeholder": "サイト開発者のノート"
     },
     "ui": {
       "tocButton": "📑 目次"
@@ -226,26 +226,26 @@
     "profile": {
       "profile-title": "講師陣",
       "profile-job1": "ウェブ開発担当",
-      "profile-name1": "一ドンソン",
-      "profile-bio1": "現在、漢陽サイバー大学でコンピューター工学とハッキング・セキュリティ学을 전공している社会人学生です。",
+      "profile-name1": "第一ドンソン",
+      "profile-bio1": "現在、漢陽サイバー大学でコンピュータ工学とハッキング／情報セキュリティを専攻する社会人学生です。",
       "profile-tags1": ["#Web開発", "#サイバー大学", "#フルスタック", "#Webデザイン"],
       "profile-job2": "バーチャル楽器開発＆音楽担当",
-      "profile-name2": "二ドンソン",
-      "profile-bio2": "漢陽大学作曲科で学士号を取得後、フランスのル・マン大学에서 기초공학전공 음향학 과정을 2年間履修했습니다.",
-      "profile-tags2": ["#電子音楽", "#音響학"],
+      "profile-name2": "第二ドンソン",
+      "profile-bio2": "漢陽大学で作曲学士を取得後、フランスのル・マン大学『Sciences pour l’ingénieur』トラックで音響を2年間履修しました。",
+      "profile-tags2": ["#電子音楽", "#音響学"],
       "profile-job3": "視覚障害者",
-      "profile-name3": "三ドンソン",
-      "profile-bio3": "重度の視覚障害자で, 루・망대학学部と루・망보자르 대학院에서 각각 물리학과 사운드 디자인을 전공했지만, 학교의 분위기에 적응하지 못하고 둘 다 중퇴했습니다. 現在あるビューティー 회사의 디지털 마케팅 팀에서 일하고 있습니다.",
-      "profile-tags3": ["#汎ぶどう膜炎網脈絡膜萎縮症", "#サウンドデザイン", "#物理학", "#視覚障害者", "#スキンケア"]
+      "profile-name3": "第三ドンソン",
+      "profile-bio3": "重度の視覚障害があり、ル・マン大学（学部）とル・マン美術学院（大学院）で物理学とサウンドデザインを学びましたが、環境に馴染めず中途退学。現在は某ビューティー企業のデジタルマーケティングチームで働いています。",
+      "profile-tags3": ["#コロイデレミア", "#サウンドデザイン", "#物理学", "#視覚障害", "#スキンケア"]
     },
     "editor": {
       "editor-title": "オンライン HTML エディタ",
       "preview-label": "ライブプレビュー",
-      "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>連絡先</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これはとても基本的な HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>私の好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n      <li>あなたと遊ぶこと 💕</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 ドンソン・ハンのブログ</p>\n</footer>"
+      "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>連絡先</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これはとても基本的な HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>&copy; 2025 ドンソン・ハンのブログ</p>\n</footer>"
     },
     "panel": {
       "title": "学習ドロワー",
-      "body": "메뉴 항목을 클릭하면, 이 패널에 해당 튜토리얼이 표시되고, 아래에는 직접 실습할 수 있는 HTML 에디터가 있습니다. 아래 리사이저 핸들을 드래그하여 높이를 조절할 수 있으며, 위로 끌어올리면 헤더 뒤로 완전히 숨겼다가 다시 아래로 당겨서 꺼낼 수 있습니다.",
+      "body": "メニューをクリックするとチュートリアルがここに表示され、下には実践用のHTMLエディタがあります。下部のハンドルをドラッグして高さを調整し、上へ押し上げるとヘッダーの下に隠れ、下へ引くと再表示されます。",
       "chips": []
     }
   }
