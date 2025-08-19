@@ -597,31 +597,27 @@
             return;
           }
 
-          const aliveCount = particles.filter(pt => pt.alpha > 0).length;
-          const useGlow = aliveCount < GLOW_THRESHOLD;
-
+          // ===== 드로잉(항상 source-over, 2패스) =====
           pctx.globalCompositeOperation = 'source-over';
-          pctx.shadowBlur = useGlow ? 14 : 0;
+          pctx.shadowBlur = 10;
+          pctx.shadowOffsetX = 0;
+          pctx.shadowOffsetY = 0;
 
           function drawPass(colorName, colorHex) {
-            pctx.shadowColor = useGlow ? (colorHex || '#fff') : 'transparent';
+            pctx.shadowColor = colorHex || '#fff';
             pctx.fillStyle = colorHex || '#fff';
             for (const pt of particles) {
               if (pt.alpha <= 0 || pt.color !== colorName) continue;
               pctx.globalAlpha = Math.max(0, pt.alpha);
-              if (useGlow) {
-                pctx.beginPath();
-                pctx.arc(pt.x, pt.y, 2.4, 0, Math.PI * 2);
-                pctx.fill();
-              } else {
-                pctx.fillRect(pt.x - 1.1, pt.y - 1.1, 2.2, 2.2);
-              }
+              pctx.beginPath();
+              pctx.arc(pt.x, pt.y, 2.4, 0, Math.PI * 2);
+              pctx.fill();
             }
           }
 
           drawPass('red', COL_RED);
           drawPass('blue', COL_BLUE);
-
+          
           requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
