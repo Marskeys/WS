@@ -14,11 +14,9 @@
       --bg:#0e1016; 
       --text:#eef2f8; 
       --muted:#9aa3b2;
+      --fill-int: 0%; /* 채움폭 (정수 %) */
 
-      /* 글자 채움폭 = 정수 퍼센트 (퍼센트 표시와 1:1) */
-      --fill-int: 0%;
-
-      /* 컬러 팔레트 */
+      /* 팔레트 */
       --pastel-red-1:#ff8aa1; 
       --pastel-blue-1:#78aaff;
       --pastel-red-2:#ff6b7a; 
@@ -31,7 +29,7 @@
       margin:0; background:var(--bg); color:var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x:hidden;
-      overflow-y:hidden; /* 초기엔 잠금 → 애니 이후 auto */
+      overflow-y:hidden; /* 초기엔 잠금 → 연출 끝나면 auto */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -44,29 +42,32 @@
       overflow:visible; /* descender/파티클 오버플로 허용 */
     }
 
-    /* ===== 브랜드 텍스트 (단일 레이어 이중배경) =====
-      위: 그라데이션(폭: --fill-int) / 아래: 흰색(전체)
-      둘 다 text-clip → 레이어 어긋남 발생 불가
-    */
+    /* ===== 브랜드 텍스트 (단일 레이어 이중배경) ===== */
     .brand{
-      margin:0; line-height:1;  /* descender 보존 */
+      margin:0;
+      line-height:1; /* descender 보존 */
       font-family:"Michroma", system-ui, sans-serif;
+      position:relative;
+      z-index:40; /* 캔버스(50)보다 뒤에 두면 파티클이 위로 지나감 */
     }
     .brand-line{
       display:block;
       font-size:clamp(56px,14vw,200px);
-      padding-bottom:0.22em;       /* 'y' 같은 descender 여유 */
-      overflow:visible;            /* 잘림 방지 */
+      line-height:1.08;           /* descender 여유 */
+      padding-bottom:0.3em;       /* y 꼬리 안전패딩 */
+      overflow:visible;           /* 잘림 방지 */
       position:relative;
     }
     .ink{
       display:inline-block;
       color:transparent;
+      -webkit-text-fill-color:transparent; /* Safari descender 페인트 이슈 회피 */
       -webkit-background-clip:text; background-clip:text;
       background-repeat:no-repeat,no-repeat;
       background-size: var(--fill-int) 100%, 100% 100%;
       background-image: var(--grad), linear-gradient(#fff,#fff);
-      letter-spacing:0; /* 샘플링과 픽셀 정확히 일치시키기 */
+      letter-spacing:0;
+      padding-bottom:0.05em;      /* 글립 박스 미세 확장 */
     }
     .brand-line:nth-child(1) .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
     .brand-line:nth-child(2) .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
@@ -75,7 +76,7 @@
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
     }
 
-    /* ===== 퍼센트: 브랜드 다음 줄, 우측 정렬 (데스크탑) ===== */
+    /* ===== 퍼센트: 브랜드 다음 줄, 우측 정렬 ===== */
     #counter{
       display:block;
       margin-top:0.6rem;
@@ -87,17 +88,19 @@
       user-select:none;
       pointer-events:none;
       transition:opacity .6s ease;
+      position:relative;
+      z-index:40;
     }
 
-    /* ===== 파티클 Canvas (성능 최적화) ===== */
+    /* ===== 파티클 Canvas ===== */
     #particleCanvas{
       position:absolute; inset:0; width:100%; height:100%;
       pointer-events:none; z-index:50;
     }
 
-    /* ===== Welcome: fixed 오버레이 (절대 안 잘림) ===== */
+    /* ===== Welcome: 문서 흐름(스크롤됨) — wrap 기준 absolute ===== */
     #welcome{
-      position:fixed; left:50%; top:50%;
+      position:absolute; left:50%; top:50%;
       transform:translate(-50%,-50%) scale(0.8);
       opacity:0;
       font-size:clamp(60px,12vw,180px);
@@ -107,7 +110,7 @@
       transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
       will-change:opacity, transform;
       pointer-events:none;
-      z-index:9999;
+      z-index:60; /* 텍스트 위, 파티클보다 살짝 위 */
     }
     #welcome.visible{
       opacity:1;
@@ -120,6 +123,7 @@
       text-align:center; 
       display:none; /* 터진 뒤 노출 */
       max-width:1200px; margin:0 auto;
+      position:relative; z-index:10;
     }
     .scrollable-content p{
       max-width:800px; margin:0 auto 1.5rem; line-height:1.8; 
@@ -149,11 +153,11 @@
     </h1>
 
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-
     <p class="tagline">Video Game Music Studio</p>
-  </main>
 
-  <div id="welcome">Welcome</div>
+    <!-- 👇 문서 흐름에 속한 환영 텍스트 (wrap 안, absolute 이므로 스크롤됨) -->
+    <div id="welcome">Welcome</div>
+  </main>
 
   <div id="scrollContent" class="scrollable-content">
     <p>게임 음악 스튜디오 Mars Keys에 오신 것을 환영합니다...</p>
@@ -176,15 +180,15 @@
     const pctx=particleCanvas.getContext('2d');
 
     // ===== 진행도 (0~1): 퍼센트/채움 완전동기화 (정수 %) =====
-    let p=0;              // 0.00 ~ 1.00
-    const accel=0.0018;          // 스크롤 민감도
+    let p=0;                       // 0.00 ~ 1.00
+    const accel=0.0018;            // 스크롤 민감도
     let autoAnimating=false, isFinalized=false, particlesGenerated=false;
 
     // ===== 파티클 데이터 (최적화) =====
     let particles=[];
-    const DENSITY=7;            // 픽셀 샘플 간격 (↑ → 입자↓ → 렉↓)
-    const MAX_PARTICLES=1200;    // 최대 입자수 상한
-    
+    const DENSITY=7;               // 픽셀 샘플 간격 (↑ → 입자↓ → 렉↓)
+    const MAX_PARTICLES=1200;      // 최대 입자수 상한
+
     function resizeParticleCanvas(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
       const rect = wrap.getBoundingClientRect();
@@ -198,15 +202,15 @@
 
     function setProgress(v){
       p=Math.max(0,Math.min(1,v));
-      const pct = Math.round(p*100);    // 정수 %
+      const pct = Math.round(p*100);
       html.style.setProperty('--fill-int', pct+'%'); // 텍스트 채움폭
       if(!isFinalized){
         counterEl.textContent = pct + "%";
         counterEl.setAttribute('aria-valuenow', String(pct));
       }
       if(p>=1 && !particlesGenerated && !isFinalized){
-        generateParticles();  
-        dissolveText();  
+        generateParticles();
+        dissolveText();
         showWelcome();
       }
     }
@@ -222,27 +226,26 @@
     }
 
     // ===== 텍스트 샘플링 (Canvas) — descender 완전 포함 =====
-    function drawTextToCanvas(text, fontSize, fontFamily, letterSpacing){
+    function drawTextToCanvas(text, fontSize, fontFamily){
       const offCanvas = document.createElement('canvas');
       const offCtx = offCanvas.getContext('2d');
       offCtx.font = `${fontSize}px ${fontFamily}`;
-
       const metrics = offCtx.measureText(text);
-      const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-      const width = metrics.width + (text.length > 0 ? (text.length - 1) * letterSpacing : 0);
+      const actualHeight = (metrics.actualBoundingBoxAscent||fontSize) + (metrics.actualBoundingBoxDescent||fontSize*0.25);
+      const width = Math.ceil(metrics.width);
 
       offCanvas.width = Math.ceil(width);
       offCanvas.height = Math.ceil(actualHeight);
 
       offCtx.font = `${fontSize}px ${fontFamily}`;
       offCtx.fillStyle = 'white';
-      offCtx.textBaseline = 'top'; 
+      offCtx.textBaseline = 'top';
       offCtx.fillText(text, 0, 0);
 
-      return { canvas: offCanvas, descent: metrics.actualBoundingBoxDescent };
+      return { canvas: offCanvas };
     }
 
-    // ===== 파티클 생성 (Mars/Keys 각각 → 위치를 wrap 기준으로 투영) =====
+    // ===== 파티클 생성 (Mars/Keys 각각 → wrap 기준 투영) =====
     function generateParticles(){
       particlesGenerated=true; particles.length=0;
 
@@ -257,10 +260,10 @@
         const style = getComputedStyle(textEl);
         const fontSize = parseFloat(style.fontSize);
         const fontFamily = style.fontFamily;
-        const letterSpacing = parseFloat(style.letterSpacing || '0') || 0;
 
-        const { canvas, descent } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, letterSpacing);
-        const imgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+        const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
         for(let y=0;y<canvas.height;y+=DENSITY){
           for(let x=0;x<canvas.width;x+=DENSITY){
@@ -268,7 +271,7 @@
             if(imgData[idx+3]>128){
               particles.push({
                 x: rect.left - wrapRect.left + x,
-                y: rect.top  - wrapRect.top + y,
+                y: rect.top  - wrapRect.top  + y,
                 vx:(Math.random()-0.5)*1.4,
                 vy:(Math.random()-0.5)*1.4,
                 alpha:1,
@@ -289,52 +292,76 @@
       }
     }
 
-    // ===== 파티클 애니메이션 (Canvas, 글로우 제거) =====
+    // ===== 파티클 애니메이션 =====
     function dissolveText(){
-      // 텍스트 페이드아웃 (배경-클립 텍스트)
+      // 텍스트 페이드아웃
       document.querySelectorAll('.ink').forEach(el=>{
         el.style.transition='opacity .3s ease';
         el.style.opacity='0';
       });
 
       const wrapRect = wrap.getBoundingClientRect();
-      const {width, height} = wrapRect;
+      const width = wrapRect.width, height = wrapRect.height;
       let frameId = null;
 
       function frame(){
         pctx.clearRect(0,0,width,height);
 
-        particles.forEach(pt=>{
-          if(pt.alpha<=0) return;
+        // 살아있는 입자 수 계산
+        let aliveCount = 0;
+        for(const pt of particles){ if(pt.alpha>0){ aliveCount++; } }
+
+        // 조합 모드: 살짝 더 밝게
+        pctx.globalCompositeOperation = 'lighter';
+
+        for(const pt of particles){
+          if(pt.alpha<=0) continue;
+
           const col = (pt.color==='red')
-            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
-            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
-          pctx.globalAlpha = pt.alpha;
-          pctx.fillStyle = col;
-          pctx.fillRect(pt.x, pt.y, 2, 2);
+            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1').trim()
+            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1').trim();
+
+          // 성능: 20개 미만일 때만 글로우
+          if(aliveCount < 20){
+            pctx.save();
+            pctx.globalAlpha = pt.alpha;
+            pctx.shadowBlur = 14;
+            pctx.shadowColor = col || '#ffffff';
+            pctx.fillStyle = col || '#ffffff';
+            pctx.beginPath();
+            pctx.arc(pt.x, pt.y, 2.2, 0, Math.PI*2);
+            pctx.fill();
+            pctx.restore();
+          }else{
+            pctx.globalAlpha = pt.alpha;
+            pctx.fillStyle = col || '#ffffff';
+            pctx.fillRect(pt.x, pt.y, 2, 2);
+          }
 
           // 이동/감쇠 (살짝 가속)
           pt.x += pt.vx; pt.y += pt.vy;
           pt.vx *= 1.016; pt.vy *= 1.016;
           pt.alpha -= 0.0045;
-        });
+        }
 
-        if(particles.some(pt=>pt.alpha>0)) {
-            frameId = requestAnimationFrame(frame);
+        if(aliveCount > 0) {
+          frameId = requestAnimationFrame(frame);
         } else {
-            pctx.clearRect(0, 0, width, height);
-            cancelAnimationFrame(frameId);
+          pctx.clearRect(0, 0, width, height);
+          pctx.globalCompositeOperation = 'source-over';
+          cancelAnimationFrame(frameId);
         }
       }
       requestAnimationFrame(frame);
     }
 
     function showWelcome(){
+      // 퍼센트 사라짐 → 웰컴 등장 → 스크롤 해제 + 이후 콘텐츠 노출
       setTimeout(()=>{ counterEl.style.opacity=0; }, 350);
       setTimeout(()=>{ welcome.classList.add("visible"); }, 900);
       setTimeout(()=>{
         scrollContent.style.display="block";
-        isFinalized=true;  
+        isFinalized=true;
         body.style.overflowY="auto";
       }, 1500);
     }
