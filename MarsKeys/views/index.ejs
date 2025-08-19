@@ -559,7 +559,6 @@
             welcome.classList.remove("welcome-glow");
             
             for (const pt of particles) {
-              // 부유하며 사라지도록 아주 작은 무작위 속도 부여
               const ang = Math.random() * Math.PI * 2;
               const spd = 0.05 + Math.random() * 0.1; 
               pt.vx = Math.cos(ang) * spd;
@@ -572,6 +571,9 @@
           }
 
           let anyAlive = false;
+          const disperseDuration = 1500; // 1.5초 동안 사라지게 함
+          const phaseProgress = (now - phaseStartTime) / disperseDuration;
+
           for (const pt of particles) {
             if (pt.alpha <= 0) continue;
             anyAlive = true;
@@ -602,16 +604,18 @@
               pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
               pt.alpha = 1;
             } else if (particlePhase === 'disperse') {
-              // 부유하며 사라지도록 알파값만 줄임
-              pt.vx *= 0.995; // 부유하는 느낌을 위해 속도를 아주 미세하게 줄임
-              pt.vy *= 0.995;
-
-              // 파란색 입자는 더 천천히 사라지게 조정
-              if (pt.color === 'blue') {
-                pt.alpha -= 0.0015;
-              } else {
-                pt.alpha -= 0.002;
+              // 투명도와 크기를 동시에 감소
+              const fadeProgress = Math.min(1, (now - phaseStartTime) / disperseDuration);
+              pt.alpha = 1 - fadeProgress;
+              
+              if (typeof pt.initialSize === 'undefined') {
+                pt.initialSize = 1.6;
               }
+              pt.size = Math.max(0, pt.initialSize * (1 - fadeProgress));
+
+              // 약간의 무작위 속도로 흩어짐
+              pt.vx *= 0.995;
+              pt.vy *= 0.995;
             }
 
             pt.x += pt.vx;
@@ -637,7 +641,8 @@
               if (pt.alpha <= 0 || pt.color !== colorName) continue;
               pctx.globalAlpha = Math.max(0, pt.alpha);
               pctx.beginPath();
-              pctx.arc(pt.x, pt.y, 1.6, 0, Math.PI * 2);
+              const particleSize = pt.size || 1.6;
+              pctx.arc(pt.x, pt.y, particleSize, 0, Math.PI * 2);
               pctx.fill();
             }
           }
