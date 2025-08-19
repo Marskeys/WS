@@ -133,15 +133,20 @@
       letter-spacing: 0.01em;
       max-width: 92vw;
       white-space: nowrap;
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1);
-      will-change: opacity, transform;
+      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
+      will-change: opacity, transform, text-shadow;
       pointer-events: none;
       z-index: 60;
+      text-shadow: 0 0 0 transparent; /* 시작 상태: 그림자 없음 */
     }
 
     #welcome.visible {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.22);
+    }
+
+    #welcome.welcome-glow {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4);
     }
 
     .scrollable-content {
@@ -404,13 +409,12 @@
       }
 
       function showWelcome() {
-        welcome.classList.add("welcome-glow"); // 처음엔 엄청 밝게 빛나도록 클래스 추가
         setTimeout(() => {
           counterEl.style.opacity = 0;
         }, 350);
         setTimeout(() => {
           welcome.classList.add("visible");
-          welcome.classList.remove("welcome-glow"); // 잠시 후 글로우 클래스 제거하여 트랜지션 시작
+          welcome.classList.add("welcome-glow");
         }, 900);
         setTimeout(() => {
           scrollContent.style.display = "block";
@@ -543,6 +547,7 @@
               phaseStartTime = now;
             }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= TAEGUK_HOLD) {
+            welcome.classList.remove("welcome-glow"); // 태극기 완성 후 글로우 효과 제거
             for (const pt of particles) {
               const ang = Math.random() * Math.PI * 2;
               const spd = 1.4 + Math.random() * 1.8;
@@ -639,7 +644,7 @@
 
       function onTouchMove(e) {
         if (isFinalized) return;
-        const touch = e.touches[0];
+        const touch = e.touches [0];
         const currentY = touch.clientY;
         if (typeof onTouchMove.lastY !== "undefined") {
           const dy = onTouchMove.lastY - currentY;
@@ -664,7 +669,7 @@
         passive: false
       });
       window.addEventListener('touchstart', (e) => {
-        onTouchMove.lastY = e.touches[0].clientY;
+        onTouchMove.lastY = e.touches [0].clientY;
       });
       window.addEventListener('touchmove', onTouchMove, {
         passive: false
