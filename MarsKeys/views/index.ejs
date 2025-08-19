@@ -37,7 +37,7 @@
     /* ===== Hero ===== */
     .wrap{
       position:relative;
-      min-height:100vh;
+      min-height:100svh; /* iOS 주소창 영향 최소화 */
       padding:5vw;
       overflow:visible; /* descender/파티클 오버플로 허용 */
     }
@@ -52,14 +52,15 @@
     }
     .brand-line{
       display:block;
-      font-size:clamp(56px,14vw,200px);
-      line-height:1.06;         /* ⬅ 줄 박스 타이트 */
-      padding-bottom:0.18em;    /* ⬅ 줄 여유 최소화 */
+      /* 화면 높이에 따라 상한(각 줄 최대 ~28vh) → 2줄 + 퍼센트가 한 화면에 */
+      font-size:clamp(56px, min(14vw, 28vh), 200px);
+      line-height:1.06;         /* 줄 박스 타이트 */
+      padding-bottom:0.18em;    /* 줄 여유 최소화 */
       overflow:visible;
       position:relative;
     }
     .brand-line + .brand-line{
-      margin-top:-0.32em;       /* ⬅ Mars/Keys 붙이기 */
+      margin-top:-0.32em;       /* Mars/Keys 붙이기 */
     }
     .ink{
       display:inline-block;
@@ -70,7 +71,7 @@
       background-size: var(--fill-int) 100%, 100% 100%;
       background-image: var(--grad), linear-gradient(#fff,#fff);
       letter-spacing:0;
-      padding-bottom:0.28em;      /* ⬅ descender 여유는 글자 박스에 */
+      padding-bottom:0.28em;      /* descender 여유는 글자 박스에 */
       transform: translateZ(0);   /* 합성층 올려 잘림 방지 */
     }
     .brand-line:nth-child(1) .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
@@ -80,20 +81,20 @@
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
     }
 
-    /* ===== 퍼센트 ===== */
+    /* ===== 퍼센트: 모든 화면에서 오른쪽-아래 고정 ===== */
     #counter{
-      display:block;
-      margin-top:0.6rem;
+      position:absolute; right:5vw; 
+      bottom:clamp(16px, 6vh, 48px); /* 화면 높이에 비례한 하단 여백 */
       text-align:right;
-      font-size:clamp(28px,7vw,96px);
+      font-size:clamp(28px, min(7vw, 10vh), 96px);
       font-family:"Michroma", system-ui, sans-serif;
       font-weight:900;
       color:white;
       user-select:none;
       pointer-events:none;
       transition:opacity .6s ease;
-      position:relative;
       z-index:40;
+      margin:0;
     }
 
     /* ===== 파티클 Canvas ===== */
@@ -138,15 +139,10 @@
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* ===== 모바일 ===== */
+    /* ===== 모바일 미세 조정 ===== */
     @media (max-width: 768px){
       .brand-line{ line-height:1.08; padding-bottom:0.16em; }
       .brand-line + .brand-line{ margin-top:-0.26em; }
-      #counter{
-        position:absolute; right:6vw; bottom:6vw;
-        margin-top:0; text-align:right;
-        font-size:clamp(24px,12vw,72px);
-      }
     }
   </style>
 </head>
@@ -193,7 +189,7 @@
     let particles=[];
     const DENSITY=7;
     const MAX_PARTICLES=1200;
-    const GLOW_THRESHOLD = 18;    // ⬅ 글로우/라이터 블렌딩 켜는 임계치
+    const GLOW_THRESHOLD = 18;    // 입자 수가 이 값 미만일 때만 글로우 on
 
     function resizeParticleCanvas(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -316,7 +312,6 @@
         // 블렌딩/글로우는 “적을 때만”
         const useGlow = aliveCount < GLOW_THRESHOLD;
 
-        // 상태 설정(성능 위해 루프 밖에서 1회)
         pctx.globalCompositeOperation = useGlow ? 'lighter' : 'source-over';
         if(!useGlow){ pctx.shadowBlur = 0; pctx.shadowColor = 'transparent'; }
 
