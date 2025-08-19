@@ -15,8 +15,17 @@
       --bg:#0e1016; 
       --text:#eef2f8; 
       --muted:#9aa3b2;
-      --fill-int: 0%;  /* 정수 % (퍼센트 표시와 정확히 동일) */
-      --pastel-red-1:#ff8aa1; --pastel-blue-1:#78aaff;
+
+      /* 글자 채움폭 = 정수 퍼센트 (퍼센트 표시와 1:1) */
+      --fill-int: 0%;
+
+      /* 컬러 팔레트 */
+      --pastel-red-1:#ff8aa1; 
+      --pastel-blue-1:#78aaff;
+      --pastel-red-2:#ff6b7a; 
+      --pastel-blue-2:#5ea1ff;
+      --pastel-red-3:#ff9db0; 
+      --pastel-blue-3:#b2d1ff;
     }
     *{box-sizing:border-box}
     body{
@@ -33,48 +42,46 @@
       position:relative;
       min-height:100vh;
       padding:5vw;
-      overflow:visible; /* 파티클/텍스트 오버플로 허용 */
+      overflow:visible; /* descender/파티클 오버플로 허용 */
     }
 
-    /* ===== 브랜드 텍스트 (단일 글자층: 컬러+화이트 이중배경) =====
-       - 상단 배경: 색 그라데이션 (폭: --fill-int)
-       - 하단 배경: 흰색 전체
-       두 배경 모두 text-clip이므로 글립 내부만 보임 → 어긋남 불가
+    /* ===== 브랜드 텍스트 (단일 레이어 이중배경) =====
+       위: 그라데이션(폭: --fill-int) / 아래: 흰색(전체)
+       둘 다 text-clip → 레이어 어긋남 발생 불가
     */
     .brand{
-      margin:0; line-height:1; /* descender 보존 */
+      margin:0; line-height:1;  /* descender 보존 */
       font-family:"Michroma", system-ui, sans-serif;
     }
     .brand-line{
       display:block;
       font-size:clamp(56px,14vw,200px);
-      padding-bottom:0.18em; /* descender(y) 여유 */
+      padding-bottom:0.22em;       /* 'y' 같은 descender 여유 */
+      overflow:visible;            /* 잘림 방지 */
       position:relative;
     }
     .ink{
       display:inline-block;
       color:transparent;
       -webkit-background-clip:text; background-clip:text;
-      background-repeat:no-repeat, no-repeat;
+      background-repeat:no-repeat,no-repeat;
       background-size: var(--fill-int) 100%, 100% 100%;
-      /* 아래서 라인별로 --grad 설정 */
       background-image: var(--grad), linear-gradient(#fff,#fff);
-      /* 캔버스 샘플링과 일치시키려 letter-spacing=0 */
-      letter-spacing: 0;
+      letter-spacing:0; /* 샘플링과 픽셀 정확히 일치시키기 */
     }
-    .brand-line[data-c="red"]  .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0); }
-    .brand-line[data-c="blue"] .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff); }
+    .brand-line[data-c="red"]  .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
+    .brand-line[data-c="blue"] .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
 
     .tagline{
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
     }
 
-    /* ===== 퍼센트: 브랜드 다음 줄, 우측 정렬 (요청 유지) ===== */
+    /* ===== 퍼센트: 브랜드 다음 줄, 우측 정렬 (데스크탑) ===== */
     #counter{
       display:block;
       margin-top:0.6rem;
       text-align:right;
-      font-size:clamp(28px,7vw,96px); /* 본문보다 살짝 작게 */
+      font-size:clamp(28px,7vw,96px);
       font-family:"Michroma", system-ui, sans-serif;
       font-weight:900;
       color:white;
@@ -84,13 +91,13 @@
       transition:opacity .6s ease;
     }
 
-    /* ===== 파티클 캔버스 (성능 개선) ===== */
+    /* ===== 파티클 Canvas (성능 최적화) ===== */
     #particleCanvas{
       position:absolute; inset:0; width:100%; height:100%;
       pointer-events:none; z-index:50;
     }
 
-    /* ===== Welcome: 고정(fixed) 오버레이 (절대 안 잘림) ===== */
+    /* ===== Welcome: fixed 오버레이 (절대 안 잘림) ===== */
     #welcome{
       position:fixed; left:50%; top:50%;
       transform:translate(-50%,-50%) scale(0.8);
@@ -124,7 +131,7 @@
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* ===== 모바일: 퍼센트 오른쪽 하단 작게 (요청 유지) ===== */
+    /* ===== 모바일: 퍼센트 오른쪽 하단 작게 ===== */
     @media (max-width: 768px){
       #counter{
         position:absolute; right:6vw; bottom:6vw;
@@ -136,7 +143,7 @@
 </head>
 <body>
   <main class="wrap" id="wrap">
-    <!-- 파티클 Canvas -->
+    <!-- 파티클 캔버스 -->
     <canvas id="particleCanvas"></canvas>
 
     <!-- 브랜드 -->
@@ -145,7 +152,7 @@
       <span class="brand-line" data-c="blue"><span class="ink" id="keys">Keys</span></span>
     </h1>
 
-    <!-- 퍼센트: 브랜드 바로 다음 줄/우측 정렬 -->
+    <!-- 퍼센트: 브랜드 다음 줄 / 우측 정렬 -->
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
 
     <p class="tagline">Video Game Music Studio</p>
@@ -175,15 +182,16 @@
     const pctx=particleCanvas.getContext('2d');
 
     // ===== 진행도 (0~1): 퍼센트/채움 완전동기화 (정수 %) =====
-    let p=0;                   // 0.00 ~ 1.00
-    const accel=0.0018;        // 스크롤 민감도
+    let p=0;                         // 0.00 ~ 1.00
+    const accel=0.0018;              // 스크롤 민감도
     let autoAnimating=false, isFinalized=false, particlesGenerated=false;
 
-    // ===== 파티클 데이터 (Canvas 렌더링) =====
+    // ===== 파티클 데이터 (최적화) =====
     let particles=[];
-    const DENSITY=4;           // 픽셀 샘플 간격 (값↑ → 파티클↓ → 렉↓)
-    const GLOW_BLUR_SMALL=6;   // 글로우
-    const GLOW_BLUR_BIG=14;
+    const DENSITY=7;                 // 픽셀 샘플 간격 (↑ → 입자↓ → 렉↓)
+    const MAX_PARTICLES=1200;        // 최대 입자수 상한
+    const GLOW_SMALL=8;              // 글로우
+    const GLOW_BIG=18;
 
     function resizeParticleCanvas(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -198,8 +206,8 @@
 
     function setProgress(v){
       p=Math.max(0,Math.min(1,v));
-      const pct = Math.round(p*100);      // 정수 %
-      html.style.setProperty('--fill-int', pct+'%'); // 텍스트 채움 폭
+      const pct = Math.round(p*100);            // 정수 %
+      html.style.setProperty('--fill-int', pct+'%'); // 텍스트 채움폭
       if(!isFinalized){
         counterEl.textContent = pct + "%";
         counterEl.setAttribute('aria-valuenow', String(pct));
@@ -221,25 +229,24 @@
       step();
     }
 
-    // ===== 텍스트 샘플링 유틸: letter-spacing 반영해 문자 단위 렌더 =====
+    // ===== 텍스트 샘플링 (Canvas) — descender 완전 포함 =====
     function drawTextToCanvas(ctx, text, fontSize, fontFamily, letterSpacing){
       ctx.font = `${fontSize}px ${fontFamily}`;
       ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = 'white';
       let x = 0;
       for(const ch of text){
-        ctx.fillText(ch, x, fontSize);
+        ctx.fillText(ch, x, fontSize);              // baseline = fontSize
         x += ctx.measureText(ch).width + letterSpacing;
       }
-      return x; // 실제 폭
+      return x;
     }
 
-    // ===== 파티클 생성 (Mars/Keys 각각 샘플링) =====
+    // ===== 파티클 생성 (Mars/Keys 각각 → 위치를 wrap 기준으로 투영) =====
     function generateParticles(){
       particlesGenerated=true; particles.length=0;
 
       const wrapRect = wrap.getBoundingClientRect();
-
       const lines = [
         { el: document.getElementById('mars').parentElement, color:'red',  textEl: document.getElementById('mars')  },
         { el: document.getElementById('keys').parentElement, color:'blue', textEl: document.getElementById('keys') }
@@ -255,17 +262,14 @@
         const fontFamily = style.fontFamily;
         const letterSpacing = parseFloat(style.letterSpacing || '0') || 0;
 
-        // 캔버스 크기: descender 포함 여유
         const w = Math.ceil(rect.width);
-        const h = Math.ceil(fontSize * 1.35);
+        const h = Math.ceil(fontSize * 1.40);         // descender 여유
         off.width = Math.max(1, w);
         off.height = Math.max(1, h);
         octx.clearRect(0,0,off.width,off.height);
 
-        // 텍스트 그리기
         drawTextToCanvas(octx, textEl.textContent, fontSize, fontFamily, letterSpacing);
 
-        // 샘플링 → 파티클
         const img=octx.getImageData(0,0,off.width,off.height).data;
         for(let y=0;y<h;y+=DENSITY){
           for(let x=0;x<w;x+=DENSITY){
@@ -273,9 +277,9 @@
             if(img[idx+3]>128){
               particles.push({
                 x: rect.left - wrapRect.left + x,
-                y: rect.top  - wrapRect.top  + (h - fontSize)/2 + y * 1, // 중앙 정렬 보정
-                vx:(Math.random()-0.5)*1.6,
-                vy:(Math.random()-0.5)*1.6,
+                y: rect.top  - wrapRect.top  + (h - fontSize)/2 + y,
+                vx:(Math.random()-0.5)*1.4,
+                vy:(Math.random()-0.5)*1.4,
                 alpha:1,
                 color
               });
@@ -283,62 +287,79 @@
           }
         }
       });
+
+      // 상한 초과 시 무작위 샘플링으로 렉 방지
+      if(particles.length > MAX_PARTICLES){
+        const sampled=[];
+        for(let i=0;i<MAX_PARTICLES;i++){
+          sampled.push(particles[(Math.random()*particles.length)|0]);
+        }
+        particles = sampled;
+      }
     }
 
-    // ===== 파티클 애니메이션 (Canvas, 글로우) =====
+    // ===== 파티클 애니메이션 (Canvas, 글로우 최적화) =====
     function dissolveText(){
-      // 텍스트 자체는 페이드아웃
-      document.querySelectorAll('.ink').forEach(el=>{ el.style.transition='opacity .35s ease'; el.style.opacity='0'; });
+      // 텍스트 페이드아웃 (배경-클립 텍스트)
+      document.querySelectorAll('.ink').forEach(el=>{
+        el.style.transition='opacity .3s ease';
+        el.style.opacity='0';
+      });
 
       const {width, height} = wrap.getBoundingClientRect();
 
+      let t=0;
       function frame(){
         pctx.clearRect(0,0,width,height);
 
-        // 글로우(외곽) 먼저
+        // 외곽 글로우 (가벼운 방식): shadowBlur + lighter 블렌딩
         pctx.save();
         pctx.globalCompositeOperation = 'lighter';
+        pctx.shadowBlur = GLOW_BIG;
+
         particles.forEach(pt=>{
           if(pt.alpha<=0) return;
-          pctx.shadowColor = (pt.color==='red') ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
-                                                : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
-          pctx.shadowBlur = GLOW_BLUR_BIG;
-          pctx.globalAlpha = pt.alpha * 0.6;
-          pctx.fillStyle = 'rgba(0,0,0,0)'; // 실제 색은 아래에서 채움
+          pctx.shadowColor = (pt.color==='red')
+            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
+            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
+          pctx.globalAlpha = pt.alpha * 0.45;
+          pctx.fillStyle = 'rgba(0,0,0,0)'; // 점만으로 글로우 트리거
           pctx.fillRect(pt.x, pt.y, 2, 2);
         });
         pctx.restore();
 
         // 본 파티클
+        pctx.shadowBlur = GLOW_SMALL;
         particles.forEach(pt=>{
           if(pt.alpha<=0) return;
+          const col = (pt.color==='red')
+            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
+            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
+          pctx.shadowColor = col;
           pctx.globalAlpha = pt.alpha;
-          pctx.shadowBlur = GLOW_BLUR_SMALL;
-          pctx.shadowColor = (pt.color==='red') ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
-                                                : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
-          pctx.fillStyle = (pt.color==='red') ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
-                                              : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
+          pctx.fillStyle = col;
           pctx.fillRect(pt.x, pt.y, 2, 2);
 
-          // 이동/감쇠
+          // 이동/감쇠 (살짝 가속)
           pt.x += pt.vx; pt.y += pt.vy;
-          pt.vx *= 1.018; pt.vy *= 1.018;
-          pt.alpha -= 0.004;
+          pt.vx *= 1.016; pt.vy *= 1.016;
+          pt.alpha -= 0.0045;
         });
 
+        t += 1/60;
         if(particles.some(pt=>pt.alpha>0)) requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
     }
 
     function showWelcome(){
-      setTimeout(()=>{ counterEl.style.opacity=0; }, 400);
-      setTimeout(()=>{ welcome.classList.add("visible"); }, 1000);
+      setTimeout(()=>{ counterEl.style.opacity=0; }, 350);
+      setTimeout(()=>{ welcome.classList.add("visible"); }, 900);
       setTimeout(()=>{
         scrollContent.style.display="block";
         isFinalized=true; 
         body.style.overflowY="auto";
-      }, 1600);
+      }, 1500);
     }
 
     // ===== 입력(휠/터치): 50%까지 수동, 50% 이상 자동 =====
