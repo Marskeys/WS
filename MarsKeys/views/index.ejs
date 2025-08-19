@@ -40,23 +40,23 @@
     .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
     .tagline{font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem;}
 
-    /* 텍스트 ↔ 파티클 크로스페이드 (즉시 0 금지) */
+    /* 텍스트 ↔ 파티클: JS가 --textAlpha로 제어 (즉시 0 금지) */
     .brand-line .plain,
     .brand-line .fill{
       opacity: var(--textAlpha, 1);
-      transition: opacity .25s linear;
+      transition: opacity .2s linear;
     }
 
     /* ===== Particles (우주 부유 + 글로우) ===== */
     .particles{
       position:absolute; inset:0; pointer-events:none; overflow:visible;
       mix-blend-mode:screen;
-      z-index:3;               /* ★ 텍스트 위에서 크로스페이드 */
-      transform: translateZ(0); /* ★ 컴포지팅 확보 */
+      z-index:3;
+      transform: translateZ(0);
     }
     .particle{
       position:absolute; 
-      left:0; top:0;          /* ★ translate 기준 원점 명시 */
+      left:0; top:0;
       width:2px; height:2px; border-radius:50%;
       background: radial-gradient(circle at center, #fff 0 28%, var(--c, #ffffff) 45%, rgba(0,0,0,0) 70%);
       box-shadow:
@@ -124,7 +124,7 @@
       padding:0 5vw; 
       text-align:center; 
       position:relative; 
-      display:none; /* 터진 뒤 보여줌 */
+      display:none;
     }
     .scrollable-content p{
       max-width:800px; margin:0 auto 1.5rem; line-height:1.8; 
@@ -188,9 +188,11 @@
     const SWIRL_AMP = 0.018;
     const DRIFT_AMP = 0.06;
 
-    const FADE_DUR  = 900;
-    const STICK_DUR = 280;
-    const RAMP_DUR  = 600;
+    const STICK_DUR = 300;  // 초기 고정 (글자형 유지)
+    const RAMP_DUR  = 700;  // 이동량 0→1
+    // 커버리지 기반 페이드(입자 등장 비율)
+    const COVER_FADE_START = 0.25; // 이 비율부터 글자 투명도 하강 시작
+    const COVER_FADE_END   = 0.85; // 이 비율에서 글자 완전 0
 
     let p=0, accel=0.0018;
     let particles=[], particlesGenerated=false;
@@ -201,7 +203,6 @@
       html.style.setProperty('--fill',(p*100).toFixed(2)+'%');
       if(!isFinalized){counterEl.textContent=Math.floor(p*100)+"%";}
       if(p>=1 && !particlesGenerated && !isFinalized){
-        // ★ 폰트 로드 완료 후 생성 (캔버스 글자 픽셀 안정)
         (document.fonts?.ready || Promise.resolve()).then(()=>{
           generateParticles(); 
           dissolveText(); 
@@ -223,7 +224,6 @@
     // ===== 유틸 =====
     const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
     const lerp=(a,b,t)=>a+(b-a)*t;
-    const easeOutCubic = (t)=>1 - Math.pow(1-t,3);
     const smoothstep = (e0,e1,x)=>{
       const t = Math.max(0, Math.min(1, (x-e0)/(e1-e0)));
       return t*t*(3-2*t);
@@ -241,7 +241,6 @@
         const fontSize=parseInt(style.fontSize)||120; 
         const fontFamily=style.fontFamily||'sans-serif';
         const w=Math.max(2,line.offsetWidth), h=Math.max(2,line.offsetHeight);
-        if(w<2 || h<2) return;
 
         canvas.width=w; canvas.height=h;
         ctx.clearRect(0,0,w,h);
@@ -257,7 +256,6 @@
         const cx=w/2, cy=h/2;
         const col=colorVar(line.dataset.c);
         const container=line.querySelector('.particles');
-        if(!container) return;
 
         for(let y=0;y<h;y+=density){
           for(let x=0;x<w;x+=density){
@@ -291,8 +289,8 @@
           }
         }
 
-        // ★ 혹시라도 파티클 0개면(폰트 문제 등) 대체 별가루 생성
-        if(particles.length===0){
+        // 안전망
+        if(!particles.some(pt=>pt.el && pt.el.parentNode===container)){
           for(let i=0;i<120;i++){
             const el=document.createElement('div');
             el.className='particle';
@@ -318,6 +316,7 @@
       const lines = Array.from(document.querySelectorAll('.brand-line'));
       for(const l of lines) l.style.setProperty('--textAlpha', '1');
 
+      const total = particles.length;
       const startT = performance.now();
       let lastT = startT;
 
@@ -325,15 +324,10 @@
         const dt = clamp(now - lastT, 0, 40); // ms
         lastT = now;
 
-        // 1) 텍스트 → 파티클 크로스페이드
-        const fadeT = Math.min(1, (now - startT)/FADE_DUR);
-        const textAlpha = 1 - easeOutCubic(fadeT); // 1→0
-        for(const line of lines){
-          line.style.setProperty('--textAlpha', textAlpha.toFixed(3));
-        }
-
-        // 2) 파티클 업데이트
+        // === 파티클 업데이트 ===
         let alive = false;
+        let visible = 0; // coverage 계산용
+
         for(const pt of particles){
           const age = now - pt.born;
           if(age < 0){ continue; }
@@ -341,9 +335,13 @@
           const lifeT = age / pt.life;
           if(lifeT >= 1){ pt.alpha = 0; continue; }
 
+          // 알파: 등장→유지→사라짐
           if(lifeT < 0.15) pt.alpha = lerp(0, 0.95, lifeT/0.15);
           else if(lifeT > 0.82) pt.alpha = lerp(0.95, 0, (lifeT-0.82)/0.18);
           else pt.alpha = 0.95;
+
+          // coverage 집계: 충분히 보이는 입자만 카운트
+          if(pt.alpha > 0.4) visible++;
 
           // 형태 유지 후 이동량 증가
           const moveGain = smoothstep(STICK_DUR, STICK_DUR + RAMP_DUR, age);
@@ -358,9 +356,8 @@
           pt.vx *= FRICTION;
           pt.vy *= FRICTION;
 
-          // dt(ms) 보정
-          pt.x += pt.vx * dt;
-          pt.y += pt.vy * dt;
+          pt.x += pt.vx * dt * moveGain;
+          pt.y += pt.vy * dt * moveGain;
 
           const s = 0.8 + pt.z * 0.6;
           const e = pt.el;
@@ -370,7 +367,15 @@
           if(pt.alpha > 0) alive = true;
         }
 
-        if(alive || textAlpha > 0.01){
+        // === 커버리지 기반 텍스트 페이드 ===
+        const coverage = total ? (visible / total) : 1; // 0~1
+        const coverT = smoothstep(COVER_FADE_START, COVER_FADE_END, coverage);
+        const textAlpha = (1 - coverT).toFixed(3);
+        for(const line of lines){
+          line.style.setProperty('--textAlpha', textAlpha);
+        }
+
+        if(alive || parseFloat(textAlpha) > 0.01){
           requestAnimationFrame(animate);
         }
       }
