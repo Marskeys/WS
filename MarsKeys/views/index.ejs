@@ -30,23 +30,22 @@
 
     body {
       margin: 0;
-      background: var(--bg);
+      background-color: var(--bg); /* 배경색만 먼저 설정 */
       color: var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
       overflow-y: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      
-      /* 우주 배경 효과를 위한 CSS */
-      background: var(--bg) url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop') no-repeat center center fixed;
-      background-size: cover;
-      opacity: 0;
-      transition: opacity 2s ease;
     }
     
     body.show-background {
-        opacity: 1;
+        background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        background-attachment: fixed;
+        transition: background-image 2s ease;
     }
 
     .wrap {
@@ -610,7 +609,7 @@
           }
 
           if (particlePhase === 'disperse' && !anyAlive) {
-            body.classList.add('show-background'); // 입자가 완전히 사라지면 배경 표시
+            body.classList.add('show-background');
             particlePhase = 'done';
             return;
           }
