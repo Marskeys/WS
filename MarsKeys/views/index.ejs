@@ -4,6 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mars Keys — Counter to Welcome</title>
+
+  <!-- Google Font: Bungee -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --bg:#0e1016; 
@@ -12,140 +18,165 @@
       --fill:0%;
       --pastel-red-1:#ff8aa1; --pastel-blue-1:#78aaff;
     }
+    *{box-sizing:border-box}
     body{
       margin:0; background:var(--bg); color:var(--text);
-      font-family:sans-serif;
-      overflow-x: hidden;
-      overflow-y: hidden; /* 초기엔 스크롤 잠금 */
+      font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      overflow-x:hidden;
+      overflow-y:hidden; /* 초기엔 스크롤 잠금, 애니 이후 해제 */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ===== Hero ===== */
+    /* ===== Hero 전체를 좌/우 1:1로 분할 ===== */
     .wrap{
       position:relative;
-      min-height:100vh; 
-      display:flex; 
-      flex-direction:column; 
-      align-items:flex-start; 
+      min-height:100vh;
+      display:grid;
+      grid-template-columns: 1fr 1fr; /* 왼쪽: 브랜드, 오른쪽: 카운터 */
+    }
+
+    /* ====== 왼쪽 절반 (Mars / Keys) ====== */
+    .hero-left{
+      position:relative;
       padding:5vw;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:flex-start;
       overflow:visible;
     }
-    .brand{margin:0; font-weight:900; line-height:.9;}
-    .brand-line{position:relative; display:block; font-size:clamp(56px,14vw,200px);}
+    .brand{
+      margin:0; line-height:.9;
+      font-family:"Bungee", system-ui, sans-serif; /* Bungee 적용 */
+      letter-spacing:0.5px;
+    }
+    .brand-line{
+      position:relative; display:block; 
+      font-size:clamp(56px,14vw,200px);
+    }
     .plain{position:relative; z-index:1;}
     .fill{position:absolute; inset:0; width:var(--fill); overflow:hidden; z-index:2;}
     .fill > span{display:block; color:transparent; -webkit-background-clip:text; background-clip:text;}
-    .brand-line[data-c="red"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0);}
+    .brand-line[data-c="red"]  .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0);}
     .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
-    .tagline{font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem;}
-
+    .tagline{
+      font-size:clamp(16px,2.6vw,28px); 
+      font-weight:600; margin-top:1rem; color:var(--muted);
+    }
     .particles{position:absolute; inset:0; pointer-events:none; overflow:visible;}
     .particle{position:absolute; width:2px; height:2px; border-radius:50%;}
     .brand-line.dissolve .plain,.brand-line.dissolve .fill{opacity:0;}
 
-    /* ===== 퍼센트 카운터 ===== */
-    #counter{
-      position:fixed;
-      top:50%; right:5%;
-      transform:translateY(-50%);
-      font-size:clamp(40px,10vw,120px);
-      font-weight:900;
-      color:white;
-      text-shadow:0 0 10px rgba(255,255,255,0.5);
-      user-select:none;
-      pointer-events:none;
-      transition:opacity .5s ease;
-      z-index:100;
-    }
-
-    /* ===== Welcome (뷰포트 고정 아님! hero 내부 일반 흐름 요소) ===== */
-    .welcome-wrap{
-      position:relative;
-      min-height:0; /* 공간은 hero 내부에 유지 */
-    }
+    /* Welcome: 왼쪽 컬럼 내부에서 오버레이 */
+    .welcome-wrap{ position:relative; width:100%; height:100vh; }
     #welcome{
-      position:absolute; /* hero(.wrap) 기준의 절대배치 → 페이지와 함께 스크롤됨 */
-      top:10%; left:50%;
-      transform:translate(-50%, -50%) scale(0.8);
+      position:absolute;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%) scale(0.8);
       opacity:0;
       font-size:clamp(60px,12vw,180px);
       font-weight:900;
+      font-family:"Bungee", system-ui, sans-serif;
       color:white;
       text-align:center;
       letter-spacing:0.02em;
       pointer-events:none;
       transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
-      will-change: opacity, transform;
-      z-index:0; /* 초기엔 브랜드 아래 */
+      will-change:opacity, transform;
+      z-index:10;
     }
     #welcome.visible{
       opacity:1;
-      transform:translate(-50%, -50%) scale(1.45);
-      z-index:10; /* 터진 뒤 앞으로 */
+      transform:translate(-50%,-50%) scale(1.45);
+    }
+
+    /* ====== 오른쪽 절반 (퍼센트 카운트) ====== */
+    .hero-right{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:5vw;
+    }
+    #counter{
+      width:100%; height:100%;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center;
+      font-size:clamp(40px,12vw,160px);
+      font-weight:900;
+      font-family:"Bungee", system-ui, sans-serif; /* Bungee 적용 */
+      color:white;
+      text-shadow:0 0 10px rgba(255,255,255,0.5);
+      user-select:none;
+      pointer-events:none;
+      transition:opacity .6s ease;
     }
 
     /* ===== 이후 스크롤 콘텐츠 ===== */
     .scrollable-content{
-      padding:0 5vw; 
+      padding:0 5vw 6rem; 
       text-align:center; 
       position:relative; 
       display:none; /* 터진 뒤 보여줌 */
+      max-width:1200px; margin:0 auto;
     }
     .scrollable-content p{
       max-width:800px; margin:0 auto 1.5rem; line-height:1.8; 
       color:var(--muted); font-size:clamp(14px,2vw,18px);
     }
     .scrollable-content .temp-box{
-      background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin-bottom:2rem;
+      background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* 1) hero 컨테이너가 자식 폭을 꽉 채우게 */
-.wrap{
-  align-items: stretch; /* 기존 flex-start → stretch */
-}
-
-/* 2) welcome의 기준 박스가 실제 너비/높이를 가지도록 */
-.welcome-wrap{
-  position: relative;
-  width: 100%;
-  height: 100vh;   /* hero 높이만큼 기준 제공 (top:50% 계산용) */
-}
-
+    /* ===== 반응형 (모바일: 세로 스택) ===== */
+    @media (max-width: 768px){
+      .wrap{ grid-template-columns: 1fr; }
+      .hero-left{ padding:10vw 6vw 4vw; }
+      .hero-right{ height:50vh; padding:0 6vw 10vw; }
+      #counter{ font-size:clamp(40px,18vw,160px); }
+      .welcome-wrap{ height:60vh; }
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <canvas id="textCanvas" style="display:none;"></canvas>
+    <!-- 왼쪽 절반 -->
+    <section class="hero-left">
+      <canvas id="textCanvas" style="display:none;"></canvas>
 
-    <h1 class="brand">
-      <span class="brand-line" data-c="red">
-        <span class="plain">Mars</span>
-        <span class="fill"><span>Mars</span></span>
-        <div class="particles"></div>
-      </span>
-      <span class="brand-line" data-c="blue">
-        <span class="plain">Keys</span>
-        <span class="fill"><span>Keys</span></span>
-        <div class="particles"></div>
-      </span>
-    </h1>
-    <p class="tagline">Video Game Music Studio</p>
+      <h1 class="brand">
+        <span class="brand-line" data-c="red">
+          <span class="plain">Mars</span>
+          <span class="fill"><span>Mars</span></span>
+          <div class="particles"></div>
+        </span>
+        <span class="brand-line" data-c="blue">
+          <span class="plain">Keys</span>
+          <span class="fill"><span>Keys</span></span>
+          <div class="particles"></div>
+        </span>
+      </h1>
+      <p class="tagline">Video Game Music Studio</p>
 
-    <!-- Welcome을 hero 내부 일반 요소로 배치 -->
-    <div class="welcome-wrap" aria-hidden="true">
-      <div id="welcome">Welcome</div>
-    </div>
+      <!-- Welcome: 왼쪽 컬럼 내부 오버레이 -->
+      <div class="welcome-wrap" aria-hidden="true">
+        <div id="welcome">Welcome</div>
+      </div>
+    </section>
+
+    <!-- 오른쪽 절반 -->
+    <section class="hero-right">
+      <div id="counter">0%</div>
+    </section>
   </main>
-  
-  <div id="counter">0%</div>
 
   <div id="scrollContent" class="scrollable-content">
     <p>게임 음악 스튜디오 Mars Keys에 오신 것을 환영합니다...</p>
     <div class="temp-box"><h3>우리의 서비스</h3><p>게임 OST, SFX, VO, 인터랙티브 음악 시스템...</p></div>
     <div class="temp-box"><h3>포트폴리오</h3><p>RPG, SF 어드벤처 등...</p></div>
     <div class="temp-box"><h3>문의</h3><p>협업 및 프로젝트 문의는 언제든지 환영합니다.</p></div>
-    <div style="height:100vh;"></div>
+    <div style="height:60vh;"></div>
     <div class="temp-box"><p>마지막 임시 콘텐츠</p></div>
   </div>
 
@@ -157,7 +188,8 @@
     const welcome=document.getElementById("welcome");
     const scrollContent=document.getElementById("scrollContent");
 
-    let p=0, accel=0.0018;
+    let p=0;
+    const accel=0.0018;
     let particles=[], particlesGenerated=false;
     let autoAnimating=false, isFinalized=false;
 
@@ -194,11 +226,12 @@
         const w=line.offsetWidth,h=line.offsetHeight;
         canvas.width=w; canvas.height=h;
         ctx.clearRect(0,0,w,h);
-        ctx.font=`900 ${fontSize}px ${fontFamily}`;
+        /* Bungee는 굵기 400 고정 → weight 지정 없이 그리기 */
+        ctx.font=`${fontSize}px ${fontFamily}`;
         ctx.fillStyle='white'; ctx.textBaseline='middle';
         ctx.fillText(text,0,h/2);
         const img=ctx.getImageData(0,0,w,h).data;
-        const density=4;
+        const density=4; /* 성능/디테일 트레이드오프 */
         for(let y=0;y<h;y+=density){
           for(let x=0;x<w;x+=density){
             const idx=(y*w+x)*4;
@@ -243,15 +276,13 @@
     }
 
     function showWelcome(){
-      // 카운터 서서히 숨김 → Welcome이 hero 내부에서 자연스럽게 등장
+      // 카운터 서서히 숨김 → 왼쪽에서 Welcome 등장
       setTimeout(()=>{ counterEl.style.opacity=0; }, 400);
+      setTimeout(()=>{ welcome.classList.add("visible"); }, 1000);
       setTimeout(()=>{
-        welcome.classList.add("visible");   // hero 중앙에서 페이드인+확대
-      }, 1000);
-      setTimeout(()=>{
-        scrollContent.style.display="block"; // 이후 본문 오픈
+        scrollContent.style.display="block";
         isFinalized=true; 
-        body.style.overflowY="auto";         // 스크롤 활성화
+        body.style.overflowY="auto"; // 스크롤 활성화
       }, 1600);
     }
 
