@@ -52,27 +52,26 @@
     }
     .brand-line{
       display:block;
-      /* 화면 높이에 따라 상한(각 줄 최대 ~28vh) → 2줄 + 퍼센트가 한 화면에 */
       font-size:clamp(56px, min(14vw, 28vh), 200px);
-      line-height:1.06;         /* 줄 박스 타이트 */
-      padding-bottom:0.18em;    /* 줄 여유 최소화 */
+      line-height:1.06;
+      padding-bottom:0.18em;
       overflow:visible;
       position:relative;
     }
     .brand-line + .brand-line{
-      margin-top:-0.32em;       /* Mars/Keys 붙이기 */
+      margin-top:-0.32em;
     }
     .ink{
       display:inline-block;
       color:transparent;
-      -webkit-text-fill-color:transparent; /* Safari 페인트 이슈 회피 */
+      -webkit-text-fill-color:transparent;
       -webkit-background-clip:text; background-clip:text;
       background-repeat:no-repeat,no-repeat;
       background-size: var(--fill-int) 100%, 100% 100%;
       background-image: var(--grad), linear-gradient(#fff,#fff);
       letter-spacing:0;
-      padding-bottom:0.28em;      /* descender 여유는 글자 박스에 */
-      transform: translateZ(0);   /* 합성층 올려 잘림 방지 */
+      padding-bottom:0.28em;
+      transform: translateZ(0);
     }
     .brand-line:nth-child(1) .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
     .brand-line:nth-child(2) .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
@@ -81,10 +80,10 @@
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
     }
 
-    /* ===== 퍼센트: 모든 화면에서 오른쪽-아래 고정 ===== */
+    /* ===== 퍼센트 ===== */
     #counter{
       position:absolute; right:5vw; 
-      bottom:clamp(16px, 6vh, 48px); /* 화면 높이에 비례한 하단 여백 */
+      bottom:clamp(16px, 6vh, 48px);
       text-align:right;
       font-size:clamp(28px, min(7vw, 10vh), 96px);
       font-family:"Michroma", system-ui, sans-serif;
@@ -103,12 +102,12 @@
       pointer-events:none; z-index:50;
     }
 
-    /* ===== Welcome: 문서 흐름(스크롤됨) — wrap 기준 absolute ===== */
+    /* ===== Welcome ===== */
     #welcome{
       position:absolute; left:50%; top:50%;
       transform:translate(-50%,-50%) scale(0.86);
       opacity:0;
-      font-size:clamp(48px,10vw,130px); /* 좌우 여유 확보 */
+      font-size:clamp(48px,10vw,130px);
       font-family:"Michroma", system-ui, sans-serif;
       color:white;
       letter-spacing:0.01em;
@@ -139,7 +138,6 @@
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* ===== 모바일 미세 조정 ===== */
     @media (max-width: 768px){
       .brand-line{ line-height:1.08; padding-bottom:0.16em; }
       .brand-line + .brand-line{ margin-top:-0.26em; }
@@ -158,7 +156,6 @@
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
     <p class="tagline">Video Game Music Studio</p>
 
-    <!-- 문서 흐름에 속하는 Welcome (스크롤됨) -->
     <div id="welcome">Welcome</div>
   </main>
 
@@ -182,14 +179,25 @@
     const particleCanvas=document.getElementById('particleCanvas');
     const pctx=particleCanvas.getContext('2d');
 
+    // ===== Progress =====
     let p=0;
     const accel=0.0018;
     let autoAnimating=false, isFinalized=false, particlesGenerated=false;
 
+    // ===== Particles =====
     let particles=[];
-    const DENSITY=10;
+    const DENSITY=10;          // 낮출수록 입자 증가
     const MAX_PARTICLES=1200;
-    const GLOW_THRESHOLD = 100;    // 입자 수가 이 값 미만일 때만 글로우 on
+    const GLOW_THRESHOLD = 100;
+
+    // ===== Taegeuk timeline params =====
+    const TAEGUK_DELAY = 2000;   // 터진 뒤 몇 ms 후 태극으로 모을지
+    const TAEGUK_HOLD  = 900;    // 태극 모양 유지 시간
+    const TAEGUK_SCALE = 0.26;   // 화면 대비 태극 반지름 비율(0~0.5)
+
+    let particlePhase = 'idle';  // 'explode'|'morph'|'hold'|'disperse'|'done'
+    let phaseStartTime = 0;
+    let taegeukTargets = null;
 
     function resizeParticleCanvas(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -212,8 +220,9 @@
       }
       if(p>=1 && !particlesGenerated && !isFinalized){
         generateParticles();
-        dissolveText();
+        fadeOutText();
         showWelcome();
+        runParticleShow(); // ✨ 타임라인 시작
       }
     }
 
@@ -234,33 +243,30 @@
       const metrics = offCtx.measureText(text);
       const actualHeight = (metrics.actualBoundingBoxAscent||fontSize) + (metrics.actualBoundingBoxDescent||fontSize*0.25);
       const width = Math.ceil(metrics.width);
-
       offCanvas.width = Math.ceil(width);
       offCanvas.height = Math.ceil(actualHeight);
-
       offCtx.font = `${fontSize}px ${fontFamily}`;
       offCtx.fillStyle = 'white';
       offCtx.textBaseline = 'top';
       offCtx.fillText(text, 0, 0);
-
       return { canvas: offCanvas };
     }
 
     function generateParticles(){
       particlesGenerated=true; particles.length=0;
-
       const wrapRect = wrap.getBoundingClientRect();
       const lines = [
         { el: document.getElementById('mars').parentElement, color:'red',  textEl: document.getElementById('mars')  },
         { el: document.getElementById('keys').parentElement, color:'blue', textEl: document.getElementById('keys') }
       ];
+      const centerX = wrapRect.width * 0.5;
+      const centerY = wrapRect.height * 0.5;
 
       lines.forEach(({el, color, textEl})=>{
         const rect = el.getBoundingClientRect();
         const style = getComputedStyle(textEl);
         const fontSize = parseFloat(style.fontSize);
         const fontFamily = style.fontFamily;
-
         const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
         const ctx = canvas.getContext('2d');
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -269,13 +275,23 @@
           for(let x=0;x<canvas.width;x+=DENSITY){
             const idx=(y*canvas.width+x)*4;
             if(imgData[idx+3]>128){
+              const px = rect.left - wrapRect.left + x;
+              const py = rect.top  - wrapRect.top  + y;
+
+              // 초기 폭발 방향(중심에서 바깥쪽)
+              const dx = px - centerX;
+              const dy = py - centerY;
+              const dist = Math.hypot(dx,dy) + 0.0001;
+              const boost = 0.6 + Math.random()*1.1;
+
               particles.push({
-                x: rect.left - wrapRect.left + x,
-                y: rect.top  - wrapRect.top  + y,
-                vx:(Math.random()-0.5)*1.4,
-                vy:(Math.random()-0.5)*1.4,
-                alpha:1,
-                color
+                x: px, y: py,
+                vx: (Math.random()-0.5)*0.6 + (dx/dist)*boost,
+                vy: (Math.random()-0.5)*0.6 + (dy/dist)*boost,
+                alpha: 1,
+                color,
+                tx: null, ty: null, // 목표(태극)
+                reached: false
               });
             }
           }
@@ -291,68 +307,12 @@
       }
     }
 
-    function dissolveText(){
+    function fadeOutText(){
       // 원 텍스트 페이드아웃
       document.querySelectorAll('.ink').forEach(el=>{
         el.style.transition='opacity .3s ease';
         el.style.opacity='0';
       });
-
-      const wrapRect = wrap.getBoundingClientRect();
-      const width = wrapRect.width, height = wrapRect.height;
-      let frameId = null;
-
-      function frame(){
-        pctx.clearRect(0,0,width,height);
-
-        // 살아있는 입자 수
-        let aliveCount = 0;
-        for(const pt of particles){ if(pt.alpha>0){ aliveCount++; } }
-
-        // 블렌딩/글로우는 “적을 때만”
-        const useGlow = aliveCount < GLOW_THRESHOLD;
-
-        pctx.globalCompositeOperation = useGlow ? 'lighter' : 'source-over';
-        if(!useGlow){ pctx.shadowBlur = 0; pctx.shadowColor = 'transparent'; }
-
-        for(const pt of particles){
-          if(pt.alpha<=0) continue;
-
-          const col = (pt.color==='red')
-            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1').trim()
-            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1').trim();
-
-          if(useGlow){
-            pctx.save();
-            pctx.globalAlpha = pt.alpha;
-            pctx.shadowBlur = 14;
-            pctx.shadowColor = col || '#ffffff';
-            pctx.fillStyle = col || '#ffffff';
-            pctx.beginPath();
-            pctx.arc(pt.x, pt.y, 2.2, 0, Math.PI*2);
-            pctx.fill();
-            pctx.restore();
-          }else{
-            pctx.globalAlpha = pt.alpha;
-            pctx.fillStyle = col || '#ffffff';
-            pctx.fillRect(pt.x, pt.y, 2, 2);
-          }
-
-          // 이동/감쇠
-          pt.x += pt.vx; pt.y += pt.vy;
-          pt.vx *= 1.016; pt.vy *= 1.016;
-          pt.alpha -= 0.0045;
-        }
-
-        if(aliveCount > 0) {
-          frameId = requestAnimationFrame(frame);
-        } else {
-          pctx.clearRect(0, 0, width, height);
-          pctx.globalCompositeOperation = 'source-over';
-          cancelAnimationFrame(frameId);
-        }
-      }
-      requestAnimationFrame(frame);
     }
 
     function showWelcome(){
@@ -363,6 +323,186 @@
         isFinalized=true;  
         body.style.overflowY="auto";
       }, 1500);
+    }
+
+    // ===== Taegeuk target builder (analytic classification) =====
+    function buildTaegeukTargets(){
+      const rect = wrap.getBoundingClientRect();
+      const cx = rect.width*0.5, cy = rect.height*0.5;
+      const R = Math.min(rect.width, rect.height) * TAEGUK_SCALE; // 반지름
+      const step = Math.max(6, DENSITY-2); // 샘플 간격
+      const red = [], blue = [];
+
+      // 중심 기준 좌표계로 샘플링
+      for(let yy=-R; yy<=R; yy+=step){
+        for(let xx=-R; xx<=R; xx+=step){
+          const x = xx, y = yy;
+          if(x*x + y*y > R*R) continue; // 큰 원 밖이면 패스
+          const r2 = (R*0.5)*(R*0.5);
+
+          let isRed;
+          if(y >= 0){
+            // 위쪽: 위 작은 원의 바깥쪽이면 red
+            const d2 = x*x + (y - R*0.5)*(y - R*0.5);
+            isRed = d2 >= r2;
+          }else{
+            // 아래쪽: 아래 작은 원의 안쪽이면 red
+            const d2 = x*x + (y + R*0.5)*(y + R*0.5);
+            isRed = d2 <= r2;
+          }
+
+          if(isRed) red.push({x: cx + x, y: cy + y});
+          else      blue.push({x: cx + x, y: cy + y});
+        }
+      }
+
+      // 셔플(균등 분산)
+      function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]];} }
+      shuffle(red); shuffle(blue);
+      return {red, blue};
+    }
+
+    function assignTaegeukTargets(){
+      taegeukTargets = buildTaegeukTargets();
+      const reds = taegeukTargets.red.slice();
+      const blues= taegeukTargets.blue.slice();
+
+      for(const pt of particles){
+        if(pt.color==='red' && reds.length){
+          const t = reds.pop(); pt.tx=t.x; pt.ty=t.y;
+        }else if(pt.color==='blue' && blues.length){
+          const t = blues.pop(); pt.tx=t.x; pt.ty=t.y;
+        }else{
+          // 남는 색 섞어서 배정
+          const pool = reds.length ? reds : (blues.length ? blues : null);
+          if(pool){
+            const t = pool.pop(); pt.tx=t.x; pt.ty=t.y;
+          }else{
+            // 타깃 부족 시 중심 근처
+            const rect = wrap.getBoundingClientRect();
+            pt.tx = rect.width*0.5 + (Math.random()-0.5)*10;
+            pt.ty = rect.height*0.5 + (Math.random()-0.5)*10;
+          }
+        }
+        pt.reached = false;
+      }
+    }
+
+    // ===== Particle Show (timeline) =====
+    function runParticleShow(){
+      particlePhase = 'explode';
+      phaseStartTime = performance.now();
+
+      const rect = wrap.getBoundingClientRect();
+      const W = rect.width, H = rect.height;
+
+      function frame(now){
+        pctx.clearRect(0,0,W,H);
+
+        // phase 전환
+        if(particlePhase==='explode' && now - phaseStartTime >= TAEGUK_DELAY){
+          assignTaegeukTargets();
+          particlePhase = 'morph';
+          phaseStartTime = now;
+        }else if(particlePhase==='morph'){
+          const allReached = particles.every(pt=>pt.reached);
+          if(allReached || (now - phaseStartTime) > 1600){
+            particlePhase = 'hold';
+            phaseStartTime = now;
+          }
+        }else if(particlePhase==='hold' && now - phaseStartTime >= TAEGUK_HOLD){
+          // 재분산 준비
+          for(const pt of particles){
+            const ang = Math.random()*Math.PI*2;
+            const spd = 1.4 + Math.random()*1.8;
+            pt.vx = Math.cos(ang)*spd;
+            pt.vy = Math.sin(ang)*spd;
+            pt.reached=false;
+          }
+          particlePhase = 'disperse';
+          phaseStartTime = now;
+        }
+
+        // 드로잉 모드(글로우는 적을 때만)
+        const aliveCount = particles.filter(pt=>pt.alpha>0).length;
+        const useGlow = aliveCount < GLOW_THRESHOLD;
+        pctx.globalCompositeOperation = useGlow ? 'lighter' : 'source-over';
+        if(!useGlow){ pctx.shadowBlur = 0; pctx.shadowColor = 'transparent'; }
+
+        // 업데이트 & 렌더
+        let anyAlive = false;
+        for(const pt of particles){
+          if(pt.alpha<=0) continue;
+          anyAlive = true;
+
+          // 색
+          const col = (pt.color==='red')
+            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1').trim()
+            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1').trim();
+
+          // 물리 업데이트
+          if(particlePhase==='explode'){
+            // 가벼운 감쇠 + 미세 노이즈, 알파는 거의 유지
+            pt.vx *= 0.985; pt.vy *= 0.985;
+            pt.vx += (Math.random()-0.5)*0.02;
+            pt.vy += (Math.random()-0.5)*0.02;
+            pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
+          }else if(particlePhase==='morph'){
+            if(pt.tx!=null){
+              const dx = pt.tx - pt.x;
+              const dy = pt.ty - pt.y;
+              // 스프링 느낌의 이징
+              pt.vx = pt.vx*0.82 + dx*0.06;
+              pt.vy = pt.vy*0.82 + dy*0.06;
+              if(Math.hypot(dx,dy) < 1.6){
+                pt.x = pt.tx; pt.y = pt.ty;
+                pt.vx = pt.vy = 0;
+                pt.reached = true;
+              }
+            }
+            pt.alpha = Math.min(1, pt.alpha + 0.01);
+          }else if(particlePhase==='hold'){
+            // 살짝 호흡(±0.6px)
+            const t = (now - phaseStartTime)*0.004;
+            pt.x += Math.sin(t + pt.tx*0.01)*0.06;
+            pt.y += Math.cos(t + pt.ty*0.01)*0.06;
+            pt.alpha = 1;
+          }else if(particlePhase==='disperse'){
+            pt.vx *= 1.012; pt.vy *= 1.012;
+            pt.alpha -= 0.006; // 서서히 소멸
+          }
+
+          // 위치 적분
+          pt.x += pt.vx; pt.y += pt.vy;
+
+          // 렌더
+          if(useGlow){
+            pctx.save();
+            pctx.globalAlpha = Math.max(0, pt.alpha);
+            pctx.shadowBlur = 14;
+            pctx.shadowColor = col || '#ffffff';
+            pctx.fillStyle = col || '#ffffff';
+            pctx.beginPath();
+            pctx.arc(pt.x, pt.y, 2.2, 0, Math.PI*2);
+            pctx.fill();
+            pctx.restore();
+          }else{
+            pctx.globalAlpha = Math.max(0, pt.alpha);
+            pctx.fillStyle = col || '#ffffff';
+            pctx.fillRect(pt.x, pt.y, 2, 2);
+          }
+        }
+
+        // 종료 판단
+        if(particlePhase==='disperse' && !anyAlive){
+          pctx.globalCompositeOperation = 'source-over';
+          particlePhase = 'done';
+          return; // 루프 종료
+        }
+
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
     }
 
     /* === 입력: 50%까지 수동, 그 뒤 자동 === */
