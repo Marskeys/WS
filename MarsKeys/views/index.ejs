@@ -245,7 +245,7 @@
 
       // ===== Particles =====
       let particles = [];
-      const MAX_PARTICLES = IS_MOBILE ? 2200 : 3000;
+      const MAX_PARTICLES = IS_MOBILE ? 5000 : 3000;
       const GLOW_THRESHOLD = 100;
 
       // ===== Taegeuk timeline params =====
@@ -339,7 +339,7 @@
         const centerX = wrapRect.width * 0.5;
         const centerY = wrapRect.height * 0.5;
 
-        const TARGET_PER_LINE = IS_MOBILE ? 1100 : 1500;
+        const TARGET_PER_LINE = IS_MOBILE ? 2500 : 1500;
 
         lines.forEach(({
           el,
@@ -599,7 +599,7 @@
 
           // ===== 드로잉(항상 source-over, 2패스) =====
           pctx.globalCompositeOperation = 'source-over';
-          pctx.shadowBlur = 20;
+          pctx.shadowBlur = 10;
           pctx.shadowOffsetX = 0;
           pctx.shadowOffsetY = 0;
 
