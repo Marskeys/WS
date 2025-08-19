@@ -30,7 +30,6 @@
       align-items:flex-start; 
       padding:5vw;
       overflow:visible;
-      align-items: stretch; /* ★ 추가: 기준 박스 꽉 채움 */
     }
     .brand{margin:0; font-weight:900; line-height:.9;}
     .brand-line{position:relative; display:block; font-size:clamp(56px,14vw,200px);}
@@ -41,33 +40,9 @@
     .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
     .tagline{font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem;}
 
-    /* ===== Particles (우주 부유 + 글로우) ===== */
-    .particles{
-      position:absolute; inset:0; pointer-events:none; overflow:visible;
-      mix-blend-mode:screen; /* ★ 은은한 광합성 느낌 */
-    }
-    .particle{
-      position:absolute; 
-      width:2px; height:2px; border-radius:50%;
-      /* ★ 라디얼 글로우 */
-      background: radial-gradient(circle at center, #fff 0 28%, var(--c, #ffffff) 45%, rgba(0,0,0,0) 70%);
-      box-shadow:
-        0 0 6px var(--c, #ffffff),
-        0 0 14px var(--c, #ffffff),
-        0 0 24px rgba(255,255,255,0.35);
-      opacity:0;
-      will-change: transform, opacity, filter;
-      transform: translate3d(0,0,0) scale(1);
-      animation: twinkle 2.6s ease-in-out infinite;
-      animation-delay: var(--twinkle-delay, 0s);
-      filter: blur(.2px); /* ★ 살짝 소프트 */
-    }
-    @keyframes twinkle{
-      0%,100%{ filter: blur(.2px) brightness(1); }
-      50%   { filter: blur(.2px) brightness(1.35); }
-    }
-
-    .brand-line.dissolve .plain,.brand-line.dissolve .fill{opacity:0; transition:opacity .4s ease;}
+    .particles{position:absolute; inset:0; pointer-events:none; overflow:visible;}
+    .particle{position:absolute; width:2px; height:2px; border-radius:50%;}
+    .brand-line.dissolve .plain,.brand-line.dissolve .fill{opacity:0;}
 
     /* ===== 퍼센트 카운터 ===== */
     #counter{
@@ -86,13 +61,11 @@
 
     /* ===== Welcome (뷰포트 고정 아님! hero 내부 일반 흐름 요소) ===== */
     .welcome-wrap{
-      position: relative;
-      width: 100%;
-      height: 100vh;   /* hero 높이만큼 기준 제공 */
-      min-height:0;
+      position:relative;
+      min-height:0; /* 공간은 hero 내부에 유지 */
     }
     #welcome{
-      position:absolute; 
+      position:absolute; /* hero(.wrap) 기준의 절대배치 → 페이지와 함께 스크롤됨 */
       top:10%; left:50%;
       transform:translate(-50%, -50%) scale(0.8);
       opacity:0;
@@ -104,13 +77,12 @@
       pointer-events:none;
       transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
       will-change: opacity, transform;
-      z-index:0;
-      text-shadow: 0 0 18px rgba(255,255,255,0.25); /* ★ 아주 약한 글로우 */
+      z-index:0; /* 초기엔 브랜드 아래 */
     }
     #welcome.visible{
       opacity:1;
       transform:translate(-50%, -50%) scale(1.45);
-      z-index:10;
+      z-index:10; /* 터진 뒤 앞으로 */
     }
 
     /* ===== 이후 스크롤 콘텐츠 ===== */
@@ -126,14 +98,23 @@
     }
     .scrollable-content .temp-box{
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin-bottom:2rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-      backdrop-filter: blur(2px);
     }
+
+    /* 1) hero 컨테이너가 자식 폭을 꽉 채우게 */
+.wrap{
+  align-items: stretch; /* 기존 flex-start → stretch */
+}
+
+/* 2) welcome의 기준 박스가 실제 너비/높이를 가지도록 */
+.welcome-wrap{
+  position: relative;
+  width: 100%;
+  height: 100vh;   /* hero 높이만큼 기준 제공 (top:50% 계산용) */
+}
+
   </style>
 </head>
 <body>
-  <img src="/assets/images/glow-circuit-bg.webp" style="display: none" alt="preload background" />
-
   <main class="wrap">
     <canvas id="textCanvas" style="display:none;"></canvas>
 
@@ -201,19 +182,10 @@
       step();
     }
 
-    // ===== 유틸 =====
-    const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-    const lerp=(a,b,t)=>a+(b-a)*t;
-
-    function colorVar(name){
-      return name==='red' ? 'var(--pastel-red-1)' : 'var(--pastel-blue-1)';
-    }
-
     function generateParticles(){
       particlesGenerated=true; particles=[];
       const canvas=document.getElementById('textCanvas');
       const ctx=canvas.getContext('2d',{willReadFrequently:true});
-
       document.querySelectorAll('.brand-line').forEach(line=>{
         const text=line.querySelector('.plain').textContent;
         const style=getComputedStyle(line.querySelector('.plain'));
@@ -225,44 +197,19 @@
         ctx.font=`900 ${fontSize}px ${fontFamily}`;
         ctx.fillStyle='white'; ctx.textBaseline='middle';
         ctx.fillText(text,0,h/2);
-
         const img=ctx.getImageData(0,0,w,h).data;
-        const density=6;            // ★ 입자 간격 (숫자↑ → 개수↓)
-        const sampleRate=0.28;      // ★ 무작위 샘플링 (개수 조절)
-        const cx=w/2, cy=h/2;
-        const col=colorVar(line.dataset.c);
-        const container=line.querySelector('.particles');
-
+        const density=4;
         for(let y=0;y<h;y+=density){
           for(let x=0;x<w;x+=density){
             const idx=(y*w+x)*4;
-            if(img[idx+3]>128 && Math.random()<sampleRate){
-              // 초기 위치(약간 지터) + 깊이감 z
-              const jx = x + (Math.random()-0.5)*1.2;
-              const jy = y + (Math.random()-0.5)*1.2;
-              const dx = jx - cx, dy = jy - cy;
-              const len = Math.hypot(dx,dy) || 1;
-              const dirx = dx/len, diry = dy/len;
-
-              const el=document.createElement('div');
-              el.className='particle';
-              el.style.setProperty('--c', col);
-              el.style.setProperty('--twinkle-delay', (Math.random()*2.5).toFixed(2)+'s');
-              container.appendChild(el);
-
+            if(img[idx+3]>128){
               particles.push({
-                x:jx, y:jy,
-                vx: dirx * (0.08 + Math.random()*0.12), // ★ 아주 느린 초기 확산
-                vy: diry * (0.08 + Math.random()*0.12),
-                ax: 0, ay: 0,
-                z: 0.6 + Math.random()*0.8,            // ★ 깊이 → 스케일
-                alpha: 0,
-                born: performance.now() + Math.random()*650, // ★ 랜덤 생성 지연
-                life: 5200 + Math.random()*2800,       // ★ 오래 떠있음
-                seed1: Math.random()*Math.PI*2,
-                seed2: Math.random()*Math.PI*2,
-                container,
-                el
+                x, y,
+                vx:(Math.random()-0.5)*2,
+                vy:(Math.random()-0.5)*2,
+                alpha:1,
+                color:line.dataset.c,
+                container:line.querySelector('.particles')
               });
             }
           }
@@ -272,67 +219,27 @@
 
     function dissolveText(){
       document.querySelectorAll('.brand-line').forEach(l=>l.classList.add('dissolve'));
-
-      const friction = 0.985;  // ★ 감쇠 → 점점 느려짐
-      const swirlAmp = 0.018;  // ★ 소용돌이 세기
-      const driftAmp = 0.06;   // ★ 아주 느린 우주 바람
-      let lastT = performance.now();
-
-      function animate(now){
-        const dt = clamp(now - lastT, 0, 40); // ms
-        lastT = now;
-
-        let alive = false;
-        for(const pt of particles){
-          const age = now - pt.born;
-
-          if(age < 0){
-            // 아직 태어나지 않음: 대기
-            continue;
+      function animate(){
+        document.querySelectorAll('.particles').forEach(pc=>pc.innerHTML='');
+        particles.forEach(pt=>{
+          if(pt.alpha>0){
+            const el=document.createElement('div');
+            el.className='particle';
+            el.style.left=pt.x+'px'; 
+            el.style.top=pt.y+'px';
+            el.style.opacity=pt.alpha;
+            el.style.backgroundColor=`var(--pastel-${pt.color}-1)`;
+            pt.container.appendChild(el);
+            pt.x+=pt.vx; 
+            pt.y+=pt.vy; 
+            pt.vx*=1.02; 
+            pt.vy*=1.02; 
+            pt.alpha-=0.004;
           }
-          const t = age / pt.life;
-
-          if(t >= 1){
-            pt.alpha = 0;
-            continue;
-          }
-
-          // ★ 알파: 서서히 등장 → 유지 → 서서히 사라짐
-          if(t < 0.15) pt.alpha = lerp(0, 0.9, t/0.15);
-          else if(t > 0.8) pt.alpha = lerp(0.9, 0, (t-0.8)/0.2);
-          else pt.alpha = 0.9;
-
-          // ★ 소용돌이/노이즈 드리프트 (우주 부유)
-          const tt = now * 0.001;
-          const swirlX = Math.sin(tt*0.9 + pt.seed1) * swirlAmp;
-          const swirlY = Math.cos(tt*0.8 + pt.seed2) * swirlAmp;
-
-          // ★ 아주 약한 항성풍 같은 지속 드리프트
-          pt.vx += swirlX + (Math.sin(pt.seed1 + tt*0.25) * driftAmp * 0.001);
-          pt.vy += swirlY + (Math.cos(pt.seed2 + tt*0.22) * driftAmp * 0.001);
-
-          // ★ 감쇠
-          pt.vx *= friction;
-          pt.vy *= friction;
-
-          // ★ 위치 업데이트
-          pt.x += pt.vx * dt;
-          pt.y += pt.vy * dt;
-
-          // ★ 깊이에 따른 스케일
-          const s = 0.8 + pt.z * 0.6;
-
-          // ★ 렌더
-          const e = pt.el;
-          e.style.opacity = pt.alpha.toFixed(3);
-          e.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0) scale(${s})`;
-
-          alive = true;
-        }
-
-        if(alive) requestAnimationFrame(animate);
+        });
+        if(particles.some(pt=>pt.alpha>0)) requestAnimationFrame(animate);
       }
-      requestAnimationFrame(animate);
+      animate();
     }
 
     function showWelcome(){
