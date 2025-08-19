@@ -429,20 +429,26 @@
         function sample(stepVal) {
           const red = [],
             blue = [];
-          const r2 = R * R;
+          const rSmall = R * 0.5;
+          const rSmall2 = rSmall * rSmall;
+          const offsetX = R * 0.5;
 
           for (let yy = -R; yy <= R; yy += stepVal) {
             for (let xx = -R; xx <= R; xx += stepVal) {
               const x = xx,
                 y = yy;
-              if (x * x + y * y > r2) continue;
-              let isRed = y < 0;
-              if (isRed) {
+
+              if (x * x + y * y > R * R) continue;
+
+              const distLeft2 = (x + offsetX) * (x + offsetX) + y * y;
+              const distRight2 = (x - offsetX) * (x - offsetX) + y * y;
+
+              if (distLeft2 <= rSmall2) {
                 red.push({
                   x: cx + x,
                   y: cy + y
                 });
-              } else {
+              } else if (distRight2 <= rSmall2) {
                 blue.push({
                   x: cx + x,
                   y: cy + y
