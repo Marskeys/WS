@@ -11,14 +11,16 @@
       --muted:#9aa3b2;
       --fill:0%;
       --pastel-red-1:#ff8aa1; --pastel-blue-1:#78aaff;
+      --pastel-red-2:#ff6b7a; --pastel-red-3:#ff9db0;
+      --pastel-blue-2:#5ea1ff; --pastel-blue-3:#b2d1ff;
     }
     body{
       margin:0; background:var(--bg); color:var(--text);
       font-family:sans-serif;
-      overflow-x: hidden;
-      overflow-y: hidden; /* 초기엔 스크롤 잠금 */
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      overflow-x:hidden;
+      overflow-y:hidden; /* 초기엔 스크롤 잠금 */
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
     /* ===== Hero ===== */
@@ -36,22 +38,27 @@
     .plain{position:relative; z-index:1;}
     .fill{position:absolute; inset:0; width:var(--fill); overflow:hidden; z-index:2;}
     .fill > span{display:block; color:transparent; -webkit-background-clip:text; background-clip:text;}
-    .brand-line[data-c="red"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0);}
-    .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
+    .brand-line[data-c="red"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3));}
+    .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3));}
     .tagline{font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem;}
 
-    /* 텍스트 ↔ 파티클: JS가 --textAlpha로 제어 (즉시 0 금지) */
-    .brand-line .plain,
-    .brand-line .fill{
-      opacity: var(--textAlpha, 1);
-      transition: opacity .2s linear;
+    /* 텍스트는 폭발 직전에만 숨김 (캔버스가 takeover) */
+    .brand-line .plain, .brand-line .fill{
+      transition: opacity .15s linear;
+    }
+
+    /* ===== overlay canvas (글자 픽셀 캡처) ===== */
+    .text-overlay{
+      position:absolute; inset:0; 
+      z-index:3;           /* 텍스트 위 */
+      pointer-events:none;
     }
 
     /* ===== Particles (우주 부유 + 글로우) ===== */
     .particles{
       position:absolute; inset:0; pointer-events:none; overflow:visible;
       mix-blend-mode:screen;
-      z-index:3;
+      z-index:4;           /* overlay 위 (진짜로 분해되는 느낌) */
       transform: translateZ(0);
     }
     .particle{
@@ -138,7 +145,7 @@
   </style>
 </head>
 <body>
-  <img src="/assets/images/glow-circuit-bg.webp" style="display: none" alt="preload background" />
+  <img src="/assets/images/glow-circuit-bg.webp" style="display:none" alt="preload background" />
 
   <main class="wrap">
     <canvas id="textCanvas" style="display:none;"></canvas>
@@ -147,11 +154,13 @@
       <span class="brand-line" data-c="red">
         <span class="plain">Mars</span>
         <span class="fill"><span>Mars</span></span>
+        <canvas class="text-overlay"></canvas>
         <div class="particles"></div>
       </span>
       <span class="brand-line" data-c="blue">
         <span class="plain">Keys</span>
         <span class="fill"><span>Keys</span></span>
+        <canvas class="text-overlay"></canvas>
         <div class="particles"></div>
       </span>
     </h1>
@@ -182,20 +191,19 @@
     const scrollContent=document.getElementById("scrollContent");
 
     // ===== 파라미터 =====
-    const SPEED_MIN = 0.08;
-    const SPEED_RND = 0.12;
-    const FRICTION  = 0.985;
-    const SWIRL_AMP = 0.018;
-    const DRIFT_AMP = 0.06;
+    const DENSITY   = 6;        // 샘플 간격(px)
+    const BUDGET    = 140;      // 프레임당 스폰 수
+    const SPEED_MIN = 0.08;     // 기본 확산 속도
+    const SPEED_RND = 0.12;     // 랜덤 추가 속도
+    const FRICTION  = 0.985;    // 감쇠
+    const SWIRL_AMP = 0.018;    // 소용돌이
+    const DRIFT_AMP = 0.06;     // 우주 바람
 
-    const STICK_DUR = 300;  // 초기 고정 (글자형 유지)
-    const RAMP_DUR  = 700;  // 이동량 0→1
-    // 커버리지 기반 페이드(입자 등장 비율)
-    const COVER_FADE_START = 0.25; // 이 비율부터 글자 투명도 하강 시작
-    const COVER_FADE_END   = 0.85; // 이 비율에서 글자 완전 0
+    const STICK_DUR = 280;      // 초반 글자형 유지
+    const RAMP_DUR  = 650;      // 이동량 0→1
 
     let p=0, accel=0.0018;
-    let particles=[], particlesGenerated=false;
+    let particles=[], spawners=[], particlesGenerated=false;
     let autoAnimating=false, isFinalized=false;
 
     function setProgress(v){
@@ -204,8 +212,9 @@
       if(!isFinalized){counterEl.textContent=Math.floor(p*100)+"%";}
       if(p>=1 && !particlesGenerated && !isFinalized){
         (document.fonts?.ready || Promise.resolve()).then(()=>{
-          generateParticles(); 
-          dissolveText(); 
+          snapshotToCanvas();  // ★ 글자를 overlay canvas에 그대로 복제
+          generateParticles(); // ★ 그 캔버스 픽셀에서 파티클 뽑음
+          explodeFromCanvas(); // ★ 캔버스 픽셀을 지워가며 분해
           showWelcome();
         });
       }
@@ -228,95 +237,105 @@
       const t = Math.max(0, Math.min(1, (x-e0)/(e1-e0)));
       return t*t*(3-2*t);
     };
-    const colorVar = (name)=> name==='red' ? 'var(--pastel-red-1)' : 'var(--pastel-blue-1)';
+    const getVar = (name)=>getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const colorStops = {
+      red:  [getVar('--pastel-red-1')||'#ff8aa1', getVar('--pastel-red-2')||'#ff6b7a', getVar('--pastel-red-3')||'#ff9db0'],
+      blue: [getVar('--pastel-blue-1')||'#78aaff', getVar('--pastel-blue-2')||'#5ea1ff', getVar('--pastel-blue-3')||'#b2d1ff']
+    };
+    const colorMain = (c)=> c==='red' ? getVar('--pastel-red-1')||'#ff8aa1' : getVar('--pastel-blue-1')||'#78aaff';
 
-    function generateParticles(){
-      particlesGenerated=true; particles=[];
-      const canvas=document.getElementById('textCanvas');
-      const ctx=canvas.getContext('2d',{willReadFrequently:true});
-
+    // === 1) 글자를 overlay canvas에 그려서 "같은 픽셀" 확보
+    function snapshotToCanvas(){
       document.querySelectorAll('.brand-line').forEach(line=>{
-        const text=line.querySelector('.plain')?.textContent || '';
-        const style=getComputedStyle(line.querySelector('.plain'));
-        const fontSize=parseInt(style.fontSize)||120; 
-        const fontFamily=style.fontFamily||'sans-serif';
-        const w=Math.max(2,line.offsetWidth), h=Math.max(2,line.offsetHeight);
+        const plain = line.querySelector('.plain');
+        const text  = plain?.textContent || '';
+        const style = getComputedStyle(plain);
+        const fontSize = parseInt(style.fontSize)||120;
+        const fontFamily= style.fontFamily || 'sans-serif';
+        const w = Math.max(2, line.offsetWidth);
+        const h = Math.max(2, line.offsetHeight);
 
-        canvas.width=w; canvas.height=h;
+        const cvs = line.querySelector('.text-overlay');
+        const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+        cvs.width  = w * dpr;
+        cvs.height = h * dpr;
+        cvs.style.width = w+'px';
+        cvs.style.height= h+'px';
+
+        const ctx = cvs.getContext('2d');
+        ctx.setTransform(dpr,0,0,dpr,0,0);
         ctx.clearRect(0,0,w,h);
-        ctx.font=`900 ${fontSize}px ${fontFamily}`;
-        ctx.fillStyle='white'; 
+
+        // gradient 채워진 텍스트로 동일하게 렌더
+        ctx.font = `900 ${fontSize}px ${fontFamily}`;
         ctx.textBaseline='middle';
         ctx.textAlign='left';
-        ctx.fillText(text,0,h/2);
 
-        const img=ctx.getImageData(0,0,w,h).data;
-        const density=6;
-        const sampleRate=0.28;
+        const ckey = line.dataset.c === 'red' ? 'red' : 'blue';
+        const g = ctx.createLinearGradient(0,0,0,h);
+        const [c1,c2,c3] = colorStops[ckey];
+        g.addColorStop(0,   c1);
+        g.addColorStop(0.5, c2);
+        g.addColorStop(1,   c3);
+        ctx.fillStyle = g;
+
+        // DOM과 맞추기 위해 h/2에 그린다(기존 코드와 동일)
+        ctx.fillText(text, 0, h/2);
+
+        // ★ 이제 DOM 텍스트는 바로 숨김 (캔버스가 takeover)
+        line.querySelector('.plain').style.opacity = 0;
+        line.querySelector('.fill').style.opacity  = 0;
+      });
+    }
+
+    // === 2) overlay canvas 픽셀을 샘플링 해서 파티클 소스 좌표를 만든다
+    function generateParticles(){
+      particles=[]; spawners=[]; particlesGenerated=true;
+      document.querySelectorAll('.brand-line').forEach(line=>{
+        const cvs = line.querySelector('.text-overlay');
+        const ctx = cvs.getContext('2d');
+        const w = cvs.width  / (window.devicePixelRatio||1);
+        const h = cvs.height / (window.devicePixelRatio||1);
+        const img = ctx.getImageData(0,0,w,h).data;
         const cx=w/2, cy=h/2;
-        const col=colorVar(line.dataset.c);
+        const col=colorMain(line.dataset.c);
         const container=line.querySelector('.particles');
 
-        for(let y=0;y<h;y+=density){
-          for(let x=0;x<w;x+=density){
-            const idx=(y*w+x)*4;
-            if(img[idx+3]>128 && Math.random()<sampleRate){
-              const jx = x + (Math.random()-0.5)*1.2;
-              const jy = y + (Math.random()-0.5)*1.2;
+        const sources=[];
+        for(let y=0;y<h;y+=DENSITY){
+          for(let x=0;x<w;x+=DENSITY){
+            const idx=( (y|0)*w + (x|0) )*4;
+            if(img[idx+3]>128){ // 알파 있는 픽셀만
+              const jx = x + (Math.random()-0.5)*1.0;
+              const jy = y + (Math.random()-0.5)*1.0;
               const dx = jx - cx, dy = jy - cy;
               const len = Math.hypot(dx,dy) || 1;
               const dirx = dx/len, diry = dy/len;
 
-              const el=document.createElement('div');
-              el.className='particle';
-              el.style.setProperty('--c', col);
-              el.style.setProperty('--twinkle-delay', (Math.random()*2.5).toFixed(2)+'s');
-              container.appendChild(el);
-
-              particles.push({
+              sources.push({
                 x:jx, y:jy,
                 vx: dirx * (SPEED_MIN + Math.random()*SPEED_RND),
                 vy: diry * (SPEED_MIN + Math.random()*SPEED_RND),
                 z: 0.6 + Math.random()*0.8,
-                alpha: 0,
-                born: performance.now() + Math.random()*650,
-                life: 5200 + Math.random()*2800,
                 seed1: Math.random()*Math.PI*2,
-                seed2: Math.random()*Math.PI*2,
-                el
+                seed2: Math.random()*Math.PI*2
               });
             }
           }
         }
 
-        // 안전망
-        if(!particles.some(pt=>pt.el && pt.el.parentNode===container)){
-          for(let i=0;i<120;i++){
-            const el=document.createElement('div');
-            el.className='particle';
-            el.style.setProperty('--c', col);
-            el.style.setProperty('--twinkle-delay', (Math.random()*2.5).toFixed(2)+'s');
-            container.appendChild(el);
-            particles.push({
-              x: Math.random()*w, y: Math.random()*h,
-              vx: (Math.random()-0.5)*0.2, vy: (Math.random()-0.5)*0.2,
-              z: 0.8 + Math.random()*0.8, alpha: 0,
-              born: performance.now() + Math.random()*300,
-              life: 4200 + Math.random()*2200,
-              seed1: Math.random()*Math.PI*2,
-              seed2: Math.random()*Math.PI*2,
-              el
-            });
-          }
+        // 스폰 순서를 랜덤 셔플 → 전체적으로 고르게 분해
+        for(let i=sources.length-1;i>0;i--){
+          const j=(Math.random()* (i+1))|0;
+          const t=sources[i]; sources[i]=sources[j]; sources[j]=t;
         }
+
+        spawners.push({line, cvs, ctx, container, col, sources, index:0, cleared:0, w, h});
       });
     }
 
-    function dissolveText(){
-      const lines = Array.from(document.querySelectorAll('.brand-line'));
-      for(const l of lines) l.style.setProperty('--textAlpha', '1');
-
-      const total = particles.length;
+    // === 3) 캔버스 픽셀을 지워가며 그 자리에서 파티클 스폰 → 진짜 분해
+    function explodeFromCanvas(){
       const startT = performance.now();
       let lastT = startT;
 
@@ -324,10 +343,46 @@
         const dt = clamp(now - lastT, 0, 40); // ms
         lastT = now;
 
-        // === 파티클 업데이트 ===
-        let alive = false;
-        let visible = 0; // coverage 계산용
+        // 3-1) 각 라인에서 일정 수의 소스를 꺼내 캔버스 픽셀을 삭제 + 파티클 생성
+        spawners.forEach(sp=>{
+          const {ctx, cvs, container, col, sources, w, h} = sp;
+          let budget = BUDGET;
+          while(budget>0 && sp.index < sources.length){
+            const s = sources[sp.index++];
+            // 해당 셀을 캔버스에서 지움 → 그 픽셀만 사라짐
+            ctx.clearRect(s.x, s.y, DENSITY, DENSITY);
+            sp.cleared++;
 
+            // 파티클 DOM 생성
+            const el=document.createElement('div');
+            el.className='particle';
+            el.style.setProperty('--c', col);
+            el.style.setProperty('--twinkle-delay', (Math.random()*2.5).toFixed(2)+'s');
+            container.appendChild(el);
+
+            particles.push({
+              x:s.x, y:s.y, vx:s.vx, vy:s.vy,
+              z:s.z, alpha:0,
+              born: now + Math.random()*450,     // 아주 짧은 지연
+              life: 5200 + Math.random()*2800,
+              seed1:s.seed1, seed2:s.seed2,
+              el
+            });
+            budget--;
+          }
+
+          // 다 지웠으면 overlay canvas를 서서히 숨김 후 제거
+          if(sp.index >= sources.length && sp._removed !== true){
+            // 잔여 픽셀 거의 없으면 페이드 아웃
+            cvs.style.transition = 'opacity .4s ease';
+            cvs.style.opacity = '0';
+            sp._removed = true;
+            setTimeout(()=>{ cvs.remove(); }, 450);
+          }
+        });
+
+        // 3-2) 파티클 업데이트(부유 + 감쇠)
+        let alive = false;
         for(const pt of particles){
           const age = now - pt.born;
           if(age < 0){ continue; }
@@ -339,9 +394,6 @@
           if(lifeT < 0.15) pt.alpha = lerp(0, 0.95, lifeT/0.15);
           else if(lifeT > 0.82) pt.alpha = lerp(0.95, 0, (lifeT-0.82)/0.18);
           else pt.alpha = 0.95;
-
-          // coverage 집계: 충분히 보이는 입자만 카운트
-          if(pt.alpha > 0.4) visible++;
 
           // 형태 유지 후 이동량 증가
           const moveGain = smoothstep(STICK_DUR, STICK_DUR + RAMP_DUR, age);
@@ -367,19 +419,10 @@
           if(pt.alpha > 0) alive = true;
         }
 
-        // === 커버리지 기반 텍스트 페이드 ===
-        const coverage = total ? (visible / total) : 1; // 0~1
-        const coverT = smoothstep(COVER_FADE_START, COVER_FADE_END, coverage);
-        const textAlpha = (1 - coverT).toFixed(3);
-        for(const line of lines){
-          line.style.setProperty('--textAlpha', textAlpha);
-        }
-
-        if(alive || parseFloat(textAlpha) > 0.01){
+        if(alive || spawners.some(sp=>sp.index < sp.sources.length)){
           requestAnimationFrame(animate);
         }
       }
-
       requestAnimationFrame(animate);
     }
 
@@ -393,6 +436,7 @@
       }, 1600);
     }
 
+    // ===== 입력 =====
     function onWheel(e){
       if(isFinalized) return;
       const dy=e.deltaY;
@@ -405,7 +449,6 @@
         if(!autoAnimating) startAutoAnimation();
       }
     }
-
     function onTouchMove(e){
       if(isFinalized) return;
       const touch=e.touches[0]; 
