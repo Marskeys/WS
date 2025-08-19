@@ -440,15 +440,25 @@
 
               if (x * x + y * y > R * R) continue;
 
+              let targetColor = null;
+
               const distLeft2 = (x + offsetX) * (x + offsetX) + y * y;
               const distRight2 = (x - offsetX) * (x - offsetX) + y * y;
 
               if (distLeft2 <= rSmall2) {
+                targetColor = 'red';
+              } else if (distRight2 <= rSmall2) {
+                targetColor = 'blue';
+              } else {
+                targetColor = (y < 0) ? 'red' : 'blue';
+              }
+
+              if (targetColor === 'red') {
                 red.push({
                   x: cx + x,
                   y: cy + y
                 });
-              } else if (distRight2 <= rSmall2) {
+              } else {
                 blue.push({
                   x: cx + x,
                   y: cy + y
