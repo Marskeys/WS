@@ -34,15 +34,13 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ===== Hero ===== */
     .wrap{
       position:relative;
-      min-height:100svh; /* iOS 주소창 영향 최소화 */
+      min-height:100svh;
       padding:5vw;
-      overflow:visible; /* descender/파티클 오버플로 허용 */
+      overflow:visible;
     }
 
-    /* ===== 브랜드 텍스트 ===== */
     .brand{
       margin:0;
       line-height:1;
@@ -80,7 +78,6 @@
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
     }
 
-    /* ===== 퍼센트 ===== */
     #counter{
       position:absolute; right:5vw; 
       bottom:clamp(16px, 6vh, 48px);
@@ -96,13 +93,11 @@
       margin:0;
     }
 
-    /* ===== 파티클 Canvas ===== */
     #particleCanvas{
       position:absolute; inset:0; width:100%; height:100%;
       pointer-events:none; z-index:50;
     }
 
-    /* ===== Welcome ===== */
     #welcome{
       position:absolute; left:50%; top:50%;
       transform:translate(-50%,-50%) scale(0.86);
@@ -122,7 +117,6 @@
       transform:translate(-50%,-50%) scale(1.22);
     }
 
-    /* ===== 이후 스크롤 콘텐츠 ===== */
     .scrollable-content{
       padding:0 5vw 6rem; 
       text-align:center; 
@@ -192,13 +186,13 @@
 
     // ===== Particles =====
     let particles=[];
-    const MAX_PARTICLES = IS_MOBILE ? 2000 : 2600; // 기기별 상한 높임
+    const MAX_PARTICLES = IS_MOBILE ? 2200 : 3000; // 상한 상향
     const GLOW_THRESHOLD = 100;
 
     // ===== Taegeuk timeline params =====
     const TAEGUK_DELAY = 2000;   // 터진 뒤 몇 ms 후 태극으로 모을지
     const TAEGUK_HOLD  = 900;    // 태극 모양 유지 시간
-    const TAEGUK_SCALE = 0.26;   // 화면 대비 태극 반지름 비율(0~0.5)
+    const TAEGUK_SCALE = 0.26;   // 화면 대비 태극 반지름 비율
 
     let particlePhase = 'idle';  // 'explode'|'morph'|'hold'|'disperse'|'done'
     let phaseStartTime = 0;
@@ -226,7 +220,7 @@
         generateParticles();
         fadeOutText();
         showWelcome();
-        runParticleShow(); // ✨ 타임라인 시작
+        runParticleShow();
       }
     }
 
@@ -258,11 +252,9 @@
 
     // === 동적 샘플링: 기기/텍스트 크기에 따라 목표 입자 수로 step 산정
     function computeStepForTarget(canvas, target){
-      const area = canvas.width * canvas.height; // 대략치(문자 내부만은 아님)
-      // 대략 35~50%가 실제 글립이라고 보고 보정값 0.45
-      const estGlyphArea = area * 0.45;
-      const step = Math.max(4, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
-      return step;
+      const area = canvas.width * canvas.height;
+      const estGlyphArea = area * 0.45; // 대략적인 글립 픽셀 비율
+      return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
     }
 
     function generateParticles(){
@@ -275,8 +267,7 @@
       const centerX = wrapRect.width * 0.5;
       const centerY = wrapRect.height * 0.5;
 
-      // 라인별 목표 개수(기기별 균일한 체감 밀도)
-      const TARGET_PER_LINE = IS_MOBILE ? 1000 : 1300;
+      const TARGET_PER_LINE = IS_MOBILE ? 1100 : 1500;
 
       lines.forEach(({el, color, textEl})=>{
         const rect = el.getBoundingClientRect();
@@ -297,7 +288,6 @@
               const px = rect.left - wrapRect.left + x;
               const py = rect.top  - wrapRect.top  + y;
 
-              // 초기 폭발 방향(중심에서 바깥쪽)
               const dx = px - centerX;
               const dy = py - centerY;
               const dist = Math.hypot(dx,dy) + 0.0001;
@@ -309,7 +299,7 @@
                 vy: (Math.random()-0.5)*0.6 + (dy/dist)*boost,
                 alpha: 1,
                 color,
-                tx: null, ty: null, // 목표(태극)
+                tx: null, ty: null,
                 reached: false
               });
             }
@@ -317,7 +307,6 @@
         }
       });
 
-      // 상한 캡
       if(particles.length > MAX_PARTICLES){
         const sampled=[];
         for(let i=0;i<MAX_PARTICLES;i++){
@@ -344,64 +333,83 @@
       }, 1500);
     }
 
-    // ===== Taegeuk target builder (analytic classification) =====
-    function buildTaegeukTargets(){
+    // ===== Taegeuk targets (정확한 분류식: 캔버스 좌표 y는 아래로 +)
+    function buildTaegeukTargets(minRed, minBlue){
       const rect = wrap.getBoundingClientRect();
       const cx = rect.width*0.5, cy = rect.height*0.5;
-      const R = Math.min(rect.width, rect.height) * TAEGUK_SCALE; // 반지름
+      const R = Math.min(rect.width, rect.height) * TAEGUK_SCALE;
 
-      // 화면 크기에 비례한 샘플 간격(모양 품질/성능 균형)
-      const step = Math.max(5, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
+      // 기본 샘플 간격
+      let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
 
-      const red = [], blue = [];
-      const rSmall = R*0.5, r2 = rSmall*rSmall;
+      function sample(stepVal){
+        const red = [], blue = [];
+        const rSmall = R*0.5, r2 = rSmall*rSmall;
+        for(let yy=-R; yy<=R; yy+=stepVal){
+          for(let xx=-R; xx<=R; xx+=stepVal){
+            const x = xx, y = yy;
+            if(x*x + y*y > R*R) continue; // 큰 원 밖
 
-      for(let yy=-R; yy<=R; yy+=step){
-        for(let xx=-R; xx<=R; xx+=step){
-          const x = xx, y = yy;
-          if(x*x + y*y > R*R) continue; // 큰 원 밖이면 패스
+            // y<=0: 위쪽(수학좌표로는 +), y>0: 아래쪽
+            let isRed;
+            if(y <= 0){
+              // 위: 위 작은 원의 '바깥'이면 red
+              const d2 = x*x + (y + rSmall)*(y + rSmall);
+              isRed = d2 >= r2;
+            }else{
+              // 아래: 아래 작은 원의 '안쪽'이면 red
+              const d2 = x*x + (y - rSmall)*(y - rSmall);
+              isRed = d2 <= r2;
+            }
 
-          let isRed;
-          if(y >= 0){
-            // 위쪽: 위 작은 원의 바깥쪽이면 red
-            const d2 = x*x + (y - rSmall)*(y - rSmall);
-            isRed = d2 >= r2;
-          }else{
-            // 아래쪽: 아래 작은 원의 안쪽이면 red
-            const d2 = x*x + (y + rSmall)*(y + rSmall);
-            isRed = d2 <= r2;
+            if(isRed) red.push({x: cx + x, y: cy + y});
+            else      blue.push({x: cx + x, y: cy + y});
           }
-
-          if(isRed) red.push({x: cx + x, y: cy + y});
-          else      blue.push({x: cx + x, y: cy + y});
         }
+        return {red, blue};
       }
+
+      // 필요 개수 맞출 때까지 step 미세조정(부족하면 촘촘히)
+      let targets = sample(step);
+      while( (targets.red.length < minRed || targets.blue.length < minBlue) && step > 2 ){
+        step = Math.max(2, Math.floor(step*0.85));
+        targets = sample(step);
+      }
+
+      // 너무 많으면 살짝 다운샘플(균일 랜덤)
+      function downsample(arr, n){
+        if(arr.length <= n) return arr;
+        const out = [];
+        for(let i=0;i<n;i++){ out.push(arr[(Math.random()*arr.length)|0]); }
+        return out;
+      }
+      const capRed  = Math.max(minRed*1.15|0, minRed);   // 약간 여유
+      const capBlue = Math.max(minBlue*1.15|0, minBlue);
+      if(targets.red.length  > capRed)  targets.red  = downsample(targets.red,  capRed);
+      if(targets.blue.length > capBlue) targets.blue = downsample(targets.blue, capBlue);
 
       // 셔플
       function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]];} }
-      shuffle(red); shuffle(blue);
-      return {red, blue};
+      shuffle(targets.red); shuffle(targets.blue);
+      return targets;
     }
 
-    // 강제 색 매칭(반대편으로 안 보냄). 부족하면 반복 할당.
+    // 강제 색 매칭
     function assignTaegeukTargets(){
-      const { red, blue } = buildTaegeukTargets();
-      const redPts  = particles.filter(pt => pt.color === 'red');
-      const bluePts = particles.filter(pt => pt.color === 'blue');
+      const reds  = particles.filter(pt => pt.color === 'red');
+      const blues = particles.filter(pt => pt.color === 'blue');
 
-      function expandTo(pool, n){
-        if (pool.length === 0) return [];
-        const out = [];
-        for (let i=0;i<n;i++) out.push(pool[i % pool.length]);
-        for (let i=out.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [out[i],out[j]]=[out[j],out[i]]; }
-        return out;
+      const targets = buildTaegeukTargets(reds.length, blues.length);
+
+      function assign(listPts, listTgts){
+        // 필요 시 반복 할당(하지만 위에서 충분히 뽑았으므로 중복은 적음)
+        for(let i=0;i<listPts.length;i++){
+          const t = listTgts[i % listTgts.length];
+          listPts[i].tx = t.x; listPts[i].ty = t.y; listPts[i].reached=false;
+        }
       }
-
-      const redTargets  = expandTo(red,  redPts.length);
-      const blueTargets = expandTo(blue, bluePts.length);
-
-      redPts.forEach((pt,i)=>{ const t = redTargets[i];  pt.tx=t.x;  pt.ty=t.y;  pt.reached=false; });
-      bluePts.forEach((pt,i)=>{ const t = blueTargets[i]; pt.tx=t.x; pt.ty=t.y; pt.reached=false; });
+      assign(reds,  targets.red);
+      assign(blues, targets.blue);
     }
 
     // ===== Particle Show (timeline) =====
@@ -426,7 +434,6 @@
             phaseStartTime = now;
           }
         }else if(particlePhase==='hold' && now - phaseStartTime >= TAEGUK_HOLD){
-          // 재분산 준비
           for(const pt of particles){
             const ang = Math.random()*Math.PI*2;
             const spd = 1.4 + Math.random()*1.8;
@@ -490,10 +497,10 @@
 
         function drawPass(colorName, colorHex){
           pctx.shadowColor = useGlow ? (colorHex || '#fff') : 'transparent';
+          pctx.fillStyle   = colorHex || '#fff';
           for(const pt of particles){
             if(pt.alpha<=0 || pt.color!==colorName) continue;
             pctx.globalAlpha = Math.max(0, pt.alpha);
-            pctx.fillStyle   = colorHex || '#fff';
             if(useGlow){
               pctx.beginPath(); pctx.arc(pt.x, pt.y, 2.4, 0, Math.PI*2); pctx.fill();
             }else{
@@ -502,16 +509,15 @@
           }
         }
 
-        // 색이 섞이지 않도록 순차 렌더
-        drawPass('red',  COL_RED);
-        drawPass('blue', COL_BLUE);
+        drawPass('red',  COL_RED);   // 위쪽은 빨강(태극기 규격)
+        drawPass('blue', COL_BLUE);  // 아래쪽은 파랑
 
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
     }
 
-    /* === 입력: 50%까지 수동, 그 뒤 자동 === */
+    // ==== 입력 처리 ====
     function onWheel(e){
       if(isFinalized) return;
       e.preventDefault();
