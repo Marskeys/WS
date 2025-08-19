@@ -133,20 +133,15 @@
       letter-spacing: 0.01em;
       max-width: 92vw;
       white-space: nowrap;
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 0.5s ease-in-out;
+      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1);
       will-change: opacity, transform;
       pointer-events: none;
       z-index: 60;
-      text-shadow: 0 0 0 transparent; /* 처음엔 그림자 없음 */
     }
 
     #welcome.visible {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.22);
-    }
-
-    #welcome.welcome-glow {
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4);
     }
 
     .scrollable-content {
@@ -409,12 +404,13 @@
       }
 
       function showWelcome() {
+        welcome.classList.add("welcome-glow"); // 처음엔 엄청 밝게 빛나도록 클래스 추가
         setTimeout(() => {
           counterEl.style.opacity = 0;
         }, 350);
         setTimeout(() => {
           welcome.classList.add("visible");
-          welcome.classList.add("welcome-glow"); // Welcome 텍스트에 글로우 효과 추가
+          welcome.classList.remove("welcome-glow"); // 잠시 후 글로우 클래스 제거하여 트랜지션 시작
         }, 900);
         setTimeout(() => {
           scrollContent.style.display = "block";
@@ -500,8 +496,7 @@
         function shuffle(a) {
           for (let i = a.length - 1; i > 0; i--) {
             const j = (Math.random() * (i + 1)) | 0;
-            ;
-            (a [i], a [j]) = (a [j], a [i]);
+            [a[i], a[j]] = [a[j], a[i]];
           }
         }
         shuffle(targets.red);
@@ -547,8 +542,7 @@
               particlePhase = 'hold';
               phaseStartTime = now;
             }
-          } else if (particlePhase === 'hold') {
-            welcome.classList.remove("welcome-glow"); // 태극기 완성 시 글로우 효과 제거
+          } else if (particlePhase === 'hold' && now - phaseStartTime >= TAEGUK_HOLD) {
             for (const pt of particles) {
               const ang = Math.random() * Math.PI * 2;
               const spd = 1.4 + Math.random() * 1.8;
@@ -645,7 +639,7 @@
 
       function onTouchMove(e) {
         if (isFinalized) return;
-        const touch = e.touches [0];
+        const touch = e.touches[0];
         const currentY = touch.clientY;
         if (typeof onTouchMove.lastY !== "undefined") {
           const dy = onTouchMove.lastY - currentY;
@@ -670,7 +664,7 @@
         passive: false
       });
       window.addEventListener('touchstart', (e) => {
-        onTouchMove.lastY = e.touches [0].clientY;
+        onTouchMove.lastY = e.touches[0].clientY;
       });
       window.addEventListener('touchmove', onTouchMove, {
         passive: false
