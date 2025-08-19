@@ -14,9 +14,9 @@
       --bg:#0e1016; 
       --text:#eef2f8; 
       --muted:#9aa3b2;
-      --fill-int: 0%; /* 채움폭 (정수 %) */
 
-      /* 팔레트 */
+      --fill-int: 0%;
+
       --pastel-red-1:#ff8aa1; 
       --pastel-blue-1:#78aaff;
       --pastel-red-2:#ff6b7a; 
@@ -29,7 +29,7 @@
       margin:0; background:var(--bg); color:var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x:hidden;
-      overflow-y:hidden; /* 초기엔 잠금 → 연출 끝나면 auto */
+      overflow-y:hidden; /* 초기엔 잠금 → 애니 이후 auto */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -42,32 +42,33 @@
       overflow:visible; /* descender/파티클 오버플로 허용 */
     }
 
-    /* ===== 브랜드 텍스트 (단일 레이어 이중배경) ===== */
+    /* ===== 브랜드 텍스트 ===== */
     .brand{
       margin:0;
-      line-height:1; /* descender 보존 */
+      line-height:1;
       font-family:"Michroma", system-ui, sans-serif;
       position:relative;
-      z-index:40; /* 캔버스(50)보다 뒤에 두면 파티클이 위로 지나감 */
+      z-index:40;
     }
     .brand-line{
       display:block;
       font-size:clamp(56px,14vw,200px);
-      line-height:1.08;           /* descender 여유 */
-      padding-bottom:0.3em;       /* y 꼬리 안전패딩 */
-      overflow:visible;           /* 잘림 방지 */
+      line-height:1.18;           /* descender 여유 더 확보 */
+      padding-bottom:0.56em;      /* y 꼬리 충분히 확보 */
+      overflow:visible;
       position:relative;
     }
     .ink{
       display:inline-block;
       color:transparent;
-      -webkit-text-fill-color:transparent; /* Safari descender 페인트 이슈 회피 */
+      -webkit-text-fill-color:transparent; /* Safari 페인트 이슈 회피 */
       -webkit-background-clip:text; background-clip:text;
       background-repeat:no-repeat,no-repeat;
       background-size: var(--fill-int) 100%, 100% 100%;
       background-image: var(--grad), linear-gradient(#fff,#fff);
       letter-spacing:0;
-      padding-bottom:0.05em;      /* 글립 박스 미세 확장 */
+      padding-bottom:0.28em;      /* 글립 박스 추가 여유 */
+      transform: translateZ(0);   /* 합성층 올려 잘림 방지 */
     }
     .brand-line:nth-child(1) .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
     .brand-line:nth-child(2) .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
@@ -76,7 +77,7 @@
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
     }
 
-    /* ===== 퍼센트: 브랜드 다음 줄, 우측 정렬 ===== */
+    /* ===== 퍼센트 ===== */
     #counter{
       display:block;
       margin-top:0.6rem;
@@ -101,27 +102,29 @@
     /* ===== Welcome: 문서 흐름(스크롤됨) — wrap 기준 absolute ===== */
     #welcome{
       position:absolute; left:50%; top:50%;
-      transform:translate(-50%,-50%) scale(0.8);
+      transform:translate(-50%,-50%) scale(0.86);
       opacity:0;
-      font-size:clamp(60px,12vw,180px);
+      font-size:clamp(48px,10vw,130px); /* ⬅️ 사이즈 축소 */
       font-family:"Michroma", system-ui, sans-serif;
       color:white;
-      letter-spacing:0.02em;
+      letter-spacing:0.01em;
+      max-width:92vw;            /* 좌우 여유 */
+      white-space:nowrap;        /* 한 줄 유지 */
       transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
       will-change:opacity, transform;
       pointer-events:none;
-      z-index:60; /* 텍스트 위, 파티클보다 살짝 위 */
+      z-index:60;
     }
     #welcome.visible{
       opacity:1;
-      transform:translate(-50%,-50%) scale(1.45);
+      transform:translate(-50%,-50%) scale(1.22); /* ⬅️ 최종 스케일 축소 */
     }
 
     /* ===== 이후 스크롤 콘텐츠 ===== */
     .scrollable-content{
       padding:0 5vw 6rem; 
       text-align:center; 
-      display:none; /* 터진 뒤 노출 */
+      display:none;
       max-width:1200px; margin:0 auto;
       position:relative; z-index:10;
     }
@@ -133,7 +136,7 @@
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* ===== 모바일: 퍼센트 오른쪽 하단 작게 ===== */
+    /* ===== 모바일 ===== */
     @media (max-width: 768px){
       #counter{
         position:absolute; right:6vw; bottom:6vw;
@@ -155,7 +158,7 @@
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
     <p class="tagline">Video Game Music Studio</p>
 
-    <!-- 👇 문서 흐름에 속한 환영 텍스트 (wrap 안, absolute 이므로 스크롤됨) -->
+    <!-- 문서 흐름에 속하는 Welcome (스크롤됨) -->
     <div id="welcome">Welcome</div>
   </main>
 
@@ -179,15 +182,13 @@
     const particleCanvas=document.getElementById('particleCanvas');
     const pctx=particleCanvas.getContext('2d');
 
-    // ===== 진행도 (0~1): 퍼센트/채움 완전동기화 (정수 %) =====
-    let p=0;                       // 0.00 ~ 1.00
-    const accel=0.0018;            // 스크롤 민감도
+    let p=0;
+    const accel=0.0018;
     let autoAnimating=false, isFinalized=false, particlesGenerated=false;
 
-    // ===== 파티클 데이터 (최적화) =====
     let particles=[];
-    const DENSITY=7;               // 픽셀 샘플 간격 (↑ → 입자↓ → 렉↓)
-    const MAX_PARTICLES=1200;      // 최대 입자수 상한
+    const DENSITY=7;
+    const MAX_PARTICLES=1200;
 
     function resizeParticleCanvas(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -203,7 +204,7 @@
     function setProgress(v){
       p=Math.max(0,Math.min(1,v));
       const pct = Math.round(p*100);
-      html.style.setProperty('--fill-int', pct+'%'); // 텍스트 채움폭
+      html.style.setProperty('--fill-int', pct+'%');
       if(!isFinalized){
         counterEl.textContent = pct + "%";
         counterEl.setAttribute('aria-valuenow', String(pct));
@@ -225,7 +226,6 @@
       step();
     }
 
-    // ===== 텍스트 샘플링 (Canvas) — descender 완전 포함 =====
     function drawTextToCanvas(text, fontSize, fontFamily){
       const offCanvas = document.createElement('canvas');
       const offCtx = offCanvas.getContext('2d');
@@ -245,7 +245,6 @@
       return { canvas: offCanvas };
     }
 
-    // ===== 파티클 생성 (Mars/Keys 각각 → wrap 기준 투영) =====
     function generateParticles(){
       particlesGenerated=true; particles.length=0;
 
@@ -282,7 +281,6 @@
         }
       });
 
-      // 상한 초과 시 무작위 샘플링으로 렉 방지
       if(particles.length > MAX_PARTICLES){
         const sampled=[];
         for(let i=0;i<MAX_PARTICLES;i++){
@@ -292,9 +290,7 @@
       }
     }
 
-    // ===== 파티클 애니메이션 =====
     function dissolveText(){
-      // 텍스트 페이드아웃
       document.querySelectorAll('.ink').forEach(el=>{
         el.style.transition='opacity .3s ease';
         el.style.opacity='0';
@@ -307,11 +303,9 @@
       function frame(){
         pctx.clearRect(0,0,width,height);
 
-        // 살아있는 입자 수 계산
         let aliveCount = 0;
         for(const pt of particles){ if(pt.alpha>0){ aliveCount++; } }
 
-        // 조합 모드: 살짝 더 밝게
         pctx.globalCompositeOperation = 'lighter';
 
         for(const pt of particles){
@@ -321,11 +315,10 @@
             ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1').trim()
             : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1').trim();
 
-          // 성능: 20개 미만일 때만 글로우
           if(aliveCount < 20){
             pctx.save();
             pctx.globalAlpha = pt.alpha;
-            pctx.shadowBlur = 14;
+            pctx.shadowBlur = 14;          /* ⬅️ 글로우 */
             pctx.shadowColor = col || '#ffffff';
             pctx.fillStyle = col || '#ffffff';
             pctx.beginPath();
@@ -338,7 +331,6 @@
             pctx.fillRect(pt.x, pt.y, 2, 2);
           }
 
-          // 이동/감쇠 (살짝 가속)
           pt.x += pt.vx; pt.y += pt.vy;
           pt.vx *= 1.016; pt.vy *= 1.016;
           pt.alpha -= 0.0045;
@@ -356,17 +348,16 @@
     }
 
     function showWelcome(){
-      // 퍼센트 사라짐 → 웰컴 등장 → 스크롤 해제 + 이후 콘텐츠 노출
       setTimeout(()=>{ counterEl.style.opacity=0; }, 350);
       setTimeout(()=>{ welcome.classList.add("visible"); }, 900);
       setTimeout(()=>{
         scrollContent.style.display="block";
-        isFinalized=true;
+        isFinalized=true;  
         body.style.overflowY="auto";
       }, 1500);
     }
 
-    // ===== 입력(휠/터치): 50%까지 수동, 50% 이상 자동 =====
+    /* === 입력: 50%까지 수동, 그 뒤 자동 === */
     function onWheel(e){
       if(isFinalized) return;
       e.preventDefault();
@@ -395,7 +386,6 @@
     }
     function onTouchEnd(){ if(!isFinalized){ onTouchMove.lastY=undefined; } }
 
-    // ===== 초기화 =====
     window.addEventListener('resize', resizeParticleCanvas);
     window.addEventListener('wheel',onWheel,{passive:false});
     window.addEventListener('touchstart',(e)=>{onTouchMove.lastY=e.touches[0].clientY;});
