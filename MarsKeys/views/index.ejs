@@ -119,6 +119,12 @@
       height: 100%;
       pointer-events: none;
       z-index: 50;
+      filter: brightness(1);
+      transition: filter 0.3s ease;
+    }
+
+    #particleCanvas.glow-on {
+      filter: brightness(1.5);
     }
 
     #welcome {
@@ -181,9 +187,9 @@
       }
     }
   </style>
-</head>
+ </head>
 
-<body>
+ <body>
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
 
@@ -617,7 +623,7 @@
 
           drawPass('red', COL_RED);
           drawPass('blue', COL_BLUE);
-          
+
           requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
