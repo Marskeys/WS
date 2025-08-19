@@ -119,12 +119,6 @@
       height: 100%;
       pointer-events: none;
       z-index: 50;
-      filter: brightness(1);
-      transition: filter 0.3s ease;
-    }
-
-    #particleCanvas.glow-on {
-      filter: brightness(1.5);
     }
 
     #welcome {
@@ -139,7 +133,7 @@
       letter-spacing: 0.01em;
       max-width: 92vw;
       white-space: nowrap;
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1);
+      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 2s ease-out;
       will-change: opacity, transform;
       pointer-events: none;
       z-index: 60;
@@ -148,6 +142,10 @@
     #welcome.visible {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1.22);
+    }
+
+    #welcome.welcome-glow {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4);
     }
 
     .scrollable-content {
@@ -187,9 +185,9 @@
       }
     }
   </style>
- </head>
+</head>
 
- <body>
+<body>
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
 
@@ -410,11 +408,13 @@
       }
 
       function showWelcome() {
+        welcome.classList.add("welcome-glow"); // 처음엔 엄청 밝게 빛나도록 클래스 추가
         setTimeout(() => {
           counterEl.style.opacity = 0;
         }, 350);
         setTimeout(() => {
           welcome.classList.add("visible");
+          welcome.classList.remove("welcome-glow"); // 잠시 후 글로우 클래스 제거하여 트랜지션 시작
         }, 900);
         setTimeout(() => {
           scrollContent.style.display = "block";
