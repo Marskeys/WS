@@ -15,7 +15,7 @@
       --bg:#0e1016; 
       --text:#eef2f8; 
       --muted:#9aa3b2;
-      --fill:0%;
+      --fill:0%; /* 글자 채워진 비율(=퍼센트와 완전 동기화) */
       --pastel-red-1:#ff8aa1; --pastel-blue-1:#78aaff;
     }
     *{box-sizing:border-box}
@@ -28,45 +28,67 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ===== 화면 좌/우 1:1 분할 ===== */
+    /* ===== Hero (단일 컬럼) ===== */
     .wrap{
+      position:relative;
       min-height:100vh;
-      display:grid;
-      grid-template-columns: 1fr 1fr; /* 왼쪽: 텍스트, 오른쪽: 퍼센트 */
+      padding:5vw;
+      overflow:visible; /* 텍스트/입자 오버플로 허용 */
     }
 
-    /* ===== 왼쪽: Mars / Keys + Welcome 오버레이 ===== */
-    .hero-left{
-      position:relative; overflow:visible;
-    }
-    .brand-box{ padding:5vw; }
+    /* ===== 브랜드 타이포 ===== */
     .brand{
-      margin:0; line-height:.9;
-      font-family:"Michroma", system-ui, sans-serif; /* Michroma 적용 */
+      margin:0; line-height:1; /* descender 잘리지 않게 1로 */
+      font-family:"Michroma", system-ui, sans-serif;
       letter-spacing:0.5px;
     }
     .brand-line{
-      position:relative; display:block; 
+      position:relative; display:block;
       font-size:clamp(56px,14vw,200px);
+      padding-bottom:0.18em; /* 'y' 같은 내림(Descender) 확보 */
     }
     .plain{position:relative; z-index:1;}
-    .fill{position:absolute; inset:0; width:var(--fill); overflow:hidden; z-index:2;}
-    .fill > span{display:block; color:transparent; -webkit-background-clip:text; background-clip:text;}
+    .fill{
+      position:absolute; left:0; top:-0.12em; bottom:-0.12em; /* 수직 오버스캔 */
+      width:var(--fill); overflow:hidden; z-index:2;
+      will-change: width;
+    }
+    .fill > span{
+      display:block; color:transparent; 
+      -webkit-background-clip:text; background-clip:text;
+    }
     .brand-line[data-c="red"]  .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0);}
     .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
-    .tagline{ font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem; color:var(--muted); }
+    .tagline{
+      font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
+    }
 
+    /* ===== 퍼센트: ‘Mars Keys’ 다음 줄, 우측 정렬 ===== */
+    #counter{
+      display:block;
+      margin-top:0.6rem;
+      text-align:right;
+      font-size:clamp(28px,7vw,96px); /* 본문보다 살짝 작게 */
+      font-family:"Michroma", system-ui, sans-serif;
+      font-weight:900;
+      color:white;
+      text-shadow:0 0 10px rgba(255,255,255,0.5);
+      user-select:none;
+      pointer-events:none;
+      transition:opacity .6s ease;
+    }
+
+    /* ===== 파티클 ===== */
     .particles{position:absolute; inset:0; pointer-events:none; overflow:visible;}
-    .particle{position:absolute; width:2px; height:2px; border-radius:50%;}
+    .particle{
+      position:absolute; width:2px; height:2px; border-radius:50%;
+      /* 글로우(각 파티클마다 drop-shadow 적용) → JS에서 색상 연동 */
+    }
     .brand-line.dissolve .plain,.brand-line.dissolve .fill{opacity:0;}
 
-    /* Welcome: 왼쪽 절반 전체를 덮는 절대 레이어 (잘림 방지) */
-    .welcome-wrap{
-      position:absolute; inset:0; pointer-events:none; overflow:visible;
-    }
+    /* ===== Welcome: 뷰포트 고정(잘림 완전 방지) ===== */
     #welcome{
-      position:absolute;
-      top:50%; left:50%;
+      position:fixed; left:50%; top:50%;
       transform:translate(-50%,-50%) scale(0.8);
       opacity:0;
       font-size:clamp(60px,12vw,180px);
@@ -75,29 +97,12 @@
       letter-spacing:0.02em;
       transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
       will-change:opacity, transform;
+      pointer-events:none;
+      z-index:999; /* 어떤 레이아웃에도 가려지지 않게 */
     }
     #welcome.visible{
       opacity:1;
       transform:translate(-50%,-50%) scale(1.45);
-    }
-
-    /* ===== 오른쪽: 퍼센트 카운트 (가운데 정렬 보장) ===== */
-    .hero-right{
-      display:grid; place-items:center; padding:5vw;
-    }
-    #counter{
-      position:relative;  /* 이전 fixed 규칙 무력화 */
-      width:100%; height:100%;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center;
-      font-size:clamp(40px,12vw,160px);
-      font-family:"Michroma", system-ui, sans-serif;
-      font-weight:900;
-      color:white;
-      text-shadow:0 0 10px rgba(255,255,255,0.5);
-      user-select:none;
-      pointer-events:none;
-      transition:opacity .6s ease;
     }
 
     /* ===== 이후 스크롤 콘텐츠 ===== */
@@ -115,47 +120,41 @@
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* 모바일: 세로 스택 */
+    /* ===== 모바일: 퍼센트는 오른쪽 하단 작게 ===== */
     @media (max-width: 768px){
-      .wrap{ grid-template-columns: 1fr; }
-      .hero-right{ height:50vh; padding:0 6vw 10vw; }
-      #counter{ font-size:clamp(40px,18vw,160px); }
+      #counter{
+        position:absolute; right:6vw; bottom:6vw;
+        margin-top:0; text-align:right;
+        font-size:clamp(24px,12vw,72px);
+      }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <!-- 왼쪽 -->
-    <section class="hero-left">
-      <canvas id="textCanvas" style="display:none;"></canvas>
+    <canvas id="textCanvas" style="display:none;"></canvas>
 
-      <div class="brand-box">
-        <h1 class="brand">
-          <span class="brand-line" data-c="red">
-            <span class="plain">Mars</span>
-            <span class="fill"><span>Mars</span></span>
-            <div class="particles"></div>
-          </span>
-          <span class="brand-line" data-c="blue">
-            <span class="plain">Keys</span>
-            <span class="fill"><span>Keys</span></span>
-            <div class="particles"></div>
-          </span>
-        </h1>
-        <p class="tagline">Video Game Music Studio</p>
-      </div>
+    <h1 class="brand">
+      <span class="brand-line" data-c="red">
+        <span class="plain">Mars</span>
+        <span class="fill"><span>Mars</span></span>
+        <div class="particles"></div>
+      </span>
+      <span class="brand-line" data-c="blue">
+        <span class="plain">Keys</span>
+        <span class="fill"><span>Keys</span></span>
+        <div class="particles"></div>
+      </span>
+    </h1>
 
-      <!-- Welcome 오버레이 (왼쪽 절반 전체 덮음) -->
-      <div class="welcome-wrap" aria-hidden="true">
-        <div id="welcome">Welcome</div>
-      </div>
-    </section>
+    <!-- 퍼센트: 바로 다음 줄 / 우측 정렬 -->
+    <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
 
-    <!-- 오른쪽 -->
-    <section class="hero-right">
-      <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-    </section>
+    <p class="tagline">Video Game Music Studio</p>
   </main>
+
+  <!-- Welcome: 고정 오버레이 (절대 안 잘림) -->
+  <div id="welcome">Welcome</div>
 
   <div id="scrollContent" class="scrollable-content">
     <p>게임 음악 스튜디오 Mars Keys에 오신 것을 환영합니다...</p>
@@ -174,7 +173,7 @@
     const welcome=document.getElementById("welcome");
     const scrollContent=document.getElementById("scrollContent");
 
-    // 진행도 (0~1). 이 값 하나로 '채움폭'과 '퍼센트' 동기화.
+    // 진행도(0~1). 이 값 하나로 "채움 폭"과 "퍼센트"를 완벽 동기화
     let p=0;
     const accel=0.0018;
     let particles=[], particlesGenerated=false;
@@ -182,8 +181,8 @@
 
     function setProgress(v){
       p=Math.max(0,Math.min(1,v));
-      const pct = Math.round(p*100);              // 시각 인지 맞추려고 반올림
-      html.style.setProperty('--fill', pct+'%');  // 글자 채움 = 퍼센트 정확 매칭
+      const pct = Math.round(p*100);          // 시각 정확도 ↑ (반올림)
+      html.style.setProperty('--fill', pct+'%');  // 글자 채움 = 퍼센트
       if(!isFinalized){
         counterEl.textContent = pct + "%";
         counterEl.setAttribute('aria-valuenow', String(pct));
@@ -205,6 +204,7 @@
       step();
     }
 
+    // ===== 파티클 생성 (캔버스 → 픽셀 샘플링) =====
     function generateParticles(){
       particlesGenerated=true; particles=[];
       const canvas=document.getElementById('textCanvas');
@@ -212,17 +212,22 @@
       document.querySelectorAll('.brand-line').forEach(line=>{
         const text=line.querySelector('.plain').textContent;
         const style=getComputedStyle(line.querySelector('.plain'));
-        const fontSize=parseInt(style.fontSize); 
+        const fontSize=parseFloat(style.fontSize);
         const fontFamily=style.fontFamily;
-        const w=line.offsetWidth,h=line.offsetHeight;
+
+        // descender 보존을 위해 캔버스 높이 넉넉히
+        const w=Math.ceil(line.offsetWidth);
+        const h=Math.ceil(fontSize*1.35);  // 내림 공간 확보
         canvas.width=w; canvas.height=h;
+
         ctx.clearRect(0,0,w,h);
-        // Michroma는 단일 웨이트 → weight 지정 없이 정확히 사용
-        ctx.font=`${fontSize}px ${fontFamily}`;
-        ctx.fillStyle='white'; ctx.textBaseline='middle';
-        ctx.fillText(text,0,h/2);
+        ctx.font=`${fontSize}px ${fontFamily}`; // Michroma: 단일 weight
+        ctx.textBaseline='alphabetic';
+        ctx.fillStyle='white';
+        ctx.fillText(text, 0, fontSize); // baseline = fontSize 근처
+
         const img=ctx.getImageData(0,0,w,h).data;
-        const density=4;
+        const density=4; // 성능/디테일 트레이드오프
         for(let y=0;y<h;y+=density){
           for(let x=0;x<w;x+=density){
             const idx=(y*w+x)*4;
@@ -241,6 +246,7 @@
       });
     }
 
+    // ===== 파티클 애니 + 글로우 =====
     function dissolveText(){
       document.querySelectorAll('.brand-line').forEach(l=>l.classList.add('dissolve'));
       function animate(){
@@ -253,11 +259,13 @@
             el.style.top=pt.y+'px';
             el.style.opacity=pt.alpha;
             el.style.backgroundColor=`var(--pastel-${pt.color}-1)`;
+            // 글로우: 컬러 drop-shadow 두 단계
+            el.style.filter = `drop-shadow(0 0 6px var(--pastel-${pt.color}-1))
+                               drop-shadow(0 0 14px var(--pastel-${pt.color}-1))`;
             pt.container.appendChild(el);
-            pt.x+=pt.vx; 
-            pt.y+=pt.vy; 
-            pt.vx*=1.02; 
-            pt.vy*=1.02; 
+
+            pt.x+=pt.vx; pt.y+=pt.vy; 
+            pt.vx*=1.02; pt.vy*=1.02; 
             pt.alpha-=0.004;
           }
         });
@@ -267,16 +275,17 @@
     }
 
     function showWelcome(){
-      // 카운터 서서히 숨김 → 왼쪽에서 Welcome 등장
+      // 카운터 서서히 숨김 → Welcome(고정 오버레이) 등장 → 스크롤 활성화
       setTimeout(()=>{ counterEl.style.opacity=0; }, 400);
       setTimeout(()=>{ welcome.classList.add("visible"); }, 1000);
       setTimeout(()=>{
         scrollContent.style.display="block";
         isFinalized=true; 
-        body.style.overflowY="auto"; // 스크롤 활성화
+        body.style.overflowY="auto";
       }, 1600);
     }
 
+    // ===== 입력(휠/터치) =====
     function onWheel(e){
       if(isFinalized) return;
       const dy=e.deltaY;
@@ -289,7 +298,6 @@
         if(!autoAnimating) startAutoAnimation();
       }
     }
-
     function onTouchMove(e){
       if(isFinalized) return;
       const touch=e.touches[0]; 
