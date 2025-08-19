@@ -250,7 +250,7 @@
 
       // ===== Particles =====
       let particles = [];
-      const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
+      const MAX_PARTICLES = IS_MOBILE ? 12000 : 3000;
       const GLOW_THRESHOLD = 100;
 
       // ===== Taegeuk timeline params =====
@@ -344,7 +344,7 @@
         const centerX = wrapRect.width * 0.5;
         const centerY = wrapRect.height * 0.5;
 
-        const TARGET_PER_LINE = IS_MOBILE ? 4000 : 1500;
+        const TARGET_PER_LINE = IS_MOBILE ? 6000 : 1500;
 
         lines.forEach(({
           el,
@@ -548,12 +548,11 @@
             }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= TAEGUK_HOLD) {
             welcome.classList.remove("welcome-glow");
+            // 입자를 흩어지지 않고 제자리에 있도록 vx, vy를 0으로 설정
             for (const pt of particles) {
-              const ang = Math.random() * Math.PI * 2;
-              const spd = 1.4 + Math.random() * 1.8;
-              pt.vx = Math.cos(ang) * spd;
-              pt.vy = Math.sin(ang) * spd;
-              pt.reached = false;
+              pt.vx = 0;
+              pt.vy = 0;
+              pt.reached = true; // 이동이 끝났음을 알림
             }
             particlePhase = 'disperse';
             phaseStartTime = now;
@@ -590,8 +589,7 @@
               pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
               pt.alpha = 1;
             } else if (particlePhase === 'disperse') {
-              pt.vx *= 1.012;
-              pt.vy *= 1.012;
+              // 제자리에서 알파값만 줄여서 페이드아웃
               pt.alpha -= 0.006;
             }
 
