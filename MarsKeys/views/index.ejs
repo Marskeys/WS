@@ -68,8 +68,8 @@
       background-image: var(--grad), linear-gradient(#fff,#fff);
       letter-spacing:0; /* 샘플링과 픽셀 정확히 일치시키기 */
     }
-    .brand-line[data-c="red"]  .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
-    .brand-line[data-c="blue"] .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
+    .brand-line:nth-child(1) .ink{ --grad: linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
+    .brand-line:nth-child(2) .ink{ --grad: linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
 
     .tagline{
       font-size:clamp(16px,2.6vw,28px); font-weight:600; margin:1rem 0 0; color:var(--muted);
@@ -84,7 +84,6 @@
       font-family:"Michroma", system-ui, sans-serif;
       font-weight:900;
       color:white;
-      text-shadow:0 0 10px rgba(255,255,255,0.5);
       user-select:none;
       pointer-events:none;
       transition:opacity .6s ease;
@@ -185,8 +184,6 @@
     let particles=[];
     const DENSITY=7;            // 픽셀 샘플 간격 (↑ → 입자↓ → 렉↓)
     const MAX_PARTICLES=1200;    // 최대 입자수 상한
-    const GLOW_SMALL=8;          // 글로우
-    const GLOW_BIG=18;
     
     function resizeParticleCanvas(){
       const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -225,21 +222,24 @@
     }
 
     // ===== 텍스트 샘플링 (Canvas) — descender 완전 포함 =====
-    function drawTextToCanvas(ctx, text, fontSize, fontFamily, letterSpacing){
-      ctx.font = `${fontSize}px ${fontFamily}`;
-      ctx.textBaseline = 'bottom'; // 바텀 기준으로 y를 포함하도록 수정
-      ctx.fillStyle = 'white';
-      
-      const metrics = ctx.measureText(text);
-      const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-      const textBaseline = metrics.actualBoundingBoxAscent;
-      
-      let x = 0;
-      for(const ch of text){
-        ctx.fillText(ch, x, textBaseline);
-        x += ctx.measureText(ch).width + letterSpacing;
-      }
-      return { width: x, height: textHeight };
+    function drawTextToCanvas(text, fontSize, fontFamily, letterSpacing){
+      const offCanvas = document.createElement('canvas');
+      const offCtx = offCanvas.getContext('2d');
+      offCtx.font = `${fontSize}px ${fontFamily}`;
+
+      const metrics = offCtx.measureText(text);
+      const actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+      const width = metrics.width + (text.length > 0 ? (text.length - 1) * letterSpacing : 0);
+
+      offCanvas.width = Math.ceil(width);
+      offCanvas.height = Math.ceil(actualHeight);
+
+      offCtx.font = `${fontSize}px ${fontFamily}`;
+      offCtx.fillStyle = 'white';
+      offCtx.textBaseline = 'top'; 
+      offCtx.fillText(text, 0, 0);
+
+      return { canvas: offCanvas, descent: metrics.actualBoundingBoxDescent };
     }
 
     // ===== 파티클 생성 (Mars/Keys 각각 → 위치를 wrap 기준으로 투영) =====
@@ -252,9 +252,6 @@
         { el: document.getElementById('keys').parentElement, color:'blue', textEl: document.getElementById('keys') }
       ];
 
-      const off = document.createElement('canvas');
-      const octx = off.getContext('2d', { willReadFrequently:true });
-
       lines.forEach(({el, color, textEl})=>{
         const rect = el.getBoundingClientRect();
         const style = getComputedStyle(textEl);
@@ -262,27 +259,16 @@
         const fontFamily = style.fontFamily;
         const letterSpacing = parseFloat(style.letterSpacing || '0') || 0;
 
-        // 폰트의 실제 높이를 계산하여 캔버스 크기 조정
-        const textMetrics = octx.measureText(textEl.textContent);
-        const textHeight = textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent;
-        
-        const w = Math.ceil(rect.width);
-        const h = Math.ceil(textHeight + 10); // 여유분 추가
-        
-        off.width = Math.max(1, w);
-        off.height = Math.max(1, h);
-        octx.clearRect(0,0,off.width,off.height);
+        const { canvas, descent } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, letterSpacing);
+        const imgData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
 
-        drawTextToCanvas(octx, textEl.textContent, fontSize, fontFamily, letterSpacing);
-
-        const img=octx.getImageData(0,0,off.width,off.height).data;
-        for(let y=0;y<h;y+=DENSITY){
-          for(let x=0;x<w;x+=DENSITY){
-            const idx=(y*w+x)*4;
-            if(img[idx+3]>128){
+        for(let y=0;y<canvas.height;y+=DENSITY){
+          for(let x=0;x<canvas.width;x+=DENSITY){
+            const idx=(y*canvas.width+x)*4;
+            if(imgData[idx+3]>128){
               particles.push({
                 x: rect.left - wrapRect.left + x,
-                y: rect.top  - wrapRect.top  + y,
+                y: rect.top  - wrapRect.top + y,
                 vx:(Math.random()-0.5)*1.4,
                 vy:(Math.random()-0.5)*1.4,
                 alpha:1,
@@ -303,7 +289,7 @@
       }
     }
 
-    // ===== 파티클 애니메이션 (Canvas, 글로우 최적화) =====
+    // ===== 파티클 애니메이션 (Canvas, 글로우 제거) =====
     function dissolveText(){
       // 텍스트 페이드아웃 (배경-클립 텍스트)
       document.querySelectorAll('.ink').forEach(el=>{
@@ -311,39 +297,18 @@
         el.style.opacity='0';
       });
 
-      // wrap의 크기를 미리 계산하여 반복 호출 방지
       const wrapRect = wrap.getBoundingClientRect();
       const {width, height} = wrapRect;
-
       let frameId = null;
 
       function frame(){
         pctx.clearRect(0,0,width,height);
 
-        // 외곽 글로우 (가벼운 방식): shadowBlur + lighter 블렌딩
-        pctx.save();
-        pctx.globalCompositeOperation = 'lighter';
-        pctx.shadowBlur = GLOW_BIG;
-
-        particles.forEach(pt=>{
-          if(pt.alpha<=0) return;
-          pctx.shadowColor = (pt.color==='red')
-            ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
-            : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
-          pctx.globalAlpha = pt.alpha * 0.45;
-          pctx.fillStyle = 'rgba(0,0,0,0)'; // 점만으로 글로우 트리거
-          pctx.fillRect(pt.x, pt.y, 2, 2);
-        });
-        pctx.restore();
-
-        // 본 파티클
-        pctx.shadowBlur = GLOW_SMALL;
         particles.forEach(pt=>{
           if(pt.alpha<=0) return;
           const col = (pt.color==='red')
             ? getComputedStyle(document.documentElement).getPropertyValue('--pastel-red-1')
             : getComputedStyle(document.documentElement).getPropertyValue('--pastel-blue-1');
-          pctx.shadowColor = col;
           pctx.globalAlpha = pt.alpha;
           pctx.fillStyle = col;
           pctx.fillRect(pt.x, pt.y, 2, 2);
@@ -357,7 +322,6 @@
         if(particles.some(pt=>pt.alpha>0)) {
             frameId = requestAnimationFrame(frame);
         } else {
-            // 애니메이션 종료 후 캔버스 초기화
             pctx.clearRect(0, 0, width, height);
             cancelAnimationFrame(frameId);
         }
