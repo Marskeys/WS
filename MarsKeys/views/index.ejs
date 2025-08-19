@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mars Keys — Counter to Welcome</title>
 
-  <!-- Google Font: Bungee -->
+  <!-- Google Font: Michroma -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -21,34 +21,28 @@
     *{box-sizing:border-box}
     body{
       margin:0; background:var(--bg); color:var(--text);
-      font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x:hidden;
-      overflow-y:hidden; /* 초기엔 스크롤 잠금, 애니 이후 해제 */
+      overflow-y:hidden; /* 초기엔 스크롤 잠금 → 애니 후 auto */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* ===== Hero 전체를 좌/우 1:1로 분할 ===== */
+    /* ===== 화면 좌/우 1:1 분할 ===== */
     .wrap{
-      position:relative;
       min-height:100vh;
       display:grid;
-      grid-template-columns: 1fr 1fr; /* 왼쪽: 브랜드, 오른쪽: 카운터 */
+      grid-template-columns: 1fr 1fr; /* 왼쪽: 텍스트, 오른쪽: 퍼센트 */
     }
 
-    /* ====== 왼쪽 절반 (Mars / Keys) ====== */
+    /* ===== 왼쪽: Mars / Keys + Welcome 오버레이 ===== */
     .hero-left{
-      position:relative;
-      padding:5vw;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-start;
-      align-items:flex-start;
-      overflow:visible;
+      position:relative; overflow:visible;
     }
+    .brand-box{ padding:5vw; }
     .brand{
       margin:0; line-height:.9;
-      font-family:"Bungee", system-ui, sans-serif; /* Bungee 적용 */
+      font-family:"Michroma", system-ui, sans-serif; /* Michroma 적용 */
       letter-spacing:0.5px;
     }
     .brand-line{
@@ -60,52 +54,45 @@
     .fill > span{display:block; color:transparent; -webkit-background-clip:text; background-clip:text;}
     .brand-line[data-c="red"]  .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0);}
     .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
-    .tagline{
-      font-size:clamp(16px,2.6vw,28px); 
-      font-weight:600; margin-top:1rem; color:var(--muted);
-    }
+    .tagline{ font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem; color:var(--muted); }
+
     .particles{position:absolute; inset:0; pointer-events:none; overflow:visible;}
     .particle{position:absolute; width:2px; height:2px; border-radius:50%;}
     .brand-line.dissolve .plain,.brand-line.dissolve .fill{opacity:0;}
 
-    /* Welcome: 왼쪽 컬럼 내부에서 오버레이 */
-    .welcome-wrap{ position:relative; width:100%; height:100vh; }
+    /* Welcome: 왼쪽 절반 전체를 덮는 절대 레이어 (잘림 방지) */
+    .welcome-wrap{
+      position:absolute; inset:0; pointer-events:none; overflow:visible;
+    }
     #welcome{
       position:absolute;
       top:50%; left:50%;
       transform:translate(-50%,-50%) scale(0.8);
       opacity:0;
       font-size:clamp(60px,12vw,180px);
-      font-weight:900;
-      font-family:"Bungee", system-ui, sans-serif;
+      font-family:"Michroma", system-ui, sans-serif;
       color:white;
-      text-align:center;
       letter-spacing:0.02em;
-      pointer-events:none;
       transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
       will-change:opacity, transform;
-      z-index:10;
     }
     #welcome.visible{
       opacity:1;
       transform:translate(-50%,-50%) scale(1.45);
     }
 
-    /* ====== 오른쪽 절반 (퍼센트 카운트) ====== */
+    /* ===== 오른쪽: 퍼센트 카운트 (가운데 정렬 보장) ===== */
     .hero-right{
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:5vw;
+      display:grid; place-items:center; padding:5vw;
     }
     #counter{
+      position:relative;  /* 이전 fixed 규칙 무력화 */
       width:100%; height:100%;
       display:flex; align-items:center; justify-content:center;
       text-align:center;
       font-size:clamp(40px,12vw,160px);
+      font-family:"Michroma", system-ui, sans-serif;
       font-weight:900;
-      font-family:"Bungee", system-ui, sans-serif; /* Bungee 적용 */
       color:white;
       text-shadow:0 0 10px rgba(255,255,255,0.5);
       user-select:none;
@@ -117,8 +104,7 @@
     .scrollable-content{
       padding:0 5vw 6rem; 
       text-align:center; 
-      position:relative; 
-      display:none; /* 터진 뒤 보여줌 */
+      display:none; /* 터진 뒤 노출 */
       max-width:1200px; margin:0 auto;
     }
     .scrollable-content p{
@@ -129,45 +115,45 @@
       background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin:2rem auto; max-width:900px;
     }
 
-    /* ===== 반응형 (모바일: 세로 스택) ===== */
+    /* 모바일: 세로 스택 */
     @media (max-width: 768px){
       .wrap{ grid-template-columns: 1fr; }
-      .hero-left{ padding:10vw 6vw 4vw; }
       .hero-right{ height:50vh; padding:0 6vw 10vw; }
       #counter{ font-size:clamp(40px,18vw,160px); }
-      .welcome-wrap{ height:60vh; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <!-- 왼쪽 절반 -->
+    <!-- 왼쪽 -->
     <section class="hero-left">
       <canvas id="textCanvas" style="display:none;"></canvas>
 
-      <h1 class="brand">
-        <span class="brand-line" data-c="red">
-          <span class="plain">Mars</span>
-          <span class="fill"><span>Mars</span></span>
-          <div class="particles"></div>
-        </span>
-        <span class="brand-line" data-c="blue">
-          <span class="plain">Keys</span>
-          <span class="fill"><span>Keys</span></span>
-          <div class="particles"></div>
-        </span>
-      </h1>
-      <p class="tagline">Video Game Music Studio</p>
+      <div class="brand-box">
+        <h1 class="brand">
+          <span class="brand-line" data-c="red">
+            <span class="plain">Mars</span>
+            <span class="fill"><span>Mars</span></span>
+            <div class="particles"></div>
+          </span>
+          <span class="brand-line" data-c="blue">
+            <span class="plain">Keys</span>
+            <span class="fill"><span>Keys</span></span>
+            <div class="particles"></div>
+          </span>
+        </h1>
+        <p class="tagline">Video Game Music Studio</p>
+      </div>
 
-      <!-- Welcome: 왼쪽 컬럼 내부 오버레이 -->
+      <!-- Welcome 오버레이 (왼쪽 절반 전체 덮음) -->
       <div class="welcome-wrap" aria-hidden="true">
         <div id="welcome">Welcome</div>
       </div>
     </section>
 
-    <!-- 오른쪽 절반 -->
+    <!-- 오른쪽 -->
     <section class="hero-right">
-      <div id="counter">0%</div>
+      <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
     </section>
   </main>
 
@@ -188,6 +174,7 @@
     const welcome=document.getElementById("welcome");
     const scrollContent=document.getElementById("scrollContent");
 
+    // 진행도 (0~1). 이 값 하나로 '채움폭'과 '퍼센트' 동기화.
     let p=0;
     const accel=0.0018;
     let particles=[], particlesGenerated=false;
@@ -195,8 +182,12 @@
 
     function setProgress(v){
       p=Math.max(0,Math.min(1,v));
-      html.style.setProperty('--fill',(p*100).toFixed(2)+'%');
-      if(!isFinalized){counterEl.textContent=Math.floor(p*100)+"%";}
+      const pct = Math.round(p*100);              // 시각 인지 맞추려고 반올림
+      html.style.setProperty('--fill', pct+'%');  // 글자 채움 = 퍼센트 정확 매칭
+      if(!isFinalized){
+        counterEl.textContent = pct + "%";
+        counterEl.setAttribute('aria-valuenow', String(pct));
+      }
       if(p>=1 && !particlesGenerated && !isFinalized){
         generateParticles(); 
         dissolveText(); 
@@ -208,9 +199,9 @@
       if(autoAnimating||isFinalized) return;
       autoAnimating=true;
       function step(){
-        if(p<1){p+=0.005; setProgress(p); requestAnimationFrame(step);}
-        else{p=1; setProgress(1); autoAnimating=false;}
-      } 
+        if(p<1){ p = Math.min(1, p+0.005); setProgress(p); requestAnimationFrame(step); }
+        else { autoAnimating=false; }
+      }
       step();
     }
 
@@ -226,12 +217,12 @@
         const w=line.offsetWidth,h=line.offsetHeight;
         canvas.width=w; canvas.height=h;
         ctx.clearRect(0,0,w,h);
-        /* Bungee는 굵기 400 고정 → weight 지정 없이 그리기 */
+        // Michroma는 단일 웨이트 → weight 지정 없이 정확히 사용
         ctx.font=`${fontSize}px ${fontFamily}`;
         ctx.fillStyle='white'; ctx.textBaseline='middle';
         ctx.fillText(text,0,h/2);
         const img=ctx.getImageData(0,0,w,h).data;
-        const density=4; /* 성능/디테일 트레이드오프 */
+        const density=4;
         for(let y=0;y<h;y+=density){
           for(let x=0;x<w;x+=density){
             const idx=(y*w+x)*4;
@@ -316,7 +307,7 @@
       }
       onTouchMove.lastY=currentY;
     }
-    function onTouchEnd(){if(!isFinalized){onTouchMove.lastY=undefined;}}
+    function onTouchEnd(){ if(!isFinalized){ onTouchMove.lastY=undefined; } }
 
     window.addEventListener('wheel',onWheel,{passive:false});
     window.addEventListener('touchstart',(e)=>{onTouchMove.lastY=e.touches[0].clientY;});
