@@ -362,7 +362,7 @@
           for (let y = 0; y < canvas.height; y += STEP) {
             for (let x = 0; x < canvas.width; x += STEP) {
               const idx = (y * canvas.width + x) * 4;
-              if (data[idx + 3] > 128) {
+              if (data [idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
 
@@ -510,10 +510,10 @@
 
         function assign(listPts, listTgts) {
           for (let i = 0; i < listPts.length; i++) {
-            const t = listTgts[i % listTgts.length];
-            listPts[i].tx = t.x;
-            listPts[i].ty = t.y;
-            listPts[i].reached = false;
+            const t = listTgts [i % listTgts.length];
+            listPts [i].tx = t.x;
+            listPts [i].ty = t.y;
+            listPts [i].reached = false;
           }
         }
         assign(reds, targets.red);
@@ -599,7 +599,7 @@
 
           // ===== 드로잉(항상 source-over, 2패스) =====
           pctx.globalCompositeOperation = 'source-over';
-          pctx.shadowBlur = 30;
+          pctx.shadowBlur = 10;
           pctx.shadowOffsetX = 0;
           pctx.shadowOffsetY = 0;
 
