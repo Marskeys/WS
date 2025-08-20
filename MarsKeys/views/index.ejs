@@ -175,14 +175,12 @@
     #welcome {
       position: absolute;
       left: 50%;
-      top: 37.5%; /* 25% -> 37.5%로 변경하여 검은색 영역 중앙에 위치 */
+      top: 37.5%; /* 검은색 영역의 수직 중앙에 위치 */
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
-      font-size: clamp(48px, 10vw, 130px);
       font-family: "Michroma", system-ui, sans-serif;
       color: white;
       letter-spacing: 0.01em;
-      max-width: 92vw;
       white-space: nowrap;
       transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
       will-change: opacity, transform, text-shadow;
@@ -197,9 +195,14 @@
                    0 0 60px rgba(255, 255, 255, 0.4);
     }
     
+    /* 모바일 전용 스타일 */
     @media (max-width: 768px) {
+      .brand-line {
+        font-size: clamp(60px, 18vw, 120px); /* 모바일에서 Mars Keys 타이틀 더 크게 */
+      }
       #welcome {
-        font-size: clamp(70px, 15vw, 130px); /* 모바일에서 더 큰 폰트 크기 적용 */
+        font-size: clamp(48px, 15vw, 130px); /* 모바일에서 Welcome 텍스트 비율 조정 */
+        max-width: 95vw; /* 잘리지 않도록 뷰포트 너비에 맞춤 */
       }
     }
 
@@ -225,11 +228,6 @@
       padding: 2rem;
       margin: 2rem auto;
       max-width: 900px;
-    }
-
-    @media (max-width: 768px) {
-      .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
-      .brand-line + .brand-line { margin-top: -0.26em; }
     }
   </style>
 </head>
