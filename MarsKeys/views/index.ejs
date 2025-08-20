@@ -76,15 +76,13 @@
       margin: 0;
       line-height: 1;
       font-family: "Michroma", system-ui, sans-serif;
-      position: absolute;
-      top: 2vw;
-      left: 2vw;
+      position: relative;
       z-index: 40;
-      font-size: clamp(24px, min(6vw, 12vh), 48px);
     }
 
     .brand-line {
       display: block;
+      font-size: clamp(56px, min(14vw, 28vh), 200px);
       line-height: 1.06;
       padding-bottom: 0.18em;
       overflow: visible;
@@ -271,6 +269,7 @@
 
       const tagline = document.querySelector('.tagline');
       
+      // 💡 추가된 부분: 애니메이션이 끝난 후 to-white 클래스 추가
       tagline.addEventListener('animationend', (event) => {
         if (event.animationName === 'shine-sweep') {
             tagline.classList.add('to-white');
@@ -529,6 +528,12 @@
             }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
             welcome.classList.remove("welcome-glow");
+            // 💡 원래 코드에서 클래스를 추가하는 부분.
+            //    이제 HTML에 클래스가 직접 추가되었으므로 이 부분은 필요 없습니다.
+            // if (tagline) {
+            //   tagline.classList.add('shine-to-white');
+            //   setTimeout(() => tagline.classList.add('to-white'), 900);
+            // }
             for (const pt of particles) {
               const ang = Math.random() * Math.PI * 2;
               const spd = 0.05 + Math.random() * 0.1;
