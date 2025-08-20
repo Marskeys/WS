@@ -330,10 +330,10 @@
         setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
-      function buildTaegeukTargets(minRed, minBlue, scaleFactor = 1) { /* 스케일 인자 추가 */
+      function buildTaegeukTargets(minRed, minBlue, scaleFactor = 1) {
         const rect = wrap.getBoundingClientRect();
         const cx = rect.width * 0.5, cy = rect.height * 0.5;
-        const R = Math.min(rect.width, rect.height) * 0.26 * scaleFactor; /* 스케일 적용 */
+        const R = Math.min(rect.width, rect.height) * 0.26 * scaleFactor;
 
         let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
 
@@ -384,14 +384,15 @@
         return targets;
       }
 
-      function assignTaegeukTargets(scaleFactor) { /* 스케일 인자 추가 */
+      function assignParticlesToTargets(targets) {
         const reds = particles.filter(pt => pt.color === 'red');
         const blues = particles.filter(pt => pt.color === 'blue');
-        const targets = buildTaegeukTargets(reds.length, blues.length, scaleFactor);
         function assign(listPts, listTgts) {
           for (let i = 0; i < listPts.length; i++) {
             const t = listTgts[i % listTgts.length];
-            listPts[i].tx = t.x; listPts[i].ty = t.y; pt.reached = false;
+            listPts[i].tx = t.x;
+            listPts[i].ty = t.y;
+            listPts[i].reached = false;
           }
         }
         assign(reds, targets.red);
@@ -416,26 +417,54 @@
             // 'morph' 단계 시작 시, 최종 목표 지점 (작아진 태극)을 한 번만 계산하여 저장
             const reds = particles.filter(pt => pt.color === 'red');
             const blues = particles.filter(pt => pt.color === 'blue');
-            finalTaegeukTargets = buildTaegeukTargets(reds.length, blues.length, finalScale);
+            // 먼저 원래 크기의 태극 문양을 형성할 목표 지점 설정
+            assignParticlesToTargets(buildTaegeukTargets(reds.length, blues.length, 1));
           } else if (particlePhase === 'morph') {
             const elapsed = (now - phaseStartTime);
-            const morphDuration = 4000;
-            let progress = elapsed / morphDuration;
-            if (progress > 1) progress = 1;
-            
-            // 입자가 최종 목표를 향해 부드럽게 이동
-            particles.forEach((pt, i) => {
-              const target = pt.color === 'red' ? finalTaegeukTargets.red[i % finalTaegeukTargets.red.length] : finalTaegeukTargets.blue[i % finalTaegeukTargets.blue.length];
-              const dx = target.x - pt.x;
-              const dy = target.y - pt.y;
-              pt.vx = pt.vx * 0.82 + dx * 0.04; // 부드러운 감속 및 목표 추종
-              pt.vy = pt.vy * 0.82 + dy * 0.04;
-              if (Math.hypot(dx, dy) < 1.6) { pt.reached = true; } // 목표에 도달했는지 확인
-              else { pt.reached = false; }
+            const initialMorphDuration = 1000; // 원래 크기 태극 형성 시간
+            const shrinkDuration = 3000; // 축소 시간
+
+            // 입자가 원래 크기 태극을 향해 부드럽게 이동
+            let progress = Math.min(1, elapsed / initialMorphDuration);
+            particles.forEach(pt => {
+              if (!pt.reached) {
+                  const dx = pt.tx - pt.x;
+                  const dy = pt.ty - pt.y;
+                  pt.vx = pt.vx * 0.82 + dx * 0.06;
+                  pt.vy = pt.vy * 0.82 + dy * 0.06;
+                  if (Math.hypot(dx, dy) < 1.6) { pt.reached = true; }
+              }
             });
 
+            // 원래 크기 태극이 완전히 형성된 후, 축소 시작
+            if (elapsed > initialMorphDuration) {
+                if (!taegeukTargets) { // 최종 목표를 한 번만 계산
+                    const reds = particles.filter(pt => pt.color === 'red');
+                    const blues = particles.filter(pt => pt.color === 'blue');
+                    taegeukTargets = buildTaegeukTargets(reds.length, blues.length, finalScale);
+                }
+                
+                const shrinkProgress = Math.min(1, (elapsed - initialMorphDuration) / shrinkDuration);
+                const currentScale = 1 - (1 - finalScale) * shrinkProgress;
+                
+                // 입자들의 목표 위치를 현재 축소율에 맞춰 업데이트 (흔들림 제거)
+                particles.forEach((pt, i) => {
+                    const originalTarget = pt.color === 'red' ? buildTaegeukTargets(1, 1, 1).red[0] : buildTaegeukTargets(1, 1, 1).blue[0];
+                    const finalTarget = pt.color === 'red' ? taegeukTargets.red[i % taegeukTargets.red.length] : taegeukTargets.blue[i % taegeukTargets.blue.length];
+                    
+                    const newX = originalTarget.x + (finalTarget.x - originalTarget.x) * shrinkProgress;
+                    const newY = originalTarget.y + (finalTarget.y - originalTarget.y) * shrinkProgress;
+                    
+                    const dx = newX - pt.x;
+                    const dy = newY - pt.y;
+                    
+                    pt.vx = pt.vx * 0.9 + dx * 0.06;
+                    pt.vy = pt.vy * 0.9 + dy * 0.06;
+                });
+            }
+
             const allReached = particles.every(pt => pt.reached);
-            if (allReached || elapsed > morphDuration + 500) { // 충분한 시간 후 다음 단계로
+            if (allReached || elapsed > initialMorphDuration + shrinkDuration + 500) {
                 particlePhase = 'hold';
                 phaseStartTime = now;
             }
@@ -454,7 +483,7 @@
 
             if (particlePhase === 'explode') {
               pt.vx *= 0.985; pt.vy *= 0.985; pt.vx += (Math.random() - 0.5) * 0.02; pt.vy += (Math.random() - 0.5) * 0.02; pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
-            } else if (particlePhase === 'morph' || particlePhase === 'hold') { // morph와 hold 상태에서만 위치 업데이트
+            } else if (particlePhase === 'morph' || particlePhase === 'hold') {
               pt.alpha = Math.min(1, pt.alpha + 0.01);
             } else if (particlePhase === 'disperse') {
               pt.vx *= 0.995; pt.vy *= 0.995; pt.alpha -= (pt.color === 'blue') ? 0.0015 : 0.002;
