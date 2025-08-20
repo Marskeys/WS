@@ -779,34 +779,30 @@
       }
 
       function applyMouseForce(){
-        if (!mouse.active) return;
-        // 장력↑일수록 총손힘↓
-        const FmaxTotal = handPower / (1 + HARD_FACTOR * tension);
+  if (!mouse.active) return;
 
-        let sumAbs = 0;
-        const raw = new Array(numPoints).fill(0);
+  // 장력 높을수록 손힘 감소 (하지만 '총합 정규화'는 제거)
+  const FcapBase = 18;                          // ← 세로로 확 당겨지게 하는 핵심 수치 (12~24로 취향 조절)
+  const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
 
-        for (let i=1;i<numPoints-1;i++){
-          const p = string[i];
-          const distX = Math.abs(p.x - mouse.x);
-          const w = hannWeight(distX, radiusPx);
-          if (w <= 0) continue;
+  for (let i = 1; i < numPoints - 1; i++) {
+    const p = string[i];
+    const distX = Math.abs(p.x - mouse.x);
+    const w = hannWeight(distX, radiusPx);
+    if (w <= 0) continue;
 
-          const vel = p.y - p.oldY; // Verlet 속도 근사
-          const Fspring = K_MOUSE * (mouse.y - p.y);
-          const Fdamp   = -C_MOUSE * vel;
-          const F = (Fspring + Fdamp) * w;
+    const vel = p.y - p.oldY;                   // Verlet 속도 근사
+    const Fspring = K_MOUSE * (mouse.y - p.y);  // 마우스-현 스프링
+    const Fdamp   = -C_MOUSE * vel;             // 손가락 댐핑
+    let F = (Fspring + Fdamp) * w;
 
-          raw[i] = F;
-          sumAbs += Math.abs(F);
-        }
+    // 🔑 '총합 정규화' 대신 포인트별 최대힘 클램프
+    if (F >  Fcap * w) F =  Fcap * w;
+    if (F < -Fcap * w) F = -Fcap * w;
 
-        if (sumAbs === 0) return;
-        const scale = Math.min(1, FmaxTotal / sumAbs);
-        for (let i=1;i<numPoints-1;i++){
-          if (raw[i] !== 0) string[i].acc += raw[i] * scale;
-        }
-      }
+    p.acc += F;
+  }
+}
 
       function physicsStep(){
         // 내부 장력(라플라시안, 해상도 보정)
