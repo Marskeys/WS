@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <% const isKorean = (lang || '').toLowerCase().startsWith('ko'); %>
 <html lang="<%= lang %>">
-  <%- include('partials/head') %>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,8 +23,10 @@
 
   <style>
     :root {
-      --bg: #0e1016;
+      --bg-top: #0e1016; /* 상단 배경: 검은색 */
+      --bg-bottom: #eef2f8; /* 하단 배경: 하얀색 */
       --text: #eef2f8;
+      --text-dark: #0e1016;
       --muted: #9aa3b2;
       --fill-int: 0%;
       --pastel-red-1: #ff8aa1;
@@ -40,7 +41,7 @@
 
     body {
       margin: 0;
-      background-color: var(--bg);
+      background-color: var(--bg-bottom); /* 전체 배경색은 하얀색으로 설정 */
       color: var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
@@ -49,8 +50,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어일 때 환영문(#welcome)만 'Yeon Sung' */
-    body.lang-ko #welcome{
+    body.lang-ko #welcome {
       font-family: 'Yeon Sung', 'Michroma', system-ui, sans-serif;
       font-weight: 400;
     }
@@ -71,12 +71,23 @@
       overflow: visible;
     }
 
+    .split-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background-color: var(--bg-top);
+      z-index: 1;
+    }
+
     .brand {
       margin: 0;
       line-height: 1;
       font-family: "Michroma", system-ui, sans-serif;
       position: relative;
       z-index: 40;
+      color: var(--text); /* Mars Keys 타이틀 색상 */
     }
 
     .brand-line {
@@ -87,9 +98,9 @@
       overflow: visible;
       position: relative;
     }
-    .brand-line+.brand-line { margin-top: -0.32em; }
+    .brand-line + .brand-line { margin-top: -0.32em; }
 
-    .ink{
+    .ink {
       display:inline-block; color:transparent; -webkit-text-fill-color:transparent;
       -webkit-background-clip:text; background-clip:text;
       background-repeat:no-repeat,no-repeat;
@@ -97,8 +108,8 @@
       background-image:var(--grad), linear-gradient(#fff,#fff);
       letter-spacing:0; padding-bottom:.28em; transform:translateZ(0);
     }
-    .brand-line:nth-child(1) .ink{ --grad:linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
-    .brand-line:nth-child(2) .ink{ --grad:linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
+    .brand-line:nth-child(1) .ink { --grad:linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
+    .brand-line:nth-child(2) .ink { --grad:linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
 
     .tagline {
       font-size: clamp(16px, 2.6vw, 28px);
@@ -140,7 +151,7 @@
       font-size: clamp(28px, min(7vw, 10vh), 96px);
       font-family: "Michroma", system-ui, sans-serif;
       font-weight: 900;
-      color: white;
+      color: var(--text-dark); /* 카운터 색상: 검은색 */
       user-select: none;
       pointer-events: none;
       transition: opacity .6s ease;
@@ -155,12 +166,6 @@
       height: 100%;
       pointer-events: none;
       z-index: 50;
-    }
-
-    #lineViz {
-      position: fixed;
-      pointer-events: none;
-      z-index: 55;
     }
 
     #welcome {
@@ -214,16 +219,16 @@
 
     @media (max-width: 768px) {
       .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
-      .brand-line+.brand-line { margin-top: -0.26em; }
+      .brand-line + .brand-line { margin-top: -0.26em; }
     }
   </style>
 </head>
 
 <body class="<%= isKorean ? 'lang-ko' : '' %>">
+  <div class="split-background"></div>
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
-    <canvas id="lineViz"></canvas>
-
+    
     <h1 class="brand" id="brand">
       <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
       <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
@@ -265,6 +270,7 @@
       const scrollContent = document.getElementById("scrollContent");
       const particleCanvas = document.getElementById('particleCanvas');
       const pctx = particleCanvas.getContext('2d');
+      const brand = document.getElementById('brand');
 
       const tagline = document.querySelector('.tagline');
 
@@ -284,10 +290,6 @@
       const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
       let particlePhase = 'idle';
       let phaseStartTime = 0;
-
-      // 신호선 애니메이션 상태 변수
-      let linePhase = 'waving';
-      let linePhaseStartTime = 0;
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -313,7 +315,6 @@
           fadeOutText();
           showWelcome();
           runParticleShow();
-          startLineEffect(); // 신호선 애니메이션 시작
         }
       }
 
@@ -604,7 +605,7 @@
         const dy = e.deltaY;
         if (p < 0.5) {
           setProgress(p + dy * 0.0018);
-          startAutoAnimation(); // 바로 시작
+          startAutoAnimation();
         } else if (!autoAnimating) {
           startAutoAnimation();
         }
@@ -634,175 +635,6 @@
 
       resizeParticleCanvas();
       setProgress(0);
-
-      /* ============================================================
-         🔊 Mars/Keys 사이 ‘고정’ 오디오 파형 라인
-         - 레이아웃 영향 없음 (position: fixed)
-         - 왼쪽 베이스가 더 길고, 오른쪽은 짧게
-         ============================================================ */
-      const lineCanvas = document.getElementById('lineViz');
-      const lctx = lineCanvas.getContext('2d');
-      const LINE_CONDENSE_DURATION = 1000;
-
-      function placeLineViz() {
-        const wrapRect = wrap.getBoundingClientRect();
-        const marsLine = document.getElementById('mars')?.parentElement;
-        const keysLine = document.getElementById('keys')?.parentElement;
-        if (!marsLine || !keysLine) return;
-
-        const cssHeight = Math.max(28, Math.min(64, Math.round((marsLine.getBoundingClientRect().height + keysLine.getBoundingClientRect().height) * 0.14)));
-        let left, width;
-        let midY;
-
-        if (IS_MOBILE) {
-            // 모바일: 화면의 수직 중앙에 오도록 위치
-            width = window.innerWidth * 0.6;
-            left = (window.innerWidth / 2) - (width / 2);
-            midY = window.innerHeight / 2;
-        } else {
-            // 데스크톱: 왼쪽 패딩을 추가하고 글자 사이에 위치
-            const wrapCS = getComputedStyle(wrap);
-            const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-            const additionalPadding = 250;
-            left = wrapRect.left + padLeft + additionalPadding;
-            
-            const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-            width = Math.max(240, rightLimit - left);
-            midY = (marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2;
-        }
-
-        lineCanvas.style.left = left + 'px';
-        lineCanvas.style.top = (midY - cssHeight / 2) + 'px';
-        lineCanvas.style.width = width + 'px';
-        lineCanvas.style.height = cssHeight + 'px';
-
-        const dpr = Math.max(1, window.devicePixelRatio || 1);
-        lineCanvas.width = Math.floor(width * dpr);
-        lineCanvas.height = Math.floor(cssHeight * dpr);
-        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-      
-      function startLineEffect() {
-        linePhase = 'condense';
-        linePhaseStartTime = performance.now();
-        // 전체 화면 너비를 사용하도록 스타일 변경
-        lineCanvas.style.left = '0px';
-        lineCanvas.style.width = window.innerWidth + 'px';
-        // 새로운 크기에 맞게 캔버스 크기 재설정
-        const dpr = Math.max(1, window.devicePixelRatio || 1);
-        lineCanvas.width = Math.floor(window.innerWidth * dpr);
-        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-
-      function drawLineViz(time) {
-        if (linePhase === 'done') return;
-
-        const W = lineCanvas.clientWidth | 0;
-        const H = lineCanvas.clientHeight | 0;
-        if (W === 0 || H === 0) {
-          requestAnimationFrame(drawLineViz);
-          return;
-        }
-        
-        lctx.clearRect(0, 0, W, H);
-        const y0 = H / 2;
-
-        lctx.beginPath();
-
-        if (linePhase === 'waving') {
-          lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
-          lctx.lineJoin = 'round';
-          lctx.lineCap = 'round';
-          lctx.strokeStyle = '#ffffff';
-          lctx.globalAlpha = 0.92;
-          lctx.shadowBlur = 0;
-
-          const leftBase = W * 0.28;
-          const waveLen = W * 0.72;
-          const t = (time || performance.now()) * 0.004;
-          const A = H * 0.30;
-          const k = 0.020 * Math.PI;
-          const beatPos = (t * 0.15 % 1) * waveLen;
-
-          function envelope(x) {
-            const u = x / waveLen;
-            return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) *
-                   (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
-          }
-          function spikeBoost(x) {
-            const d = (x - beatPos);
-            const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02));
-            return 1 + 1.8 * s;
-          }
-
-          const transitionLen = W * 0.08;
-          const step = Math.max(2, Math.min(4, Math.round(W / 220)));
-          
-          lctx.moveTo(0, y0);
-          lctx.lineTo(leftBase, y0);
-          
-          for (let i = 0; i <= waveLen; i += step) {
-            const x = leftBase + i;
-            let currentAmp = A;
-            if (i < transitionLen) {
-                const transitionFactor = Math.sin( (i / transitionLen) * (Math.PI / 2) );
-                currentAmp = A * transitionFactor;
-            }
-            const y = y0
-              + envelope(i) * spikeBoost(i) *
-                ( currentAmp * 0.55 * Math.sin(k * i + t * 1.1)
-                + currentAmp * 0.28 * Math.sin(k * 0.47 * i - t * 0.7)
-                + currentAmp * 0.17 * Math.sin(k * 1.9 * i + t * 0.33) );
-            lctx.lineTo(x, y);
-          }
-          
-        } else if (linePhase === 'condense') {
-          const elapsed = time - linePhaseStartTime;
-          const progress = Math.min(1, elapsed / LINE_CONDENSE_DURATION);
-          
-          lctx.globalAlpha = 1 - progress;
-          lctx.lineWidth = 6;
-          lctx.strokeStyle = '#ffffff';
-          
-          const maxBlur = 60;
-          lctx.shadowColor = '#ffffff';
-          lctx.shadowBlur = maxBlur * (1 - progress);
-
-          const midX = W / 2;
-          const midY = H / 2;
-          
-          // 양 끝에서 중앙으로 응축
-          const startX = midX * progress;
-          const endX = W - midX * progress;
-
-          lctx.moveTo(startX, midY);
-          lctx.lineTo(endX, midY);
-
-          if (progress >= 1) {
-            linePhase = 'done';
-            lctx.clearRect(0, 0, W, H);
-            return;
-          }
-        }
-        
-        lctx.stroke();
-        requestAnimationFrame(drawLineViz);
-      }
-
-      // 초기 배치 & 리사이즈 핸들링
-      const ro = new ResizeObserver(() => placeLineViz());
-      ro.observe(document.body);
-      ro.observe(document.getElementById('brand'));
-
-      window.addEventListener('resize', placeLineViz);
-      window.addEventListener('orientationchange', placeLineViz);
-
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(placeLineViz);
-      }
-      
-      placeLineViz();
-      requestAnimationFrame(drawLineViz);
     })();
   </script>
 </body>
