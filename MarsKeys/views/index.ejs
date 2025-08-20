@@ -32,9 +32,7 @@
       --pastel-blue-3: #b2d1ff;
     }
 
-    * {
-      box-sizing: border-box
-    }
+    * { box-sizing: border-box }
 
     body {
       margin: 0;
@@ -48,12 +46,12 @@
     }
     
     body.show-background {
-        background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: cover;
-        background-attachment: fixed;
-        transition: background-image 2s ease;
+      background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      background-attachment: fixed;
+      transition: background-image 2s ease;
     }
 
     .wrap {
@@ -80,9 +78,7 @@
       position: relative;
     }
 
-    .brand-line+.brand-line {
-      margin-top: -0.32em;
-    }
+    .brand-line+.brand-line { margin-top: -0.32em; }
 
     .ink {
       display: inline-block;
@@ -101,16 +97,45 @@
     .brand-line:nth-child(1) .ink {
       --grad: linear-gradient(180deg, var(--pastel-red-1), var(--pastel-red-2), var(--pastel-red-3));
     }
-
     .brand-line:nth-child(2) .ink {
       --grad: linear-gradient(180deg, var(--pastel-blue-1), var(--pastel-blue-2), var(--pastel-blue-3));
     }
 
+    /* === Tagline (반사 후 흰색 전환) === */
     .tagline {
       font-size: clamp(16px, 2.6vw, 28px);
       font-weight: 600;
       margin: 1rem 0 0;
       color: var(--muted);
+      position: relative;
+      transition: color .55s ease;
+      will-change: color;
+    }
+    /* 반사 스윕: 텍스트에만 비치도록 before에 텍스트 복제 + text clip */
+    .tagline.shine-to-white { overflow: visible; }
+    .tagline.shine-to-white::before {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,.16) 32%,
+        rgba(255,255,255,.85) 50%,
+        rgba(255,255,255,.16) 68%,
+        rgba(255,255,255,0) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      transform: translateX(-120%) skewX(-18deg);
+      filter: blur(.3px);
+      animation: shine-sweep 900ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .tagline.to-white { color: #fff; }
+
+    @keyframes shine-sweep {
+      to { transform: translateX(120%) skewX(-18deg); }
     }
 
     #counter {
@@ -157,13 +182,11 @@
       text-shadow: 0 0 0 transparent;
     }
 
-    #welcome.visible {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1.22);
-    }
-
+    #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
     #welcome.welcome-glow {
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                   0 0 40px rgba(255, 255, 255, 0.6),
+                   0 0 60px rgba(255, 255, 255, 0.4);
     }
 
     .scrollable-content {
@@ -175,7 +198,6 @@
       position: relative;
       z-index: 10;
     }
-
     .scrollable-content p {
       max-width: 800px;
       margin: 0 auto 1.5rem;
@@ -183,7 +205,6 @@
       color: var(--muted);
       font-size: clamp(14px, 2vw, 18px);
     }
-
     .scrollable-content .temp-box {
       background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
@@ -193,14 +214,8 @@
     }
 
     @media (max-width: 768px) {
-      .brand-line {
-        line-height: 1.08;
-        padding-bottom: 0.16em;
-      }
-
-      .brand-line+.brand-line {
-        margin-top: -0.26em;
-      }
+      .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
+      .brand-line+.brand-line { margin-top: -0.26em; }
     }
   </style>
 </head>
@@ -214,9 +229,10 @@
       <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
     </h1>
 
-    <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-    <p class="tagline"><%= locale.game_music_studio %></p>
+    <!-- data-text로 before가 동일 텍스트를 복제해 클리핑 -->
+    <p class="tagline" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
 
+    <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
     <div id="welcome"><%= locale.welcome %></div>
   </main>
 
@@ -252,12 +268,15 @@
       const pctx = particleCanvas.getContext('2d');
       const particleShowDuration = 10000;
 
+      // NEW: tagline ref
+      const tagline = document.querySelector('.tagline');
+
       // ===== Progress =====
       let p = 0;
       const accel = 0.0018;
       let autoAnimating = false,
-        isFinalized = false,
-        particlesGenerated = false;
+          isFinalized = false,
+          particlesGenerated = false;
 
       // ===== Env & palette cache =====
       const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
@@ -308,7 +327,6 @@
       function startAutoAnimation() {
         if (autoAnimating || isFinalized) return;
         autoAnimating = true;
-
         function step() {
           if (p < 1) {
             p = Math.min(1, p + 0.005);
@@ -334,9 +352,7 @@
         offCtx.fillStyle = 'white';
         offCtx.textBaseline = 'top';
         offCtx.fillText(text, 0, 0);
-        return {
-          canvas: offCanvas
-        };
+        return { canvas: offCanvas };
       }
 
       function computeStepForTarget(canvas, target) {
@@ -349,32 +365,21 @@
         particlesGenerated = true;
         particles.length = 0;
         const wrapRect = wrap.getBoundingClientRect();
-        const lines = [{
-          el: document.getElementById('mars').parentElement,
-          color: 'red',
-          textEl: document.getElementById('mars')
-        }, {
-          el: document.getElementById('keys').parentElement,
-          color: 'blue',
-          textEl: document.getElementById('keys')
-        }];
+        const lines = [
+          { el: document.getElementById('mars').parentElement, color: 'red',  textEl: document.getElementById('mars') },
+          { el: document.getElementById('keys').parentElement, color: 'blue', textEl: document.getElementById('keys') }
+        ];
         const centerX = wrapRect.width * 0.5;
         const centerY = wrapRect.height * 0.5;
 
         const TARGET_PER_LINE = IS_MOBILE ? 4000 : 1500;
 
-        lines.forEach(({
-          el,
-          color,
-          textEl
-        }) => {
+        lines.forEach(({ el, color, textEl }) => {
           const rect = el.getBoundingClientRect();
           const style = getComputedStyle(textEl);
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
-          const {
-            canvas
-          } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
+          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
           const ctx = canvas.getContext('2d');
           const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = img.data;
@@ -394,15 +399,11 @@
                 const boost = 0.6 + Math.random() * 1.1;
 
                 particles.push({
-                  x: px,
-                  y: py,
+                  x: px, y: py,
                   vx: (Math.random() - 0.5) * 0.6 + (dx / dist) * boost,
                   vy: (Math.random() - 0.5) * 0.6 + (dy / dist) * boost,
-                  alpha: 1,
-                  color,
-                  tx: null,
-                  ty: null,
-                  reached: false
+                  alpha: 1, color,
+                  tx: null, ty: null, reached: false
                 });
               }
             }
@@ -426,9 +427,7 @@
       }
 
       function showWelcome() {
-        setTimeout(() => {
-          counterEl.style.opacity = 0;
-        }, 350);
+        setTimeout(() => { counterEl.style.opacity = 0; }, 350);
         setTimeout(() => {
           welcome.classList.add("visible");
           welcome.classList.add("welcome-glow");
@@ -440,59 +439,37 @@
         }, 1500);
       }
 
-      // 태극 문양 목표 지점 생성 함수
+      // 태극 문양 목표 지점 생성
       function buildTaegeukTargets(minRed, minBlue) {
         const rect = wrap.getBoundingClientRect();
-        const cx = rect.width * 0.5,
-          cy = rect.height * 0.5;
+        const cx = rect.width * 0.5, cy = rect.height * 0.5;
         const R = Math.min(rect.width, rect.height) * TAEGUK_SCALE;
 
         let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
 
         function sample(stepVal) {
-          const red = [],
-            blue = [];
-          const rSmall = R * 0.5;
-          const rSmall2 = rSmall * rSmall;
+          const red = [], blue = [];
+          const rSmall = R * 0.5, rSmall2 = rSmall * rSmall;
           const offsetX = R * 0.5;
 
           for (let yy = -R; yy <= R; yy += stepVal) {
             for (let xx = -R; xx <= R; xx += stepVal) {
-              const x = xx,
-                y = yy;
-
+              const x = xx, y = yy;
               if (x * x + y * y > R * R) continue;
 
               let targetColor = null;
-
-              const distLeft2 = (x + offsetX) * (x + offsetX) + y * y;
+              const distLeft2  = (x + offsetX) * (x + offsetX) + y * y;
               const distRight2 = (x - offsetX) * (x - offsetX) + y * y;
 
-              if (distLeft2 <= rSmall2) {
-                targetColor = 'red';
-              } else if (distRight2 <= rSmall2) {
-                targetColor = 'blue';
-              } else {
-                targetColor = (y < 0) ? 'red' : 'blue';
-              }
+              if (distLeft2 <= rSmall2)      targetColor = 'red';
+              else if (distRight2 <= rSmall2) targetColor = 'blue';
+              else                             targetColor = (y < 0) ? 'red' : 'blue';
 
-              if (targetColor === 'red') {
-                red.push({
-                  x: cx + x,
-                  y: cy + y
-                });
-              } else {
-                blue.push({
-                  x: cx + x,
-                  y: cy + y
-                });
-              }
+              if (targetColor === 'red') red.push({ x: cx + x, y: cy + y });
+              else                        blue.push({ x: cx + x, y: cy + y });
             }
           }
-          return {
-            red,
-            blue
-          };
+          return { red, blue };
         }
 
         let targets = sample(step);
@@ -504,39 +481,27 @@
         function downsample(arr, n) {
           if (arr.length <= n) return arr;
           const out = [];
-          for (let i = 0; i < n; i++) {
-            out.push(arr[(Math.random() * arr.length) | 0]);
-          }
+          for (let i = 0; i < n; i++) out.push(arr[(Math.random() * arr.length) | 0]);
           return out;
         }
-        const capRed = Math.max(minRed * 1.15 | 0, minRed);
+        const capRed  = Math.max(minRed  * 1.15 | 0, minRed);
         const capBlue = Math.max(minBlue * 1.15 | 0, minBlue);
-        if (targets.red.length > capRed) targets.red = downsample(targets.red, capRed);
+        if (targets.red.length  > capRed)  targets.red  = downsample(targets.red,  capRed);
         if (targets.blue.length > capBlue) targets.blue = downsample(targets.blue, capBlue);
 
-        function shuffle(a) {
-          for (let i = a.length - 1; i > 0; i--) {
-            const j = (Math.random() * (i + 1)) | 0;
-            [a[i], a[j]] = [a[j], a[i]];
-          }
-        }
-        shuffle(targets.red);
-        shuffle(targets.blue);
+        function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]]; } }
+        shuffle(targets.red); shuffle(targets.blue);
         return targets;
       }
 
       function assignTaegeukTargets() {
         const reds = particles.filter(pt => pt.color === 'red');
         const blues = particles.filter(pt => pt.color === 'blue');
-
         const targets = buildTaegeukTargets(reds.length, blues.length);
-
         function assign(listPts, listTgts) {
           for (let i = 0; i < listPts.length; i++) {
             const t = listTgts[i % listTgts.length];
-            listPts[i].tx = t.x;
-            listPts[i].ty = t.y;
-            listPts[i].reached = false;
+            listPts[i].tx = t.x; listPts[i].ty = t.y; listPts[i].reached = false;
           }
         }
         assign(reds, targets.red);
@@ -549,8 +514,7 @@
 
         function frame(now) {
           const rect = wrap.getBoundingClientRect();
-          const W = rect.width,
-            H = rect.height;
+          const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
 
           if (particlePhase === 'explode' && now - phaseStartTime >= TAEGUK_DELAY) {
@@ -564,17 +528,22 @@
               phaseStartTime = now;
             }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= TAEGUK_HOLD) {
+            // 1) 웰컴 글로우 제거
             welcome.classList.remove("welcome-glow");
-            
+            // 2) 태그라인 반사 → 흰색 전환 트리거
+            if (tagline) {
+              tagline.classList.add('shine-to-white');      // 반사 스윕 시작
+              setTimeout(() => tagline.classList.add('to-white'), 900); // 스윕 끝난 뒤 흰색
+            }
+
+            // 분산 준비
             for (const pt of particles) {
-              // 부유하며 사라지도록 아주 작은 무작위 속도 부여
               const ang = Math.random() * Math.PI * 2;
               const spd = 0.05 + Math.random() * 0.1; 
               pt.vx = Math.cos(ang) * spd;
               pt.vy = Math.sin(ang) * spd;
               pt.reached = false;
             }
-            
             particlePhase = 'disperse';
             phaseStartTime = now;
           }
@@ -585,22 +554,17 @@
             anyAlive = true;
 
             if (particlePhase === 'explode') {
-              pt.vx *= 0.985;
-              pt.vy *= 0.985;
+              pt.vx *= 0.985; pt.vy *= 0.985;
               pt.vx += (Math.random() - 0.5) * 0.02;
               pt.vy += (Math.random() - 0.5) * 0.02;
               pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
             } else if (particlePhase === 'morph') {
               if (pt.tx != null) {
-                const dx = pt.tx - pt.x;
-                const dy = pt.ty - pt.y;
+                const dx = pt.tx - pt.x, dy = pt.ty - pt.y;
                 pt.vx = pt.vx * 0.82 + dx * 0.06;
                 pt.vy = pt.vy * 0.82 + dy * 0.06;
                 if (Math.hypot(dx, dy) < 1.6) {
-                  pt.x = pt.tx;
-                  pt.y = pt.ty;
-                  pt.vx = pt.vy = 0;
-                  pt.reached = true;
+                  pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true;
                 }
               }
               pt.alpha = Math.min(1, pt.alpha + 0.01);
@@ -610,20 +574,12 @@
               pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
               pt.alpha = 1;
             } else if (particlePhase === 'disperse') {
-              // 부유하며 사라지도록 알파값만 줄임
-              pt.vx *= 0.995; // 부유하는 느낌을 위해 속도를 아주 미세하게 줄임
-              pt.vy *= 0.995;
-
-              // 파란색 입자는 더 천천히 사라지게 조정
-              if (pt.color === 'blue') {
-                pt.alpha -= 0.0015;
-              } else {
-                pt.alpha -= 0.002;
-              }
+              pt.vx *= 0.995; pt.vy *= 0.995;
+              if (pt.color === 'blue') pt.alpha -= 0.0015;
+              else                     pt.alpha -= 0.002;
             }
 
-            pt.x += pt.vx;
-            pt.y += pt.vy;
+            pt.x += pt.vx; pt.y += pt.vy;
           }
 
           if (particlePhase === 'disperse' && !anyAlive) {
@@ -632,11 +588,9 @@
             return;
           }
 
-          // ===== 드로잉(항상 source-over, 2패스) =====
+          // draw
           pctx.globalCompositeOperation = 'source-over';
-          pctx.shadowBlur = 10;
-          pctx.shadowOffsetX = 0;
-          pctx.shadowOffsetY = 0;
+          pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
 
           function drawPass(colorName, colorHex) {
             pctx.shadowColor = colorHex || '#fff';
@@ -649,7 +603,6 @@
               pctx.fill();
             }
           }
-
           drawPass('red', COL_RED);
           drawPass('blue', COL_BLUE);
 
@@ -685,23 +638,12 @@
         }
         onTouchMove.lastY = currentY;
       }
-
-      function onTouchEnd() {
-        if (!isFinalized) {
-          onTouchMove.lastY = undefined;
-        }
-      }
+      function onTouchEnd() { if (!isFinalized) onTouchMove.lastY = undefined; }
 
       window.addEventListener('resize', resizeParticleCanvas);
-      window.addEventListener('wheel', onWheel, {
-        passive: false
-      });
-      window.addEventListener('touchstart', (e) => {
-        onTouchMove.lastY = e.touches[0].clientY;
-      });
-      window.addEventListener('touchmove', onTouchMove, {
-        passive: false
-      });
+      window.addEventListener('wheel', onWheel, { passive: false });
+      window.addEventListener('touchstart', (e) => { onTouchMove.lastY = e.touches[0].clientY; });
+      window.addEventListener('touchmove', onTouchMove, { passive: false });
       window.addEventListener('touchend', onTouchEnd);
 
       resizeParticleCanvas();
@@ -709,5 +651,4 @@
     })();
   </script>
 </body>
-
 </html>
