@@ -15,13 +15,9 @@
     <% } %>
   </title>
 
-  <!-- Fonts: Michroma(항상), Yeon Sung & Do Hyeon(한국어일 때만) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
-  <% if (isKorean) { %>
-    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Yeon+Sung&display=swap" rel="stylesheet">
-  <% } %>
+  <!-- Pretendard Variable (웹폰트) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" crossorigin>
 
   <style>
     :root {
@@ -43,23 +39,15 @@
       margin: 0;
       background-color: var(--bg);
       color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      /* 전체 기본 폰트 → Pretendard */
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
       overflow-x: hidden;
       overflow-y: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어 페이지 전용 폰트 적용 */
-    /* 타이틀(.brand)만 '도현', 환영문(#welcome)만 '연성' */
-    body.lang-ko .brand{
-      font-family: 'Do Hyeon', 'Michroma', system-ui, sans-serif;
-      font-weight: 400; /* Do Hyeon은 단일 웨이트 */
-    }
-    body.lang-ko #welcome{
-      font-family: 'Yeon Sung', system-ui, sans-serif;
-    }
-
+    /* 배경 전환 */
     body.show-background {
       background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
       background-repeat: no-repeat;
@@ -76,10 +64,11 @@
       overflow: visible;
     }
 
+    /* 타이틀(브랜드)도 Pretendard */
     .brand {
       margin: 0;
       line-height: 1;
-      font-family: "Michroma", system-ui, sans-serif; /* 기본: Michroma, 한국어에선 위 규칙으로 Do Hyeon */
+      font-family: 'Pretendard Variable', Pretendard, sans-serif;
       position: relative;
       z-index: 40;
     }
@@ -94,25 +83,17 @@
     }
     .brand-line+.brand-line { margin-top: -0.32em; }
 
-    .ink {
-      display: inline-block;
-      color: transparent;
-      -webkit-text-fill-color: transparent;
-      -webkit-background-clip: text;
-      background-clip: text;
-      background-repeat: no-repeat, no-repeat;
-      background-size: var(--fill-int) 100%, 100% 100%;
-      background-image: var(--grad), linear-gradient(#fff, #fff);
-      letter-spacing: 0;
-      padding-bottom: 0.28em;
-      transform: translateZ(0);
+    /* 단일 레이어 이중배경(흰색/그라데) → 채움폭과 퍼센트 1:1 */
+    .ink{
+      display:inline-block; color:transparent; -webkit-text-fill-color:transparent;
+      -webkit-background-clip:text; background-clip:text;
+      background-repeat:no-repeat,no-repeat;
+      background-size:var(--fill-int) 100%, 100% 100%;
+      background-image:var(--grad), linear-gradient(#fff,#fff);
+      letter-spacing:0; padding-bottom:.28em; transform:translateZ(0);
     }
-    .brand-line:nth-child(1) .ink {
-      --grad: linear-gradient(180deg, var(--pastel-red-1), var(--pastel-red-2), var(--pastel-red-3));
-    }
-    .brand-line:nth-child(2) .ink {
-      --grad: linear-gradient(180deg, var(--pastel-blue-1), var(--pastel-blue-2), var(--pastel-blue-3));
-    }
+    .brand-line:nth-child(1) .ink{ --grad:linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
+    .brand-line:nth-child(2) .ink{ --grad:linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
 
     .tagline {
       font-size: clamp(16px, 2.6vw, 28px);
@@ -146,14 +127,14 @@
     .tagline.to-white { color: #fff; }
     @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
 
-    /* 퍼센트(브랜드와 분리해서 Michroma 유지) */
+    /* 퍼센트도 Pretendard로 통일 */
     #counter {
       position: absolute;
       right: 5vw;
       bottom: clamp(16px, 6vh, 48px);
       text-align: right;
       font-size: clamp(28px, min(7vw, 10vh), 96px);
-      font-family: "Michroma", system-ui, sans-serif;
+      font-family: 'Pretendard Variable', Pretendard, sans-serif;
       font-weight: 900;
       color: white;
       user-select: none;
@@ -172,6 +153,7 @@
       z-index: 50;
     }
 
+    /* Welcome도 Pretendard */
     #welcome {
       position: absolute;
       left: 50%;
@@ -179,7 +161,7 @@
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
       font-size: clamp(48px, 10vw, 130px);
-      font-family: "Michroma", system-ui, sans-serif; /* 기본 Michroma → 한국어면 위에서 Yeon Sung 오버라이드 */
+      font-family: 'Pretendard Variable', Pretendard, sans-serif;
       color: white;
       letter-spacing: 0.01em;
       max-width: 92vw;
@@ -224,18 +206,10 @@
     @media (max-width: 768px) {
       .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
       .brand-line+.brand-line { margin-top: -0.26em; }
+      /* 필요하면 모바일에서 더 키우기
+      .brand-line{ font-size: clamp(56px, min(20vw, 32vh), 240px); }
+      */
     }
-
-    /* 모바일에서 타이틀 더 크게 */
-@media (max-width: 768px) {
-  .brand-line{
-    /* 14vw → 20vw, 세로 한계도 28vh → 32vh, 최대치도 200px → 240px */
-    font-size: clamp(56px, min(20vw, 32vh), 240px);
-  }
-  /* 줄 겹침 보정(필요하면 살짝만 손봐줘도 OK) */
-  .brand-line + .brand-line { margin-top: -0.28em; }
-}
-
   </style>
 </head>
 
