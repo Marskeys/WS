@@ -175,7 +175,7 @@
     #welcome {
       position: absolute;
       left: 50%;
-      top: 50%;
+      top: 25%; /* 전체 화면의 25% 지점으로 변경하여 검은색 영역 중앙에 위치 */
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
       font-size: clamp(48px, 10vw, 130px);
@@ -368,7 +368,7 @@
           { el: document.getElementById('keys').parentElement, color: 'blue', textEl: document.getElementById('keys') }
         ];
         const centerX = wrapRect.width * 0.5;
-        const centerY = wrapRect.height * 0.5;
+        const centerY = wrapRect.height * 0.25; /* 검은색 영역의 수직 중앙으로 변경 */
 
         const TARGET_PER_LINE = IS_MOBILE ? 4000 : 1500;
 
@@ -438,7 +438,7 @@
 
       function buildTaegeukTargets(minRed, minBlue) {
         const rect = wrap.getBoundingClientRect();
-        const cx = rect.width * 0.5, cy = rect.height * 0.5;
+        const cx = rect.width * 0.5, cy = rect.height * 0.25; /* 검은색 영역의 수직 중앙으로 변경 */
         const R = Math.min(rect.width, rect.height) * 0.26;
 
         let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
