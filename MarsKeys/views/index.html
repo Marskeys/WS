@@ -1,299 +1,252 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mars Keys — Counter to Welcome</title>
-  <style>
-    :root{
-      --bg:#0e1016; 
-      --text:#eef2f8; 
-      --muted:#9aa3b2;
-      --fill:0%;
-      --pastel-red-1:#ff8aa1; --pastel-blue-1:#78aaff;
-    }
-    body{
-      margin:0; background:var(--bg); color:var(--text);
-      font-family:sans-serif;
-      overflow-x: hidden;
-      overflow-y: hidden; /* 초기엔 스크롤 잠금 */
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* ===== Hero ===== */
-    .wrap{
-      position:relative;
-      min-height:100vh; 
-      display:flex; 
-      flex-direction:column; 
-      align-items:flex-start; 
-      padding:5vw;
-      overflow:visible;
-    }
-    .brand{margin:0; font-weight:900; line-height:.9;}
-    .brand-line{position:relative; display:block; font-size:clamp(56px,14vw,200px);}
-    .plain{position:relative; z-index:1;}
-    .fill{position:absolute; inset:0; width:var(--fill); overflow:hidden; z-index:2;}
-    .fill > span{display:block; color:transparent; -webkit-background-clip:text; background-clip:text;}
-    .brand-line[data-c="red"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-red-1),#ff6b7a,#ff9db0);}
-    .brand-line[data-c="blue"] .fill > span{background-image:linear-gradient(180deg,var(--pastel-blue-1),#5ea1ff,#b2d1ff);}
-    .tagline{font-size:clamp(16px,2.6vw,28px); font-weight:600; margin-top:1rem;}
-
-    .particles{position:absolute; inset:0; pointer-events:none; overflow:visible;}
-    .particle{position:absolute; width:2px; height:2px; border-radius:50%;}
-    .brand-line.dissolve .plain,.brand-line.dissolve .fill{opacity:0;}
-
-    /* ===== 퍼센트 카운터 ===== */
-    #counter{
-      position:fixed;
-      top:50%; right:5%;
-      transform:translateY(-50%);
-      font-size:clamp(40px,10vw,120px);
-      font-weight:900;
-      color:white;
-      text-shadow:0 0 10px rgba(255,255,255,0.5);
-      user-select:none;
-      pointer-events:none;
-      transition:opacity .5s ease;
-      z-index:100;
-    }
-
-    /* ===== Welcome (뷰포트 고정 아님! hero 내부 일반 흐름 요소) ===== */
-    .welcome-wrap{
-      position:relative;
-      min-height:0; /* 공간은 hero 내부에 유지 */
-    }
-    #welcome{
-      position:absolute; /* hero(.wrap) 기준의 절대배치 → 페이지와 함께 스크롤됨 */
-      top:10%; left:50%;
-      transform:translate(-50%, -50%) scale(0.8);
-      opacity:0;
-      font-size:clamp(60px,12vw,180px);
-      font-weight:900;
-      color:white;
-      text-align:center;
-      letter-spacing:0.02em;
-      pointer-events:none;
-      transition:opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
-      will-change: opacity, transform;
-      z-index:0; /* 초기엔 브랜드 아래 */
-    }
-    #welcome.visible{
-      opacity:1;
-      transform:translate(-50%, -50%) scale(1.45);
-      z-index:10; /* 터진 뒤 앞으로 */
-    }
-
-    /* ===== 이후 스크롤 콘텐츠 ===== */
-    .scrollable-content{
-      padding:0 5vw; 
-      text-align:center; 
-      position:relative; 
-      display:none; /* 터진 뒤 보여줌 */
-    }
-    .scrollable-content p{
-      max-width:800px; margin:0 auto 1.5rem; line-height:1.8; 
-      color:var(--muted); font-size:clamp(14px,2vw,18px);
-    }
-    .scrollable-content .temp-box{
-      background:rgba(255,255,255,0.05); border-radius:12px; padding:2rem; margin-bottom:2rem;
-    }
-
-    /* 1) hero 컨테이너가 자식 폭을 꽉 채우게 */
-.wrap{
-  align-items: stretch; /* 기존 flex-start → stretch */
-}
-
-/* 2) welcome의 기준 박스가 실제 너비/높이를 가지도록 */
-.welcome-wrap{
-  position: relative;
-  width: 100%;
-  height: 100vh;   /* hero 높이만큼 기준 제공 (top:50% 계산용) */
-}
-
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>현(줄) 시뮬레이션 — 드래그해서 튕겨보기</title>
+<style>
+  :root{
+    --bg:#0e1016; --text:#eef2f8; --muted:#9aa3b2;
+    --accent:#77aaff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    display:flex; align-items:center; justify-content:center;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+  .wrap{
+    width:min(900px, 92vw);
+  }
+  h1{font-size:clamp(18px, 2.4vw, 22px); margin:0 0 10px 0; font-weight:700; color:var(--text)}
+  p.hint{
+    margin:0 0 10px 0; color:var(--muted); font-size:clamp(12px, 1.8vw, 14px)
+  }
+  .card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px; padding:16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  canvas{
+    width:100%; height:260px; display:block; border-radius:10px;
+    background: radial-gradient(1200px 600px at 50% 140%, rgba(255,255,255,0.06), rgba(0,0,0,0)) ,
+                linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0));
+    outline: none;
+    touch-action: none; /* 모바일 스크롤 방지 */
+    cursor: grab;
+  }
+  canvas.dragging{ cursor: grabbing; }
+  .controls{
+    display:flex; gap:12px; align-items:center; margin-top:10px; color:var(--muted);
+    font-size:13px; flex-wrap:wrap;
+  }
+  .controls label{display:flex; align-items:center; gap:8px}
+  .controls input[type="range"]{width:160px}
+</style>
 </head>
 <body>
-  <main class="wrap">
-    <canvas id="textCanvas" style="display:none;"></canvas>
-
-    <h1 class="brand">
-      <span class="brand-line" data-c="red">
-        <span class="plain">Mars</span>
-        <span class="fill"><span>Mars</span></span>
-        <div class="particles"></div>
-      </span>
-      <span class="brand-line" data-c="blue">
-        <span class="plain">Keys</span>
-        <span class="fill"><span>Keys</span></span>
-        <div class="particles"></div>
-      </span>
-    </h1>
-    <p class="tagline">Video Game Music Studio</p>
-
-    <!-- Welcome을 hero 내부 일반 요소로 배치 -->
-    <div class="welcome-wrap" aria-hidden="true">
-      <div id="welcome">Welcome</div>
+  <div class="wrap card">
+    <h1>현(줄) 시뮬레이션</h1>
+    <p class="hint">줄을 아무 지점에서나 눌러 아래로 당겼다가 놓아보세요. 실제 기타현처럼 <b>감쇠하는 파동</b>이 퍼집니다.</p>
+    <canvas id="stringCanvas" aria-label="string simulation" tabindex="0"></canvas>
+    <div class="controls">
+      <label>감쇠(damping)
+        <input id="damp" type="range" min="0" max="1" step="0.01" value="0.06">
+      </label>
+      <label>파동 속도(wave speed)
+        <input id="speed" type="range" min="100" max="400" step="10" value="260">
+      </label>
+      <span>Tip: 더 길게 끌수록 더 크게 진동해요.</span>
     </div>
-  </main>
-  
-  <div id="counter">0%</div>
-
-  <div id="scrollContent" class="scrollable-content">
-    <p>게임 음악 스튜디오 Mars Keys에 오신 것을 환영합니다...</p>
-    <div class="temp-box"><h3>우리의 서비스</h3><p>게임 OST, SFX, VO, 인터랙티브 음악 시스템...</p></div>
-    <div class="temp-box"><h3>포트폴리오</h3><p>RPG, SF 어드벤처 등...</p></div>
-    <div class="temp-box"><h3>문의</h3><p>협업 및 프로젝트 문의는 언제든지 환영합니다.</p></div>
-    <div style="height:100vh;"></div>
-    <div class="temp-box"><p>마지막 임시 콘텐츠</p></div>
   </div>
 
-  <script>
-  (function(){
-    const html=document.documentElement;
-    const body=document.body;
-    const counterEl=document.getElementById("counter");
-    const welcome=document.getElementById("welcome");
-    const scrollContent=document.getElementById("scrollContent");
+<script>
+(() => {
+  const canvas = document.getElementById('stringCanvas');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
 
-    let p=0, accel=0.0018;
-    let particles=[], particlesGenerated=false;
-    let autoAnimating=false, isFinalized=false;
+  // ===== String discretization =====
+  const N = 120;                           // 분할 포인트 수 (끝점 포함)
+  const y  = new Float32Array(N);          // 변위 (px, +는 아래)
+  const v  = new Float32Array(N);          // 속도 (px/s)
+  let dx = 1;                              // 이웃 간 간격 (px) — resize에서 갱신
+  let x0 = 0, x1 = 0, baseline = 0;        // 줄의 시작/끝/기준선
+  let dragging = false;
+  let dragIndex = -1;
+  const dragRadius = 8;                    // 드래그 영향 반경 (인덱스 단위)
+  const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 
-    function setProgress(v){
-      p=Math.max(0,Math.min(1,v));
-      html.style.setProperty('--fill',(p*100).toFixed(2)+'%');
-      if(!isFinalized){counterEl.textContent=Math.floor(p*100)+"%";}
-      if(p>=1 && !particlesGenerated && !isFinalized){
-        generateParticles(); 
-        dissolveText(); 
-        showWelcome();
-      }
+  // 물리 파라미터 (UI로 조절)
+  const dampUI  = document.getElementById('damp');   // 감쇠 계수 gamma (s^-1)
+  const speedUI = document.getElementById('speed');  // 파동 속도 c (px/s)
+
+  // ===== Resize & HiDPI =====
+  function resize(){
+    const rect = canvas.getBoundingClientRect();
+    canvas.width  = Math.round(rect.width * dpr);
+    canvas.height = Math.round(260 * dpr); // 고정 높이
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // 그리기는 CSS px 단위로
+
+    // 줄 배치
+    const W = rect.width;
+    const H = 260;
+    const margin = 32;
+    x0 = margin;
+    x1 = W - margin;
+    baseline = Math.round(H * 0.5);
+    dx = (x1 - x0) / (N - 1);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ===== 입력(포인터) 보조 =====
+  function eventToCanvasPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0) - rect.left;
+    const y = (e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? 0) - rect.top;
+    return {x, y};
+  }
+  function xToIndex(xCss){
+    const s = clamp((xCss - x0) / (x1 - x0), 0, 1);
+    return Math.round(s * (N - 1));
+  }
+
+  function setDraggedShape(ix, targetY){
+    // 인접한 점들에 부드럽게 분포(삼각 프로파일)
+    for(let j = -dragRadius; j <= dragRadius; j++){
+      const k = ix + j;
+      if(k <= 0 || k >= N-1) continue; // 끝점은 고정
+      const w = 1 - Math.abs(j) / (dragRadius + 0.0001);
+      y[k] = targetY * w;
+      v[k] = 0;
+    }
+  }
+
+  // ===== 포인터 이벤트 =====
+  const onDown = (e) => {
+    e.preventDefault();
+    canvas.classList.add('dragging');
+    const pos = eventToCanvasPos(e);
+    dragIndex = xToIndex(pos.x);
+    dragging = true;
+    const target = clamp(pos.y - baseline, -baseline*0.9, baseline*0.9);
+    setDraggedShape(dragIndex, target);
+    canvas.setPointerCapture?.(e.pointerId ?? 1);
+  };
+  const onMove = (e) => {
+    if(!dragging) return;
+    const pos = eventToCanvasPos(e);
+    dragIndex = xToIndex(pos.x);
+    const target = clamp(pos.y - baseline, -baseline*0.9, baseline*0.9);
+    setDraggedShape(dragIndex, target);
+  };
+  const onUp = (e) => {
+    dragging = false;
+    dragIndex = -1;
+    canvas.classList.remove('dragging');
+  };
+
+  // Pointer + 마우스/터치 폴백
+  canvas.addEventListener('pointerdown', onDown);
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
+  // iOS 사파리/구형 브라우저 대비
+  canvas.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+  canvas.addEventListener('touchstart', (e)=>onDown(e.touches[0]||e), {passive:false});
+  window.addEventListener('touchmove',  (e)=>onMove(e.touches[0]||e),  {passive:false});
+  window.addEventListener('touchend',   onUp,                            {passive:false});
+
+  // ===== 시뮬레이션 루프 =====
+  let lastT = performance.now();
+  function step(now){
+    const dt = Math.min(0.034, (now - lastT) / 1000); // 안정성 위해 dt 클램프
+    lastT = now;
+
+    const c      = parseFloat(speedUI.value); // px/s
+    const gamma  = parseFloat(dampUI.value);  // s^-1
+    const c2dx2  = (c*c) / (dx*dx);
+
+    // 고정 끝점(디리클레 경계): y[0]=y[N-1]=0
+    y[0] = 0; y[N-1] = 0; v[0]=0; v[N-1]=0;
+
+    // 드래그 중이면 해당 구간은 위에서 강제했으니 여기선 건드리지 않음
+    // 내부 포인트 업데이트 (1D wave eq + 점성 감쇠)
+    for(let i=1;i<N-1;i++){
+      // 이산 2차 미분(라플라시안)
+      const lap = y[i-1] - 2*y[i] + y[i+1];
+      const a = c2dx2 * lap - gamma * v[i]; // 가속도
+      v[i] += a * dt;
+      y[i] += v[i] * dt;
     }
 
-    function startAutoAnimation(){
-      if(autoAnimating||isFinalized) return;
-      autoAnimating=true;
-      function step(){
-        if(p<1){p+=0.005; setProgress(p); requestAnimationFrame(step);}
-        else{p=1; setProgress(1); autoAnimating=false;}
-      } 
-      step();
+    draw();
+    requestAnimationFrame(step);
+  }
+
+  // ===== 렌더링 =====
+  function draw(){
+    const W = canvas.getBoundingClientRect().width;
+    const H = 260;
+
+    // 배경 정리
+    ctx.clearRect(0,0,W,H);
+
+    // 기준선
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.beginPath();
+    ctx.moveTo(x0, baseline);
+    ctx.lineTo(x1, baseline);
+    ctx.stroke();
+
+    // 현 그리기 (부드럽게 보간)
+    ctx.lineWidth = 3;
+    const grad = ctx.createLinearGradient(x0, baseline-40, x1, baseline+40);
+    grad.addColorStop(0.0, 'rgba(120,170,255,0.95)');
+    grad.addColorStop(0.5, 'rgba(255,255,255,0.95)');
+    grad.addColorStop(1.0, 'rgba(255,140,180,0.95)');
+    ctx.strokeStyle = grad;
+    ctx.shadowColor = 'rgba(120,170,255,0.5)';
+    ctx.shadowBlur = 6;
+
+    ctx.beginPath();
+    for(let i=0;i<N;i++){
+      const x = x0 + i*dx;
+      const yy = baseline + y[i];
+      if(i===0) ctx.moveTo(x, yy);
+      else ctx.lineTo(x, yy);
     }
+    ctx.stroke();
 
-    function generateParticles(){
-      particlesGenerated=true; particles=[];
-      const canvas=document.getElementById('textCanvas');
-      const ctx=canvas.getContext('2d',{willReadFrequently:true});
-      document.querySelectorAll('.brand-line').forEach(line=>{
-        const text=line.querySelector('.plain').textContent;
-        const style=getComputedStyle(line.querySelector('.plain'));
-        const fontSize=parseInt(style.fontSize); 
-        const fontFamily=style.fontFamily;
-        const w=line.offsetWidth,h=line.offsetHeight;
-        canvas.width=w; canvas.height=h;
-        ctx.clearRect(0,0,w,h);
-        ctx.font=`900 ${fontSize}px ${fontFamily}`;
-        ctx.fillStyle='white'; ctx.textBaseline='middle';
-        ctx.fillText(text,0,h/2);
-        const img=ctx.getImageData(0,0,w,h).data;
-        const density=4;
-        for(let y=0;y<h;y+=density){
-          for(let x=0;x<w;x+=density){
-            const idx=(y*w+x)*4;
-            if(img[idx+3]>128){
-              particles.push({
-                x, y,
-                vx:(Math.random()-0.5)*2,
-                vy:(Math.random()-0.5)*2,
-                alpha:1,
-                color:line.dataset.c,
-                container:line.querySelector('.particles')
-              });
-            }
-          }
-        }
-      });
+    // 드래그 지점 표시
+    if(dragging && dragIndex >= 0){
+      const x = x0 + dragIndex*dx;
+      const yy = baseline + y[dragIndex];
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.beginPath();
+      ctx.arc(x, yy, 4.5, 0, Math.PI*2);
+      ctx.fill();
     }
+    // 그림자 초기화
+    ctx.shadowBlur = 0;
+  }
 
-    function dissolveText(){
-      document.querySelectorAll('.brand-line').forEach(l=>l.classList.add('dissolve'));
-      function animate(){
-        document.querySelectorAll('.particles').forEach(pc=>pc.innerHTML='');
-        particles.forEach(pt=>{
-          if(pt.alpha>0){
-            const el=document.createElement('div');
-            el.className='particle';
-            el.style.left=pt.x+'px'; 
-            el.style.top=pt.y+'px';
-            el.style.opacity=pt.alpha;
-            el.style.backgroundColor=`var(--pastel-${pt.color}-1)`;
-            pt.container.appendChild(el);
-            pt.x+=pt.vx; 
-            pt.y+=pt.vy; 
-            pt.vx*=1.02; 
-            pt.vy*=1.02; 
-            pt.alpha-=0.004;
-          }
-        });
-        if(particles.some(pt=>pt.alpha>0)) requestAnimationFrame(animate);
-      }
-      animate();
-    }
+  requestAnimationFrame(step);
 
-    function showWelcome(){
-      // 카운터 서서히 숨김 → Welcome이 hero 내부에서 자연스럽게 등장
-      setTimeout(()=>{ counterEl.style.opacity=0; }, 400);
-      setTimeout(()=>{
-        welcome.classList.add("visible");   // hero 중앙에서 페이드인+확대
-      }, 1000);
-      setTimeout(()=>{
-        scrollContent.style.display="block"; // 이후 본문 오픈
-        isFinalized=true; 
-        body.style.overflowY="auto";         // 스크롤 활성화
-      }, 1600);
-    }
-
-    function onWheel(e){
-      if(isFinalized) return;
-      const dy=e.deltaY;
-      if(p<0.5){
-        e.preventDefault(); 
-        setProgress(p+dy*accel); 
-        if(p>=0.5) startAutoAnimation();
-      }else{
-        e.preventDefault(); 
-        if(!autoAnimating) startAutoAnimation();
-      }
-    }
-
-    function onTouchMove(e){
-      if(isFinalized) return;
-      const touch=e.touches[0]; 
-      const currentY=touch.clientY;
-      if(typeof onTouchMove.lastY!=="undefined"){
-        const dy=onTouchMove.lastY-currentY;
-        if(dy>0&&p<0.5){
-          e.preventDefault(); 
-          setProgress(p+dy*accel*2); 
-          if(p>=0.5) startAutoAnimation();
-        } else if(dy>0&&p>=0.5&&!autoAnimating){
-          e.preventDefault(); 
-          startAutoAnimation();
-        }
-      }
-      onTouchMove.lastY=currentY;
-    }
-    function onTouchEnd(){if(!isFinalized){onTouchMove.lastY=undefined;}}
-
-    window.addEventListener('wheel',onWheel,{passive:false});
-    window.addEventListener('touchstart',(e)=>{onTouchMove.lastY=e.touches[0].clientY;});
-    window.addEventListener('touchmove',onTouchMove,{passive:false});
-    window.addEventListener('touchend',onTouchEnd);
-
-    setProgress(0);
+  // 초기 작은 플럭(자동 데모)
+  (function demoPluck(){
+    const ix = Math.floor(N*0.32);
+    setDraggedShape(ix, 26);
+    setTimeout(()=>{ dragging=false; dragIndex=-1; }, 120);
   })();
-  </script>
+
+})();
+</script>
 </body>
 </html>

@@ -730,7 +730,10 @@
           const leftBase = W * 0.28;
           const waveLen = W * 0.72;
           const t = (time || performance.now()) * 0.004;
-          const A = H * 0.30;
+          
+          // 💡 파동의 전체 진폭(Amplitude)을 더 크게 설정
+          const A = H * 0.50;
+
           const k = 0.020 * Math.PI;
           const beatPos = (t * 0.15 % 1) * waveLen;
 
@@ -760,9 +763,9 @@
             }
             const y = y0
               + envelope(i) * spikeBoost(i) *
-                ( currentAmp * 0.55 * Math.sin(k * i + t * 1.1)
-                + currentAmp * 0.28 * Math.sin(k * 0.47 * i - t * 0.7)
-                + currentAmp * 0.17 * Math.sin(k * 1.9 * i + t * 0.33) );
+                ( currentAmp * 0.70 * Math.sin(k * i + t * 1.1) // 기존 0.55 -> 0.70
+                + currentAmp * 0.40 * Math.sin(k * 0.47 * i - t * 0.7) // 기존 0.28 -> 0.40
+                + currentAmp * 0.25 * Math.sin(k * 1.9 * i + t * 0.33) ); // 기존 0.17 -> 0.25
             lctx.lineTo(x, y);
           }
           
