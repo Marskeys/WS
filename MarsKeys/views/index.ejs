@@ -225,6 +225,17 @@
       .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
       .brand-line+.brand-line { margin-top: -0.26em; }
     }
+
+    /* 모바일에서 타이틀 더 크게 */
+@media (max-width: 768px) {
+  .brand-line{
+    /* 14vw → 20vw, 세로 한계도 28vh → 32vh, 최대치도 200px → 240px */
+    font-size: clamp(56px, min(20vw, 32vh), 240px);
+  }
+  /* 줄 겹침 보정(필요하면 살짝만 손봐줘도 OK) */
+  .brand-line + .brand-line { margin-top: -0.28em; }
+}
+
   </style>
 </head>
 
