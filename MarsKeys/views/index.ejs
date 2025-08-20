@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <% if (isKorean) { %>
     <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
   <% } %>
@@ -49,9 +50,9 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어일 때 환영문(#welcome)만 'Yeon Sung' */
-    body.lang-ko #welcome{
-      font-family: 'Yeon Sung', 'Michroma', system-ui, sans-serif;
+    /* 한국어일 때 환영문(#welcome)만 'Montserrat'로 변경 */
+    body.lang-ko #welcome {
+      font-family: 'Montserrat', 'Michroma', system-ui, sans-serif;
       font-weight: 400;
     }
 
@@ -170,7 +171,7 @@
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
       font-size: clamp(48px, 10vw, 130px);
-      font-family: "Michroma", system-ui, sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       color: white;
       letter-spacing: 0.01em;
       max-width: 92vw;
