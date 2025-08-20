@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <% const isKorean = (lang || '').toLowerCase().startsWith('ko'); %>
 <html lang="<%= lang %>">
-  <%- include('partials/head') %>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -539,7 +538,8 @@
               const idx = (y * canvas.width + x) * 4;
               if (data[idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
-                const py = rect.top - rect.top + y;
+                const py = rect.top - wrapRect.top + y;
+
                 const dx = px - centerX;
                 const dy = py - centerY;
                 const dist = Math.hypot(dx, dy) + 0.0001;
