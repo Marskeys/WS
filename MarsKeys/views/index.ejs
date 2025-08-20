@@ -194,6 +194,7 @@
       const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
       let particlePhase = 'idle';
       let phaseStartTime = 0;
+      let finalTaegeukTargets = null; // 최종 목표 지점 저장
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -390,7 +391,7 @@
         function assign(listPts, listTgts) {
           for (let i = 0; i < listPts.length; i++) {
             const t = listTgts[i % listTgts.length];
-            listPts[i].tx = t.x; listPts[i].ty = t.y; listPts[i].reached = false;
+            listPts[i].tx = t.x; listPts[i].ty = t.y; pt.reached = false;
           }
         }
         assign(reds, targets.red);
@@ -400,7 +401,9 @@
       function runParticleShow() {
         particlePhase = 'explode';
         phaseStartTime = performance.now();
-        let lastMorphProgress = 0;
+        
+        const finalScale = 0.3; // 최종 축소율
+        let taegeukTargets = null; // 고정된 태극 문양 목표 지점
 
         function frame(now) {
           const rect = wrap.getBoundingClientRect();
@@ -408,24 +411,31 @@
           pctx.clearRect(0, 0, W, H);
 
           if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
-            assignTaegeukTargets(1); /* 초기 태극 크기 */
             particlePhase = 'morph';
             phaseStartTime = now;
+            // 'morph' 단계 시작 시, 최종 목표 지점 (작아진 태극)을 한 번만 계산하여 저장
+            const reds = particles.filter(pt => pt.color === 'red');
+            const blues = particles.filter(pt => pt.color === 'blue');
+            finalTaegeukTargets = buildTaegeukTargets(reds.length, blues.length, finalScale);
           } else if (particlePhase === 'morph') {
             const elapsed = (now - phaseStartTime);
-            const duration = 4000; /* 태극문양 축소 속도 2000ms -> 4000ms로 변경 */
-            let progress = elapsed / duration;
+            const morphDuration = 4000;
+            let progress = elapsed / morphDuration;
             if (progress > 1) progress = 1;
             
-            // 태극문양 점점 작아지는 효과
-            const scaleFactor = 1 - 0.7 * progress; /* 100% -> 30%로 축소 */
-            if (Math.abs(progress - lastMorphProgress) > 0.05) {
-                assignTaegeukTargets(scaleFactor);
-                lastMorphProgress = progress;
-            }
+            // 입자가 최종 목표를 향해 부드럽게 이동
+            particles.forEach((pt, i) => {
+              const target = pt.color === 'red' ? finalTaegeukTargets.red[i % finalTaegeukTargets.red.length] : finalTaegeukTargets.blue[i % finalTaegeukTargets.blue.length];
+              const dx = target.x - pt.x;
+              const dy = target.y - pt.y;
+              pt.vx = pt.vx * 0.82 + dx * 0.04; // 부드러운 감속 및 목표 추종
+              pt.vy = pt.vy * 0.82 + dy * 0.04;
+              if (Math.hypot(dx, dy) < 1.6) { pt.reached = true; } // 목표에 도달했는지 확인
+              else { pt.reached = false; }
+            });
 
             const allReached = particles.every(pt => pt.reached);
-            if (allReached || elapsed > 4500) { /* 충분한 시간 후 다음 단계로 */
+            if (allReached || elapsed > morphDuration + 500) { // 충분한 시간 후 다음 단계로
                 particlePhase = 'hold';
                 phaseStartTime = now;
             }
@@ -444,18 +454,8 @@
 
             if (particlePhase === 'explode') {
               pt.vx *= 0.985; pt.vy *= 0.985; pt.vx += (Math.random() - 0.5) * 0.02; pt.vy += (Math.random() - 0.5) * 0.02; pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
-            } else if (particlePhase === 'morph') {
-              if (pt.tx != null) {
-                const dx = pt.tx - pt.x, dy = pt.ty - pt.y;
-                pt.vx = pt.vx * 0.82 + dx * 0.06; pt.vy = pt.vy * 0.82 + dy * 0.06;
-                if (Math.hypot(dx, dy) < 1.6) { pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true; }
-              }
+            } else if (particlePhase === 'morph' || particlePhase === 'hold') { // morph와 hold 상태에서만 위치 업데이트
               pt.alpha = Math.min(1, pt.alpha + 0.01);
-            } else if (particlePhase === 'hold') {
-              const t = (now - phaseStartTime) * 0.004;
-              pt.x += Math.sin(t + (pt.tx || pt.x) * 0.01) * 0.06;
-              pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
-              pt.alpha = 1;
             } else if (particlePhase === 'disperse') {
               pt.vx *= 0.995; pt.vy *= 0.995; pt.alpha -= (pt.color === 'blue') ? 0.0015 : 0.002;
             }
