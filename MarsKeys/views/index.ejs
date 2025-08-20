@@ -50,11 +50,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어일 때 환영문(#welcome)만 'Montserrat'로 변경 */
-    body.lang-ko #welcome {
-      font-family: 'Montserrat', 'Michroma', system-ui, sans-serif;
-      font-weight: 400;
-    }
+    body.lang-ko #welcome { font-family: 'Montserrat', 'Michroma', system-ui, sans-serif; font-weight: 400; }
 
     body.show-background {
       background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
@@ -65,29 +61,11 @@
       transition: background-image 2s ease;
     }
 
-    .wrap {
-      position: relative;
-      min-height: 100svh;
-      padding: 5vw;
-      overflow: visible;
-    }
+    .wrap { position: relative; min-height: 100svh; padding: 5vw; overflow: visible; }
 
-    .brand {
-      margin: 0;
-      line-height: 1;
-      font-family: "Michroma", system-ui, sans-serif;
-      position: relative;
-      z-index: 40;
-    }
+    .brand { margin: 0; line-height: 1; font-family: "Michroma", system-ui, sans-serif; position: relative; z-index: 40; }
 
-    .brand-line {
-      display: block;
-      font-size: clamp(56px, min(14vw, 28vh), 200px);
-      line-height: 1.06;
-      padding-bottom: 0.18em;
-      overflow: visible;
-      position: relative;
-    }
+    .brand-line { display: block; font-size: clamp(56px, min(14vw, 28vh), 200px); line-height: 1.06; padding-bottom: 0.18em; overflow: visible; position: relative; }
     .brand-line+.brand-line { margin-top: -0.32em; }
 
     .ink{
@@ -101,118 +79,42 @@
     .brand-line:nth-child(1) .ink{ --grad:linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
     .brand-line:nth-child(2) .ink{ --grad:linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
 
-    .tagline {
-      font-size: clamp(16px, 2.6vw, 28px);
-      font-weight: 600;
-      margin: 1rem 0 0;
-      color: var(--muted);
-      position: relative;
-      transition: color .55s ease;
-      will-change: color;
-    }
+    .tagline { font-size: clamp(16px, 2.6vw, 28px); font-weight: 600; margin: 1rem 0 0; color: var(--muted); position: relative; transition: color .55s ease; will-change: color; }
     .tagline.shine-to-white { overflow: visible; }
-    .tagline.shine-to-white::before {
-      content: attr(data-text);
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      color: transparent;
-      -webkit-text-fill-color: transparent;
-      background: linear-gradient(90deg,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,.16) 32%,
-        rgba(255,255,255,.85) 50%,
-        rgba(255,255,255,.16) 68%,
-        rgba(255,255,255,0) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      transform: translateX(-120%) skewX(-18deg);
-      filter: blur(.3px);
+    .tagline.shine-to-white::before{
+      content: attr(data-text); position: absolute; inset: 0; pointer-events: none;
+      color: transparent; -webkit-text-fill-color: transparent;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.16) 32%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.16) 68%, rgba(255,255,255,0) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      transform: translateX(-120%) skewX(-18deg); filter: blur(.3px);
       animation: shine-sweep 900ms cubic-bezier(.2,.7,.2,1) forwards;
     }
     .tagline.to-white { color: #fff; }
     @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
 
     #counter {
-      position: absolute;
-      right: 5vw;
-      bottom: clamp(16px, 6vh, 48px);
-      text-align: right;
-      font-size: clamp(28px, min(7vw, 10vh), 96px);
-      font-family: "Michroma", system-ui, sans-serif;
-      font-weight: 900;
-      color: white;
-      user-select: none;
-      pointer-events: none;
-      transition: opacity .6s ease;
-      z-index: 40;
-      margin: 0;
+      position: absolute; right: 5vw; bottom: clamp(16px, 6vh, 48px); text-align: right;
+      font-size: clamp(28px, min(7vw, 10vh), 96px); font-family: "Michroma", system-ui, sans-serif;
+      font-weight: 900; color: white; user-select: none; pointer-events: none; transition: opacity .6s ease; z-index: 40; margin: 0;
     }
 
-    #particleCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 50;
-    }
+    #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
 
-    /* 🔁 신호선 → 현 시뮬레이터 캔버스 */
-    #lineViz {
-      position: fixed;
-      pointer-events: auto; /* ← 드래그 가능하게 변경 */
-      z-index: 55;
-    }
-
+    /* 🎸 현 시뮬레이터 캔버스 */
+    #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
     #welcome {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(0.86);
-      opacity: 0;
-      font-size: clamp(48px, 10vw, 130px);
-      font-family: 'Montserrat', system-ui, sans-serif;
-      color: white;
-      letter-spacing: 0.01em;
-      max-width: 92vw;
-      white-space: nowrap;
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.86);
+      opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
+      letter-spacing: 0.01em; max-width: 92vw; white-space: nowrap;
       transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
-      will-change: opacity, transform, text-shadow;
-      pointer-events: none;
-      z-index: 60;
-      text-shadow: 0 0 0 transparent;
+      will-change: opacity, transform, text-shadow; pointer-events: none; z-index: 60; text-shadow: 0 0 0 transparent;
     }
     #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
-    #welcome.welcome-glow {
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-                   0 0 40px rgba(255, 255, 255, 0.6),
-                   0 0 60px rgba(255, 255, 255, 0.4);
-    }
+    #welcome.welcome-glow { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4); }
 
-    .scrollable-content {
-      padding: 0 5vw 6rem;
-      text-align: center;
-      display: none;
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 10;
-    }
-    .scrollable-content p {
-      max-width: 800px;
-      margin: 0 auto 1.5rem;
-      line-height: 1.8;
-      color: var(--muted);
-      font-size: clamp(14px, 2vw, 18px);
-    }
-    .scrollable-content .temp-box {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 2rem;
-      margin: 2rem auto;
-      max-width: 900px;
-    }
+    .scrollable-content { padding: 0 5vw 6rem; text-align: center; display: none; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+    .scrollable-content p { max-width: 800px; margin: 0 auto 1.5rem; line-height: 1.8; color: var(--muted); font-size: clamp(14px, 2vw, 18px); }
+    .scrollable-content .temp-box { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 2rem; margin: 2rem auto; max-width: 900px; }
 
     @media (max-width: 768px) {
       .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
@@ -316,7 +218,7 @@
           fadeOutText();
           showWelcome();
           runParticleShow();
-          startLineEffect(); // 신호선(현) 시뮬레이터 시작
+          startLineEffect(); // 현 시뮬레이터 시작
         }
       }
 
@@ -423,15 +325,8 @@
 
       function showWelcome() {
         setTimeout(() => { counterEl.style.opacity = 0; }, 350);
-        setTimeout(() => {
-          welcome.classList.add("visible");
-          welcome.classList.add("welcome-glow");
-        }, 900);
-        setTimeout(() => {
-          scrollContent.style.display = "block";
-          isFinalized = true;
-          body.style.overflowY = "auto";
-        }, 1500);
+        setTimeout(() => { welcome.classList.add("visible"); welcome.classList.add("welcome-glow"); }, 900);
+        setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
       function buildTaegeukTargets(minRed, minBlue) {
@@ -512,46 +407,30 @@
           pctx.clearRect(0, 0, W, H);
 
           if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
-            assignTaegeukTargets();
-            particlePhase = 'morph';
-            phaseStartTime = now;
+            assignTaegeukTargets(); particlePhase = 'morph'; phaseStartTime = now;
           } else if (particlePhase === 'morph') {
             const allReached = particles.every(pt => pt.reached);
-            if (allReached || (now - phaseStartTime) > 1600) {
-              particlePhase = 'hold';
-              phaseStartTime = now;
-            }
+            if (allReached || (now - phaseStartTime) > 1600) { particlePhase = 'hold'; phaseStartTime = now; }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
             welcome.classList.remove("welcome-glow");
             for (const pt of particles) {
-              const ang = Math.random() * Math.PI * 2;
-              const spd = 0.05 + Math.random() * 0.1;
-              pt.vx = Math.cos(ang) * spd;
-              pt.vy = Math.sin(ang) * spd;
-              pt.reached = false;
+              const ang = Math.random() * Math.PI * 2; const spd = 0.05 + Math.random() * 0.1;
+              pt.vx = Math.cos(ang) * spd; pt.vy = Math.sin(ang) * spd; pt.reached = false;
             }
-            particlePhase = 'disperse';
-            phaseStartTime = now;
+            particlePhase = 'disperse'; phaseStartTime = now;
           }
 
           let anyAlive = false;
           for (const pt of particles) {
-            if (pt.alpha <= 0) continue;
-            anyAlive = true;
+            if (pt.alpha <= 0) continue; anyAlive = true;
 
             if (particlePhase === 'explode') {
-              pt.vx *= 0.985; pt.vy *= 0.985;
-              pt.vx += (Math.random() - 0.5) * 0.02;
-              pt.vy += (Math.random() - 0.5) * 0.02;
-              pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
+              pt.vx *= 0.985; pt.vy *= 0.985; pt.vx += (Math.random() - 0.5) * 0.02; pt.vy += (Math.random() - 0.5) * 0.02; pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
             } else if (particlePhase === 'morph') {
               if (pt.tx != null) {
                 const dx = pt.tx - pt.x, dy = pt.ty - pt.y;
-                pt.vx = pt.vx * 0.82 + dx * 0.06;
-                pt.vy = pt.vy * 0.82 + dy * 0.06;
-                if (Math.hypot(dx, dy) < 1.6) {
-                  pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true;
-                }
+                pt.vx = pt.vx * 0.82 + dx * 0.06; pt.vy = pt.vy * 0.82 + dy * 0.06;
+                if (Math.hypot(dx, dy) < 1.6) { pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true; }
               }
               pt.alpha = Math.min(1, pt.alpha + 0.01);
             } else if (particlePhase === 'hold') {
@@ -560,38 +439,23 @@
               pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
               pt.alpha = 1;
             } else if (particlePhase === 'disperse') {
-              pt.vx *= 0.995; pt.vy *= 0.995;
-              if (pt.color === 'blue') pt.alpha -= 0.0015;
-              else                     pt.alpha -= 0.002;
+              pt.vx *= 0.995; pt.vy *= 0.995; pt.alpha -= (pt.color === 'blue') ? 0.0015 : 0.002;
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
           }
 
-          if (particlePhase === 'disperse' && !anyAlive) {
-            body.classList.add('show-background');
-            particlePhase = 'done';
-            return;
-          }
+          if (particlePhase === 'disperse' && !anyAlive) { body.classList.add('show-background'); particlePhase = 'done'; return; }
 
-          // draw
-          pctx.globalCompositeOperation = 'source-over';
-          pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
-
+          pctx.globalCompositeOperation = 'source-over'; pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
           function drawPass(colorName, colorHex) {
-            pctx.shadowColor = colorHex || '#fff';
-            pctx.fillStyle = colorHex || '#fff';
+            pctx.shadowColor = colorHex || '#fff'; pctx.fillStyle = colorHex || '#fff';
             for (const pt of particles) {
               if (pt.alpha <= 0 || pt.color !== colorName) continue;
-              pctx.globalAlpha = Math.max(0, pt.alpha);
-              pctx.beginPath();
-              pctx.arc(pt.x, pt.y, 1.6, 0, Math.PI * 2);
-              pctx.fill();
+              pctx.globalAlpha = Math.max(0, pt.alpha); pctx.beginPath(); pctx.arc(pt.x, pt.y, 1.6, 0, Math.PI * 2); pctx.fill();
             }
           }
-          drawPass('red', COL_RED);
-          drawPass('blue', COL_BLUE);
-
+          drawPass('red', COL_RED); drawPass('blue', COL_BLUE);
           requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
@@ -601,25 +465,16 @@
         if (isFinalized) return;
         e.preventDefault();
         const dy = e.deltaY;
-        if (p < 0.5) {
-          setProgress(p + dy * 0.0018);
-          startAutoAnimation();
-        } else if (!autoAnimating) {
-          startAutoAnimation();
-        }
+        if (p < 0.5) { setProgress(p + dy * 0.0018); startAutoAnimation(); }
+        else if (!autoAnimating) { startAutoAnimation(); }
       }
       function onTouchMove(e) {
         if (isFinalized) return;
-        const touch = e.touches[0];
-        const currentY = touch.clientY;
+        const touch = e.touches[0]; const currentY = touch.clientY;
         if (typeof onTouchMove.lastY !== "undefined") {
           const dy = onTouchMove.lastY - currentY;
-          if (p < 0.5) {
-            setProgress(p + dy * 0.0018 * 2);
-            if (p >= 0.5) startAutoAnimation();
-          } else if (!autoAnimating && dy > 0) {
-            startAutoAnimation();
-          }
+          if (p < 0.5) { setProgress(p + dy * 0.0018 * 2); if (p >= 0.5) startAutoAnimation(); }
+          else if (!autoAnimating && dy > 0) { startAutoAnimation(); }
         }
         onTouchMove.lastY = currentY;
       }
@@ -642,21 +497,24 @@
       const lineCanvas = document.getElementById('lineViz');
       const lctx = lineCanvas.getContext('2d');
 
-      // 시각적 두께 & 높이(고정 오버레이)
-      const LINE_THICK = 8;            // 선 두께(px)
-      const LINE_H_DESKTOP = 72;        // 캔버스 높이(데스크탑)
-      const LINE_H_MOBILE  = 96;        // 캔버스 높이(모바일)
+      // 시각적 두께 & 베이스 높이
+      const LINE_THICK = 8;
+      const LINE_H_DESKTOP = 72;
+      const LINE_H_MOBILE  = 96;
 
-      // 물리 파라미터(체감 튜닝)
-      let tension    = 0.8;  // 빠른 왕복
-      let loss       = 0.986; // 금방 소실(0.98~0.992)
-      let SUBSTEPS   = 10;     // 프레임당 스텝
-      let radiusPx   = 120;   // 넓게 당겨짐 반경
-      let handPower  = 0.95;  // 손힘(최대 총힘)
-      const K_MOUSE  = 1.5;   // 마우스-현 스프링
-      const C_MOUSE  = 0.08;  // 마우스 감쇠
-      const HARD_FACTOR = 0.4;// 장력↑ → 손힘↓
-      const RELEASE_KICK = 0.25; // 놓을 때 반동
+      // ⬇️ 화면 전체 기준 패딩(vh) — 위/아래 각각 적용
+      const V_PAD_VH = 18; // 18vh 위 + 18vh 아래 = 총 36vh 여유
+
+      // 물리 파라미터(네 설정 유지)
+      let tension    = 0.8;
+      let loss       = 0.986;
+      let SUBSTEPS   = 10;
+      let radiusPx   = 120;
+      let handPower  = 0.95;
+      const K_MOUSE  = 1.5;
+      const C_MOUSE  = 0.08;
+      const HARD_FACTOR = 0.4;
+      const RELEASE_KICK = 0.25;
 
       // 상태
       let numPoints = 240;
@@ -664,11 +522,9 @@
       let initialY = 0;
       let string = [];
 
-      class StringPoint {
-        constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; }
-      }
+      class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
-      // 배치: 데스크톱은 Mars~Keys 사이, 모바일은 화면 중앙
+      // 배치
       function placeLineViz() {
         const Wwin = window.innerWidth;
         const Hwin = window.innerHeight;
@@ -676,12 +532,12 @@
         const keysLine = document.getElementById('keys')?.parentElement;
         if (!marsLine || !keysLine) return;
 
-        let left, width, midY, cssHeight;
+        let left, width, midY, cssHeightBase;
         if (IS_MOBILE) {
           width = Wwin * 0.6;
           left = (Wwin - width) / 2;
           midY = Hwin / 2;
-          cssHeight = LINE_H_MOBILE;
+          cssHeightBase = LINE_H_MOBILE;
         } else {
           const wrapRect = wrap.getBoundingClientRect();
           const wrapCS = getComputedStyle(wrap);
@@ -694,8 +550,12 @@
           const marsBottom = marsLine.getBoundingClientRect().bottom;
           const keysTop = keysLine.getBoundingClientRect().top;
           midY = (marsBottom + keysTop) / 2;
-          cssHeight = LINE_H_DESKTOP;
+          cssHeightBase = LINE_H_DESKTOP;
         }
+
+        // 🔑 화면 기준 패딩(px) 계산
+        const padPx = Math.round((V_PAD_VH / 100) * Hwin);
+        const cssHeight = cssHeightBase + padPx * 2;
 
         // 스타일 & 실제 캔버스 크기
         lineCanvas.style.left = left + 'px';
@@ -708,12 +568,11 @@
         lineCanvas.height = Math.floor(cssHeight * dpr);
         lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        // 문자열 재구성
         setupString(width, cssHeight);
       }
 
       function setupString(W, H){
-        numPoints = Math.max(160, Math.min(360, Math.round(W / 4))); // 폭에 따른 해상도
+        numPoints = Math.max(160, Math.min(360, Math.round(W / 4)));
         string = [];
         for (let i=0;i<numPoints;i++){
           const x = (i/(numPoints-1)) * W;
@@ -734,18 +593,15 @@
       }
 
       lineCanvas.addEventListener('mousedown', e=>{
-        const {x,y} = getPos(e);
-        mouse.active = true; mouse.x = x; mouse.y = y;
+        const {x,y} = getPos(e); mouse.active = true; mouse.x = x; mouse.y = y;
       });
       window.addEventListener('mousemove', e=>{
         if (!mouse.active) return;
-        const {x,y} = getPos(e);
-        mouse.x = x; mouse.y = y;
+        const {x,y} = getPos(e); mouse.x = x; mouse.y = y;
       });
       window.addEventListener('mouseup', ()=>{
         if (!mouse.active) return;
         mouse.active = false;
-        // 놓는 순간 반동
         for (let i=0;i<numPoints;i++){
           const disp = string[i].y - initialY;
           string[i].oldY = string[i].y + RELEASE_KICK * disp;
@@ -754,13 +610,11 @@
 
       // 터치
       lineCanvas.addEventListener('touchstart', e=>{
-        const {x,y} = getPos(e); e.preventDefault();
-        mouse.active = true; mouse.x = x; mouse.y = y;
+        const {x,y} = getPos(e); e.preventDefault(); mouse.active = true; mouse.x = x; mouse.y = y;
       }, {passive:false});
       lineCanvas.addEventListener('touchmove', e=>{
         if (!mouse.active) return;
-        const {x,y} = getPos(e); e.preventDefault();
-        mouse.x = x; mouse.y = y;
+        const {x,y} = getPos(e); e.preventDefault(); mouse.x = x; mouse.y = y;
       }, {passive:false});
       window.addEventListener('touchend', ()=>{
         if (!mouse.active) return;
@@ -771,58 +625,53 @@
         }
       });
 
-      // 넓게 당기는 해닝 커널
+      // 해닝 커널(넓게 당겨짐)
       function hannWeight(dist, R){
         if (dist >= R) return 0;
         const r = dist / R;
-        return 0.5 * (1 + Math.cos(Math.PI * r)); // 중앙1 → 가장자리0
+        return 0.5 * (1 + Math.cos(Math.PI * r));
       }
 
+      // 손힘 분배(포인트별 캡 방식)
       function applyMouseForce(){
-  if (!mouse.active) return;
+        if (!mouse.active) return;
 
-  // 장력 높을수록 손힘 감소 (하지만 '총합 정규화'는 제거)
-  const FcapBase = 12;                          // ← 세로로 확 당겨지게 하는 핵심 수치 (12~24로 취향 조절)
-  const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
+        const FcapBase = 12;
+        const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
 
-  for (let i = 1; i < numPoints - 1; i++) {
-    const p = string[i];
-    const distX = Math.abs(p.x - mouse.x);
-    const w = hannWeight(distX, radiusPx);
-    if (w <= 0) continue;
+        for (let i = 1; i < numPoints - 1; i++) {
+          const p = string[i];
+          const distX = Math.abs(p.x - mouse.x);
+          const w = hannWeight(distX, radiusPx);
+          if (w <= 0) continue;
 
-    const vel = p.y - p.oldY;                   // Verlet 속도 근사
-    const Fspring = K_MOUSE * (mouse.y - p.y);  // 마우스-현 스프링
-    const Fdamp   = -C_MOUSE * vel;             // 손가락 댐핑
-    let F = (Fspring + Fdamp) * w;
+          const vel = p.y - p.oldY;
+          const Fspring = K_MOUSE * (mouse.y - p.y);
+          const Fdamp   = -C_MOUSE * vel;
+          let F = (Fspring + Fdamp) * w;
 
-    // 🔑 '총합 정규화' 대신 포인트별 최대힘 클램프
-    if (F >  Fcap * w) F =  Fcap * w;
-    if (F < -Fcap * w) F = -Fcap * w;
+          if (F >  Fcap * w) F =  Fcap * w;
+          if (F < -Fcap * w) F = -Fcap * w;
 
-    p.acc += F;
-  }
-}
+          p.acc += F;
+        }
+      }
 
       function physicsStep(){
-        // 내부 장력(라플라시안, 해상도 보정)
         for (let i=1;i<numPoints-1;i++){
           const prev = string[i-1].y, curr = string[i].y, next = string[i+1].y;
           const lap = (prev - 2*curr + next) * invDX2;
           string[i].acc = tension * lap;
         }
-        // 외력(마우스)
         applyMouseForce();
 
-        // 양 끝 고정
         string[0].acc = 0; string[numPoints-1].acc = 0;
 
         for (let i=1;i<numPoints-1;i++){
           const p = string[i];
           const tempY = p.y;
-          p.y = p.y*2 - p.oldY + p.acc; // dt=1
+          p.y = p.y*2 - p.oldY + p.acc;
           p.oldY = tempY;
-          // 손실(빠르게 소실)
           p.y = initialY + (p.y - initialY) * loss;
         }
         string[0].y = string[0].oldY = initialY;
@@ -857,20 +706,16 @@
         requestAnimationFrame(animateString);
       }
 
-      // 외부에서 호출되던 훅: 이제 현 시뮬레이터 시작만 담당
-      function startLineEffect(){
-        // nothing special; 이미 항상 실행해도 OK
-      }
+      function startLineEffect(){ /* keep */ }
 
-      // 초기 배치 & 리사이즈 핸들링
+      // 리사이즈 핸들링
       const ro = new ResizeObserver(() => placeLineViz());
       ro.observe(document.body);
       ro.observe(document.getElementById('brand'));
       window.addEventListener('resize', placeLineViz);
       window.addEventListener('orientationchange', placeLineViz);
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(placeLineViz);
-      }
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeLineViz); }
+
       placeLineViz();
       requestAnimationFrame(animateString);
     })();
