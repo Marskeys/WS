@@ -103,7 +103,7 @@
     /* 🎸 현 시뮬레이터 캔버스 */
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
     #welcome {
-      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.66); /* 시작 크기 변경 */
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.86);
       opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
       letter-spacing: 0.01em; max-width: 92vw; white-space: nowrap;
       transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
@@ -329,10 +329,10 @@
         setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
-      function buildTaegeukTargets(minRed, minBlue, scaleFactor = 1) { /* 스케일 인자 추가 */
+      function buildTaegeukTargets(minRed, minBlue) {
         const rect = wrap.getBoundingClientRect();
         const cx = rect.width * 0.5, cy = rect.height * 0.5;
-        const R = Math.min(rect.width, rect.height) * 0.26 * scaleFactor; /* 스케일 적용 */
+        const R = Math.min(rect.width, rect.height) * 0.26;
 
         let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
 
@@ -383,10 +383,10 @@
         return targets;
       }
 
-      function assignTaegeukTargets(scaleFactor) { /* 스케일 인자 추가 */
+      function assignTaegeukTargets() {
         const reds = particles.filter(pt => pt.color === 'red');
         const blues = particles.filter(pt => pt.color === 'blue');
-        const targets = buildTaegeukTargets(reds.length, blues.length, scaleFactor);
+        const targets = buildTaegeukTargets(reds.length, blues.length);
         function assign(listPts, listTgts) {
           for (let i = 0; i < listPts.length; i++) {
             const t = listTgts[i % listTgts.length];
@@ -400,7 +400,6 @@
       function runParticleShow() {
         particlePhase = 'explode';
         phaseStartTime = performance.now();
-        let lastMorphProgress = 0;
 
         function frame(now) {
           const rect = wrap.getBoundingClientRect();
@@ -408,27 +407,10 @@
           pctx.clearRect(0, 0, W, H);
 
           if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
-            assignTaegeukTargets(1); /* 초기 태극 크기 */
-            particlePhase = 'morph';
-            phaseStartTime = now;
+            assignTaegeukTargets(); particlePhase = 'morph'; phaseStartTime = now;
           } else if (particlePhase === 'morph') {
-            const elapsed = (now - phaseStartTime);
-            const duration = 2000;
-            let progress = elapsed / duration;
-            if (progress > 1) progress = 1;
-            
-            // 태극문양 점점 작아지는 효과
-            const scaleFactor = 1 - 0.7 * progress; /* 100% -> 30%로 축소 */
-            if (Math.abs(progress - lastMorphProgress) > 0.05) {
-                assignTaegeukTargets(scaleFactor);
-                lastMorphProgress = progress;
-            }
-
             const allReached = particles.every(pt => pt.reached);
-            if (allReached || elapsed > 2500) { /* 충분한 시간 후 다음 단계로 */
-                particlePhase = 'hold';
-                phaseStartTime = now;
-            }
+            if (allReached || (now - phaseStartTime) > 1600) { particlePhase = 'hold'; phaseStartTime = now; }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
             welcome.classList.remove("welcome-glow");
             for (const pt of particles) {
