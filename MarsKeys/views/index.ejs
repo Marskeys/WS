@@ -782,7 +782,7 @@
   if (!mouse.active) return;
 
   // 장력 높을수록 손힘 감소 (하지만 '총합 정규화'는 제거)
-  const FcapBase = 18;                          // ← 세로로 확 당겨지게 하는 핵심 수치 (12~24로 취향 조절)
+  const FcapBase = 12;                          // ← 세로로 확 당겨지게 하는 핵심 수치 (12~24로 취향 조절)
   const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
 
   for (let i = 1; i < numPoints - 1; i++) {
