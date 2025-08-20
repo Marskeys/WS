@@ -15,12 +15,12 @@
     <% } %>
   </title>
 
-  <!-- Fonts: Michroma(항상), Yeon Sung(한국어일 때만) -->
+  <!-- Fonts: Michroma(항상), Yeon Sung & Do Hyeon(한국어일 때만) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
   <% if (isKorean) { %>
-    <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Yeon+Sung&display=swap" rel="stylesheet">
   <% } %>
 
   <style>
@@ -51,14 +51,11 @@
     }
 
     /* 한국어 페이지 전용 폰트 적용 */
-    body.lang-ko{
-      font-family: 'Yeon Sung', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-    /* 브랜드 타이틀도 한국어에서 Yeon Sung으로 (이전엔 Michroma 고정이었음) */
+    /* 타이틀(.brand)만 '도현', 환영문(#welcome)만 '연성' */
     body.lang-ko .brand{
-      font-family: 'Yeon Sung', system-ui, sans-serif;
+      font-family: 'Do Hyeon', 'Michroma', system-ui, sans-serif;
+      font-weight: 400; /* Do Hyeon은 단일 웨이트 */
     }
-    /* Welcome도 한국어면 Yeon Sung */
     body.lang-ko #welcome{
       font-family: 'Yeon Sung', system-ui, sans-serif;
     }
@@ -82,7 +79,7 @@
     .brand {
       margin: 0;
       line-height: 1;
-      font-family: "Michroma", system-ui, sans-serif; /* 기본: Michroma, 한국어에선 위 오버라이드로 Yeon Sung */
+      font-family: "Michroma", system-ui, sans-serif; /* 기본: Michroma, 한국어에선 위 규칙으로 Do Hyeon */
       position: relative;
       z-index: 40;
     }
@@ -182,7 +179,7 @@
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
       font-size: clamp(48px, 10vw, 130px);
-      font-family: "Michroma", system-ui, sans-serif; /* 한국어에선 위 오버라이드로 Yeon Sung */
+      font-family: "Michroma", system-ui, sans-serif; /* 기본 Michroma → 한국어면 위에서 Yeon Sung 오버라이드 */
       color: white;
       letter-spacing: 0.01em;
       max-width: 92vw;
