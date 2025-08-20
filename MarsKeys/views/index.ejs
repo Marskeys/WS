@@ -313,7 +313,9 @@
           fadeOutText();
           showWelcome();
           runParticleShow();
-          startLineEffect(); // 신호선 애니메이션 시작
+          setTimeout(() => {
+            startLineEffect();
+        }, 1000); 
         }
       }
 
