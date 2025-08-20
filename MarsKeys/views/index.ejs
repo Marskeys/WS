@@ -15,7 +15,6 @@
     <% } %>
   </title>
 
-  <!-- Fonts: Michroma(항상), Yeon Sung(한국어일 때만 #welcome에 적용) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
@@ -425,11 +424,6 @@
           welcome.classList.add("visible");
           welcome.classList.add("welcome-glow");
         }, 900);
-        setTimeout(() => {
-          scrollContent.style.display = "block";
-          isFinalized = true;
-          body.style.overflowY = "auto";
-        }, 1500);
       }
 
       function buildTaegeukTargets(minRed, minBlue) {
@@ -503,78 +497,89 @@
       function runParticleShow() {
         particlePhase = 'explode';
         phaseStartTime = performance.now();
+        let targetParticle = null;
 
         function frame(now) {
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
+          let elapsed = now - phaseStartTime;
 
-          if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
+          if (particlePhase === 'explode' && elapsed >= 2000) {
             assignTaegeukTargets();
             particlePhase = 'morph';
             phaseStartTime = now;
           } else if (particlePhase === 'morph') {
             const allReached = particles.every(pt => pt.reached);
-            if (allReached || (now - phaseStartTime) > 1600) {
+            if (allReached || (elapsed > 1600)) {
               particlePhase = 'hold';
               phaseStartTime = now;
             }
-          } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
+          } else if (particlePhase === 'hold' && elapsed >= 900) {
             welcome.classList.remove("welcome-glow");
             if (tagline) {
               tagline.classList.add('shine-to-white');
               setTimeout(() => tagline.classList.add('to-white'), 900);
             }
-            for (const pt of particles) {
-              const ang = Math.random() * Math.PI * 2;
-              const spd = 0.05 + Math.random() * 0.1; 
-              pt.vx = Math.cos(ang) * spd;
-              pt.vy = Math.sin(ang) * spd;
-              pt.reached = false;
+            const redParticles = particles.filter(pt => pt.color === 'red');
+            if (redParticles.length > 0) {
+              targetParticle = redParticles[(Math.random() * redParticles.length) | 0];
+              targetParticle.isHero = true;
+              targetParticle.size = 1.6;
             }
-            particlePhase = 'disperse';
+            particlePhase = 'hero-disperse';
             phaseStartTime = now;
-          }
+          } else if (particlePhase === 'hero-disperse') {
+            let anyAlive = false;
+            for (const pt of particles) {
+              if (pt.isHero) continue;
 
-          let anyAlive = false;
-          for (const pt of particles) {
-            if (pt.alpha <= 0) continue;
-            anyAlive = true;
+              pt.vx *= 0.99; pt.vy *= 0.99;
+              pt.alpha -= 0.02;
+              pt.x += pt.vx; pt.y += pt.vy;
 
-            if (particlePhase === 'explode') {
-              pt.vx *= 0.985; pt.vy *= 0.985;
-              pt.vx += (Math.random() - 0.5) * 0.02;
-              pt.vy += (Math.random() - 0.5) * 0.02;
-              pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
-            } else if (particlePhase === 'morph') {
-              if (pt.tx != null) {
-                const dx = pt.tx - pt.x, dy = pt.ty - pt.y;
-                pt.vx = pt.vx * 0.82 + dx * 0.06;
-                pt.vy = pt.vy * 0.82 + dy * 0.06;
-                if (Math.hypot(dx, dy) < 1.6) {
-                  pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true;
-                }
-              }
-              pt.alpha = Math.min(1, pt.alpha + 0.01);
-            } else if (particlePhase === 'hold') {
-              const t = (now - phaseStartTime) * 0.004;
-              pt.x += Math.sin(t + (pt.tx || pt.x) * 0.01) * 0.06;
-              pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
-              pt.alpha = 1;
-            } else if (particlePhase === 'disperse') {
-              pt.vx *= 0.995; pt.vy *= 0.995;
-              if (pt.color === 'blue') pt.alpha -= 0.0015;
-              else                     pt.alpha -= 0.002;
+              if (pt.alpha > 0) anyAlive = true;
             }
 
-            pt.x += pt.vx; pt.y += pt.vy;
+            if (targetParticle) {
+              const dt = (now - phaseStartTime) / 1000;
+              targetParticle.size = 1.6 + dt * 40;
+              targetParticle.x += (W / 2 - targetParticle.x) * 0.05;
+              targetParticle.y += (H / 2 - targetParticle.y) * 0.05;
+              anyAlive = true;
+            }
+
+            if (!anyAlive) {
+              particlePhase = 'hero-grow';
+              phaseStartTime = now;
+            }
+          } else if (particlePhase === 'hero-grow') {
+            if (targetParticle) {
+              const dt = (now - phaseStartTime) / 1000;
+              targetParticle.size += dt * 100;
+
+              if (targetParticle.size > 200) {
+                body.style.transition = 'background-color 0.8s ease';
+                body.style.backgroundColor = COL_RED;
+                welcome.style.opacity = 1;
+                welcome.style.transform = 'translate(-50%, -50%) scale(1.22)';
+
+                particlePhase = 'done';
+                setTimeout(() => {
+                  particleCanvas.style.display = 'none';
+                  body.classList.add('show-background');
+                  isFinalized = true;
+                  body.style.overflowY = "auto";
+                }, 800);
+                return;
+              }
+            } else {
+                particlePhase = 'done';
+                body.classList.add('show-background');
+            }
           }
 
-          if (particlePhase === 'disperse' && !anyAlive) {
-            body.classList.add('show-background');
-            particlePhase = 'done';
-            return;
-          }
+          if (particlePhase === 'done') return;
 
           // draw
           pctx.globalCompositeOperation = 'source-over';
@@ -587,7 +592,7 @@
               if (pt.alpha <= 0 || pt.color !== colorName) continue;
               pctx.globalAlpha = Math.max(0, pt.alpha);
               pctx.beginPath();
-              pctx.arc(pt.x, pt.y, 1.6, 0, Math.PI * 2);
+              pctx.arc(pt.x, pt.y, pt.size || 1.6, 0, Math.PI * 2);
               pctx.fill();
             }
           }
