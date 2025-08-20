@@ -272,21 +272,24 @@
     const { useSpring, animated } = ReactSpring;
 
     // React 컴포넌트
-    const SpringLine = () => {
-      const lineRef = useRef(null);
-      const [points, setPoints] = useState([]);
+    const SpringLine = ({ isReady }) => {
       const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
       const [isCondensing, setIsCondensing] = useState(false);
-      
+      const [isCondenseDone, setIsCondenseDone] = useState(false);
+      const [isVisible, setIsVisible] = useState(false);
+
+      useEffect(() => {
+        setIsVisible(!isReady); // 로딩 중일 때만 보임
+      }, [isReady]);
+
       const springProps = useSpring({
         from: { x: 0, y: windowSize.height / 2 },
         to: { x: windowSize.width / 2, y: windowSize.height / 2 },
         config: { mass: 1, tension: 280, friction: 30, precision: 0.001 },
       });
       
-      // 마우스 좌표를 스프링 목표값으로 업데이트
       const handleMouseMove = (event) => {
-        if (isCondensing) return;
+        if (!isVisible || isCondensing) return;
         springProps.x.set(event.clientX);
         springProps.y.set(event.clientY);
       };
@@ -302,31 +305,26 @@
           window.removeEventListener('resize', handleResize);
           window.removeEventListener('mousemove', handleMouseMove);
         };
-      }, [isCondensing]);
+      }, [isVisible, isCondensing]);
       
-      useEffect(() => {
-        if (!isCondensing) {
-          const newPoints = [];
-          for (let i = 0; i < 20; i++) {
-            newPoints.push({ x: windowSize.width / 2, y: windowSize.height / 2 });
-          }
-          setPoints(newPoints);
-        }
-      }, [windowSize, isCondensing]);
-      
-      // 스프링 값에 따라 점들의 배열 업데이트
+      const [points, setPoints] = useState([]);
       useLayoutEffect(() => {
-        if (isCondensing) return;
+        if (!isVisible || isCondensing) return;
+        
+        const newPoints = [];
+        for (let i = 0; i < 20; i++) {
+          newPoints.push({ x: windowSize.width / 2, y: windowSize.height / 2 });
+        }
+        setPoints(newPoints);
+
         const unsubscribe = springProps.x.onChange((springVal) => {
           setPoints(currentPoints => {
             const nextPoints = [...currentPoints];
             const mouseX = springVal;
             const mouseY = springProps.y.get();
             
-            // 첫 번째 점을 마우스 좌표로 설정
             nextPoints[0] = { x: mouseX, y: mouseY };
             
-            // 나머지 점들을 이전 점을 따라오도록 업데이트 (스프링 효과)
             for (let i = 1; i < nextPoints.length; i++) {
               const prev = nextPoints[i - 1];
               const current = nextPoints[i];
@@ -344,36 +342,28 @@
           });
         });
         return () => unsubscribe();
-      }, [springProps, isCondensing]);
+      }, [springProps, isVisible, isCondensing, windowSize]);
       
-      // Condense 애니메이션 (캔버스의 기존 '신호선'을 재현)
       const condenseSpring = useSpring({
         from: { x1: 0, x2: windowSize.width, opacity: 1 },
         to: { x1: windowSize.width / 2, x2: windowSize.width / 2, opacity: 0 },
         config: { mass: 1, tension: 120, friction: 14 },
         onRest: () => {
-            // 애니메이션 종료 후 완전히 숨김
-            if (isCondensing) setIsCondensing(false);
+          setIsCondenseDone(true);
         }
       });
       
-      // 기존 로직의 startLineEffect를 대체하는 함수
-      const startCondenseEffect = () => {
-        setIsCondensing(true);
-        condenseSpring.x1.start({ to: windowSize.width / 2 });
-        condenseSpring.x2.start({ to: windowSize.width / 2 });
-        condenseSpring.opacity.start({ to: 0 });
-      };
-      
-      // 외부에서 이 함수를 호출할 수 있도록 전역에 노출
       useEffect(() => {
-        window.startSpringLineCondense = startCondenseEffect;
+        window.startSpringLineCondense = () => {
+          setIsCondensing(true);
+        };
       }, []);
       
+      if (!isVisible || isCondenseDone) return null;
+
       return (
         <svg style={{ position: 'fixed', inset: 0 }}>
-          {/* 응축 애니메이션 라인 */}
-          {isCondensing && (
+          {isCondensing ? (
             <animated.line
               x1={condenseSpring.x1}
               y1={windowSize.height / 2}
@@ -385,10 +375,7 @@
                 opacity: condenseSpring.opacity
               }}
             />
-          )}
-
-          {/* 마우스 따라다니는 스프링 라인 */}
-          {!isCondensing && (
+          ) : (
             <path
               d={points.length > 0 ? `M${points.map(p => `${p.x},${p.y}`).join(' L')}` : ''}
               fill="none"
@@ -403,10 +390,24 @@
     };
 
     // React 컴포넌트를 DOM에 렌더링
+    const App = () => {
+      const [isFinalized, setIsFinalized] = useState(false);
+      
+      useEffect(() => {
+        window.setFinalizedState = (state) => {
+          setIsFinalized(state);
+        };
+      }, []);
+
+      return (
+        <SpringLine isReady={isFinalized} />
+      );
+    };
+
     const container = document.getElementById('spring-line-container');
     if (container) {
       const root = ReactDOM.createRoot(container);
-      root.render(<SpringLine />);
+      root.render(<App />);
     }
 
     //
@@ -423,14 +424,12 @@
       const pctx = particleCanvas.getContext('2d');
       const tagline = document.querySelector('.tagline');
       
-      // 💡 추가된 부분: 애니메이션이 끝난 후 to-white 클래스 추가
       tagline.addEventListener('animationend', (event) => {
         if (event.animationName === 'shine-sweep') {
             tagline.classList.add('to-white');
         }
       });
 
-      // Progress
       let p = 0;
       let autoAnimating = false,
           isFinalized = false,
@@ -441,7 +440,6 @@
       const COL_RED = (CSS.getPropertyValue('--pastel-red-2') || '#ff6b7a').trim();
       const COL_BLUE = (CSS.getPropertyValue('--pastel-blue-2') || '#5ea1ff').trim();
 
-      // Particles
       let particles = [];
       const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
       let particlePhase = 'idle';
@@ -471,10 +469,6 @@
           fadeOutText();
           showWelcome();
           runParticleShow();
-          // 신호선 애니메이션 시작: 기존 함수 호출 대신 React 컴포넌트 함수 호출
-          if (typeof window.startSpringLineCondense === 'function') {
-            window.startSpringLineCondense();
-          }
         }
       }
 
@@ -586,9 +580,15 @@
           welcome.classList.add("welcome-glow");
         }, 900);
         setTimeout(() => {
+          if (typeof window.startSpringLineCondense === 'function') {
+            window.startSpringLineCondense();
+          }
           scrollContent.style.display = "block";
           isFinalized = true;
           body.style.overflowY = "auto";
+          if (typeof window.setFinalizedState === 'function') {
+            window.setFinalizedState(true);
+          }
         }, 1500);
       }
 
