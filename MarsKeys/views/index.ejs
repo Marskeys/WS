@@ -15,12 +15,12 @@
     <% } %>
   </title>
 
-  <!-- Fonts: 원래대로 Michroma는 항상 로드, 한국어일 때만 Do Hyeon 추가 -->
+  <!-- Fonts: Michroma(항상), Yeon Sung(한국어일 때만 #welcome에 적용) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
   <% if (isKorean) { %>
-    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
   <% } %>
 
   <style>
@@ -51,10 +51,10 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어일 때 환영문(#welcome)만 '도현'으로 오버라이드 */
+    /* 한국어일 때 환영문(#welcome)만 'Yeon Sung'으로 오버라이드 */
     body.lang-ko #welcome{
-      font-family: 'Do Hyeon', 'Michroma', system-ui, sans-serif;
-      font-weight: 400; /* Do Hyeon 단일 웨이트 */
+      font-family: 'Yeon Sung', 'Michroma', system-ui, sans-serif;
+      font-weight: 400;
     }
 
     body.show-background {
@@ -73,7 +73,7 @@
       overflow: visible;
     }
 
-    /* 브랜드 타이틀: 원래대로 Michroma 유지 */
+    /* 브랜드 타이틀: Michroma 유지 */
     .brand {
       margin: 0;
       line-height: 1;
@@ -136,7 +136,7 @@
     .tagline.to-white { color: #fff; }
     @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
 
-    /* 퍼센트 카운터: 원래대로 Michroma 유지 */
+    /* 퍼센트 카운터: Michroma 유지 */
     #counter {
       position: absolute;
       right: 5vw;
