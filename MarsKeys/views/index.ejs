@@ -659,7 +659,7 @@
             // 데스크톱: 왼쪽 패딩을 추가하고 글자 사이에 위치
             const wrapCS = getComputedStyle(wrap);
             const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-            const additionalPadding = 100; // 요청에 따라 100px로 설정
+            const additionalPadding = 500; // 요청에 따라 100px로 설정
             left = wrapRect.left + padLeft + additionalPadding;
             
             const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
