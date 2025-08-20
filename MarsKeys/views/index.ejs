@@ -655,6 +655,13 @@
       function applyMouseForce(){
         if (!mouse.active) return;
 
+        // 마우스 당김 힘
+        let pullY = mouse.y - initialY;
+        // 최대 당김 한계 적용
+        if (Math.abs(pullY) > MAX_PULL) {
+          pullY = Math.sign(pullY) * MAX_PULL;
+        }
+
         const FcapBase = 12;
         const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
 
@@ -663,12 +670,12 @@
           const distX = Math.abs(p.x - mouse.x);
           const w = hannWeight(distX, radiusPx);
           if (w <= 0) continue;
-
+          
           const vel = p.y - p.oldY;
-          const Fspring = K_MOUSE * (mouse.y - p.y);
+          const Fspring = K_MOUSE * (initialY + pullY - p.y);
           const Fdamp   = -C_MOUSE * vel;
           let F = (Fspring + Fdamp) * w;
-
+          
           if (F >  Fcap * w) F =  Fcap * w;
           if (F < -Fcap * w) F = -Fcap * w;
 
