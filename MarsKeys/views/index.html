@@ -1,252 +1,254 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>현(줄) 시뮬레이션 — 드래그해서 튕겨보기</title>
-<style>
-  :root{
-    --bg:#0e1016; --text:#eef2f8; --muted:#9aa3b2;
-    --accent:#77aaff;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; background:var(--bg); color:var(--text);
-    display:flex; align-items:center; justify-content:center;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  }
-  .wrap{
-    width:min(900px, 92vw);
-  }
-  h1{font-size:clamp(18px, 2.4vw, 22px); margin:0 0 10px 0; font-weight:700; color:var(--text)}
-  p.hint{
-    margin:0 0 10px 0; color:var(--muted); font-size:clamp(12px, 1.8vw, 14px)
-  }
-  .card{
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:14px; padding:16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  }
-  canvas{
-    width:100%; height:260px; display:block; border-radius:10px;
-    background: radial-gradient(1200px 600px at 50% 140%, rgba(255,255,255,0.06), rgba(0,0,0,0)) ,
-                linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0));
-    outline: none;
-    touch-action: none; /* 모바일 스크롤 방지 */
-    cursor: grab;
-  }
-  canvas.dragging{ cursor: grabbing; }
-  .controls{
-    display:flex; gap:12px; align-items:center; margin-top:10px; color:var(--muted);
-    font-size:13px; flex-wrap:wrap;
-  }
-  .controls label{display:flex; align-items:center; gap:8px}
-  .controls input[type="range"]{width:160px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>현실적인 기타 현 시뮬레이터</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            flex-direction: column;
+            overflow: hidden;
+            color: #e0e0e0;
+        }
+        canvas {
+            border: 2px solid #555;
+            background-color: #2c2c2c;
+            cursor: crosshair;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+        h1 {
+            color: #f0f0f0;
+            text-shadow: 2px 2px 4px #000;
+        }
+        p {
+            color: #b0b0b0;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+        #controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        #controls label {
+            font-size: 0.9em;
+        }
+        #controls input[type="range"] {
+            -webkit-appearance: none;
+            width: 150px;
+            height: 8px;
+            background: #555;
+            outline: none;
+            opacity: 0.8;
+            transition: opacity .2s;
+            border-radius: 5px;
+        }
+        #controls input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #00aaff;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        #controls input[type="range"]:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap card">
-    <h1>현(줄) 시뮬레이션</h1>
-    <p class="hint">줄을 아무 지점에서나 눌러 아래로 당겼다가 놓아보세요. 실제 기타현처럼 <b>감쇠하는 파동</b>이 퍼집니다.</p>
-    <canvas id="stringCanvas" aria-label="string simulation" tabindex="0"></canvas>
-    <div class="controls">
-      <label>감쇠(damping)
-        <input id="damp" type="range" min="0" max="1" step="0.01" value="0.06">
-      </label>
-      <label>파동 속도(wave speed)
-        <input id="speed" type="range" min="100" max="400" step="10" value="260">
-      </label>
-      <span>Tip: 더 길게 끌수록 더 크게 진동해요.</span>
+    <h1>현실적인 기타 현 시뮬레이터 🎸</h1>
+    <p>마우스를 현에 가져다 대고 클릭하여 당겼다가 놓아보세요!</p>
+    <canvas id="stringCanvas" width="800" height="400"></canvas>
+    
+    <div id="controls">
+        <label for="tension">장력: <span id="tensionValue">32</span></label>
+        <input type="range" id="tension" min="0.01" max="0.2" step="0.01" value="0.12">
+        
+        <label for="damping">감쇠: <span id="dampingValue">0.998</span></label>
+        <input type="range" id="damping" min="0.9" max="0.999" step="0.001" value="0.998">
+        
+        <label for="friction">마찰: <span id="frictionValue">0.999</span></label>
+        <input type="range" id="friction" min="0.98" max="0.999" step="0.001" value="0.999">
     </div>
-  </div>
 
-<script>
-(() => {
-  const canvas = document.getElementById('stringCanvas');
-  const ctx = canvas.getContext('2d', { alpha: true });
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('stringCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
 
-  // ===== String discretization =====
-  const N = 120;                           // 분할 포인트 수 (끝점 포함)
-  const y  = new Float32Array(N);          // 변위 (px, +는 아래)
-  const v  = new Float32Array(N);          // 속도 (px/s)
-  let dx = 1;                              // 이웃 간 간격 (px) — resize에서 갱신
-  let x0 = 0, x1 = 0, baseline = 0;        // 줄의 시작/끝/기준선
-  let dragging = false;
-  let dragIndex = -1;
-  const dragRadius = 8;                    // 드래그 영향 반경 (인덱스 단위)
-  const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+            const tensionControl = document.getElementById('tension');
+            const dampingControl = document.getElementById('damping');
+            const frictionControl = document.getElementById('friction');
 
-  // 물리 파라미터 (UI로 조절)
-  const dampUI  = document.getElementById('damp');   // 감쇠 계수 gamma (s^-1)
-  const speedUI = document.getElementById('speed');  // 파동 속도 c (px/s)
+            const tensionValueSpan = document.getElementById('tensionValue');
+            const dampingValueSpan = document.getElementById('dampingValue');
+            const frictionValueSpan = document.getElementById('frictionValue');
 
-  // ===== Resize & HiDPI =====
-  function resize(){
-    const rect = canvas.getBoundingClientRect();
-    canvas.width  = Math.round(rect.width * dpr);
-    canvas.height = Math.round(260 * dpr); // 고정 높이
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // 그리기는 CSS px 단위로
+            let tension = parseFloat(tensionControl.value);
+            let damping = parseFloat(dampingControl.value);
+            let friction = parseFloat(frictionControl.value);
 
-    // 줄 배치
-    const W = rect.width;
-    const H = 260;
-    const margin = 32;
-    x0 = margin;
-    x1 = W - margin;
-    baseline = Math.round(H * 0.5);
-    dx = (x1 - x0) / (N - 1);
-  }
-  resize();
-  window.addEventListener('resize', resize);
+            tensionControl.addEventListener('input', (e) => {
+                tension = parseFloat(e.target.value);
+                tensionValueSpan.textContent = tension.toFixed(2);
+            });
+            dampingControl.addEventListener('input', (e) => {
+                damping = parseFloat(e.target.value);
+                dampingValueSpan.textContent = damping.toFixed(3);
+            });
+            frictionControl.addEventListener('input', (e) => {
+                friction = parseFloat(e.target.value);
+                frictionValueSpan.textContent = friction.toFixed(3);
+            });
 
-  // ===== 입력(포인터) 보조 =====
-  function eventToCanvasPos(e){
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0) - rect.left;
-    const y = (e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? 0) - rect.top;
-    return {x, y};
-  }
-  function xToIndex(xCss){
-    const s = clamp((xCss - x0) / (x1 - x0), 0, 1);
-    return Math.round(s * (N - 1));
-  }
+            // 현의 속성 정의
+            class StringPoint {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.oldY = y;
+                    this.velocity = 0;
+                    this.acceleration = 0;
+                }
+            }
+            
+            // 현의 부드러움을 위해 점의 수를 더 늘림
+            const numPoints = 400; 
+            const string = [];
+            const initialY = height / 2;
 
-  function setDraggedShape(ix, targetY){
-    // 인접한 점들에 부드럽게 분포(삼각 프로파일)
-    for(let j = -dragRadius; j <= dragRadius; j++){
-      const k = ix + j;
-      if(k <= 0 || k >= N-1) continue; // 끝점은 고정
-      const w = 1 - Math.abs(j) / (dragRadius + 0.0001);
-      y[k] = targetY * w;
-      v[k] = 0;
-    }
-  }
+            // 현의 초기화
+            for (let i = 0; i < numPoints; i++) {
+                string.push(new StringPoint((i / (numPoints - 1)) * width, initialY));
+            }
 
-  // ===== 포인터 이벤트 =====
-  const onDown = (e) => {
-    e.preventDefault();
-    canvas.classList.add('dragging');
-    const pos = eventToCanvasPos(e);
-    dragIndex = xToIndex(pos.x);
-    dragging = true;
-    const target = clamp(pos.y - baseline, -baseline*0.9, baseline*0.9);
-    setDraggedShape(dragIndex, target);
-    canvas.setPointerCapture?.(e.pointerId ?? 1);
-  };
-  const onMove = (e) => {
-    if(!dragging) return;
-    const pos = eventToCanvasPos(e);
-    dragIndex = xToIndex(pos.x);
-    const target = clamp(pos.y - baseline, -baseline*0.9, baseline*0.9);
-    setDraggedShape(dragIndex, target);
-  };
-  const onUp = (e) => {
-    dragging = false;
-    dragIndex = -1;
-    canvas.classList.remove('dragging');
-  };
+            let isDragging = false;
+            let dragPointIndex = -1;
 
-  // Pointer + 마우스/터치 폴백
-  canvas.addEventListener('pointerdown', onDown);
-  window.addEventListener('pointermove', onMove);
-  window.addEventListener('pointerup', onUp);
-  // iOS 사파리/구형 브라우저 대비
-  canvas.addEventListener('mousedown', onDown);
-  window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup', onUp);
-  canvas.addEventListener('touchstart', (e)=>onDown(e.touches[0]||e), {passive:false});
-  window.addEventListener('touchmove',  (e)=>onMove(e.touches[0]||e),  {passive:false});
-  window.addEventListener('touchend',   onUp,                            {passive:false});
+            // 마우스 이벤트 핸들러
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
 
-  // ===== 시뮬레이션 루프 =====
-  let lastT = performance.now();
-  function step(now){
-    const dt = Math.min(0.034, (now - lastT) / 1000); // 안정성 위해 dt 클램프
-    lastT = now;
+                let closestDist = Infinity;
+                for (let i = 0; i < numPoints; i++) {
+                    const point = string[i];
+                    const dist = Math.sqrt(Math.pow(point.x - mouseX, 2) + Math.pow(point.y - mouseY, 2));
+                    if (dist < closestDist) {
+                        closestDist = dist;
+                        dragPointIndex = i;
+                    }
+                }
+                
+                if (closestDist < 20) {
+                    isDragging = true;
+                    string[dragPointIndex].y = mouseY;
+                    string[dragPointIndex].oldY = mouseY;
+                    handleDrag(mouseY);
+                }
+            });
 
-    const c      = parseFloat(speedUI.value); // px/s
-    const gamma  = parseFloat(dampUI.value);  // s^-1
-    const c2dx2  = (c*c) / (dx*dx);
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDragging || dragPointIndex === -1) return;
+                const rect = canvas.getBoundingClientRect();
+                const mouseY = e.clientY - rect.top;
+                string[dragPointIndex].y = mouseY;
+                string[dragPointIndex].oldY = mouseY;
+                handleDrag(mouseY);
+            });
 
-    // 고정 끝점(디리클레 경계): y[0]=y[N-1]=0
-    y[0] = 0; y[N-1] = 0; v[0]=0; v[N-1]=0;
+            canvas.addEventListener('mouseup', () => {
+                isDragging = false;
+                dragPointIndex = -1;
+            });
+            
+            // 드래그 시 주변 점들 함께 이동시키는 함수
+            function handleDrag(mouseY) {
+                if (dragPointIndex === -1) return;
 
-    // 드래그 중이면 해당 구간은 위에서 강제했으니 여기선 건드리지 않음
-    // 내부 포인트 업데이트 (1D wave eq + 점성 감쇠)
-    for(let i=1;i<N-1;i++){
-      // 이산 2차 미분(라플라시안)
-      const lap = y[i-1] - 2*y[i] + y[i+1];
-      const a = c2dx2 * lap - gamma * v[i]; // 가속도
-      v[i] += a * dt;
-      y[i] += v[i] * dt;
-    }
+                const dragPoint = string[dragPointIndex];
+                const deltaY = mouseY - initialY;
+                const totalWidth = numPoints - 1;
 
-    draw();
-    requestAnimationFrame(step);
-  }
+                // 좌측 부분
+                for (let i = 0; i < dragPointIndex; i++) {
+                    const distRatio = (dragPointIndex - i) / dragPointIndex;
+                    string[i].y = initialY + deltaY * (1 - distRatio);
+                    string[i].oldY = string[i].y;
+                }
 
-  // ===== 렌더링 =====
-  function draw(){
-    const W = canvas.getBoundingClientRect().width;
-    const H = 260;
+                // 우측 부분
+                for (let i = dragPointIndex + 1; i < numPoints; i++) {
+                    const distRatio = (i - dragPointIndex) / (totalWidth - dragPointIndex);
+                    string[i].y = initialY + deltaY * (1 - distRatio);
+                    string[i].oldY = string[i].y;
+                }
+            }
 
-    // 배경 정리
-    ctx.clearRect(0,0,W,H);
 
-    // 기준선
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-    ctx.beginPath();
-    ctx.moveTo(x0, baseline);
-    ctx.lineTo(x1, baseline);
-    ctx.stroke();
+            // 애니메이션 루프
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // 현 시뮬레이션 업데이트 (Verlet Integration)
+                if (!isDragging) {
+                    for (let i = 1; i < numPoints - 1; i++) {
+                        const prevPoint = string[i - 1];
+                        const currPoint = string[i];
+                        const nextPoint = string[i + 1];
 
-    // 현 그리기 (부드럽게 보간)
-    ctx.lineWidth = 3;
-    const grad = ctx.createLinearGradient(x0, baseline-40, x1, baseline+40);
-    grad.addColorStop(0.0, 'rgba(120,170,255,0.95)');
-    grad.addColorStop(0.5, 'rgba(255,255,255,0.95)');
-    grad.addColorStop(1.0, 'rgba(255,140,180,0.95)');
-    ctx.strokeStyle = grad;
-    ctx.shadowColor = 'rgba(120,170,255,0.5)';
-    ctx.shadowBlur = 6;
+                        const force = tension * (prevPoint.y + nextPoint.y - 2 * currPoint.y);
+                        currPoint.acceleration = force;
+                    }
 
-    ctx.beginPath();
-    for(let i=0;i<N;i++){
-      const x = x0 + i*dx;
-      const yy = baseline + y[i];
-      if(i===0) ctx.moveTo(x, yy);
-      else ctx.lineTo(x, yy);
-    }
-    ctx.stroke();
+                    for (let i = 1; i < numPoints - 1; i++) {
+                        const currPoint = string[i];
+                        const tempY = currPoint.y;
+                        
+                        currPoint.y = currPoint.y * 2 - currPoint.oldY + currPoint.acceleration;
+                        currPoint.oldY = tempY;
 
-    // 드래그 지점 표시
-    if(dragging && dragIndex >= 0){
-      const x = x0 + dragIndex*dx;
-      const yy = baseline + y[dragIndex];
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.beginPath();
-      ctx.arc(x, yy, 4.5, 0, Math.PI*2);
-      ctx.fill();
-    }
-    // 그림자 초기화
-    ctx.shadowBlur = 0;
-  }
+                        currPoint.y = initialY + (currPoint.y - initialY) * damping * friction;
+                    }
+                } else {
+                    handleDrag(string[dragPointIndex].y);
+                }
 
-  requestAnimationFrame(step);
+                // 현 그리기 (부드러운 곡선)
+                ctx.beginPath();
+                ctx.strokeStyle = '#00aaff';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.moveTo(string[0].x, string[0].y);
+                
+                for (let i = 1; i < numPoints - 2; i++) {
+                    const xc = (string[i].x + string[i + 1].x) / 2;
+                    const yc = (string[i].y + string[i + 1].y) / 2;
+                    ctx.quadraticCurveTo(string[i].x, string[i].y, xc, yc);
+                }
+                ctx.quadraticCurveTo(string[numPoints - 2].x, string[numPoints - 2].y, string[numPoints - 1].x, string[numPoints - 1].y);
+                ctx.stroke();
 
-  // 초기 작은 플럭(자동 데모)
-  (function demoPluck(){
-    const ix = Math.floor(N*0.32);
-    setDraggedShape(ix, 26);
-    setTimeout(()=>{ dragging=false; dragIndex=-1; }, 120);
-  })();
+                requestAnimationFrame(animate);
+            }
 
-})();
-</script>
+            animate();
+        });
+    </script>
 </body>
 </html>
