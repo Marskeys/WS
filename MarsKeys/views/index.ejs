@@ -647,23 +647,24 @@
         if (!marsLine || !keysLine) return;
 
         const cssHeight = Math.max(28, Math.min(64, Math.round((marsLine.getBoundingClientRect().height + keysLine.getBoundingClientRect().height) * 0.14)));
-        const midY = (marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2;
-
         let left, width;
-        
+        let midY;
+
         if (IS_MOBILE) {
-            // 모바일: 화면 중앙에 오도록 계산
-            width = window.innerWidth * 0.6; // 뷰포트 너비의 60%
+            // 모바일: 화면의 수직 중앙에 오도록 위치
+            width = window.innerWidth * 0.6;
             left = (window.innerWidth / 2) - (width / 2);
+            midY = window.innerHeight / 2;
         } else {
-            // 데스크톱: 왼쪽 패딩 추가
+            // 데스크톱: 왼쪽 패딩을 추가하고 글자 사이에 위치
             const wrapCS = getComputedStyle(wrap);
             const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-            const additionalPadding = 50; // 원하는 추가 패딩 값
+            const additionalPadding = 100; // 요청에 따라 100px로 설정
             left = wrapRect.left + padLeft + additionalPadding;
             
             const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
             width = Math.max(240, rightLimit - left);
+            midY = (marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2;
         }
 
         lineCanvas.style.left = left + 'px';
@@ -693,9 +694,8 @@
         lctx.globalAlpha = 0.92;
 
         const leftBase = W * 0.28;
-        const waveLen = W * 0.54;
-        const rightBase = Math.max(8, W - leftBase - waveLen);
-
+        const waveLen = W * 0.72; // 파형 길이를 늘려 끝까지 채움
+        
         const t = (time || performance.now()) * 0.004;
         const A = H * 0.30;
         const k = 0.020 * Math.PI;
@@ -719,7 +719,7 @@
         lctx.lineTo(leftBase, y0);
 
         // 파형 구간 (진폭을 점진적으로 증가시켜 부드럽게 시작)
-        const transitionLen = W * 0.08; // 진폭이 서서히 증가하는 구간 길이
+        const transitionLen = W * 0.08;
         const step = Math.max(2, Math.min(4, Math.round(W / 220)));
         for (let i = 0; i <= waveLen; i += step) {
           const x = leftBase + i;
@@ -738,8 +738,8 @@
           lctx.lineTo(x, y);
         }
 
-        // 오른쪽 짧은 베이스
-        lctx.lineTo(leftBase + waveLen + rightBase, y0);
+        // 끝부분 직선 제거
+        // lctx.lineTo(leftBase + waveLen + rightBase, y0);
         lctx.stroke();
 
         requestAnimationFrame(drawLineViz);
