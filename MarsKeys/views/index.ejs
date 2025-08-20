@@ -18,6 +18,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
 
+  <!-- (선택) 로딩 미리당김 -->
+  <link rel="preload" href="/mars.png" as="image" imagesrcset="/mars.png 1x">
+
   <style>
     :root {
       --bg: #0e1016;
@@ -45,13 +48,10 @@
       -moz-osx-font-smoothing: grayscale;
     }
     
+    /* 파티클 종료 후 배경 이미지는 쓰지 않고(기존 unsplash 제거), 우리가 넣는 비주얼을 켠다 */
     body.show-background {
-      background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: cover;
-      background-attachment: fixed;
-      transition: background-image 2s ease;
+      background-image: none;
+      transition: background-image 0s;
     }
 
     .wrap {
@@ -59,6 +59,31 @@
       min-height: 100svh;
       padding: 5vw;
       overflow: visible;
+    }
+
+    /* === Mars Visual (블러 가장자리 마스크) === */
+    #marsVisual{
+      position:absolute; inset:0;
+      display:flex; align-items:flex-end; justify-content:center;
+      pointer-events:none;
+      opacity:0; transition:opacity 900ms ease;
+      z-index:30; /* brand(40), canvas(50), welcome(60) 아래/위 관계 조정 */
+    }
+    #marsVisual.on{ opacity:1; }
+
+    #marsVisual img{
+      width:min(95vw, 1100px);
+      height:auto;
+      object-fit:contain;
+      margin-bottom:clamp(2vh, 6vh, 8vh);
+      /* 테두리 블러 느낌으로 사라지는 마스크 */
+      -webkit-mask-image: radial-gradient(125% 115% at 50% 68%, rgba(0,0,0,1) 62%, rgba(0,0,0,0) 100%);
+              mask-image: radial-gradient(125% 115% at 50% 68%, rgba(0,0,0,1) 62%, rgba(0,0,0,0) 100%);
+      -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+      -webkit-mask-position:center;  mask-position:center;
+      -webkit-mask-size:100% 100%;   mask-size:100% 100%;
+      /* 가장자리와 배경이 더 자연스럽게 섞이게 살짝 글로우 */
+      filter: drop-shadow(0 0 28px rgba(0,0,0,0.6));
     }
 
     .brand {
@@ -111,7 +136,6 @@
       transition: color .55s ease;
       will-change: color;
     }
-    /* 반사 스윕: 텍스트에만 비치도록 before에 텍스트 복제 + text clip */
     .tagline.shine-to-white { overflow: visible; }
     .tagline.shine-to-white::before {
       content: attr(data-text);
@@ -216,6 +240,7 @@
     @media (max-width: 768px) {
       .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
       .brand-line+.brand-line { margin-top: -0.26em; }
+      #marsVisual img{ width:95vw; margin-bottom:7vh; }
     }
   </style>
 </head>
@@ -223,6 +248,12 @@
 <body>
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
+
+    <!-- 새로 추가: Mars 일러스트(가장자리 블러 마스크) -->
+    <figure id="marsVisual" aria-hidden="true">
+      <img src="/mars.png" alt="A handsome Joseon scholar standing on Mars (anime style)"
+           decoding="async" fetchpriority="low">
+    </figure>
 
     <h1 class="brand" id="brand">
       <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
@@ -267,6 +298,8 @@
       const particleCanvas = document.getElementById('particleCanvas');
       const pctx = particleCanvas.getContext('2d');
       const particleShowDuration = 10000;
+
+      const marsVisual = document.getElementById('marsVisual'); // ★ 추가
 
       // NEW: tagline ref
       const tagline = document.querySelector('.tagline');
@@ -584,6 +617,8 @@
 
           if (particlePhase === 'disperse' && !anyAlive) {
             body.classList.add('show-background');
+            /* ★ 파티클 쇼 종료 → Mars 비주얼 페이드인 */
+            if (marsVisual) marsVisual.classList.add('on');
             particlePhase = 'done';
             return;
           }
@@ -616,7 +651,7 @@
         e.preventDefault();
         const dy = e.deltaY;
         if (p < 0.5) {
-          setProgress(p + dy * accel);
+          setProgress(p + dy * 0.0018);
           if (p >= 0.5) startAutoAnimation();
         } else if (!autoAnimating) {
           startAutoAnimation();
@@ -630,7 +665,7 @@
         if (typeof onTouchMove.lastY !== "undefined") {
           const dy = onTouchMove.lastY - currentY;
           if (p < 0.5) {
-            setProgress(p + dy * accel * 2);
+            setProgress(p + dy * 0.0018 * 2);
             if (p >= 0.5) startAutoAnimation();
           } else if (!autoAnimating && dy > 0) {
             startAutoAnimation();
