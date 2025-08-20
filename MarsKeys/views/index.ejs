@@ -1,15 +1,27 @@
 <!DOCTYPE html>
-<html lang="ko">
+<% const isKorean = (lang || '').toLowerCase().startsWith('ko'); %>
+<html lang="<%= lang %>">
+  <%- include('partials/head') %>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>점들이 태극문양이 된 후에 사라지는 애니메이션</title>
+  <title>
+    <% if (isSearch) { %>
+      <%= locale.search_results_for %>: <%= searchKeyword %>
+    <% } else if (selectedCategory) { %>
+      <%= selectedCategory %>
+    <% } else { %>
+      <%= locale.marskeys_title %>
+    <% } %>
+  </title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
+  <% if (isKorean) { %>
+    <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
+  <% } %>
 
   <style>
     :root {
@@ -97,7 +109,7 @@
       position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.86);
       opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
       letter-spacing: 0.01em; max-width: 92vw; white-space: nowrap;
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7,.2, 1), text-shadow 1s ease-out;
+      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
       will-change: opacity, transform, text-shadow; pointer-events: none; z-index: 60; text-shadow: 0 0 0 transparent;
     }
     #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
@@ -114,24 +126,24 @@
   </style>
 </head>
 
-<body class="lang-ko">
+<body class="<%= isKorean ? 'lang-ko' : '' %>">
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
     <canvas id="lineViz"></canvas>
 
     <h1 class="brand" id="brand">
-      <span class="brand-line" data-c="red"><span class="ink" id="mars">MARS</span></span>
-      <span class="brand-line" data-c="blue"><span class="ink" id="keys">KEYS</span></span>
+      <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
+      <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
     </h1>
 
-    <p class="tagline shine-to-white" data-text="GAME MUSIC STUDIO">GAME MUSIC STUDIO</p>
+    <p class="tagline shine-to-white" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
 
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-    <div id="welcome">WELCOME</div>
+    <div id="welcome"><%= locale.welcome %></div>
   </main>
 
   <div id="scrollContent" class="scrollable-content">
-    <p>GAME MUSIC STUDIO MARSKEYS에 오신 것을 환영합니다...</p>
+    <p><%= locale.game_music_studio %> <%= locale.marskeys_title %>에 오신 것을 환영합니다...</p>
     <div class="temp-box">
       <h3>우리의 서비스</h3>
       <p>게임 OST, SFX, VO, 인터랙티브 음악 시스템...</p>
@@ -494,7 +506,7 @@
       let tension    = 0.8;
       let loss       = 0.986;
       let SUBSTEPS   = 10;
-      let radiusPx   = 40;
+      let radiusPx   = 0;
       const K_MOUSE  = 1.5;
       const C_MOUSE  = 0.08;
       const HARD_FACTOR = 0.4;
@@ -718,6 +730,8 @@
         drawString();
         if(!isFinalized) requestAnimationFrame(animateString);
       }
+
+      function startLineEffect(){ /* keep */ }
 
       const ro = new ResizeObserver(() => placeLineViz());
       ro.observe(document.body);
