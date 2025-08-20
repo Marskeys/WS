@@ -604,7 +604,7 @@
         const dy = e.deltaY;
         if (p < 0.5) {
           setProgress(p + dy * 0.0018);
-          if (p >= 0.5) startAutoAnimation();
+          startAutoAnimation(); // 바로 시작
         } else if (!autoAnimating) {
           startAutoAnimation();
         }
@@ -642,7 +642,7 @@
          ============================================================ */
       const lineCanvas = document.getElementById('lineViz');
       const lctx = lineCanvas.getContext('2d');
-      const LINE_CONDENSE_DURATION = 1500;
+      const LINE_CONDENSE_DURATION = 800;
 
       function placeLineViz() {
         const wrapRect = wrap.getBoundingClientRect();
