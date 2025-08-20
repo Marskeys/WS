@@ -1,1006 +1,822 @@
 <!DOCTYPE html>
-<html lang="ko">
+<% const isKorean = (lang || '').toLowerCase().startsWith('ko'); %>
+<html lang="<%= lang %>">
+  <%- include('partials/head') %>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MarsKeys - 게임 & 음악 스튜디오</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+    <% if (isSearch) { %>
+      <%= locale.search_results_for %>: <%= searchKeyword %>
+    <% } else if (selectedCategory) { %>
+      <%= selectedCategory %>
+    <% } else { %>
+      <%= locale.marskeys_title %>
+    <% } %>
+  </title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <% if (isKorean) { %>
     <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
+  <% } %>
 
-    <style>
-        :root {
-            --bg: #0e1016;
-            --text: #eef2f8;
-            --muted: #9aa3b2;
-            --fill-int: 0%;
-            --pastel-red-1: #ff8aa1;
-            --pastel-blue-1: #78aaff;
-            --pastel-red-2: #ff6b7a;
-            --pastel-blue-2: #5ea1ff;
-            --pastel-red-3: #ff9db0;
-            --pastel-blue-3: #b2d1ff;
-        }
+  <style>
+    :root {
+      --bg: #0e1016;
+      --text: #eef2f8;
+      --muted: #9aa3b2;
+      --fill-int: 0%;
+      --pastel-red-1: #ff8aa1;
+      --pastel-blue-1: #78aaff;
+      --pastel-red-2: #ff6b7a;
+      --pastel-blue-2: #5ea1ff;
+      --pastel-red-3: #ff9db0;
+      --pastel-blue-3: #b2d1ff;
+    }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * { box-sizing: border-box }
 
-        body {
-            margin: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Noto Sans KR', 'system-ui', -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
-            overflow-y: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            transition: background-image 2s ease;
-        }
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-        body.lang-ko #welcome {
-            font-family: 'Montserrat', 'Michroma', system-ui, sans-serif;
-            font-weight: 400;
-        }
+    /* 한국어일 때 환영문(#welcome)만 'Montserrat'로 변경 */
+    body.lang-ko #welcome {
+      font-family: 'Montserrat', 'Michroma', system-ui, sans-serif;
+      font-weight: 400;
+    }
 
-        body.show-background {
-            background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: cover;
-            background-attachment: fixed;
-        }
+    body.show-background {
+      background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      background-attachment: fixed;
+      transition: background-image 2s ease;
+    }
 
-        /* 메인 로딩 화면 */
-        .wrap {
-            position: relative;
-            min-height: 100svh;
-            padding: 5vw;
-            overflow: visible;
-        }
+    .wrap {
+      position: relative;
+      min-height: 100svh;
+      padding: 5vw;
+      overflow: visible;
+    }
 
-        .brand {
-            margin: 0;
-            line-height: 1;
-            font-family: "Michroma", system-ui, sans-serif;
-            position: relative;
-            z-index: 40;
-        }
+    .brand {
+      margin: 0;
+      line-height: 1;
+      font-family: "Michroma", system-ui, sans-serif;
+      position: relative;
+      z-index: 40;
+    }
 
-        .brand-line {
-            display: block;
-            font-size: clamp(56px, min(14vw, 28vh), 200px);
-            line-height: 1.06;
-            padding-bottom: 0.18em;
-            overflow: visible;
-            position: relative;
-        }
-        .brand-line + .brand-line {
-            margin-top: -0.32em;
-        }
+    .brand-line {
+      display: block;
+      font-size: clamp(56px, min(14vw, 28vh), 200px);
+      line-height: 1.06;
+      padding-bottom: 0.18em;
+      overflow: visible;
+      position: relative;
+    }
+    .brand-line+.brand-line { margin-top: -0.32em; }
 
-        .ink {
-            display: inline-block;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            background-repeat: no-repeat, no-repeat;
-            background-size: var(--fill-int) 100%, 100% 100%;
-            background-image: var(--grad), linear-gradient(#fff, #fff);
-            letter-spacing: 0;
-            padding-bottom: .28em;
-            transform: translateZ(0);
-        }
+    .ink{
+      display:inline-block; color:transparent; -webkit-text-fill-color:transparent;
+      -webkit-background-clip:text; background-clip:text;
+      background-repeat:no-repeat,no-repeat;
+      background-size:var(--fill-int) 100%, 100% 100%;
+      background-image:var(--grad), linear-gradient(#fff,#fff);
+      letter-spacing:0; padding-bottom:.28em; transform:translateZ(0);
+    }
+    .brand-line:nth-child(1) .ink{ --grad:linear-gradient(180deg,var(--pastel-red-1),var(--pastel-red-2),var(--pastel-red-3)); }
+    .brand-line:nth-child(2) .ink{ --grad:linear-gradient(180deg,var(--pastel-blue-1),var(--pastel-blue-2),var(--pastel-blue-3)); }
 
-        .brand-line:nth-child(1) .ink {
-            --grad: linear-gradient(180deg, var(--pastel-red-1), var(--pastel-red-2), var(--pastel-red-3));
-        }
+    .tagline {
+      font-size: clamp(16px, 2.6vw, 28px);
+      font-weight: 600;
+      margin: 1rem 0 0;
+      color: var(--muted);
+      position: relative;
+      transition: color .55s ease;
+      will-change: color;
+    }
+    .tagline.shine-to-white { overflow: visible; }
+    .tagline.shine-to-white::before {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,.16) 32%,
+        rgba(255,255,255,.85) 50%,
+        rgba(255,255,255,.16) 68%,
+        rgba(255,255,255,0) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      transform: translateX(-120%) skewX(-18deg);
+      filter: blur(.3px);
+      animation: shine-sweep 900ms cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .tagline.to-white { color: #fff; }
+    @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
 
-        .brand-line:nth-child(2) .ink {
-            --grad: linear-gradient(180deg, var(--pastel-blue-1), var(--pastel-blue-2), var(--pastel-blue-3));
-        }
+    #counter {
+      position: absolute;
+      right: 5vw;
+      bottom: clamp(16px, 6vh, 48px);
+      text-align: right;
+      font-size: clamp(28px, min(7vw, 10vh), 96px);
+      font-family: "Michroma", system-ui, sans-serif;
+      font-weight: 900;
+      color: white;
+      user-select: none;
+      pointer-events: none;
+      transition: opacity .6s ease;
+      z-index: 40;
+      margin: 0;
+    }
 
-        .tagline {
-            font-size: clamp(16px, 2.6vw, 28px);
-            font-weight: 600;
-            margin: 1rem 0 0;
-            color: var(--muted);
-            position: relative;
-            transition: color .55s ease;
-            will-change: color;
-        }
+    #particleCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 50;
+    }
 
-        .tagline.shine-to-white {
-            overflow: visible;
-        }
+    #lineViz {
+      position: fixed;
+      pointer-events: none;
+      z-index: 55;
+    }
 
-        .tagline.shine-to-white::before {
-            content: attr(data-text);
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .16) 32%, rgba(255, 255, 255, .85) 50%, rgba(255, 255, 255, .16) 68%, rgba(255, 255, 255, 0) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            transform: translateX(-120%) skewX(-18deg);
-            filter: blur(.3px);
-            animation: shine-sweep 900ms cubic-bezier(.2, .7, .2, 1) forwards;
-        }
+    #welcome {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.86);
+      opacity: 0;
+      font-size: clamp(48px, 10vw, 130px);
+      font-family: 'Montserrat', system-ui, sans-serif;
+      color: white;
+      letter-spacing: 0.01em;
+      max-width: 92vw;
+      white-space: nowrap;
+      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
+      will-change: opacity, transform, text-shadow;
+      pointer-events: none;
+      z-index: 60;
+      text-shadow: 0 0 0 transparent;
+    }
+    #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
+    #welcome.welcome-glow {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                   0 0 40px rgba(255, 255, 255, 0.6),
+                   0 0 60px rgba(255, 255, 255, 0.4);
+    }
 
-        .tagline.to-white {
-            color: #fff;
-        }
+    .scrollable-content {
+      padding: 0 5vw 6rem;
+      text-align: center;
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+    .scrollable-content p {
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.8;
+      color: var(--muted);
+      font-size: clamp(14px, 2vw, 18px);
+    }
+    .scrollable-content .temp-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 900px;
+    }
 
-        @keyframes shine-sweep {
-            to {
-                transform: translateX(120%) skewX(-18deg);
-            }
-        }
-
-        #counter {
-            position: absolute;
-            right: 5vw;
-            bottom: clamp(16px, 6vh, 48px);
-            text-align: right;
-            font-size: clamp(28px, min(7vw, 10vh), 96px);
-            font-family: "Michroma", system-ui, sans-serif;
-            font-weight: 900;
-            color: white;
-            user-select: none;
-            pointer-events: none;
-            transition: opacity .6s ease;
-            z-index: 40;
-            margin: 0;
-        }
-
-        #particleCanvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        #lineViz {
-            position: fixed;
-            pointer-events: none;
-            z-index: 55;
-        }
-
-        #welcome {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(0.86);
-            opacity: 0;
-            font-size: clamp(48px, 10vw, 130px);
-            font-family: 'Montserrat', system-ui, sans-serif;
-            color: white;
-            letter-spacing: 0.01em;
-            max-width: 92vw;
-            white-space: nowrap;
-            transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
-            will-change: opacity, transform, text-shadow;
-            pointer-events: none;
-            z-index: 60;
-            text-shadow: 0 0 0 transparent;
-        }
-
-        #welcome.visible {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.22);
-        }
-
-        #welcome.welcome-glow {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4);
-        }
-
-        /* 스크롤 가능한 콘텐츠 */
-        .scrollable-content {
-            padding: 0 5vw 6rem;
-            text-align: center;
-            display: none;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .scrollable-content h2,
-        .scrollable-content h3 {
-            font-family: 'Michroma', sans-serif;
-            font-size: clamp(24px, 4vw, 42px);
-            color: var(--text);
-            margin-top: 4rem;
-        }
-
-        .scrollable-content p {
-            max-width: 800px;
-            margin: 0 auto 1.5rem;
-            line-height: 1.8;
-            color: var(--muted);
-            font-size: clamp(14px, 2vw, 18px);
-        }
-        
-        /* 섹션별 스타일 */
-        .section {
-            padding: 4rem 0;
-        }
-        .section-intro {
-            padding-top: 2rem;
-        }
-        .section-portfolio {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-        }
-
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .portfolio-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            overflow: hidden;
-            text-align: left;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .portfolio-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        .portfolio-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .portfolio-item-content {
-            padding: 1.5rem;
-        }
-        .portfolio-item h4 {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0 0 0.5rem;
-            font-size: 1.2rem;
-            color: var(--pastel-red-2);
-        }
-        .portfolio-item p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* 문의 및 푸터 */
-        .contact-box {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 900px;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 3rem 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 4rem;
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-        
-        .footer a {
-            color: var(--text);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .footer a:hover {
-            color: var(--pastel-blue-2);
-        }
-
-        @media (max-width: 768px) {
-            .brand-line {
-                line-height: 1.08;
-                padding-bottom: 0.16em;
-            }
-            .brand-line + .brand-line {
-                margin-top: -0.26em;
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+      .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
+      .brand-line+.brand-line { margin-top: -0.26em; }
+    }
+  </style>
 </head>
 
-<body class="lang-ko">
-    <main class="wrap" id="wrap">
-        <canvas id="particleCanvas"></canvas>
-        <canvas id="lineViz"></canvas>
+<body class="<%= isKorean ? 'lang-ko' : '' %>">
+  <main class="wrap" id="wrap">
+    <canvas id="particleCanvas"></canvas>
+    <canvas id="lineViz"></canvas>
 
-        <h1 class="brand" id="brand">
-            <span class="brand-line" data-c="red"><span class="ink" id="mars">MARS</span></span>
-            <span class="brand-line" data-c="blue"><span class="ink" id="keys">KEYS</span></span>
-        </h1>
+    <h1 class="brand" id="brand">
+      <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
+      <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
+    </h1>
 
-        <p class="tagline shine-to-white" data-text="GAME & MUSIC STUDIO">GAME & MUSIC STUDIO</p>
+    <p class="tagline shine-to-white" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
 
-        <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-        <div id="welcome">MARSKEYS</div>
-    </main>
+    <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
+    <div id="welcome"><%= locale.welcome %></div>
+  </main>
 
-    <div id="scrollContent" class="scrollable-content">
-        <section class="section section-intro">
-            <h2>우주를 담은 소리, <br>MARSKEYS가 만들어냅니다.</h2>
-            <p>
-                MarsKeys는 몰입감 넘치는 게임 경험을 완성하기 위한 최고의 음악과 사운드를 제공하는 전문 스튜디오입니다. 
-                게임 속 세계를 더욱 풍성하게 만들어 줄 오리지널 사운드트랙, 효과음, 음성 녹음 등 모든 오디오 작업을 책임집니다.
-            </p>
-        </section>
-
-        <section class="section section-services">
-            <h3>우리의 서비스</h3>
-            <p>게임 오디오 제작의 모든 과정을 MarsKeys와 함께하세요.</p>
-            <div class="portfolio-grid">
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1596207851147-32b010d8a556?q=80&w=1740&auto=format&fit=crop" alt="게임 OST">
-                    <div class="portfolio-item-content">
-                        <h4>오리지널 사운드트랙 (OST)</h4>
-                        <p>장르와 테마에 맞는 독창적인 음악으로 게임의 분위기를 극대화합니다.</p>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1598424268688-66df7521096b?q=80&w=1740&auto=format&fit=crop" alt="사운드 이펙트">
-                    <div class="portfolio-item-content">
-                        <h4>사운드 이펙트 (SFX)</h4>
-                        <p>타격음, 환경음, UI 사운드 등 게임 플레이의 재미를 더하는 효과음을 제작합니다.</p>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1506540443916-2917d4722668?q=80&w=1740&auto=format&fit=crop" alt="인터랙티브 음악">
-                    <div class="portfolio-item-content">
-                        <h4>인터랙티브 음악</h4>
-                        <p>실시간으로 변화하는 플레이 상황에 맞춰 음악이 역동적으로 반응하게 만듭니다.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section section-portfolio">
-            <h3>프로젝트 포트폴리오</h3>
-            <p>우리가 참여한 다양한 프로젝트들을 만나보세요.</p>
-            <div class="portfolio-grid">
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=1740&auto=format&fit=crop" alt="판타지 RPG">
-                    <div class="portfolio-item-content">
-                        <h4>프로젝트 아르카나 (Fantasy RPG)</h4>
-                        <p>웅장한 오케스트라 사운드와 신비로운 테마 음악을 담당했습니다.</p>
-                    </div>
-                </div>
-                <div class="portfolio-item">
-                    <img src="https://images.unsplash.com/photo-1518171120400-b6f005c2a381?q=80&w=1740&auto=format&fit=crop" alt="SF 어드벤처">
-                    <div class="portfolio-item-content">
-                        <h4>프로젝트 제로 (Sci-Fi Adventure)</h4>
-                        <p>미래적인 신시사이저와 긴장감 넘치는 비트로 우주 분위기를 연출했습니다.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section section-contact">
-            <h3>문의하기</h3>
-            <p>협업 및 프로젝트 문의는 언제든지 환영합니다. 함께 멋진 작품을 만들어 가요!</p>
-            <div class="contact-box">
-                <p><strong>이메일:</strong> contact@marskeys.studio</p>
-                <p><strong>전화:</strong> 070-1234-5678</p>
-            </div>
-        </section>
+  <div id="scrollContent" class="scrollable-content">
+    <p><%= locale.game_music_studio %> <%= locale.marskeys_title %>에 오신 것을 환영합니다...</p>
+    <div class="temp-box">
+      <h3>우리의 서비스</h3>
+      <p>게임 OST, SFX, VO, 인터랙티브 음악 시스템...</p>
     </div>
-    
-    <footer class="footer">
-        <p>&copy; 2025 MarsKeys. All Rights Reserved.</p>
-        <p><a href="#">개인정보처리방침</a> | <a href="#">이용약관</a></p>
-    </footer>
+    <div class="temp-box">
+      <h3>포트폴리오</h3>
+      <p>RPG, SF 어드벤처 등...</p>
+    </div>
+    <div class="temp-box">
+      <h3>문의</h3>
+      <p>협업 및 프로젝트 문의는 언제든지 환영합니다.</p>
+    </div>
+    <div style="height:60vh;"></div>
+    <div class="temp-box">
+      <p>마지막 임시 콘텐츠</p>
+    </div>
+  </div>
 
-    <script>
-        (function() {
-            const html = document.documentElement;
-            const body = document.body;
-            const wrap = document.getElementById('wrap');
-            const counterEl = document.getElementById("counter");
-            const welcome = document.getElementById("welcome");
-            const scrollContent = document.getElementById("scrollContent");
-            const particleCanvas = document.getElementById('particleCanvas');
-            const pctx = particleCanvas.getContext('2d');
-            const tagline = document.querySelector('.tagline');
-            
-            tagline.addEventListener('animationend', (event) => {
-                if (event.animationName === 'shine-sweep') {
-                    tagline.classList.add('to-white');
-                }
-            });
+  <script>
+    (function() {
+      const html = document.documentElement;
+      const body = document.body;
+      const wrap = document.getElementById('wrap');
+      const counterEl = document.getElementById("counter");
+      const welcome = document.getElementById("welcome");
+      const scrollContent = document.getElementById("scrollContent");
+      const particleCanvas = document.getElementById('particleCanvas');
+      const pctx = particleCanvas.getContext('2d');
 
-            // Progress
-            let p = 0;
-            let autoAnimating = false,
-                isFinalized = false,
-                particlesGenerated = false;
+      const tagline = document.querySelector('.tagline');
+      
+      // 💡 추가된 부분: 애니메이션이 끝난 후 to-white 클래스 추가
+      tagline.addEventListener('animationend', (event) => {
+        if (event.animationName === 'shine-sweep') {
+            tagline.classList.add('to-white');
+        }
+      });
 
-            const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-            const CSS = getComputedStyle(document.documentElement);
-            const COL_RED = (CSS.getPropertyValue('--pastel-red-2') || '#ff6b7a').trim();
-            const COL_BLUE = (CSS.getPropertyValue('--pastel-blue-2') || '#5ea1ff').trim();
+      // Progress
+      let p = 0;
+      let autoAnimating = false,
+          isFinalized = false,
+          particlesGenerated = false;
 
-            // Particles
-            let particles = [];
-            const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
-            let particlePhase = 'idle';
-            let phaseStartTime = 0;
+      const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+      const CSS = getComputedStyle(document.documentElement);
+      const COL_RED = (CSS.getPropertyValue('--pastel-red-2') || '#ff6b7a').trim();
+      const COL_BLUE = (CSS.getPropertyValue('--pastel-blue-2') || '#5ea1ff').trim();
 
-            // 신호선 애니메이션 상태 변수
-            let linePhase = 'waving';
-            let linePhaseStartTime = 0;
+      // Particles
+      let particles = [];
+      const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
+      let particlePhase = 'idle';
+      let phaseStartTime = 0;
 
-            function resizeParticleCanvas() {
-                const dpr = Math.max(1, window.devicePixelRatio || 1);
-                const rect = wrap.getBoundingClientRect();
-                particleCanvas.width = Math.floor(rect.width * dpr);
-                particleCanvas.height = Math.floor(rect.height * dpr);
-                particleCanvas.style.width = rect.width + 'px';
-                particleCanvas.style.height = rect.height + 'px';
-                pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                pctx.clearRect(0, 0, rect.width, rect.height);
-            }
+      // 신호선 애니메이션 상태 변수
+      let linePhase = 'waving';
+      let linePhaseStartTime = 0;
 
-            function setProgress(v) {
-                p = Math.max(0, Math.min(1, v));
-                const pct = Math.round(p * 100);
-                html.style.setProperty('--fill-int', pct + '%');
-                if (!isFinalized) {
-                    counterEl.textContent = pct + "%";
-                    counterEl.setAttribute('aria-valuenow', String(pct));
-                }
-                if (p >= 1 && !particlesGenerated && !isFinalized) {
-                    generateParticles();
-                    fadeOutText();
-                    showWelcome();
-                    runParticleShow();
-                    startLineEffect();
-                }
-            }
+      function resizeParticleCanvas() {
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        const rect = wrap.getBoundingClientRect();
+        particleCanvas.width = Math.floor(rect.width * dpr);
+        particleCanvas.height = Math.floor(rect.height * dpr);
+        particleCanvas.style.width = rect.width + 'px';
+        particleCanvas.style.height = rect.height + 'px';
+        pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        pctx.clearRect(0, 0, rect.width, rect.height);
+      }
 
-            function startAutoAnimation() {
-                if (autoAnimating || isFinalized) return;
-                autoAnimating = true;
-                function step() {
-                    if (p < 1) {
-                        p = Math.min(1, p + 0.005);
-                        setProgress(p);
-                        requestAnimationFrame(step);
-                    } else {
-                        autoAnimating = false;
-                    }
-                }
-                step();
-            }
+      function setProgress(v) {
+        p = Math.max(0, Math.min(1, v));
+        const pct = Math.round(p * 100);
+        html.style.setProperty('--fill-int', pct + '%');
+        if (!isFinalized) {
+          counterEl.textContent = pct + "%";
+          counterEl.setAttribute('aria-valuenow', String(pct));
+        }
+        if (p >= 1 && !particlesGenerated && !isFinalized) {
+          generateParticles();
+          fadeOutText();
+          showWelcome();
+          runParticleShow();
+          startLineEffect(); // 신호선 애니메이션 시작
+        }
+      }
 
-            function drawTextToCanvas(text, fontSize, fontFamily) {
-                const offCanvas = document.createElement('canvas');
-                const offCtx = offCanvas.getContext('2d');
-                offCtx.font = `${fontSize}px ${fontFamily}`;
-                const metrics = offCtx.measureText(text);
-                const actualHeight = (metrics.actualBoundingBoxAscent || fontSize) + (metrics.actualBoundingBoxDescent || fontSize * 0.25);
-                const width = Math.ceil(metrics.width);
-                offCanvas.width = Math.ceil(width);
-                offCanvas.height = Math.ceil(actualHeight);
-                offCtx.font = `${fontSize}px ${fontFamily}`;
-                offCtx.fillStyle = 'white';
-                offCtx.textBaseline = 'top';
-                offCtx.fillText(text, 0, 0);
-                return { canvas: offCanvas };
-            }
+      function startAutoAnimation() {
+        if (autoAnimating || isFinalized) return;
+        autoAnimating = true;
+        function step() {
+          if (p < 1) {
+            p = Math.min(1, p + 0.005);
+            setProgress(p);
+            requestAnimationFrame(step);
+          } else {
+            autoAnimating = false;
+          }
+        }
+        step();
+      }
 
-            function computeStepForTarget(canvas, target) {
-                const area = canvas.width * canvas.height;
-                const estGlyphArea = area * 0.45;
-                return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
-            }
+      function drawTextToCanvas(text, fontSize, fontFamily) {
+        const offCanvas = document.createElement('canvas');
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.font = `${fontSize}px ${fontFamily}`;
+        const metrics = offCtx.measureText(text);
+        const actualHeight = (metrics.actualBoundingBoxAscent || fontSize) + (metrics.actualBoundingBoxDescent || fontSize * 0.25);
+        const width = Math.ceil(metrics.width);
+        offCanvas.width = Math.ceil(width);
+        offCanvas.height = Math.ceil(actualHeight);
+        offCtx.font = `${fontSize}px ${fontFamily}`;
+        offCtx.fillStyle = 'white';
+        offCtx.textBaseline = 'top';
+        offCtx.fillText(text, 0, 0);
+        return { canvas: offCanvas };
+      }
 
-            function generateParticles() {
-                particlesGenerated = true;
-                particles.length = 0;
-                const wrapRect = wrap.getBoundingClientRect();
-                const lines = [
-                    { el: document.getElementById('mars').parentElement, color: 'red', textEl: document.getElementById('mars') },
-                    { el: document.getElementById('keys').parentElement, color: 'blue', textEl: document.getElementById('keys') }
-                ];
-                const centerX = wrapRect.width * 0.5;
-                const centerY = wrapRect.height * 0.5;
+      function computeStepForTarget(canvas, target) {
+        const area = canvas.width * canvas.height;
+        const estGlyphArea = area * 0.45;
+        return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
+      }
 
-                const TARGET_PER_LINE = IS_MOBILE ? 4000 : 1500;
+      function generateParticles() {
+        particlesGenerated = true;
+        particles.length = 0;
+        const wrapRect = wrap.getBoundingClientRect();
+        const lines = [
+          { el: document.getElementById('mars').parentElement, color: 'red',  textEl: document.getElementById('mars') },
+          { el: document.getElementById('keys').parentElement, color: 'blue', textEl: document.getElementById('keys') }
+        ];
+        const centerX = wrapRect.width * 0.5;
+        const centerY = wrapRect.height * 0.5;
 
-                lines.forEach(({ el, color, textEl }) => {
-                    const rect = el.getBoundingClientRect();
-                    const style = getComputedStyle(textEl);
-                    const fontSize = parseFloat(style.fontSize);
-                    const fontFamily = style.fontFamily;
-                    const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
-                    const ctx = canvas.getContext('2d');
-                    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const data = img.data;
+        const TARGET_PER_LINE = IS_MOBILE ? 4000 : 1500;
 
-                    const STEP = computeStepForTarget(canvas, TARGET_PER_LINE);
+        lines.forEach(({ el, color, textEl }) => {
+          const rect = el.getBoundingClientRect();
+          const style = getComputedStyle(textEl);
+          const fontSize = parseFloat(style.fontSize);
+          const fontFamily = style.fontFamily;
+          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
+          const ctx = canvas.getContext('2d');
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = img.data;
 
-                    for (let y = 0; y < canvas.height; y += STEP) {
-                        for (let x = 0; x < canvas.width; x += STEP) {
-                            const idx = (y * canvas.width + x) * 4;
-                            if (data[idx + 3] > 128) {
-                                const px = rect.left - wrapRect.left + x;
-                                const py = rect.top - wrapRect.top + y;
+          const STEP = computeStepForTarget(canvas, TARGET_PER_LINE);
 
-                                const dx = px - centerX;
-                                const dy = py - centerY;
-                                const dist = Math.hypot(dx, dy) + 0.0001;
-                                const boost = 0.6 + Math.random() * 1.1;
+          for (let y = 0; y < canvas.height; y += STEP) {
+            for (let x = 0; x < canvas.width; x += STEP) {
+              const idx = (y * canvas.width + x) * 4;
+              if (data[idx + 3] > 128) {
+                const px = rect.left - wrapRect.left + x;
+                const py = rect.top - wrapRect.top + y;
 
-                                particles.push({
-                                    x: px,
-                                    y: py,
-                                    vx: (Math.random() - 0.5) * 0.6 + (dx / dist) * boost,
-                                    vy: (Math.random() - 0.5) * 0.6 + (dy / dist) * boost,
-                                    alpha: 1,
-                                    color,
-                                    tx: null,
-                                    ty: null,
-                                    reached: false
-                                });
-                            }
-                        }
-                    }
+                const dx = px - centerX;
+                const dy = py - centerY;
+                const dist = Math.hypot(dx, dy) + 0.0001;
+                const boost = 0.6 + Math.random() * 1.1;
+
+                particles.push({
+                  x: px, y: py,
+                  vx: (Math.random() - 0.5) * 0.6 + (dx / dist) * boost,
+                  vy: (Math.random() - 0.5) * 0.6 + (dy / dist) * boost,
+                  alpha: 1, color,
+                  tx: null, ty: null, reached: false
                 });
+              }
+            }
+          }
+        });
 
-                if (particles.length > (IS_MOBILE ? 8000 : 3000)) {
-                    const cap = IS_MOBILE ? 8000 : 3000;
-                    const sampled = [];
-                    for (let i = 0; i < cap; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
-                    particles = sampled;
+        if (particles.length > (IS_MOBILE ? 8000 : 3000)) {
+          const cap = IS_MOBILE ? 8000 : 3000;
+          const sampled = [];
+          for (let i = 0; i < cap; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
+          particles = sampled;
+        }
+      }
+
+      function fadeOutText() {
+        document.querySelectorAll('.ink').forEach(el => {
+          el.style.transition = 'opacity .3s ease';
+          el.style.opacity = '0';
+        });
+      }
+
+      function showWelcome() {
+        setTimeout(() => { counterEl.style.opacity = 0; }, 350);
+        setTimeout(() => {
+          welcome.classList.add("visible");
+          welcome.classList.add("welcome-glow");
+        }, 900);
+        setTimeout(() => {
+          scrollContent.style.display = "block";
+          isFinalized = true;
+          body.style.overflowY = "auto";
+        }, 1500);
+      }
+
+      function buildTaegeukTargets(minRed, minBlue) {
+        const rect = wrap.getBoundingClientRect();
+        const cx = rect.width * 0.5, cy = rect.height * 0.5;
+        const R = Math.min(rect.width, rect.height) * 0.26;
+
+        let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
+
+        function sample(stepVal) {
+          const red = [], blue = [];
+          const rSmall = R * 0.5, rSmall2 = rSmall * rSmall;
+          const offsetX = R * 0.5;
+
+          for (let yy = -R; yy <= R; yy += stepVal) {
+            for (let xx = -R; xx <= R; xx += stepVal) {
+              const x = xx, y = yy;
+              if (x * x + y * y > R * R) continue;
+
+              let targetColor = null;
+              const distLeft2  = (x + offsetX) * (x + offsetX) + y * y;
+              const distRight2 = (x - offsetX) * (x - offsetX) + y * y;
+
+              if (distLeft2 <= rSmall2)      targetColor = 'red';
+              else if (distRight2 <= rSmall2) targetColor = 'blue';
+              else                             targetColor = (y < 0) ? 'red' : 'blue';
+
+              if (targetColor === 'red') red.push({ x: cx + x, y: cy + y });
+              else                        blue.push({ x: cx + x, y: cy + y });
+            }
+          }
+          return { red, blue };
+        }
+
+        let targets = sample(step);
+        while ((targets.red.length < minRed || targets.blue.length < minBlue) && step > 2) {
+          step = Math.max(2, Math.floor(step * 0.85));
+          targets = sample(step);
+        }
+
+        function downsample(arr, n) {
+          if (arr.length <= n) return arr;
+          const out = [];
+          for (let i = 0; i < n; i++) out.push(arr[(Math.random() * arr.length) | 0]);
+          return out;
+        }
+        const capRed  = Math.max(minRed  * 1.15 | 0, minRed);
+        const capBlue = Math.max(minBlue * 1.15 | 0, minBlue);
+        if (targets.red.length  > capRed)  targets.red  = downsample(targets.red,  capRed);
+        if (targets.blue.length > capBlue) targets.blue = downsample(targets.blue, capBlue);
+
+        function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [a[i],a[j]]=[a[j],a[i]]; } }
+        shuffle(targets.red); shuffle(targets.blue);
+        return targets;
+      }
+
+      function assignTaegeukTargets() {
+        const reds = particles.filter(pt => pt.color === 'red');
+        const blues = particles.filter(pt => pt.color === 'blue');
+        const targets = buildTaegeukTargets(reds.length, blues.length);
+        function assign(listPts, listTgts) {
+          for (let i = 0; i < listPts.length; i++) {
+            const t = listTgts[i % listTgts.length];
+            listPts[i].tx = t.x; listPts[i].ty = t.y; listPts[i].reached = false;
+          }
+        }
+        assign(reds, targets.red);
+        assign(blues, targets.blue);
+      }
+
+      function runParticleShow() {
+        particlePhase = 'explode';
+        phaseStartTime = performance.now();
+
+        function frame(now) {
+          const rect = wrap.getBoundingClientRect();
+          const W = rect.width, H = rect.height;
+          pctx.clearRect(0, 0, W, H);
+
+          if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
+            assignTaegeukTargets();
+            particlePhase = 'morph';
+            phaseStartTime = now;
+          } else if (particlePhase === 'morph') {
+            const allReached = particles.every(pt => pt.reached);
+            if (allReached || (now - phaseStartTime) > 1600) {
+              particlePhase = 'hold';
+              phaseStartTime = now;
+            }
+          } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
+            welcome.classList.remove("welcome-glow");
+            // 💡 원래 코드에서 클래스를 추가하는 부분.
+            //    이제 HTML에 클래스가 직접 추가되었으므로 이 부분은 필요 없습니다.
+            // if (tagline) {
+            //   tagline.classList.add('shine-to-white');
+            //   setTimeout(() => tagline.classList.add('to-white'), 900);
+            // }
+            for (const pt of particles) {
+              const ang = Math.random() * Math.PI * 2;
+              const spd = 0.05 + Math.random() * 0.1;
+              pt.vx = Math.cos(ang) * spd;
+              pt.vy = Math.sin(ang) * spd;
+              pt.reached = false;
+            }
+            particlePhase = 'disperse';
+            phaseStartTime = now;
+          }
+
+          let anyAlive = false;
+          for (const pt of particles) {
+            if (pt.alpha <= 0) continue;
+            anyAlive = true;
+
+            if (particlePhase === 'explode') {
+              pt.vx *= 0.985; pt.vy *= 0.985;
+              pt.vx += (Math.random() - 0.5) * 0.02;
+              pt.vy += (Math.random() - 0.5) * 0.02;
+              pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
+            } else if (particlePhase === 'morph') {
+              if (pt.tx != null) {
+                const dx = pt.tx - pt.x, dy = pt.ty - pt.y;
+                pt.vx = pt.vx * 0.82 + dx * 0.06;
+                pt.vy = pt.vy * 0.82 + dy * 0.06;
+                if (Math.hypot(dx, dy) < 1.6) {
+                  pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true;
                 }
+              }
+              pt.alpha = Math.min(1, pt.alpha + 0.01);
+            } else if (particlePhase === 'hold') {
+              const t = (now - phaseStartTime) * 0.004;
+              pt.x += Math.sin(t + (pt.tx || pt.x) * 0.01) * 0.06;
+              pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
+              pt.alpha = 1;
+            } else if (particlePhase === 'disperse') {
+              pt.vx *= 0.995; pt.vy *= 0.995;
+              if (pt.color === 'blue') pt.alpha -= 0.0015;
+              else                     pt.alpha -= 0.002;
             }
 
-            function fadeOutText() {
-                document.querySelectorAll('.ink').forEach(el => {
-                    el.style.transition = 'opacity .3s ease';
-                    el.style.opacity = '0';
-                });
+            pt.x += pt.vx; pt.y += pt.vy;
+          }
+
+          if (particlePhase === 'disperse' && !anyAlive) {
+            body.classList.add('show-background');
+            particlePhase = 'done';
+            return;
+          }
+
+          // draw
+          pctx.globalCompositeOperation = 'source-over';
+          pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
+
+          function drawPass(colorName, colorHex) {
+            pctx.shadowColor = colorHex || '#fff';
+            pctx.fillStyle = colorHex || '#fff';
+            for (const pt of particles) {
+              if (pt.alpha <= 0 || pt.color !== colorName) continue;
+              pctx.globalAlpha = Math.max(0, pt.alpha);
+              pctx.beginPath();
+              pctx.arc(pt.x, pt.y, 1.6, 0, Math.PI * 2);
+              pctx.fill();
             }
+          }
+          drawPass('red', COL_RED);
+          drawPass('blue', COL_BLUE);
 
-            function showWelcome() {
-                setTimeout(() => {
-                    counterEl.style.opacity = 0;
-                }, 350);
-                setTimeout(() => {
-                    welcome.classList.add("visible");
-                    welcome.classList.add("welcome-glow");
-                }, 900);
-                setTimeout(() => {
-                    scrollContent.style.display = "block";
-                    isFinalized = true;
-                    body.style.overflowY = "auto";
-                }, 1500);
-            }
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
 
-            function buildTaegeukTargets(minRed, minBlue) {
-                const rect = wrap.getBoundingClientRect();
-                const cx = rect.width * 0.5,
-                    cy = rect.height * 0.5;
-                const R = Math.min(rect.width, rect.height) * 0.26;
+      function onWheel(e) {
+        if (isFinalized) return;
+        e.preventDefault();
+        const dy = e.deltaY;
+        if (p < 0.5) {
+          setProgress(p + dy * 0.0018);
+          startAutoAnimation(); // 바로 시작
+        } else if (!autoAnimating) {
+          startAutoAnimation();
+        }
+      }
+      function onTouchMove(e) {
+        if (isFinalized) return;
+        const touch = e.touches[0];
+        const currentY = touch.clientY;
+        if (typeof onTouchMove.lastY !== "undefined") {
+          const dy = onTouchMove.lastY - currentY;
+          if (p < 0.5) {
+            setProgress(p + dy * 0.0018 * 2);
+            if (p >= 0.5) startAutoAnimation();
+          } else if (!autoAnimating && dy > 0) {
+            startAutoAnimation();
+          }
+        }
+        onTouchMove.lastY = currentY;
+      }
+      function onTouchEnd() { if (!isFinalized) onTouchMove.lastY = undefined; }
 
-                let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
+      window.addEventListener('resize', resizeParticleCanvas);
+      window.addEventListener('wheel', onWheel, { passive: false });
+      window.addEventListener('touchstart', (e) => { onTouchMove.lastY = e.touches[0].clientY; });
+      window.addEventListener('touchmove', onTouchMove, { passive: false });
+      window.addEventListener('touchend', onTouchEnd);
 
-                function sample(stepVal) {
-                    const red = [],
-                        blue = [];
-                    const rSmall = R * 0.5,
-                        rSmall2 = rSmall * rSmall;
-                    const offsetX = R * 0.5;
+      resizeParticleCanvas();
+      setProgress(0);
 
-                    for (let yy = -R; yy <= R; yy += stepVal) {
-                        for (let xx = -R; xx <= R; xx += stepVal) {
-                            const x = xx,
-                                y = yy;
-                            if (x * x + y * y > R * R) continue;
+      /* ============================================================
+         🔊 Mars/Keys 사이 ‘고정’ 오디오 파형 라인
+         - 레이아웃 영향 없음 (position: fixed)
+         - 왼쪽 베이스가 더 길고, 오른쪽은 짧게
+         ============================================================ */
+      const lineCanvas = document.getElementById('lineViz');
+      const lctx = lineCanvas.getContext('2d');
+      const LINE_CONDENSE_DURATION = 1000;
 
-                            let targetColor = null;
-                            const distLeft2 = (x + offsetX) * (x + offsetX) + y * y;
-                            const distRight2 = (x - offsetX) * (x - offsetX) + y * y;
+      function placeLineViz() {
+        const wrapRect = wrap.getBoundingClientRect();
+        const marsLine = document.getElementById('mars')?.parentElement;
+        const keysLine = document.getElementById('keys')?.parentElement;
+        if (!marsLine || !keysLine) return;
 
-                            if (distLeft2 <= rSmall2) targetColor = 'red';
-                            else if (distRight2 <= rSmall2) targetColor = 'blue';
-                            else targetColor = (y < 0) ? 'red' : 'blue';
+        const cssHeight = Math.max(28, Math.min(64, Math.round((marsLine.getBoundingClientRect().height + keysLine.getBoundingClientRect().height) * 0.14)));
+        let left, width;
+        let midY;
 
-                            if (targetColor === 'red') red.push({
-                                x: cx + x,
-                                y: cy + y
-                            });
-                            else blue.push({
-                                x: cx + x,
-                                y: cy + y
-                            });
-                        }
-                    }
-                    return {
-                        red,
-                        blue
-                    };
-                }
-
-                let targets = sample(step);
-                while ((targets.red.length < minRed || targets.blue.length < minBlue) && step > 2) {
-                    step = Math.max(2, Math.floor(step * 0.85));
-                    targets = sample(step);
-                }
-
-                function downsample(arr, n) {
-                    if (arr.length <= n) return arr;
-                    const out = [];
-                    for (let i = 0; i < n; i++) out.push(arr[(Math.random() * arr.length) | 0]);
-                    return out;
-                }
-                const capRed = Math.max(minRed * 1.15 | 0, minRed);
-                const capBlue = Math.max(minBlue * 1.15 | 0, minBlue);
-                if (targets.red.length > capRed) targets.red = downsample(targets.red, capRed);
-                if (targets.blue.length > capBlue) targets.blue = downsample(targets.blue, capBlue);
-
-                function shuffle(a) {
-                    for (let i = a.length - 1; i > 0; i--) {
-                        const j = (Math.random() * (i + 1)) | 0;
-                        [a[i], a[j]] = [a[j], a[i]];
-                    }
-                }
-                shuffle(targets.red);
-                shuffle(targets.blue);
-                return targets;
-            }
-
-            function assignTaegeukTargets() {
-                const reds = particles.filter(pt => pt.color === 'red');
-                const blues = particles.filter(pt => pt.color === 'blue');
-                const targets = buildTaegeukTargets(reds.length, blues.length);
-
-                function assign(listPts, listTgts) {
-                    for (let i = 0; i < listPts.length; i++) {
-                        const t = listTgts[i % listTgts.length];
-                        listPts[i].tx = t.x;
-                        listPts[i].ty = t.y;
-                        listPts[i].reached = false;
-                    }
-                }
-                assign(reds, targets.red);
-                assign(blues, targets.blue);
-            }
-
-            function runParticleShow() {
-                particlePhase = 'explode';
-                phaseStartTime = performance.now();
-
-                function frame(now) {
-                    const rect = wrap.getBoundingClientRect();
-                    const W = rect.width,
-                        H = rect.height;
-                    pctx.clearRect(0, 0, W, H);
-
-                    if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
-                        assignTaegeukTargets();
-                        particlePhase = 'morph';
-                        phaseStartTime = now;
-                    } else if (particlePhase === 'morph') {
-                        const allReached = particles.every(pt => pt.reached);
-                        if (allReached || (now - phaseStartTime) > 1600) {
-                            particlePhase = 'hold';
-                            phaseStartTime = now;
-                        }
-                    } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
-                        welcome.classList.remove("welcome-glow");
-                        for (const pt of particles) {
-                            const ang = Math.random() * Math.PI * 2;
-                            const spd = 0.05 + Math.random() * 0.1;
-                            pt.vx = Math.cos(ang) * spd;
-                            pt.vy = Math.sin(ang) * spd;
-                            pt.reached = false;
-                        }
-                        particlePhase = 'disperse';
-                        phaseStartTime = now;
-                    }
-
-                    let anyAlive = false;
-                    for (const pt of particles) {
-                        if (pt.alpha <= 0) continue;
-                        anyAlive = true;
-
-                        if (particlePhase === 'explode') {
-                            pt.vx *= 0.985;
-                            pt.vy *= 0.985;
-                            pt.vx += (Math.random() - 0.5) * 0.02;
-                            pt.vy += (Math.random() - 0.5) * 0.02;
-                            pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
-                        } else if (particlePhase === 'morph') {
-                            if (pt.tx != null) {
-                                const dx = pt.tx - pt.x,
-                                    dy = pt.ty - pt.y;
-                                pt.vx = pt.vx * 0.82 + dx * 0.06;
-                                pt.vy = pt.vy * 0.82 + dy * 0.06;
-                                if (Math.hypot(dx, dy) < 1.6) {
-                                    pt.x = pt.tx;
-                                    pt.y = pt.ty;
-                                    pt.vx = pt.vy = 0;
-                                    pt.reached = true;
-                                }
-                            }
-                            pt.alpha = Math.min(1, pt.alpha + 0.01);
-                        } else if (particlePhase === 'hold') {
-                            const t = (now - phaseStartTime) * 0.004;
-                            pt.x += Math.sin(t + (pt.tx || pt.x) * 0.01) * 0.06;
-                            pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
-                            pt.alpha = 1;
-                        } else if (particlePhase === 'disperse') {
-                            pt.vx *= 0.995;
-                            pt.vy *= 0.995;
-                            if (pt.color === 'blue') pt.alpha -= 0.0015;
-                            else pt.alpha -= 0.002;
-                        }
-
-                        pt.x += pt.vx;
-                        pt.y += pt.vy;
-                    }
-
-                    if (particlePhase === 'disperse' && !anyAlive) {
-                        body.classList.add('show-background');
-                        particlePhase = 'done';
-                        return;
-                    }
-
-                    // draw
-                    pctx.globalCompositeOperation = 'source-over';
-                    pctx.shadowBlur = 10;
-                    pctx.shadowOffsetX = 0;
-                    pctx.shadowOffsetY = 0;
-
-                    function drawPass(colorName, colorHex) {
-                        pctx.shadowColor = colorHex || '#fff';
-                        pctx.fillStyle = colorHex || '#fff';
-                        for (const pt of particles) {
-                            if (pt.alpha <= 0 || pt.color !== colorName) continue;
-                            pctx.globalAlpha = Math.max(0, pt.alpha);
-                            pctx.beginPath();
-                            pctx.arc(pt.x, pt.y, 1.6, 0, Math.PI * 2);
-                            pctx.fill();
-                        }
-                    }
-                    drawPass('red', COL_RED);
-                    drawPass('blue', COL_BLUE);
-
-                    requestAnimationFrame(frame);
-                }
-                requestAnimationFrame(frame);
-            }
-
-            function onWheel(e) {
-                if (isFinalized) return;
-                e.preventDefault();
-                const dy = e.deltaY;
-                if (p < 0.5) {
-                    setProgress(p + dy * 0.0018);
-                    startAutoAnimation();
-                } else if (!autoAnimating) {
-                    startAutoAnimation();
-                }
-            }
-
-            function onTouchMove(e) {
-                if (isFinalized) return;
-                const touch = e.touches[0];
-                const currentY = touch.clientY;
-                if (typeof onTouchMove.lastY !== "undefined") {
-                    const dy = onTouchMove.lastY - currentY;
-                    if (p < 0.5) {
-                        setProgress(p + dy * 0.0018 * 2);
-                        if (p >= 0.5) startAutoAnimation();
-                    } else if (!autoAnimating && dy > 0) {
-                        startAutoAnimation();
-                    }
-                }
-                onTouchMove.lastY = currentY;
-            }
-
-            function onTouchEnd() {
-                if (!isFinalized) onTouchMove.lastY = undefined;
-            }
-
-            window.addEventListener('resize', resizeParticleCanvas);
-            window.addEventListener('wheel', onWheel, {
-                passive: false
-            });
-            window.addEventListener('touchstart', (e) => {
-                onTouchMove.lastY = e.touches[0].clientY;
-            });
-            window.addEventListener('touchmove', onTouchMove, {
-                passive: false
-            });
-            window.addEventListener('touchend', onTouchEnd);
-
-            resizeParticleCanvas();
-            setProgress(0);
-
-            /* ============================================================
-               🔊 Mars/Keys 사이 ‘고정’ 오디오 파형 라인
-               - 레이아웃 영향 없음 (position: fixed)
-               - 왼쪽 베이스가 더 길고, 오른쪽은 짧게
-               ============================================================ */
-            const lineCanvas = document.getElementById('lineViz');
-            const lctx = lineCanvas.getContext('2d');
-            const LINE_CONDENSE_DURATION = 1000;
-
-            function placeLineViz() {
-                const wrapRect = wrap.getBoundingClientRect();
-                const marsLine = document.getElementById('mars')?.parentElement;
-                const keysLine = document.getElementById('keys')?.parentElement;
-                if (!marsLine || !keysLine) return;
-
-                const cssHeight = Math.max(28, Math.min(64, Math.round((marsLine.getBoundingClientRect().height + keysLine.getBoundingClientRect().height) * 0.14)));
-                let left, width;
-                let midY;
-
-                if (IS_MOBILE) {
-                    width = window.innerWidth * 0.6;
-                    left = (window.innerWidth / 2) - (width / 2);
-                    midY = window.innerHeight / 2;
-                } else {
-                    const wrapCS = getComputedStyle(wrap);
-                    const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-                    const additionalPadding = 250;
-                    left = wrapRect.left + padLeft + additionalPadding;
-                    
-                    const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-                    width = Math.max(240, rightLimit - left);
-                    midY = (marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2;
-                }
-
-                lineCanvas.style.left = left + 'px';
-                lineCanvas.style.top = (midY - cssHeight / 2) + 'px';
-                lineCanvas.style.width = width + 'px';
-                lineCanvas.style.height = cssHeight + 'px';
-
-                const dpr = Math.max(1, window.devicePixelRatio || 1);
-                lineCanvas.width = Math.floor(width * dpr);
-                lineCanvas.height = Math.floor(cssHeight * dpr);
-                lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            }
+        if (IS_MOBILE) {
+            // 모바일: 화면의 수직 중앙에 오도록 위치
+            width = window.innerWidth * 0.6;
+            left = (window.innerWidth / 2) - (width / 2);
+            midY = window.innerHeight / 2;
+        } else {
+            // 데스크톱: 왼쪽 패딩을 추가하고 글자 사이에 위치
+            const wrapCS = getComputedStyle(wrap);
+            const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
+            const additionalPadding = 250;
+            left = wrapRect.left + padLeft + additionalPadding;
             
-            function startLineEffect() {
-                linePhase = 'condense';
-                linePhaseStartTime = performance.now();
-                lineCanvas.style.left = '0px';
-                lineCanvas.style.width = window.innerWidth + 'px';
-                const dpr = Math.max(1, window.devicePixelRatio || 1);
-                lineCanvas.width = Math.floor(window.innerWidth * dpr);
-                lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
+            width = Math.max(240, rightLimit - left);
+            midY = (marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2;
+        }
+
+        lineCanvas.style.left = left + 'px';
+        lineCanvas.style.top = (midY - cssHeight / 2) + 'px';
+        lineCanvas.style.width = width + 'px';
+        lineCanvas.style.height = cssHeight + 'px';
+
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        lineCanvas.width = Math.floor(width * dpr);
+        lineCanvas.height = Math.floor(cssHeight * dpr);
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      
+      function startLineEffect() {
+        linePhase = 'condense';
+        linePhaseStartTime = performance.now();
+        // 전체 화면 너비를 사용하도록 스타일 변경
+        lineCanvas.style.left = '0px';
+        lineCanvas.style.width = window.innerWidth + 'px';
+        // 새로운 크기에 맞게 캔버스 크기 재설정
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        lineCanvas.width = Math.floor(window.innerWidth * dpr);
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function drawLineViz(time) {
+        if (linePhase === 'done') return;
+
+        const W = lineCanvas.clientWidth | 0;
+        const H = lineCanvas.clientHeight | 0;
+        if (W === 0 || H === 0) {
+          requestAnimationFrame(drawLineViz);
+          return;
+        }
+        
+        lctx.clearRect(0, 0, W, H);
+        const y0 = H / 2;
+
+        lctx.beginPath();
+
+        if (linePhase === 'waving') {
+          lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
+          lctx.lineJoin = 'round';
+          lctx.lineCap = 'round';
+          lctx.strokeStyle = '#ffffff';
+          lctx.globalAlpha = 0.92;
+          lctx.shadowBlur = 0;
+
+          const leftBase = W * 0.28;
+          const waveLen = W * 0.72;
+          const t = (time || performance.now()) * 0.004;
+          
+          // 💡 파동의 전체 진폭(Amplitude)을 더 크게 설정
+          const A = H * 0.50;
+
+          const k = 0.020 * Math.PI;
+          const beatPos = (t * 0.15 % 1) * waveLen;
+
+          function envelope(x) {
+            const u = x / waveLen;
+            return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) *
+                   (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
+          }
+          function spikeBoost(x) {
+            const d = (x - beatPos);
+            const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02));
+            return 1 + 1.8 * s;
+          }
+
+          const transitionLen = W * 0.08;
+          const step = Math.max(2, Math.min(4, Math.round(W / 220)));
+          
+          lctx.moveTo(0, y0);
+          lctx.lineTo(leftBase, y0);
+          
+          for (let i = 0; i <= waveLen; i += step) {
+            const x = leftBase + i;
+            let currentAmp = A;
+            if (i < transitionLen) {
+                const transitionFactor = Math.sin( (i / transitionLen) * (Math.PI / 2) );
+                currentAmp = A * transitionFactor;
             }
+            const y = y0
+              + envelope(i) * spikeBoost(i) *
+                ( currentAmp * 0.70 * Math.sin(k * i + t * 1.1) // 기존 0.55 -> 0.70
+                + currentAmp * 0.40 * Math.sin(k * 0.47 * i - t * 0.7) // 기존 0.28 -> 0.40
+                + currentAmp * 0.25 * Math.sin(k * 1.9 * i + t * 0.33) ); // 기존 0.17 -> 0.25
+            lctx.lineTo(x, y);
+          }
+          
+        } else if (linePhase === 'condense') {
+          const elapsed = time - linePhaseStartTime;
+          const progress = Math.min(1, elapsed / LINE_CONDENSE_DURATION);
+          
+          lctx.globalAlpha = 1 - progress;
+          lctx.lineWidth = 6;
+          lctx.strokeStyle = '#ffffff';
+          
+          const maxBlur = 60;
+          lctx.shadowColor = '#ffffff';
+          lctx.shadowBlur = maxBlur * (1 - progress);
 
-            function drawLineViz(time) {
-                if (linePhase === 'done') return;
+          const midX = W / 2;
+          const midY = H / 2;
+          
+          // 양 끝에서 중앙으로 응축
+          const startX = midX * progress;
+          const endX = W - midX * progress;
 
-                const W = lineCanvas.clientWidth | 0;
-                const H = lineCanvas.clientHeight | 0;
-                if (W === 0 || H === 0) {
-                    requestAnimationFrame(drawLineViz);
-                    return;
-                }
-                
-                lctx.clearRect(0, 0, W, H);
-                const y0 = H / 2;
+          lctx.moveTo(startX, midY);
+          lctx.lineTo(endX, midY);
 
-                lctx.beginPath();
+          if (progress >= 1) {
+            linePhase = 'done';
+            lctx.clearRect(0, 0, W, H);
+            return;
+          }
+        }
+        
+        lctx.stroke();
+        requestAnimationFrame(drawLineViz);
+      }
 
-                if (linePhase === 'waving') {
-                    lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
-                    lctx.lineJoin = 'round';
-                    lctx.lineCap = 'round';
-                    lctx.strokeStyle = '#ffffff';
-                    lctx.globalAlpha = 0.92;
-                    lctx.shadowBlur = 0;
+      // 초기 배치 & 리사이즈 핸들링
+      const ro = new ResizeObserver(() => placeLineViz());
+      ro.observe(document.body);
+      ro.observe(document.getElementById('brand'));
 
-                    const leftBase = W * 0.28;
-                    const waveLen = W * 0.72;
-                    const t = (time || performance.now()) * 0.004;
-                    
-                    const A = H * 0.50;
+      window.addEventListener('resize', placeLineViz);
+      window.addEventListener('orientationchange', placeLineViz);
 
-                    const k = 0.020 * Math.PI;
-                    const beatPos = (t * 0.15 % 1) * waveLen;
-
-                    function envelope(x) {
-                        const u = x / waveLen;
-                        return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) * (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
-                    }
-
-                    function spikeBoost(x) {
-                        const d = (x - beatPos);
-                        const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02));
-                        return 1 + 1.8 * s;
-                    }
-
-                    const transitionLen = W * 0.08;
-                    const step = Math.max(2, Math.min(4, Math.round(W / 220)));
-                    
-                    lctx.moveTo(0, y0);
-                    lctx.lineTo(leftBase, y0);
-                    
-                    for (let i = 0; i <= waveLen; i += step) {
-                        const x = leftBase + i;
-                        let currentAmp = A;
-                        if (i < transitionLen) {
-                            const transitionFactor = Math.sin((i / transitionLen) * (Math.PI / 2));
-                            currentAmp = A * transitionFactor;
-                        }
-                        const y = y0 + envelope(i) * spikeBoost(i) * (currentAmp * 0.70 * Math.sin(k * i + t * 1.1) + currentAmp * 0.40 * Math.sin(k * 0.47 * i - t * 0.7) + currentAmp * 0.25 * Math.sin(k * 1.9 * i + t * 0.33));
-                        lctx.lineTo(x, y);
-                    }
-                    
-                } else if (linePhase === 'condense') {
-                    const elapsed = time - linePhaseStartTime;
-                    const progress = Math.min(1, elapsed / LINE_CONDENSE_DURATION);
-                    
-                    lctx.globalAlpha = 1 - progress;
-                    lctx.lineWidth = 6;
-                    lctx.strokeStyle = '#ffffff';
-                    
-                    const maxBlur = 60;
-                    lctx.shadowColor = '#ffffff';
-                    lctx.shadowBlur = maxBlur * (1 - progress);
-
-                    const midX = W / 2;
-                    const midY = H / 2;
-                    
-                    const startX = midX * progress;
-                    const endX = W - midX * progress;
-
-                    lctx.moveTo(startX, midY);
-                    lctx.lineTo(endX, midY);
-
-                    if (progress >= 1) {
-                        linePhase = 'done';
-                        lctx.clearRect(0, 0, W, H);
-                        return;
-                    }
-                }
-                
-                lctx.stroke();
-                requestAnimationFrame(drawLineViz);
-            }
-
-            const ro = new ResizeObserver(() => placeLineViz());
-            ro.observe(document.body);
-            ro.observe(document.getElementById('brand'));
-
-            window.addEventListener('resize', placeLineViz);
-            window.addEventListener('orientationchange', placeLineViz);
-
-            if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(placeLineViz);
-            }
-            
-            placeLineViz();
-            requestAnimationFrame(drawLineViz);
-        })();
-    </script>
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(placeLineViz);
+      }
+      
+      placeLineViz();
+      requestAnimationFrame(drawLineViz);
+    })();
+  </script>
 </body>
 </html>
