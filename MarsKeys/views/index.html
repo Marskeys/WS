@@ -1,254 +1,256 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>현실적인 기타 현 시뮬레이터</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #1a1a1a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            flex-direction: column;
-            overflow: hidden;
-            color: #e0e0e0;
-        }
-        canvas {
-            border: 2px solid #555;
-            background-color: #2c2c2c;
-            cursor: crosshair;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-        }
-        h1 {
-            color: #f0f0f0;
-            text-shadow: 2px 2px 4px #000;
-        }
-        p {
-            color: #b0b0b0;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 1.1em;
-        }
-        #controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-        #controls label {
-            font-size: 0.9em;
-        }
-        #controls input[type="range"] {
-            -webkit-appearance: none;
-            width: 150px;
-            height: 8px;
-            background: #555;
-            outline: none;
-            opacity: 0.8;
-            transition: opacity .2s;
-            border-radius: 5px;
-        }
-        #controls input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            background: #00aaff;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-        #controls input[type="range"]:hover {
-            opacity: 1;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>현실적인 기타 현 시뮬레이터</title>
+<style>
+  body{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100vh; margin:0; background:#1a1a1a; color:#e0e0e0; font-family:system-ui,-apple-system,"Segoe UI",Roboto
+  }
+  canvas{border:2px solid #555; background:#2c2c2c; cursor:crosshair; box-shadow:0 8px 16px rgba(0,0,0,.4)}
+  h1{color:#f0f0f0; text-shadow:2px 2px 4px #000}
+  p{color:#b0b0b0; text-align:center; margin-top:10px; font-size:1.05em}
+  #controls{margin-top:16px; display:flex; gap:18px; align-items:center; flex-wrap:wrap; justify-content:center}
+  #controls label{font-size:.9em}
+  #controls input[type="range"]{-webkit-appearance:none; width:160px; height:8px; background:#555; outline:none; border-radius:5px}
+  #controls input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; background:#00aaff; border-radius:50%}
+</style>
 </head>
 <body>
-    <h1>현실적인 기타 현 시뮬레이터 🎸</h1>
-    <p>마우스를 현에 가져다 대고 클릭하여 당겼다가 놓아보세요!</p>
-    <canvas id="stringCanvas" width="800" height="400"></canvas>
-    
-    <div id="controls">
-        <label for="tension">장력: <span id="tensionValue">32</span></label>
-        <input type="range" id="tension" min="0.01" max="0.2" step="0.01" value="0.12">
-        
-        <label for="damping">감쇠: <span id="dampingValue">0.998</span></label>
-        <input type="range" id="damping" min="0.9" max="0.999" step="0.001" value="0.998">
-        
-        <label for="friction">마찰: <span id="frictionValue">0.999</span></label>
-        <input type="range" id="friction" min="0.98" max="0.999" step="0.001" value="0.999">
-    </div>
+  <h1>현실적인 기타 현 시뮬레이터 🎸</h1>
+  <p>영향반경을 키우면 넓~게 같이 휘어져요!</p>
+  <canvas id="stringCanvas" width="800" height="400"></canvas>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const canvas = document.getElementById('stringCanvas');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
+  <div id="controls">
+    <label for="tension">장력: <span id="tensionValue">0.80</span></label>
+    <input type="range" id="tension" min="0.05" max="5" step="0.01" value="0.80">
 
-            const tensionControl = document.getElementById('tension');
-            const dampingControl = document.getElementById('damping');
-            const frictionControl = document.getElementById('friction');
+    <label for="damping">감쇠: <span id="dampingValue">0.996</span></label>
+    <input type="range" id="damping" min="0.980" max="0.999" step="0.001" value="0.996">
 
-            const tensionValueSpan = document.getElementById('tensionValue');
-            const dampingValueSpan = document.getElementById('dampingValue');
-            const frictionValueSpan = document.getElementById('frictionValue');
+    <label for="friction">마찰: <span id="frictionValue">0.998</span></label>
+    <input type="range" id="friction" min="0.980" max="0.999" step="0.001" value="0.998">
 
-            let tension = parseFloat(tensionControl.value);
-            let damping = parseFloat(dampingControl.value);
-            let friction = parseFloat(frictionControl.value);
+    <label for="substeps">서브스텝: <span id="substepsValue">3</span></label>
+    <input type="range" id="substeps" min="1" max="6" step="1" value="3">
 
-            tensionControl.addEventListener('input', (e) => {
-                tension = parseFloat(e.target.value);
-                tensionValueSpan.textContent = tension.toFixed(2);
-            });
-            dampingControl.addEventListener('input', (e) => {
-                damping = parseFloat(e.target.value);
-                dampingValueSpan.textContent = damping.toFixed(3);
-            });
-            frictionControl.addEventListener('input', (e) => {
-                friction = parseFloat(e.target.value);
-                frictionValueSpan.textContent = friction.toFixed(3);
-            });
+    <label for="hand">손힘: <span id="handValue">0.40</span></label>
+    <input type="range" id="hand" min="0.05" max="1.50" step="0.05" value="0.40">
 
-            // 현의 속성 정의
-            class StringPoint {
-                constructor(x, y) {
-                    this.x = x;
-                    this.y = y;
-                    this.oldY = y;
-                    this.velocity = 0;
-                    this.acceleration = 0;
-                }
-            }
-            
-            // 현의 부드러움을 위해 점의 수를 더 늘림
-            const numPoints = 400; 
-            const string = [];
-            const initialY = height / 2;
+    <label for="radius">영향반경(px): <span id="radiusValue">120</span></label>
+    <input type="range" id="radius" min="20" max="300" step="5" value="120">
+  </div>
 
-            // 현의 초기화
-            for (let i = 0; i < numPoints; i++) {
-                string.push(new StringPoint((i / (numPoints - 1)) * width, initialY));
-            }
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('stringCanvas');
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width, height = canvas.height;
 
-            let isDragging = false;
-            let dragPointIndex = -1;
+  // ===== Controls =====
+  const tensionCtl  = document.getElementById('tension');
+  const dampingCtl  = document.getElementById('damping');
+  const frictionCtl = document.getElementById('friction');
+  const subCtl      = document.getElementById('substeps');
+  const handCtl     = document.getElementById('hand');
+  const radiusCtl   = document.getElementById('radius');
 
-            // 마우스 이벤트 핸들러
-            canvas.addEventListener('mousedown', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
+  const tv = document.getElementById('tensionValue');
+  const dv = document.getElementById('dampingValue');
+  const fv = document.getElementById('frictionValue');
+  const sv = document.getElementById('substepsValue');
+  const hv = document.getElementById('handValue');
+  const rv = document.getElementById('radiusValue');
 
-                let closestDist = Infinity;
-                for (let i = 0; i < numPoints; i++) {
-                    const point = string[i];
-                    const dist = Math.sqrt(Math.pow(point.x - mouseX, 2) + Math.pow(point.y - mouseY, 2));
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        dragPointIndex = i;
-                    }
-                }
-                
-                if (closestDist < 20) {
-                    isDragging = true;
-                    string[dragPointIndex].y = mouseY;
-                    string[dragPointIndex].oldY = mouseY;
-                    handleDrag(mouseY);
-                }
-            });
+  let tension   = parseFloat(tensionCtl.value);
+  let damping   = parseFloat(dampingCtl.value);
+  let friction  = parseFloat(frictionCtl.value);
+  let SUBSTEPS  = parseInt(subCtl.value, 10);
+  let handPower = parseFloat(handCtl.value);
+  let radiusPx  = parseFloat(radiusCtl.value);
 
-            canvas.addEventListener('mousemove', (e) => {
-                if (!isDragging || dragPointIndex === -1) return;
-                const rect = canvas.getBoundingClientRect();
-                const mouseY = e.clientY - rect.top;
-                string[dragPointIndex].y = mouseY;
-                string[dragPointIndex].oldY = mouseY;
-                handleDrag(mouseY);
-            });
+  const updateLabels = () => {
+    tv.textContent = tension.toFixed(2);
+    dv.textContent = damping.toFixed(3);
+    fv.textContent = friction.toFixed(3);
+    sv.textContent = SUBSTEPS.toString();
+    hv.textContent = handPower.toFixed(2);
+    rv.textContent = Math.round(radiusPx).toString();
+  };
+  updateLabels();
 
-            canvas.addEventListener('mouseup', () => {
-                isDragging = false;
-                dragPointIndex = -1;
-            });
-            
-            // 드래그 시 주변 점들 함께 이동시키는 함수
-            function handleDrag(mouseY) {
-                if (dragPointIndex === -1) return;
+  tensionCtl.addEventListener('input', e => { tension = parseFloat(e.target.value); updateLabels(); });
+  dampingCtl.addEventListener('input', e => { damping = parseFloat(e.target.value); updateLabels(); });
+  frictionCtl.addEventListener('input', e => { friction = parseFloat(e.target.value); updateLabels(); });
+  subCtl.addEventListener('input', e => { SUBSTEPS = parseInt(e.target.value,10); updateLabels(); });
+  handCtl.addEventListener('input', e => { handPower = parseFloat(e.target.value); updateLabels(); });
+  radiusCtl.addEventListener('input', e => { radiusPx = parseFloat(e.target.value); updateLabels(); });
 
-                const dragPoint = string[dragPointIndex];
-                const deltaY = mouseY - initialY;
-                const totalWidth = numPoints - 1;
+  // ===== String model =====
+  class StringPoint { constructor(x,y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
+  const numPoints = 280;
+  const initialY = height/2;
+  const string = [];
+  for (let i=0;i<numPoints;i++) string.push(new StringPoint((i/(numPoints-1))*width, initialY));
 
-                // 좌측 부분
-                for (let i = 0; i < dragPointIndex; i++) {
-                    const distRatio = (dragPointIndex - i) / dragPointIndex;
-                    string[i].y = initialY + deltaY * (1 - distRatio);
-                    string[i].oldY = string[i].y;
-                }
+  const dx = width / (numPoints - 1);
+  const invDX2 = 1/(dx*dx);
 
-                // 우측 부분
-                for (let i = dragPointIndex + 1; i < numPoints; i++) {
-                    const distRatio = (i - dragPointIndex) / (totalWidth - dragPointIndex);
-                    string[i].y = initialY + deltaY * (1 - distRatio);
-                    string[i].oldY = string[i].y;
-                }
-            }
+  // ===== Drag state =====
+  const mouse = {active:false, x:0, y:initialY};
+  const K_MOUSE = 0.35;       // 마우스-현 스프링 상수
+  const C_MOUSE = 0.08;       // 마우스-현 감쇠
+  const HARD_FACTOR = 1.1;    // 장력에 따른 손힘 감소 계수
 
+  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
-            // 애니메이션 루프
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                
-                // 현 시뮬레이션 업데이트 (Verlet Integration)
-                if (!isDragging) {
-                    for (let i = 1; i < numPoints - 1; i++) {
-                        const prevPoint = string[i - 1];
-                        const currPoint = string[i];
-                        const nextPoint = string[i + 1];
+  function getPos(e){
+    const r = canvas.getBoundingClientRect();
+    const cx = (e.clientX??e.touches?.[0].clientX) - r.left;
+    const cy = (e.clientY??e.touches?.[0].clientY) - r.top;
+    return {x:cx, y:cy};
+  }
 
-                        const force = tension * (prevPoint.y + nextPoint.y - 2 * currPoint.y);
-                        currPoint.acceleration = force;
-                    }
+  canvas.addEventListener('mousedown', e=>{
+    const {x,y} = getPos(e);
+    mouse.x = x; mouse.y = y; mouse.active = true;
+  });
+  canvas.addEventListener('mousemove', e=>{
+    if (!mouse.active) return;
+    const {x,y} = getPos(e);
+    mouse.x = x; mouse.y = y;
+  });
+  window.addEventListener('mouseup', ()=>{
+    if (!mouse.active) return;
+    mouse.active = false;
+    const kick = 0.22;
+    for (let i=0;i<numPoints;i++){
+      const disp = string[i].y - initialY;
+      string[i].oldY = string[i].y + kick*disp;
+    }
+  });
 
-                    for (let i = 1; i < numPoints - 1; i++) {
-                        const currPoint = string[i];
-                        const tempY = currPoint.y;
-                        
-                        currPoint.y = currPoint.y * 2 - currPoint.oldY + currPoint.acceleration;
-                        currPoint.oldY = tempY;
+  // 터치
+  canvas.addEventListener('touchstart', e=>{
+    const {x,y} = getPos(e); e.preventDefault();
+    mouse.x = x; mouse.y = y; mouse.active = true;
+  }, {passive:false});
+  canvas.addEventListener('touchmove', e=>{
+    if (!mouse.active) return;
+    const {x,y} = getPos(e); e.preventDefault();
+    mouse.x = x; mouse.y = y;
+  }, {passive:false});
+  window.addEventListener('touchend', ()=>{
+    if (!mouse.active) return;
+    mouse.active = false;
+    const kick = 0.22;
+    for (let i=0;i<numPoints;i++){
+      const disp = string[i].y - initialY;
+      string[i].oldY = string[i].y + kick*disp;
+    }
+  });
 
-                        currPoint.y = initialY + (currPoint.y - initialY) * damping * friction;
-                    }
-                } else {
-                    handleDrag(string[dragPointIndex].y);
-                }
+  // ===== Physics =====
+  function hannWeight(d, R){
+    if (d >= R) return 0;
+    const r = d / R;
+    // Hann: 0.5 * (1 + cos(pi * r)) -> 가장자리 0, 중앙 1 (부드럽게)
+    return 0.5 * (1 + Math.cos(Math.PI * r));
+  }
 
-                // 현 그리기 (부드러운 곡선)
-                ctx.beginPath();
-                ctx.strokeStyle = '#00aaff';
-                ctx.lineWidth = 4;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.moveTo(string[0].x, string[0].y);
-                
-                for (let i = 1; i < numPoints - 2; i++) {
-                    const xc = (string[i].x + string[i + 1].x) / 2;
-                    const yc = (string[i].y + string[i + 1].y) / 2;
-                    ctx.quadraticCurveTo(string[i].x, string[i].y, xc, yc);
-                }
-                ctx.quadraticCurveTo(string[numPoints - 2].x, string[numPoints - 2].y, string[numPoints - 1].x, string[numPoints - 1].y);
-                ctx.stroke();
+  function applyMouseForce(){
+    if (!mouse.active) return;
 
-                requestAnimationFrame(animate);
-            }
+    // 손힘 총량 한계 (장력↑일수록 한계↓)
+    const FmaxTotal = handPower / (1 + HARD_FACTOR * tension);
 
-            animate();
-        });
-    </script>
+    // 1) 반경 내 모든 점에 대해 원시(force) 계산 + 가중치 합
+    const raw = new Array(numPoints).fill(0);
+    let sumAbs = 0;
+
+    for (let i=1;i<numPoints-1;i++){
+      const p = string[i];
+      const d = Math.abs(p.x - mouse.x);     // x축 거리(픽셀)
+      const w = hannWeight(d, radiusPx);     // 영향 가중치
+      if (w <= 0) continue;
+
+      const vel = p.y - p.oldY;              // Verlet 속도 근사
+      const Fspring = K_MOUSE * (mouse.y - p.y);
+      const Fdamp   = -C_MOUSE * vel;
+      const F = (Fspring + Fdamp) * w;
+
+      raw[i] = F;
+      sumAbs += Math.abs(F);
+    }
+
+    if (sumAbs === 0) return;
+
+    // 2) 총힘 정규화 → 반경이 커져도 손힘 총량은 일정
+    const scale = Math.min(1, FmaxTotal / sumAbs);
+
+    // 3) 가속도에 반영
+    for (let i=1;i<numPoints-1;i++){
+      if (raw[i] !== 0) string[i].acc += raw[i] * scale;
+    }
+  }
+
+  function physicsStep(){
+    // 내부 힘 (라플라시안) — 해상도 독립
+    for (let i=1;i<numPoints-1;i++){
+      const prev = string[i-1].y, curr = string[i].y, next = string[i+1].y;
+      const lap = (prev - 2*curr + next) * invDX2;
+      string[i].acc = tension * lap;
+    }
+
+    // 외력(마우스) — 넓게 분배
+    applyMouseForce();
+
+    // 경계 고정
+    string[0].acc = 0; string[numPoints-1].acc = 0;
+
+    // 손실
+    const loss = damping * friction;
+
+    // Verlet 통합
+    for (let i=1;i<numPoints-1;i++){
+      const p = string[i];
+      const tempY = p.y;
+      p.y = p.y*2 - p.oldY + p.acc;  // dt=1 가정
+      p.oldY = tempY;
+      p.y = initialY + (p.y - initialY) * loss;
+    }
+
+    // 끝점 고정
+    string[0].y = string[0].oldY = initialY;
+    string[numPoints-1].y = string[numPoints-1].oldY = initialY;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,width,height);
+    ctx.beginPath();
+    ctx.strokeStyle = '#00aaff';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.moveTo(string[0].x, string[0].y);
+    for (let i=1;i<numPoints-2;i++){
+      const xc = (string[i].x + string[i+1].x)/2;
+      const yc = (string[i].y + string[i+1].y)/2;
+      ctx.quadraticCurveTo(string[i].x, string[i].y, xc, yc);
+    }
+    ctx.quadraticCurveTo(string[numPoints-2].x, string[numPoints-2].y, string[numPoints-1].x, string[numPoints-1].y);
+    ctx.stroke();
+  }
+
+  function animate(){
+    for (let s=0; s<SUBSTEPS; s++) physicsStep();
+    draw();
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
+</script>
 </body>
 </html>
