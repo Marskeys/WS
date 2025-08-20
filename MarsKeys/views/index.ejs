@@ -43,7 +43,6 @@
       margin: 0;
       background-color: var(--bg);
       color: var(--text);
-      /* 기본 바디 폰트: 원래 쓰던 시스템 폰트 스택 */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -51,7 +50,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어일 때 환영문(#welcome)만 'Yeon Sung'으로 오버라이드 */
+    /* 한국어일 때 환영문(#welcome)만 'Yeon Sung' */
     body.lang-ko #welcome{
       font-family: 'Yeon Sung', 'Michroma', system-ui, sans-serif;
       font-weight: 400;
@@ -73,7 +72,6 @@
       overflow: visible;
     }
 
-    /* 브랜드 타이틀: Michroma 유지 */
     .brand {
       margin: 0;
       line-height: 1;
@@ -92,7 +90,6 @@
     }
     .brand-line+.brand-line { margin-top: -0.32em; }
 
-    /* 단일 레이어 이중배경(흰색/그라데) → 채움폭과 퍼센트 1:1 */
     .ink{
       display:inline-block; color:transparent; -webkit-text-fill-color:transparent;
       -webkit-background-clip:text; background-clip:text;
@@ -136,7 +133,6 @@
     .tagline.to-white { color: #fff; }
     @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
 
-    /* 퍼센트 카운터: Michroma 유지 */
     #counter {
       position: absolute;
       right: 5vw;
@@ -162,7 +158,14 @@
       z-index: 50;
     }
 
-    /* Welcome: 기본은 Michroma, 한국어에서만 위 오버라이드 */
+    /* 새로 추가: Mars/Keys 사이 ‘고정’ 파형 라인 캔버스 */
+    #lineViz {
+      position: fixed;
+      pointer-events: none;
+      z-index: 55; /* brand(40) 위, welcome(60) 아래 */
+      /* width/height/top/left는 JS에서 동적으로 세팅 */
+    }
+
     #welcome {
       position: absolute;
       left: 50%;
@@ -222,6 +225,8 @@
 <body class="<%= isKorean ? 'lang-ko' : '' %>">
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
+    <!-- 고정 파형 라인 캔버스 -->
+    <canvas id="lineViz"></canvas>
 
     <h1 class="brand" id="brand">
       <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
@@ -269,12 +274,10 @@
 
       // Progress
       let p = 0;
-      const accel = 0.0018;
       let autoAnimating = false,
           isFinalized = false,
           particlesGenerated = false;
 
-      // Env & palette
       const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
       const CSS = getComputedStyle(document.documentElement);
       const COL_RED = (CSS.getPropertyValue('--pastel-red-2') || '#ff6b7a').trim();
@@ -283,11 +286,6 @@
       // Particles
       let particles = [];
       const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
-
-      // Taegeuk params
-      const TAEGUK_DELAY = 2000;
-      const TAEGUK_HOLD = 900;
-
       let particlePhase = 'idle';
       let phaseStartTime = 0;
 
@@ -527,7 +525,7 @@
             }
             for (const pt of particles) {
               const ang = Math.random() * Math.PI * 2;
-              const spd = 0.05 + Math.random() * 0.1; 
+              const spd = 0.05 + Math.random() * 0.1;
               pt.vx = Math.cos(ang) * spd;
               pt.vy = Math.sin(ang) * spd;
               pt.reached = false;
@@ -635,6 +633,131 @@
 
       resizeParticleCanvas();
       setProgress(0);
+
+      /* ============================================================
+         🔊 Mars/Keys 사이 ‘고정’ 오디오 파형 라인
+         - 레이아웃 영향 없음 (position: fixed)
+         - 왼쪽 베이스가 더 길고, 오른쪽은 짧게
+         ============================================================ */
+      const lineCanvas = document.getElementById('lineViz');
+      const lctx = lineCanvas.getContext('2d');
+
+      function placeLineViz() {
+        const wrapRect = wrap.getBoundingClientRect();
+        const marsLine = document.getElementById('mars')?.parentElement;
+        const keysLine = document.getElementById('keys')?.parentElement;
+        if (!marsLine || !keysLine) return;
+
+        const marsRect = marsLine.getBoundingClientRect();
+        const keysRect = keysLine.getBoundingClientRect();
+
+        // 두 라인 사이 중앙 y
+        const midY = (marsRect.bottom + keysRect.top) / 2;
+
+        // 왼쪽은 wrap의 padding-left 기준 정렬
+        const wrapCS = getComputedStyle(wrap);
+        const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
+        const left = wrapRect.left + padLeft;
+
+        // 전체 길이는 Keys 우측 끝 안쪽으로 살짝 여유
+        const rightLimit = Math.min(keysRect.right, wrapRect.right - padLeft * 0.25);
+        const width = Math.max(240, rightLimit - left);
+
+        // 두께/높이
+        const cssHeight = Math.max(28, Math.min(64, Math.round((marsRect.height + keysRect.height) * 0.14)));
+        lineCanvas.style.left = left + 'px';
+        lineCanvas.style.top = (midY - cssHeight / 2) + 'px';
+        lineCanvas.style.width = width + 'px';
+        lineCanvas.style.height = cssHeight + 'px';
+
+        // HiDPI 스케일
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        lineCanvas.width = Math.floor(width * dpr);
+        lineCanvas.height = Math.floor(cssHeight * dpr);
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function drawLineViz(time) {
+        const W = lineCanvas.clientWidth | 0;
+        const H = lineCanvas.clientHeight | 0;
+        if (W === 0 || H === 0) return requestAnimationFrame(drawLineViz);
+
+        lctx.clearRect(0, 0, W, H);
+        const y0 = H / 2;
+
+        // 선 스타일 (굵고 부드럽게)
+        lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
+        lctx.lineJoin = 'round';
+        lctx.lineCap = 'round';
+        lctx.strokeStyle = '#ffffff';
+        lctx.globalAlpha = 0.92;
+
+        // 왼쪽/오른쪽 베이스 길이 비율
+        const leftBase = W * 0.28;     // ← 왼쪽 베이스 더 김
+        const waveLen  = W * 0.54;     // 중간 파형 길이
+        const rightBase= Math.max(8, W - leftBase - waveLen); // 오른쪽 짧게
+
+        // 파형 파라미터
+        const t = (time || performance.now()) * 0.004;
+        const A = H * 0.30;        // 기본 진폭
+        const k = 0.020 * Math.PI; // 공간 주파수
+
+        // 임의성 부여 (불규칙한 오디오/심전도 느낌)
+        function envelope(x) {
+          const u = x / waveLen;
+          // 미세 요철 + 느린 변조
+          return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) *
+                 (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
+        }
+        // 주기적 스파이크(심박 peak) 위치
+        const beatPos = (t * 0.15 % 1) * waveLen;
+        function spikeBoost(x) {
+          const d = (x - beatPos);
+          const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02)); // 좁은 가우시안
+          return 1 + 1.8 * s;
+        }
+
+        lctx.beginPath();
+        // 왼쪽 베이스
+        lctx.moveTo(0, y0);
+        lctx.lineTo(leftBase, y0);
+
+        // 파형 구간
+        const step = Math.max(2, Math.min(4, Math.round(W / 220)));
+        for (let i = 0; i <= waveLen; i += step) {
+          const x = leftBase + i;
+          // 다중 사인 합성으로 유기적 움직임
+          const y = y0
+            + envelope(i) * spikeBoost(i) *
+              ( A * 0.55 * Math.sin(k * i + t*1.1)
+              + A * 0.28 * Math.sin(k * 0.47 * i - t*0.7)
+              + A * 0.17 * Math.sin(k * 1.9 * i + t*0.33) ) / 1.0;
+          lctx.lineTo(x, y);
+        }
+
+        // 오른쪽 짧은 베이스
+        lctx.lineTo(leftBase + waveLen + rightBase, y0);
+        lctx.stroke();
+
+        requestAnimationFrame(drawLineViz);
+      }
+
+      // 초기 배치 & 리사이즈 핸들링
+      const ro = new ResizeObserver(() => placeLineViz());
+      ro.observe(document.body);
+      ro.observe(document.getElementById('brand'));
+
+      window.addEventListener('resize', placeLineViz);
+      window.addEventListener('orientationchange', placeLineViz);
+
+      // 폰트 로딩 이후 위치 보정
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(placeLineViz);
+      }
+
+      // 첫 배치 & 시작
+      placeLineViz();
+      requestAnimationFrame(drawLineViz);
     })();
   </script>
 </body>
