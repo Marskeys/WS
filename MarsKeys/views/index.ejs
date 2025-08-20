@@ -525,7 +525,7 @@
         const Hwin = window.innerHeight;
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-        // Mobile: 화면 중앙에 배치
+        // Mobile: Center on screen
         if (isMobile) {
           const desiredWidth = Math.round(Wwin * 0.9);
           const midY   = Math.round(Hwin / 2);
@@ -551,7 +551,7 @@
             vanishBaseLeft  = left;
           }
         }
-        // Desktop: Mars/Keys 사이 중앙에 배치
+        // Desktop: Position between Mars/Keys
         else {
           const marsLine = document.getElementById('mars')?.parentElement || null;
           const keysLine = document.getElementById('keys')?.parentElement || null;
@@ -737,7 +737,7 @@
           const yc = (string[i].y + string[i+1].y)/2;
           lctx.quadraticCurveTo(mapX(string[i].x), string[i].y, xc, yc);
         }
-        lctx.quadraticCurveCurveTo(mapX(string[numPoints-2].x), string[numPoints-2].y, mapX(string[numPoints-1].x), string[numPoints-1].y);
+        lctx.quadraticCurveTo(mapX(string[numPoints-2].x), string[numPoints-2].y, mapX(string[numPoints-1].x), string[numPoints-1].y);
         lctx.stroke();
 
         lctx.globalAlpha = 1;
