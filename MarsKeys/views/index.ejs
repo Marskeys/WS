@@ -103,13 +103,13 @@
     /* 🎸 현 시뮬레이터 캔버스 */
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
     #welcome {
-      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.66); /* 시작 크기 변경 */
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.66); /* 시작 크기 유지 */
       opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
       letter-spacing: 0.01em; max-width: 92vw; white-space: nowrap;
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
+      transition: opacity 1s ease, transform 1.6s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out; /* Welcome 커지는 속도 조절 */
       will-change: opacity, transform, text-shadow; pointer-events: none; z-index: 60; text-shadow: 0 0 0 transparent;
     }
-    #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
+    #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); } /* 최종 크기 1로 조정 */
     #welcome.welcome-glow { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4); }
 
     .scrollable-content { padding: 0 5vw 6rem; text-align: center; display: none; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
@@ -413,7 +413,7 @@
             phaseStartTime = now;
           } else if (particlePhase === 'morph') {
             const elapsed = (now - phaseStartTime);
-            const duration = 2000;
+            const duration = 4000; /* 태극문양 축소 속도 2000ms -> 4000ms로 변경 */
             let progress = elapsed / duration;
             if (progress > 1) progress = 1;
             
@@ -425,7 +425,7 @@
             }
 
             const allReached = particles.every(pt => pt.reached);
-            if (allReached || elapsed > 2500) { /* 충분한 시간 후 다음 단계로 */
+            if (allReached || elapsed > 4500) { /* 충분한 시간 후 다음 단계로 */
                 particlePhase = 'hold';
                 phaseStartTime = now;
             }
@@ -508,7 +508,7 @@
       setProgress(0);
 
       /* ============================================================
-         🎸 Mars/Keys 사이 ‘현 시뮬레이터’ (신호선 대체)
+         🎸 현 시뮬레이터 (신호선 대체)
          - 흰색 두툼한 선(드래그해서 당기기)
          - 빠른 왕복, 빠른 소실, 넓은 반경이 같이 움직임
          ============================================================ */
@@ -552,29 +552,37 @@
   const marsLine = document.getElementById('mars')?.parentElement || null;
   const keysLine = document.getElementById('keys')?.parentElement || null;
 
-  // 기본값(혹시 요소 계산 실패해도 보이도록 안전한 폴백)
-  let left   = Math.round(Wwin * 0.2);
-  let width  = Math.round(Wwin * 0.6);
-  let midY   = Math.round(Hwin / 2);
-  let cssHeightBase = (window.matchMedia("(max-width: 768px)").matches ? LINE_H_MOBILE : LINE_H_DESKTOP);
+  let left, width, midY;
+  const cssHeightBase = (IS_MOBILE ? LINE_H_MOBILE : LINE_H_DESKTOP);
+  
+  // 모바일과 데스크톱 레이아웃 분리
+  if (IS_MOBILE) {
+    left = 0;
+    width = Wwin;
+    midY = Hwin / 2;
+  } else {
+    // 데스크톱 레이아웃
+    let leftFromBrand = Math.round(Wwin * 0.2);
+    let rightLimit = Math.round(Wwin * 0.8);
+    let midYFromBrand = Hwin / 2;
 
-  // 요소가 있으면 정밀 배치
-  try {
-    if (marsLine && keysLine) {
-      const wrapRect = wrap.getBoundingClientRect();
-      const wrapCS = getComputedStyle(wrap);
-      const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-      const additionalPadding = 250;
+    try {
+      if (marsLine && keysLine) {
+        const wrapRect = wrap.getBoundingClientRect();
+        const wrapCS = getComputedStyle(wrap);
+        const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
+        const additionalPadding = 250;
 
-      left = Math.round(wrapRect.left + padLeft + additionalPadding);
-      const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-      width = Math.max(260, Math.round(rightLimit - left));
-
-      const marsBottom = marsLine.getBoundingClientRect().bottom;
-      const keysTop = keysLine.getBoundingClientRect().top;
-      midY = Math.round((marsBottom + keysTop) / 2);
-    }
-  } catch(e) { /* 폴백 그대로 사용 */ }
+        leftFromBrand = Math.round(wrapRect.left + padLeft + additionalPadding);
+        rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
+        midYFromBrand = Math.round((marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2);
+      }
+    } catch(e) { /* fallback */ }
+    
+    left = leftFromBrand;
+    width = Math.max(260, Math.round(rightLimit - left));
+    midY = midYFromBrand;
+  }
 
   // 화면 기준 패딩(px)
   const padPx = Math.round((V_PAD_VH / 100) * Hwin);
