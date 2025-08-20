@@ -646,15 +646,11 @@
         const keysLine = document.getElementById('keys')?.parentElement;
         if (!marsLine || !keysLine) return;
 
-        const marsRect = marsLine.getBoundingClientRect();
-        const keysRect = keysLine.getBoundingClientRect();
-
-        // 두 라인 사이 중앙 y
-        const midY = (marsRect.bottom + keysRect.top) / 2;
+        const cssHeight = Math.max(28, Math.min(64, Math.round((marsLine.getBoundingClientRect().height + keysLine.getBoundingClientRect().height) * 0.14)));
+        const midY = (marsLine.getBoundingClientRect().bottom + keysLine.getBoundingClientRect().top) / 2;
 
         let left, width;
-        const cssHeight = Math.max(28, Math.min(64, Math.round((marsRect.height + keysRect.height) * 0.14)));
-
+        
         if (IS_MOBILE) {
             // 모바일: 화면 중앙에 오도록 계산
             width = window.innerWidth * 0.6; // 뷰포트 너비의 60%
@@ -666,7 +662,7 @@
             const additionalPadding = 50; // 원하는 추가 패딩 값
             left = wrapRect.left + padLeft + additionalPadding;
             
-            const rightLimit = Math.min(keysRect.right, wrapRect.right - padLeft * 0.25);
+            const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
             width = Math.max(240, rightLimit - left);
         }
 
@@ -690,35 +686,30 @@
         lctx.clearRect(0, 0, W, H);
         const y0 = H / 2;
 
-        // 선 스타일 (굵고 부드럽게)
         lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
         lctx.lineJoin = 'round';
         lctx.lineCap = 'round';
         lctx.strokeStyle = '#ffffff';
         lctx.globalAlpha = 0.92;
 
-        // 왼쪽/오른쪽 베이스 길이 비율
-        const leftBase = W * 0.28;     // ← 왼쪽 베이스 더 김
-        const waveLen  = W * 0.54;     // 중간 파형 길이
-        const rightBase= Math.max(8, W - leftBase - waveLen); // 오른쪽 짧게
+        const leftBase = W * 0.28;
+        const waveLen = W * 0.54;
+        const rightBase = Math.max(8, W - leftBase - waveLen);
 
-        // 파형 파라미터
         const t = (time || performance.now()) * 0.004;
-        const A = H * 0.30;        // 기본 진폭
-        const k = 0.020 * Math.PI; // 공간 주파수
+        const A = H * 0.30;
+        const k = 0.020 * Math.PI;
 
-        // 임의성 부여 (불규칙한 오디오/심전도 느낌)
         function envelope(x) {
           const u = x / waveLen;
-          // 미세 요철 + 느린 변조
           return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) *
                  (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
         }
-        // 주기적 스파이크(심박 peak) 위치
+        
         const beatPos = (t * 0.15 % 1) * waveLen;
         function spikeBoost(x) {
           const d = (x - beatPos);
-          const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02)); // 좁은 가우시안
+          const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02));
           return 1 + 1.8 * s;
         }
 
@@ -727,16 +718,23 @@
         lctx.moveTo(0, y0);
         lctx.lineTo(leftBase, y0);
 
-        // 파형 구간
+        // 파형 구간 (진폭을 점진적으로 증가시켜 부드럽게 시작)
+        const transitionLen = W * 0.08; // 진폭이 서서히 증가하는 구간 길이
         const step = Math.max(2, Math.min(4, Math.round(W / 220)));
         for (let i = 0; i <= waveLen; i += step) {
           const x = leftBase + i;
-          // 다중 사인 합성으로 유기적 움직임
+          
+          let currentAmp = A;
+          if (i < transitionLen) {
+              const transitionFactor = Math.sin( (i / transitionLen) * (Math.PI / 2) );
+              currentAmp = A * transitionFactor;
+          }
+
           const y = y0
             + envelope(i) * spikeBoost(i) *
-              ( A * 0.55 * Math.sin(k * i + t*1.1)
-              + A * 0.28 * Math.sin(k * 0.47 * i - t*0.7)
-              + A * 0.17 * Math.sin(k * 1.9 * i + t*0.33) ) / 1.0;
+              ( currentAmp * 0.55 * Math.sin(k * i + t * 1.1)
+              + currentAmp * 0.28 * Math.sin(k * 0.47 * i - t * 0.7)
+              + currentAmp * 0.17 * Math.sin(k * 1.9 * i + t * 0.33) );
           lctx.lineTo(x, y);
         }
 
