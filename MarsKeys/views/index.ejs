@@ -526,50 +526,67 @@
 
       // 배치
       function placeLineViz() {
-        const Wwin = window.innerWidth;
-        const Hwin = window.innerHeight;
-        const marsLine = document.getElementById('mars')?.parentElement;
-        const keysLine = document.getElementById('keys')?.parentElement;
-        if (!marsLine || !keysLine) return;
+  const Wwin = window.innerWidth;
+  const Hwin = window.innerHeight;
 
-        let left, width, midY, cssHeightBase;
-        if (IS_MOBILE) {
-          width = Wwin * 0.6;
-          left = (Wwin - width) / 2;
-          midY = Hwin / 2;
-          cssHeightBase = LINE_H_MOBILE;
-        } else {
-          const wrapRect = wrap.getBoundingClientRect();
-          const wrapCS = getComputedStyle(wrap);
-          const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-          const additionalPadding = 250;
-          left = wrapRect.left + padLeft + additionalPadding;
+  const marsLine = document.getElementById('mars')?.parentElement || null;
+  const keysLine = document.getElementById('keys')?.parentElement || null;
 
-          const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-          width = Math.max(260, rightLimit - left);
-          const marsBottom = marsLine.getBoundingClientRect().bottom;
-          const keysTop = keysLine.getBoundingClientRect().top;
-          midY = (marsBottom + keysTop) / 2;
-          cssHeightBase = LINE_H_DESKTOP;
-        }
+  // 기본값(혹시 요소 계산 실패해도 보이도록 안전한 폴백)
+  let left   = Math.round(Wwin * 0.2);
+  let width  = Math.round(Wwin * 0.6);
+  let midY   = Math.round(Hwin / 2);
+  let cssHeightBase = (window.matchMedia("(max-width: 768px)").matches ? LINE_H_MOBILE : LINE_H_DESKTOP);
 
-        // 🔑 화면 기준 패딩(px) 계산
-        const padPx = Math.round((V_PAD_VH / 100) * Hwin);
-        const cssHeight = cssHeightBase + padPx * 2;
+  // 요소가 있으면 정밀 배치
+  try {
+    if (marsLine && keysLine) {
+      const wrapRect = wrap.getBoundingClientRect();
+      const wrapCS = getComputedStyle(wrap);
+      const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
+      const additionalPadding = 250;
 
-        // 스타일 & 실제 캔버스 크기
-        lineCanvas.style.left = left + 'px';
-        lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
-        lineCanvas.style.width  = width + 'px';
-        lineCanvas.style.height = cssHeight + 'px';
+      left = Math.round(wrapRect.left + padLeft + additionalPadding);
+      const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
+      width = Math.max(260, Math.round(rightLimit - left));
 
-        const dpr = Math.max(1, window.devicePixelRatio || 1);
-        lineCanvas.width  = Math.floor(width  * dpr);
-        lineCanvas.height = Math.floor(cssHeight * dpr);
-        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const marsBottom = marsLine.getBoundingClientRect().bottom;
+      const keysTop = keysLine.getBoundingClientRect().top;
+      midY = Math.round((marsBottom + keysTop) / 2);
+    }
+  } catch(e) { /* 폴백 그대로 사용 */ }
 
-        setupString(width, cssHeight);
-      }
+  // 화면 기준 패딩(px)
+  const padPx = Math.round((V_PAD_VH / 100) * Hwin);
+  const cssHeight = cssHeightBase + padPx * 2;
+
+  // 안전장치: 화면 경계 안으로
+  width = Math.min(width, Wwin);
+  left  = Math.max(0, Math.min(left, Wwin - width));
+
+  // 스타일 & 실제 캔버스 크기
+  lineCanvas.style.left = left + 'px';
+  lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
+  lineCanvas.style.width  = width + 'px';
+  lineCanvas.style.height = cssHeight + 'px';
+
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  lineCanvas.width  = Math.floor(width  * dpr);
+  lineCanvas.height = Math.floor(cssHeight * dpr);
+  lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // 최대 당김(하드캡)
+  MAX_PULL = Math.floor(cssHeight * 0.42);
+
+  // 문자열 초기화
+  setupString(width, cssHeight);
+
+  // vanish 기준 갱신(최초 1회)
+  if (vanishBaseWidth === null) {
+    vanishBaseWidth = width;
+    vanishBaseLeft  = left;
+  }
+}
 
       function setupString(W, H){
         numPoints = Math.max(160, Math.min(360, Math.round(W / 4)));
@@ -679,26 +696,43 @@
       }
 
       function drawString(){
-        const W = lineCanvas.clientWidth | 0;
-        const H = lineCanvas.clientHeight | 0;
-        if (!W || !H) return;
+  // 실제 렌더 크기(레이아웃 엔진 기준)로 안전하게 가져오기
+  const rect = lineCanvas.getBoundingClientRect();
+  const Wdraw = Math.max(0, Math.round(rect.width));
+  const Hdraw = Math.max(0, Math.round(rect.height));
+  if (!Wdraw || !Hdraw) return;
 
-        lctx.clearRect(0,0,W,H);
-        lctx.beginPath();
-        lctx.strokeStyle = '#ffffff';
-        lctx.lineWidth = LINE_THICK;
-        lctx.lineCap = 'round';
-        lctx.lineJoin = 'round';
+  lctx.clearRect(0,0,Wdraw,Hdraw);
 
-        lctx.moveTo(string[0].x, string[0].y);
-        for (let i=1;i<numPoints-2;i++){
-          const xc = (string[i].x + string[i+1].x)/2;
-          const yc = (string[i].y + string[i+1].y)/2;
-          lctx.quadraticCurveTo(string[i].x, string[i].y, xc, yc);
-        }
-        lctx.quadraticCurveTo(string[numPoints-2].x, string[numPoints-2].y, string[numPoints-1].x, string[numPoints-1].y);
-        lctx.stroke();
-      }
+  // p>=0.5부터 얇아지고 투명해짐
+  const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
+  const thickness = Math.max(0.6, LINE_THICK * (1 - 0.9 * f));
+  lctx.globalAlpha = 1 - f;
+
+  lctx.beginPath();
+  lctx.strokeStyle = '#ffffff';
+  lctx.lineWidth = thickness;
+  lctx.lineCap = 'round';
+  lctx.lineJoin = 'round';
+
+  // 가로 확장 보정: 기준 폭 → 현재 폭 선형 스케일
+  const baseW = (vanishBaseWidth || Wdraw);
+  const baseC = baseW / 2;
+  const scaleX = Wdraw / baseW;
+  const mapX = x => baseC + (x - baseC) * scaleX;
+
+  lctx.moveTo(mapX(string[0].x), string[0].y);
+  for (let i=1;i<numPoints-2;i++){
+    const xc = mapX((string[i].x + string[i+1].x)/2);
+    const yc = (string[i].y + string[i+1].y)/2;
+    lctx.quadraticCurveTo(mapX(string[i].x), string[i].y, xc, yc);
+  }
+  lctx.quadraticCurveTo(mapX(string[numPoints-2].x), string[numPoints-2].y, mapX(string[numPoints-1].x), string[numPoints-1].y);
+  lctx.stroke();
+
+  lctx.globalAlpha = 1;
+}
+
 
       function animateString(){
         for (let s=0; s<SUBSTEPS; s++) physicsStep();
