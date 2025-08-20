@@ -92,7 +92,7 @@
 
     .brand-line {
       display: block;
-      font-size: clamp(36px, 9vw, 120px); /* 글꼴 크기 조정 */
+      font-size: clamp(56px, min(14vw, 28vh), 200px);
       line-height: 1.06;
       padding-bottom: 0.18em;
       overflow: visible;
@@ -228,7 +228,7 @@
   <div class="split-background"></div>
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
-
+    
     <h1 class="brand" id="brand">
       <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
       <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
@@ -605,7 +605,8 @@
         const dy = e.deltaY;
         if (p < 0.5) {
           setProgress(p + dy * 0.0018);
-        } else {
+          startAutoAnimation();
+        } else if (!autoAnimating) {
           startAutoAnimation();
         }
       }
@@ -617,6 +618,7 @@
           const dy = onTouchMove.lastY - currentY;
           if (p < 0.5) {
             setProgress(p + dy * 0.0018 * 2);
+            if (p >= 0.5) startAutoAnimation();
           } else if (!autoAnimating && dy > 0) {
             startAutoAnimation();
           }
