@@ -102,6 +102,9 @@
 
     /* 🎸 현 시뮬레이터 캔버스 */
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
+    @media (max-width: 768px) {
+      #lineViz { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%); }
+    }
     #welcome {
       position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.86);
       opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
@@ -490,33 +493,25 @@
       setProgress(0);
 
       /* ============================================================
-         🎸 Mars/Keys 사이 ‘현 시뮬레이터’ (신호선 대체)
-         - 흰색 두툼한 선(드래그해서 당기기)
-         - 빠른 왕복, 빠른 소실, 넓은 반경이 같이 움직임
+         🎸 현 시뮬레이터 (신호선 대체)
          ============================================================ */
       const lineCanvas = document.getElementById('lineViz');
       const lctx = lineCanvas.getContext('2d');
 
-      // 시각적 두께 & 베이스 높이
       const LINE_THICK = 8;
       const LINE_H_DESKTOP = 72;
       const LINE_H_MOBILE  = 96;
+      const V_PAD_VH = 18;
 
-      // ⬇️ 화면 전체 기준 패딩(vh) — 위/아래 각각 적용
-      const V_PAD_VH = 18; // 18vh 위 + 18vh 아래 = 총 36vh 여유
-
-      // 물리 파라미터(네 설정 유지)
       let tension    = 0.8;
       let loss       = 0.986;
       let SUBSTEPS   = 10;
       let radiusPx   = 120;
-      let handPower  = 0.95;
       const K_MOUSE  = 1.5;
       const C_MOUSE  = 0.08;
       const HARD_FACTOR = 0.4;
       const RELEASE_KICK = 0.25;
 
-      // 상태
       let numPoints = 240;
       let dx = 1, invDX2 = 1;
       let initialY = 0;
@@ -525,70 +520,66 @@
 
       class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
-      // 배치
       let vanishBaseWidth = null, vanishBaseLeft = null;
       function placeLineViz() {
-  const Wwin = window.innerWidth;
-  const Hwin = window.innerHeight;
+        const Wwin = window.innerWidth;
+        const Hwin = window.innerHeight;
 
-  const marsLine = document.getElementById('mars')?.parentElement || null;
-  const keysLine = document.getElementById('keys')?.parentElement || null;
+        let left, width, midY;
+        const cssHeightBase = (IS_MOBILE ? LINE_H_MOBILE : LINE_H_DESKTOP);
+        const padPx = Math.round((V_PAD_VH / 100) * Hwin);
+        const cssHeight = cssHeightBase + padPx * 2;
 
-  // 기본값(혹시 요소 계산 실패해도 보이도록 안전한 폴백)
-  let left   = Math.round(Wwin * 0.2);
-  let width  = Math.round(Wwin * 0.6);
-  let midY   = Math.round(Hwin / 2);
-  let cssHeightBase = (window.matchMedia("(max-width: 768px)").matches ? LINE_H_MOBILE : LINE_H_DESKTOP);
+        if (IS_MOBILE) {
+          left = Wwin / 2;
+          width = Wwin * 0.8;
+          midY = Hwin / 2;
+        } else {
+          const marsLine = document.getElementById('mars')?.parentElement || null;
+          const keysLine = document.getElementById('keys')?.parentElement || null;
+          
+          left = Math.round(Wwin * 0.2);
+          width = Math.round(Wwin * 0.6);
+          midY = Math.round(Hwin / 2);
 
-  // 요소가 있으면 정밀 배치
-  try {
-    if (marsLine && keysLine) {
-      const wrapRect = wrap.getBoundingClientRect();
-      const wrapCS = getComputedStyle(wrap);
-      const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-      const additionalPadding = 250;
+          try {
+            if (marsLine && keysLine) {
+              const wrapRect = wrap.getBoundingClientRect();
+              const wrapCS = getComputedStyle(wrap);
+              const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
+              const additionalPadding = 250;
 
-      left = Math.round(wrapRect.left + padLeft + additionalPadding);
-      const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-      width = Math.max(260, Math.round(rightLimit - left));
+              left = Math.round(wrapRect.left + padLeft + additionalPadding);
+              const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
+              width = Math.max(260, Math.round(rightLimit - left));
+              const marsBottom = marsLine.getBoundingClientRect().bottom;
+              const keysTop = keysLine.getBoundingClientRect().top;
+              midY = Math.round((marsBottom + keysTop) / 2);
+            }
+          } catch(e) { /* Fallback to default */ }
+        }
 
-      const marsBottom = marsLine.getBoundingClientRect().bottom;
-      const keysTop = keysLine.getBoundingClientRect().top;
-      midY = Math.round((marsBottom + keysTop) / 2);
-    }
-  } catch(e) { /* 폴백 그대로 사용 */ }
+        width = Math.min(width, Wwin);
+        if (!IS_MOBILE) left = Math.max(0, Math.min(left, Wwin - width));
 
-  // 화면 기준 패딩(px)
-  const padPx = Math.round((V_PAD_VH / 100) * Hwin);
-  const cssHeight = cssHeightBase + padPx * 2;
+        lineCanvas.style.left = (IS_MOBILE) ? '50%' : `${left}px`;
+        lineCanvas.style.top  = (IS_MOBILE) ? '50%' : `${midY - cssHeight/2}px`;
+        lineCanvas.style.width  = `${width}px`;
+        lineCanvas.style.height = `${cssHeight}px`;
 
-  // 안전장치: 화면 경계 안으로
-  width = Math.min(width, Wwin);
-  left  = Math.max(0, Math.min(left, Wwin - width));
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        lineCanvas.width  = Math.floor(width  * dpr);
+        lineCanvas.height = Math.floor(cssHeight * dpr);
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  // 스타일 & 실제 캔버스 크기
-  lineCanvas.style.left = left + 'px';
-  lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
-  lineCanvas.style.width  = width + 'px';
-  lineCanvas.style.height = cssHeight + 'px';
+        MAX_PULL = Math.floor(cssHeight * 0.42);
+        setupString(width, cssHeight);
 
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  lineCanvas.width  = Math.floor(width  * dpr);
-  lineCanvas.height = Math.floor(cssHeight * dpr);
-  lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  // 최대 당김(하드캡)
-  MAX_PULL = Math.floor(cssHeight * 0.42);
-
-  // 문자열 초기화
-  setupString(width, cssHeight);
-
-  // vanish 기준 갱신(최초 1회)
-  if (vanishBaseWidth === null) {
-    vanishBaseWidth = width;
-    vanishBaseLeft  = left;
-  }
-}
+        if (vanishBaseWidth === null) {
+          vanishBaseWidth = width;
+          vanishBaseLeft  = left;
+        }
+      }
 
       function setupString(W, H){
         numPoints = Math.max(160, Math.min(360, Math.round(W / 4)));
@@ -602,7 +593,6 @@
         invDX2 = 1 / (dx*dx);
       }
 
-      // 드래그(마우스/터치)
       const mouse = { active:false, x:0, y:0 };
       function getPos(e){
         const r = lineCanvas.getBoundingClientRect();
@@ -627,7 +617,6 @@
         }
       });
 
-      // 터치
       lineCanvas.addEventListener('touchstart', e=>{
         const {x,y} = getPos(e); e.preventDefault(); mouse.active = true; mouse.x = x; mouse.y = y;
       }, {passive:false});
@@ -644,20 +633,16 @@
         }
       });
 
-      // 해닝 커널(넓게 당겨짐)
       function hannWeight(dist, R){
         if (dist >= R) return 0;
         const r = dist / R;
         return 0.5 * (1 + Math.cos(Math.PI * r));
       }
 
-      // 손힘 분배(포인트별 캡 방식)
       function applyMouseForce(){
         if (!mouse.active) return;
 
-        // 마우스 당김 힘
         let pullY = mouse.y - initialY;
-        // 최대 당김 한계 적용
         if (Math.abs(pullY) > MAX_PULL) {
           pullY = Math.sign(pullY) * MAX_PULL;
         }
@@ -705,44 +690,40 @@
       }
 
       function drawString(){
-  // 실제 렌더 크기(레이아웃 엔진 기준)로 안전하게 가져오기
-  const rect = lineCanvas.getBoundingClientRect();
-  const Wdraw = Math.max(0, Math.round(rect.width));
-  const Hdraw = Math.max(0, Math.round(rect.height));
-  if (!Wdraw || !Hdraw) return;
+        const rect = lineCanvas.getBoundingClientRect();
+        const Wdraw = Math.max(0, Math.round(rect.width));
+        const Hdraw = Math.max(0, Math.round(rect.height));
+        if (!Wdraw || !Hdraw) return;
 
-  lctx.clearRect(0,0,Wdraw,Hdraw);
+        lctx.clearRect(0,0,Wdraw,Hdraw);
+        
+        const smoothstep = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
+        const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
+        const thickness = Math.max(0.6, LINE_THICK * (1 - 0.9 * f));
+        lctx.globalAlpha = 1 - f;
 
-  // p>=0.5부터 얇아지고 투명해짐
-  const smoothstep = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
-  const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
-  const thickness = Math.max(0.6, LINE_THICK * (1 - 0.9 * f));
-  lctx.globalAlpha = 1 - f;
+        lctx.beginPath();
+        lctx.strokeStyle = '#ffffff';
+        lctx.lineWidth = thickness;
+        lctx.lineCap = 'round';
+        lctx.lineJoin = 'round';
 
-  lctx.beginPath();
-  lctx.strokeStyle = '#ffffff';
-  lctx.lineWidth = thickness;
-  lctx.lineCap = 'round';
-  lctx.lineJoin = 'round';
+        const baseW = (vanishBaseWidth || Wdraw);
+        const baseC = baseW / 2;
+        const scaleX = Wdraw / baseW;
+        const mapX = x => baseC + (x - baseC) * scaleX;
 
-  // 가로 확장 보정: 기준 폭 → 현재 폭 선형 스케일
-  const baseW = (vanishBaseWidth || Wdraw);
-  const baseC = baseW / 2;
-  const scaleX = Wdraw / baseW;
-  const mapX = x => baseC + (x - baseC) * scaleX;
+        lctx.moveTo(mapX(string[0].x), string[0].y);
+        for (let i=1;i<numPoints-2;i++){
+          const xc = mapX((string[i].x + string[i+1].x)/2);
+          const yc = (string[i].y + string[i+1].y)/2;
+          lctx.quadraticCurveTo(mapX(string[i].x), string[i].y, xc, yc);
+        }
+        lctx.quadraticCurveTo(mapX(string[numPoints-2].x), string[numPoints-2].y, mapX(string[numPoints-1].x), string[numPoints-1].y);
+        lctx.stroke();
 
-  lctx.moveTo(mapX(string[0].x), string[0].y);
-  for (let i=1;i<numPoints-2;i++){
-    const xc = mapX((string[i].x + string[i+1].x)/2);
-    const yc = (string[i].y + string[i+1].y)/2;
-    lctx.quadraticCurveTo(mapX(string[i].x), string[i].y, xc, yc);
-  }
-  lctx.quadraticCurveTo(mapX(string[numPoints-2].x), string[numPoints-2].y, mapX(string[numPoints-1].x), string[numPoints-1].y);
-  lctx.stroke();
-
-  lctx.globalAlpha = 1;
-}
-
+        lctx.globalAlpha = 1;
+      }
 
       function animateString(){
         for (let s=0; s<SUBSTEPS; s++) physicsStep();
@@ -752,7 +733,6 @@
 
       function startLineEffect(){ /* keep */ }
 
-      // 리사이즈 핸들링
       const ro = new ResizeObserver(() => placeLineViz());
       ro.observe(document.body);
       ro.observe(document.getElementById('brand'));
