@@ -87,7 +87,7 @@
       background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.16) 32%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.16) 68%, rgba(255,255,255,0) 100%);
       -webkit-background-clip: text; background-clip: text;
       transform: translateX(-120%) skewX(-18deg); filter: blur(.3px);
-      animation: shine-sweep 2500ms cubic-bezier(.2,.7,.2,1) forwards;
+      animation: shine-sweep 900ms cubic-bezier(.2,.7,.2,1) forwards;
     }
     .tagline.to-white { color: #fff; }
     @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
@@ -334,7 +334,7 @@
 
       function showWelcome() {
         setTimeout(() => { counterEl.style.opacity = 0; }, 350);
-        setTimeout(() => { welcome.classList.add("visible"); welcome.classList.add("welcome-glow"); }, 900);
+        setTimeout(() => { welcome.classList.add("visible"); welcome.classList.add("welcome-glow"); }, 2000);
         setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
