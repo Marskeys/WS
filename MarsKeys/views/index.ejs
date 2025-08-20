@@ -16,10 +16,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
-  <% if (isKorean) { %>
-    <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
-  <% } %>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -43,16 +40,16 @@
       margin: 0;
       background-color: var(--bg-bottom); /* 전체 배경색은 하얀색으로 설정 */
       color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
       overflow-y: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* welcome 폰트가 타이틀과 동일하게 Michroma를 사용하도록 통일 */
+    /* welcome 폰트가 타이틀과 동일하게 Montserrat를 사용하도록 통일 */
     body.lang-ko #welcome {
-      font-family: 'Michroma', system-ui, sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       font-weight: 400;
     }
 
@@ -85,7 +82,7 @@
     .brand {
       margin: 0;
       line-height: 1;
-      font-family: "Michroma", system-ui, sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       position: absolute;
       top: 37.5%; /* 25% -> 37.5%로 변경하여 검은색 영역 중앙에 위치 */
       left: 5vw;
@@ -153,7 +150,7 @@
       bottom: clamp(16px, 6vh, 48px);
       text-align: right;
       font-size: clamp(28px, min(7vw, 10vh), 96px);
-      font-family: "Michroma", system-ui, sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       font-weight: 900;
       color: var(--text-dark); /* 카운터 색상: 검은색 */
       user-select: none;
@@ -178,7 +175,7 @@
       top: 37.5%; /* 검은색 영역의 수직 중앙에 위치 */
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
-      font-family: "Michroma", system-ui, sans-serif;
+      font-family: 'Montserrat', system-ui, sans-serif;
       color: white;
       letter-spacing: 0.01em;
       white-space: nowrap;
