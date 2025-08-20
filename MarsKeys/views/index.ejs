@@ -182,6 +182,7 @@
       let autoAnimating = false,
           isFinalized = false,
           particlesGenerated = false;
+      const VANISH_START = 0.5;
 
       const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
       const CSS = getComputedStyle(document.documentElement);
@@ -218,7 +219,6 @@
           fadeOutText();
           showWelcome();
           runParticleShow();
-          startLineEffect(); // 현 시뮬레이터 시작
         }
       }
 
@@ -521,10 +521,12 @@
       let dx = 1, invDX2 = 1;
       let initialY = 0;
       let string = [];
+      let MAX_PULL = 0;
 
       class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
       // 배치
+      let vanishBaseWidth = null, vanishBaseLeft = null;
       function placeLineViz() {
   const Wwin = window.innerWidth;
   const Hwin = window.innerHeight;
@@ -705,6 +707,7 @@
   lctx.clearRect(0,0,Wdraw,Hdraw);
 
   // p>=0.5부터 얇아지고 투명해짐
+  const smoothstep = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
   const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
   const thickness = Math.max(0.6, LINE_THICK * (1 - 0.9 * f));
   lctx.globalAlpha = 1 - f;
@@ -737,7 +740,7 @@
       function animateString(){
         for (let s=0; s<SUBSTEPS; s++) physicsStep();
         drawString();
-        requestAnimationFrame(animateString);
+        if(!isFinalized) requestAnimationFrame(animateString);
       }
 
       function startLineEffect(){ /* keep */ }
