@@ -195,6 +195,13 @@
       let particlePhase = 'idle';
       let phaseStartTime = 0;
 
+      // 🔻 태극 축소 관련 전역(신규)
+      let tgCenterX = 0, tgCenterY = 0;
+      let taegeukScale = 1;
+      const TAEGEUK_FINAL_SCALE = 0.38;     // 최종 축소 비율(원하면 더 작게 0.3~0.4)
+      const SHRINK_DURATION_MS = 2600;      // 천~천히 줄어드는 시간(ms)
+      const easeInOutCubic = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
         const rect = wrap.getBoundingClientRect();
@@ -301,7 +308,9 @@
                   vx: (Math.random() - 0.5) * 0.6 + (dx / dist) * boost,
                   vy: (Math.random() - 0.5) * 0.6 + (dy / dist) * boost,
                   alpha: 1, color,
-                  tx: null, ty: null, reached: false
+                  tx: null, ty: null, reached: false,
+                  // shrink용 기준 좌표(신규)
+                  tbx: null, tby: null
                 });
               }
             }
@@ -332,6 +341,9 @@
       function buildTaegeukTargets(minRed, minBlue) {
         const rect = wrap.getBoundingClientRect();
         const cx = rect.width * 0.5, cy = rect.height * 0.5;
+        tgCenterX = cx;                       // 🔸 중심 보관(신규)
+        tgCenterY = cy;
+
         const R = Math.min(rect.width, rect.height) * 0.26;
 
         let step = Math.max(4, Math.round(Math.min(rect.width, rect.height) / (IS_MOBILE ? 120 : 150)));
@@ -387,14 +399,19 @@
         const reds = particles.filter(pt => pt.color === 'red');
         const blues = particles.filter(pt => pt.color === 'blue');
         const targets = buildTaegeukTargets(reds.length, blues.length);
+
         function assign(listPts, listTgts) {
           for (let i = 0; i < listPts.length; i++) {
             const t = listTgts[i % listTgts.length];
-            listPts[i].tx = t.x; listPts[i].ty = t.y; listPts[i].reached = false;
+            const pt = listPts[i];
+            pt.tx = t.x; pt.ty = t.y; pt.reached = false;
+            // 🔸 축소용 기준 좌표 저장
+            pt.tbx = t.x; pt.tby = t.y;
           }
         }
         assign(reds, targets.red);
         assign(blues, targets.blue);
+        taegeukScale = 1;  // 시작은 원래 크기
       }
 
       function runParticleShow() {
@@ -406,18 +423,27 @@
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
 
+          // 단계 전환
           if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
             assignTaegeukTargets(); particlePhase = 'morph'; phaseStartTime = now;
           } else if (particlePhase === 'morph') {
             const allReached = particles.every(pt => pt.reached);
             if (allReached || (now - phaseStartTime) > 1600) { particlePhase = 'hold'; phaseStartTime = now; }
           } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
-            welcome.classList.remove("welcome-glow");
-            for (const pt of particles) {
-              const ang = Math.random() * Math.PI * 2; const spd = 0.05 + Math.random() * 0.1;
-              pt.vx = Math.cos(ang) * spd; pt.vy = Math.sin(ang) * spd; pt.reached = false;
+            // ✅ 태극 완성 후 "천천히 축소" 단계로 이동
+            particlePhase = 'shrink'; phaseStartTime = now;
+          } else if (particlePhase === 'shrink') {
+            const t = Math.min(1, (now - phaseStartTime) / SHRINK_DURATION_MS);
+            taegeukScale = 1 - (1 - TAEGEUK_FINAL_SCALE) * easeInOutCubic(t);
+            if (t >= 1) {
+              // 축소 끝 → 분산
+              welcome.classList.remove("welcome-glow");
+              for (const pt of particles) {
+                const ang = Math.random() * Math.PI * 2; const spd = 0.05 + Math.random() * 0.1;
+                pt.vx = Math.cos(ang) * spd; pt.vy = Math.sin(ang) * spd; pt.reached = false;
+              }
+              particlePhase = 'disperse'; phaseStartTime = now;
             }
-            particlePhase = 'disperse'; phaseStartTime = now;
           }
 
           let anyAlive = false;
@@ -434,9 +460,17 @@
               }
               pt.alpha = Math.min(1, pt.alpha + 0.01);
             } else if (particlePhase === 'hold') {
-              const t = (now - phaseStartTime) * 0.004;
-              pt.x += Math.sin(t + (pt.tx || pt.x) * 0.01) * 0.06;
-              pt.y += Math.cos(t + (pt.ty || pt.y) * 0.01) * 0.06;
+              const wob = (now - phaseStartTime) * 0.004;
+              pt.x += Math.sin(wob + (pt.tx || pt.x) * 0.01) * 0.06;
+              pt.y += Math.cos(wob + (pt.ty || pt.y) * 0.01) * 0.06;
+              pt.alpha = 1;
+            } else if (particlePhase === 'shrink') {
+              // 🔽 중심 기준으로 타깃을 점차 안쪽으로 이동시키며 따라가게 함
+              const sx = tgCenterX + (pt.tbx - tgCenterX) * taegeukScale;
+              const sy = tgCenterY + (pt.tby - tgCenterY) * taegeukScale;
+              const dx = sx - pt.x, dy = sy - pt.y;
+              pt.vx = pt.vx * 0.86 + dx * 0.045;   // 부드럽게 추종
+              pt.vy = pt.vy * 0.86 + dy * 0.045;
               pt.alpha = 1;
             } else if (particlePhase === 'disperse') {
               pt.vx *= 0.995; pt.vy *= 0.995; pt.alpha -= (pt.color === 'blue') ? 0.0015 : 0.002;
