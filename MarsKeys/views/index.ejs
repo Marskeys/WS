@@ -157,12 +157,10 @@
       z-index: 50;
     }
 
-    /* 새로 추가: Mars/Keys 사이 ‘고정’ 파형 라인 캔버스 */
     #lineViz {
       position: fixed;
       pointer-events: none;
-      z-index: 55; /* brand(40) 위, welcome(60) 아래 */
-      /* width/height/top/left는 JS에서 동적으로 세팅 */
+      z-index: 55;
     }
 
     #welcome {
@@ -287,6 +285,10 @@
       let particlePhase = 'idle';
       let phaseStartTime = 0;
 
+      // 신호선 애니메이션 상태 변수
+      let linePhase = 'waving';
+      let linePhaseStartTime = 0;
+
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
         const rect = wrap.getBoundingClientRect();
@@ -311,6 +313,7 @@
           fadeOutText();
           showWelcome();
           runParticleShow();
+          startLineEffect(); // 신호선 애니메이션 시작
         }
       }
 
@@ -659,7 +662,7 @@
             // 데스크톱: 왼쪽 패딩을 추가하고 글자 사이에 위치
             const wrapCS = getComputedStyle(wrap);
             const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-            const additionalPadding = 250; // 요청에 따라 100px로 설정
+            const additionalPadding = 250;
             left = wrapRect.left + padLeft + additionalPadding;
             
             const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
@@ -672,76 +675,119 @@
         lineCanvas.style.width = width + 'px';
         lineCanvas.style.height = cssHeight + 'px';
 
-        // HiDPI 스케일
         const dpr = Math.max(1, window.devicePixelRatio || 1);
         lineCanvas.width = Math.floor(width * dpr);
         lineCanvas.height = Math.floor(cssHeight * dpr);
         lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
+      
+      function startLineEffect() {
+        linePhase = 'glow';
+        linePhaseStartTime = performance.now();
+      }
 
       function drawLineViz(time) {
+        if (linePhase === 'done') return;
+
         const W = lineCanvas.clientWidth | 0;
         const H = lineCanvas.clientHeight | 0;
-        if (W === 0 || H === 0) return requestAnimationFrame(drawLineViz);
-
+        if (W === 0 || H === 0) {
+          requestAnimationFrame(drawLineViz);
+          return;
+        }
+        
         lctx.clearRect(0, 0, W, H);
         const y0 = H / 2;
-
-        lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
-        lctx.lineJoin = 'round';
-        lctx.lineCap = 'round';
-        lctx.strokeStyle = '#ffffff';
-        lctx.globalAlpha = 0.92;
-
         const leftBase = W * 0.28;
-        const waveLen = W * 0.72; // 파형 길이를 늘려 끝까지 채움
-        
-        const t = (time || performance.now()) * 0.004;
-        const A = H * 0.30;
-        const k = 0.020 * Math.PI;
-
-        function envelope(x) {
-          const u = x / waveLen;
-          return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) *
-                 (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
-        }
-        
-        const beatPos = (t * 0.15 % 1) * waveLen;
-        function spikeBoost(x) {
-          const d = (x - beatPos);
-          const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02));
-          return 1 + 1.8 * s;
-        }
 
         lctx.beginPath();
-        // 왼쪽 베이스
         lctx.moveTo(0, y0);
         lctx.lineTo(leftBase, y0);
 
-        // 파형 구간 (진폭을 점진적으로 증가시켜 부드럽게 시작)
-        const transitionLen = W * 0.08;
-        const step = Math.max(2, Math.min(4, Math.round(W / 220)));
-        for (let i = 0; i <= waveLen; i += step) {
-          const x = leftBase + i;
-          
-          let currentAmp = A;
-          if (i < transitionLen) {
-              const transitionFactor = Math.sin( (i / transitionLen) * (Math.PI / 2) );
-              currentAmp = A * transitionFactor;
+        if (linePhase === 'waving') {
+          lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
+          lctx.lineJoin = 'round';
+          lctx.lineCap = 'round';
+          lctx.strokeStyle = '#ffffff';
+          lctx.globalAlpha = 0.92;
+          lctx.shadowBlur = 0;
+
+          const waveLen = W * 0.72;
+          const t = (time || performance.now()) * 0.004;
+          const A = H * 0.30;
+          const k = 0.020 * Math.PI;
+          const beatPos = (t * 0.15 % 1) * waveLen;
+
+          function envelope(x) {
+            const u = x / waveLen;
+            return (0.75 + 0.25 * Math.sin(u * 6.283 + t * 0.6)) *
+                   (0.85 + 0.15 * Math.sin(u * 10.472 + t * 1.1));
+          }
+          function spikeBoost(x) {
+            const d = (x - beatPos);
+            const s = Math.exp(-(d * d) / (waveLen * 0.02 * waveLen * 0.02));
+            return 1 + 1.8 * s;
           }
 
-          const y = y0
-            + envelope(i) * spikeBoost(i) *
-              ( currentAmp * 0.55 * Math.sin(k * i + t * 1.1)
-              + currentAmp * 0.28 * Math.sin(k * 0.47 * i - t * 0.7)
-              + currentAmp * 0.17 * Math.sin(k * 1.9 * i + t * 0.33) );
-          lctx.lineTo(x, y);
+          const transitionLen = W * 0.08;
+          const step = Math.max(2, Math.min(4, Math.round(W / 220)));
+          for (let i = 0; i <= waveLen; i += step) {
+            const x = leftBase + i;
+            let currentAmp = A;
+            if (i < transitionLen) {
+                const transitionFactor = Math.sin( (i / transitionLen) * (Math.PI / 2) );
+                currentAmp = A * transitionFactor;
+            }
+            const y = y0
+              + envelope(i) * spikeBoost(i) *
+                ( currentAmp * 0.55 * Math.sin(k * i + t * 1.1)
+                + currentAmp * 0.28 * Math.sin(k * 0.47 * i - t * 0.7)
+                + currentAmp * 0.17 * Math.sin(k * 1.9 * i + t * 0.33) );
+            lctx.lineTo(x, y);
+          }
+
+        } else if (linePhase === 'glow') {
+          const elapsed = time - linePhaseStartTime;
+          const duration = 500;
+          const progress = Math.min(1, elapsed / duration);
+          
+          lctx.globalAlpha = 1;
+          lctx.lineWidth = 6;
+          lctx.strokeStyle = '#ffffff';
+          
+          lctx.shadowColor = '#ffffff';
+          lctx.shadowBlur = progress * 60;
+
+          lctx.lineTo(W, y0);
+          
+          if (progress >= 1) {
+            linePhase = 'fade';
+            linePhaseStartTime = time;
+          }
+
+        } else if (linePhase === 'fade') {
+          const elapsed = time - linePhaseStartTime;
+          const duration = 1500;
+          const progress = Math.min(1, elapsed / duration);
+          
+          lctx.globalAlpha = 1 - progress;
+          lctx.lineWidth = 6;
+          lctx.strokeStyle = '#ffffff';
+          
+          const glowProgress = 1 - progress;
+          lctx.shadowColor = '#ffffff';
+          lctx.shadowBlur = glowProgress * 60;
+          
+          lctx.lineTo(W, y0);
+
+          if (progress >= 1) {
+            linePhase = 'done';
+            lctx.clearRect(0, 0, W, H);
+            return;
+          }
         }
-
-        // 끝부분 직선 제거
-        // lctx.lineTo(leftBase + waveLen + rightBase, y0);
+        
         lctx.stroke();
-
         requestAnimationFrame(drawLineViz);
       }
 
@@ -753,12 +799,10 @@
       window.addEventListener('resize', placeLineViz);
       window.addEventListener('orientationchange', placeLineViz);
 
-      // 폰트 로딩 이후 위치 보정
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(placeLineViz);
       }
-
-      // 첫 배치 & 시작
+      
       placeLineViz();
       requestAnimationFrame(drawLineViz);
     })();
