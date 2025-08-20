@@ -15,7 +15,7 @@
     <% } %>
   </title>
 
-  <!-- Fonts: Michroma (항상), Yeon Sung (한국어일 때만) -->
+  <!-- Fonts: Michroma(항상), Yeon Sung(한국어일 때만) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
@@ -50,11 +50,18 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* 한국어 페이지에서만 Yeon Sung 적용 (브랜드/카운터는 Michroma 유지) */
+    /* 한국어 페이지 전용 폰트 적용 */
     body.lang-ko{
       font-family: 'Yeon Sung', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
-    body.lang-ko #welcome{ font-family: 'Yeon Sung', system-ui, sans-serif; }
+    /* 브랜드 타이틀도 한국어에서 Yeon Sung으로 (이전엔 Michroma 고정이었음) */
+    body.lang-ko .brand{
+      font-family: 'Yeon Sung', system-ui, sans-serif;
+    }
+    /* Welcome도 한국어면 Yeon Sung */
+    body.lang-ko #welcome{
+      font-family: 'Yeon Sung', system-ui, sans-serif;
+    }
 
     body.show-background {
       background-image: url('https://images.unsplash.com/photo-1502126428-175f0881ed53?q=80&w=2670&auto=format&fit=crop');
@@ -75,7 +82,7 @@
     .brand {
       margin: 0;
       line-height: 1;
-      font-family: "Michroma", system-ui, sans-serif; /* 브랜드는 계속 Michroma */
+      font-family: "Michroma", system-ui, sans-serif; /* 기본: Michroma, 한국어에선 위 오버라이드로 Yeon Sung */
       position: relative;
       z-index: 40;
     }
@@ -110,7 +117,6 @@
       --grad: linear-gradient(180deg, var(--pastel-blue-1), var(--pastel-blue-2), var(--pastel-blue-3));
     }
 
-    /* Tagline */
     .tagline {
       font-size: clamp(16px, 2.6vw, 28px);
       font-weight: 600;
@@ -143,14 +149,14 @@
     .tagline.to-white { color: #fff; }
     @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
 
-    /* 퍼센트 (Michroma 유지) */
+    /* 퍼센트(브랜드와 분리해서 Michroma 유지) */
     #counter {
       position: absolute;
       right: 5vw;
       bottom: clamp(16px, 6vh, 48px);
       text-align: right;
       font-size: clamp(28px, min(7vw, 10vh), 96px);
-      font-family: "Michroma", system-ui, sans-serif; /* 유지 */
+      font-family: "Michroma", system-ui, sans-serif;
       font-weight: 900;
       color: white;
       user-select: none;
@@ -176,7 +182,7 @@
       transform: translate(-50%, -50%) scale(0.86);
       opacity: 0;
       font-size: clamp(48px, 10vw, 130px);
-      font-family: "Michroma", system-ui, sans-serif; /* 한국어면 아래에서 Yeon Sung으로 override */
+      font-family: "Michroma", system-ui, sans-serif; /* 한국어에선 위 오버라이드로 Yeon Sung */
       color: white;
       letter-spacing: 0.01em;
       max-width: 92vw;
@@ -234,7 +240,6 @@
       <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
     </h1>
 
-    <!-- data-text로 before가 동일 텍스트를 복제해 클리핑 -->
     <p class="tagline" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
 
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
@@ -271,7 +276,6 @@
       const scrollContent = document.getElementById("scrollContent");
       const particleCanvas = document.getElementById('particleCanvas');
       const pctx = particleCanvas.getContext('2d');
-      const particleShowDuration = 10000;
 
       const tagline = document.querySelector('.tagline');
 
@@ -295,7 +299,6 @@
       // Taegeuk params
       const TAEGUK_DELAY = 2000;
       const TAEGUK_HOLD = 900;
-      const TAEGUK_SCALE = 0.26;
 
       let particlePhase = 'idle';
       let phaseStartTime = 0;
@@ -413,11 +416,10 @@
           }
         });
 
-        if (particles.length > MAX_PARTICLES) {
+        if (particles.length > (IS_MOBILE ? 8000 : 3000)) {
+          const cap = IS_MOBILE ? 8000 : 3000;
           const sampled = [];
-          for (let i = 0; i < MAX_PARTICLES; i++) {
-            sampled.push(particles[(Math.random() * particles.length) | 0]);
-          }
+          for (let i = 0; i < cap; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
           particles = sampled;
         }
       }
