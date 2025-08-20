@@ -642,6 +642,7 @@
          ============================================================ */
       const lineCanvas = document.getElementById('lineViz');
       const lctx = lineCanvas.getContext('2d');
+      const LINE_CONDENSE_DURATION = 1500;
 
       function placeLineViz() {
         const wrapRect = wrap.getBoundingClientRect();
@@ -682,8 +683,15 @@
       }
       
       function startLineEffect() {
-        linePhase = 'glow';
+        linePhase = 'condense';
         linePhaseStartTime = performance.now();
+        // 전체 화면 너비를 사용하도록 스타일 변경
+        lineCanvas.style.left = '0px';
+        lineCanvas.style.width = window.innerWidth + 'px';
+        // 새로운 크기에 맞게 캔버스 크기 재설정
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        lineCanvas.width = Math.floor(window.innerWidth * dpr);
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
 
       function drawLineViz(time) {
@@ -698,11 +706,8 @@
         
         lctx.clearRect(0, 0, W, H);
         const y0 = H / 2;
-        const leftBase = W * 0.28;
 
         lctx.beginPath();
-        lctx.moveTo(0, y0);
-        lctx.lineTo(leftBase, y0);
 
         if (linePhase === 'waving') {
           lctx.lineWidth = Math.max(5, Math.min(9, Math.round(H * 0.22)));
@@ -712,6 +717,7 @@
           lctx.globalAlpha = 0.92;
           lctx.shadowBlur = 0;
 
+          const leftBase = W * 0.28;
           const waveLen = W * 0.72;
           const t = (time || performance.now()) * 0.004;
           const A = H * 0.30;
@@ -731,6 +737,10 @@
 
           const transitionLen = W * 0.08;
           const step = Math.max(2, Math.min(4, Math.round(W / 220)));
+          
+          lctx.moveTo(0, y0);
+          lctx.lineTo(leftBase, y0);
+          
           for (let i = 0; i <= waveLen; i += step) {
             const x = leftBase + i;
             let currentAmp = A;
@@ -745,40 +755,28 @@
                 + currentAmp * 0.17 * Math.sin(k * 1.9 * i + t * 0.33) );
             lctx.lineTo(x, y);
           }
-
-        } else if (linePhase === 'glow') {
+          
+        } else if (linePhase === 'condense') {
           const elapsed = time - linePhaseStartTime;
-          const duration = 500;
-          const progress = Math.min(1, elapsed / duration);
-          
-          lctx.globalAlpha = 1;
-          lctx.lineWidth = 6;
-          lctx.strokeStyle = '#ffffff';
-          
-          lctx.shadowColor = '#ffffff';
-          lctx.shadowBlur = progress * 60;
-
-          lctx.lineTo(W, y0);
-          
-          if (progress >= 1) {
-            linePhase = 'fade';
-            linePhaseStartTime = time;
-          }
-
-        } else if (linePhase === 'fade') {
-          const elapsed = time - linePhaseStartTime;
-          const duration = 1500;
-          const progress = Math.min(1, elapsed / duration);
+          const progress = Math.min(1, elapsed / LINE_CONDENSE_DURATION);
           
           lctx.globalAlpha = 1 - progress;
           lctx.lineWidth = 6;
           lctx.strokeStyle = '#ffffff';
           
-          const glowProgress = 1 - progress;
+          const maxBlur = 60;
           lctx.shadowColor = '#ffffff';
-          lctx.shadowBlur = glowProgress * 60;
+          lctx.shadowBlur = maxBlur * (1 - progress);
+
+          const midX = W / 2;
+          const midY = H / 2;
           
-          lctx.lineTo(W, y0);
+          // 양 끝에서 중앙으로 응축
+          const startX = midX * progress;
+          const endX = W - midX * progress;
+
+          lctx.moveTo(startX, midY);
+          lctx.lineTo(endX, midY);
 
           if (progress >= 1) {
             linePhase = 'done';
