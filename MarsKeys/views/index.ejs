@@ -228,7 +228,7 @@
       const MAX_PARTICLES = 5000;
       let particlePhase = 'idle';
       let phaseStartTime = 0;
-      let bigCircle = null;
+      let mainBigCircle = null;
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -316,18 +316,20 @@
         particles.length = 0;
 
         const wrapRect = wrap.getBoundingClientRect();
+        const W = wrapRect.width, H = wrapRect.height;
         const lines = [
           { el: document.getElementById('mars').parentElement, textEl: document.getElementById('mars') },
           { el: document.getElementById('keys').parentElement, textEl: document.getElementById('keys') }
         ];
 
+        let hasMainBigCircle = false;
         lines.forEach(({ el, textEl }) => {
           const rect = el.getBoundingClientRect();
           const style = getComputedStyle(textEl);
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
 
-        const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
+          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
           const ctx = canvas.getContext('2d');
           const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = img.data;
@@ -340,10 +342,21 @@
               if (data[idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
-
-                let targetSize = 1.5 + Math.random() * 3.5;
-                if (Math.random() < 0.1) { // 10% 확률로 더 큰 파티클 생성
-                  targetSize = 10 + Math.random() * 30; // 10px ~ 40px 사이의 크기
+                
+                let targetSize, isBig, color, fadeRate, sizeGrowthRate;
+                if (Math.random() < 0.1 && !hasMainBigCircle) { // 10% 확률로 큰 파티클 생성
+                  targetSize = Math.min(W, H) / 3;
+                  isBig = true;
+                  color = 'rgba(150, 200, 255, 0.4)';
+                  fadeRate = 0.999;
+                  sizeGrowthRate = 0.005;
+                  hasMainBigCircle = true;
+                } else {
+                  targetSize = 1.5 + Math.random() * 3.5;
+                  isBig = false;
+                  color = pickStarColor();
+                  fadeRate = 0.999;
+                  sizeGrowthRate = 0.02 + Math.random() * 0.01;
                 }
 
                 const spd = 0.35 + Math.random() * 0.4;
@@ -353,13 +366,15 @@
                   vx: Math.cos(ang) * spd,
                   vy: Math.sin(ang) * spd,
                   alpha: 1,
-                  color: pickStarColor(),
+                  color: color,
                   initialSize: 1 + Math.random() * 0.8,
                   targetSize: targetSize,
                   currentSize: 0,
-                  sizeGrowthRate: 0.02 + Math.random() * 0.01,
+                  sizeGrowthRate: sizeGrowthRate,
                   tw: 0.5 + Math.random() * 0.8,
-                  twPhase: Math.random() * Math.PI * 2
+                  twPhase: Math.random() * Math.PI * 2,
+                  isBigCircle: isBig,
+                  fadeRate: fadeRate,
                 });
               }
             }
@@ -383,7 +398,7 @@
       function showWelcome() {
         setTimeout(() => { counterEl.style.opacity = 0; }, 350);
         setTimeout(() => { 
-          welcome.classList.add("visible", "darken-overlap");  // ▼ 어둡게 마스크 ON
+          welcome.classList.add("visible", "darken-overlap");
         }, 2000);
         setTimeout(() => { 
           scrollContent.style.display = "block"; 
@@ -396,26 +411,6 @@
       function runParticleShow() {
         particlePhase = 'break';
         phaseStartTime = performance.now();
-
-        // 큰 원 파티클 생성 (화면 중앙 근처에서 시작)
-        const rect = wrap.getBoundingClientRect();
-        const W = rect.width, H = rect.height;
-        const bigCircleX = W / 2 + (Math.random() - 0.5) * W * 0.1;
-        const bigCircleY = H / 2 + (Math.random() - 0.5) * H * 0.1;
-        bigCircle = {
-          x: bigCircleX, y: bigCircleY,
-          vx: 0, vy: 0,
-          alpha: 1,
-          color: 'rgba(150, 200, 255, 0.4)',
-          initialSize: 0,
-          targetSize: Math.min(W, H) / 3,
-          currentSize: 0,
-          sizeGrowthRate: 0.005,
-          tw: 0, twPhase: 0,
-          isBigCircle: true,
-          fadeRate: 0.001
-        };
-        
         requestAnimationFrame(frame);
       }
       
@@ -423,6 +418,8 @@
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
+          let mainBigCircle = null;
+          let maxBigCircleSize = 0;
 
           const phaseDuration = 1500;
           if (particlePhase === 'break' && now - phaseStartTime >= phaseDuration) {
@@ -434,28 +431,37 @@
             phaseStartTime = now;
           }
 
-          // 파티클 업데이트
+          // 파티클 업데이트 및 메인 큰 원 찾기
           for (const pt of particles) {
-            if (pt.currentSize < pt.initialSize) {
-              pt.currentSize += (pt.initialSize - pt.currentSize) * pt.sizeGrowthRate * 5;
-              if (pt.currentSize >= pt.initialSize) pt.currentSize = pt.initialSize;
-            } else if (pt.currentSize < pt.targetSize) {
+            if (pt.currentSize < pt.targetSize) {
               pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
               if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
             }
 
-            if (particlePhase === 'break') {
-              pt.vx *= 0.97; pt.vy *= 0.97;
-              pt.vx += (Math.random() - 0.5) * 0.03;
-              pt.vy += (Math.random() - 0.5) * 0.03;
+            if (pt.isBigCircle) {
+                if (pt.currentSize > maxBigCircleSize) {
+                    mainBigCircle = pt;
+                    maxBigCircleSize = pt.currentSize;
+                }
+                pt.vx += (Math.random() - 0.5) * 0.02;
+                pt.vy += (Math.random() - 0.5) * 0.02;
+                const maxV = 0.1;
+                const sp = Math.hypot(pt.vx, pt.vy);
+                if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
+                pt.alpha *= pt.fadeRate;
             } else {
-              pt.vx += (Math.random() - 0.5) * 0.006;
-              pt.vy += (Math.random() - 0.5) * 0.006;
-
-              const maxV = 0.22;
-              const sp = Math.hypot(pt.vx, pt.vy);
-              if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-              pt.alpha *= 0.999;
+                if (particlePhase === 'break') {
+                    pt.vx *= 0.97; pt.vy *= 0.97;
+                    pt.vx += (Math.random() - 0.5) * 0.03;
+                    pt.vy += (Math.random() - 0.5) * 0.03;
+                } else {
+                    pt.vx += (Math.random() - 0.5) * 0.006;
+                    pt.vy += (Math.random() - 0.5) * 0.006;
+                    const maxV = 0.22;
+                    const sp = Math.hypot(pt.vx, pt.vy);
+                    if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
+                    pt.alpha *= 0.999;
+                }
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
@@ -467,54 +473,41 @@
             if (pt.y > H + m) pt.y = -m;
           }
 
-          // 큰 원 업데이트
-          if (bigCircle) {
-            if (bigCircle.currentSize < bigCircle.targetSize) {
-              bigCircle.currentSize += (bigCircle.targetSize - bigCircle.currentSize) * bigCircle.sizeGrowthRate;
-            }
-
-            bigCircle.vx += (Math.random() - 0.5) * 0.02;
-            bigCircle.vy += (Math.random() - 0.5) * 0.02;
-
-            const maxV = 0.1;
-            const sp = Math.hypot(bigCircle.vx, bigCircle.vy);
-            if (sp > maxV) { bigCircle.vx = (bigCircle.vx / sp) * maxV; bigCircle.vy = (bigCircle.vy / sp) * maxV; }
-            bigCircle.x += bigCircle.vx; bigCircle.y += bigCircle.vy;
-
-            bigCircle.alpha *= 0.999;
-          }
-
           // ======== 드로잉 ========
           pctx.globalCompositeOperation = 'source-over';
           pctx.shadowBlur = 0;
           pctx.shadowColor = 'transparent';
 
           // 배경 살짝 어둡게
-          if (bigCircle && bigCircle.alpha > 0.01) {
+          if (mainBigCircle && mainBigCircle.alpha > 0.01) {
             pctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             pctx.fillRect(0, 0, pctx.canvas.width, pctx.canvas.height);
           }
 
-          // 큰 원 (multiply로 배경 효과)
-          if (bigCircle && bigCircle.alpha > 0.01) {
-            pctx.globalCompositeOperation = 'multiply';
-            pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
-            pctx.fillStyle = bigCircle.color;
-            pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
-            pctx.globalCompositeOperation = 'source-over';
+          // 큰 파티클 (multiply로 배경 효과)
+          for (const pt of particles) {
+              if (pt.isBigCircle && pt.alpha > 0.01) {
+                pctx.globalCompositeOperation = 'multiply';
+                pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha));
+                pctx.fillStyle = pt.color;
+                pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
+              }
           }
+          pctx.globalCompositeOperation = 'source-over';
 
           // 일반 파티클
           for (const pt of particles) {
-            if (pt.alpha <= 0.01) continue;
-            const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
-            pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
-            pctx.fillStyle = pt.color;
-            pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
+            if (!pt.isBigCircle && pt.alpha > 0.01) {
+              const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
+              pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
+              pctx.fillStyle = pt.color;
+              pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
+            }
           }
+          pctx.globalAlpha = 1;
 
-          // === ★ welcome 어둡게 마스크 좌표 동기화 (scale 보정 버전) ===
-          if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
+          // === welcome 어둡게 마스크 좌표 동기화 (scale 보정 버전) ===
+          if (mainBigCircle && welcome && welcome.classList.contains('darken-overlap')) {
               const wrapRect = wrap.getBoundingClientRect();
               const wrect = welcome.getBoundingClientRect();
 
@@ -525,11 +518,11 @@
               const scaleY = wrect.height / oh || 1;
 
               // bigCircle(x,y)는 wrap 기준 CSS px → welcome 로컬 좌표로 변환 후 scale 보정
-              const cxLocal = (bigCircle.x + wrapRect.left - wrect.left) / scaleX;
-              const cyLocal = (bigCircle.y + wrapRect.top - wrect.top) / scaleY;
+              const cxLocal = (mainBigCircle.x + wrapRect.left - wrect.left) / scaleX;
+              const cyLocal = (mainBigCircle.y + wrapRect.top - wrect.top) / scaleY;
 
               // 반경도 동일하게 보정(비균일 스케일 가능성까지 고려해 최대값 사용)
-              const rLocal = bigCircle.currentSize / Math.max(scaleX, scaleY);
+              const rLocal = mainBigCircle.currentSize / Math.max(scaleX, scaleY);
 
               welcome.style.setProperty('--circle-x', `${cxLocal}px`);
               welcome.style.setProperty('--circle-y', `${cyLocal}px`);
