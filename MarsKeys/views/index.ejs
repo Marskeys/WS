@@ -383,8 +383,7 @@
                 });
               }
             }
-          }
-        });
+          });
 
         if (particles.length > MAX_PARTICLES) {
           const sampled = [];
@@ -583,10 +582,9 @@
       class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
       class StringSim {
-        constructor(canvas, initialPullY) {
+        constructor(canvas) {
           this.canvas = canvas;
           this.ctx = canvas.getContext('2d');
-          this.initialPullY = initialPullY || 0;
           this.tension = 0.8;
           this.loss = 0.986;
           this.SUBSTEPS = 10;
@@ -595,6 +593,7 @@
           this.C_MOUSE = 0.08;
           this.HARD_FACTOR = 0.4;
           this.RELEASE_KICK = 0.25;
+          this.MIN_FLICK_DISTANCE = 20; // 튕김을 감지할 최소 드래그 거리 (px)
 
           this.numPoints = 240;
           this.dx = 1;
@@ -602,7 +601,7 @@
           this.initialY = 0;
           this.string = [];
           this.MAX_PULL = 0;
-          this.mouse = { active: false, x: 0, y: 0 };
+          this.mouse = { active: false, x: 0, y: 0, startX: 0, startY: 0 };
           
           this.setup();
           this.addEventListeners();
@@ -636,19 +635,24 @@
             this.mouse.active = true;
             this.mouse.x = x;
             this.mouse.y = y;
-            updateRing(x, y);
+            this.mouse.startX = x; // 시작점 저장
+            this.mouse.startY = y;
           });
           this.canvas.addEventListener('mousemove', e => {
             if (!this.mouse.active) return;
             const { x, y } = this.getPos(e);
             this.mouse.x = x;
             this.mouse.y = y;
-            updateRing(x, y);
           });
           this.canvas.addEventListener('mouseup', () => {
             if (!this.mouse.active) return;
             this.mouse.active = false;
-            this.releaseKick();
+            const distance = Math.hypot(this.mouse.x - this.mouse.startX, this.mouse.y - this.mouse.startY);
+            if (distance > this.MIN_FLICK_DISTANCE) {
+                this.releaseKick();
+            } else {
+                this.resetString();
+            }
           });
           this.canvas.addEventListener('touchstart', e => {
             const { x, y } = this.getPos(e);
@@ -656,7 +660,8 @@
             this.mouse.active = true;
             this.mouse.x = x;
             this.mouse.y = y;
-            updateRing(x, y);
+            this.mouse.startX = x;
+            this.mouse.startY = y;
           }, { passive: false });
           this.canvas.addEventListener('touchmove', e => {
             if (!this.mouse.active) return;
@@ -664,12 +669,16 @@
             e.preventDefault();
             this.mouse.x = x;
             this.mouse.y = y;
-            updateRing(x, y);
           }, { passive: false });
           this.canvas.addEventListener('touchend', () => {
             if (!this.mouse.active) return;
             this.mouse.active = false;
-            this.releaseKick();
+            const distance = Math.hypot(this.mouse.x - this.mouse.startX, this.mouse.y - this.mouse.startY);
+            if (distance > this.MIN_FLICK_DISTANCE) {
+                this.releaseKick();
+            } else {
+                this.resetString();
+            }
           });
         }
 
@@ -683,6 +692,14 @@
             const disp = this.string[i].y - this.initialY;
             this.string[i].oldY = this.string[i].y + this.RELEASE_KICK * disp;
           }
+        }
+        
+        // 마우스 클릭 후 드래그하지 않았을 때 현을 초기 상태로 복원
+        resetString() {
+            for (let i = 0; i < this.numPoints; i++) {
+                this.string[i].y = this.initialY;
+                this.string[i].oldY = this.initialY;
+            }
         }
 
         hannWeight(dist, R) {
