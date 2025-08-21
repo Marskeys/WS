@@ -206,10 +206,10 @@
 
       // ===== Particles (부유만) =====
       let particles = [];
-      const MAX_PARTICLES = 5000; // 파티클 수 대폭 증가
+      const MAX_PARTICLES = 5000;
       let particlePhase = 'idle';
       let phaseStartTime = 0;
-      let bigCircle = null; // 큰 원 파티클 변수
+      let bigCircle = null;
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -279,7 +279,7 @@
       // 파티클 수를 줄이기 위해 픽셀 간격(STEP)을 계산하는 함수 수정
       function computeStepForTarget(canvas) {
         const area = canvas.width * canvas.height;
-        const target = IS_MOBILE ? 1500 : 5000; // 파티클 밀도 조정
+        const target = IS_MOBILE ? 1500 : 5000;
         const estGlyphArea = area * 0.45;
         const step = Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
         return step;
@@ -288,10 +288,10 @@
       // ✨ 별색 팔레트(진한 계열)
       function pickStarColor(){
         const r = Math.random();
-        if (r < 0.25) return 'rgba(255,255,255,0.98)';        // white
-        if (r < 0.50) return 'rgba(120,160,255,0.96)';        // deep blue
-        if (r < 0.75) return 'rgba(235,160,255,0.96)';        // magenta/violet
-        return 'rgba(255,120,220,0.96)';                      // hot pink
+        if (r < 0.25) return 'rgba(255,255,255,0.98)';
+        if (r < 0.50) return 'rgba(120,160,255,0.96)';
+        if (r < 0.75) return 'rgba(235,160,255,0.96)';
+        return 'rgba(255,120,220,0.96)';
       }
 
       function generateParticles() {
@@ -325,7 +325,7 @@
                 const py = rect.top - wrapRect.top + y;
                 
                 let targetSize = 1.5 + Math.random() * 3.5;
-                if (Math.random() < 0.05) { // 5% 확률로 큰 파티클 생성
+                if (Math.random() < 0.05) {
                   targetSize = 10 + Math.random() * 20;
                 }
 
@@ -385,7 +385,7 @@
           alpha: 1,
           color: 'rgba(150, 200, 255, 0.5)',
           initialSize: 0,
-          targetSize: Math.min(W, H) / 3, // 화면 1/3 크기
+          targetSize: Math.min(W, H) / 3,
           currentSize: 0,
           sizeGrowthRate: 0.005,
           tw: 0, twPhase: 0,
@@ -427,7 +427,7 @@
               const maxV = 0.22;
               const sp = Math.hypot(pt.vx, pt.vy);
               if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-              pt.alpha *= 0.985; // 파티클 빠르게 사라지게
+              pt.alpha *= 0.985;
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
@@ -453,18 +453,20 @@
             if (sp > maxV) { bigCircle.vx = (bigCircle.vx / sp) * maxV; bigCircle.vy = (bigCircle.vy / sp) * maxV; }
             bigCircle.x += bigCircle.vx; bigCircle.y += bigCircle.vy;
 
-            // 서서히 사라지게
             bigCircle.alpha *= 0.999;
           }
 
           // 드로잉 (트윙클)
           pctx.globalCompositeOperation = 'source-over';
-          pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
+          
+          // **성능 최적화: 그림자 효과 제거**
+          pctx.shadowBlur = 0;
+          pctx.shadowColor = 'transparent';
 
           // 큰 원 그리기
           if (bigCircle && bigCircle.alpha > 0.01) {
             pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
-            pctx.shadowColor = bigCircle.color; pctx.fillStyle = bigCircle.color;
+            pctx.fillStyle = bigCircle.color;
             pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
           }
 
@@ -473,7 +475,7 @@
             if (pt.alpha <= 0.01) continue;
             const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
             pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
-            pctx.shadowColor = pt.color; pctx.fillStyle = pt.color;
+            pctx.fillStyle = pt.color;
             pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
           }
 
