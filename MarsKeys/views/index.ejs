@@ -383,7 +383,8 @@
                 });
               }
             }
-          });
+          }
+        });
 
         if (particles.length > MAX_PARTICLES) {
           const sampled = [];
@@ -593,7 +594,7 @@
           this.C_MOUSE = 0.08;
           this.HARD_FACTOR = 0.4;
           this.RELEASE_KICK = 0.25;
-          this.MIN_FLICK_DISTANCE = 20; // 튕김을 감지할 최소 드래그 거리 (px)
+          this.MIN_FLICK_DISTANCE = 20;
 
           this.numPoints = 240;
           this.dx = 1;
@@ -635,7 +636,7 @@
             this.mouse.active = true;
             this.mouse.x = x;
             this.mouse.y = y;
-            this.mouse.startX = x; // 시작점 저장
+            this.mouse.startX = x;
             this.mouse.startY = y;
           });
           this.canvas.addEventListener('mousemove', e => {
@@ -694,7 +695,6 @@
           }
         }
         
-        // 마우스 클릭 후 드래그하지 않았을 때 현을 초기 상태로 복원
         resetString() {
             for (let i = 0; i < this.numPoints; i++) {
                 this.string[i].y = this.initialY;
@@ -845,8 +845,7 @@
         const Hwin = window.innerHeight;
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
         
-        let left, width, topBase;
-        const padPx = Math.round((20 / 100) * Hwin);
+        let left, width;
         
         const marsLine = document.getElementById('mars')?.parentElement || null;
         const keysLine = document.getElementById('keys')?.parentElement || null;
