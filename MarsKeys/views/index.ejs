@@ -393,11 +393,6 @@
           fadeRate: 0.001
         };
 
-        // 파티클 초기 크기 설정
-        for(const pt of particles) {
-            pt.currentSize = pt.initialSize;
-        }
-
         function frame(now) {
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
@@ -415,10 +410,15 @@
 
           // 파티클 업데이트
           for (const pt of particles) {
-            // 크기 변화
-            if (pt.currentSize < pt.targetSize) {
-              pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
-              if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
+            // 크기 변화: currentSize가 initialSize보다 작으면 initialSize까지 빠르게 키움
+            if (pt.currentSize < pt.initialSize) {
+                pt.currentSize += (pt.initialSize - pt.currentSize) * pt.sizeGrowthRate * 5;
+                if (pt.currentSize >= pt.initialSize) pt.currentSize = pt.initialSize;
+            }
+            // initialSize에 도달하면 targetSize까지 천천히 키움
+            else if (pt.currentSize < pt.targetSize) {
+                pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
+                if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
             }
 
             if (particlePhase === 'break') {
