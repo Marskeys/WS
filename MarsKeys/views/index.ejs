@@ -393,6 +393,11 @@
           fadeRate: 0.001
         };
 
+        // 파티클 초기 크기 설정
+        for(const pt of particles) {
+            pt.currentSize = pt.initialSize;
+        }
+
         function frame(now) {
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
