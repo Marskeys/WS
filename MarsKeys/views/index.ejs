@@ -30,7 +30,7 @@
       --muted: #9aa3b2;
       --fill-int: 0%;
 
-      /* ✨ 더 진한 은하 텍스처(보라/핑크/파랑 믹스 + 별빛) */
+      /* ✨ 더 진한 은하 텍스처(보라/핑크/파랑 + 별빛) */
       --galaxy-text:
         radial-gradient(1.4px 1.4px at 8% 12%, rgba(255,255,255,.98), transparent 60%),
         radial-gradient(1.6px 1.6px at 18% 64%, rgba(255,155,230,.95), transparent 60%),
@@ -40,7 +40,6 @@
         radial-gradient(1.3px 1.3px at 70% 18%, rgba(235,160,255,.95),  transparent 60%),
         radial-gradient(1.5px 1.5px at 80% 70%, rgba(120,160,255,.95),  transparent 60%),
         radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,245,225,.95),  transparent 60%),
-        /* 은하 안개빛: 채도 살짝 ↑ */
         conic-gradient(from 130deg at 50% 50%,
           rgba(130,160,255,.42) 0%,
           rgba(255,120,220,.45) 14%,
@@ -82,7 +81,6 @@
     .brand-line { display: block; font-size: clamp(56px, min(14vw, 28vh), 200px); line-height: 1.06; padding-bottom: 0.18em; overflow: visible; position: relative; }
     .brand-line+.brand-line { margin-top: -0.32em; }
 
-    /* 🔤 텍스트 채움(은하) — 기존 채움 애니 유지 */
     .ink{
       display:inline-block; color:transparent; -webkit-text-fill-color:transparent;
       -webkit-background-clip:text; background-clip:text;
@@ -119,7 +117,6 @@
 
     #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
 
-    /* 🎸 현 시뮬레이터 캔버스 */
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
 
     #welcome {
@@ -204,11 +201,12 @@
 
       const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
 
-      // ===== Particles (부유만) =====
+      // ===== Particles (부유 + 스파클) =====
       let particles = [];
-      const MAX_PARTICLES = IS_MOBILE ? 5000 : 2500; // 성능 여유
-      let particlePhase = 'idle';
-      let phaseStartTime = 0;
+      const MAX_PARTICLES = IS_MOBILE ? 5200 : 2600; // 성능 여유
+      let phase = 'idle';
+      let phaseStart = 0;
+      let floatStart = 0;
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -233,7 +231,7 @@
           generateParticles();
           fadeOutText();
           showWelcome();
-          runParticleShow();
+          runParticles();
         }
       }
 
@@ -272,13 +270,13 @@
         return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
       }
 
-      // ✨ 별색 팔레트(진한 계열)
+      // ✨ 진한 별색 팔레트
       function pickStarColor(){
         const r = Math.random();
-        if (r < 0.25) return 'rgba(255,255,255,0.98)';        // white
-        if (r < 0.50) return 'rgba(120,160,255,0.96)';        // deep blue
-        if (r < 0.75) return 'rgba(235,160,255,0.96)';        // magenta/violet
-        return 'rgba(255,120,220,0.96)';                      // hot pink
+        if (r < 0.25) return 'rgba(255,255,255,0.98)';
+        if (r < 0.50) return 'rgba(120,160,255,0.96)';
+        if (r < 0.75) return 'rgba(235,160,255,0.96)';
+        return 'rgba(255,120,220,0.96)';
       }
 
       function generateParticles() {
@@ -312,7 +310,7 @@
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
 
-                // 초기 '깨짐' 살짝 튕기고 곧 잔잔히 부유
+                // 초기 '깨짐' → 바깥으로 살짝 튕김
                 const spd = 0.35 + Math.random() * 0.4;
                 const ang = Math.random() * Math.PI * 2;
                 particles.push({
@@ -321,16 +319,19 @@
                   vy: Math.sin(ang) * spd,
                   alpha: 1,
                   color: pickStarColor(),
-                  size: 1.2 + Math.random() * 1.3,
+                  size0: 1.1 + Math.random() * 1.3, // 기본 크기
+                  size: 0,                           // 그려질 크기(트윙클/글로우 반영)
                   tw: 0.5 + Math.random() * 0.8,
-                  twPhase: Math.random() * Math.PI * 2
+                  twPhase: Math.random() * Math.PI * 2,
+                  glow: 0,                           // 스파클 강도 0..1
+                  sparkCooldown: 400 + Math.random()*3000 // 다음 스파클까지 남은 ms
                 });
               }
             }
           }
         });
 
-        // 캡 적용(성능)
+        // 캡 적용
         if (particles.length > MAX_PARTICLES) {
           const sampled = [];
           for (let i = 0; i < MAX_PARTICLES; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
@@ -351,64 +352,132 @@
         setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
-      // ===== 파티클 쇼: break -> float(부유) =====
-      function runParticleShow() {
-        particlePhase = 'break';
-        phaseStartTime = performance.now();
+      // ===== 유틸: 플로우 필드(부드러운 전체 드리프트) =====
+      function flowField(x, y, t){
+        // 가벼운 준-노이즈 필드 (sin/cos 결합)
+        const ax = 0.0006, ay = 0.0007;
+        const a = Math.sin(x * ax + t * 0.00022) + Math.cos(y * ay - t * 0.00018);
+        const ang = a * Math.PI; // [-2π..2π] 범위 비슷
+        const mag = 0.03 + 0.01 * Math.sin(t * 0.00013); // 서서히 진폭 변화
+        return { fx: Math.cos(ang) * mag, fy: Math.sin(ang) * mag };
+      }
+
+      function runParticles() {
+        phase = 'break';
+        phaseStart = performance.now();
+        let last = phaseStart;
 
         function frame(now) {
+          const dt = Math.min(40, now - last); // ms, 프레임 드랍 방지
+          last = now;
+
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
+          const cx = W * 0.5, cy = H * 0.5;
+
           pctx.clearRect(0, 0, W, H);
 
-          // 단계 전환: 짧게만 튕기고 곧 부유
-          if (particlePhase === 'break' && now - phaseStartTime >= 900) {
-            // 속도를 부드럽게 줄이고 천천히 흐르게 전환
+          // 단계 전환
+          if (phase === 'break' && now - phaseStart >= 900) {
+            // float 시작: 전역 확산을 위한 약한 바깥쪽 푸시 적용
             for (const pt of particles) {
-              pt.vx *= 0.25 + Math.random()*0.15;
-              pt.vy *= 0.25 + Math.random()*0.15;
+              const dx = pt.x - cx, dy = pt.y - cy;
+              const dist = Math.hypot(dx, dy) + 0.0001;
+              const push = 0.25 + Math.random() * 0.15;
+              pt.vx *= 0.35; pt.vy *= 0.35;
+              pt.vx += (dx / dist) * push;
+              pt.vy += (dy / dist) * push;
             }
-            particlePhase = 'float';
-            phaseStartTime = now;
+            phase = 'float';
+            floatStart = now;
           }
 
           // 업데이트
+          const elapsedFloat = Math.max(0, now - floatStart);
           for (const pt of particles) {
-            // 약한 난류(노이즈)로 부유감
-            if (particlePhase === 'break') {
+            if (phase === 'break') {
+              // 초기 튕김 감쇠 + 약한 난류
               pt.vx *= 0.985; pt.vy *= 0.985;
               pt.vx += (Math.random() - 0.5) * 0.02;
               pt.vy += (Math.random() - 0.5) * 0.02;
             } else {
-              // float
-              pt.vx += (Math.random() - 0.5) * 0.006;
-              pt.vy += (Math.random() - 0.5) * 0.006;
+              // ===== float 단계 =====
+              // 1) 플로우 필드 기반 부유
+              const f = flowField(pt.x, pt.y, now);
+              pt.vx += f.fx; pt.vy += f.fy;
 
-              // 최대 속도 제한 (아주 느리게)
-              const maxV = 0.22;
+              // 2) 느린 전역 회전 드리프트로 화면 전역 순환
+              const rot = now * 0.00005;
+              pt.vx += Math.cos(rot) * 0.012;
+              pt.vy += Math.sin(rot) * 0.012;
+
+              // 3) 시작 초반 전체 확산(점점 사라지는 바깥쪽 압력)
+              if (elapsedFloat < 8000) {
+                const dx = pt.x - cx, dy = pt.y - cy;
+                const dist = Math.hypot(dx, dy) + 0.0001;
+                const outward = (0.04 * Math.exp(-elapsedFloat / 5000));
+                pt.vx += (dx / dist) * outward;
+                pt.vy += (dy / dist) * outward;
+              }
+
+              // 4) 속도 제한 (너무 빠르게 모이지 않게)
+              const maxV = 0.30;
               const sp = Math.hypot(pt.vx, pt.vy);
               if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
+
+              // 5) 랜덤 킥 (한 자리에 너무 오래 머무르지 않도록)
+              if (Math.random() < 0.0025) {
+                pt.vx += (Math.random() - 0.5) * 0.06;
+                pt.vy += (Math.random() - 0.5) * 0.06;
+              }
+
+              // ===== 스파클(글로우 펄스) 타이머 =====
+              pt.sparkCooldown -= dt;
+              if (pt.sparkCooldown <= 0) {
+                if (Math.random() < 0.25) {
+                  pt.glow = 1;                            // 글로우 시작
+                }
+                pt.sparkCooldown = 600 + Math.random()*5000; // 다음 스파클까지
+              }
+              // 글로우 감쇠
+              if (pt.glow > 0) pt.glow *= 0.92;
             }
 
+            // 위치 이동
             pt.x += pt.vx; pt.y += pt.vy;
 
             // 스크린 래핑
-            const m = 24;
+            const m = 32;
             if (pt.x < -m) pt.x = W + m;
             if (pt.x > W + m) pt.x = -m;
             if (pt.y < -m) pt.y = H + m;
             if (pt.y > H + m) pt.y = -m;
           }
 
-          // 드로잉 (트윙클)
+          // ===== 드로잉 =====
           pctx.globalCompositeOperation = 'source-over';
           pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
 
           for (const pt of particles) {
+            // 트윙클 + 글로우 반영
             const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
-            pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
+            const glowBoost = 1 + 0.9 * pt.glow; // 밝기 업
+            const sizeBoost = 1 + 0.9 * pt.glow; // 크기 업
+            pt.size = pt.size0 * sizeBoost;
+
+            // 기본 별
+            pctx.globalAlpha = Math.max(0, Math.min(1, twinkle * glowBoost));
             pctx.shadowColor = pt.color; pctx.fillStyle = pt.color;
             pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); pctx.fill();
+
+            // 글로우 중이면 라이트 블룸 링
+            if (pt.glow > 0.02) {
+              pctx.save();
+              pctx.globalCompositeOperation = 'lighter';
+              pctx.globalAlpha = 0.35 * pt.glow;
+              pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.size * 2.2, 0, Math.PI * 2); pctx.fill();
+              pctx.restore();
+            }
           }
 
           requestAnimationFrame(frame);
@@ -444,9 +513,9 @@
       resizeParticleCanvas();
       setProgress(0);
 
-      /* ============================================================
-         🎸 현 시뮬레이터 (신호선) — 그대로 유지
-         ============================================================ */
+      /* ================================
+         🎸 현 시뮬레이터 — 기존 유지
+         ================================ */
       const lineCanvas = document.getElementById('lineViz');
       const lctx = lineCanvas.getContext('2d');
 
