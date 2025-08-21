@@ -577,6 +577,8 @@
       const ringCtx = document.getElementById('particleCanvas').getContext('2d');
       let ringRadius = 0;
       let ringAlpha = 0;
+      let ringX = 0;
+      let ringY = 0;
 
       class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
@@ -746,7 +748,8 @@
           const Hdraw = Math.max(0, Math.round(rect.height));
           if (!Wdraw || !Hdraw) return;
 
-          this.ctx.clearRect(0, 0, Wdraw, Hdraw);
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
           this.ctx.save();
           this.ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
 
@@ -798,6 +801,7 @@
       }
       
       function drawRing() {
+        // 이 함수는 매 프레임 파티클 캔버스에 원을 그립니다.
         if (ringAlpha <= 0) return;
         
         ringCtx.save();
@@ -814,8 +818,8 @@
         
         ringCtx.restore();
         
-        ringRadius += 2.5; // 원이 퍼지는 속도
-        ringAlpha -= 0.02; // 원이 사라지는 속도
+        ringRadius += 2.5;
+        ringAlpha -= 0.02;
         if (ringAlpha < 0) ringAlpha = 0;
       }
 
@@ -863,7 +867,7 @@
             
             const dpr = Math.max(1, window.devicePixelRatio || 1);
             canvas.width = Math.floor(width * dpr);
-            canvas.height = Math.floor(200 * dpr); // 캔버스 높이는 충분히 확보
+            canvas.height = Math.floor(200 * dpr);
             
             canvas.style.height = '200px';
         });
