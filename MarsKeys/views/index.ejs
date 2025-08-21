@@ -122,15 +122,35 @@
     /* 🎸 현 시뮬레이터 */
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
 
+    /* ====== WELCOME ====== */
     #welcome {
       position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.86);
       opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
       letter-spacing: 0.01em; max-width: 92vw; white-space: nowrap;
       transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
       will-change: opacity, transform, text-shadow; pointer-events: none; z-index: 60; text-shadow: 0 0 0 transparent;
+
+      /* ▼ 마스크용 좌표/반경 CSS 변수 (JS가 갱신) */
+      --circle-x: -9999px;
+      --circle-y: -9999px;
+      --circle-r: 0px;
     }
     #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
     #welcome.welcome-glow { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4); }
+
+    /* ▼ 겹치는 원 영역만 어둡게: pseudo-element + CSS mask */
+    #welcome.darken-overlap::after{
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      color: #000;            /* 어둡게 할 색 */
+      opacity: .45;           /* 어두워지는 강도 조절 */
+      pointer-events: none;
+      /* 원과 겹치는 영역만 보이게 */
+      -webkit-mask: radial-gradient(circle var(--circle-r) at var(--circle-x) var(--circle-y), #000 98%, transparent 100%);
+              mask: radial-gradient(circle var(--circle-r) at var(--circle-x) var(--circle-y), #000 98%, transparent 100%);
+      /* 텍스트 가장자리 부드럽게 하고 싶으면 살짝 blur 주면 됨 (선택) */
+      filter: none;
+    }
 
     .scrollable-content { padding: 0 5vw 6rem; text-align: center; display: none; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
     .scrollable-content p { max-width: 800px; margin: 0 auto 1.5rem; line-height: 1.8; color: var(--muted); font-size: clamp(14px, 2vw, 18px); }
@@ -156,7 +176,8 @@
     <p class="tagline shine-to-white" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
 
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-    <div id="welcome"><%= locale.welcome %></div>
+    <!-- ▼ data-text 추가 (pseudo-element가 동일 텍스트를 사용) -->
+    <div id="welcome" data-text="<%= locale.welcome %>"><%= locale.welcome %></div>
   </main>
 
   <div id="scrollContent" class="scrollable-content">
@@ -269,7 +290,6 @@
         const metrics = offCtx.measureText(text);
         const ascent = metrics.actualBoundingBoxAscent;
         const descent = metrics.actualBoundingBoxDescent;
-        const textHeight = ascent + descent;
         const yOffset = (offCanvas.height / 2) + (ascent - descent) / 2;
 
         offCtx.fillText(text, 0, yOffset);
@@ -310,7 +330,7 @@
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
 
-          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
+        const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
           const ctx = canvas.getContext('2d');
           const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = img.data;
@@ -323,7 +343,7 @@
               if (data[idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
-                
+
                 let targetSize = 1.5 + Math.random() * 3.5;
                 if (Math.random() < 0.05) {
                   targetSize = 10 + Math.random() * 20;
@@ -365,8 +385,14 @@
 
       function showWelcome() {
         setTimeout(() => { counterEl.style.opacity = 0; }, 350);
-        setTimeout(() => { welcome.classList.add("visible"); }, 2000);
-        setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
+        setTimeout(() => { 
+          welcome.classList.add("visible", "darken-overlap");  // ▼ 어둡게 마스크 ON
+        }, 2000);
+        setTimeout(() => { 
+          scrollContent.style.display = "block"; 
+          isFinalized = true; 
+          body.style.overflowY = "auto"; 
+        }, 1500);
       }
 
       // ===== 파티클 쇼: break -> float(부유) =====
@@ -383,7 +409,6 @@
           x: bigCircleX, y: bigCircleY,
           vx: 0, vy: 0,
           alpha: 1,
-          // 원 색상을 약간 어둡게 또는 반투명하게 설정
           color: 'rgba(150, 200, 255, 0.4)',
           initialSize: 0,
           targetSize: Math.min(W, H) / 3,
@@ -411,15 +436,12 @@
 
           // 파티클 업데이트
           for (const pt of particles) {
-            // 크기 변화: currentSize가 initialSize보다 작으면 initialSize까지 빠르게 키움
             if (pt.currentSize < pt.initialSize) {
-                pt.currentSize += (pt.initialSize - pt.currentSize) * pt.sizeGrowthRate * 5;
-                if (pt.currentSize >= pt.initialSize) pt.currentSize = pt.initialSize;
-            }
-            // initialSize에 도달하면 targetSize까지 천천히 키움
-            else if (pt.currentSize < pt.targetSize) {
-                pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
-                if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
+              pt.currentSize += (pt.initialSize - pt.currentSize) * pt.sizeGrowthRate * 5;
+              if (pt.currentSize >= pt.initialSize) pt.currentSize = pt.initialSize;
+            } else if (pt.currentSize < pt.targetSize) {
+              pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
+              if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
             }
 
             if (particlePhase === 'break') {
@@ -462,39 +484,44 @@
             bigCircle.alpha *= 0.999;
           }
 
-          // 드로잉 (트윙클)
+          // ======== 드로잉 ========
           pctx.globalCompositeOperation = 'source-over';
-          
-          // **성능 최적화: 그림자 효과 제거**
           pctx.shadowBlur = 0;
           pctx.shadowColor = 'transparent';
 
-          // ⭐ 추가: 큰 원이 나타날 때 전체 배경을 살짝 어둡게 만듭니다.
+          // 배경 살짝 어둡게
           if (bigCircle && bigCircle.alpha > 0.01) {
             pctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             pctx.fillRect(0, 0, pctx.canvas.width, pctx.canvas.height);
           }
-          
-          // 큰 원 그리기
+
+          // 큰 원 (multiply로 배경 효과)
           if (bigCircle && bigCircle.alpha > 0.01) {
-            // ⭐ `multiply` 모드를 사용하여 아래 텍스트와 겹치는 부분을 어둡게 만듭니다.
             pctx.globalCompositeOperation = 'multiply';
-            
             pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
             pctx.fillStyle = bigCircle.color;
             pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
-            
-            // ⭐ 다시 `source-over` 모드로 되돌려서 다른 파티클은 정상적으로 보이게 합니다.
             pctx.globalCompositeOperation = 'source-over';
           }
 
-          // 일반 파티클 그리기
+          // 일반 파티클
           for (const pt of particles) {
             if (pt.alpha <= 0.01) continue;
             const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
             pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
             pctx.fillStyle = pt.color;
             pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
+          }
+
+          // === ★ welcome 어둡게 마스크 좌표 동기화 ===
+          if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
+            const wrapRect = wrap.getBoundingClientRect();
+            const wrect = welcome.getBoundingClientRect();
+            const cx = bigCircle.x + wrapRect.left - wrect.left;
+            const cy = bigCircle.y + wrapRect.top  - wrect.top;
+            welcome.style.setProperty('--circle-x', cx + 'px');
+            welcome.style.setProperty('--circle-y', cy + 'px');
+            welcome.style.setProperty('--circle-r', Math.max(0, bigCircle.currentSize) + 'px');
           }
 
           requestAnimationFrame(frame);
