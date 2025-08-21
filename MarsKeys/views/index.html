@@ -1,256 +1,203 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>현실적인 기타 현 시뮬레이터</title>
-<style>
-  body{
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    height:100vh; margin:0; background:#1a1a1a; color:#e0e0e0; font-family:system-ui,-apple-system,"Segoe UI",Roboto
-  }
-  canvas{border:2px solid #555; background:#2c2c2c; cursor:crosshair; box-shadow:0 8px 16px rgba(0,0,0,.4)}
-  h1{color:#f0f0f0; text-shadow:2px 2px 4px #000}
-  p{color:#b0b0b0; text-align:center; margin-top:10px; font-size:1.05em}
-  #controls{margin-top:16px; display:flex; gap:18px; align-items:center; flex-wrap:wrap; justify-content:center}
-  #controls label{font-size:.9em}
-  #controls input[type="range"]{-webkit-appearance:none; width:160px; height:8px; background:#555; outline:none; border-radius:5px}
-  #controls input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; background:#00aaff; border-radius:50%}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orchestra Scroll Scene — 2D (PixiJS + GSAP)</title>
+  <style>
+    :root { --bg:#0e1016; --text:#eef2f8; }
+    html, body { height:100%; margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+    #stage { position: fixed; inset: 0; z-index: 0; }
+    #scroll { position: relative; height: 500vh; }
+    .hud { position: fixed; left: 16px; bottom: 16px; z-index: 5; opacity:.8; font-size:12px; }
+    .tag { position: fixed; right: 16px; bottom: 16px; z-index: 5; opacity:.6; font-size:11px; }
+    .loading { position: fixed; inset: 0; display: grid; place-items: center; z-index: 10; background: var(--bg); }
+    .loading.hidden{ display:none; }
+    .loading .bar { width: 240px; height: 4px; background: #1c2230; border-radius: 999px; overflow: hidden; }
+    .loading .bar div { height: 100%; width: 0; background: linear-gradient(90deg,#6ea8ff,#b388ff,#ff8aa1); }
+
+    @media (prefers-reduced-motion: reduce){ #scroll{ height: 250vh; } }
+  </style>
+  <!-- PixiJS v7 -->
+  <script src="https://unpkg.com/pixi.js@7.4.0/dist/pixi.min.js"></script>
+  <!-- GSAP -->
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
 </head>
 <body>
-  <h1>현실적인 기타 현 시뮬레이터 🎸</h1>
-  <p>영향반경을 키우면 넓~게 같이 휘어져요!</p>
-  <canvas id="stringCanvas" width="800" height="400"></canvas>
-
-  <div id="controls">
-    <label for="tension">장력: <span id="tensionValue">0.80</span></label>
-    <input type="range" id="tension" min="0.05" max="5" step="0.01" value="0.80">
-
-    <label for="damping">감쇠: <span id="dampingValue">0.996</span></label>
-    <input type="range" id="damping" min="0.980" max="0.999" step="0.001" value="0.996">
-
-    <label for="friction">마찰: <span id="frictionValue">0.998</span></label>
-    <input type="range" id="friction" min="0.980" max="0.999" step="0.001" value="0.998">
-
-    <label for="substeps">서브스텝: <span id="substepsValue">3</span></label>
-    <input type="range" id="substeps" min="1" max="6" step="1" value="3">
-
-    <label for="hand">손힘: <span id="handValue">0.40</span></label>
-    <input type="range" id="hand" min="0.05" max="1.50" step="0.05" value="0.40">
-
-    <label for="radius">영향반경(px): <span id="radiusValue">120</span></label>
-    <input type="range" id="radius" min="20" max="300" step="5" value="120">
+  <div id="stage"></div>
+  <div id="scroll"></div>
+  <div class="hud">스크롤하면 더블베이스가 입장해요 ▶︎</div>
+  <div class="tag">PixiJS AnimatedSprite + GSAP ScrollTrigger</div>
+  <div class="loading" id="loading">
+    <div style="margin-bottom:10px; opacity:.7">애셋 불러오는 중…</div>
+    <div class="bar"><div id="progress"></div></div>
   </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('stringCanvas');
-  const ctx = canvas.getContext('2d');
-  const width = canvas.width, height = canvas.height;
+  <script>
+  (async function(){
+    gsap.registerPlugin(ScrollTrigger);
 
-  // ===== Controls =====
-  const tensionCtl  = document.getElementById('tension');
-  const dampingCtl  = document.getElementById('damping');
-  const frictionCtl = document.getElementById('friction');
-  const subCtl      = document.getElementById('substeps');
-  const handCtl     = document.getElementById('hand');
-  const radiusCtl   = document.getElementById('radius');
+    // ------------------------------------------------------------------
+    // PIXI 앱
+    // ------------------------------------------------------------------
+    const app = new PIXI.Application({
+      background: '#0e1016',
+      antialias: true,
+      hello: false,
+      // 창 크기에 자동 맞춤
+      resizeTo: window,
+    });
+    document.getElementById('stage').appendChild(app.view);
 
-  const tv = document.getElementById('tensionValue');
-  const dv = document.getElementById('dampingValue');
-  const fv = document.getElementById('frictionValue');
-  const sv = document.getElementById('substepsValue');
-  const hv = document.getElementById('handValue');
-  const rv = document.getElementById('radiusValue');
+    // 해상도 제한 (모바일 발열/전력↓)
+    app.renderer.resolution = Math.min(window.devicePixelRatio || 1, 1.5);
 
-  let tension   = parseFloat(tensionCtl.value);
-  let damping   = parseFloat(dampingCtl.value);
-  let friction  = parseFloat(frictionCtl.value);
-  let SUBSTEPS  = parseInt(subCtl.value, 10);
-  let handPower = parseFloat(handCtl.value);
-  let radiusPx  = parseFloat(radiusCtl.value);
+    // 로딩 표시
+    const loadingEl = document.getElementById('loading');
+    const progressBar = document.getElementById('progress');
 
-  const updateLabels = () => {
-    tv.textContent = tension.toFixed(2);
-    dv.textContent = damping.toFixed(3);
-    fv.textContent = friction.toFixed(3);
-    sv.textContent = SUBSTEPS.toString();
-    hv.textContent = handPower.toFixed(2);
-    rv.textContent = Math.round(radiusPx).toString();
-  };
-  updateLabels();
+    // ------------------------------------------------------------------
+    // 애셋 등록
+    //  - TexturePacker나 Pixi Spritesheet 포맷(JSON) 권장
+    //  - 예) cello.json 안에 프레임명이 cello_0001.png ~ cello_0060.png
+    //  -     bass.json  안에 프레임명이 bass_0001.png  ~ bass_0060.png
+    //  - 경로만 네가 쓰는 걸로 바꿔줘.
+    // ------------------------------------------------------------------
+    PIXI.Assets.add({ alias: 'cello', src: '/assets/cello/cello.json' });
+    PIXI.Assets.add({ alias: 'bass',  src: '/assets/bass/bass.json'   });
 
-  tensionCtl.addEventListener('input', e => { tension = parseFloat(e.target.value); updateLabels(); });
-  dampingCtl.addEventListener('input', e => { damping = parseFloat(e.target.value); updateLabels(); });
-  frictionCtl.addEventListener('input', e => { friction = parseFloat(e.target.value); updateLabels(); });
-  subCtl.addEventListener('input', e => { SUBSTEPS = parseInt(e.target.value,10); updateLabels(); });
-  handCtl.addEventListener('input', e => { handPower = parseFloat(e.target.value); updateLabels(); });
-  radiusCtl.addEventListener('input', e => { radiusPx = parseFloat(e.target.value); updateLabels(); });
+    PIXI.Assets.setPreferences({ preferWorkers: true });
 
-  // ===== String model =====
-  class StringPoint { constructor(x,y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
-  const numPoints = 280;
-  const initialY = height/2;
-  const string = [];
-  for (let i=0;i<numPoints;i++) string.push(new StringPoint((i/(numPoints-1))*width, initialY));
+    // 진행률
+    PIXI.Assets.events.on('progress', (p)=>{
+      progressBar.style.width = (p*100).toFixed(1)+'%';
+    });
 
-  const dx = width / (numPoints - 1);
-  const invDX2 = 1/(dx*dx);
+    // 로드
+    const [celloSheet, bassSheet] = await PIXI.Assets.load(['cello','bass']);
+    loadingEl.classList.add('hidden');
 
-  // ===== Drag state =====
-  const mouse = {active:false, x:0, y:initialY};
-  const K_MOUSE = 0.35;       // 마우스-현 스프링 상수
-  const C_MOUSE = 0.08;       // 마우스-현 감쇠
-  const HARD_FACTOR = 1.1;    // 장력에 따른 손힘 감소 계수
-
-  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-
-  function getPos(e){
-    const r = canvas.getBoundingClientRect();
-    const cx = (e.clientX??e.touches?.[0].clientX) - r.left;
-    const cy = (e.clientY??e.touches?.[0].clientY) - r.top;
-    return {x:cx, y:cy};
-  }
-
-  canvas.addEventListener('mousedown', e=>{
-    const {x,y} = getPos(e);
-    mouse.x = x; mouse.y = y; mouse.active = true;
-  });
-  canvas.addEventListener('mousemove', e=>{
-    if (!mouse.active) return;
-    const {x,y} = getPos(e);
-    mouse.x = x; mouse.y = y;
-  });
-  window.addEventListener('mouseup', ()=>{
-    if (!mouse.active) return;
-    mouse.active = false;
-    const kick = 0.22;
-    for (let i=0;i<numPoints;i++){
-      const disp = string[i].y - initialY;
-      string[i].oldY = string[i].y + kick*disp;
-    }
-  });
-
-  // 터치
-  canvas.addEventListener('touchstart', e=>{
-    const {x,y} = getPos(e); e.preventDefault();
-    mouse.x = x; mouse.y = y; mouse.active = true;
-  }, {passive:false});
-  canvas.addEventListener('touchmove', e=>{
-    if (!mouse.active) return;
-    const {x,y} = getPos(e); e.preventDefault();
-    mouse.x = x; mouse.y = y;
-  }, {passive:false});
-  window.addEventListener('touchend', ()=>{
-    if (!mouse.active) return;
-    mouse.active = false;
-    const kick = 0.22;
-    for (let i=0;i<numPoints;i++){
-      const disp = string[i].y - initialY;
-      string[i].oldY = string[i].y + kick*disp;
-    }
-  });
-
-  // ===== Physics =====
-  function hannWeight(d, R){
-    if (d >= R) return 0;
-    const r = d / R;
-    // Hann: 0.5 * (1 + cos(pi * r)) -> 가장자리 0, 중앙 1 (부드럽게)
-    return 0.5 * (1 + Math.cos(Math.PI * r));
-  }
-
-  function applyMouseForce(){
-    if (!mouse.active) return;
-
-    // 손힘 총량 한계 (장력↑일수록 한계↓)
-    const FmaxTotal = handPower / (1 + HARD_FACTOR * tension);
-
-    // 1) 반경 내 모든 점에 대해 원시(force) 계산 + 가중치 합
-    const raw = new Array(numPoints).fill(0);
-    let sumAbs = 0;
-
-    for (let i=1;i<numPoints-1;i++){
-      const p = string[i];
-      const d = Math.abs(p.x - mouse.x);     // x축 거리(픽셀)
-      const w = hannWeight(d, radiusPx);     // 영향 가중치
-      if (w <= 0) continue;
-
-      const vel = p.y - p.oldY;              // Verlet 속도 근사
-      const Fspring = K_MOUSE * (mouse.y - p.y);
-      const Fdamp   = -C_MOUSE * vel;
-      const F = (Fspring + Fdamp) * w;
-
-      raw[i] = F;
-      sumAbs += Math.abs(F);
+    // ------------------------------------------------------------------
+    // 헬퍼: 프리픽스 기준으로 프레임 수집
+    // ------------------------------------------------------------------
+    function framesByPrefix(sheet, prefix){
+      const names = Object.keys(sheet.textures)
+        .filter(n => n.startsWith(prefix))
+        .sort((a,b)=>{
+          // 숫자 인덱스 정렬 (예: _0001)
+          const na = parseInt(a.match(/(\d+)/)?.[0]||'0',10);
+          const nb = parseInt(b.match(/(\d+)/)?.[0]||'0',10);
+          return na-nb;
+        });
+      return names.map(n => sheet.textures[n]);
     }
 
-    if (sumAbs === 0) return;
+    // ------------------------------------------------------------------
+    // 애니메이티드 스프라이트 생성
+    //  - 네 시트 프레임명에 맞춰 prefix 수정
+    // ------------------------------------------------------------------
+    const cello = new PIXI.AnimatedSprite(framesByPrefix(celloSheet, 'cello_'));
+    cello.animationSpeed = 0.7; // 0.1~1.0
+    cello.loop = true; cello.play();
+    cello.anchor.set(0.5, 1.0); // 가운데-아래 기준
 
-    // 2) 총힘 정규화 → 반경이 커져도 손힘 총량은 일정
-    const scale = Math.min(1, FmaxTotal / sumAbs);
+    const bass = new PIXI.AnimatedSprite(framesByPrefix(bassSheet, 'bass_'));
+    bass.animationSpeed = 0.7; bass.loop = true; bass.play();
+    bass.anchor.set(0.5, 1.0);
 
-    // 3) 가속도에 반영
-    for (let i=1;i<numPoints-1;i++){
-      if (raw[i] !== 0) string[i].acc += raw[i] * scale;
+    // 스테이지에 추가
+    app.stage.addChild(cello, bass);
+
+    // 레이아웃: 스테이지 하단 라인에 세워두기
+    function layout(){
+      const W = app.renderer.width;
+      const H = app.renderer.height;
+      const baseH = Math.min(H, 900);
+      const scale = Math.min(1, (W/1280)*0.9, (H/720)*0.9);
+
+      cello.scale.set(scale);
+      bass.scale.set(scale);
+
+      const groundY = H * 0.90;
+      cello.y = groundY;
+      bass.y  = groundY;
+
+      // 시작 포지션(첼로 중앙 살짝 왼쪽 / 베이스는 화면 밖 오른쪽)
+      cello.x = W*0.42;
+      bass.x  = W + (bass.width*0.5);
     }
-  }
+    layout();
+    window.addEventListener('resize', layout);
 
-  function physicsStep(){
-    // 내부 힘 (라플라시안) — 해상도 독립
-    for (let i=1;i<numPoints-1;i++){
-      const prev = string[i-1].y, curr = string[i].y, next = string[i+1].y;
-      const lap = (prev - 2*curr + next) * invDX2;
-      string[i].acc = tension * lap;
+    // 처음엔 베이스 안 보이게
+    bass.alpha = 0;
+
+    // ------------------------------------------------------------------
+    // GSAP ScrollTrigger — 스크롤 구동 연출
+    //  - 0%~100% 스크럽 타임라인에서 합주 연출
+    // ------------------------------------------------------------------
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: '#scroll',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: true,
+      }
+    });
+
+    // 카메라 느낌: 스테이지 전체 스케일 조절(살짝 줌)
+    const stageProxy = { s: 1, x: 0 };
+    tl.to(stageProxy, { s: 1.06 }, 0.0)
+      .to(stageProxy, { x: 10 }, 0.20); // 미세 패닝
+
+    app.ticker.add(()=>{
+      app.stage.scale.set(stageProxy.s);
+      app.stage.x = stageProxy.x;
+    });
+
+    // 35%~60%: 베이스 입장 + 페이드인
+    tl.to(bass, { alpha: 1, duration: 0.6 }, 0.38)
+      .to(bass, { x: ()=> app.renderer.width*0.60, duration: 1.0 }, 0.35)
+      // 첼로는 살짝 왼쪽으로 비켜주기
+      .to(cello, { x: ()=> app.renderer.width*0.32, duration: 1.0 }, 0.38)
+      // 피날레 근처: 둘 다 약간 확대
+      .to([cello, bass], { pixi: { } , duration: 0.0 }, 0.8) // placeholder
+      .to([cello, bass], { scaleX: '+=0.04', scaleY: '+=0.04', duration: 0.6 }, 0.82);
+
+    // (선택) 스크롤 방향에 따라 연주 속도 살짝 변주
+    let lastY = window.scrollY;
+    let speedMod = 1;
+    function updateSpeed(){
+      const dy = window.scrollY - lastY;
+      lastY = window.scrollY;
+      const t = Math.max(-1, Math.min(1, dy / 200));
+      speedMod = 0.7 + Math.abs(t)*0.4; // 0.7~1.1
+      cello.animationSpeed = speedMod;
+      bass.animationSpeed  = speedMod;
     }
+    window.addEventListener('scroll', updateSpeed, { passive: true });
 
-    // 외력(마우스) — 넓게 분배
-    applyMouseForce();
+    // 저전력 모드: requestAnimationFrame은 Pixi가 내부에서 관리
+    // 필요 시 app.ticker.maxFPS = 60; 조절
 
-    // 경계 고정
-    string[0].acc = 0; string[numPoints-1].acc = 0;
+  })();
+  </script>
 
-    // 손실
-    const loss = damping * friction;
+  <!--
+  ▶︎ 애셋 제작 가이드 (실전)
+  1) 일러스트 레이어를 분리해서 캐릭터 리깅(Spine/DragonBones/Rive) 또는 프레임 애니메이션 제작
+  2) 프레임 애니메이션이라면 TexturePacker로 atlas(json+png) 출력
+     - 프레임명 접두어 통일: cello_0001.png .. bass_0001.png
+     - 캔버스 여백 최소화, Trim 사용, Max Size 2048~4096
+  3) 상단 src 경로를 네 경로로 교체
+  4) 퍼포먼스: 해상도 제한(resolution), 프레임 수(≤60), 이미지 2K 이하
 
-    // Verlet 통합
-    for (let i=1;i<numPoints-1;i++){
-      const p = string[i];
-      const tempY = p.y;
-      p.y = p.y*2 - p.oldY + p.acc;  // dt=1 가정
-      p.oldY = tempY;
-      p.y = initialY + (p.y - initialY) * loss;
-    }
-
-    // 끝점 고정
-    string[0].y = string[0].oldY = initialY;
-    string[numPoints-1].y = string[numPoints-1].oldY = initialY;
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,width,height);
-    ctx.beginPath();
-    ctx.strokeStyle = '#00aaff';
-    ctx.lineWidth = 4;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.moveTo(string[0].x, string[0].y);
-    for (let i=1;i<numPoints-2;i++){
-      const xc = (string[i].x + string[i+1].x)/2;
-      const yc = (string[i].y + string[i+1].y)/2;
-      ctx.quadraticCurveTo(string[i].x, string[i].y, xc, yc);
-    }
-    ctx.quadraticCurveTo(string[numPoints-2].x, string[numPoints-2].y, string[numPoints-1].x, string[numPoints-1].y);
-    ctx.stroke();
-  }
-
-  function animate(){
-    for (let s=0; s<SUBSTEPS; s++) physicsStep();
-    draw();
-    requestAnimationFrame(animate);
-  }
-  animate();
-});
-</script>
+  ▶︎ Spine/Live2D/Rive로 하고 싶다면
+  - Spine: pixi-spine 런타임으로 skeleton.json+.atlas+.png 로드 후 state.setAnimation('play', true)
+  - Live2D: pixi-live2d-display로 .model3.json 로드, 모션/파츠 파라미터 스크립팅
+  - Rive: @rive-app/canvas 로 .riv 로드, StateMachine 입력값을 ScrollTrigger로 제어
+  -->
 </body>
 </html>

@@ -383,7 +383,8 @@
           x: bigCircleX, y: bigCircleY,
           vx: 0, vy: 0,
           alpha: 1,
-          color: 'rgba(150, 200, 255, 0.5)',
+          // 원 색상을 약간 어둡게 또는 반투명하게 설정
+          color: 'rgba(150, 200, 255, 0.4)',
           initialSize: 0,
           targetSize: Math.min(W, H) / 3,
           currentSize: 0,
@@ -470,9 +471,15 @@
 
           // 큰 원 그리기
           if (bigCircle && bigCircle.alpha > 0.01) {
+            // ⭐ `multiply` 모드를 사용하여 아래 텍스트와 겹치는 부분을 어둡게 만듭니다.
+            pctx.globalCompositeOperation = 'multiply';
+            
             pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
             pctx.fillStyle = bigCircle.color;
             pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
+            
+            // ⭐ 다시 `source-over` 모드로 되돌려서 다른 파티클은 정상적으로 보이게 합니다.
+            pctx.globalCompositeOperation = 'source-over';
           }
 
           // 일반 파티클 그리기
