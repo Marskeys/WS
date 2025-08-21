@@ -455,7 +455,7 @@
               const maxV = 0.22;
               const sp = Math.hypot(pt.vx, pt.vy);
               if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-              pt.alpha *= 0.985;
+              pt.alpha *= 0.999;
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
