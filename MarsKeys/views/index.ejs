@@ -406,8 +406,7 @@
           x: bigCircleX, y: bigCircleY,
           vx: 0, vy: 0,
           alpha: 1,
-          // 💡 수정된 부분: 글로우 효과를 위해 붉은색으로 변경
-          color: '#C84C4C',
+          color: 'rgba(150, 200, 255, 0.4)',
           initialSize: 0,
           targetSize: Math.min(W, H) / 3,
           currentSize: 0,
@@ -499,13 +498,8 @@
           // 큰 원 (multiply로 배경 효과)
           if (bigCircle && bigCircle.alpha > 0.01) {
             pctx.globalCompositeOperation = 'multiply';
-            pctx.globalAlpha = 1; // 💡 수정된 부분: 투명하지 않게 alpha를 1로 고정
+            pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
             pctx.fillStyle = bigCircle.color;
-
-            // 💡 수정된 부분: 글로우 효과 추가
-            pctx.shadowColor = 'rgba(255, 60, 60, 0.9)';
-            pctx.shadowBlur = bigCircle.currentSize * 0.25;
-
             pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
             pctx.globalCompositeOperation = 'source-over';
           }
@@ -513,8 +507,6 @@
           // 일반 파티클
           for (const pt of particles) {
             if (pt.alpha <= 0.01) continue;
-            pctx.shadowBlur = pt.currentSize * 0.8;
-            pctx.shadowColor = pt.color;
             const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
             pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
             pctx.fillStyle = pt.color;
