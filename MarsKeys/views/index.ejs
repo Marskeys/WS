@@ -30,23 +30,24 @@
       --muted: #9aa3b2;
       --fill-int: 0%;
 
+      /* 텍스트 채움: 보라/핑크/블루 & 별빛 스파클 */
       --galaxy-text:
-        radial-gradient(1.4px 1.4px at 8% 12%, rgba(255,255,255,.98), transparent 60%),
-        radial-gradient(1.6px 1.6px at 18% 64%, rgba(255,155,230,.95), transparent 60%),
-        radial-gradient(1.4px 1.4px at 32% 22%, rgba(150,180,255,.95), transparent 60%),
-        radial-gradient(1.2px 1.2px at 44% 78%, rgba(255,225,180,.92),  transparent 60%),
-        radial-gradient(1.8px 1.8px at 58% 36%, rgba(205,220,255,.98),  transparent 60%),
-        radial-gradient(1.3px 1.3px at 70% 18%, rgba(235,160,255,.95),  transparent 60%),
-        radial-gradient(1.5px 1.5px at 80% 70%, rgba(120,160,255,.95),  transparent 60%),
-        radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,245,225,.95),  transparent 60%),
+        radial-gradient(1.2px 1.2px at 8% 12%, rgba(255,255,255,.95), transparent 60%),
+        radial-gradient(1.3px 1.3px at 18% 64%, rgba(255,210,245,.92), transparent 60%),
+        radial-gradient(1.1px 1.1px at 32% 22%, rgba(190,210,255,.95), transparent 60%),
+        radial-gradient(1.0px 1.0px at 44% 78%, rgba(255,229,170,.9),  transparent 60%),
+        radial-gradient(1.6px 1.6px at 58% 36%, rgba(210,226,255,1),   transparent 60%),
+        radial-gradient(1.1px 1.1px at 70% 18%, rgba(250,205,255,.9),  transparent 60%),
+        radial-gradient(1.2px 1.2px at 80% 70%, rgba(176,198,255,.95), transparent 60%),
+        radial-gradient(1.0px 1.0px at 92% 42%, rgba(255,246,230,.9),  transparent 60%),
         conic-gradient(from 130deg at 50% 50%,
-          rgba(130,160,255,.42) 0%,
-          rgba(255,120,220,.45) 14%,
-          rgba(90,130,255,.44) 28%,
-          rgba(255,90,190,.45) 42%,
-          rgba(130,170,255,.44) 58%,
-          rgba(230,150,255,.45) 72%,
-          rgba(210,230,255,.42) 100%);
+          rgba(200,210,255,.28) 0%,
+          rgba(255,160,240,.30) 14%,
+          rgba(140,170,255,.32) 28%,
+          rgba(255,120,200,.30) 42%,
+          rgba(170,210,255,.30) 58%,
+          rgba(250,190,255,.30) 72%,
+          rgba(220,232,255,.28) 100%);
     }
 
     * { box-sizing: border-box }
@@ -115,7 +116,6 @@
     }
 
     #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
-
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
 
     #welcome {
@@ -184,41 +184,37 @@
       const welcome = document.getElementById("welcome");
       const scrollContent = document.getElementById("scrollContent");
       const particleCanvas = document.getElementById('particleCanvas');
-      const pctx = particleCanvas.getContext('2d', { alpha: true });
+      const pctx = particleCanvas.getContext('2d');
 
       const tagline = document.querySelector('.tagline');
       tagline.addEventListener('animationend', (event) => {
         if (event.animationName === 'shine-sweep') tagline.classList.add('to-white');
       });
 
-      // ===== Tunables =====
-      const VANISH_START = 0.5;
-      const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-
-      // 파티클 양 유지 (요청)
-      const MAX_PARTICLES = IS_MOBILE ? 5000 : 2500;
-      const TARGET_PER_LINE = IS_MOBILE ? 3200 : 1400;
-
-      // 큰 원 & 트윙클(극소수만)
-      const GIANT_RATE = 0.015;                  // 전체의 1.5%만 거대 원
-      const GIANT_SIZE_MIN = 14;
-      const GIANT_SIZE_MAX = 28;
-      const TWINKLE_MAX = 24;                    // 최대 24개만 깜빡임
-      const TWINKLE_SPEED = 0.003;               // 느리게
-      const TWINKLE_AMP = 0.05;                  // 약하게
-
       // ===== Progress =====
       let p = 0;
       let autoAnimating = false,
           isFinalized = false,
           particlesGenerated = false;
+      const VANISH_START = 0.5;
 
-      // ===== Particles =====
+      const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+
+      // ===== Particles / Galaxy fields =====
       let particles = [];
+      const MAX_PARTICLES = IS_MOBILE ? 8000 : 3000;
       let particlePhase = 'idle';
       let phaseStartTime = 0;
-      let twinkleSet = new Set();
-      let giantSet = new Set();
+
+      // 축소(완성 후) 파라미터
+      let tgCenterX = 0, tgCenterY = 0;
+      let taegeukScale = 1;
+      const TAEGEUK_FINAL_SCALE = 0.38;
+      const SHRINK_DURATION_MS = 2600;
+      const easeInOutCubic = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+
+      // 성운(가스 클라우드) 데이터
+      let clouds = [];
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -262,7 +258,7 @@
 
       function drawTextToCanvas(text, fontSize, fontFamily) {
         const offCanvas = document.createElement('canvas');
-        const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+        const offCtx = offCanvas.getContext('2d');
         offCtx.font = `${fontSize}px ${fontFamily}`;
         const metrics = offCtx.measureText(text);
         const actualHeight = (metrics.actualBoundingBoxAscent || fontSize) + (metrics.actualBoundingBoxDescent || fontSize * 0.25);
@@ -282,27 +278,35 @@
         return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
       }
 
-      function pickStarColor(){
-        const r = Math.random();
-        if (r < 0.25) return 'rgba(255,255,255,0.98)';
-        if (r < 0.50) return 'rgba(120,160,255,0.96)';
-        if (r < 0.75) return 'rgba(235,160,255,0.96)';
-        return 'rgba(255,120,220,0.96)';
-      }
-
-      function randomInt(n){ return (Math.random() * n) | 0; }
-
-      function pickUniqueIndices(n, max){
-        const set = new Set();
-        while (set.size < Math.min(n, max)) set.add(randomInt(max));
-        return set;
+      // ===== Star color palette (H-R 느낌) =====
+      function pickStarColorByRegion(rNorm, armBias, ringBias) {
+        // 중심부: 따뜻한 백/황백, 팔: 청백/블루, 링: 핑크/보라 강조
+        const t = Math.random();
+        if (rNorm < 0.2) {
+          if (t < 0.6) return 'rgba(255,245,230,0.95)';
+          if (t < 0.85) return 'rgba(255,255,255,0.95)';
+          return 'rgba(255,230,180,0.95)';
+        }
+        if (ringBias > 0.5 && Math.random() < 0.6) {
+          if (t < 0.55) return 'rgba(255,150,230,0.95)'; // 핑크 HII
+          if (t < 0.8)  return 'rgba(210,190,255,0.95)'; // 보랏빛
+          return 'rgba(176,198,255,0.95)';               // 푸른-보라
+        }
+        if (armBias > 0.45) {
+          if (t < 0.55) return 'rgba(200,220,255,0.95)';
+          if (t < 0.85) return 'rgba(176,198,255,0.95)';
+          return 'rgba(255,255,255,0.95)';
+        }
+        // 외곽/헤일로: 차갑거나 희미
+        if (t < 0.5) return 'rgba(210,226,255,0.9)';
+        if (t < 0.8) return 'rgba(255,255,255,0.9)';
+        return 'rgba(190,205,235,0.85)';
       }
 
       function generateParticles() {
         particlesGenerated = true;
         particles.length = 0;
-        twinkleSet.clear();
-        giantSet.clear();
+        clouds.length = 0;
 
         const wrapRect = wrap.getBoundingClientRect();
         const lines = [
@@ -310,16 +314,19 @@
           { el: document.getElementById('keys').parentElement, textEl: document.getElementById('keys') }
         ];
 
+        // Particles originate from glyphs (그 모양 그대로 분해)
+        const TARGET_PER_LINE = IS_MOBILE ? 4000 : 1500;
+        const glyphPts = [];
+
         lines.forEach(({ el, textEl }) => {
           const rect = el.getBoundingClientRect();
           const style = getComputedStyle(textEl);
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
           const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          const ctx = canvas.getContext('2d');
           const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = img.data;
-
           const STEP = computeStepForTarget(canvas, TARGET_PER_LINE);
 
           for (let y = 0; y < canvas.height; y += STEP) {
@@ -328,41 +335,43 @@
               if (data[idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
-
-                const spd = 0.35 + Math.random() * 0.4;
-                const ang = Math.random() * Math.PI * 2;
-                particles.push({
-                  x: px, y: py,
-                  vx: Math.cos(ang) * spd,
-                  vy: Math.sin(ang) * spd,
-                  color: pickStarColor(),
-                  size: 1.2 + Math.random() * 1.3, // 기본
-                  tw: 0.5 + Math.random() * 0.8,
-                  twPhase: Math.random() * Math.PI * 2
-                });
+                glyphPts.push({ x: px, y: py });
               }
             }
           }
         });
 
-        // 수 캡(성능)
-        if (particles.length > MAX_PARTICLES) {
-          const sampled = [];
-          for (let i = 0; i < MAX_PARTICLES; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
-          particles = sampled;
+        // 초기 폭발 속도 부여
+        const centerX = wrapRect.width * 0.5;
+        const centerY = wrapRect.height * 0.5;
+
+        for (const g of glyphPts) {
+          const dx = g.x - centerX;
+          const dy = g.y - centerY;
+          const dist = Math.hypot(dx, dy) + 0.0001;
+          const boost = 0.6 + Math.random() * 1.1;
+          particles.push({
+            x: g.x, y: g.y,
+            vx: (Math.random() - 0.5) * 0.6 + (dx / dist) * boost,
+            vy: (Math.random() - 0.5) * 0.6 + (dy / dist) * boost,
+            alpha: 1,
+            color: 'rgba(255,255,255,0.95)',
+            size: 1.2 + Math.random() * 1.3,
+            tw: 0.5 + Math.random() * 0.8,
+            twPhase: Math.random() * Math.PI * 2,
+            tx: null, ty: null, reached: false,
+            tbx: null, tby: null,
+            armBias: 0, ringBias: 0, rNorm: 1
+          });
         }
 
-        // 거대 원 소수 선택
-        const giantCount = Math.max(8, Math.floor(particles.length * GIANT_RATE));
-        giantSet = pickUniqueIndices(giantCount, particles.length);
-        giantSet.forEach(i => {
-          const pt = particles[i];
-          pt.size = GIANT_SIZE_MIN + Math.random() * (GIANT_SIZE_MAX - GIANT_SIZE_MIN);
-        });
-
-        // 트윙클 소수 선택(눈아프지 않게)
-        const twinkleCount = Math.min(TWINKLE_MAX, Math.max(6, Math.floor(particles.length * 0.004)));
-        twinkleSet = pickUniqueIndices(twinkleCount, particles.length);
+        // Trim
+        if (particles.length > (IS_MOBILE ? 8000 : 3000)) {
+          const cap = IS_MOBILE ? 8000 : 3000;
+          const sampled = [];
+          for (let i = 0; i < cap; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
+          particles = sampled;
+        }
       }
 
       function fadeOutText() {
@@ -378,9 +387,178 @@
         setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
-      // ===== 파티클 쇼: break -> float =====
+      // ======= 안드로메다 타깃 빌드 =======
+      function buildAndromedaTargets(n) {
+        const rect = wrap.getBoundingClientRect();
+        const cx = rect.width * 0.5, cy = rect.height * 0.5;
+        tgCenterX = cx; tgCenterY = cy;
+
+        const R = Math.min(rect.width, rect.height) * 0.42; // 전체 은하 크기
+        const ex = 0.62;    // 타원 압축(기울기)
+        const tilt = -0.18; // 기울기
+
+        const targets = [];
+
+        // 비율: 코어 22%, 팔 50%, 별형성 링 20%, 헤일로 8%
+        const nCore  = Math.max(120, Math.floor(n * 0.22));
+        const nArms  = Math.max(300, Math.floor(n * 0.50));
+        const nRing  = Math.max(160, Math.floor(n * 0.20));
+        const nHalo  = Math.max(60,  Math.floor(n * 0.08));
+
+        // --- 코어 (세르식-ish) ---
+        for (let i = 0; i < nCore; i++) {
+          const a = Math.random() * Math.PI * 2;
+          const rr = R * 0.16 * Math.pow(Math.random(), 0.55); // 중심 밀집
+          const x = cx + rr * Math.cos(a);
+          const y = cy + rr * ex * Math.sin(a);
+          targets.push({ x, y, armBias: 0.1, ringBias: 0.0 });
+        }
+
+        // --- 나선팔 (로그 스파이럴 + 노이즈 + 분기) ---
+        const arms = 3;
+        const b = 0.21; // 로그 스파이럴 계수 (r = a * e^{bθ})
+        const a0 = R * 0.035;
+        const turns = 3.4;
+        const thetaMax = turns * Math.PI * 2;
+        const perArm = Math.max(200, Math.floor(nArms / arms));
+
+        for (let k = 0; k < arms; k++) {
+          const armPhase = (k / arms) * (Math.PI * 2);
+          for (let j = 0; j < perArm; j++) {
+            const t = j / (perArm - 1);
+            let theta = t * thetaMax + armPhase;
+
+            // 로그 스파이럴
+            let r = a0 * Math.exp(b * theta);
+
+            // 팔 두께/플럭추에이션 + 분기
+            const width = R * (0.015 + 0.06 * t);
+            r += (Math.random() - 0.5) * width;
+            if (Math.random() < 0.08 && t > 0.2) {
+              // 작은 분지(브랜치)
+              const dt = (Math.random() - 0.5) * 0.35;
+              const dr = (Math.random() - 0.5) * width * 0.7;
+              theta += dt; r += dr;
+            }
+
+            // 좌표 변환(기울기/타원)
+            const ct = Math.cos(theta + tilt);
+            const st = Math.sin(theta + tilt);
+            const x = cx + r * ct;
+            const y = cy + r * ex * st;
+
+            // 유효 반경 체크 & 추가 샘플
+            if (r < R) {
+              targets.push({ x, y, armBias: 1.0, ringBias: 0.0 });
+              if (Math.random() < 0.35) {
+                const rr = r + (Math.random() - 0.5) * width * 0.8;
+                const tt = theta + (Math.random() - 0.5) * 0.25;
+                const xx = cx + rr * Math.cos(tt + tilt);
+                const yy = cy + rr * ex * Math.sin(tt + tilt);
+                if (rr < R) targets.push({ x: xx, y: yy, armBias: 0.9, ringBias: 0.05 });
+              }
+            }
+          }
+        }
+
+        // --- 별형성 링 (안쪽 링/팔 사이, 핑크/보라 강조) ---
+        const ringR = R * 0.58;
+        for (let i = 0; i < nRing; i++) {
+          let ang = Math.random() * Math.PI * 2;
+          // 링의 엘립스
+          let rr = ringR + (Math.random() - 0.5) * (R * 0.05);
+          // 일부 구간은 조밀 (HII belt)
+          if ((ang % (Math.PI * 2)) > 1.2 && (ang % (Math.PI * 2)) < 2.1) {
+            rr += (Math.random() - 0.5) * (R * 0.03);
+          }
+          const x = cx + rr * Math.cos(ang + tilt);
+          const y = cy + rr * ex * Math.sin(ang + tilt);
+          if (Math.hypot(x - cx, (y - cy)/ex) < R) {
+            targets.push({ x, y, armBias: 0.4, ringBias: 1.0 });
+          }
+        }
+
+        // --- 헤일로/외곽 ---
+        for (let i = 0; i < nHalo; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const rr = R * (0.75 + 0.25 * Math.pow(Math.random(), 0.4));
+          const x = cx + rr * Math.cos(ang + tilt);
+          const y = cy + rr * ex * Math.sin(ang + tilt);
+          targets.push({ x, y, armBias: 0.1, ringBias: 0.0 });
+        }
+
+        // 성운 클라우드 (팔/링 따라)
+        const cloudCount = 22;
+        for (let i = 0; i < cloudCount; i++) {
+          const base = targets[(Math.random() * targets.length) | 0];
+          const rr = Math.random() * (R * 0.08) + R * 0.03;
+          const col = Math.random();
+          // 보라/핑크/청보라/청백 안개
+          let c1 = 'rgba(255,150,230,0.14)', c2 = 'rgba(160,190,255,0.10)';
+          if (col < 0.33) { c1 = 'rgba(250,180,255,0.14)'; c2 = 'rgba(190,210,255,0.10)'; }
+          else if (col < 0.66){ c1 = 'rgba(200,170,255,0.14)'; c2 = 'rgba(150,190,255,0.10)'; }
+          clouds.push({ x: base.x, y: base.y, r: rr, c1, c2 });
+        }
+
+        // Dust lanes(감산용) 파라미터 준비
+        const dust = {
+          cx, cy, ex, tilt, R,
+          bands: [
+            { r: 0.45 * R, w: 0.025 * R },
+            { r: 0.52 * R, w: 0.020 * R },
+            { r: 0.62 * R, w: 0.022 * R }
+          ]
+        };
+
+        return { targets, dust, cx, cy, ex, R };
+      }
+
+      let galaxyMask = null; // dust/params cache
+
+      function assignGalaxyTargets() {
+        const { targets, dust, cx, cy, ex, R } = buildAndromedaTargets(particles.length);
+        galaxyMask = { dust, cx, cy, ex, R };
+
+        for (let i = 0; i < particles.length; i++) {
+          const t = targets[i % targets.length];
+          const pt = particles[i];
+          pt.tx = t.x; pt.ty = t.y; pt.reached = false;
+          pt.tbx = t.x; pt.tby = t.y;
+          // region metadata
+          const dx = t.x - cx;
+          const dy = (t.y - cy) / (ex || 1);
+          const r = Math.hypot(dx, dy);
+          pt.rNorm = Math.min(1, r / R);
+          pt.armBias = t.armBias;
+          pt.ringBias = t.ringBias;
+          pt.color = pickStarColorByRegion(pt.rNorm, pt.armBias, pt.ringBias);
+          // 사이즈/밝기 살짝 조정
+          if (pt.rNorm < 0.18) pt.size *= 1.25;
+          else if (pt.armBias > 0.7 && Math.random() < 0.15) pt.size *= 1.35;
+        }
+        taegeukScale = 1;
+      }
+
+      function dustFactor(x, y) {
+        // 링 모양의 어두운 밴드(팔과 나란히)에서 살짝 감쇄
+        if (!galaxyMask) return 1;
+        const { cx, cy, ex, dust } = galaxyMask;
+        const dx = x - cx;
+        const dy = (y - cy) / (ex || 1);
+        const r = Math.hypot(dx, dy);
+        let atten = 1;
+        for (const b of dust.bands) {
+          const d = Math.abs(r - b.r);
+          if (d < b.w) {
+            const t = (b.w - d) / b.w;
+            atten = Math.min(atten, 1 - 0.35 * (0.6 + 0.4 * t)); // 최대 35% 감쇠
+          }
+        }
+        return atten;
+      }
+
       function runParticleShow() {
-        particlePhase = 'break';
+        particlePhase = 'explode';
         phaseStartTime = performance.now();
 
         function frame(now) {
@@ -388,72 +566,101 @@
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
 
-          if (particlePhase === 'break' && now - phaseStartTime >= 900) {
-            for (const pt of particles) {
-              pt.vx *= 0.25 + Math.random()*0.15;
-              pt.vy *= 0.25 + Math.random()*0.15;
+          // 단계 전환
+          if (particlePhase === 'explode' && now - phaseStartTime >= 2000) {
+            assignGalaxyTargets(); particlePhase = 'morph'; phaseStartTime = now;
+          } else if (particlePhase === 'morph') {
+            const allReached = particles.every(pt => pt.reached);
+            if (allReached || (now - phaseStartTime) > 2000) { particlePhase = 'hold'; phaseStartTime = now; }
+          } else if (particlePhase === 'hold' && now - phaseStartTime >= 900) {
+            particlePhase = 'shrink'; phaseStartTime = now;
+          } else if (particlePhase === 'shrink') {
+            const t = Math.min(1, (now - phaseStartTime) / SHRINK_DURATION_MS);
+            taegeukScale = 1 - (1 - TAEGEUK_FINAL_SCALE) * easeInOutCubic(t);
+            if (t >= 1) {
+              welcome.classList.remove("welcome-glow");
+              for (const pt of particles) {
+                const ang = Math.random() * Math.PI * 2; const spd = 0.05 + Math.random() * 0.1;
+                pt.vx = Math.cos(ang) * spd; pt.vy = Math.sin(ang) * spd; pt.reached = false;
+              }
+              particlePhase = 'disperse'; phaseStartTime = now;
             }
-            particlePhase = 'float';
-            phaseStartTime = now;
           }
 
-          // 업데이트
+          // === 성운 먼저 렌더(밝은 합성) ===
+          if (particlePhase !== 'explode') {
+            pctx.save();
+            pctx.globalCompositeOperation = 'lighter';
+            for (const c of clouds) {
+              const grad = pctx.createRadialGradient(c.x, c.y, c.r * 0.1, c.x, c.y, c.r);
+              grad.addColorStop(0, c.c1);
+              grad.addColorStop(1, c.c2);
+              pctx.fillStyle = grad;
+              pctx.beginPath();
+              pctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+              pctx.fill();
+            }
+            pctx.restore();
+          }
+
+          // === 별 업데이트/렌더 ===
+          let anyAlive = false;
           for (const pt of particles) {
-            if (particlePhase === 'break') {
+            if (pt.alpha <= 0) continue; anyAlive = true;
+
+            if (particlePhase === 'explode') {
               pt.vx *= 0.985; pt.vy *= 0.985;
-              pt.vx += (Math.random() - 0.5) * 0.02;
-              pt.vy += (Math.random() - 0.5) * 0.02;
-            } else {
-              pt.vx += (Math.random() - 0.5) * 0.006;
-              pt.vy += (Math.random() - 0.5) * 0.006;
-              const maxV = 0.22;
-              const sp = Math.hypot(pt.vx, pt.vy);
-              if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
+              pt.vx += (Math.random() - 0.5) * 0.02; pt.vy += (Math.random() - 0.5) * 0.02;
+              pt.alpha = Math.max(0.8, pt.alpha - 0.0006);
+            } else if (particlePhase === 'morph') {
+              if (pt.tx != null) {
+                const dx = pt.tx - pt.x, dy = pt.ty - pt.y;
+                pt.vx = pt.vx * 0.82 + dx * 0.06; pt.vy = pt.vy * 0.82 + dy * 0.06;
+                if (Math.hypot(dx, dy) < 1.6) { pt.x = pt.tx; pt.y = pt.ty; pt.vx = pt.vy = 0; pt.reached = true; }
+              }
+              pt.alpha = Math.min(1, pt.alpha + 0.01);
+            } else if (particlePhase === 'hold') {
+              const wob = (now - phaseStartTime) * 0.004;
+              pt.x += Math.sin(wob + (pt.tx || pt.x) * 0.01) * 0.06;
+              pt.y += Math.cos(wob + (pt.ty || pt.y) * 0.01) * 0.06;
+              pt.alpha = 1;
+            } else if (particlePhase === 'shrink') {
+              const sx = tgCenterX + (pt.tbx - tgCenterX) * taegeukScale;
+              const sy = tgCenterY + (pt.tby - tgCenterY) * taegeukScale;
+              const dx = sx - pt.x, dy = sy - pt.y;
+              pt.vx = pt.vx * 0.86 + dx * 0.045;
+              pt.vy = pt.vy * 0.86 + dy * 0.045;
+              pt.alpha = 1;
+            } else if (particlePhase === 'disperse') {
+              pt.vx *= 0.995; pt.vy *= 0.995; pt.alpha -= 0.0018;
             }
+
             pt.x += pt.vx; pt.y += pt.vy;
-
-            // 래핑
-            const m = 24;
-            if (pt.x < -m) pt.x = W + m;
-            if (pt.x > W + m) pt.x = -m;
-            if (pt.y < -m) pt.y = H + m;
-            if (pt.y > H + m) pt.y = -m;
           }
 
-          // 드로잉: 평면 원, 섀도우/글로우 없음
+          if (particlePhase === 'disperse' && !anyAlive) { body.classList.add('show-background'); particlePhase = 'done'; return; }
+
+          // 드로잉 (트윙클 + 더스트 감쇄 + 하이라이트 스파클)
           pctx.globalCompositeOperation = 'source-over';
+          pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
 
-          // 1) 일반 파티클
-          for (let i = 0; i < particles.length; i++) {
-            if (giantSet.has(i)) continue; // 자이언트는 마지막에 그려서 위에 오게
-            const pt = particles[i];
-            let alpha = 1.0;
+          for (const pt of particles) {
+            if (pt.alpha <= 0) continue;
 
-            if (twinkleSet.has(i)) {
-              const tw = 1 + TWINKLE_AMP * Math.sin(now * TWINKLE_SPEED * pt.tw + pt.twPhase);
-              alpha = Math.max(0.6, Math.min(1.0, tw));
+            // 트윙클
+            const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
+
+            // 더스트 감쇄
+            const dustAtt = dustFactor(pt.x, pt.y);
+
+            pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle * dustAtt));
+            pctx.shadowColor = pt.color; pctx.fillStyle = pt.color;
+            pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); pctx.fill();
+
+            if (Math.random() < 0.0025) {
+              pctx.globalAlpha *= 0.6;
+              pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.size * 2.2, 0, Math.PI * 2); pctx.fill();
             }
-
-            pctx.globalAlpha = alpha;
-            pctx.fillStyle = pt.color;
-            pctx.beginPath();
-            pctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-            pctx.fill();
-          }
-
-          // 2) 거대 파티클(위로)
-          for (let i of giantSet) {
-            const pt = particles[i];
-            let alpha = 1.0;
-            if (twinkleSet.has(i)) {
-              const tw = 1 + TWINKLE_AMP * Math.sin(now * TWINKLE_SPEED * pt.tw + pt.twPhase);
-              alpha = Math.max(0.6, Math.min(1.0, tw));
-            }
-            pctx.globalAlpha = alpha;
-            pctx.fillStyle = pt.color;
-            pctx.beginPath();
-            pctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-            pctx.fill();
           }
 
           requestAnimationFrame(frame);
@@ -490,7 +697,7 @@
       setProgress(0);
 
       /* ============================================================
-         🎸 현 시뮬레이터 — 기존 유지
+         🎸 현 시뮬레이터 — 기존 그대로
          ============================================================ */
       const lineCanvas = document.getElementById('lineViz');
       const lctx = lineCanvas.getContext('2d');
@@ -504,6 +711,7 @@
       let loss       = 0.986;
       let SUBSTEPS   = 10;
       let radiusPx   = 80;
+      let handPower  = 0.95;
       const K_MOUSE  = 1.5;
       const C_MOUSE  = 0.08;
       const HARD_FACTOR = 0.4;
@@ -517,7 +725,7 @@
 
       class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
-      let vanishBaseWidth = null, vanishBaseLeft = null;
+      let vanishBaseWidth = null;
 
       function placeLineViz() {
         const Wwin = window.innerWidth;
@@ -544,10 +752,7 @@
 
           MAX_PULL = Math.floor(cssHeight * 0.42);
           setupString(desiredWidth, cssHeight);
-          if (vanishBaseWidth === null) {
-            vanishBaseWidth = desiredWidth;
-            vanishBaseLeft  = left;
-          }
+          if (vanishBaseWidth === null) vanishBaseWidth = desiredWidth;
         } else {
           const marsLine = document.getElementById('mars')?.parentElement || null;
           const keysLine = document.getElementById('keys')?.parentElement || null;
@@ -569,7 +774,7 @@
               const keysTop = keysLine.getBoundingClientRect().top;
               midY = Math.round((marsBottom + keysTop) / 2);
             }
-          } catch(e) { /* fallback */ }
+          } catch(e) {}
 
           const padPx = Math.round((V_PAD_VH / 100) * Hwin);
           const cssHeight = LINE_H_DESKTOP + padPx * 2;
@@ -587,10 +792,7 @@
           lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
           MAX_PULL = Math.floor(cssHeight * 0.42);
           setupString(width, cssHeight);
-          if (vanishBaseWidth === null) {
-            vanishBaseWidth = width;
-            vanishBaseLeft  = left;
-          }
+          if (vanishBaseWidth === null) vanishBaseWidth = width;
         }
       }
 
@@ -646,19 +848,12 @@
         }
       });
 
-      function hannWeight(dist, R){
-        if (dist >= R) return 0;
-        const r = dist / R;
-        return 0.5 * (1 + Math.cos(Math.PI * r));
-      }
+      function hannWeight(dist, R){ if (dist >= R) return 0; const r = dist / R; return 0.5 * (1 + Math.cos(Math.PI * r)); }
 
       function applyMouseForce(){
         if (!mouse.active) return;
-
         let pullY = mouse.y - initialY;
-        if (Math.abs(pullY) > MAX_PULL) {
-          pullY = Math.sign(pullY) * MAX_PULL;
-        }
+        if (Math.abs(pullY) > MAX_PULL) pullY = Math.sign(pullY) * MAX_PULL;
 
         const FcapBase = 12;
         const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
