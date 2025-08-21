@@ -342,7 +342,7 @@
                 const py = rect.top - wrapRect.top + y;
 
                 let targetSize = 1.5 + Math.random() * 3.5;
-                if (Math.random() < 0.05) {
+                if (Math.random() < 0.05) { // 5% 확률로 큰 파티클 생성
                   targetSize = 10 + Math.random() * 20;
                 }
 
@@ -396,25 +396,6 @@
       function runParticleShow() {
         particlePhase = 'break';
         phaseStartTime = performance.now();
-
-        // 큰 원 파티클 생성 (화면 중앙 근처에서 시작)
-        const rect = wrap.getBoundingClientRect();
-        const W = rect.width, H = rect.height;
-        const bigCircleX = W / 2 + (Math.random() - 0.5) * W * 0.1;
-        const bigCircleY = H / 2 + (Math.random() - 0.5) * H * 0.1;
-        bigCircle = {
-          x: bigCircleX, y: bigCircleY,
-          vx: 0, vy: 0,
-          alpha: 1,
-          color: 'rgba(150, 200, 255, 0.4)',
-          initialSize: 0,
-          targetSize: Math.min(W, H) / 3,
-          currentSize: 0,
-          sizeGrowthRate: 0.005,
-          tw: 0, twPhase: 0,
-          isBigCircle: true,
-          fadeRate: 0.001
-        };
         
         requestAnimationFrame(frame);
       }
@@ -467,42 +448,10 @@
             if (pt.y > H + m) pt.y = -m;
           }
 
-          // 큰 원 업데이트
-          if (bigCircle) {
-            if (bigCircle.currentSize < bigCircle.targetSize) {
-              bigCircle.currentSize += (bigCircle.targetSize - bigCircle.currentSize) * bigCircle.sizeGrowthRate;
-            }
-
-            bigCircle.vx += (Math.random() - 0.5) * 0.02;
-            bigCircle.vy += (Math.random() - 0.5) * 0.02;
-
-            const maxV = 0.1;
-            const sp = Math.hypot(bigCircle.vx, bigCircle.vy);
-            if (sp > maxV) { bigCircle.vx = (bigCircle.vx / sp) * maxV; bigCircle.vy = (bigCircle.vy / sp) * maxV; }
-            bigCircle.x += bigCircle.vx; bigCircle.y += bigCircle.vy;
-
-            bigCircle.alpha *= 0.999;
-          }
-
           // ======== 드로잉 ========
           pctx.globalCompositeOperation = 'source-over';
           pctx.shadowBlur = 0;
           pctx.shadowColor = 'transparent';
-
-          // 배경 살짝 어둡게
-          if (bigCircle && bigCircle.alpha > 0.01) {
-            pctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            pctx.fillRect(0, 0, pctx.canvas.width, pctx.canvas.height);
-          }
-
-          // 큰 원 (multiply로 배경 효과)
-          if (bigCircle && bigCircle.alpha > 0.01) {
-            pctx.globalCompositeOperation = 'multiply';
-            pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
-            pctx.fillStyle = bigCircle.color;
-            pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
-            pctx.globalCompositeOperation = 'source-over';
-          }
 
           // 일반 파티클
           for (const pt of particles) {
@@ -514,26 +463,26 @@
           }
 
           // === ★ welcome 어둡게 마스크 좌표 동기화 (scale 보정 버전) ===
-          if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
-              const wrapRect = wrap.getBoundingClientRect();
-              const wrect = welcome.getBoundingClientRect();
+          if (welcome && welcome.classList.contains('darken-overlap')) {
+            const wrapRect = wrap.getBoundingClientRect();
+            const wrect = welcome.getBoundingClientRect();
+            
+            // #welcome은 transform(scale)이 있으므로, 요소의 "원래" 크기 대비 현재 크기로 스케일 추정
+            const ow = welcome.offsetWidth || wrect.width; // pre-transform width
+            const oh = welcome.offsetHeight || wrect.height; // pre-transform height
+            const scaleX = wrect.width / ow || 1;
+            const scaleY = wrect.height / oh || 1;
 
-              // #welcome은 transform(scale)이 있으므로, 요소의 "원래" 크기 대비 현재 크기로 스케일 추정
-              const ow = welcome.offsetWidth || wrect.width; // pre-transform width
-              const oh = welcome.offsetHeight || wrect.height; // pre-transform height
-              const scaleX = wrect.width / ow || 1;
-              const scaleY = wrect.height / oh || 1;
+            // bigCircle(x,y)는 wrap 기준 CSS px → welcome 로컬 좌표로 변환 후 scale 보정
+            const cxLocal = (W / 2 + wrapRect.left - wrect.left) / scaleX;
+            const cyLocal = (H / 2 + wrapRect.top - wrect.top) / scaleY;
 
-              // bigCircle(x,y)는 wrap 기준 CSS px → welcome 로컬 좌표로 변환 후 scale 보정
-              const cxLocal = (bigCircle.x + wrapRect.left - wrect.left) / scaleX;
-              const cyLocal = (bigCircle.y + wrapRect.top - wrect.top) / scaleY;
-
-              // 반경도 동일하게 보정(비균일 스케일 가능성까지 고려해 최대값 사용)
-              const rLocal = bigCircle.currentSize / Math.max(scaleX, scaleY);
-
-              welcome.style.setProperty('--circle-x', `${cxLocal}px`);
-              welcome.style.setProperty('--circle-y', `${cyLocal}px`);
-              welcome.style.setProperty('--circle-r', `${rLocal}px`);
+            // 반경도 동일하게 보정(비균일 스케일 가능성까지 고려해 최대값 사용)
+            const rLocal = Math.min(W, H) / 3 / Math.max(scaleX, scaleY);
+            
+            welcome.style.setProperty('--circle-x', `${cxLocal}px`);
+            welcome.style.setProperty('--circle-y', `${cyLocal}px`);
+            welcome.style.setProperty('--circle-r', `${rLocal}px`);
           }
           
           requestAnimationFrame(frame);
