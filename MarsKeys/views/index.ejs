@@ -119,7 +119,7 @@
 
     #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
 
-    /* 🎸 현 시뮬레이터 캔버스 */
+    /* 🎸 현 시뮬레이터 */
     #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
 
     #welcome {
@@ -206,7 +206,7 @@
 
       // ===== Particles (부유만) =====
       let particles = [];
-      const MAX_PARTICLES = IS_MOBILE ? 5000 : 2500; // 성능 여유
+      const MAX_PARTICLES = 1000; // 성능 최적화를 위해 파티클 수 대폭 축소
       let particlePhase = 'idle';
       let phaseStartTime = 0;
 
@@ -250,26 +250,38 @@
         step();
       }
 
-      function drawTextToCanvas(text, fontSize, fontFamily) {
+      // 텍스트를 캔버스에 그리는 함수
+      function drawTextToCanvas(text, fontSize, fontFamily, el) {
         const offCanvas = document.createElement('canvas');
         const offCtx = offCanvas.getContext('2d');
         offCtx.font = `${fontSize}px ${fontFamily}`;
-        const metrics = offCtx.measureText(text);
-        const actualHeight = (metrics.actualBoundingBoxAscent || fontSize) + (metrics.actualBoundingBoxDescent || fontSize * 0.25);
-        const width = Math.ceil(metrics.width);
+        const rect = el.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
         offCanvas.width = Math.ceil(width);
-        offCanvas.height = Math.ceil(actualHeight);
+        offCanvas.height = Math.ceil(height);
+
         offCtx.font = `${fontSize}px ${fontFamily}`;
         offCtx.fillStyle = 'white';
-        offCtx.textBaseline = 'top';
-        offCtx.fillText(text, 0, 0);
+        offCtx.textBaseline = 'alphabetic';
+
+        const metrics = offCtx.measureText(text);
+        const ascent = metrics.actualBoundingBoxAscent;
+        const descent = metrics.actualBoundingBoxDescent;
+        const textHeight = ascent + descent;
+        const yOffset = (offCanvas.height / 2) + (ascent - descent) / 2;
+
+        offCtx.fillText(text, 0, yOffset);
         return { canvas: offCanvas };
       }
 
-      function computeStepForTarget(canvas, target) {
+      // 파티클 수를 줄이기 위해 픽셀 간격(STEP)을 계산하는 함수 수정
+      function computeStepForTarget(canvas) {
         const area = canvas.width * canvas.height;
+        const target = IS_MOBILE ? 600 : 300; // 파티클 밀도 조정
         const estGlyphArea = area * 0.45;
-        return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
+        const step = Math.max(5, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
+        return step;
       }
 
       // ✨ 별색 팔레트(진한 계열)
@@ -291,19 +303,18 @@
           { el: document.getElementById('keys').parentElement, textEl: document.getElementById('keys') }
         ];
 
-        const TARGET_PER_LINE = IS_MOBILE ? 3200 : 1400;
-
         lines.forEach(({ el, textEl }) => {
           const rect = el.getBoundingClientRect();
           const style = getComputedStyle(textEl);
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
-          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily);
+
+          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
           const ctx = canvas.getContext('2d');
           const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = img.data;
 
-          const STEP = computeStepForTarget(canvas, TARGET_PER_LINE);
+          const STEP = computeStepForTarget(canvas);
 
           for (let y = 0; y < canvas.height; y += STEP) {
             for (let x = 0; x < canvas.width; x += STEP) {
@@ -311,8 +322,12 @@
               if (data[idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
+                
+                let targetSize = 1.5 + Math.random() * 3.5;
+                if (Math.random() < 0.05) { // 5% 확률로 큰 파티클 생성
+                  targetSize = 10 + Math.random() * 20;
+                }
 
-                // 초기 '깨짐' 살짝 튕기고 곧 잔잔히 부유
                 const spd = 0.35 + Math.random() * 0.4;
                 const ang = Math.random() * Math.PI * 2;
                 particles.push({
@@ -321,7 +336,10 @@
                   vy: Math.sin(ang) * spd,
                   alpha: 1,
                   color: pickStarColor(),
-                  size: 1.2 + Math.random() * 1.3,
+                  initialSize: 1 + Math.random() * 0.8,
+                  targetSize: targetSize,
+                  currentSize: 0,
+                  sizeGrowthRate: 0.02 + Math.random() * 0.01,
                   tw: 0.5 + Math.random() * 0.8,
                   twPhase: Math.random() * Math.PI * 2
                 });
@@ -330,7 +348,6 @@
           }
         });
 
-        // 캡 적용(성능)
         if (particles.length > MAX_PARTICLES) {
           const sampled = [];
           for (let i = 0; i < MAX_PARTICLES; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
@@ -361,12 +378,11 @@
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
 
-          // 단계 전환: 짧게만 튕기고 곧 부유
-          if (particlePhase === 'break' && now - phaseStartTime >= 900) {
-            // 속도를 부드럽게 줄이고 천천히 흐르게 전환
+          const phaseDuration = 1500;
+          if (particlePhase === 'break' && now - phaseStartTime >= phaseDuration) {
             for (const pt of particles) {
-              pt.vx *= 0.25 + Math.random()*0.15;
-              pt.vy *= 0.25 + Math.random()*0.15;
+              pt.vx *= 0.15 + Math.random() * 0.1;
+              pt.vy *= 0.15 + Math.random() * 0.1;
             }
             particlePhase = 'float';
             phaseStartTime = now;
@@ -374,25 +390,28 @@
 
           // 업데이트
           for (const pt of particles) {
-            // 약한 난류(노이즈)로 부유감
+            // 크기 변화
+            if (pt.currentSize < pt.targetSize) {
+              pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
+              if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
+            }
+
             if (particlePhase === 'break') {
-              pt.vx *= 0.985; pt.vy *= 0.985;
-              pt.vx += (Math.random() - 0.5) * 0.02;
-              pt.vy += (Math.random() - 0.5) * 0.02;
+              pt.vx *= 0.97; pt.vy *= 0.97;
+              pt.vx += (Math.random() - 0.5) * 0.03;
+              pt.vy += (Math.random() - 0.5) * 0.03;
             } else {
-              // float
               pt.vx += (Math.random() - 0.5) * 0.006;
               pt.vy += (Math.random() - 0.5) * 0.006;
 
-              // 최대 속도 제한 (아주 느리게)
               const maxV = 0.22;
               const sp = Math.hypot(pt.vx, pt.vy);
               if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
+              pt.alpha *= 0.9995;
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
 
-            // 스크린 래핑
             const m = 24;
             if (pt.x < -m) pt.x = W + m;
             if (pt.x > W + m) pt.x = -m;
@@ -405,10 +424,11 @@
           pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
 
           for (const pt of particles) {
+            if (pt.alpha <= 0.01) continue;
             const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
             pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
             pctx.shadowColor = pt.color; pctx.fillStyle = pt.color;
-            pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); pctx.fill();
+            pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
           }
 
           requestAnimationFrame(frame);
@@ -459,7 +479,6 @@
       let loss       = 0.986;
       let SUBSTEPS   = 10;
       let radiusPx   = 80;
-      let handPower  = 0.95;
       const K_MOUSE  = 1.5;
       const C_MOUSE  = 0.08;
       const HARD_FACTOR = 0.4;
@@ -713,5 +732,3 @@
   </script>
 </body>
 </html>
-
-
