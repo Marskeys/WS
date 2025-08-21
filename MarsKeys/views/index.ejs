@@ -365,7 +365,7 @@
 
       function showWelcome() {
         setTimeout(() => { counterEl.style.opacity = 0; }, 350);
-        setTimeout(() => { welcome.classList.add("visible"); welcome.classList.add("welcome-glow"); }, 2000);
+        setTimeout(() => { welcome.classList.add("visible"); }, 2000);
         setTimeout(() => { scrollContent.style.display = "block"; isFinalized = true; body.style.overflowY = "auto"; }, 1500);
       }
 
@@ -469,6 +469,12 @@
           pctx.shadowBlur = 0;
           pctx.shadowColor = 'transparent';
 
+          // ⭐ 추가: 큰 원이 나타날 때 전체 배경을 살짝 어둡게 만듭니다.
+          if (bigCircle && bigCircle.alpha > 0.01) {
+            pctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            pctx.fillRect(0, 0, pctx.canvas.width, pctx.canvas.height);
+          }
+          
           // 큰 원 그리기
           if (bigCircle && bigCircle.alpha > 0.01) {
             // ⭐ `multiply` 모드를 사용하여 아래 텍스트와 겹치는 부분을 어둡게 만듭니다.
