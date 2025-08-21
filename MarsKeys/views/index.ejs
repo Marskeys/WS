@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <% const isKorean = (lang || '').toLowerCase().startsWith('ko'); %>
 <html lang="<%= lang %>">
-  <%- include('partials/head') %>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -176,7 +175,6 @@
     <p class="tagline shine-to-white" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
 
     <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-    <!-- ▼ data-text 추가 (pseudo-element가 동일 텍스트를 사용) -->
     <div id="welcome" data-text="<%= locale.welcome %>"><%= locale.welcome %></div>
   </main>
 
@@ -276,7 +274,6 @@
       function drawTextToCanvas(text, fontSize, fontFamily, el) {
         const offCanvas = document.createElement('canvas');
         const offCtx = offCanvas.getContext('2d');
-        offCtx.font = `${fontSize}px ${fontFamily}`;
         const rect = el.getBoundingClientRect();
         const width = rect.width;
         const height = rect.height;
@@ -418,8 +415,11 @@
           isBigCircle: true,
           fadeRate: 0.001
         };
-
-        function frame(now) {
+        
+        requestAnimationFrame(frame);
+      }
+      
+      function frame(now) {
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
@@ -514,27 +514,30 @@
           }
 
           // === ★ welcome 어둡게 마스크 좌표 동기화 (scale 보정 버전) ===
-if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
-  const wrapRect = wrap.getBoundingClientRect();
-  const wrect = welcome.getBoundingClientRect();
+          if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
+              const wrapRect = wrap.getBoundingClientRect();
+              const wrect = welcome.getBoundingClientRect();
 
-  // #welcome은 transform(scale)이 있으므로, 요소의 "원래" 크기 대비 현재 크기로 스케일 추정
-  const ow = welcome.offsetWidth  || wrect.width;   // pre-transform width
-  const oh = welcome.offsetHeight || wrect.height;  // pre-transform height
-  const scaleX = wrect.width  / ow || 1;
-  const scaleY = wrect.height / oh || 1;
+              // #welcome은 transform(scale)이 있으므로, 요소의 "원래" 크기 대비 현재 크기로 스케일 추정
+              const ow = welcome.offsetWidth || wrect.width; // pre-transform width
+              const oh = welcome.offsetHeight || wrect.height; // pre-transform height
+              const scaleX = wrect.width / ow || 1;
+              const scaleY = wrect.height / oh || 1;
 
-  // bigCircle(x,y)는 wrap 기준 CSS px → welcome 로컬 좌표로 변환 후 scale 보정
-  const cxLocal = (bigCircle.x + wrapRect.left - wrect.left) / scaleX;
-  const cyLocal = (bigCircle.y + wrapRect.top  - wrect.top ) / scaleY;
+              // bigCircle(x,y)는 wrap 기준 CSS px → welcome 로컬 좌표로 변환 후 scale 보정
+              const cxLocal = (bigCircle.x + wrapRect.left - wrect.left) / scaleX;
+              const cyLocal = (bigCircle.y + wrapRect.top - wrect.top) / scaleY;
 
-  // 반경도 동일하게 보정(비균일 스케일 가능성까지 고려해 최대값 사용)
-  const rLocal = bigCircle.currentSize / Math.max(scaleX, scaleY);
+              // 반경도 동일하게 보정(비균일 스케일 가능성까지 고려해 최대값 사용)
+              const rLocal = bigCircle.currentSize / Math.max(scaleX, scaleY);
 
-  welcome.style.setProperty('--circle-x', `${cxLocal}px`);
-  welcome.style.setProperty('--circle-y', `${cyLocal}px`);
-  welcome.style.setProperty('--circle-r', `${rLocal}px`);
-}
+              welcome.style.setProperty('--circle-x', `${cxLocal}px`);
+              welcome.style.setProperty('--circle-y', `${cyLocal}px`);
+              welcome.style.setProperty('--circle-r', `${rLocal}px`);
+          }
+          
+          requestAnimationFrame(frame);
+      }
 
       function onWheel(e) {
         if (isFinalized) return;
