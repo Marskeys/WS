@@ -249,7 +249,7 @@
         }
         step();
       }
-
+      
       // ✨ 텍스트를 캔버스에 그리는 함수 수정(사파리 호환성)
       function drawTextToCanvas(text, fontSize, fontFamily, el) {
         const offCanvas = document.createElement('canvas');
@@ -265,16 +265,16 @@
         offCtx.fillStyle = 'white';
         // 사파리 글자 오류 해결을 위해 textBaseline을 alphabetic으로 변경
         offCtx.textBaseline = 'alphabetic';
-
+        
         // 텍스트의 실제 높이와 위치를 계산하여 정중앙에 배치
         const metrics = offCtx.measureText(text);
         const ascent = metrics.actualBoundingBoxAscent;
         const descent = metrics.actualBoundingBoxDescent;
         const textHeight = ascent + descent;
         const yOffset = (offCanvas.height / 2) + (ascent - descent) / 2;
-
+        
         offCtx.fillText(text, 0, yOffset);
-
+        
         return { canvas: offCanvas };
       }
 
@@ -310,7 +310,7 @@
           const style = getComputedStyle(textEl);
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
-
+          
           // 수정된 함수 호출: 텍스트 요소 자체를 인자로 전달
           const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
           const ctx = canvas.getContext('2d');
@@ -335,8 +335,8 @@
                   vy: Math.sin(ang) * spd,
                   alpha: 1,
                   color: pickStarColor(),
-                  // 파티클 크기 범위를 더 넓게 설정 (최소 1.2 ~ 최대 6.5)
-                  size: 1.2 + Math.random() * 5.3,
+                  // 파티클 크기 범위를 더 넓게 설정 (최소 1.2 ~ 최대 3.5)
+                  size: 1.2 + Math.random() * 2.3, 
                   tw: 0.5 + Math.random() * 0.8,
                   twPhase: Math.random() * Math.PI * 2
                 });
@@ -377,12 +377,11 @@
           pctx.clearRect(0, 0, W, H);
 
           // 단계 전환: 짧게만 튕기고 곧 부유
-          const phaseDuration = 1500; // 1.5초로 늘려서 더 부드럽게
-          if (particlePhase === 'break' && now - phaseStartTime >= phaseDuration) {
+          if (particlePhase === 'break' && now - phaseStartTime >= 900) {
             // 속도를 부드럽게 줄이고 천천히 흐르게 전환
             for (const pt of particles) {
-              pt.vx *= 0.15 + Math.random() * 0.1;
-              pt.vy *= 0.15 + Math.random() * 0.1;
+              pt.vx *= 0.25 + Math.random()*0.15;
+              pt.vy *= 0.25 + Math.random()*0.15;
             }
             particlePhase = 'float';
             phaseStartTime = now;
@@ -392,9 +391,9 @@
           for (const pt of particles) {
             // 약한 난류(노이즈)로 부유감
             if (particlePhase === 'break') {
-              pt.vx *= 0.97; pt.vy *= 0.97; // 감속 계수 조정
-              pt.vx += (Math.random() - 0.5) * 0.03;
-              pt.vy += (Math.random() - 0.5) * 0.03;
+              pt.vx *= 0.985; pt.vy *= 0.985;
+              pt.vx += (Math.random() - 0.5) * 0.02;
+              pt.vy += (Math.random() - 0.5) * 0.02;
             } else {
               // float
               pt.vx += (Math.random() - 0.5) * 0.006;
@@ -404,9 +403,6 @@
               const maxV = 0.22;
               const sp = Math.hypot(pt.vx, pt.vy);
               if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-
-              // 부드러운 페이드 아웃
-              pt.alpha *= 0.9995;
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
@@ -424,7 +420,6 @@
           pctx.shadowBlur = 10; pctx.shadowOffsetX = 0; pctx.shadowOffsetY = 0;
 
           for (const pt of particles) {
-            if (pt.alpha <= 0.01) continue;
             const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
             pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
             pctx.shadowColor = pt.color; pctx.fillStyle = pt.color;
