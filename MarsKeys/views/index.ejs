@@ -118,11 +118,8 @@
 
     #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
 
-    /* 🎸 현 시뮬레이터 (3줄) */
-    .lineViz { position: fixed; pointer-events: auto; z-index: 55; }
-    #lineViz1 { top: calc(50% - 100px); }
-    #lineViz2 { top: 50%; }
-    #lineViz3 { top: calc(50% + 100px); }
+    /* 🎸 현 시뮬레이터 */
+    #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
 
     /* ====== WELCOME ====== */
     #welcome {
@@ -168,9 +165,7 @@
 <body class="<%= isKorean ? 'lang-ko' : '' %>">
   <main class="wrap" id="wrap">
     <canvas id="particleCanvas"></canvas>
-    <canvas class="lineViz" id="lineViz1"></canvas>
-    <canvas class="lineViz" id="lineViz2"></canvas>
-    <canvas class="lineViz" id="lineViz3"></canvas>
+    <canvas id="lineViz"></canvas>
 
     <h1 class="brand" id="brand">
       <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
@@ -233,7 +228,7 @@
       const MAX_PARTICLES = 5000;
       let particlePhase = 'idle';
       let phaseStartTime = 0;
-      let mainBigCircle = null;
+      let bigCircle = null;
 
       function resizeParticleCanvas() {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -321,20 +316,18 @@
         particles.length = 0;
 
         const wrapRect = wrap.getBoundingClientRect();
-        const W = wrapRect.width, H = wrapRect.height;
         const lines = [
           { el: document.getElementById('mars').parentElement, textEl: document.getElementById('mars') },
           { el: document.getElementById('keys').parentElement, textEl: document.getElementById('keys') }
         ];
 
-        let hasMainBigCircle = false;
         lines.forEach(({ el, textEl }) => {
           const rect = el.getBoundingClientRect();
           const style = getComputedStyle(textEl);
           const fontSize = parseFloat(style.fontSize);
           const fontFamily = style.fontFamily;
 
-          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
+        const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
           const ctx = canvas.getContext('2d');
           const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = img.data;
@@ -347,21 +340,10 @@
               if (data[idx + 3] > 128) {
                 const px = rect.left - wrapRect.left + x;
                 const py = rect.top - wrapRect.top + y;
-                
-                let targetSize, isBig, color, fadeRate, sizeGrowthRate;
-                if (Math.random() < 0.1 && !hasMainBigCircle) { // 10% 확률로 큰 파티클 생성
-                  targetSize = Math.min(W, H) / 3;
-                  isBig = true;
-                  color = 'rgba(150, 200, 255, 0.4)';
-                  fadeRate = 0.999;
-                  sizeGrowthRate = 0.005;
-                  hasMainBigCircle = true;
-                } else {
-                  targetSize = 1.5 + Math.random() * 3.5;
-                  isBig = false;
-                  color = pickStarColor();
-                  fadeRate = 0.999;
-                  sizeGrowthRate = 0.02 + Math.random() * 0.01;
+
+                let targetSize = 1.5 + Math.random() * 3.5;
+                if (Math.random() < 0.1) { // 10% 확률로 더 큰 파티클 생성
+                  targetSize = 10 + Math.random() * 30; // 10px ~ 40px 사이의 크기
                 }
 
                 const spd = 0.35 + Math.random() * 0.4;
@@ -371,15 +353,13 @@
                   vx: Math.cos(ang) * spd,
                   vy: Math.sin(ang) * spd,
                   alpha: 1,
-                  color: color,
+                  color: pickStarColor(),
                   initialSize: 1 + Math.random() * 0.8,
                   targetSize: targetSize,
                   currentSize: 0,
-                  sizeGrowthRate: sizeGrowthRate,
+                  sizeGrowthRate: 0.02 + Math.random() * 0.01,
                   tw: 0.5 + Math.random() * 0.8,
-                  twPhase: Math.random() * Math.PI * 2,
-                  isBigCircle: isBig,
-                  fadeRate: fadeRate,
+                  twPhase: Math.random() * Math.PI * 2
                 });
               }
             }
@@ -403,7 +383,7 @@
       function showWelcome() {
         setTimeout(() => { counterEl.style.opacity = 0; }, 350);
         setTimeout(() => { 
-          welcome.classList.add("visible", "darken-overlap");
+          welcome.classList.add("visible", "darken-overlap");  // ▼ 어둡게 마스크 ON
         }, 2000);
         setTimeout(() => { 
           scrollContent.style.display = "block"; 
@@ -416,6 +396,26 @@
       function runParticleShow() {
         particlePhase = 'break';
         phaseStartTime = performance.now();
+
+        // 큰 원 파티클 생성 (화면 중앙 근처에서 시작)
+        const rect = wrap.getBoundingClientRect();
+        const W = rect.width, H = rect.height;
+        const bigCircleX = W / 2 + (Math.random() - 0.5) * W * 0.1;
+        const bigCircleY = H / 2 + (Math.random() - 0.5) * H * 0.1;
+        bigCircle = {
+          x: bigCircleX, y: bigCircleY,
+          vx: 0, vy: 0,
+          alpha: 1,
+          color: 'rgba(150, 200, 255, 0.4)',
+          initialSize: 0,
+          targetSize: Math.min(W, H) / 3,
+          currentSize: 0,
+          sizeGrowthRate: 0.005,
+          tw: 0, twPhase: 0,
+          isBigCircle: true,
+          fadeRate: 0.001
+        };
+        
         requestAnimationFrame(frame);
       }
       
@@ -423,8 +423,6 @@
           const rect = wrap.getBoundingClientRect();
           const W = rect.width, H = rect.height;
           pctx.clearRect(0, 0, W, H);
-          let mainBigCircle = null;
-          let maxBigCircleSize = 0;
 
           const phaseDuration = 1500;
           if (particlePhase === 'break' && now - phaseStartTime >= phaseDuration) {
@@ -436,37 +434,28 @@
             phaseStartTime = now;
           }
 
-          // 파티클 업데이트 및 메인 큰 원 찾기
+          // 파티클 업데이트
           for (const pt of particles) {
-            if (pt.currentSize < pt.targetSize) {
+            if (pt.currentSize < pt.initialSize) {
+              pt.currentSize += (pt.initialSize - pt.currentSize) * pt.sizeGrowthRate * 5;
+              if (pt.currentSize >= pt.initialSize) pt.currentSize = pt.initialSize;
+            } else if (pt.currentSize < pt.targetSize) {
               pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
               if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
             }
 
-            if (pt.isBigCircle) {
-                if (pt.currentSize > maxBigCircleSize) {
-                    mainBigCircle = pt;
-                    maxBigCircleSize = pt.currentSize;
-                }
-                pt.vx += (Math.random() - 0.5) * 0.02;
-                pt.vy += (Math.random() - 0.5) * 0.02;
-                const maxV = 0.1;
-                const sp = Math.hypot(pt.vx, pt.vy);
-                if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-                pt.alpha *= pt.fadeRate;
+            if (particlePhase === 'break') {
+              pt.vx *= 0.97; pt.vy *= 0.97;
+              pt.vx += (Math.random() - 0.5) * 0.03;
+              pt.vy += (Math.random() - 0.5) * 0.03;
             } else {
-                if (particlePhase === 'break') {
-                    pt.vx *= 0.97; pt.vy *= 0.97;
-                    pt.vx += (Math.random() - 0.5) * 0.03;
-                    pt.vy += (Math.random() - 0.5) * 0.03;
-                } else {
-                    pt.vx += (Math.random() - 0.5) * 0.006;
-                    pt.vy += (Math.random() - 0.5) * 0.006;
-                    const maxV = 0.22;
-                    const sp = Math.hypot(pt.vx, pt.vy);
-                    if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-                    pt.alpha *= 0.999;
-                }
+              pt.vx += (Math.random() - 0.5) * 0.006;
+              pt.vy += (Math.random() - 0.5) * 0.006;
+
+              const maxV = 0.22;
+              const sp = Math.hypot(pt.vx, pt.vy);
+              if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
+              pt.alpha *= 0.999;
             }
 
             pt.x += pt.vx; pt.y += pt.vy;
@@ -478,41 +467,54 @@
             if (pt.y > H + m) pt.y = -m;
           }
 
+          // 큰 원 업데이트
+          if (bigCircle) {
+            if (bigCircle.currentSize < bigCircle.targetSize) {
+              bigCircle.currentSize += (bigCircle.targetSize - bigCircle.currentSize) * bigCircle.sizeGrowthRate;
+            }
+
+            bigCircle.vx += (Math.random() - 0.5) * 0.02;
+            bigCircle.vy += (Math.random() - 0.5) * 0.02;
+
+            const maxV = 0.1;
+            const sp = Math.hypot(bigCircle.vx, bigCircle.vy);
+            if (sp > maxV) { bigCircle.vx = (bigCircle.vx / sp) * maxV; bigCircle.vy = (bigCircle.vy / sp) * maxV; }
+            bigCircle.x += bigCircle.vx; bigCircle.y += bigCircle.vy;
+
+            bigCircle.alpha *= 0.999;
+          }
+
           // ======== 드로잉 ========
           pctx.globalCompositeOperation = 'source-over';
           pctx.shadowBlur = 0;
           pctx.shadowColor = 'transparent';
 
           // 배경 살짝 어둡게
-          if (mainBigCircle && mainBigCircle.alpha > 0.01) {
+          if (bigCircle && bigCircle.alpha > 0.01) {
             pctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             pctx.fillRect(0, 0, pctx.canvas.width, pctx.canvas.height);
           }
 
-          // 큰 파티클 (multiply로 배경 효과)
-          for (const pt of particles) {
-              if (pt.isBigCircle && pt.alpha > 0.01) {
-                pctx.globalCompositeOperation = 'multiply';
-                pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha));
-                pctx.fillStyle = pt.color;
-                pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
-              }
+          // 큰 원 (multiply로 배경 효과)
+          if (bigCircle && bigCircle.alpha > 0.01) {
+            pctx.globalCompositeOperation = 'multiply';
+            pctx.globalAlpha = Math.max(0, Math.min(1, bigCircle.alpha));
+            pctx.fillStyle = bigCircle.color;
+            pctx.beginPath(); pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2); pctx.fill();
+            pctx.globalCompositeOperation = 'source-over';
           }
-          pctx.globalCompositeOperation = 'source-over';
 
           // 일반 파티클
           for (const pt of particles) {
-            if (!pt.isBigCircle && pt.alpha > 0.01) {
-              const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
-              pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
-              pctx.fillStyle = pt.color;
-              pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
-            }
+            if (pt.alpha <= 0.01) continue;
+            const twinkle = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
+            pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * twinkle));
+            pctx.fillStyle = pt.color;
+            pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
           }
-          pctx.globalAlpha = 1;
 
-          // === welcome 어둡게 마스크 좌표 동기화 (scale 보정 버전) ===
-          if (mainBigCircle && welcome && welcome.classList.contains('darken-overlap')) {
+          // === ★ welcome 어둡게 마스크 좌표 동기화 (scale 보정 버전) ===
+          if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
               const wrapRect = wrap.getBoundingClientRect();
               const wrect = welcome.getBoundingClientRect();
 
@@ -523,11 +525,11 @@
               const scaleY = wrect.height / oh || 1;
 
               // bigCircle(x,y)는 wrap 기준 CSS px → welcome 로컬 좌표로 변환 후 scale 보정
-              const cxLocal = (mainBigCircle.x + wrapRect.left - wrect.left) / scaleX;
-              const cyLocal = (mainBigCircle.y + wrapRect.top - wrect.top) / scaleY;
+              const cxLocal = (bigCircle.x + wrapRect.left - wrect.left) / scaleX;
+              const cyLocal = (bigCircle.y + wrapRect.top - wrect.top) / scaleY;
 
               // 반경도 동일하게 보정(비균일 스케일 가능성까지 고려해 최대값 사용)
-              const rLocal = mainBigCircle.currentSize / Math.max(scaleX, scaleY);
+              const rLocal = bigCircle.currentSize / Math.max(scaleX, scaleY);
 
               welcome.style.setProperty('--circle-x', `${cxLocal}px`);
               welcome.style.setProperty('--circle-y', `${cyLocal}px`);
@@ -566,350 +568,269 @@
       setProgress(0);
 
       /* ============================================================
-         🎸 현 시뮬레이터 (3줄) — 신규 추가/수정
+         🎸 현 시뮬레이터 (신호선) — 그대로 유지
          ============================================================ */
-      const lineCanvases = [
-        document.getElementById('lineViz1'),
-        document.getElementById('lineViz2'),
-        document.getElementById('lineViz3'),
-      ];
-      let stringSimulators = [];
-      const ringCtx = document.getElementById('particleCanvas').getContext('2d');
-      let ringRadius = 0;
-      let ringAlpha = 0;
-      let ringX = 0;
-      let ringY = 0;
+      const lineCanvas = document.getElementById('lineViz');
+      const lctx = lineCanvas.getContext('2d');
+
+      const LINE_THICK = 8;
+      const LINE_H_DESKTOP = 72;
+      const LINE_H_MOBILE  = 96;
+      const V_PAD_VH = 18;
+
+      let tension    = 0.8;
+      let loss       = 0.986;
+      let SUBSTEPS   = 10;
+      let radiusPx   = 80;
+      const K_MOUSE  = 1.5;
+      const C_MOUSE  = 0.08;
+      const HARD_FACTOR = 0.4;
+      const RELEASE_KICK = 0.25;
+
+      let numPoints = 240;
+      let dx = 1, invDX2 = 1;
+      let initialY = 0;
+      let string = [];
+      let MAX_PULL = 0;
 
       class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
 
-      class StringSim {
-        constructor(canvas) {
-          this.canvas = canvas;
-          this.ctx = canvas.getContext('2d');
-          this.tension = 0.8;
-          this.loss = 0.986;
-          this.SUBSTEPS = 10;
-          this.radiusPx = 80;
-          this.K_MOUSE = 1.5;
-          this.C_MOUSE = 0.08;
-          this.HARD_FACTOR = 0.4;
-          this.RELEASE_KICK = 0.25;
-          this.MIN_FLICK_DISTANCE = 20;
-
-          this.numPoints = 240;
-          this.dx = 1;
-          this.invDX2 = 1;
-          this.initialY = 0;
-          this.string = [];
-          this.MAX_PULL = 0;
-          this.mouse = { active: false, x: 0, y: 0, startX: 0, startY: 0 };
-          
-          this.setup();
-          this.addEventListeners();
-        }
-
-        setup() {
-          const W = this.canvas.width / window.devicePixelRatio;
-          const H = this.canvas.height / window.devicePixelRatio;
-          this.numPoints = Math.max(160, Math.min(360, Math.round(W / 4)));
-          this.string = [];
-          for (let i = 0; i < this.numPoints; i++) {
-            const x = (i / (this.numPoints - 1)) * W;
-            this.string.push(new StringPoint(x, H / 2));
-          }
-          this.initialY = H / 2;
-          this.dx = W / (this.numPoints - 1);
-          this.invDX2 = 1 / (this.dx * this.dx);
-          this.MAX_PULL = Math.floor(H * 0.42);
-        }
-
-        getPos(e) {
-          const r = this.canvas.getBoundingClientRect();
-          const cx = (e.clientX ?? e.touches?.[0].clientX) - r.left;
-          const cy = (e.clientY ?? e.touches?.[0].clientY) - r.top;
-          return { x: cx, y: cy };
-        }
-
-        addEventListeners() {
-          this.canvas.addEventListener('mousedown', e => {
-            const { x, y } = this.getPos(e);
-            this.mouse.active = true;
-            this.mouse.x = x;
-            this.mouse.y = y;
-            this.mouse.startX = x;
-            this.mouse.startY = y;
-          });
-          this.canvas.addEventListener('mousemove', e => {
-            if (!this.mouse.active) return;
-            const { x, y } = this.getPos(e);
-            this.mouse.x = x;
-            this.mouse.y = y;
-          });
-          this.canvas.addEventListener('mouseup', () => {
-            if (!this.mouse.active) return;
-            this.mouse.active = false;
-            const distance = Math.hypot(this.mouse.x - this.mouse.startX, this.mouse.y - this.mouse.startY);
-            if (distance > this.MIN_FLICK_DISTANCE) {
-                this.releaseKick();
-            } else {
-                this.resetString();
-            }
-          });
-          this.canvas.addEventListener('touchstart', e => {
-            const { x, y } = this.getPos(e);
-            e.preventDefault();
-            this.mouse.active = true;
-            this.mouse.x = x;
-            this.mouse.y = y;
-            this.mouse.startX = x;
-            this.mouse.startY = y;
-          }, { passive: false });
-          this.canvas.addEventListener('touchmove', e => {
-            if (!this.mouse.active) return;
-            const { x, y } = this.getPos(e);
-            e.preventDefault();
-            this.mouse.x = x;
-            this.mouse.y = y;
-          }, { passive: false });
-          this.canvas.addEventListener('touchend', () => {
-            if (!this.mouse.active) return;
-            this.mouse.active = false;
-            const distance = Math.hypot(this.mouse.x - this.mouse.startX, this.mouse.y - this.mouse.startY);
-            if (distance > this.MIN_FLICK_DISTANCE) {
-                this.releaseKick();
-            } else {
-                this.resetString();
-            }
-          });
-        }
-
-        releaseKick() {
-          const canvasRect = this.canvas.getBoundingClientRect();
-          const ringX = canvasRect.left + this.mouse.x;
-          const ringY = canvasRect.top + this.mouse.y;
-          triggerRingPulse(ringX, ringY, 30);
-          
-          for (let i = 0; i < this.numPoints; i++) {
-            const disp = this.string[i].y - this.initialY;
-            this.string[i].oldY = this.string[i].y + this.RELEASE_KICK * disp;
-          }
-        }
-        
-        resetString() {
-            for (let i = 0; i < this.numPoints; i++) {
-                this.string[i].y = this.initialY;
-                this.string[i].oldY = this.initialY;
-            }
-        }
-
-        hannWeight(dist, R) {
-          if (dist >= R) return 0;
-          const r = dist / R;
-          return 0.5 * (1 + Math.cos(Math.PI * r));
-        }
-
-        applyMouseForce() {
-          if (!this.mouse.active) return;
-
-          let pullY = this.mouse.y - this.initialY;
-          if (Math.abs(pullY) > this.MAX_PULL) {
-            pullY = Math.sign(pullY) * this.MAX_PULL;
-          }
-
-          const FcapBase = 12;
-          const Fcap = FcapBase / (1 + this.HARD_FACTOR * this.tension);
-
-          for (let i = 1; i < this.numPoints - 1; i++) {
-            const p = this.string[i];
-            const distX = Math.abs(p.x - this.mouse.x);
-            const w = this.hannWeight(distX, this.radiusPx);
-            if (w <= 0) continue;
-
-            const vel = p.y - p.oldY;
-            const Fspring = this.K_MOUSE * (this.initialY + pullY - p.y);
-            const Fdamp = -this.C_MOUSE * vel;
-            let F = (Fspring + Fdamp) * w;
-
-            if (F > Fcap * w) F = Fcap * w;
-            if (F < -Fcap * w) F = -Fcap * w;
-
-            p.acc += F;
-          }
-        }
-
-        physicsStep() {
-          for (let i = 1; i < this.numPoints - 1; i++) {
-            const prev = this.string[i - 1].y, curr = this.string[i].y, next = this.string[i + 1].y;
-            const lap = (prev - 2 * curr + next) * this.invDX2;
-            this.string[i].acc = this.tension * lap;
-          }
-          this.applyMouseForce();
-
-          this.string[0].acc = 0;
-          this.string[this.numPoints - 1].acc = 0;
-
-          for (let i = 1; i < this.numPoints - 1; i++) {
-            const p = this.string[i];
-            const tempY = p.y;
-            p.y = p.y * 2 - p.oldY + p.acc;
-            p.oldY = tempY;
-            p.y = this.initialY + (p.y - this.initialY) * this.loss;
-          }
-          this.string[0].y = this.string[0].oldY = this.initialY;
-          this.string[this.numPoints - 1].y = this.string[this.numPoints - 1].oldY = this.initialY;
-        }
-
-        draw(p) {
-          const rect = this.canvas.getBoundingClientRect();
-          const Wdraw = Math.max(0, Math.round(rect.width));
-          const Hdraw = Math.max(0, Math.round(rect.height));
-          if (!Wdraw || !Hdraw) return;
-
-          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-          this.ctx.save();
-          this.ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-
-          const smoothstep = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
-          const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
-          const thickness = Math.max(0.6, 8 * (1 - 0.9 * f));
-          this.ctx.globalAlpha = 1 - f;
-
-          this.ctx.beginPath();
-          this.ctx.strokeStyle = '#ffffff';
-          this.ctx.lineWidth = thickness;
-          this.ctx.lineCap = 'round';
-          this.ctx.lineJoin = 'round';
-
-          this.ctx.moveTo(this.string[0].x, this.string[0].y);
-          for (let i = 1; i < this.numPoints - 2; i++) {
-            const xc = (this.string[i].x + this.string[i + 1].x) / 2;
-            const yc = (this.string[i].y + this.string[i + 1].y) / 2;
-            this.ctx.quadraticCurveTo(this.string[i].x, this.string[i].y, xc, yc);
-          }
-          this.ctx.quadraticCurveTo(this.string[this.numPoints - 2].x, this.string[this.numPoints - 2].y, this.string[this.numPoints - 1].x, this.string[this.numPoints - 1].y);
-          this.ctx.stroke();
-          
-          this.ctx.restore();
-        }
-      }
-
-      function setupStrings() {
-        stringSimulators = [];
-        lineCanvases.forEach((canvas) => {
-          const sim = new StringSim(canvas);
-          stringSimulators.push(sim);
-        });
-        placeLineViz();
-      }
-
-      function updateRing(x, y) {
-        // 이 함수는 마우스가 움직일 때마다 호출됩니다.
-        // 마우스와 가장 가까운 현의 위치를 기준으로 원의 좌표를 설정할 수 있습니다.
-        // 현재는 ringCtx.clearRect를 하기 때문에 계속 그릴 필요는 없습니다.
-      }
-
-      function triggerRingPulse(x, y, initialRadius) {
-        ringRadius = initialRadius;
-        ringAlpha = 1;
-        const dpr = window.devicePixelRatio;
-        ringX = x * dpr;
-        ringY = y * dpr;
-      }
-      
-      function drawRing() {
-        // 이 함수는 매 프레임 파티클 캔버스에 원을 그립니다.
-        if (ringAlpha <= 0) return;
-        
-        ringCtx.save();
-        ringCtx.globalAlpha = ringAlpha;
-        ringCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ringCtx.lineWidth = 2;
-        
-        ringCtx.beginPath();
-        const rect = wrap.getBoundingClientRect();
-        const dpr = window.devicePixelRatio;
-        
-        ringCtx.arc(ringX, ringY, ringRadius, 0, 2 * Math.PI);
-        ringCtx.stroke();
-        
-        ringCtx.restore();
-        
-        ringRadius += 2.5;
-        ringAlpha -= 0.02;
-        if (ringAlpha < 0) ringAlpha = 0;
-      }
+      let vanishBaseWidth = null, vanishBaseLeft = null;
 
       function placeLineViz() {
         const Wwin = window.innerWidth;
         const Hwin = window.innerHeight;
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
-        
-        let left, width;
-        
-        const marsLine = document.getElementById('mars')?.parentElement || null;
-        const keysLine = document.getElementById('keys')?.parentElement || null;
-        let midY;
 
-        if (marsLine && keysLine) {
-            const wrapRect = wrap.getBoundingClientRect();
-            const wrapCS = getComputedStyle(wrap);
-            const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-            const additionalPadding = 250;
+        if (isMobile) {
+          const desiredWidth = Math.round(Wwin * 0.9);
+          const midY   = Math.round(Hwin / 2);
+          const cssHeightBase = LINE_H_MOBILE;
+          const padPx = Math.round((V_PAD_VH / 100) * Hwin);
+          const cssHeight = cssHeightBase + padPx * 2;
+          const left = Math.round((Wwin - desiredWidth) / 2);
 
-            left = Math.round(wrapRect.left + padLeft + additionalPadding);
-            const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-            width = Math.max(260, Math.round(rightLimit - left));
+          lineCanvas.style.left = left + 'px';
+          lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
+          lineCanvas.style.width  = desiredWidth + 'px';
+          lineCanvas.style.height = cssHeight + 'px';
 
-            const marsBottom = marsLine.getBoundingClientRect().bottom;
-            const keysTop = keysLine.getBoundingClientRect().top;
-            midY = Math.round((marsBottom + keysTop) / 2);
+          const dpr = Math.max(1, window.devicePixelRatio || 1);
+          lineCanvas.width  = Math.floor(desiredWidth  * dpr);
+          lineCanvas.height = Math.floor(cssHeight * dpr);
+          lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+          MAX_PULL = Math.floor(cssHeight * 0.42);
+          setupString(desiredWidth, cssHeight);
+          if (vanishBaseWidth === null) {
+            vanishBaseWidth = desiredWidth;
+            vanishBaseLeft  = left;
+          }
         } else {
-            left = Math.round(Wwin * 0.2);
-            width = Math.round(Wwin * 0.6);
-            midY = Math.round(Hwin / 2);
+          const marsLine = document.getElementById('mars')?.parentElement || null;
+          const keysLine = document.getElementById('keys')?.parentElement || null;
+          let left   = Math.round(Wwin * 0.2);
+          let width  = Math.round(Wwin * 0.6);
+          let midY   = Math.round(Hwin / 2);
+          try {
+            if (marsLine && keysLine) {
+              const wrapRect = wrap.getBoundingClientRect();
+              const wrapCS = getComputedStyle(wrap);
+              const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
+              const additionalPadding = 250;
+
+              left = Math.round(wrapRect.left + padLeft + additionalPadding);
+              const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
+              width = Math.max(260, Math.round(rightLimit - left));
+
+              const marsBottom = marsLine.getBoundingClientRect().bottom;
+              const keysTop = keysLine.getBoundingClientRect().top;
+              midY = Math.round((marsBottom + keysTop) / 2);
+            }
+          } catch(e) { /* fallback */ }
+
+          const padPx = Math.round((V_PAD_VH / 100) * Hwin);
+          const cssHeight = LINE_H_DESKTOP + padPx * 2;
+          width = Math.min(width, Wwin);
+          left  = Math.max(0, Math.min(left, Wwin - width));
+
+          lineCanvas.style.left = left + 'px';
+          lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
+          lineCanvas.style.width  = width + 'px';
+          lineCanvas.style.height = cssHeight + 'px';
+
+          const dpr = Math.max(1, window.devicePixelRatio || 1);
+          lineCanvas.width  = Math.floor(width  * dpr);
+          lineCanvas.height = Math.floor(cssHeight * dpr);
+          lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          MAX_PULL = Math.floor(cssHeight * 0.42);
+          setupString(width, cssHeight);
+          if (vanishBaseWidth === null) {
+            vanishBaseWidth = width;
+            vanishBaseLeft  = left;
+          }
+        }
+      }
+
+      function setupString(W, H){
+        numPoints = Math.max(160, Math.min(360, Math.round(W / 4)));
+        string = [];
+        for (let i=0;i<numPoints;i++){
+          const x = (i/(numPoints-1)) * W;
+          string.push(new StringPoint(x, H/2));
+        }
+        initialY = H/2;
+        dx = W / (numPoints - 1);
+        invDX2 = 1 / (dx*dx);
+      }
+
+      const mouse = { active:false, x:0, y:0 };
+      function getPos(e){
+        const r = lineCanvas.getBoundingClientRect();
+        const cx = (e.clientX??e.touches?.[0].clientX) - r.left;
+        const cy = (e.clientY??e.touches?.[0].clientY) - r.top;
+        return {x:cx, y:cy};
+      }
+
+      lineCanvas.addEventListener('mousedown', e=>{
+        const {x,y} = getPos(e); mouse.active = true; mouse.x = x; mouse.y = y;
+      });
+      window.addEventListener('mousemove', e=>{
+        if (!mouse.active) return;
+        const {x,y} = getPos(e); mouse.x = x; mouse.y = y;
+      });
+      window.addEventListener('mouseup', ()=>{
+        if (!mouse.active) return;
+        mouse.active = false;
+        for (let i=0;i<numPoints;i++){
+          const disp = string[i].y - initialY;
+          string[i].oldY = string[i].y + RELEASE_KICK * disp;
+        }
+      });
+
+      lineCanvas.addEventListener('touchstart', e=>{
+        const {x,y} = getPos(e); e.preventDefault(); mouse.active = true; mouse.x = x; mouse.y = y;
+      }, {passive:false});
+      lineCanvas.addEventListener('touchmove', e=>{
+        if (!mouse.active) return;
+        const {x,y} = getPos(e); e.preventDefault(); mouse.x = x; mouse.y = y;
+      }, {passive:false});
+      window.addEventListener('touchend', ()=>{
+        if (!mouse.active) return;
+        mouse.active = false;
+        for (let i=0;i<numPoints;i++){
+          const disp = string[i].y - initialY;
+          string[i].oldY = string[i].y + RELEASE_KICK * disp;
+        }
+      });
+
+      function hannWeight(dist, R){
+        if (dist >= R) return 0;
+        const r = dist / R;
+        return 0.5 * (1 + Math.cos(Math.PI * r));
+      }
+
+      function applyMouseForce(){
+        if (!mouse.active) return;
+
+        let pullY = mouse.y - initialY;
+        if (Math.abs(pullY) > MAX_PULL) {
+          pullY = Math.sign(pullY) * MAX_PULL;
         }
 
-        width = Math.min(width, Wwin);
-        left = Math.max(0, Math.min(left, Wwin - width));
-        
-        const lineSpacing = isMobile ? 40 : 100;
-        
-        lineCanvases.forEach((canvas, index) => {
-            const top = midY + (index - 1) * lineSpacing;
-            canvas.style.left = left + 'px';
-            canvas.style.width = width + 'px';
-            canvas.style.top = top + 'px';
-            
-            const dpr = Math.max(1, window.devicePixelRatio || 1);
-            canvas.width = Math.floor(width * dpr);
-            canvas.height = Math.floor(200 * dpr);
-            
-            canvas.style.height = '200px';
-        });
-        
-        stringSimulators.forEach(sim => sim.setup());
+        const FcapBase = 12;
+        const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
+
+        for (let i = 1; i < numPoints - 1; i++) {
+          const p = string[i];
+          const distX = Math.abs(p.x - mouse.x);
+          const w = hannWeight(distX, radiusPx);
+          if (w <= 0) continue;
+
+          const vel = p.y - p.oldY;
+          const Fspring = K_MOUSE * (initialY + pullY - p.y);
+          const Fdamp   = -C_MOUSE * vel;
+          let F = (Fspring + Fdamp) * w;
+
+          if (F >  Fcap * w) F =  Fcap * w;
+          if (F < -Fcap * w) F = -Fcap * w;
+
+          p.acc += F;
+        }
       }
-      
-      function animateStrings() {
-          stringSimulators.forEach(sim => {
-              for (let s = 0; s < sim.SUBSTEPS; s++) sim.physicsStep();
-              sim.draw(p);
-          });
-          drawRing();
-          if (!isFinalized) requestAnimationFrame(animateStrings);
+
+      function physicsStep(){
+        for (let i=1;i<numPoints-1;i++){
+          const prev = string[i-1].y, curr = string[i].y, next = string[i+1].y;
+          const lap = (prev - 2*curr + next) * invDX2;
+          string[i].acc = tension * lap;
+        }
+        applyMouseForce();
+
+        string[0].acc = 0; string[numPoints-1].acc = 0;
+
+        for (let i=1;i<numPoints-1;i++){
+          const p = string[i];
+          const tempY = p.y;
+          p.y = p.y*2 - p.oldY + p.acc;
+          p.oldY = tempY;
+          p.y = initialY + (p.y - initialY) * loss;
+        }
+        string[0].y = string[0].oldY = initialY;
+        string[numPoints-1].y = string[numPoints-1].oldY = initialY;
       }
-      
+
+      function drawString(){
+        const rect = lineCanvas.getBoundingClientRect();
+        const Wdraw = Math.max(0, Math.round(rect.width));
+        const Hdraw = Math.max(0, Math.round(rect.height));
+        if (!Wdraw || !Hdraw) return;
+
+        lctx.clearRect(0,0,Wdraw,Hdraw);
+
+        const smoothstep = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
+        const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
+        const thickness = Math.max(0.6, LINE_THICK * (1 - 0.9 * f));
+        lctx.globalAlpha = 1 - f;
+
+        lctx.beginPath();
+        lctx.strokeStyle = '#ffffff';
+        lctx.lineWidth = thickness;
+        lctx.lineCap = 'round';
+        lctx.lineJoin = 'round';
+
+        const baseW = (vanishBaseWidth || Wdraw);
+        const baseC = baseW / 2;
+        const scaleX = Wdraw / baseW;
+        const mapX = x => baseC + (x - baseC) * scaleX;
+
+        lctx.moveTo(mapX(string[0].x), string[0].y);
+        for (let i=1;i<numPoints-2;i++){
+          const xc = mapX((string[i].x + string[i+1].x)/2);
+          const yc = (string[i].y + string[i+1].y)/2;
+          lctx.quadraticCurveTo(mapX(string[i].x), string[i].y, xc, yc);
+        }
+        lctx.quadraticCurveTo(mapX(string[numPoints-2].x), string[numPoints-2].y, mapX(string[numPoints-1].x), string[numPoints-1].y);
+        lctx.stroke();
+
+        lctx.globalAlpha = 1;
+      }
+
+      function animateString(){
+        for (let s=0; s<SUBSTEPS; s++) physicsStep();
+        drawString();
+        if(!isFinalized) requestAnimationFrame(animateString);
+      }
+
       const ro = new ResizeObserver(() => placeLineViz());
       ro.observe(document.body);
       ro.observe(document.getElementById('brand'));
       window.addEventListener('resize', placeLineViz);
       window.addEventListener('orientationchange', placeLineViz);
       if (document.fonts && document.fonts.ready) { document.fonts.ready.then(placeLineViz); }
-      
-      setupStrings();
+
       placeLineViz();
-      requestAnimationFrame(animateStrings);
+      requestAnimationFrame(animateString);
     })();
   </script>
 </body>
