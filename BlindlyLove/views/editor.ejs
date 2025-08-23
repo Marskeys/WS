@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
@@ -9,7 +12,19 @@
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
 <style>
+/* strong/b 굵게 적용 시 글자 크기 축소 방지 */
+.editor .bl-content strong,
+.editor .bl-content b {
+  font-size: inherit;
+  font-weight: 700;
+}
 
+/* "진한 레이블"도 본문과 같은 크기로 */
+.editor .bl-content .label,
+.editor .bl-content .label-bold {
+  font-size: inherit;
+  font-weight: 700;
+}
 </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
@@ -189,8 +204,6 @@
             </label>
           <% } %>
         </div>
-
-
       </div>
     <% }) %> 
 
@@ -208,17 +221,16 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
   <script>
-    let selectedCategories = []; // 기본값으로 빈 배열 선언
+    let selectedCategories = [];
     <% if (post && post.categories) { %>
-      // post.categories가 있을 경우에만 JSON.stringify를 사용하여 할당
       selectedCategories = <%- JSON.stringify(post.categories.split(',')) %>;
     <% } %>
 
     let categories = [];
     let savedRange = null;
-    let currentActiveEditor = null; // 현재 활성 디자인 모드 에디터 div 엘리먼트
-    let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea 엘리먼트
-    let currentActiveToolbar = null; // 현재 활성 툴바 div 엘리먼트 (새로 추가)
+    let currentActiveEditor = null;
+    let currentActiveHtmlEditor = null;
+    let currentActiveToolbar = null;
 
     const langList = [
         { code: 'ko', label: '한국어' },
@@ -231,8 +243,9 @@
     
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
-    const CURRENT_PAGE_LANG = '<%= lang %>'; // 이 변수는 서버에서 초기 렌더링 시 사용
+    const CURRENT_PAGE_LANG = '<%= lang %>';
 
+    /* ---------- 카테고리 렌더/추가 (생략 없는 원본 유지) ---------- */
     function renderCategories() {
         const list = document.getElementById('categoryList');
         list.innerHTML = '';
@@ -315,7 +328,6 @@
               is_pinned: document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0,
               lang_content: {}
           };
-
           let hasContentForDefaultLang = false;
 
           langList.forEach(({ code }) => {
@@ -329,15 +341,13 @@
               }
 
               let contentToSave = '';
-              if (htmlEditorDiv.style.display === 'block') { // HTML 모드인 경우
+              if (htmlEditorDiv.style.display === 'block') {
                   contentToSave = htmlEditorDiv.value.trim();
-              } else { // 디자인 모드인 경우
-                  // 디자인 모드에서 내용을 가져올 때, bl-content 내부의 내용만 가져오도록 합니다.
+              } else {
                   const blContent = editorDiv.querySelector('.bl-content');
                   contentToSave = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
               }
 
-              // 내용이 비어있거나 기본 플레이스홀더 내용인 경우 '<p><br></p>'로 통일
               if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
                   contentToSave = '<p><br></p>';
               }
@@ -360,8 +370,7 @@
             return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
           }
       
-          // 폼 제출 URL을 현재 언어 경로를 포함하도록 수정
-          const submitUrl = IS_EDIT_PAGE && POST_ID ? `/${CURRENT_PAGE_LANG}/edit/${POST_ID}` : `/${CURRENT_PAGE_LANG}/savePost`;
+          const submitUrl = IS_EDIT_PAGE && POST_ID ? `/edit/${POST_ID}` : `/savePost`;
 
           fetch(submitUrl, {
             method: 'POST',
@@ -372,13 +381,12 @@
           .then(data => {
             if (data.success) {
               showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-                // 저장 후 리디렉션 URL에도 현재 언어 경로를 포함
                 if (IS_EDIT_PAGE && POST_ID) {
                   window.location.href = `/${CURRENT_PAGE_LANG}/post/${POST_ID}`;
-                } else if (data.postId) { // 새로 생성된 글의 경우 ID가 있을 수 있음
+                } else if (data.postId) {
                   window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
                 } else {
-                  window.location.href = `/${CURRENT_PAGE_LANG}/`; // 글 ID가 없는 경우 메인 페이지로
+                  window.location.href = `/${CURRENT_PAGE_LANG}/`;
                 }
               });
             } else {
@@ -391,13 +399,127 @@
           });
         }
       
+      /* ---------- 서식 명령 (블록/기타) ---------- */
       function format(command, value = null) {
           if (!currentActiveEditor) return; 
           currentActiveEditor.focus();
+          restoreSelection();
           document.execCommand(command, false, value);
           setTimeout(detectStyle, 100);
       }
 
+      /* =========[ 핵심 추가: 역방향 선택 신뢰 보장 + 인라인 토글 ]========= */
+
+      // 선택범위 저장
+      function saveSelection() {
+          const sel = window.getSelection();
+          if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+              savedRange = sel.getRangeAt(0).cloneRange();
+          } else {
+              savedRange = null;
+          }
+      }
+
+      // selectionchange로 항상 최신 선택범위 보존 (역방향 포함)
+      document.addEventListener('selectionchange', () => {
+        if (!currentActiveEditor) return;
+        const sel = window.getSelection();
+        if (sel.rangeCount === 0) return;
+        const ca = sel.getRangeAt(0).commonAncestorContainer;
+        if (currentActiveEditor.contains(ca)) {
+          saveSelection();
+        }
+      });
+
+      // 복원
+      function restoreSelection() {
+        if (!savedRange) return;
+        const sel = window.getSelection();
+        if (!currentActiveEditor || 
+            !currentActiveEditor.contains(savedRange.startContainer) || 
+            !currentActiveEditor.contains(savedRange.endContainer)) {
+          savedRange = null;
+          return;
+        }
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
+
+      // 조각에서 특정 태그 언랩
+      function unwrapTagFromFragment(fragment, tag) {
+        const nodes = fragment.querySelectorAll(tag);
+        nodes.forEach(el => {
+          const parent = el.parentNode;
+          while (el.firstChild) parent.insertBefore(el.firstChild, el);
+          parent.removeChild(el);
+        });
+      }
+
+      // 선택영역이 전부 해당 태그 안인가 대략 확인
+      function selectionAllInsideTag(range, tag) {
+        const frag = range.cloneContents();
+        const walker = document.createTreeWalker(frag, NodeFilter.SHOW_TEXT, null);
+        let hasText = false;
+        let allInside = true;
+        while (walker.nextNode()) {
+          const t = walker.currentNode;
+          if (!t.nodeValue || !t.nodeValue.trim()) continue;
+          hasText = true;
+          let n = t.parentNode;
+          let inside = false;
+          while (n && n !== frag) {
+            if (n.nodeName && n.nodeName.toLowerCase() === tag) { inside = true; break; }
+            n = n.parentNode;
+          }
+          if (!inside) { allInside = false; break; }
+        }
+        return hasText && allInside;
+      }
+
+      const INLINE_MAP = {
+        bold: 'strong',
+        italic: 'em',
+        underline: 'u',
+        strikeThrough: 's'
+      };
+
+      // 인라인 서식 토글 (역방향/정방향 동일 동작)
+      function applyInlineToggle(command) {
+        if (!currentActiveEditor) return;
+        currentActiveEditor.focus();
+        restoreSelection();
+
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) return;
+
+        const tag = INLINE_MAP[command];
+        if (!tag) return;
+
+        const range = sel.getRangeAt(0);
+
+        // 이미 전부 해당 태그면 언랩, 아니면 랩
+        if (selectionAllInsideTag(range, tag)) {
+          const fragment = range.extractContents();
+          unwrapTagFromFragment(fragment, tag);
+          range.insertNode(fragment);
+        } else {
+          const fragment = range.extractContents();
+          const wrapper = document.createElement(tag);
+          wrapper.appendChild(fragment);
+          range.insertNode(wrapper);
+          
+          // 선택을 래핑된 노드로 갱신
+          sel.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(wrapper);
+          sel.addRange(newRange);
+        }
+
+        saveSelection();
+        detectStyle();
+      }
+
+      /* =========[ 블록 스타일 적용 (기존 로직 유지) ]========= */
       function applyStyle(tag) {
         if (!currentActiveEditor) return;
         const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
@@ -428,7 +550,6 @@
 
         if (targetBlock && targetBlock !== currentActiveEditor && blockTags.includes(targetBlock.tagName.toLowerCase())) {
             const currentTag = targetBlock.tagName.toLowerCase();
-
             if (currentTag === tag) {
                 if (tag === 'p' && sel.isCollapsed) {
                     document.execCommand("styleWithCSS", false, false);
@@ -444,7 +565,6 @@
 
             document.execCommand("styleWithCSS", false, false);
             document.execCommand("formatBlock", false, `<${tag.toUpperCase()}>`);
-            
         } else {
             try {
                 const fragment = range.extractContents(); 
@@ -457,7 +577,6 @@
                 const newRange = document.createRange();
                 newRange.selectNodeContents(newBlock); 
                 sel.addRange(newRange);
-                
             } catch (e) {
                 console.warn("applyStyle (DOM 조작) 실패, fallback to execCommand:", e);
                 document.execCommand("styleWithCSS", false, false);
@@ -492,7 +611,7 @@
                 console.error("applyStyle(span/strong) 오류:", e);
             }
         }
-    }
+      }
 
       function insertImage() {
           showCustomInput("이미지 URL을 입력하세요:", (url) => {
@@ -552,23 +671,6 @@
           node = node.parentNode;
         }
         updateCurrentStyle('p');
-      }
-
-      function saveSelection() {
-          const sel = window.getSelection();
-          if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-              savedRange = sel.getRangeAt(0).cloneRange();
-          } else {
-              savedRange = null;
-          }
-      }
-
-      function restoreSelection() {
-          const sel = window.getSelection();
-          if (savedRange && currentActiveEditor) {
-              sel.removeAllRanges();
-              sel.addRange(savedRange);
-          }
       }
 
       function setColor(command, color) {
@@ -724,30 +826,35 @@
       };
 
       function activateEditor(langCode) {
-          document.querySelectorAll('.lang-meta-block').forEach(block => {
-              block.style.display = 'none';
-          });
+  // 1) 모든 언어 블록 숨김 (인라인 스타일로 강제)
+  document.querySelectorAll('.lang-meta-block').forEach(block => {
+    block.style.display = 'none';
+  });
 
-          const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
-          if (activeLangBlock) {
-              activeLangBlock.style.display = '';
+  // 2) 선택한 언어 블록만 표시
+  const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
+  if (!activeLangBlock) {
+    console.warn('활성화할 언어 블록을 찾지 못했습니다:', langCode);
+    return;
+  }
+  activeLangBlock.style.display = '';
 
-              const editorDiv = document.getElementById(`editor_${langCode}`);
-              const htmlEditorDiv = document.getElementById(`htmlEditor_${langCode}`);
-              const toolbarDiv = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+  // 3) 해당 언어의 에디터/툴바만 활성화
+  const editorDiv = activeLangBlock.querySelector(`#editor_${langCode}`);
+  const htmlEditorDiv = activeLangBlock.querySelector(`#htmlEditor_${langCode}`);
+  const toolbarDiv = activeLangBlock.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
 
-              currentActiveEditor = editorDiv;
-              currentActiveHtmlEditor = htmlEditorDiv;
-              currentActiveToolbar = toolbarDiv;
+  currentActiveEditor = editorDiv || null;
+  currentActiveHtmlEditor = htmlEditorDiv || null;
+  currentActiveToolbar = toolbarDiv || null;
 
-              if (editorDiv) {
-                  editorDiv.style.display = 'block';
-                  htmlEditorDiv.style.display = 'none';
-                  editorDiv.focus();
-                  detectStyle();
-              }
-          }
-      }
+  if (editorDiv) {
+    editorDiv.style.display = 'block';
+    if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
+    editorDiv.focus();
+    detectStyle();
+  }
+}
 
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -762,17 +869,8 @@
               categories = ['일상', '기록', '리뷰'];
               renderCategories();
             });
-
           document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
-
           activateEditor(CURRENT_PAGE_LANG);
-
-          // ⭐ 변경 사항 시작: 언어 선택 드롭다운 이벤트 리스너 추가
-          document.getElementById('langSelector').addEventListener('change', (event) => {
-              const selectedLangCode = event.target.value;
-              activateEditor(selectedLangCode);
-          });
-          // ⭐ 변경 사항 끝
 
           const languageEditors = document.querySelectorAll('.language-editor');
           languageEditors.forEach(editor => {
@@ -785,94 +883,85 @@
                   currentActiveEditor = editor;
                   currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
                   currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
-                  
                   if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
                       switchToDesignMode(); 
                   }
                   detectStyle();
               });
+
+              // [추가] 언어 변경 시 해당 블록만 보이도록 호출
+const langSelectorEl = document.getElementById('langSelector');
+if (langSelectorEl) {
+  langSelectorEl.addEventListener('change', (e) => {
+    activateEditor(e.target.value);
+  });
+}
           });
 
           document.querySelectorAll('.toolbar').forEach(toolbar => {
             toolbar.addEventListener('mousedown', (event) => {
+                const button = event.target.closest('button, .dropdown-toggle, [data-style-command], [data-color-btn]');
+                if (button) {
+                    event.preventDefault(); // 포커스 이동으로 선택범위 날아가는 것 방지
+                    saveSelection();       // 버튼 누르는 찰나의 선택범위 저장 (정/역방향 모두)
+                }
+            });
+            toolbar.addEventListener('click', (event) => {
                 const styleDropdownToggle = event.target.closest('.dropdown-toggle');
                 const commandButton = event.target.closest('button[data-command]');
                 const styleCommandElement = event.target.closest('[data-style-command]');
                 const colorButton = event.target.closest('[data-color-btn]');
 
-                if (styleDropdownToggle || styleCommandElement || commandButton || colorButton) {
-                    event.preventDefault(); 
-                    if (currentActiveEditor && !savedRange) {
-                        saveSelection(); 
-                    }
+                if (currentActiveEditor) {
+                    currentActiveEditor.focus();
+                    restoreSelection();
                 }
-            });
 
-            toolbar.addEventListener('click', (event) => {
-              const button = event.target.closest('button[data-command], .dropdown-toggle');
-              const styleCommandElement = event.target.closest('[data-style-command]');
+                if (styleCommandElement) {
+                    const styleCommand = styleCommandElement.dataset.styleCommand;
+                    applyStyle(styleCommand);
+                    const styleDropdown = styleCommandElement.closest('.dropdown-menu');
+                    if (styleDropdown) styleDropdown.classList.remove('show');
+                } else if (commandButton) {
+                    const command = commandButton.dataset.command;
 
-              if (currentActiveEditor) {
-                  currentActiveEditor.focus();
-                  restoreSelection(); 
-              }
-
-              if (!button && !styleCommandElement) return;
-
-              if (styleCommandElement) {
-                  const styleCommand = styleCommandElement.dataset.styleCommand;
-                  applyStyle(styleCommand);
-                  const styleDropdown = styleCommandElement.closest('.dropdown-menu');
-                  if (styleDropdown) {
-                      styleDropdown.classList.remove('show');
-                  }
-                  event.stopPropagation(); 
-              } else if (button) {
-                const command = button.dataset.command;
-
-                if (command) {
-                  switch (command) {
-                    case 'insertTOC':
-                      insertTOC();
-                      break;
-                    case 'createLink':
-                      showCustomInput("링크 URL을 입력하세요:", (url) => {
-                        if (url) format('createLink', url);
-                      });
-                      break;
-                    case 'insertImage':
-                      insertImage();
-                      break;
-                    case 'openHtmlPopup':
-                      showCustomMessage("HTML 삽입 기능은 현재 구현되지 않았습니다.");
-                      break;
-                    case 'removeFormat':
-                      format('removeFormat');
-                      break;
-                    default:
-                      format(command);
-                      break;
-                  }
-                } else if (button.classList.contains('dropdown-toggle')) {
-                  toggleDropdown();
-                  event.stopPropagation(); 
+                    // 인라인 명령은 커스텀 토글 사용 (역방향 선택 이슈 해결)
+                    if (['bold','italic','underline','strikeThrough'].includes(command)) {
+                      applyInlineToggle(command);
+                    } else {
+                      switch (command) {
+                        case 'insertTOC':
+                            insertTOC();
+                            break;
+                        case 'createLink':
+                            showCustomInput("링크 URL을 입력하세요:", (url) => {
+                                if (url) format('createLink', url);
+                            });
+                            break;
+                        case 'insertImage':
+                            insertImage();
+                            break;
+                        case 'openHtmlPopup':
+                            showCustomMessage("HTML 삽입 기능은 현재 구현되지 않았습니다.");
+                            break;
+                        case 'removeFormat':
+                            format('removeFormat');
+                            break;
+                        default:
+                            format(command);
+                            break;
+                      }
+                    }
+                } else if (styleDropdownToggle) {
+                    toggleDropdown();
                 }
-              }
-            });
 
-            toolbar.querySelectorAll('[data-color-btn]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    if (currentActiveEditor) {
-                        currentActiveEditor.focus();
-                        restoreSelection();
-                    }
-
-                    const colorPalette = btn.closest('[data-color-tool]').querySelector('[data-color-palette]');
-                    if (colorPalette) {
-                        colorPalette.classList.toggle('show');
-                    }
-                    e.stopPropagation(); 
-                });
+                const clickedColorBtn = event.target.closest('[data-color-btn]');
+                if (clickedColorBtn) {
+                    const colorPalette = clickedColorBtn.closest('[data-color-tool]').querySelector('[data-color-palette]');
+                    if (colorPalette) colorPalette.classList.toggle('show');
+                    event.stopPropagation();
+                }
             });
 
             toolbar.querySelectorAll('[data-color-palette] button').forEach(colorBtn => {
@@ -883,7 +972,6 @@
                     e.target.closest('[data-color-palette]').classList.remove('show'); 
                 });
             });
-
             toolbar.querySelectorAll('[data-color-input]').forEach(colorInput => {
                 colorInput.addEventListener('change', (e) => {
                     const command = colorInput.closest('[data-color-tool]').dataset.colorTool;
@@ -910,73 +998,57 @@
             showCustomMessage("에디터가 활성화되지 않았습니다.");
             return;
         }
-
         const blContentDiv = currentActiveEditor.querySelector('.bl-content');
-
         if (!blContentDiv) {
             showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
             return;
         }
-
         const headings = blContentDiv.querySelectorAll("h1, h2");
         if (!headings.length) {
             showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
             return;
         }
-
         const oldTOC = blContentDiv.querySelector(".auto-toc");
         if (oldTOC) oldTOC.remove();
-
         const tocWrapper = document.createElement("div");
         tocWrapper.className = "auto-toc";
         tocWrapper.contentEditable = "false";
-
         const tocTitle = document.createElement("strong");
         tocTitle.className = "toc-title";
         tocTitle.textContent = "📑 목차";
-
         const tocList = document.createElement("ul");
         tocList.className = "toc-list";
         tocList.style.margin = "0";
         tocList.style.padding = "0";
-
         let h1Count = 0;
         let h2Count = 0;
-
         headings.forEach(el => {
             const tag = el.tagName.toLowerCase();
             let number = "";
-
             if (tag === "h1") {
-            h1Count++;
-            h2Count = 0;
-            number = `${h1Count}.`;
+                h1Count++;
+                h2Count = 0;
+                number = `${h1Count}.`;
             } else if (tag === "h2") {
-            h2Count++;
-            number = `${h1Count}.${h2Count}`;
+                h2Count++;
+                number = `${h1Count}.${h2Count}`;
             }
-
             const id = `toc-${number.replace(/\./g, "-")}`;
             el.id = id;
-
             const li = document.createElement("li");
             li.className = `toc-item toc-${tag}`;
-
             const a = document.createElement("a");
             a.href = `#${id}`;
             a.textContent = `${number} ${el.textContent.trim()}`;
             a.onclick = function(e) {
-            e.preventDefault();
-            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                e.preventDefault();
+                document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
             };
-
             li.appendChild(a);
             tocList.appendChild(li);
         });
-
         tocWrapper.appendChild(tocTitle);
         tocWrapper.appendChild(tocList);
-
         blContentDiv.prepend(tocWrapper);
       }
 
@@ -985,28 +1057,22 @@
             console.error("HTML 모드 전환 실패: 활성 에디터 또는 툴바 없음");
             return;
         }
-
         let currentContent = currentActiveEditor.innerHTML.trim();
-
         const isWrapped = currentContent.startsWith('<div class="bl-content"');
-
         if (!isWrapped) {
             if (!currentContent || currentContent === '<p><br></p>' || currentContent === '<div><br></div>') {
                 currentContent = '<p><br></p>';
             }
-
             currentContent = `
 <div class="bl-content" style="white-space:normal; line-height: 1.7;">
 ${currentContent}
 </div>`.trim();
         }
-
         currentActiveHtmlEditor.value = html_beautify(currentContent, {
             indent_size: 2,
             wrap_attributes: 'auto',
             indent_with_tabs: false
         });
-
         currentActiveEditor.style.display = 'none';
         currentActiveHtmlEditor.style.display = 'block';
         currentActiveToolbar.style.display = 'none';
@@ -1017,13 +1083,10 @@ ${currentContent}
             console.error("디자인 모드 전환 실패: 활성 에디터 또는 툴바 없음");
             return;
         }
-
         let rawHtml = currentActiveHtmlEditor.value.trim();
-
         if (!rawHtml.startsWith('<div class="bl-content"')) {
             rawHtml = `<div class="bl-content" style="white-space:normal; line-height: 1.7;">${rawHtml}</div>`;
         }
-
         currentActiveEditor.innerHTML = rawHtml;
         currentActiveHtmlEditor.style.display = 'none';
         currentActiveEditor.style.display = 'block';
@@ -1031,11 +1094,9 @@ ${currentContent}
         currentActiveEditor.focus();
         detectStyle();
       }
-
   </script>
-
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
-
 </body>
 </html>
+
