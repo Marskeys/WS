@@ -546,24 +546,37 @@
       function saveSelection() {
           const sel = window.getSelection();
           if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-              savedRange = sel.getRangeAt(0).cloneRange();
+              // 선택 범위의 시작과 끝이 서로 바뀌어 있을 경우를 대비하여 정규화
+              const range = sel.getRangeAt(0);
+              const { startContainer, startOffset, endContainer, endOffset } = range;
+              
+              const newRange = document.createRange();
+              // 시작점과 끝점을 항상 올바른 순서로 설정
+              if (range.collapsed || startContainer.compareDocumentPosition(endContainer) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                newRange.setStart(startContainer, startOffset);
+                newRange.setEnd(endContainer, endOffset);
+              } else {
+                newRange.setStart(endContainer, endOffset);
+                newRange.setEnd(startContainer, startOffset);
+              }
+
+              savedRange = newRange;
+
           } else {
               savedRange = null;
           }
       }
       
-      // **수정된 restoreSelection 함수**
       function restoreSelection() {
         if (!savedRange) return;
         const sel = window.getSelection();
         
         // 유효성 검사: 저장된 범위가 현재 활성 에디터에 속하는지 확인
         if (!currentActiveEditor.contains(savedRange.startContainer) || !currentActiveEditor.contains(savedRange.endContainer)) {
-            console.warn("선택 범위가 현재 활성 에디터에 속하지 않아 복원할 수 없습니다.");
             savedRange = null;
             return;
         }
-
+        
         sel.removeAllRanges();
         sel.addRange(savedRange);
       }
