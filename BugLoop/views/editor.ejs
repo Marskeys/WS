@@ -556,18 +556,18 @@
       function restoreSelection() {
         if (!savedRange) return;
         const sel = window.getSelection();
+        
+        // 유효성 검사: 저장된 범위가 현재 활성 에디터에 속하는지 확인
         if (!currentActiveEditor.contains(savedRange.startContainer) || !currentActiveEditor.contains(savedRange.endContainer)) {
+            console.warn("선택 범위가 현재 활성 에디터에 속하지 않아 복원할 수 없습니다.");
             savedRange = null;
             return;
         }
-        // Selection을 새 Range로 교체하여 역방향 선택 문제 해결
-        try {
-            sel.removeAllRanges();
-            sel.addRange(savedRange);
-        } catch (e) {
-            console.error("선택 범위 복원 오류:", e);
-        }
+
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
       }
+      
 
       function setColor(command, color) {
         restoreSelection();
