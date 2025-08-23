@@ -47,6 +47,7 @@ function mergeLocaleWithDefaults(lang) {
   return merged;
 }
 
+// slugMap은 제공된 파일에 있으므로 그대로 사용
 const { map: slugMap } = require('./slugMap');
 
 app.use((req, res, next) => {
@@ -75,19 +76,17 @@ app.use(express.json({ limit: '50mb' }));
 
 // 세션 설정
 app.use(session({
-  secret: 'wowthats_amazing', // 이 값을 실제 운영 환경에서는 더 복잡하게 설정하세요.
+  secret: 'wowthats_amazing',
   resave: false,
   saveUninitialized: true,
 }));
 
-// ✅ 공통 locals 미들웨어 (라우트보다 위)
+// 공통 locals 미들웨어
 app.use((req, res, next) => {
-  // 💡 URL에서 언어 코드 추출
   const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja)(\/|$)/);
   res.locals.lang = langMatch ? langMatch[1] : 'ko';
-  req.lang = res.locals.lang; // 다른 미들웨어/라우트에서 쉽게 접근 가능하도록
+  req.lang = res.locals.lang;
 
-  // locale, user, panelData 등 공통 locals 설정
   const defaultLocale = {
     meta: { title: 'Bug Loop · Online HTML Editor', description: '' },
     profile: {
@@ -106,17 +105,16 @@ app.use((req, res, next) => {
   res.locals.currentPath = req.path;
   res.locals.supportedLangs = supportedLangs;
 
-  // ✅ panelData를 allLocales에서 불러오기
   if (allLocales[res.locals.lang] && allLocales[res.locals.lang].panel) {
     res.locals.panelData = allLocales[res.locals.lang].panel;
   } else {
-    res.locals.panelData = allLocales['ko'].panel; // 기본값
+    res.locals.panelData = allLocales['ko'].panel;
   }
 
   next();
 });
 
-
+// Helper functions (moved from inside routes)
 function buildPanel({ lang, section, topic }) {
   const filePath = path.join(__dirname, 'content', String(lang).toLowerCase(),
     String(section).toLowerCase(), `${String(topic).toLowerCase()}.html`);
@@ -141,34 +139,167 @@ function buildPanel({ lang, section, topic }) {
   }
 }
 
-// ⭐ 패널 라우팅 핸들러를 위한 헬퍼 함수
-async function handlePanelRoute(req, res, next) {
+function generatePagination(current, total) {
+  const delta = 2;
+  const range = [];
+  const rangeWithDots = [];
+  let l;
+
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (let i of range) {
+    if (l) {
+      if (i - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (i - l > 2) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(i);
+    l = i;
+  }
+  return rangeWithDots;
+}
+
+async function getSidebarData(req) {
+  const safeLang = (req.params && req.params.lang) ? req.params.lang : 'ko';
+  const categoryQueryParam = req.query.category || 'all';
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  let postsBaseQuery = `
+    SELECT
+        p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+        COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+        COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+    FROM posts p
+    LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+    LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+  `;
+  let postsCountQuery = `SELECT COUNT(*) as count FROM posts`;
+  const postsQueryParams = [safeLang];
+  const postsCountParams = [];
+
+  if (categoryQueryParam !== 'all') {
+    postsBaseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
+    postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
+    postsQueryParams.push(categoryQueryParam);
+    postsCountParams.push(categoryQueryParam);
+  }
+
+  postsBaseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
+  postsQueryParams.push(limit, offset);
+
+  const [postsForSidebar] = await db.query(postsBaseQuery, postsQueryParams);
+
+  const filteredPostsForSidebar = postsForSidebar.map(sidebarPost => {
+    if (sidebarPost.is_private && sidebarPost.user_id !== req.session.user?.id && !(req.session.user?.is_admin === 1)) {
+      return {
+        ...sidebarPost,
+        content: '이 글은 비공개로 설정되어 있습니다.'
+      };
+    }
+    return sidebarPost;
+  });
+
+  for (const sidebarPost of filteredPostsForSidebar) {
+    const originalSidebarCategories = sidebarPost.categories ? sidebarPost.categories.split(',').map(c => c.trim()) : [];
+    const translatedSidebarCategories = [];
+    if (originalSidebarCategories.length > 0) {
+      const sidebarCategoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+      const placeholders = originalSidebarCategories.map(() => '?').join(',');
+      const [sidebarCategoryNames] = await db.query(
+        `SELECT COALESCE(${sidebarCategoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+        originalSidebarCategories
+      );
+      translatedSidebarCategories.push(...sidebarCategoryNames.map(row => row.name));
+    }
+    sidebarPost.translated_categories_display = translatedSidebarCategories;
+  }
+
+  const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+  const [allCategoryRows] = await db.query(`
+    SELECT
+      TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
+      MAX(p.created_at) AS latest,
+      COALESCE(c.${categoryColumn}, c.name) AS translated_category_name
+    FROM posts p
+    JOIN (
+      SELECT a.N + b.N * 10 + 1 AS n
+      FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+            UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+       (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+        UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+    ) numbers
+    ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
+    JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
+    GROUP BY original_category, translated_category_name
+    ORDER BY latest DESC
+  `);
+
+  const allCategories = allCategoryRows.map(row => ({
+    original: row.original_category,
+    translated: row.translated_category_name
+  }));
+
+  let translatedSelectedCategory = null;
+  if (categoryQueryParam !== 'all') {
+    const foundCategory = allCategories.find(cat => cat.original === categoryQueryParam);
+    if (foundCategory) {
+      translatedSelectedCategory = foundCategory.translated;
+    }
+  }
+  const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
+  const totalPages = Math.ceil(count / limit);
+  const paginationRange = generatePagination(page, totalPages);
+
+  return { postsForSidebar: filteredPostsForSidebar, allCategories, translatedSelectedCategory, paginationRange };
+}
+
+async function getPostCount(req) {
+  const categoryQueryParam = req.query.category || 'all';
+  let countQuery = `SELECT COUNT(*) as count FROM posts`;
+  const countParams = [];
+
+  if (categoryQueryParam !== 'all') {
+    countQuery += ` WHERE FIND_IN_SET(?, categories)`;
+    countParams.push(categoryQueryParam);
+  }
+
+  const [[{ count }]] = await db.query(countQuery, countParams);
+  return count;
+}
+
+
+// 라우트 핸들러
+const handlePanelRoute = async (req, res, next) => {
   try {
     const { lang, section, topic } = req.params;
     res.locals.lang = lang;
 
-    // 🔒 Guard: 잘못 패널로 들어온 /:lang/search 를 검색 라우트로 우회
     if ((!lang && supportedLangs.includes(section) && topic === 'search') || (lang && section === 'search')) {
       const qs = req._parsedUrl && req._parsedUrl.search ? req._parsedUrl.search : '';
       const targetLang = lang || section;
       return res.redirect(`/${targetLang}/search${qs || ''}`);
     }
 
-
-    // ✅ 특정 라우트는 패널 처리를 스킵하고 다음 미들웨어/라우트로 넘깁니다.
     if (section === 'write' || section === 'edit' || (section === 'post' && /^\d+$/.test(topic))) {
       return next();
     }
 
-    // 💡 getSidebarData를 호출하여 사이드바 데이터를 일관되게 가져옵니다.
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
 
     const panelData = buildPanel({ lang, section, topic });
     res.locals.panelData = panelData;
     res.locals.posts = postsForSidebar;
-    res.locals.categories = allCategories; // 💡 카테고리 데이터 추가
+    res.locals.categories = allCategories;
     res.locals.selectedCategory = translatedSelectedCategory;
-    res.locals.pagination = { current: 1, total: 1, range: [1] }; // 패널 페이지는 고정된 값 사용
+    res.locals.pagination = { current: 1, total: 1, range: [1] };
     res.locals.isSearch = false;
     res.locals.searchKeyword = '';
 
@@ -188,7 +319,6 @@ async function handlePanelRoute(req, res, next) {
   }
 }
 
-
 const handleWriteRoute = async (req, res) => {
   if (!req.session.user || req.session.user.is_admin !== 1) {
     return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
@@ -204,7 +334,7 @@ const handleWriteRoute = async (req, res) => {
       post: null,
       isEdit: false,
       posts: postsForSidebar,
-      categories: allCategories, // ✅ 추가: 카테고리 데이터를 EJS로 전달
+      categories: allCategories,
       isSearch: false,
       searchKeyword: '',
       selectedCategory: translatedSelectedCategory,
@@ -265,7 +395,7 @@ const handleEditRoute = async (req, res) => {
       post: postForEjs,
       isEdit: true,
       posts: postsForSidebar,
-      categories: allCategories, // ✅ 추가: 카테고리 데이터를 EJS로 전달
+      categories: allCategories,
       isSearch: false,
       searchKeyword: '',
       selectedCategory: translatedSelectedCategory,
@@ -286,8 +416,8 @@ const handleEditRoute = async (req, res) => {
 const handlePostViewRoute = async (req, res) => {
   try {
     const postId = req.params.id;
-    const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
-    res.locals.lang = safeLang; // locals 업데이트
+    const safeLang = req.params.lang;
+    res.locals.lang = safeLang;
 
     if (!req.session.viewedPosts) {
       req.session.viewedPosts = [];
@@ -320,7 +450,7 @@ const handlePostViewRoute = async (req, res) => {
     if (!translation && safeLang !== 'ko') {
       console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
       [translations] = await db.query(
-        'SELECT title, content FROM post_translations WHERE post_id = ? AND pt_ko.lang_code = "ko"',
+        'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
         [postId]
       );
       translation = translations[0];
@@ -387,227 +517,7 @@ const handlePostViewRoute = async (req, res) => {
   }
 };
 
-// ⭐ 로그아웃 라우트 (언어 코드 포함)
-app.get('/:lang/logout', (req, res) => {
-  req.session.destroy(() => {
-    // 세션 파괴 후 리다이렉트
-    res.redirect(`/${req.params.lang}/`);
-  });
-});
-
-// ⭐ 로그아웃 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    // 세션 파괴 후 리다이렉트
-    res.redirect(`/ko/`);
-  });
-});
-
-// ⭐ 글쓰기 페이지 라우트 (언어 코드 포함)
-app.get('/:lang/write', handleWriteRoute);
-
-// ⭐ 글쓰기 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/write', (req, res) => {
-  req.params.lang = 'ko';
-  handleWriteRoute(req, res);
-});
-
-
-// ⭐ 글 수정 페이지 라우트 (언어 코드 포함)
-app.get('/:lang/edit/:id', handleEditRoute);
-
-// ⭐ 글 수정 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/edit/:id', (req, res) => {
-  req.params.lang = 'ko';
-  handleEditRoute(req, res);
-});
-
-// ⭐ 글 상세 페이지 라우트 (언어 코드 포함)
-app.get('/:lang/post/:id', handlePostViewRoute);
-
-// ⭐ 글 상세 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
-app.get('/post/:id', (req, res) => {
-  req.params.lang = 'ko'; // 기본 언어 'ko'로 설정
-  handlePostViewRoute(req, res);
-});
-
-// (Removed duplicate isPanelRequest and handlePanelRoute)
-app.get('/:lang/search', async (req, res) => {
-  const keyword = req.query.q?.trim();
-  if (!keyword) return res.redirect(`/${req.params.lang}/`);
-
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang; // URL 파라미터에서 직접 언어 추출
-  res.locals.lang = safeLang;
-
-  const page = parseInt(req.query.page) || 1;
-  const limit = 10;
-  const offset = (page - 1) * limit;
-
-  try {
-    const [allPosts] = await db.query(`
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-      WHERE
-          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
-          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
-          OR p.categories LIKE ?
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
-
-
-    const filteredAll = allPosts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return post;
-    });
-
-    const total = filteredAll.length;
-    const totalPages = Math.ceil(total / limit);
-    const paginationRange = generatePagination(page, totalPages);
-
-    const { allCategories } = await getSidebarData(req);
-
-    for (const post of filteredAll) {
-      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-      const translatedCategories = [];
-      if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-          originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
-      }
-      post.translated_categories_display = translatedCategories;
-    }
-
-    const paginatedPosts = filteredAll.slice(offset, offset + limit);
-
-    const wantsPanelOnly = (req.query.panel === '1' || String(req.query.panel).toLowerCase() === 'true');
-    const viewData = {
-      posts: paginatedPosts,
-      categories: allCategories,
-      isSearch: true,
-      searchKeyword: keyword,
-      currentPath: req.path,
-      pagination: {
-        current: page,
-        total: totalPages,
-        range: paginationRange
-      },
-      selectedCategory: null,
-      user: req.session.user,
-      lang: safeLang,
-      locale: res.locals.locale
-    };
-    if (wantsPanelOnly) {
-      return res.render('partials/table', viewData);
-    }
-    return res.render('index', viewData);
-  } catch (err) {
-    console.error('검색 오류:', err);
-    res.status(500).send('검색 중 오류 발생');
-  }
-});
-
-// ✅ AJAX 검색 API 라우트
-app.get('/api/search', async (req, res) => {
-  const keyword = req.query.q?.trim();
-  if (!keyword) return res.json({ posts: [] });
-
-  const userId = req.session.user?.id;
-  const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = res.locals.lang;
-
-  try {
-    const [posts] = await db.query(`
-      SELECT
-          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
-          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-      FROM posts p
-      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-      WHERE
-          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
-          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
-          OR p.categories LIKE ?
-      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
-    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
-
-    const filteredPosts = posts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return post;
-    });
-
-    for (const post of filteredPosts) {
-      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
-      const translatedCategories = [];
-      if (originalCategories.length > 0) {
-        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-        const placeholders = originalCategories.map(() => '?').join(',');
-        const [categoryNames] = await db.query(
-          `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
-          originalCategories
-        );
-        translatedCategories.push(...categoryNames.map(row => row.name));
-      }
-      post.categories = translatedCategories;
-    }
-
-    res.json({ posts: filteredPosts });
-  } catch (err) {
-    console.error('AJAX 검색 오류:', err);
-    res.status(500).json({ error: '검색 중 오류 발생' });
-  }
-});
-
-function generatePagination(current, total) {
-  const delta = 2;
-  const range = [];
-  const rangeWithDots = [];
-  let l;
-
-  for (let i = 1; i <= total; i++) {
-    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
-      range.push(i);
-    }
-  }
-
-  for (let i of range) {
-    if (l) {
-      if (i - l === 2) {
-        rangeWithDots.push(l + 1);
-      } else if (i - l > 2) {
-        rangeWithDots.push('...');
-      }
-    }
-    rangeWithDots.push(i);
-    l = i;
-  }
-  return rangeWithDots;
-}
-
-
-// ⭐ 메인 페이지 라우트 핸들러를 위한 헬퍼 함수
-async function handleMainPage(req, res) {
+const handleMainPage = async (req, res) => {
   const category = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -732,92 +642,96 @@ async function handleMainPage(req, res) {
   }
 }
 
-// ⭐ 메인 페이지 라우트 (언어 코드 포함)
+const handleSearchRoute = async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) return res.redirect(`/${req.params.lang}/`);
 
-app.get('/:lang/:section/:topic', handlePanelRoute);
-app.get('/:section/:topic', handlePanelRoute);
-app.get('/:lang/', handleMainPage); // 홈은 메인 핸들러
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+  const safeLang = req.params.lang;
+  res.locals.lang = safeLang;
 
-app.get('/sitemap.xml', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
   try {
-    const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
-    const excludeConditions = testCategoryKeywords.map(keyword => `FIND_IN_SET(?, p.categories)`).join(' OR ');
-    const [posts] = await db.query(`
-      SELECT p.id, p.updated_at, p.categories
+    const [allPosts] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
       FROM posts p
-      WHERE p.is_private = 0
-        AND NOT (${excludeConditions})
-      ORDER BY p.updated_at DESC
-    `, testCategoryKeywords);
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      WHERE
+          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
+          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
+          OR p.categories LIKE ?
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
 
-    let postUrls = [];
-    posts.forEach(post => {
-      supportedLangs.forEach(lang => {
-        postUrls.push(`
-          <url>
-            <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
-            <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
-            <priority>0.80</priority>
-          </url>
-        `);
-      });
+    const filteredAll = allPosts.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return post;
     });
-    postUrls = postUrls.join('');
 
-    const staticUrls = [
-      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
-      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
-    ].join('');
+    const total = filteredAll.length;
+    const totalPages = Math.ceil(total / limit);
+    const paginationRange = generatePagination(page, totalPages);
 
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.w3.org/2001/XMLSchema-instance">
-        ${staticUrls}
-        ${postUrls}
-      </urlset>
-    `;
+    const { allCategories } = await getSidebarData(req);
 
-    res.header('Content-Type', 'application/xml');
-    res.send(sitemap.trim());
+    for (const post of filteredAll) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.translated_categories_display = translatedCategories;
+    }
+
+    const paginatedPosts = filteredAll.slice(offset, offset + limit);
+
+    const wantsPanelOnly = (req.query.panel === '1' || String(req.query.panel).toLowerCase() === 'true');
+    const viewData = {
+      posts: paginatedPosts,
+      categories: allCategories,
+      isSearch: true,
+      searchKeyword: keyword,
+      currentPath: req.path,
+      pagination: {
+        current: page,
+        total: totalPages,
+        range: paginationRange
+      },
+      selectedCategory: null,
+      user: req.session.user,
+      lang: safeLang,
+      locale: res.locals.locale
+    };
+    if (wantsPanelOnly) {
+      return res.render('partials/table', viewData);
+    }
+    return res.render('index', viewData);
   } catch (err) {
-    console.error('🚨 sitemap.xml 생성 오류:', err);
-    res.status(500).send('Sitemap 생성 실패');
+    console.error('검색 오류:', err);
+    res.status(500).send('검색 중 오류 발생');
   }
-});
+};
 
-app.get('/session', (req, res) => {
-  const user = req.session.user;
-  if (user) {
-    res.json({
-      loggedIn: true,
-      username: user.nickname,
-      is_admin: user.is_admin === 1
-    });
-  } else {
-    res.json({ loggedIn: false });
-  }
-});
-
-app.get('/signup', (req, res) => {
-  res.render('signup', {
-    error: null,
-    selectedCategory: null,
-    isSearch: false,
-    searchKeyword: '',
-    locale: res.locals.locale,
-    lang: res.locals.lang,
-    pagination: {
-      current: 1,
-      total: 1,
-      range: [1]
-    },
-    categories: []
-  });
-});
-
+// 라우트 정의
 app.post('/login', async (req, res) => {
   const { id, password } = req.body;
   try {
@@ -845,28 +759,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.get('/api/check-id', async (req, res) => {
-  const { id } = req.query;
-  try {
-    const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
-    res.json({ exists: rows.length > 0 });
-  } catch (err) {
-    console.error('아이디 중복 확인 오류:', err);
-    res.status(500).json({ error: '서버 오류' });
-  }
-});
-
-app.get('/api/check-nickname', async (req, res) => {
-  const { nickname } = req.query;
-  try {
-    const [rows] = await db.query('SELECT * FROM users WHERE nickname = ?', [nickname]);
-    res.json({ exists: rows.length > 0 });
-  } catch (err) {
-    console.error('닉네임 중복 확인 오류:', err);
-    res.status(500).json({ error: '서버 오류' });
-  }
-});
-
 app.post('/signup', async (req, res) => {
   const { user_id, username, email, password } = req.body;
   if (!user_id || !username || !password) {
@@ -886,10 +778,6 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-app.get('/signup-success', (req, res) => {
-  res.render('signup-success');
-});
-
 // ✅ 글 저장 처리 라우트 (트랜잭션 적용)
 app.post('/savePost', async (req, res) => {
   const conn = await db.getConnection();
@@ -899,7 +787,7 @@ app.post('/savePost', async (req, res) => {
     const { categories, is_private, is_pinned, lang_content } = req.body;
     const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
 
-    if (!req.session.user || req.session.user.is_admin !== 1) { // 글쓰기 권한 검증 추가
+    if (!req.session.user || req.session.user.is_admin !== 1) {
       await conn.rollback();
       return res.status(403).json({ success: false, error: '관리자만 글을 작성할 수 있습니다.' });
     }
@@ -907,7 +795,7 @@ app.post('/savePost', async (req, res) => {
       await conn.rollback();
       return res.status(400).json({ success: false, error: '최소 하나의 카테고리를 선택해주세요.' });
     }
-    if (!lang_content || !lang_content.ko || (!lang_content.ko.title && !lang_content.ko.content)) { // 제목 또는 내용 필수
+    if (!lang_content || !lang_content.ko || (!lang_content.ko.title && !lang_content.ko.content)) {
       await conn.rollback();
       return res.status(400).json({ success: false, error: '한국어 제목 또는 내용은 필수입니다.' });
     }
@@ -950,51 +838,6 @@ app.post('/savePost', async (req, res) => {
   }
 });
 
-app.post('/delete/:id', async (req, res) => {
-  const postId = req.params.id;
-  const userId = req.session.user?.id;
-
-  try {
-    const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
-    if (rows.length === 0) {
-      return res.status(404).send('게시글을 찾을 수 없습니다.');
-    }
-
-    const post = rows[0];
-
-    if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
-      return res.status(403).send('글 작성자 또는 관리자만 삭제할 수 있습니다.');
-    }
-
-    const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-    const backupPost = postData[0];
-
-    await db.query(`
-      INSERT INTO post_backups
-        (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'delete')
-    `, [
-      backupPost.id,
-      backupPost.title,
-      backupPost.content,
-      backupPost.categories,
-      backupPost.author,
-      backupPost.user_id,
-      backupPost.is_private,
-      backupPost.is_pinned,
-      backupPost.views
-    ]);
-
-    await db.query('DELETE FROM posts WHERE id = ?', [postId]);
-    res.redirect(`/${res.locals.lang}/`);
-  } catch (err) {
-    console.error('삭제 오류:', err);
-    res.status(500).send('서버 오류로 삭제할 수 없습니다.');
-  }
-});
-
-
-// ✅ 글 수정 처리 라우트 (트랜잭션 적용)
 app.post('/edit/:id', async (req, res) => {
   const conn = await db.getConnection();
   try {
@@ -1004,7 +847,7 @@ app.post('/edit/:id', async (req, res) => {
     const userId = req.session.user?.id;
     const { categories, is_private, is_pinned, lang_content } = req.body;
 
-    if (!req.session.user) { // 로그인 여부 다시 확인
+    if (!req.session.user) {
       await conn.rollback();
       return res.status(401).json({ success: false, error: '로그인이 필요합니다.' });
     }
@@ -1087,6 +930,48 @@ app.post('/edit/:id', async (req, res) => {
   }
 });
 
+app.post('/delete/:id', async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.session.user?.id;
+
+  try {
+    const [rows] = await db.query('SELECT user_id FROM posts WHERE id = ?', [postId]);
+    if (rows.length === 0) {
+      return res.status(404).send('게시글을 찾을 수 없습니다.');
+    }
+
+    const post = rows[0];
+
+    if (post.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
+      return res.status(403).send('글 작성자 또는 관리자만 삭제할 수 있습니다.');
+    }
+
+    const [postData] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    const backupPost = postData[0];
+
+    await db.query(`
+      INSERT INTO post_backups
+        (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'delete')
+    `, [
+      backupPost.id,
+      backupPost.title,
+      backupPost.content,
+      backupPost.categories,
+      backupPost.author,
+      backupPost.user_id,
+      backupPost.is_private,
+      backupPost.is_pinned,
+      backupPost.views
+    ]);
+
+    await db.query('DELETE FROM posts WHERE id = ?', [postId]);
+    res.redirect(`/${res.locals.lang}/`);
+  } catch (err) {
+    console.error('삭제 오류:', err);
+    res.status(500).send('서버 오류로 삭제할 수 없습니다.');
+  }
+});
 
 app.get('/api/categories', async (req, res) => {
   const safeLang = res.locals.lang;
@@ -1136,24 +1021,205 @@ app.delete('/api/categories/:name', async (req, res) => {
   }
 });
 
-// ✅ 검색 결과 페이지 라우트
-// :lang 접두사를 추가하여 URL을 명확히 처리합니다.
-
-app.get('/:lang', (req, res, next) => {
-  const { lang } = req.params;
-  if (!supportedLangs.includes(lang)) {
-    // 언어 코드가 아닌 경우, 다음 미들웨어로 전달
-    return next();
+app.get('/api/check-id', async (req, res) => {
+  const { id } = req.query;
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
+    res.json({ exists: rows.length > 0 });
+  } catch (err) {
+    console.error('아이디 중복 확인 오류:', err);
+    res.status(500).json({ error: '서버 오류' });
   }
-  handleMainPage(req, res);
 });
 
-// ⭐ 메인 페이지 라우트 (언어 코드 미포함, 기본값 'ko'로 처리)
+app.get('/api/check-nickname', async (req, res) => {
+  const { nickname } = req.query;
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE nickname = ?', [nickname]);
+    res.json({ exists: rows.length > 0 });
+  } catch (err) {
+    console.error('닉네임 중복 확인 오류:', err);
+    res.status(500).json({ error: '서버 오류' });
+  }
+});
+
+// Main 라우트 핸들러
+app.get('/:lang/', handleMainPage);
 app.get('/', (req, res) => {
-  req.params.lang = 'ko'; // 기본 언어 'ko'로 설정
+  req.params.lang = 'ko';
   handleMainPage(req, res);
 });
 
+// 글쓰기/수정/상세 라우트
+app.get('/:lang/write', handleWriteRoute);
+app.get('/write', (req, res) => {
+  req.params.lang = 'ko';
+  handleWriteRoute(req, res);
+});
+app.get('/:lang/edit/:id', handleEditRoute);
+app.get('/edit/:id', (req, res) => {
+  req.params.lang = 'ko';
+  handleEditRoute(req, res);
+});
+app.get('/:lang/post/:id', handlePostViewRoute);
+app.get('/post/:id', (req, res) => {
+  req.params.lang = 'ko';
+  handlePostViewRoute(req, res);
+});
+
+// 검색 라우트
+app.get('/:lang/search', handleSearchRoute);
+app.get('/search', (req, res) => {
+  req.params.lang = 'ko';
+  handleSearchRoute(req, res);
+});
+app.get('/api/search', async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) return res.json({ posts: [] });
+
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+  const safeLang = res.locals.lang;
+
+  try {
+    const [posts] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      WHERE
+          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
+          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
+          OR p.categories LIKE ?
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+
+    const filteredPosts = posts.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return post;
+    });
+
+    for (const post of filteredPosts) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.categories = translatedCategories;
+    }
+
+    res.json({ posts: filteredPosts });
+  } catch (err) {
+    console.error('AJAX 검색 오류:', err);
+    res.status(500).json({ error: '검색 중 오류 발생' });
+  }
+});
+
+// 기타 라우트
+app.get('/:lang/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect(`/${req.params.lang}/`);
+  });
+});
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect(`/ko/`);
+  });
+});
+app.get('/signup', (req, res) => {
+  res.render('signup', {
+    error: null,
+    selectedCategory: null,
+    isSearch: false,
+    searchKeyword: '',
+    locale: res.locals.locale,
+    lang: res.locals.lang,
+    pagination: {
+      current: 1,
+      total: 1,
+      range: [1]
+    },
+    categories: []
+  });
+});
+app.get('/signup-success', (req, res) => {
+  res.render('signup-success');
+});
+app.get('/session', (req, res) => {
+  const user = req.session.user;
+  if (user) {
+    res.json({
+      loggedIn: true,
+      username: user.nickname,
+      is_admin: user.is_admin === 1
+    });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
+    const excludeConditions = testCategoryKeywords.map(keyword => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+    const [posts] = await db.query(`
+      SELECT p.id, p.updated_at, p.categories
+      FROM posts p
+      WHERE p.is_private = 0
+        AND NOT (${excludeConditions})
+      ORDER BY p.updated_at DESC
+    `, testCategoryKeywords);
+
+    let postUrls = [];
+    posts.forEach(post => {
+      supportedLangs.forEach(lang => {
+        postUrls.push(`
+          <url>
+            <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
+            <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+            <priority>0.80</priority>
+          </url>
+        `);
+      });
+    });
+    postUrls = postUrls.join('');
+
+    const staticUrls = [
+      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
+      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
+    ].join('');
+
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+      <urlset
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.w3.org/2001/XMLSchema-instance">
+        ${staticUrls}
+        ${postUrls}
+      </urlset>
+    `;
+
+    res.header('Content-Type', 'application/xml');
+    res.send(sitemap.trim());
+  } catch (err) {
+    console.error('🚨 sitemap.xml 생성 오류:', err);
+    res.status(500).send('Sitemap 생성 실패');
+  }
+});
 
 // EJS에서 slug 변환 함수 쓰게 하기
 app.locals.slug = function(label, lang) {
@@ -1169,118 +1235,9 @@ app.get('/_slugtest', (req, res) => {
   res.type('text').send(out);
 });
 
-// Sidebar Data를 가져오는 공통 함수로 리팩토링
-async function getSidebarData(req) {
-  const safeLang = (req.params && req.params.lang) ? req.params.lang : 'ko';
-  const categoryQueryParam = req.query.category || 'all';
-  const page = parseInt(req.query.page) || 1;
-  const limit = 10;
-  const offset = (page - 1) * limit;
-
-  let postsBaseQuery = `
-    SELECT
-        p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at, p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
-        COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
-        COALESCE(pt_req.content, pt_ko.content, p.content) AS content
-    FROM posts p
-    LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
-    LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
-  `;
-  let postsCountQuery = `SELECT COUNT(*) as count FROM posts`;
-  const postsQueryParams = [safeLang];
-  const postsCountParams = [];
-
-  if (categoryQueryParam !== 'all') {
-    postsBaseQuery += ` WHERE FIND_IN_SET(?, p.categories)`;
-    postsCountQuery += ` WHERE FIND_IN_SET(?, categories)`;
-    postsQueryParams.push(categoryQueryParam);
-    postsCountParams.push(categoryQueryParam);
-  }
-
-  postsBaseQuery += ` ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC LIMIT ? OFFSET ?`;
-  postsQueryParams.push(limit, offset);
-
-  const [postsForSidebar] = await db.query(postsBaseQuery, postsQueryParams);
-
-  const filteredPostsForSidebar = postsForSidebar.map(sidebarPost => {
-    if (sidebarPost.is_private && sidebarPost.user_id !== req.session.user?.id && !(req.session.user?.is_admin === 1)) {
-      return {
-        ...sidebarPost,
-        content: '이 글은 비공개로 설정되어 있습니다.'
-      };
-    }
-    return sidebarPost;
-  });
-
-  for (const sidebarPost of filteredPostsForSidebar) {
-    const originalSidebarCategories = sidebarPost.categories ? sidebarPost.categories.split(',').map(c => c.trim()) : [];
-    const translatedSidebarCategories = [];
-    if (originalSidebarCategories.length > 0) {
-      const sidebarCategoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-      const placeholders = originalSidebarCategories.map(() => '?').join(',');
-      const [sidebarCategoryNames] = await db.query(
-        `SELECT COALESCE(${sidebarCategoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
-        originalSidebarCategories
-      );
-      translatedSidebarCategories.push(...sidebarCategoryNames.map(row => row.name));
-    }
-    sidebarPost.translated_categories_display = translatedSidebarCategories;
-  }
-
-  const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-  const [allCategoryRows] = await db.query(`
-    SELECT
-      TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) AS original_category,
-      MAX(p.created_at) AS latest,
-      COALESCE(c.${categoryColumn}, c.name) AS translated_category_name
-    FROM posts p
-    JOIN (
-      SELECT a.N + b.N * 10 + 1 AS n
-      FROM (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-            UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
-       (SELECT 0 AS N UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
-        UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
-    ) numbers
-    ON CHAR_LENGTH(p.categories) - CHAR_LENGTH(REPLACE(p.categories, ',', '')) >= numbers.n - 1
-    JOIN categories c ON TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(p.categories, ',', numbers.n), ',', -1)) = c.name
-    GROUP BY original_category, translated_category_name
-    ORDER BY latest DESC
-  `);
-
-  const allCategories = allCategoryRows.map(row => ({
-    original: row.original_category,
-    translated: row.translated_category_name
-  }));
-
-  let translatedSelectedCategory = null;
-  if (categoryQueryParam !== 'all') {
-    const foundCategory = allCategories.find(cat => cat.original === categoryQueryParam);
-    if (foundCategory) {
-      translatedSelectedCategory = foundCategory.translated;
-    }
-  }
-  const [[{ count }]] = await db.query(postsCountQuery, postsCountParams);
-  const totalPages = Math.ceil(count / limit);
-  const paginationRange = generatePagination(page, totalPages);
-
-  return { postsForSidebar: filteredPostsForSidebar, allCategories, translatedSelectedCategory, paginationRange };
-}
-
-// 전체 게시글 수를 가져오는 헬퍼 함수
-async function getPostCount(req) {
-  const categoryQueryParam = req.query.category || 'all';
-  let countQuery = `SELECT COUNT(*) as count FROM posts`;
-  const countParams = [];
-
-  if (categoryQueryParam !== 'all') {
-    countQuery += ` WHERE FIND_IN_SET(?, categories)`;
-    countParams.push(categoryQueryParam);
-  }
-
-  const [[{ count }]] = await db.query(countQuery, countParams);
-  return count;
-}
-
+// 패널 라우팅
+app.get('/:lang/:section/:topic', handlePanelRoute);
+app.get('/:section/:topic', handlePanelRoute);
 
 // DB 연결 확인
 db.query('SELECT NOW()')
@@ -1291,3 +1248,5 @@ db.query('SELECT NOW()')
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
 });
+
+module.exports = app;
