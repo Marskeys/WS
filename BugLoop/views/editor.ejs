@@ -8,12 +8,9 @@
   <% if (user) { %>
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
-<style>
-/* ... (스타일 시트 유지) ... */
-.editor-toolbar.is-hidden {
-    display: none !important;
-}
-</style>
+  <style>
+  .editor-toolbar.is-hidden { display: none !important; }
+  </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css" />
@@ -222,11 +219,12 @@
         .filter(Boolean);
     <% } %>
 
-    let categories = <%- JSON.stringify(categories.map(c => c.translated)) %>; // ✅ 서버에서 전달받은 카테고리 데이터 사용
+    // ✅ 서버에서 전달받은 카테고리(번역 문자열) 사용
+    let categories = <%- JSON.stringify(categories.map(c => c.translated)) %>;
     let savedRange = null;
-    let currentActiveEditor = null;   // 현재 활성 디자인 모드 에디터 div
-    let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea
-    let currentActiveToolbar = null;  // 현재 활성 툴바 div
+    let currentActiveEditor = null;
+    let currentActiveHtmlEditor = null;
+    let currentActiveToolbar = null;
 
     const langList = [
         { code: 'ko', label: '한국어' },
@@ -238,14 +236,11 @@
     
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
-    const CURRENT_PAGE_LANG = '<%= lang %>'; // 서버에서 초기 렌더링 시 사용
+    const CURRENT_PAGE_LANG = '<%= lang %>';
 
-    // 로더 숨기기 함수
     function hidePreloader() {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-            preloader.style.display = 'none';
-        }
+      const preloader = document.getElementById('preloader');
+      if (preloader) preloader.style.display = 'none';
     }
     
     function renderCategories() {
@@ -269,8 +264,8 @@
         removeBtn.innerText = '×';
         removeBtn.onclick = (e) => {
           e.stopPropagation();
-          showCustomMessage(`'${cat}' 카테고리를 삭제하시겠습니까?`, true, () => {
-            fetch(`/api/categories/${encodeURIComponent(cat)}`, { method: 'DELETE' })
+          showCustomMessage(\`'\${cat}' 카테고리를 삭제하시겠습니까?\`, true, () => {
+            fetch(\`/api/categories/\${encodeURIComponent(cat)}\`, { method: 'DELETE' })
               .then(res => {
                 if (!res.ok) throw new Error('Network response was not ok');
                 return res.json();
@@ -335,22 +330,20 @@
         lang_content: {}
       };
 
-      let hasContentForDefaultLang = false;
-
       langList.forEach(({ code }) => {
-        const titleInput = document.querySelector(`input[name="title_${code}"]`);
-        const editorDiv = document.getElementById(`editor_${code}`);
-        const htmlEditorDiv = document.getElementById(`htmlEditor_${code}`);
+        const titleInput = document.querySelector(\`input[name="title_\${code}"]\`);
+        const editorDiv = document.getElementById(\`editor_\${code}\`);
+        const htmlEditorDiv = document.getElementById(\`htmlEditor_\${code}\`);
 
         if (!titleInput || !editorDiv || !htmlEditorDiv) {
-          console.warn(`언어 코드 ${code} 에 대한 입력 필드 또는 에디터 DIV를 찾을 수 없습니다.`);
+          console.warn(\`언어 코드 \${code} 에 대한 입력 필드 또는 에디터 DIV를 찾을 수 없습니다.\`);
           return;
         }
 
         let contentToSave = '';
-        if (htmlEditorDiv.style.display === 'block') { // HTML 모드
+        if (htmlEditorDiv.style.display === 'block') {
           contentToSave = htmlEditorDiv.value.trim();
-        } else { // 디자인 모드
+        } else {
           const blContent = editorDiv.querySelector('.bl-content');
           contentToSave = blContent ? blContent.innerHTML.trim() : editorDiv.innerHTML.trim();
         }
@@ -365,46 +358,46 @@
         };
       });
 
-      const defaultLangContent = postData.lang_content['ko'];
-      if (!defaultLangContent?.title && !defaultLangContent?.content) {
-        return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
+      // ✅ 서버 검증과 일치: 한국어 제목 필수
+      const defaultLangTitle = postData.lang_content['ko']?.title;
+      if (!defaultLangTitle) {
+        return showCustomMessage("한국어 제목은 필수입니다.");
       }
       
       if (!postData.categories || postData.categories.length === 0) {
         return showCustomMessage("최소 하나의 카테고리를 선택해주세요.");
       }
   
-      const submitUrl = IS_EDIT_PAGE && POST_ID
-        ? `/${CURRENT_PAGE_LANG}/edit/${POST_ID}`
-        : `/${CURRENT_PAGE_LANG}/savePost`;
+      // ✅ 서버 라우트와 일치하도록 언어 접두어 제거
+      const submitUrl = IS_EDIT_PAGE && POST_ID ? `/edit/${POST_ID}` : `/savePost`;
 
       fetch(submitUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(postData)
       })
-      .then(res => {
-        if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
-      })
-      .then(data => {
-        if (data && data.success) {
-          showCustomMessage("성공적으로 저장되었습니다!", false, () => {
-            if (IS_EDIT_PAGE && POST_ID) {
-              window.location.href = `/${CURRENT_PAGE_LANG}/post/${POST_ID}`;
-            } else if (data.postId) {
-              window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
-            } else {
-              window.location.href = `/${CURRENT_PAGE_LANG}/`;
-            }
-          });
-        } else {
-          showCustomMessage("저장 실패: " + (data && data.error ? data.error : '알 수 없는 오류'));
+      .then(async (res) => {
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.success) {
+          throw new Error(data?.error || '저장 실패');
         }
+        return data;
       })
-      .catch(err => {
+      .then((data) => {
+        showCustomMessage("성공적으로 저장되었습니다!", false, () => {
+          if (IS_EDIT_PAGE && POST_ID) {
+            window.location.href = data.redirect || `/${CURRENT_PAGE_LANG}/post/${POST_ID}`;
+          } else if (data.postId) {
+            window.location.href = `/${CURRENT_PAGE_LANG}/post/${data.postId}`;
+          } else {
+            window.location.href = `/${CURRENT_PAGE_LANG}/`;
+          }
+        });
+      })
+      .catch((err) => {
         console.error("저장 중 오류:", err);
-        showCustomMessage("저장 중 오류가 발생했습니다.");
+        showCustomMessage(err.message || "저장 중 오류가 발생했습니다.");
       });
     }
       
@@ -642,13 +635,13 @@
         block.style.display = 'none';
       });
 
-      const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
+      const activeLangBlock = document.querySelector(\`.lang-meta-block[data-lang="\${langCode}"]\`);
       if (activeLangBlock) {
         activeLangBlock.style.display = '';
 
-        const editorDiv = document.getElementById(`editor_${langCode}`);
-        const htmlEditorDiv = document.getElementById(`htmlEditor_${langCode}`);
-        const toolbarDiv = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+        const editorDiv = document.getElementById(\`editor_\${langCode}\`);
+        const htmlEditorDiv = document.getElementById(\`htmlEditor_\${langCode}\`);
+        const toolbarDiv = document.querySelector(\`.toolbar[data-lang-toolbar="\${langCode}"]\`);
 
         currentActiveEditor = editorDiv;
         currentActiveHtmlEditor = htmlEditorDiv;
@@ -658,7 +651,7 @@
           editorDiv.style.display = 'block';
           htmlEditorDiv.style.display = 'none';
           if (toolbarDiv) {
-             toolbarDiv.classList.remove('is-hidden');
+            toolbarDiv.classList.remove('is-hidden');
           }
           editorDiv.focus();
           detectStyle();
@@ -687,8 +680,8 @@
         editor.addEventListener('focus', () => {
           const langCode = editor.dataset.langEditor;
           currentActiveEditor = editor;
-          currentActiveHtmlEditor = document.getElementById(`htmlEditor_${langCode}`);
-          currentActiveToolbar = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+          currentActiveHtmlEditor = document.getElementById(\`htmlEditor_\${langCode}\`);
+          currentActiveToolbar = document.querySelector(\`.toolbar[data-lang-toolbar="\${langCode}"]\`);
           
           if (currentActiveHtmlEditor && currentActiveHtmlEditor.style.display !== 'none') {
             switchToDesignMode(); 
@@ -709,6 +702,13 @@
             if (currentActiveEditor && !savedRange) {
               saveSelection(); 
             }
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('show'));
+            document.querySelectorAll('.color-palette').forEach(cp => cp.classList.remove('show'));
           }
         });
 
@@ -948,8 +948,7 @@ ${currentContent}
 
   </script>
 
-<%- include('partials/footer') %>
-<%- include('partials/scripts') %>
-
+  <%- include('partials/footer') %>
+  <%- include('partials/scripts') %>
 </body>
 </html>
