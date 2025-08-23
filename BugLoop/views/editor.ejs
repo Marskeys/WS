@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
@@ -823,26 +826,36 @@
       };
 
       function activateEditor(langCode) {
-          document.querySelectorAll('.lang-meta-block').forEach(block => {
-              block.style.display = 'none';
-          });
-          const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
-          if (activeLangBlock) {
-              activeLangBlock.style.display = '';
-              const editorDiv = document.getElementById(`editor_${langCode}`);
-              const htmlEditorDiv = document.getElementById(`htmlEditor_${langCode}`);
-              const toolbarDiv = document.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
-              currentActiveEditor = editorDiv;
-              currentActiveHtmlEditor = htmlEditorDiv;
-              currentActiveToolbar = toolbarDiv;
-              if (editorDiv) {
-                  editorDiv.style.display = 'block';
-                  htmlEditorDiv.style.display = 'none';
-                  editorDiv.focus();
-                  detectStyle();
-              }
-          }
-      }
+  // 1) 모든 언어 블록 숨김 (인라인 스타일로 강제)
+  document.querySelectorAll('.lang-meta-block').forEach(block => {
+    block.style.display = 'none';
+  });
+
+  // 2) 선택한 언어 블록만 표시
+  const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
+  if (!activeLangBlock) {
+    console.warn('활성화할 언어 블록을 찾지 못했습니다:', langCode);
+    return;
+  }
+  activeLangBlock.style.display = '';
+
+  // 3) 해당 언어의 에디터/툴바만 활성화
+  const editorDiv = activeLangBlock.querySelector(`#editor_${langCode}`);
+  const htmlEditorDiv = activeLangBlock.querySelector(`#htmlEditor_${langCode}`);
+  const toolbarDiv = activeLangBlock.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+
+  currentActiveEditor = editorDiv || null;
+  currentActiveHtmlEditor = htmlEditorDiv || null;
+  currentActiveToolbar = toolbarDiv || null;
+
+  if (editorDiv) {
+    editorDiv.style.display = 'block';
+    if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
+    editorDiv.focus();
+    detectStyle();
+  }
+}
+
 
       window.addEventListener('DOMContentLoaded', () => {
           fetch(`/api/categories?lang=${CURRENT_PAGE_LANG}`)
@@ -1078,3 +1091,4 @@ ${currentContent}
 <%- include('partials/scripts') %>
 </body>
 </html>
+
