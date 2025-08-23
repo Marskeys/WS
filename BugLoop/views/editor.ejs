@@ -222,7 +222,8 @@
         .filter(Boolean);
     <% } %>
 
-    let categories = <%- JSON.stringify(categories.map(c => c.translated)) %>; // ✅ 서버에서 전달받은 카테고리 데이터 사용
+    // ✅ 카테고리 데이터를 객체 배열로 받도록 수정
+    let categories = <%- JSON.stringify(categories) %>;
     let savedRange = null;
     let currentActiveEditor = null;   // 현재 활성 디자인 모드 에디터 div
     let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea
@@ -252,14 +253,15 @@
       const list = document.getElementById('categoryList');
       list.innerHTML = '';
       categories.forEach((cat, index) => {
+        // ✅ 이제 cat은 { original, translated } 객체입니다.
         const item = document.createElement('div');
         item.className = 'category-item';
-        if (selectedCategories.includes(cat)) item.classList.add('selected');
-        item.innerText = cat;
+        if (selectedCategories.includes(cat.original)) item.classList.add('selected'); // ✅ original 값으로 비교
+        item.innerText = cat.translated; // ✅ translated 값으로 표시
 
         item.onclick = () => {
-          const i = selectedCategories.indexOf(cat);
-          if (i === -1) selectedCategories.push(cat);
+          const i = selectedCategories.indexOf(cat.original); // ✅ original 값으로 찾기
+          if (i === -1) selectedCategories.push(cat.original); // ✅ original 값으로 추가
           else selectedCategories.splice(i, 1);
           renderCategories();
         };
@@ -269,16 +271,17 @@
         removeBtn.innerText = '×';
         removeBtn.onclick = (e) => {
           e.stopPropagation();
-          showCustomMessage(`'${cat}' 카테고리를 삭제하시겠습니까?`, true, () => {
-            fetch(`/api/categories/${encodeURIComponent(cat)}`, { method: 'DELETE' })
+          showCustomMessage(`'${cat.translated}' 카테고리를 삭제하시겠습니까?`, true, () => {
+            fetch(`/api/categories/${encodeURIComponent(cat.original)}`, { method: 'DELETE' }) // ✅ original 값으로 삭제 요청
               .then(res => {
                 if (!res.ok) throw new Error('Network response was not ok');
                 return res.json();
               })
               .then(data => {
                 if (data && data.success) {
-                  categories.splice(index, 1);
-                  selectedCategories = selectedCategories.filter(c => c !== cat);
+                  // 카테고리 배열에서도 original 값으로 삭제
+                  categories = categories.filter(c => c.original !== cat.original);
+                  selectedCategories = selectedCategories.filter(c => c !== cat.original);
                   renderCategories();
                   showCustomMessage("카테고리가 성공적으로 삭제되었습니다.");
                 } else {
@@ -300,7 +303,7 @@
     function addCategory() {
       showCustomInput("새 카테고리 이름을 입력하세요:", (newCat) => {
         newCat = newCat?.trim();
-        if (!newCat || categories.includes(newCat)) return;
+        if (!newCat || categories.some(c => c.original === newCat || c.translated === newCat)) return;
     
         fetch('/api/categories', {
           method: 'POST',
@@ -313,7 +316,7 @@
         })
         .then(data => {
           if (data && data.success) {
-            categories.push(newCat);
+            categories.push({ original: newCat, translated: newCat }); // ✅ 새로운 카테고리는 original과 translated가 동일
             renderCategories();
             showCustomMessage("카테고리가 성공적으로 추가되었습니다.");
           } else {
@@ -329,7 +332,7 @@
     
     function postContent() {
       const postData = {
-        categories: selectedCategories,
+        categories: selectedCategories, // ✅ 이미 original 이름으로만 구성된 배열입니다.
         is_private: document.getElementById('isPrivateCheckbox')?.checked ? 1 : 0,
         is_pinned: document.getElementById('isPinnedCheckbox')?.checked ? 1 : 0,
         lang_content: {}
