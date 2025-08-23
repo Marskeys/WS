@@ -361,7 +361,7 @@
           }
       
           // 폼 제출 URL을 현재 언어 경로를 포함하도록 수정
-          const submitUrl = IS_EDIT_PAGE && POST_ID ? `/${CURRENT_PAGE_LANG}/edit/${POST_ID}` : `/${CURRENT_PAGE_LANG}/savePost`;
+          const submitUrl = IS_EDIT_PAGE && POST_ID ? `/edit/${POST_ID}` : `/savePost`;
 
           fetch(submitUrl, {
             method: 'POST',
