@@ -9,7 +9,7 @@
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
 <style>
-
+/* 필요시 에디터 전용 미세 스타일 추가 가능 */
 </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
@@ -230,6 +230,7 @@
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
     const CURRENT_PAGE_LANG = '<%= lang %>';
 
+    /* ---------- 카테고리 렌더/추가 (생략 없는 원본 유지) ---------- */
     function renderCategories() {
         const list = document.getElementById('categoryList');
         list.innerHTML = '';
@@ -383,13 +384,127 @@
           });
         }
       
+      /* ---------- 서식 명령 (블록/기타) ---------- */
       function format(command, value = null) {
           if (!currentActiveEditor) return; 
           currentActiveEditor.focus();
+          restoreSelection();
           document.execCommand(command, false, value);
           setTimeout(detectStyle, 100);
       }
 
+      /* =========[ 핵심 추가: 역방향 선택 신뢰 보장 + 인라인 토글 ]========= */
+
+      // 선택범위 저장
+      function saveSelection() {
+          const sel = window.getSelection();
+          if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+              savedRange = sel.getRangeAt(0).cloneRange();
+          } else {
+              savedRange = null;
+          }
+      }
+
+      // selectionchange로 항상 최신 선택범위 보존 (역방향 포함)
+      document.addEventListener('selectionchange', () => {
+        if (!currentActiveEditor) return;
+        const sel = window.getSelection();
+        if (sel.rangeCount === 0) return;
+        const ca = sel.getRangeAt(0).commonAncestorContainer;
+        if (currentActiveEditor.contains(ca)) {
+          saveSelection();
+        }
+      });
+
+      // 복원
+      function restoreSelection() {
+        if (!savedRange) return;
+        const sel = window.getSelection();
+        if (!currentActiveEditor || 
+            !currentActiveEditor.contains(savedRange.startContainer) || 
+            !currentActiveEditor.contains(savedRange.endContainer)) {
+          savedRange = null;
+          return;
+        }
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+      }
+
+      // 조각에서 특정 태그 언랩
+      function unwrapTagFromFragment(fragment, tag) {
+        const nodes = fragment.querySelectorAll(tag);
+        nodes.forEach(el => {
+          const parent = el.parentNode;
+          while (el.firstChild) parent.insertBefore(el.firstChild, el);
+          parent.removeChild(el);
+        });
+      }
+
+      // 선택영역이 전부 해당 태그 안인가 대략 확인
+      function selectionAllInsideTag(range, tag) {
+        const frag = range.cloneContents();
+        const walker = document.createTreeWalker(frag, NodeFilter.SHOW_TEXT, null);
+        let hasText = false;
+        let allInside = true;
+        while (walker.nextNode()) {
+          const t = walker.currentNode;
+          if (!t.nodeValue || !t.nodeValue.trim()) continue;
+          hasText = true;
+          let n = t.parentNode;
+          let inside = false;
+          while (n && n !== frag) {
+            if (n.nodeName && n.nodeName.toLowerCase() === tag) { inside = true; break; }
+            n = n.parentNode;
+          }
+          if (!inside) { allInside = false; break; }
+        }
+        return hasText && allInside;
+      }
+
+      const INLINE_MAP = {
+        bold: 'strong',
+        italic: 'em',
+        underline: 'u',
+        strikeThrough: 's'
+      };
+
+      // 인라인 서식 토글 (역방향/정방향 동일 동작)
+      function applyInlineToggle(command) {
+        if (!currentActiveEditor) return;
+        currentActiveEditor.focus();
+        restoreSelection();
+
+        const sel = window.getSelection();
+        if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) return;
+
+        const tag = INLINE_MAP[command];
+        if (!tag) return;
+
+        const range = sel.getRangeAt(0);
+
+        // 이미 전부 해당 태그면 언랩, 아니면 랩
+        if (selectionAllInsideTag(range, tag)) {
+          const fragment = range.extractContents();
+          unwrapTagFromFragment(fragment, tag);
+          range.insertNode(fragment);
+        } else {
+          const fragment = range.extractContents();
+          const wrapper = document.createElement(tag);
+          wrapper.appendChild(fragment);
+          range.insertNode(wrapper);
+          
+          // 선택을 래핑된 노드로 갱신
+          sel.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(wrapper);
+          sel.addRange(newRange);
+        }
+
+        saveSelection();
+        detectStyle();
+      }
+
+      /* =========[ 블록 스타일 적용 (기존 로직 유지) ]========= */
       function applyStyle(tag) {
         if (!currentActiveEditor) return;
         const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
@@ -542,32 +657,6 @@
         }
         updateCurrentStyle('p');
       }
-
-      function saveSelection() {
-          const sel = window.getSelection();
-          if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
-              savedRange = sel.getRangeAt(0).cloneRange();
-          } else {
-              savedRange = null;
-          }
-      }
-      
-      // **수정된 restoreSelection 함수**
-      function restoreSelection() {
-        if (!savedRange) return;
-        const sel = window.getSelection();
-        
-        // 유효성 검사: 저장된 범위가 현재 활성 에디터에 속하는지 확인
-        if (!currentActiveEditor.contains(savedRange.startContainer) || !currentActiveEditor.contains(savedRange.endContainer)) {
-            console.warn("선택 범위가 현재 활성 에디터에 속하지 않아 복원할 수 없습니다.");
-            savedRange = null;
-            return;
-        }
-
-        sel.removeAllRanges();
-        sel.addRange(savedRange);
-      }
-      
 
       function setColor(command, color) {
         restoreSelection();
@@ -757,10 +846,7 @@
             });
           document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
           activateEditor(CURRENT_PAGE_LANG);
-          document.getElementById('langSelector').addEventListener('change', (event) => {
-              const selectedLangCode = event.target.value;
-              activateEditor(selectedLangCode);
-          });
+
           const languageEditors = document.querySelectorAll('.language-editor');
           languageEditors.forEach(editor => {
               editor.addEventListener('keyup', detectStyle);
@@ -778,14 +864,13 @@
                   detectStyle();
               });
           });
+
           document.querySelectorAll('.toolbar').forEach(toolbar => {
             toolbar.addEventListener('mousedown', (event) => {
                 const button = event.target.closest('button, .dropdown-toggle, [data-style-command], [data-color-btn]');
                 if (button) {
-                    event.preventDefault(); 
-                    if (currentActiveEditor && !savedRange) {
-                        saveSelection(); 
-                    }
+                    event.preventDefault(); // 포커스 이동으로 선택범위 날아가는 것 방지
+                    saveSelection();       // 버튼 누르는 찰나의 선택범위 저장 (정/역방향 모두)
                 }
             });
             toolbar.addEventListener('click', (event) => {
@@ -793,20 +878,25 @@
                 const commandButton = event.target.closest('button[data-command]');
                 const styleCommandElement = event.target.closest('[data-style-command]');
                 const colorButton = event.target.closest('[data-color-btn]');
+
                 if (currentActiveEditor) {
                     currentActiveEditor.focus();
                     restoreSelection();
                 }
+
                 if (styleCommandElement) {
                     const styleCommand = styleCommandElement.dataset.styleCommand;
                     applyStyle(styleCommand);
                     const styleDropdown = styleCommandElement.closest('.dropdown-menu');
-                    if (styleDropdown) {
-                        styleDropdown.classList.remove('show');
-                    }
+                    if (styleDropdown) styleDropdown.classList.remove('show');
                 } else if (commandButton) {
                     const command = commandButton.dataset.command;
-                    switch (command) {
+
+                    // 인라인 명령은 커스텀 토글 사용 (역방향 선택 이슈 해결)
+                    if (['bold','italic','underline','strikeThrough'].includes(command)) {
+                      applyInlineToggle(command);
+                    } else {
+                      switch (command) {
                         case 'insertTOC':
                             insertTOC();
                             break;
@@ -827,19 +917,20 @@
                         default:
                             format(command);
                             break;
+                      }
                     }
                 } else if (styleDropdownToggle) {
                     toggleDropdown();
                 }
+
                 const clickedColorBtn = event.target.closest('[data-color-btn]');
                 if (clickedColorBtn) {
                     const colorPalette = clickedColorBtn.closest('[data-color-tool]').querySelector('[data-color-palette]');
-                    if (colorPalette) {
-                        colorPalette.classList.toggle('show');
-                    }
+                    if (colorPalette) colorPalette.classList.toggle('show');
                     event.stopPropagation();
                 }
             });
+
             toolbar.querySelectorAll('[data-color-palette] button').forEach(colorBtn => {
                 colorBtn.addEventListener('click', (e) => {
                     const command = colorBtn.closest('[data-color-tool]').dataset.colorTool;
@@ -856,6 +947,7 @@
                 });
             });
           });
+
           document.querySelectorAll('[data-mode-toggle]').forEach(button => {
             button.addEventListener('click', (event) => {
               const mode = event.target.dataset.modeToggle;
@@ -867,6 +959,7 @@
             });
           });
       });
+
       function insertTOC() {
         if (!currentActiveEditor) {
             showCustomMessage("에디터가 활성화되지 않았습니다.");
@@ -925,6 +1018,7 @@
         tocWrapper.appendChild(tocList);
         blContentDiv.prepend(tocWrapper);
       }
+
       function switchToHtmlMode() {
         if (!currentActiveEditor || !currentActiveHtmlEditor || !currentActiveToolbar) {
             console.error("HTML 모드 전환 실패: 활성 에디터 또는 툴바 없음");
@@ -950,6 +1044,7 @@ ${currentContent}
         currentActiveHtmlEditor.style.display = 'block';
         currentActiveToolbar.style.display = 'none';
       }
+
       function switchToDesignMode() {
         if (!currentActiveEditor || !currentActiveHtmlEditor || !currentActiveToolbar) {
             console.error("디자인 모드 전환 실패: 활성 에디터 또는 툴바 없음");
