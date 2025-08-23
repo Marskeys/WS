@@ -9,7 +9,19 @@
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
 <style>
-/* 필요시 에디터 전용 미세 스타일 추가 가능 */
+/* strong/b 굵게 적용 시 글자 크기 축소 방지 */
+.editor .bl-content strong,
+.editor .bl-content b {
+  font-size: inherit;
+  font-weight: 700;
+}
+
+/* "진한 레이블"도 본문과 같은 크기로 */
+.editor .bl-content .label,
+.editor .bl-content .label-bold {
+  font-size: inherit;
+  font-weight: 700;
+}
 </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
