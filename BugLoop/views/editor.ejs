@@ -189,8 +189,6 @@
             </label>
           <% } %>
         </div>
-
-
       </div>
     <% }) %> 
 
@@ -553,19 +551,22 @@
               savedRange = null;
           }
       }
-
+      
       // **수정된 restoreSelection 함수**
       function restoreSelection() {
-          if (!savedRange) return;
-          const sel = window.getSelection();
-          // 현재 활성 에디터와 저장된 범위의 시작/끝 노드가 동일한 문서에 있는지 확인
-          if (!currentActiveEditor.contains(savedRange.startContainer) || !currentActiveEditor.contains(savedRange.endContainer)) {
-            // 다른 에디터에 있는 선택 범위라면 무시
+        if (!savedRange) return;
+        const sel = window.getSelection();
+        if (!currentActiveEditor.contains(savedRange.startContainer) || !currentActiveEditor.contains(savedRange.endContainer)) {
             savedRange = null;
             return;
-          }
-          sel.removeAllRanges();
-          sel.addRange(savedRange);
+        }
+        // Selection을 새 Range로 교체하여 역방향 선택 문제 해결
+        try {
+            sel.removeAllRanges();
+            sel.addRange(savedRange);
+        } catch (e) {
+            console.error("선택 범위 복원 오류:", e);
+        }
       }
 
       function setColor(command, color) {
