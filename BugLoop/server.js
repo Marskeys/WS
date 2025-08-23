@@ -890,25 +890,31 @@ app.get('/signup-success', (req, res) => {
   res.render('signup-success');
 });
 
-// ✅ 글 저장 처리 라우트
+// ✅ 글 저장 처리 라우트 (트랜잭션 적용)
 app.post('/savePost', async (req, res) => {
-  const { categories, is_private, is_pinned, lang_content } = req.body;
-  const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
-
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, error: '로그인이 필요합니다.' });
-  }
-  if (!categories || categories.length === 0) {
-    return res.status(400).json({ success: false, error: '최소 하나의 카테고리를 선택해주세요.' });
-  }
-  if (!lang_content || !lang_content.ko || !lang_content.ko.title) {
-    return res.status(400).json({ success: false, error: '한국어 제목은 필수입니다.' });
-  }
-
-  const isPrivate = is_private ? 1 : 0;
-
+  const conn = await db.getConnection();
   try {
-    const [result] = await db.query(
+    await conn.beginTransaction();
+
+    const { categories, is_private, is_pinned, lang_content } = req.body;
+    const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
+
+    if (!req.session.user || req.session.user.is_admin !== 1) { // 글쓰기 권한 검증 추가
+      await conn.rollback();
+      return res.status(403).json({ success: false, error: '관리자만 글을 작성할 수 있습니다.' });
+    }
+    if (!categories || categories.length === 0) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, error: '최소 하나의 카테고리를 선택해주세요.' });
+    }
+    if (!lang_content || !lang_content.ko || (!lang_content.ko.title && !lang_content.ko.content)) { // 제목 또는 내용 필수
+      await conn.rollback();
+      return res.status(400).json({ success: false, error: '한국어 제목 또는 내용은 필수입니다.' });
+    }
+
+    const isPrivate = is_private ? 1 : 0;
+
+    const [result] = await conn.query(
       'INSERT INTO posts (title, content, categories, author, user_id, is_private, is_pinned) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         lang_content.ko.title,
@@ -924,18 +930,23 @@ app.post('/savePost', async (req, res) => {
 
     for (const langCode in lang_content) {
       const { title, content } = lang_content[langCode];
-      if (title || content) { // 제목이나 내용 중 하나라도 있으면 저장
-        await db.query(
+      if (title || content) {
+        await conn.query(
           'INSERT INTO post_translations (post_id, lang_code, title, content) VALUES (?, ?, ?, ?)',
           [postId, langCode, title, content]
         );
       }
     }
 
+    await conn.commit();
     res.json({ success: true, postId: postId });
+
   } catch (err) {
+    await conn.rollback();
     console.error('글 저장 오류:', err);
     res.status(500).json({ success: false, error: '서버 오류로 글을 저장할 수 없습니다.' });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
@@ -983,32 +994,45 @@ app.post('/delete/:id', async (req, res) => {
 });
 
 
-// ✅ 글 수정 처리 라우트
+// ✅ 글 수정 처리 라우트 (트랜잭션 적용)
 app.post('/edit/:id', async (req, res) => {
-  const postId = req.params.id;
-  const userId = req.session.user?.id;
-  const { categories, is_private, is_pinned, lang_content } = req.body;
-
-  if (!categories || categories.length === 0) {
-    return res.status(400).json({ success: false, error: '최소 하나의 카테고리를 선택해주세요.' });
-  }
-  if (!lang_content || !lang_content.ko || !lang_content.ko.title) {
-    return res.status(400).json({ success: false, error: '한국어 제목은 필수입니다.' });
-  }
-
-  const isPrivate = is_private ? 1 : 0;
-  const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
-
+  const conn = await db.getConnection();
   try {
-    const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
-    if (basePostRows.length === 0) return res.status(404).json({ success: false, error: '게시글을 찾을 수 없습니다.' });
+    await conn.beginTransaction();
+
+    const postId = req.params.id;
+    const userId = req.session.user?.id;
+    const { categories, is_private, is_pinned, lang_content } = req.body;
+
+    if (!req.session.user) { // 로그인 여부 다시 확인
+      await conn.rollback();
+      return res.status(401).json({ success: false, error: '로그인이 필요합니다.' });
+    }
+    if (!categories || categories.length === 0) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, error: '최소 하나의 카테고리를 선택해주세요.' });
+    }
+    if (!lang_content || !lang_content.ko || !lang_content.ko.title) {
+      await conn.rollback();
+      return res.status(400).json({ success: false, error: '한국어 제목은 필수입니다.' });
+    }
+
+    const isPrivate = is_private ? 1 : 0;
+    const pinnedValue = is_pinned === 1 || is_pinned === '1' ? 1 : 0;
+
+    const [basePostRows] = await conn.query('SELECT * FROM posts WHERE id = ?', [postId]);
+    if (basePostRows.length === 0) {
+      await conn.rollback();
+      return res.status(404).json({ success: false, error: '게시글을 찾을 수 없습니다.' });
+    }
 
     const existingPost = basePostRows[0];
     if (existingPost.user_id !== userId && (!req.session.user || req.session.user.is_admin !== 1)) {
+      await conn.rollback();
       return res.status(403).json({ success: false, error: '글 작성자 또는 관리자만 수정할 수 있습니다.' });
     }
 
-    await db.query(`
+    await conn.query(`
       INSERT INTO post_backups
         (post_id, title, content, categories, author, user_id, is_private, is_pinned, views, backup_type)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'edit')
@@ -1024,7 +1048,7 @@ app.post('/edit/:id', async (req, res) => {
       existingPost.views
     ]);
 
-    await db.query(
+    await conn.query(
       'UPDATE posts SET title = ?, content = ?, categories = ?, is_private = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
       [
         lang_content.ko.title,
@@ -1038,8 +1062,8 @@ app.post('/edit/:id', async (req, res) => {
 
     for (const langCode in lang_content) {
       const { title, content } = lang_content[langCode];
-      if (title || content) { // 제목이나 내용 중 하나라도 있으면 업데이트
-        await db.query(
+      if (title || content) {
+        await conn.query(
           `INSERT INTO post_translations (post_id, lang_code, title, content)
            VALUES (?, ?, ?, ?)
            ON DUPLICATE KEY UPDATE
@@ -1051,10 +1075,15 @@ app.post('/edit/:id', async (req, res) => {
       }
     }
 
+    await conn.commit();
     res.json({ success: true, redirect: `/${res.locals.lang}/post/${postId}` });
+
   } catch (err) {
+    await conn.rollback();
     console.error('수정 처리 오류:', err);
     res.status(500).json({ success: false, error: '서버 오류로 글을 수정할 수 없습니다.' });
+  } finally {
+    if (conn) conn.release();
   }
 });
 
