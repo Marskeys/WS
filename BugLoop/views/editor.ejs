@@ -888,6 +888,14 @@
                   }
                   detectStyle();
               });
+
+              // [추가] 언어 변경 시 해당 블록만 보이도록 호출
+const langSelectorEl = document.getElementById('langSelector');
+if (langSelectorEl) {
+  langSelectorEl.addEventListener('change', (e) => {
+    activateEditor(e.target.value);
+  });
+}
           });
 
           document.querySelectorAll('.toolbar').forEach(toolbar => {
