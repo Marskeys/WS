@@ -204,7 +204,7 @@ const handleWriteRoute = async (req, res) => {
       post: null,
       isEdit: false,
       posts: postsForSidebar,
-      categories: allCategories,
+      categories: allCategories, // ✅ 추가: 카테고리 데이터를 EJS로 전달
       isSearch: false,
       searchKeyword: '',
       selectedCategory: translatedSelectedCategory,
@@ -265,7 +265,7 @@ const handleEditRoute = async (req, res) => {
       post: postForEjs,
       isEdit: true,
       posts: postsForSidebar,
-      categories: allCategories,
+      categories: allCategories, // ✅ 추가: 카테고리 데이터를 EJS로 전달
       isSearch: false,
       searchKeyword: '',
       selectedCategory: translatedSelectedCategory,
@@ -735,8 +735,8 @@ async function handleMainPage(req, res) {
 // ⭐ 메인 페이지 라우트 (언어 코드 포함)
 
 app.get('/:lang/:section/:topic', handlePanelRoute);
-app.get('/:section/:topic',        handlePanelRoute);
-app.get('/:lang/',                 handleMainPage);     // 홈은 메인 핸들러
+app.get('/:section/:topic', handlePanelRoute);
+app.get('/:lang/', handleMainPage); // 홈은 메인 핸들러
 
 app.get('/sitemap.xml', async (req, res) => {
   try {
@@ -774,7 +774,7 @@ app.get('/sitemap.xml', async (req, res) => {
         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+        http://www.w3.org/2001/XMLSchema-instance">
         ${staticUrls}
         ${postUrls}
       </urlset>

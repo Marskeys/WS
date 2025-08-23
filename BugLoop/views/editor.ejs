@@ -8,13 +8,12 @@
   <% if (user) { %>
     <meta name="author" content="<%= user.nickname %>">
   <% } %>
-  <style>
-    /* ... (스타일 시트 유지) ... */
-    /* HTML 모드에서 툴바 숨김을 위한 클래스 추가 */
-    .editor-toolbar.is-hidden {
-      display: none !important;
-    }
-  </style>
+<style>
+/* ... (스타일 시트 유지) ... */
+.editor-toolbar.is-hidden {
+    display: none !important;
+}
+</style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css" />
@@ -211,7 +210,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
   <script>
     // -----------------------------
-    // 선택된 카테고리 초기화 (문자열/배열 모두 지원)  ← FIX
+    // 선택된 카테고리 초기화 (문자열/배열 모두 지원)
     // -----------------------------
     let selectedCategories = [];
     <% if (post && post.categories) { %>
@@ -223,7 +222,7 @@
         .filter(Boolean);
     <% } %>
 
-    let categories = [];
+    let categories = <%- JSON.stringify(categories.map(c => c.translated)) %>; // ✅ 서버에서 전달받은 카테고리 데이터 사용
     let savedRange = null;
     let currentActiveEditor = null;   // 현재 활성 디자인 모드 에디터 div
     let currentActiveHtmlEditor = null; // 현재 활성 HTML 모드 에디터 textarea
@@ -240,7 +239,7 @@
     const IS_EDIT_PAGE = <%- isEdit ? 'true' : 'false' %>; 
     const POST_ID = <%- post && post.id ? JSON.stringify(post.id) : 'null' %>;
     const CURRENT_PAGE_LANG = '<%= lang %>'; // 서버에서 초기 렌더링 시 사용
-    
+
     // 로더 숨기기 함수
     function hidePreloader() {
         const preloader = document.getElementById('preloader');
@@ -248,31 +247,9 @@
             preloader.style.display = 'none';
         }
     }
-
-    // -----------------------------
-    // 응답 payload를 표시용 문자열 배열로 정규화  ← FIX
-    // -----------------------------
-    function normalizeCategoriesPayload(raw, lang) {
-      if (!raw || (!Array.isArray(raw) && (!raw.categories || !Array.isArray(raw.categories)))) {
-        console.warn("Invalid categories payload received:", raw);
-        return [];
-      }
-      const list = Array.isArray(raw) ? raw : raw.categories;
-      return list.map((c) => {
-        if (typeof c === 'string') return c.trim();
-        if (c && typeof c === 'object') {
-          // 객체인 경우: 다국어/일반 키 후보를 우선순위로 매핑
-          const byLang = c[`name_${lang}`] || c[`label_${lang}`] || c[lang] || c[`title_${lang}`];
-          const generic = c.name || c.label || c.title || c.slug || c.displayName;
-          return String(byLang || generic || '').trim();
-        }
-        return '';
-      }).filter(Boolean);
-    }
-
+    
     function renderCategories() {
       const list = document.getElementById('categoryList');
-      if (!list) return; // 카테고리 리스트가 없는 경우 조기 반환
       list.innerHTML = '';
       categories.forEach((cat, index) => {
         const item = document.createElement('div');
@@ -379,7 +356,7 @@
         }
 
         if (!contentToSave || contentToSave === '<div><br></div>' || contentToSave === '<p><br></p>') {
-          contentToSave = ''; // 빈 콘텐츠는 빈 문자열로 저장
+          contentToSave = '';
         }
 
         postData.lang_content[code] = {
@@ -388,7 +365,6 @@
         };
       });
 
-      // 한국어(기본 언어)의 제목 또는 내용이 비어있는지 확인
       const defaultLangContent = postData.lang_content['ko'];
       if (!defaultLangContent?.title && !defaultLangContent?.content) {
         return showCustomMessage("한국어 제목 또는 내용을 입력해주세요.");
@@ -451,7 +427,6 @@
       const sel = window.getSelection();
       const range = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
       if (!range || sel.isCollapsed || !currentActiveEditor.contains(range.commonAncestorContainer)) {
-        // 선택 영역이 없거나 에디터 내에 있지 않으면 execCommand로 대체
         document.execCommand("styleWithCSS", false, false);
         document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
         saveSelection();
@@ -459,15 +434,12 @@
         return;
       }
       
-      // 복잡한 DOM 조작 대신 `execCommand` 활용
       document.execCommand("styleWithCSS", false, false);
       if (blockTags.includes(tag)) {
         document.execCommand('formatBlock', false, `<${tag.toUpperCase()}>`);
       } else if (inlineTags.includes(tag)) {
         if (tag === 'span') {
-          // 'span'의 경우, 이미 존재하는 span을 제거하거나 감싸는 로직 필요
-          // 여기서는 간단히 execCommand로 대체
-          document.execCommand('bold', false, null); // 예시
+          document.execCommand('bold', false, null); 
         } else {
           format(tag);
         }
@@ -489,7 +461,6 @@
       if (styleDropdown) {
         styleDropdown.classList.toggle('show');
       }
-      // 다른 드롭다운 닫기
       document.querySelectorAll('.dropdown-menu').forEach(d => {
         if (d !== styleDropdown) {
           d.classList.remove('show');
@@ -562,7 +533,7 @@
       if (!sel.rangeCount || sel.isCollapsed || !currentActiveEditor || !currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) return;
 
       if (color === "__clear__") {
-        document.execCommand(command, false, 'transparent'); // 투명색으로 설정
+        document.execCommand(command, false, 'transparent');
         return;
       }
       document.execCommand('styleWithCSS', false, true);
@@ -696,26 +667,12 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 카테고리 로딩 (응답 어떤 형태든 수용)  ← FIX
-      fetch(`/api/categories?lang=${encodeURIComponent(CURRENT_PAGE_LANG)}`)
-        .then(res => res.json())
-        .then(raw => {
-          categories = normalizeCategoriesPayload(raw, CURRENT_PAGE_LANG);
-          renderCategories();
-          hidePreloader(); // 데이터 로딩 완료 후 로더 숨기기
-        })
-        .catch(err => {
-          console.error("카테고리 불러오기 오류:", err);
-          categories = ['일상', '기록', '리뷰'];
-          renderCategories();
-          hidePreloader(); // 오류 발생 시에도 로더 숨기기
-        });
-
+      renderCategories();
+      hidePreloader(); 
       document.getElementById('langSelector').value = CURRENT_PAGE_LANG;
 
       activateEditor(CURRENT_PAGE_LANG);
 
-      // 언어 선택 드롭다운 이벤트 리스너
       document.getElementById('langSelector').addEventListener('change', (event) => {
         const selectedLangCode = event.target.value;
         activateEditor(selectedLangCode);
@@ -815,7 +772,6 @@
             }
             const colorPalette = btn.closest('[data-color-tool]').querySelector('[data-color-palette]');
             if (colorPalette) {
-              // 다른 팔레트 닫기
               document.querySelectorAll('.color-palette').forEach(cp => {
                 if(cp !== colorPalette) cp.classList.remove('show');
               });
