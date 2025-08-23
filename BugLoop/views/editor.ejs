@@ -189,6 +189,8 @@
             </label>
           <% } %>
         </div>
+
+
       </div>
     <% }) %> 
 
@@ -386,6 +388,7 @@
       function format(command, value = null) {
           if (!currentActiveEditor) return; 
           currentActiveEditor.focus();
+          restoreSelection(); // 포커스 후 선택 범위 복원
           document.execCommand(command, false, value);
           setTimeout(detectStyle, 100);
       }
@@ -542,7 +545,8 @@
         }
         updateCurrentStyle('p');
       }
-
+      
+      // **이 부분이 수정되었습니다**
       function saveSelection() {
           const sel = window.getSelection();
           if (sel.rangeCount > 0 && currentActiveEditor && currentActiveEditor.contains(sel.getRangeAt(0).commonAncestorContainer)) {
@@ -552,6 +556,7 @@
               
               const newRange = document.createRange();
               // 시작점과 끝점을 항상 올바른 순서로 설정
+              // Node.DOCUMENT_POSITION_FOLLOWING은 `endContainer`가 `startContainer` 뒤에 오는지 확인
               if (range.collapsed || startContainer.compareDocumentPosition(endContainer) & Node.DOCUMENT_POSITION_FOLLOWING) {
                 newRange.setStart(startContainer, startOffset);
                 newRange.setEnd(endContainer, endOffset);
@@ -567,6 +572,7 @@
           }
       }
       
+      // **이 부분이 수정되었습니다**
       function restoreSelection() {
         if (!savedRange) return;
         const sel = window.getSelection();
@@ -577,6 +583,7 @@
             return;
         }
         
+        // 기존 선택 범위를 모두 제거하고, 정규화된 savedRange를 추가
         sel.removeAllRanges();
         sel.addRange(savedRange);
       }
