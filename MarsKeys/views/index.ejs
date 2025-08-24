@@ -1,887 +1,218 @@
-<!DOCTYPE html>
-<% const isKorean = (lang || '').toLowerCase().startsWith('ko'); %>
-<html lang="<%= lang %>">
+<!doctype html>
+<html lang="<%= (typeof lang !== 'undefined' ? lang : 'en') %>">
 <head>
   <meta charset="utf-8" />
+  <title>MarsKeys • three.js Cube</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>
-    <% if (isSearch) { %>
-      <%= locale.search_results_for %>: <%= searchKeyword %>
-    <% } else if (selectedCategory) { %>
-      <%= selectedCategory %>
-    <% } else { %>
-      <%= locale.marskeys_title %>
-    <% } %>
-  </title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <% if (isKorean) { %>
-    <link href="https://fonts.googleapis.com/css2?family=Yeon+Sung&display=swap" rel="stylesheet">
-  <% } %>
-
+  <!-- Inline CSS -->
   <style>
     :root {
       --bg: #0e1016;
-      --text: #eef2f8;
-      --muted: #9aa3b2;
-      --fill-int: 0%;
-
-      --galaxy-text:
-        radial-gradient(1.4px 1.4px at 8% 12%, rgba(255,255,255,.98), transparent 60%),
-        radial-gradient(1.6px 1.6px at 18% 64%, rgba(255,155,230,.95), transparent 60%),
-        radial-gradient(1.4px 1.4px at 32% 22%, rgba(150,180,255,.95), transparent 60%),
-        radial-gradient(1.2px 1.2px at 44% 78%, rgba(255,225,180,.92),  transparent 60%),
-        radial-gradient(1.8px 1.8px at 58% 36%, rgba(205,220,255,.98),  transparent 60%),
-        radial-gradient(1.3px 1.3px at 70% 18%, rgba(235,160,255,.95),  transparent 60%),
-        radial-gradient(1.5px 1.5px at 80% 70%, rgba(120,160,255,.95),  transparent 60%),
-        radial-gradient(1.2px 1.2px at 92% 42%, rgba(255,245,225,.95),  transparent 60%),
-        conic-gradient(from 130deg at 50% 50%,
-          rgba(130,160,255,.42) 0%,
-          rgba(255,120,220,.45) 14%,
-          rgba(90,130,255,.44) 28%,
-          rgba(255,90,190,.45) 42%,
-          rgba(130,170,255,.44) 58%,
-          rgba(230,150,255,.45) 72%,
-          rgba(210,230,255,.42) 100%);
+      --panel: rgba(255,255,255,.04);
+      --text: #cfd6e6;
+      --accent: #9bb4ff;
     }
-
-    * { box-sizing: border-box }
-
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      overflow-x: hidden;
-      overflow-y: hidden;
+      font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow: hidden; /* full-canvas */
     }
-
-    body.lang-ko #welcome { font-family: 'Montserrat', 'Michroma', system-ui, sans-serif; font-weight: 400; }
-
-    .wrap { position: relative; min-height: 100svh; padding: 5vw; overflow: visible; }
-
-    .brand { margin: 0; line-height: 1; font-family: "Michroma", system-ui, sans-serif; position: relative; z-index: 40; }
-
-    .brand-line { display: block; font-size: clamp(56px, min(14vw, 28vh), 200px); line-height: 1.06; padding-bottom: 0.18em; overflow: visible; position: relative; }
-    .brand-line+.brand-line { margin-top: -0.32em; }
-
-    .ink{
-      display:inline-block; color:transparent; -webkit-text-fill-color:transparent;
-      -webkit-background-clip:text; background-clip:text;
-      background-repeat:no-repeat,no-repeat;
-      background-size:var(--fill-int) 100%, 100% 100%;
-      background-image:var(--galaxy-text), linear-gradient(#fff,#fff);
-      letter-spacing:0; padding-bottom:.28em; transform:translateZ(0);
-      animation: galaxy-pan 30s linear infinite;
+    #app {
+      position: fixed; inset: 0;
     }
-    @keyframes galaxy-pan {
-      0%   { background-position: 0 0, center; }
-      50%  { background-position: -2% -1%, center; }
-      100% { background-position: 0 0, center; }
-    }
+    canvas { display: block; outline: none; }
 
-    .tagline { font-size: clamp(16px, 2.6vw, 28px); font-weight: 600; margin: 1rem 0 0; color: var(--muted); position: relative; transition: color .55s ease; will-change: color; }
-    .tagline.shine-to-white { overflow: visible; }
-    .tagline.shine-to-white::before{
-      content: attr(data-text); position: absolute; inset: 0; pointer-events: none;
-      color: transparent; -webkit-text-fill-color: transparent;
-      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.16) 32%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.16) 68%, rgba(255,255,255,0) 100%);
-      -webkit-background-clip: text; background-clip: text;
-      transform: translateX(-120%) skewX(-18deg); filter: blur(.3px);
-      animation: shine-sweep 900ms cubic-bezier(.2,.7,.2,1) forwards;
-    }
-    .tagline.to-white { color: #fff; }
-    @keyframes shine-sweep { to { transform: translateX(120%) skewX(-18deg); } }
-
-    #counter {
-      position: absolute; right: 5vw; bottom: clamp(16px, 6vh, 48px); text-align: right;
-      font-size: clamp(28px, min(7vw, 10vh), 96px); font-family: "Michroma", system-ui, sans-serif;
-      font-weight: 900; color: white; user-select: none; pointer-events: none; transition: opacity .6s ease; z-index: 40; margin: 0;
-    }
-
-    #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
-
-    /* 🎸 현 시뮬레이터 */
-    #lineViz { position: fixed; pointer-events: auto; z-index: 55; }
-
-    /* ====== WELCOME ====== */
-    #welcome {
-      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0.86);
-      opacity: 0; font-size: clamp(48px, 10vw, 130px); font-family: 'Montserrat', system-ui, sans-serif; color: white;
-      letter-spacing: 0.01em; max-width: 92vw; white-space: nowrap;
-      transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1), text-shadow 1s ease-out;
-      will-change: opacity, transform, text-shadow; pointer-events: none; z-index: 60; text-shadow: 0 0 0 transparent;
-
-      --circle-x: -9999px;
-      --circle-y: -9999px;
-      --circle-r: 0px;
-    }
-    #welcome.visible { opacity: 1; transform: translate(-50%, -50%) scale(1.22); }
-    #welcome.welcome-glow { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4); }
-
-    #welcome.darken-overlap::after{
-      content: attr(data-text);
-      position: absolute; inset: 0;
-      color: #000;
-      opacity: .45;
+    /* small on-screen help */
+    .hint {
+      position: fixed; left: 12px; bottom: 12px;
+      padding: .55rem .7rem;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: .7rem;
+      backdrop-filter: blur(4px);
+      user-select: none;
       pointer-events: none;
-      -webkit-mask: radial-gradient(circle var(--circle-r) at var(--circle-x) var(--circle-y), #000 98%, transparent 100%);
-              mask: radial-gradient(circle var(--circle-r) at var(--circle-x) var(--circle-y), #000 98%, transparent 100%);
+      color: var(--text);
+      font-size: 13px;
+      opacity: .9;
+    }
+    .hint kbd {
+      font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 0 .35rem;
+      border-radius: .35rem;
     }
 
-    .scrollable-content { padding: 0 5vw 6rem; text-align: center; display: none; max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
-    .scrollable-content p { max-width: 800px; margin: 0 auto 1.5rem; line-height: 1.8; color: var(--muted); font-size: clamp(14px, 2vw, 18px); }
-    .scrollable-content .temp-box { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 2rem; margin: 2rem auto; max-width: 900px; }
-
-    @media (max-width: 768px) {
-      .brand-line { line-height: 1.08; padding-bottom: 0.16em; }
-      .brand-line+.brand-line { margin-top: -0.26em; }
+    /* optional watermark */
+    .brand {
+      position: fixed; right: 12px; top: 12px;
+      padding: .4rem .6rem;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: .6rem;
+      backdrop-filter: blur(4px);
+      font-weight: 600; font-size: 13px; letter-spacing: .2px;
+      user-select: none;
     }
   </style>
+
+  <!-- Import maps (CDN modules) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.163.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
-
-<body class="<%= isKorean ? 'lang-ko' : '' %>">
-  <main class="wrap" id="wrap">
-    <canvas id="particleCanvas"></canvas>
-    <canvas id="lineViz"></canvas>
-
-    <h1 class="brand" id="brand">
-      <span class="brand-line" data-c="red"><span class="ink" id="mars"><%= locale.mars_keys.split(' ')[0] %></span></span>
-      <span class="brand-line" data-c="blue"><span class="ink" id="keys"><%= locale.mars_keys.split(' ')[1] %></span></span>
-    </h1>
-
-    <p class="tagline shine-to-white" data-text="<%= locale.game_music_studio %>"><%= locale.game_music_studio %></p>
-
-    <div id="counter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">0%</div>
-    <div id="welcome" data-text="<%= locale.welcome %>"><%= locale.welcome %></div>
-  </main>
-
-  <div id="scrollContent" class="scrollable-content">
-    <p><%= locale.game_music_studio %> <%= locale.marskeys_title %>에 오신 것을 환영합니다...</p>
-    <div class="temp-box">
-      <h3>우리의 서비스</h3>
-      <p>게임 OST, SFX, VO, 인터랙티브 음악 시스템...</p>
-    </div>
-    <div class="temp-box">
-      <h3>포트폴리오</h3>
-      <p>RPG, SF 어드벤처 등...</p>
-    </div>
-    <div class="temp-box">
-      <h3>문의</h3>
-      <p>협업 및 프로젝트 문의는 언제든지 환영합니다.</p>
-    </div>
-    <div style="height:60vh;"></div>
-    <div class="temp-box">
-      <p>마지막 임시 콘텐츠</p>
-    </div>
+<body>
+  <div id="app"></div>
+  <div class="hint">
+    <strong>Cube demo</strong> — <kbd>hover</kbd> grows • drag to orbit • scroll to zoom • tap = toggle
   </div>
+  <div class="brand">MarsKeys · three.js</div>
 
-  <script>
-    (function() {
-      const html = document.documentElement;
-      const body = document.body;
-      const wrap = document.getElementById('wrap');
-      const counterEl = document.getElementById("counter");
-      const welcome = document.getElementById("welcome");
-      const scrollContent = document.getElementById("scrollContent");
-      const particleCanvas = document.getElementById('particleCanvas');
-      const pctx = particleCanvas.getContext('2d');
+  <!-- Inline JS -->
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-      const tagline = document.querySelector('.tagline');
-      tagline.addEventListener('animationend', (event) => {
-        if (event.animationName === 'shine-sweep') tagline.classList.add('to-white');
-      });
+    // --- basics
+    const rootEl = document.getElementById("app");
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0e1016);
 
-      // ===== Progress =====
-      let p = 0;
-      let autoAnimating = false,
-          isFinalized = false,
-          particlesGenerated = false;
-      const VANISH_START = 0.5;
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(2.2, 1.6, 2.2);
 
-      const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    rootEl.appendChild(renderer.domElement);
 
-      // ===== Particles =====
-      let particles = [];
-      const MAX_PARTICLES = 5000;
-      let particlePhase = 'idle';
-      let phaseStartTime = 0;
+    // --- lights
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x2b2b2b, 0.8);
+    scene.add(hemi);
+    const dir = new THREE.DirectionalLight(0xffffff, 1.1);
+    dir.position.set(3, 4, 2);
+    dir.castShadow = false;
+    scene.add(dir);
 
-      // ===== Orbs =====
-      let bigCircle = null;   // 가장 큰 원(단색, 웰컴 중앙 고정)
-      let floatOrbs = [];     // 단색 부유 원 5개
-      let orbsStarted = false;
+    // --- optional ground
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(20, 20),
+      new THREE.MeshStandardMaterial({ color: 0x141826, roughness: 1, metalness: 0 })
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.5;
+    ground.receiveShadow = true;
+    scene.add(ground);
 
-      function resizeParticleCanvas() {
-        const dpr = Math.max(1, window.devicePixelRatio || 1);
-        const rect = wrap.getBoundingClientRect();
-        particleCanvas.width = Math.floor(rect.width * dpr);
-        particleCanvas.height = Math.floor(rect.height * dpr);
-        particleCanvas.style.width = rect.width + 'px';
-        particleCanvas.style.height = rect.height + 'px';
-        pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        pctx.clearRect(0, 0, rect.width, rect.height);
-      }
+    // --- controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.target.set(0, 0.25, 0);
 
-      function setProgress(v) {
-        p = Math.max(0, Math.min(1, v));
-        const pct = Math.round(p * 100);
-        html.style.setProperty('--fill-int', pct + '%');
-        if (!isFinalized) {
-          counterEl.textContent = pct + "%";
-          counterEl.setAttribute('aria-valuenow', String(pct));
-        }
-        if (p >= 1 && !particlesGenerated && !isFinalized) {
-          generateParticles();
-          fadeOutText();
-          showWelcome();
-          runParticleShow();
-        }
-      }
+    // --- raycasting for hover
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let pointerInside = false;
+    function onPointerMove(e) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      pointerInside = true;
+    }
+    function onPointerLeave() { pointerInside = false; }
+    renderer.domElement.addEventListener("pointermove", onPointerMove);
+    renderer.domElement.addEventListener("pointerleave", onPointerLeave);
 
-      function startAutoAnimation() {
-        if (autoAnimating || isFinalized) return;
-        autoAnimating = true;
-        function step() {
-          if (p < 1) {
-            p = Math.min(1, p + 0.005);
-            setProgress(p);
-            requestAnimationFrame(step);
-          } else autoAnimating = false;
-        }
-        step();
-      }
+    // --- load GLB (export your Blender cube to /public/models/cube.glb)
+    const MODEL_URL = "/models/cube.glb";
+    const loader = new GLTFLoader();
 
-      // 텍스트 샘플링
-      function drawTextToCanvas(text, fontSize, fontFamily, el) {
-        const offCanvas = document.createElement('canvas');
-        const offCtx = offCanvas.getContext('2d');
-        const rect = el.getBoundingClientRect();
-        offCanvas.width = Math.ceil(rect.width);
-        offCanvas.height = Math.ceil(rect.height);
-        offCtx.font = `${fontSize}px ${fontFamily}`;
-        offCtx.fillStyle = 'white';
-        offCtx.textBaseline = 'alphabetic';
-        const m = offCtx.measureText(text);
-        const ascent = m.actualBoundingBoxAscent, descent = m.actualBoundingBoxDescent;
-        const yOffset = (offCanvas.height / 2) + (ascent - descent) / 2;
-        offCtx.fillText(text, 0, yOffset);
-        return { canvas: offCanvas };
-      }
+    let cubeRoot = null;
+    let hover = false;
+    let tapToggle = false;
 
-      function computeStepForTarget(canvas) {
-        const area = canvas.width * canvas.height;
-        const target = IS_MOBILE ? 1500 : 5000;
-        const estGlyphArea = area * 0.45;
-        return Math.max(3, Math.floor(Math.sqrt(estGlyphArea / Math.max(1, target))));
-      }
-
-      function pickStarColor(){
-        const r = Math.random();
-        if (r < 0.25) return 'rgba(255,255,255,0.98)';
-        if (r < 0.50) return 'rgba(120,160,255,0.96)';
-        if (r < 0.75) return 'rgba(235,160,255,0.96)';
-        return 'rgba(255,120,220,0.96)';
-      }
-
-      function generateParticles() {
-        particlesGenerated = true;
-        particles.length = 0;
-
-        const wrapRect = wrap.getBoundingClientRect();
-        const lines = [
-          { el: document.getElementById('mars').parentElement, textEl: document.getElementById('mars') },
-          { el: document.getElementById('keys').parentElement, textEl: document.getElementById('keys') }
-        ];
-
-        lines.forEach(({ el, textEl }) => {
-          const rect = el.getBoundingClientRect();
-          const style = getComputedStyle(textEl);
-          const fontSize = parseFloat(style.fontSize);
-          const fontFamily = style.fontFamily;
-
-          const { canvas } = drawTextToCanvas(textEl.textContent, fontSize, fontFamily, textEl);
-          const ctx = canvas.getContext('2d');
-          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = img.data;
-
-          const STEP = computeStepForTarget(canvas);
-
-          for (let y = 0; y < canvas.height; y += STEP) {
-            for (let x = 0; x < canvas.width; x += STEP) {
-              const idx = (y * canvas.width + x) * 4;
-              if (data[idx + 3] > 128) {
-                const px = rect.left - wrapRect.left + x;
-                const py = rect.top - wrapRect.top + y;
-
-                const spd = 0.35 + Math.random() * 0.4;
-                const ang = Math.random() * Math.PI * 2;
-                particles.push({
-                  x: px, y: py,
-                  vx: Math.cos(ang) * spd,
-                  vy: Math.sin(ang) * spd,
-                  alpha: 1,
-                  color: pickStarColor(),
-                  initialSize: 1 + Math.random() * 0.8,
-                  targetSize: 1.5 + Math.random() * 3.5,
-                  currentSize: 0,
-                  sizeGrowthRate: 0.02 + Math.random() * 0.01,
-                  tw: 0.5 + Math.random() * 0.8,
-                  twPhase: Math.random() * Math.PI * 2
-                });
-              }
+    loader.load(
+      MODEL_URL,
+      (gltf) => {
+        cubeRoot = gltf.scene;
+        cubeRoot.traverse((o) => {
+          if (o.isMesh) {
+            // If the exported material isn't PBR, swap to a decent standard one
+            if (!o.material || !("metalness" in o.material)) {
+              o.material = new THREE.MeshStandardMaterial({
+                color: 0x9bb4ff,
+                roughness: 0.45,
+                metalness: 0.2
+              });
             }
+            o.castShadow = true;
           }
         });
-
-        if (particles.length > MAX_PARTICLES) {
-          const sampled = [];
-          for (let i = 0; i < MAX_PARTICLES; i++) sampled.push(particles[(Math.random() * particles.length) | 0]);
-          particles = sampled;
-        }
+        cubeRoot.position.set(0, 0, 0);
+        scene.add(cubeRoot);
+      },
+      undefined,
+      (err) => {
+        console.error("GLB load error:", err);
       }
+    );
 
-      function fadeOutText() {
-        document.querySelectorAll('.ink').forEach(el => {
-          el.style.transition = 'opacity .3s ease';
-          el.style.opacity = '0';
-        });
-      }
+    // --- mobile: tap toggles scale
+    renderer.domElement.addEventListener("pointerdown", () => { tapToggle = !tapToggle; });
 
-      function showWelcome() {
-        setTimeout(() => { counterEl.style.opacity = 0; }, 350);
-        setTimeout(() => { 
-          welcome.classList.add("visible", "darken-overlap");
-          setTimeout(startFloatingOrbs, 200); // 웰컴 보인 직후 공들 시작
-        }, 2000);
-        setTimeout(() => { 
-          scrollContent.style.display = "block"; 
-          isFinalized = true; 
-          body.style.overflowY = "auto"; 
-        }, 1500);
-      }
+    // --- resize
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-      // ===== Orbs =====
-      function getWelcomeCenterInWrap(){
-        const wrapRect = wrap.getBoundingClientRect();
-        const wrect = welcome.getBoundingClientRect();
-        return {
-          x: (wrect.left - wrapRect.left) + wrect.width/2,
-          y: (wrect.top  - wrapRect.top ) + wrect.height/2,
-          w: wrect.width, h: wrect.height
-        };
-      }
+    // --- animate
+    const base = new THREE.Vector3(1, 1, 1);
+    const big  = new THREE.Vector3(1.35, 1.35, 1.35);
+    const clock = new THREE.Clock();
 
-      function startFloatingOrbs(){
-        if (orbsStarted) return;
-        orbsStarted = true;
+    function tick() {
+      const dt = clock.getDelta();
 
-        // 가장 큰 원: 단색 + 중앙 고정
-        const center = getWelcomeCenterInWrap();
-        const baseR = Math.max(40, Math.min(center.h * 0.55, Math.min(particleCanvas.width, particleCanvas.height) * 0.33));
-        bigCircle = {
-          x: center.x, y: center.y,
-          alpha: 1,
-          color: '#96C8FF', // 단색
-          initialSize: baseR * 0.6,
-          targetSize: baseR,
-          currentSize: 0,
-          sizeGrowthRate: 0.04,
-          isBigCircle: true
-        };
-
-        // 작은 부유 원 5개 (단색, 불투명)
-        const orbCount = 5;
-        const colors = ['#FF82D2','#789CFF','#EAA0FF','#FFD18A','#82E9FF'];
-        const rect = wrap.getBoundingClientRect();
-        floatOrbs = [];
-        for (let i=0;i<orbCount;i++){
-          const r = (IS_MOBILE ? (12 + Math.random()*20) : (18 + Math.random()*36));
-          let ox = Math.random()*rect.width, oy = Math.random()*rect.height;
-          const cdist = Math.hypot(ox - center.x, oy - center.y);
-          if (cdist < (baseR + r*2)) {
-            const ang = Math.random()*Math.PI*2;
-            ox = center.x + Math.cos(ang)*(baseR + r*2 + 30);
-            oy = center.y + Math.sin(ang)*(baseR + r*2 + 30);
-          }
-          floatOrbs.push({
-            x: ox, y: oy, r,
-            vx: (Math.random()-0.5)*0.6,
-            vy: (Math.random()-0.5)*0.6,
-            color: colors[i % colors.length],
-            jitter: 0.02 + Math.random()*0.02,
-            maxV: 0.35 + Math.random()*0.15
-          });
-        }
-      }
-
-      // ===== Particle show =====
-      function runParticleShow() {
-        particlePhase = 'break';
-        phaseStartTime = performance.now();
-        requestAnimationFrame(frame);
-      }
-      
-      function frame(now) {
-        const rect = wrap.getBoundingClientRect();
-        const W = rect.width, H = rect.height;
-        pctx.clearRect(0, 0, W, H);
-
-        const phaseDuration = 1500;
-        if (particlePhase === 'break' && now - phaseStartTime >= phaseDuration) {
-          for (const pt of particles) {
-            pt.vx *= 0.15 + Math.random() * 0.1;
-            pt.vy *= 0.15 + Math.random() * 0.1;
-          }
-          particlePhase = 'float';
-          phaseStartTime = now;
-        }
-
-        // 파티클 업데이트
-        for (const pt of particles) {
-          if (pt.currentSize < pt.initialSize) {
-            pt.currentSize += (pt.initialSize - pt.currentSize) * pt.sizeGrowthRate * 5;
-            if (pt.currentSize >= pt.initialSize) pt.currentSize = pt.initialSize;
-          } else if (pt.currentSize < pt.targetSize) {
-            pt.currentSize += (pt.targetSize - pt.currentSize) * pt.sizeGrowthRate;
-            if (pt.currentSize > pt.targetSize) pt.currentSize = pt.targetSize;
-          }
-
-          if (particlePhase === 'break') {
-            pt.vx *= 0.97; pt.vy *= 0.97;
-            pt.vx += (Math.random() - 0.5) * 0.03;
-            pt.vy += (Math.random() - 0.5) * 0.03;
-          } else {
-            pt.vx += (Math.random() - 0.5) * 0.006;
-            pt.vy += (Math.random() - 0.5) * 0.006;
-
-            const maxV = 0.22;
-            const sp = Math.hypot(pt.vx, pt.vy);
-            if (sp > maxV) { pt.vx = (pt.vx / sp) * maxV; pt.vy = (pt.vy / sp) * maxV; }
-            pt.alpha *= 0.999;
-          }
-
-          pt.x += pt.vx; pt.y += pt.vy;
-
-          const m = 24;
-          if (pt.x < -m) pt.x = W + m;
-          if (pt.x > W + m) pt.x = -m;
-          if (pt.y < -m) pt.y = H + m;
-          if (pt.y > H + m) pt.y = -m;
-        }
-
-        // 큰 원(중앙 고정, 단색)
-        if (bigCircle) {
-          const c = getWelcomeCenterInWrap();
-          bigCircle.x = c.x; bigCircle.y = c.y;
-          if (bigCircle.currentSize < bigCircle.targetSize) {
-            bigCircle.currentSize += (bigCircle.targetSize - bigCircle.currentSize) * bigCircle.sizeGrowthRate;
-          }
-        }
-
-        // 작은 단색 부유 원들
-        if (floatOrbs.length){
-          for (const o of floatOrbs){
-            o.vx += (Math.random()-0.5) * o.jitter;
-            o.vy += (Math.random()-0.5) * o.jitter;
-            const sp = Math.hypot(o.vx, o.vy);
-            if (sp > o.maxV){ o.vx = (o.vx/sp)*o.maxV; o.vy = (o.vy/sp)*o.maxV; }
-
-            o.x += o.vx; o.y += o.vy;
-
-            // 중앙 큰 원과 살짝 충돌 회피
-            if (bigCircle){
-              const dx = o.x - bigCircle.x, dy = o.y - bigCircle.y;
-              const dist = Math.hypot(dx,dy);
-              const minD = (bigCircle.currentSize + o.r) * 0.9;
-              if (dist < minD && dist > 0.001){
-                const push = (minD - dist) * 0.04;
-                o.x += (dx/dist) * push;
-                o.y += (dy/dist) * push;
-              }
-            }
-
-            // 경계 래핑
-            const pad = o.r + 8;
-            if (o.x < -pad) o.x = W + pad;
-            if (o.x > W + pad) o.x = -pad;
-            if (o.y < -pad) o.y = H + pad;
-            if (o.y > H + pad) o.y = -pad;
-          }
-        }
-
-        // ======== DRAW (모두 단색, 불투명, 그라데이션/알파 없음) ========
-        pctx.globalCompositeOperation = 'source-over';
-        pctx.shadowBlur = 0;
-        pctx.shadowColor = 'transparent';
-
-        // (1) 큰 원
-        if (bigCircle && bigCircle.currentSize > 0.5) {
-          pctx.fillStyle = bigCircle.color;     // 단색
-          pctx.beginPath();
-          pctx.arc(bigCircle.x, bigCircle.y, bigCircle.currentSize, 0, Math.PI * 2);
-          pctx.fill();
-        }
-
-        // (2) 작은 원들
-        for (const o of floatOrbs){
-          pctx.fillStyle = o.color;            // 단색
-          pctx.beginPath();
-          pctx.arc(o.x, o.y, o.r, 0, Math.PI*2);
-          pctx.fill();
-        }
-
-        // (3) 별 파티클
-        for (const pt of particles) {
-          if (pt.alpha <= 0.01) continue;
-          const tw = 0.85 + 0.15 * Math.sin(now * 0.006 * pt.tw + pt.twPhase);
-          pctx.globalAlpha = Math.max(0, Math.min(1, pt.alpha * tw));
-          pctx.fillStyle = pt.color;
-          pctx.beginPath(); pctx.arc(pt.x, pt.y, pt.currentSize, 0, Math.PI * 2); pctx.fill();
-        }
-        pctx.globalAlpha = 1;
-
-        // (4) welcome 어둡게 마스크 좌표 동기화
-        if (bigCircle && welcome && welcome.classList.contains('darken-overlap')) {
-          const wrapRect = wrap.getBoundingClientRect();
-          const wrect = welcome.getBoundingClientRect();
-          const ow = welcome.offsetWidth || wrect.width;
-          const oh = welcome.offsetHeight || wrect.height;
-          const scaleX = wrect.width / ow || 1;
-          const scaleY = wrect.height / oh || 1;
-
-          const cxLocal = (bigCircle.x + wrapRect.left - wrect.left) / scaleX;
-          const cyLocal = (bigCircle.y + wrapRect.top  - wrect.top ) / scaleY;
-          const rLocal  = bigCircle.currentSize / Math.max(scaleX, scaleY);
-
-          welcome.style.setProperty('--circle-x', `${cxLocal}px`);
-          welcome.style.setProperty('--circle-y', `${cyLocal}px`);
-          welcome.style.setProperty('--circle-r', `${rLocal}px`);
-        }
-        
-        requestAnimationFrame(frame);
-      }
-
-      // ===== Progress input =====
-      function onWheel(e) {
-        if (isFinalized) return;
-        e.preventDefault();
-        const dy = e.deltaY;
-        if (p < 0.5) { setProgress(p + dy * 0.0018); startAutoAnimation(); }
-        else if (!autoAnimating) { startAutoAnimation(); }
-      }
-      function onTouchMove(e) {
-        if (isFinalized) return;
-        const touch = e.touches[0]; const currentY = touch.clientY;
-        if (typeof onTouchMove.lastY !== "undefined") {
-          const dy = onTouchMove.lastY - currentY;
-          if (p < 0.5) { setProgress(p + dy * 0.0018 * 2); if (p >= 0.5) startAutoAnimation(); }
-          else if (!autoAnimating && dy > 0) { startAutoAnimation(); }
-        }
-        onTouchMove.lastY = currentY;
-      }
-      function onTouchEnd() { if (!isFinalized) onTouchMove.lastY = undefined; }
-
-      window.addEventListener('resize', resizeParticleCanvas);
-      window.addEventListener('wheel', onWheel, { passive: false });
-      window.addEventListener('touchstart', (e) => { onTouchMove.lastY = e.touches[0].clientY; });
-      window.addEventListener('touchmove', onTouchMove, { passive: false });
-      window.addEventListener('touchend', onTouchEnd);
-
-      resizeParticleCanvas();
-      setProgress(0);
-
-      /* ============================================================
-         🎸 현 시뮬레이터 (드래그 전용 + 꼬리 제거)
-         ============================================================ */
-      const lineCanvas = document.getElementById('lineViz');
-      const lctx = lineCanvas.getContext('2d');
-
-      const LINE_THICK = 8;
-      const LINE_H_DESKTOP = 72;
-      const LINE_H_MOBILE  = 96;
-      const V_PAD_VH = 18;
-
-      let tension    = 0.8;
-      let loss       = 0.986;
-      let SUBSTEPS   = 10;
-      let radiusPx   = 60;
-      const K_MOUSE  = 1.5;
-      const C_MOUSE  = 0.08;
-      const HARD_FACTOR = 0.9;
-      const RELEASE_KICK = 0.25;
-
-      let numPoints = 240;
-      let dx = 1, invDX2 = 1;
-      let initialY = 0;
-      let string = [];
-      let MAX_PULL = 0;
-
-      class StringPoint { constructor(x, y){ this.x=x; this.y=y; this.oldY=y; this.acc=0; } }
-
-      let vanishBaseWidth = null, vanishBaseLeft = null;
-
-      function placeLineViz() {
-        const Wwin = window.innerWidth;
-        const Hwin = window.innerHeight;
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-        if (isMobile) {
-          const desiredWidth = Math.round(Wwin * 0.9);
-          const midY   = Math.round(Hwin / 2);
-          const cssHeightBase = LINE_H_MOBILE;
-          const padPx = Math.round((V_PAD_VH / 100) * Hwin);
-          const cssHeight = cssHeightBase + padPx * 2;
-          const left = Math.round((Wwin - desiredWidth) / 2);
-
-          lineCanvas.style.left = left + 'px';
-          lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
-          lineCanvas.style.width  = desiredWidth + 'px';
-          lineCanvas.style.height = cssHeight + 'px';
-
-          const dpr = Math.max(1, window.devicePixelRatio || 1);
-          lineCanvas.width  = Math.floor(desiredWidth  * dpr);
-          lineCanvas.height = Math.floor(cssHeight * dpr);
-          lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-          MAX_PULL = Math.floor(cssHeight * 0.42);
-          setupString(desiredWidth, cssHeight);
-          if (vanishBaseWidth === null) {
-            vanishBaseWidth = desiredWidth;
-            vanishBaseLeft  = left;
-          }
+      if (cubeRoot) {
+        // hover detection (desktop)
+        if (pointerInside) {
+          raycaster.setFromCamera(pointer, camera);
+          const hits = raycaster.intersectObject(cubeRoot, true);
+          hover = hits.length > 0;
         } else {
-          const marsLine = document.getElementById('mars')?.parentElement || null;
-          const keysLine = document.getElementById('keys')?.parentElement || null;
-          let left   = Math.round(Wwin * 0.2);
-          let width  = Math.round(Wwin * 0.6);
-          let midY   = Math.round(Hwin / 2);
-          try {
-            if (marsLine && keysLine) {
-              const wrapRect = wrap.getBoundingClientRect();
-              const wrapCS = getComputedStyle(wrap);
-              const padLeft = parseFloat(wrapCS.paddingLeft) || 0;
-              const additionalPadding = 250;
-
-              left = Math.round(wrapRect.left + padLeft + additionalPadding);
-              const rightLimit = Math.min(keysLine.getBoundingClientRect().right, wrapRect.right - padLeft * 0.25);
-              width = Math.max(260, Math.round(rightLimit - left));
-
-              const marsBottom = marsLine.getBoundingClientRect().bottom;
-              const keysTop = keysLine.getBoundingClientRect().top;
-              midY = Math.round((marsBottom + keysTop) / 2);
-            }
-          } catch(e) { /* fallback */ }
-
-          const padPx = Math.round((V_PAD_VH / 100) * Hwin);
-          const cssHeight = LINE_H_DESKTOP + padPx * 2;
-          width = Math.min(width, Wwin);
-          left  = Math.max(0, Math.min(left, Wwin - width));
-
-          lineCanvas.style.left = left + 'px';
-          lineCanvas.style.top  = (midY - cssHeight/2) + 'px';
-          lineCanvas.style.width  = width + 'px';
-          lineCanvas.style.height = cssHeight + 'px';
-
-          const dpr = Math.max(1, window.devicePixelRatio || 1);
-          lineCanvas.width  = Math.floor(width  * dpr);
-          lineCanvas.height = Math.floor(cssHeight * dpr);
-          lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          MAX_PULL = Math.floor(cssHeight * 0.42);
-          setupString(width, cssHeight);
-          if (vanishBaseWidth === null) {
-            vanishBaseWidth = width;
-            vanishBaseLeft  = left;
-          }
+          hover = false;
         }
+
+        // scale with smooth lerp
+        const target = (hover || tapToggle) ? big : base;
+        cubeRoot.scale.lerp(target, 10 * dt);
+
+        // subtle idle rotation
+        cubeRoot.rotation.y += 0.4 * dt;
       }
 
-      function setupString(W, H){
-        numPoints = Math.max(160, Math.min(360, Math.round(W / 4)));
-        string = [];
-        for (let i=0;i<numPoints;i++){
-          const x = (i/(numPoints-1)) * W;
-          string.push(new StringPoint(x, H/2));
-        }
-        initialY = H/2;
-        dx = W / (numPoints - 1);
-        invDX2 = 1 / (dx*dx);
-      }
-
-      // ===== 드래그 전용 =====
-      const mouse = { active:false, x:0, y:0 };
-      let isDragging = false;
-      let dragStartX = 0, dragStartY = 0;
-      const DRAG_THRESHOLD = 4;
-
-      function getPos(e){
-        const r = lineCanvas.getBoundingClientRect();
-        const cx = (e.clientX??e.touches?.[0].clientX) - r.left;
-        const cy = (e.clientY??e.touches?.[0].clientY) - r.top;
-        return {x:cx, y:cy};
-      }
-
-      lineCanvas.addEventListener('mousedown', e=>{
-        const {x,y} = getPos(e);
-        mouse.active = true; isDragging = false;
-        dragStartX = x; dragStartY = y;
-        mouse.x = x; mouse.y = y;
-      });
-      window.addEventListener('mousemove', e=>{
-        if (!mouse.active) return;
-        const {x,y} = getPos(e);
-        mouse.x = x; mouse.y = y;
-        if (!isDragging){
-          const dxm = x - dragStartX, dym = y - dragStartY;
-          if ((dxm*dxm + dym*dym) > DRAG_THRESHOLD*DRAG_THRESHOLD) isDragging = true;
-        }
-      });
-      window.addEventListener('mouseup', ()=>{
-        if (!mouse.active) return;
-        mouse.active = false; isDragging = false;
-        for (let i=0;i<numPoints;i++){
-          const disp = string[i].y - initialY;
-          string[i].oldY = string[i].y + RELEASE_KICK * disp;
-        }
-      });
-
-      lineCanvas.addEventListener('touchstart', e=>{
-        const {x,y} = getPos(e); e.preventDefault();
-        mouse.active = true; isDragging = false;
-        dragStartX = x; dragStartY = y;
-        mouse.x = x; mouse.y = y;
-      }, {passive:false});
-      lineCanvas.addEventListener('touchmove', e=>{
-        if (!mouse.active) return;
-        const {x,y} = getPos(e); e.preventDefault();
-        mouse.x = x; mouse.y = y;
-        if (!isDragging){
-          const dxm = x - dragStartX, dym = y - dragStartY;
-          if ((dxm*dxm + dym*dym) > DRAG_THRESHOLD*DRAG_THRESHOLD) isDragging = true;
-        }
-      }, {passive:false});
-      window.addEventListener('touchend', ()=>{
-        if (!mouse.active) return;
-        mouse.active = false; isDragging = false;
-        for (let i=0;i<numPoints;i++){
-          const disp = string[i].y - initialY;
-          string[i].oldY = string[i].y + RELEASE_KICK * disp;
-        }
-      });
-
-      function hannWeight(dist, R){
-        if (dist >= R) return 0;
-        const r = dist / R;
-        return 0.5 * (1 + Math.cos(Math.PI * r));
-      }
-
-      function applyMouseForce(){
-        if (!mouse.active || !isDragging) return;
-
-        let pullY = mouse.y - initialY;
-        if (Math.abs(pullY) > MAX_PULL) {
-          pullY = Math.sign(pullY) * MAX_PULL;
-        }
-
-        const FcapBase = 12;
-        const Fcap = FcapBase / (1 + HARD_FACTOR * tension);
-
-        for (let i = 1; i < numPoints - 1; i++) {
-          const p = string[i];
-          const distX = Math.abs(p.x - mouse.x);
-          const w = hannWeight(distX, radiusPx);
-          if (w <= 0) continue;
-
-          const vel = p.y - p.oldY;
-          const Fspring = K_MOUSE * (initialY + pullY - p.y);
-          const Fdamp   = -C_MOUSE * vel;
-          let F = (Fspring + Fdamp) * w;
-
-          if (F >  Fcap * w) F =  Fcap * w;
-          if (F < -Fcap * w) F = -Fcap * w;
-
-          p.acc += F;
-        }
-      }
-
-      function physicsStep(){
-        for (let i=1;i<numPoints-1;i++){
-          const prev = string[i-1].y, curr = string[i].y, next = string[i+1].y;
-          const lap = (prev - 2*curr + next) * invDX2;
-          string[i].acc = tension * lap;
-        }
-        applyMouseForce();
-
-        string[0].acc = 0; string[numPoints-1].acc = 0;
-
-        for (let i=1;i<numPoints-1;i++){
-          const p = string[i];
-          const tempY = p.y;
-          p.y = p.y*2 - p.oldY + p.acc;
-          p.oldY = tempY;
-          p.y = initialY + (p.y - initialY) * loss;
-        }
-        string[0].y = string[0].oldY = initialY;
-        string[numPoints-1].y = string[numPoints-1].oldY = initialY;
-      }
-
-      function drawString(){
-        const rect = lineCanvas.getBoundingClientRect();
-        const Wdraw = Math.max(0, Math.round(rect.width));
-        const Hdraw = Math.max(0, Math.round(rect.height));
-        if (!Wdraw || !Hdraw) return;
-
-        lctx.clearRect(0,0,Wdraw,Hdraw);
-
-        const smoothstep = (x) => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
-        const f = (p < VANISH_START) ? 0 : smoothstep((p - VANISH_START) / (1 - VANISH_START));
-        const thickness = Math.max(0.6, LINE_THICK * (1 - 0.9 * f));
-        lctx.globalAlpha = 1 - f;
-
-        lctx.beginPath();
-        lctx.strokeStyle = '#ffffff';
-        lctx.lineWidth = thickness;
-        lctx.lineCap = 'round';
-        lctx.lineJoin = 'round';
-
-        const baseW = (vanishBaseWidth || Wdraw);
-        const baseC = baseW / 2;
-        const scaleX = Wdraw / baseW;
-        const mapX = x => baseC + (x - baseC) * scaleX;
-
-        lctx.moveTo(mapX(string[0].x), string[0].y);
-        for (let i=1;i<numPoints;i++){
-          lctx.lineTo(mapX(string[i].x), string[i].y);
-        }
-        lctx.stroke();
-
-        lctx.globalAlpha = 1;
-      }
-
-      function animateString(){
-        for (let s=0; s<SUBSTEPS; s++) physicsStep();
-        drawString();
-        if(!isFinalized) requestAnimationFrame(animateString);
-      }
-
-      const ro = new ResizeObserver(() => { resizeParticleCanvas(); });
-      ro.observe(document.body);
-      ro.observe(document.getElementById('brand'));
-      window.addEventListener('resize', resizeParticleCanvas);
-      window.addEventListener('orientationchange', resizeParticleCanvas);
-      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(resizeParticleCanvas); }
-
-      resizeParticleCanvas();
-      requestAnimationFrame(animateString);
-
-      // 시작
-      setProgress(0);
-    })();
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
   </script>
 </body>
 </html>
