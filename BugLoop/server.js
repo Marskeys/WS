@@ -47,6 +47,50 @@ function mergeLocaleWithDefaults(lang) {
   return merged;
 }
 
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
+    const excludeConditions = testCategoryKeywords.map(() => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+
+    const [posts] = await db.query(`
+      SELECT p.id, p.updated_at, p.categories
+      FROM posts p
+      WHERE p.is_private = 0
+        AND NOT (${excludeConditions})
+      ORDER BY p.updated_at DESC
+    `, testCategoryKeywords);
+
+    let postUrls = [];
+    posts.forEach(post => {
+      supportedLangs.forEach(lang => {
+        postUrls.push(`
+  <url>
+    <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
+    <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+    <priority>0.80</priority>
+  </url>`);
+      });
+    });
+    const postXml = postUrls.join('');
+
+    const staticXml = [
+      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
+      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
+    ].join('');
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticXml}
+${postXml}
+</urlset>`;
+
+    res.type('application/xml; charset=utf-8').send(xml.trim());
+  } catch (err) {
+    console.error('🚨 sitemap.xml 생성 오류:', err);
+    res.status(500).send('Sitemap 생성 실패');
+  }
+});
+
 // slugMap은 제공된 파일에 있으므로 그대로 사용
 const { map: slugMap } = require('./slugMap');
 
@@ -1171,49 +1215,7 @@ app.get('/session', (req, res) => {
     res.json({ loggedIn: false });
   }
 });
-app.get('/sitemap.xml', async (req, res) => {
-  try {
-    const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
-    const excludeConditions = testCategoryKeywords.map(() => `FIND_IN_SET(?, p.categories)`).join(' OR ');
 
-    const [posts] = await db.query(`
-      SELECT p.id, p.updated_at, p.categories
-      FROM posts p
-      WHERE p.is_private = 0
-        AND NOT (${excludeConditions})
-      ORDER BY p.updated_at DESC
-    `, testCategoryKeywords);
-
-    let postUrls = [];
-    posts.forEach(post => {
-      supportedLangs.forEach(lang => {
-        postUrls.push(`
-  <url>
-    <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
-    <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
-    <priority>0.80</priority>
-  </url>`);
-      });
-    });
-    const postXml = postUrls.join('');
-
-    const staticXml = [
-      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
-      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
-    ].join('');
-
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticXml}
-${postXml}
-</urlset>`;
-
-    res.type('application/xml; charset=utf-8').send(xml.trim());
-  } catch (err) {
-    console.error('🚨 sitemap.xml 생성 오류:', err);
-    res.status(500).send('Sitemap 생성 실패');
-  }
-});
 
 
 // EJS에서 slug 변환 함수 쓰게 하기
