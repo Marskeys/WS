@@ -1174,7 +1174,8 @@ app.get('/session', (req, res) => {
 app.get('/sitemap.xml', async (req, res) => {
   try {
     const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
-    const excludeConditions = testCategoryKeywords.map(keyword => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+    const excludeConditions = testCategoryKeywords.map(() => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+
     const [posts] = await db.query(`
       SELECT p.id, p.updated_at, p.categories
       FROM posts p
@@ -1187,39 +1188,33 @@ app.get('/sitemap.xml', async (req, res) => {
     posts.forEach(post => {
       supportedLangs.forEach(lang => {
         postUrls.push(`
-          <url>
-            <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
-            <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
-            <priority>0.80</priority>
-          </url>
-        `);
+  <url>
+    <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
+    <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+    <priority>0.80</priority>
+  </url>`);
       });
     });
-    postUrls = postUrls.join('');
+    const postXml = postUrls.join('');
 
-    const staticUrls = [
+    const staticXml = [
       ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
       ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
     ].join('');
 
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.w3.org/2001/XMLSchema-instance">
-        ${staticUrls}
-        ${postUrls}
-      </urlset>
-    `;
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticXml}
+${postXml}
+</urlset>`;
 
-    res.header('Content-Type', 'application/xml');
-    res.send(sitemap.trim());
+    res.type('application/xml; charset=utf-8').send(xml.trim());
   } catch (err) {
     console.error('🚨 sitemap.xml 생성 오류:', err);
     res.status(500).send('Sitemap 생성 실패');
   }
 });
+
 
 // EJS에서 slug 변환 함수 쓰게 하기
 app.locals.slug = function(label, lang) {
