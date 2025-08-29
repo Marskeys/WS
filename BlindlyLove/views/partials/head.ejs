@@ -1,77 +1,117 @@
 <head>
   <meta charset="UTF-8" />
-  <meta name="google-adsense-anchor-top" content="false">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title><%= locale.seo.title %></title>
-    <meta name="description" content="<%= locale.seo.description %>">
- 
+  <!-- SEO 기본 -->
+  <title><%= page?.title || locale.seo.title %></title>
+  <meta name="description" content="<%= page?.description || locale.seo.description %>">
+  <% if (noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><meta name="robots" content="index, follow"><% } %>
+
+  <!-- Canonical (언어별 대표 URL) -->
+  <link rel="canonical" href="<%= canonicalHref %>" />
+
+  <!-- hreflang (x-default 포함) -->
+  <% if (Array.isArray(alternates)) { 
+       const hasXDefault = alternates.some(a => a.lang === 'x-default');
+       const ogLocaleMap = { ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN' }; %>
+    <% alternates.forEach(a => { %>
+      <link rel="alternate" hreflang="<%= a.lang %>" href="<%= a.href %>"/>
+    <% }) %>
+    <% if (!hasXDefault) { %>
+      <link rel="alternate" hreflang="x-default" href="<%= (alternates.find(a=>a.lang===lang)||alternates[0]).href %>"/>
+    <% } %>
+  <% } %>
+
+  <!-- Favicon -->
   <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128">
 
-  <!-- ✅ 최신 CDN (v6.6.6)에서 확실히 작동하는 경로 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
+  <!-- 성능: 프리커넥트/디엔에스 프리패치 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="//www.googletagmanager.com">
 
-  <link rel="preload" as="image" href="/assets/images/apps/tetris.png">
-  <link rel="preload" as="image" href="/assets/images/apps/sudoku.png">
-  <link rel="preload" as="image" href="/assets/images/apps/hearing-test.png">
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <!-- 폰트/아이콘 -->
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-81ZWTFGSH5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- 스타일 -->
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/darkmode.css" />
 
-  gtag('config', 'G-81ZWTFGSH5');
-</script>
+  <!-- Open Graph / Twitter -->
+  <% 
+    const siteName = 'Blindly Love';
+    const ogType = page?.type || 'website';
+    const ogUrl = canonicalHref;
+    const ogTitle = page?.title || locale.seo.title;
+    const ogDesc = page?.description || locale.seo.description;
+    const ogImg = page?.ogImage || 'https://blindly.love/assets/logo.png';
+    const ogLocaleMap2 = { ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN' };
+    const ogLocale = ogLocaleMap2[lang] || 'en_US';
+  %>
+  <meta property="og:type" content="<%= ogType %>">
+  <meta property="og:site_name" content="<%= siteName %>">
+  <meta property="og:url" content="<%= ogUrl %>">
+  <meta property="og:title" content="<%= ogTitle %>">
+  <meta property="og:description" content="<%= ogDesc %>">
+  <meta property="og:image" content="<%= ogImg %>">
+  <meta property="og:locale" content="<%= ogLocale %>">
+  <% if (Array.isArray(alternates)) {
+       alternates.filter(a=>a.lang!==lang && a.lang!=='x-default').forEach(a=>{
+         const m = {ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN'}; %>
+         <meta property="og:locale:alternate" content="<%= m[a.lang] || 'en_US' %>">
+  <%   });
+     } %>
 
-  <!-- Open Graph 기본 메타태그 -->
-<meta property="og:title" content="Blindly Love | 복지 정보 블로그">
-<meta property="og:description" content="쉽게 이해하는 복지 정보, 외국인·청년·장애인 복지 안내 블로그">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://blindly.love/">
-<meta property="og:image" content="https://blindly.love/assets/logo.png"> <!-- 이미지 경로는 수정 필요 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= ogTitle %>">
+  <meta name="twitter:description" content="<%= ogDesc %>">
+  <meta name="twitter:image" content="<%= ogImg %>">
 
+  <!-- 구조화 데이터 (Website) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"Blindly Love",
+    "url":"https://blindly.love/",
+    "inLanguage":"<%= lang %>",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://blindly.love/search?q={query}",
+      "query-input":"required name=query"
+    }
+  }
+  </script>
 
-<script>
-  (function () {
-    try {
-      var key = 'theme-mode';
-      var saved = localStorage.getItem(key);
-      if (!saved) {
-        // 저장이 없으면 시스템 선호를 기본값으로
-        saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark' : 'light';
-      }
-      var root = document.documentElement;
-      root.classList.toggle('dark',  saved === 'dark');
-      root.classList.toggle('light', saved !== 'dark');
-    } catch (e) {}
-  })();
-</script>
-
-  <!-- ✅ 테마를 페이지 렌더 전에 미리 적용 -->
+  <!-- 테마: FOUC 방지(한 번만) -->
   <script>
-    (function() {
-      const STORAGE_KEY = 'theme-mode';
-      const savedTheme = localStorage.getItem(STORAGE_KEY);
-      const isDark = !savedTheme || savedTheme === 'dark';
-
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+    (function () {
+      try {
+        var key='theme-mode';
+        var saved=localStorage.getItem(key);
+        if(!saved){ saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'; }
+        document.documentElement.classList.toggle('dark', saved==='dark');
+        document.documentElement.classList.toggle('light', saved!=='dark');
+      } catch(e){}
     })();
   </script>
 
-  <link rel="stylesheet" href="/assets/css/style.css" />
-  <link rel="stylesheet" href="/assets/css/darkmode.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-    crossorigin="anonymous"></script>
+  <!-- 유틸/광고/태그 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-81ZWTFGSH5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date()); gtag('config', 'G-81ZWTFGSH5');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js" defer></script>
+
+  <!-- 프리로드(선택) -->
+  <link rel="preload" as="image" href="/assets/images/apps/tetris.png">
+  <link rel="preload" as="image" href="/assets/images/apps/sudoku.png">
+  <link rel="preload" as="image" href="/assets/images/apps/hearing-test.png">
 </head>
