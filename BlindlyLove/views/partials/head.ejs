@@ -1,25 +1,45 @@
+<!-- views/partials/head.ejs -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <% 
+    // ---- 안전 가드 & 기본값 ----
+    const _page       = (typeof page !== 'undefined' && page) ? page : null;
+    const _locale     = (typeof locale !== 'undefined' && locale) ? locale : { seo: { title: 'Blindly Love', description: '' } };
+    const _lang       = (typeof lang !== 'undefined' && lang) ? lang : 'en';
+    const _noindex    = (typeof noindex !== 'undefined') ? !!noindex : false;
+    const _canonHref  = (typeof canonicalHref !== 'undefined' && canonicalHref) ? canonicalHref : '/';
+    const _alts       = Array.isArray(alternates) ? alternates : [];
+
+    const _title = (_page && _page.title) ? _page.title : _locale.seo.title;
+    const _desc  = (_page && _page.description) ? _page.description : _locale.seo.description;
+
+    const ogLocaleMap = { ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN' };
+    const _ogType  = (_page && _page.type) ? _page.type : 'website';
+    const _ogUrl   = _canonHref;
+    const _ogTitle = _title;
+    const _ogDesc  = _desc;
+    const _ogImg   = (_page && _page.ogImage) ? _page.ogImage : 'https://blindly.love/assets/logo.png';
+    const _ogLoc   = ogLocaleMap[_lang] || 'en_US';
+    const _hasXDef = _alts.some(a => a.lang === 'x-default');
+  %>
+
   <!-- SEO 기본 -->
-  <title><%= page?.title || locale.seo.title %></title>
-  <meta name="description" content="<%= page?.description || locale.seo.description %>">
-  <% if (noindex) { %><meta name="robots" content="noindex, nofollow"><% } else { %><meta name="robots" content="index, follow"><% } %>
+  <title><%= _title %></title>
+  <meta name="description" content="<%= _desc %>">
+  <meta name="robots" content="<%= _noindex ? 'noindex, nofollow' : 'index, follow' %>">
 
   <!-- Canonical (언어별 대표 URL) -->
-  <link rel="canonical" href="<%= canonicalHref %>" />
+  <link rel="canonical" href="<%= _canonHref %>" />
 
   <!-- hreflang (x-default 포함) -->
-  <% if (Array.isArray(alternates)) { 
-       const hasXDefault = alternates.some(a => a.lang === 'x-default');
-       const ogLocaleMap = { ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN' }; %>
-    <% alternates.forEach(a => { %>
-      <link rel="alternate" hreflang="<%= a.lang %>" href="<%= a.href %>"/>
-    <% }) %>
-    <% if (!hasXDefault) { %>
-      <link rel="alternate" hreflang="x-default" href="<%= (alternates.find(a=>a.lang===lang)||alternates[0]).href %>"/>
-    <% } %>
+  <% _alts.forEach(a => { %>
+    <link rel="alternate" hreflang="<%= a.lang %>" href="<%= a.href %>"/>
+  <% }) %>
+  <% if (!_hasXDef && _alts.length) { 
+       const current = _alts.find(a => a.lang === _lang) || _alts[0]; %>
+    <link rel="alternate" hreflang="x-default" href="<%= current.href %>"/>
   <% } %>
 
   <!-- Favicon -->
@@ -41,35 +61,23 @@
   <link rel="stylesheet" href="/assets/css/style.css" />
   <link rel="stylesheet" href="/assets/css/darkmode.css" />
 
-  <!-- Open Graph / Twitter -->
-  <% 
-    const siteName = 'Blindly Love';
-    const ogType = page?.type || 'website';
-    const ogUrl = canonicalHref;
-    const ogTitle = page?.title || locale.seo.title;
-    const ogDesc = page?.description || locale.seo.description;
-    const ogImg = page?.ogImage || 'https://blindly.love/assets/logo.png';
-    const ogLocaleMap2 = { ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN' };
-    const ogLocale = ogLocaleMap2[lang] || 'en_US';
-  %>
-  <meta property="og:type" content="<%= ogType %>">
-  <meta property="og:site_name" content="<%= siteName %>">
-  <meta property="og:url" content="<%= ogUrl %>">
-  <meta property="og:title" content="<%= ogTitle %>">
-  <meta property="og:description" content="<%= ogDesc %>">
-  <meta property="og:image" content="<%= ogImg %>">
-  <meta property="og:locale" content="<%= ogLocale %>">
-  <% if (Array.isArray(alternates)) {
-       alternates.filter(a=>a.lang!==lang && a.lang!=='x-default').forEach(a=>{
-         const m = {ko:'ko_KR', en:'en_US', fr:'fr_FR', ja:'ja_JP', zh:'zh_CN'}; %>
-         <meta property="og:locale:alternate" content="<%= m[a.lang] || 'en_US' %>">
-  <%   });
-     } %>
+  <!-- Open Graph -->
+  <meta property="og:type" content="<%= _ogType %>">
+  <meta property="og:site_name" content="Blindly Love">
+  <meta property="og:url" content="<%= _ogUrl %>">
+  <meta property="og:title" content="<%= _ogTitle %>">
+  <meta property="og:description" content="<%= _ogDesc %>">
+  <meta property="og:image" content="<%= _ogImg %>">
+  <meta property="og:locale" content="<%= _ogLoc %>">
+  <% _alts.filter(a => a.lang !== _lang && a.lang !== 'x-default').forEach(a => { %>
+    <meta property="og:locale:alternate" content="<%= ogLocaleMap[a.lang] || 'en_US' %>">
+  <% }) %>
 
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="<%= ogTitle %>">
-  <meta name="twitter:description" content="<%= ogDesc %>">
-  <meta name="twitter:image" content="<%= ogImg %>">
+  <meta name="twitter:title" content="<%= _ogTitle %>">
+  <meta name="twitter:description" content="<%= _ogDesc %>">
+  <meta name="twitter:image" content="<%= _ogImg %>">
 
   <!-- 구조화 데이터 (Website) -->
   <script type="application/ld+json">
@@ -78,7 +86,7 @@
     "@type":"WebSite",
     "name":"Blindly Love",
     "url":"https://blindly.love/",
-    "inLanguage":"<%= lang %>",
+    "inLanguage":"<%= _lang %>",
     "potentialAction":{
       "@type":"SearchAction",
       "target":"https://blindly.love/search?q={query}",
@@ -87,7 +95,7 @@
   }
   </script>
 
-  <!-- 테마: FOUC 방지(한 번만) -->
+  <!-- 테마: FOUC 방지 -->
   <script>
     (function () {
       try {
@@ -110,7 +118,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js" defer></script>
 
-  <!-- 프리로드(선택) -->
+  <!-- 프리로드 -->
   <link rel="preload" as="image" href="/assets/images/apps/tetris.png">
   <link rel="preload" as="image" href="/assets/images/apps/sudoku.png">
   <link rel="preload" as="image" href="/assets/images/apps/hearing-test.png">
