@@ -712,7 +712,21 @@ app.get('/search', async (req, res) => {
     
     const paginatedPosts = filteredAll.slice(offset, offset + limit);
 
-    res.render('index', {
+    
+    // ✅ International SEO: canonical & hreflang for search
+    const __base = `${req.protocol}://${req.get('host')}`;
+    const __q = encodeURIComponent(keyword);
+    const __catParam = categoryFilter ? `&category=${encodeURIComponent(categoryFilter)}` : '';
+    const canonical = (safeLang === 'ko')
+      ? `${__base}/search?q=${__q}${__catParam}`
+      : `${__base}/${safeLang}/search?q=${__q}${__catParam}`;
+    const alternateLinks = supportedLangs.map(l => ({
+      lang: l,
+      href: (l === 'ko')
+        ? `${__base}/search?q=${__q}${__catParam}`
+        : `${__base}/${l}/search?q=${__q}${__catParam}`
+    }));
+res.render('index', {
       posts: paginatedPosts,
       categories: allCategories,
       isSearch: true,
@@ -726,7 +740,9 @@ app.get('/search', async (req, res) => {
       selectedCategory: categoryFilter, // ✅ 선택된 카테고리 반영
       user: req.session.user,
       lang: safeLang,
-      locale: res.locals.locale
+      locale: res.locals.locale,
+      canonical,
+      alternateLinks
     });
   } catch (err) {
     console.error('검색 오류:', err);
@@ -1035,6 +1051,19 @@ if (category !== 'all') {
     }
 }
 
+
+  // ✅ International SEO: canonical & hreflang for home (optionally with category filter)
+  const __baseHome = `${req.protocol}://${req.get('host')}`;
+  const __catHome = (category && category !== 'all') ? `?category=${encodeURIComponent(category)}` : '';
+  const canonical = (safeLang === 'ko')
+    ? `${__baseHome}/${__catHome}`.replace(/\/\/$/, '/')  // ensure trailing slash
+    : `${__baseHome}/${safeLang}/${__catHome}`.replace(/\/\/$/, '/');
+  const alternateLinks = supportedLangs.map(l => ({
+    lang: l,
+    href: (l === 'ko')
+      ? `${__baseHome}/${__catHome}`.replace(/\/\/$/, '/')
+      : `${__baseHome}/${l}/${__catHome}`.replace(/\/\/$/, '/')
+  }));
 res.render('index', {
   posts: filteredPosts,
   categories: allCategories, // 원본 & 번역된 카테고리 객체 배열
@@ -1047,7 +1076,9 @@ res.render('index', {
     total: totalPages,
     range: paginationRange
   },
-  lang: safeLang // 현재 언어 정보를 EJS로 넘겨줍니다.
+  lang: safeLang, // 현재 언어 정보를 EJS로 넘겨줍니다.
+  canonical,
+  alternateLinks
 });
   } catch (err) {
     console.error('메인 페이지 로드 오류:', err);

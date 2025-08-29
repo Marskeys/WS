@@ -3,13 +3,13 @@
   <meta name="google-adsense-anchor-top" content="false">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title><%= locale.seo.title %></title>
-    <meta name="description" content="<%= locale.seo.description %>">
+  <title><%= locale.seo.title %></title>
+  <meta name="description" content="<%= locale.seo.description %>">
  
   <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128">
 
   <!-- ✅ 최신 CDN (v6.6.6)에서 확실히 작동하는 경로 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
 
   <link rel="preload" as="image" href="/assets/images/apps/tetris.png">
   <link rel="preload" as="image" href="/assets/images/apps/sudoku.png">
@@ -17,39 +17,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-81ZWTFGSH5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-81ZWTFGSH5');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-81ZWTFGSH5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-81ZWTFGSH5');
+  </script>
 
   <!-- Open Graph 기본 메타태그 -->
-<meta property="og:title" content="Blindly Love | 복지 정보 블로그">
-<meta property="og:description" content="쉽게 이해하는 복지 정보, 외국인·청년·장애인 복지 안내 블로그">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://blindly.love/">
-<meta property="og:image" content="https://blindly.love/assets/logo.png"> <!-- 이미지 경로는 수정 필요 -->
+  <meta property="og:title" content="Blindly Love | 복지 정보 블로그">
+  <meta property="og:description" content="쉽게 이해하는 복지 정보, 외국인·청년·장애인 복지 안내 블로그">
+  <meta property="og:type" content="website">
+  <% 
+    const _canonical = (typeof canonical !== 'undefined' && canonical) 
+      ? canonical 
+      : ((typeof canonicalUrl !== 'undefined' && canonicalUrl) ? canonicalUrl : null);
+  %>
+  <meta property="og:url" content="<%= _canonical || 'https://blindly.love/' %>">
+  <meta property="og:image" content="https://blindly.love/assets/logo.png"> <!-- 이미지 경로는 필요시 교체 -->
 
+  <!-- ✅ canonical / hreflang (다국어 SEO) -->
+  <% 
+    const _alts = (typeof alternateLinks !== 'undefined' && Array.isArray(alternateLinks)) ? alternateLinks : [];
+  %>
+  <% if (_canonical) { %>
+    <link rel="canonical" href="<%= _canonical %>">
+  <% } %>
+  <% if (_alts.length) { %>
+    <% _alts.forEach(link => { %>
+      <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
+    <% }); %>
+    <link rel="alternate" hreflang="x-default" href="https://blindly.love/">
+  <% } %>
 
-<script>
-  (function () {
-    try {
-      var key = 'theme-mode';
-      var saved = localStorage.getItem(key);
-      if (!saved) {
-        // 저장이 없으면 시스템 선호를 기본값으로
-        saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark' : 'light';
-      }
-      var root = document.documentElement;
-      root.classList.toggle('dark',  saved === 'dark');
-      root.classList.toggle('light', saved !== 'dark');
-    } catch (e) {}
-  })();
-</script>
+  <script>
+    (function () {
+      try {
+        var key = 'theme-mode';
+        var saved = localStorage.getItem(key);
+        if (!saved) {
+          // 저장이 없으면 시스템 선호를 기본값으로
+          saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark' : 'light';
+        }
+        var root = document.documentElement;
+        root.classList.toggle('dark',  saved === 'dark');
+        root.classList.toggle('light', saved !== 'dark');
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- ✅ 테마를 페이지 렌더 전에 미리 적용 -->
   <script>
