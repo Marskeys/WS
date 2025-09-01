@@ -673,6 +673,12 @@ html.dark{
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
+/* 첫 번째 라벨만 왼쪽 마진 제거 */
+.main-menu-container .menu-item-wrapper:first-child .menu-label {
+  margin-left: 0;
+}
+
 .menu-label.active,
 .menu-label[aria-current="true"],
 .menu-label[aria-expanded="true"] {
