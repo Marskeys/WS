@@ -673,7 +673,7 @@ html.dark{
   transition: background-color 0.2s ease;
 }
 
-.main-menu-container { display: flex; gap: 10px; }
+.main-menu-container { display: flex; gap: 50px; }
 
 .menu-label.active,
 .menu-label[aria-current="true"],
