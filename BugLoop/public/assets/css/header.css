@@ -660,7 +660,6 @@ html.dark{
 }
 .menu-label {
   position: sticky;
-  margin-left: 10px;
   left: 0;
   top: 0;
   z-index: 10;
@@ -674,10 +673,7 @@ html.dark{
   transition: background-color 0.2s ease;
 }
 
-/* 첫 번째 라벨만 왼쪽 마진 제거 */
-.main-menu-container .menu-item-wrapper:first-child .menu-label {
-  margin-left: 0;
-}
+.main-menu-container { display: flex; gap: 10px; }
 
 .menu-label.active,
 .menu-label[aria-current="true"],
