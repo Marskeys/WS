@@ -16,29 +16,6 @@
 
       <nav class="header-menu" aria-label="주 메뉴">
         <ul class="main-menu-container">
-
-                  <!-- ✅ 새 섹션: 컴퓨터 하드웨어 -->
-                  <li class="menu-item-wrapper">
-                    <span class="menu-label">컴퓨터 하드웨어</span>
-                    <ul class="submenu">
-                      <li><a href="/<%= lang %>/hardware/cpu"           data-panel-link>CPU</a></li>
-                      <li><a href="/<%= lang %>/hardware/gpu"           data-panel-link>GPU</a></li>
-                      <li><a href="/<%= lang %>/hardware/ram"           data-panel-link>메모리(RAM)</a></li>
-                      <li><a href="/<%= lang %>/hardware/storage"       data-panel-link>저장장치(SSD/HDD)</a></li>
-                      <li><a href="/<%= lang %>/hardware/motherboard"   data-panel-link>메인보드</a></li>
-                      <li><a href="/<%= lang %>/hardware/psu"           data-panel-link>파워서플라이(PSU)</a></li>
-                      <li><a href="/<%= lang %>/hardware/case"          data-panel-link>케이스</a></li>
-                      <li><a href="/<%= lang %>/hardware/cooling"       data-panel-link>쿨링(공랭/수랭)</a></li>
-                      <li><a href="/<%= lang %>/hardware/monitor"       data-panel-link>모니터</a></li>
-                      <li><a href="/<%= lang %>/hardware/peripherals"   data-panel-link>주변기기(키보드/마우스/오디오)</a></li>
-                      <li><a href="/<%= lang %>/hardware/network"       data-panel-link>네트워크/Wi-Fi</a></li>
-                      <li><a href="/<%= lang %>/hardware/os"            data-panel-link>운영체제/드라이버</a></li>
-                      <li><a href="/<%= lang %>/hardware/tools"         data-panel-link>벤치마크/모니터링</a></li>
-                      <li><a href="/<%= lang %>/hardware/buying-guide"  data-panel-link>구매가이드(예산/용도)</a></li>
-                    </ul>
-                  </li>
-                  <!-- 🔚 새 섹션 끝 -->
-                   
           <li class="menu-item-wrapper">
             <span class="menu-label">프론트엔드</span>
             <ul class="submenu">
@@ -89,8 +66,6 @@
               <li><a href="/<%= lang %>/database/timescaledb"  data-panel-link>TimescaleDB</a></li>
             </ul>
           </li>
-
-  
 
           <li class="menu-item-wrapper">
             <span class="menu-label">네트워크/인프라</span>
@@ -343,4 +318,14 @@
       const orig = history[fn];
       history[fn] = function(...args){
         const ret = orig.apply(this, args);
-        window.dispatchEvent(new Event('
+        window.dispatchEvent(new Event('panel:navigated'));
+        return ret;
+      };
+    });
+    window.addEventListener('panel:navigated', sync);
+  })();
+</script>
+
+<!-- ✅ 메인 로직: header.js가 패널/탭 상태(복구, a11y 포함)를 전담 -->
+<script src="/assets/js/header.js"></script>
+<script src="/assets/js/global.js"></script>
