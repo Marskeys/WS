@@ -1006,3 +1006,62 @@ html.dark .lang-option:hover { background-color: #333; }
   width: min(80%, 250px); /* 컨테이너의 60% 또는 180px 중 작은 값 */
   height: auto;           /* 비율 유지 */
 }
+
+/* ===== 컴퓨터 하드웨어 말풍선 ===== */
+.menu-item-wrapper.hardware-wrapper {
+  position: relative; /* 말풍선 기준점 */
+}
+.hint-bubble {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 8px); /* 라벨 오른쪽 살짝 떨어져 */
+  transform: translateY(-50%);
+  background: #ff4d6d;           /* 붉은계열 */
+  color: #fff;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  padding: 8px 12px 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(255, 77, 109, 0.25);
+  white-space: nowrap;
+  z-index: 9999;
+  display: none; /* JS로 표시 제어 */
+}
+.hint-bubble::after { /* 말풍선 꼬리 */
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #ff4d6d transparent transparent;
+}
+.hint-bubble .hint-close {
+  all: unset;
+  cursor: pointer;
+  margin-right: 8px;
+  font-weight: 700;
+  line-height: 1;
+}
+.hint-bubble .hint-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.hint-bubble .hint-text {
+  vertical-align: middle;
+}
+@media (max-width: 900px) {
+  .hint-bubble {
+    left: 0;
+    top: calc(100% + 8px);
+    transform: none;
+  }
+  .hint-bubble::after {
+    left: 14px;
+    top: -6px;
+    transform: none;
+    border-color: transparent transparent #ff4d6d transparent;
+  }
+}
+
