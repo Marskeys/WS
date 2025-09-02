@@ -17,6 +17,9 @@
       white-space: nowrap;
       z-index: 2147483647;
       animation: bubbleFadeIn 0.25s ease forwards;
+
+      /* ✅ 추가: 스크롤/제스처 가로채지 않도록 */
+      pointer-events: none;
     }
 
     /* 말풍선 꼬리 */
@@ -46,6 +49,9 @@
       justify-content: center;
       align-items: center;
       transition: background 0.15s ease;
+
+      /* ✅ 추가: 닫기 버튼만 클릭 가능 */
+      pointer-events: auto;
     }
 
     .hint-bubble .hint-close:hover {
@@ -59,13 +65,25 @@
     }
 
     /* ============================
-       ⬇️ 추가: 오버플로우 잘림 방지
+       ⬇️ 오버플로우 관련
        ============================ */
+
+    /* ❌ 기존 가로 스크롤 막던 규칙 비활성화
     .header-menu,
     .main-menu-container,
     .menu-item-wrapper.hardware-wrapper {
       overflow: visible !important;
     }
+    */
+
+    /* ✅ 가로 스크롤 되살리기 */
+    .header-menu,
+    .main-menu-container {
+      overflow-x: auto !important;
+      overflow-y: visible !important;
+      -webkit-overflow-scrolling: touch;
+    }
+
     /* 팝업 기준점 및 레이어 보장 */
     .menu-item-wrapper.hardware-wrapper {
       position: relative; /* 말풍선 absolute 기준 */
