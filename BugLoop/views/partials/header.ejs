@@ -1,79 +1,49 @@
 <div class="full-header-container" style="z-index:20000;">
   <style>
-    /* ===== 말풍선: 기본은 body로 포털되어 fixed 배치 ===== */
-    .hint-bubble {
-      position: fixed;                  /* ✅ viewport 기준 */
-      top: -9999px; left: -9999px;      /* 초기 오프스크린 */
-      display: inline-flex;
-      align-items: center;
-      background: #ff4d6d;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 8px 12px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(255,77,109,.3);
-      white-space: nowrap;
-      z-index: 2147483647 !important;   /* 최상단 보장 */
-      animation: bubbleFadeIn .25s ease forwards;
-      pointer-events: auto;
+    /* ===== 말풍선: body로 포털되어 fixed 배치 ===== */
+    .hint-bubble{
+      position: fixed; top:-9999px; left:-9999px;
+      display:inline-flex; align-items:center;
+      background:#ff4d6d; color:#fff;
+      font-size:.85rem; font-weight:500;
+      padding:8px 12px; border-radius:8px;
+      box-shadow:0 4px 12px rgba(255,77,109,.3);
+      white-space:nowrap;
+      z-index:2147483647 !important;
+      animation:bubbleFadeIn .25s ease forwards;
+      pointer-events:auto;
     }
-    /* 말풍선 꼬리 (포털 후에도 정상 표시) */
     .hint-bubble::after{
       content:"";
-      position:absolute;
-      top: -8px;
-      left: var(--tail-left, 20px);     /* JS가 계산해서 넣어줌 */
-      border-width:0 8px 8px 8px;
-      border-style:solid;
+      position:absolute; top:-8px; left:var(--tail-left, 20px);
+      border-width:0 8px 8px 8px; border-style:solid;
       border-color:transparent transparent #ff4d6d transparent;
     }
-    /* 닫기 버튼 */
     .hint-bubble .hint-close{
-      all: unset; cursor: pointer; margin-left: 8px;
-      font-size: 14px; font-weight: 700; color:#fff;
-      background: rgba(255,255,255,.2); border-radius: 50%;
-      width: 18px; height: 18px; display:flex; align-items:center; justify-content:center;
-      transition: background .15s ease;
+      all:unset; cursor:pointer; margin-left:8px;
+      font-size:14px; font-weight:700; color:#fff;
+      background:rgba(255,255,255,.2); border-radius:50%;
+      width:18px; height:18px; display:flex; align-items:center; justify-content:center;
+      transition:background .15s ease;
     }
-    .hint-bubble .hint-close:hover{ background: rgba(255,255,255,.35); }
+    .hint-bubble .hint-close:hover{ background:rgba(255,255,255,.35); }
   
-    /* 부드러운 등장 */
-    @keyframes bubbleFadeIn{
-      0%{ opacity:0; transform: translateY(-5px); }
-      100%{ opacity:1; transform: translateY(0); }
-    }
+    @keyframes bubbleFadeIn{ 0%{opacity:0; transform:translateY(-5px);} 100%{opacity:1; transform:translateY(0);} }
   
-    /* =========================================
-       헤더 가로 스크롤 유지 + 스크롤바 숨김
-       ========================================= */
-    .header-menu{
-      overflow-x: auto;                 /* ✅ 가로 스크롤 유지 */
-      overflow-y: visible;              /* ✅ 세로는 열어둠 */
-      -webkit-overflow-scrolling: touch;
-      position: relative;
-    }
-    .header-menu::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
-    .header-menu{ scrollbar-width: none; -ms-overflow-style: none; } /* Firefox/IE */
+    /* 헤더 가로 스크롤 유지 + 스크롤바 숨김 */
+    .header-menu{ overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; position:relative; }
+    .header-menu::-webkit-scrollbar{ display:none; }
+    .header-menu{ scrollbar-width:none; -ms-overflow-style:none; }
+    .main-menu-container{ display:flex; flex-wrap:nowrap; width:max-content; overflow:visible !important; }
+    .menu-item-wrapper.hardware-wrapper{ position:relative; overflow:visible !important; z-index:10; }
+    .full-header-container, .header-top, .top-controls{ overflow:visible !important; position:relative; }
   
-    .main-menu-container{
-      display:flex; flex-wrap: nowrap; width:max-content;
-      overflow: visible !important;
-    }
-  
-    /* 기준 라벨 요소(하드웨어) 쪽은 기준점만 두면 됨 */
-    .menu-item-wrapper.hardware-wrapper{
-      position: relative;
-      overflow: visible !important;
-      z-index: 10;
-    }
-  
-    /* 혹시 모를 조상 클리핑 완화(안전망) */
-    .full-header-container, .header-top, .top-controls{
-      overflow: visible !important;
-      position: relative;
+    /* 디버그 강제 위치(워치독이 안 떠 있으면 일시 적용) */
+    .hint-bubble.debug-position{
+      top: 72px !important; left: 16px !important; /* 화면 좌상단 안전지대 */
     }
   </style>
+  
   
   
   
@@ -442,49 +412,74 @@
     const bubble = wrapper.querySelector('#hardware-hint');
     const label  = wrapper.querySelector('#hardware-label');
     const close  = wrapper.querySelector('.hint-close');
-  
     if (!bubble || !label) return;
   
-    /* --- 유틸: 포털(teleport) - bubble을 body로 이동 --- */
-    const ensurePortaled = () => {
-      if (bubble.parentElement !== document.body) {
-        document.body.appendChild(bubble);     // ✅ 조상 클리핑/스택 완전 무력화
-      }
+    /* 포털: bubble을 body로 이동 */
+    const portal = () => {
+      if (bubble.parentElement !== document.body) document.body.appendChild(bubble);
     };
   
-    /* --- 위치 고정(pinning): label 기준 → viewport 좌표 --- */
-    const OFFSET_X = 60;  // 네가 쓰던 좌측 오프셋
+    /* 좌표 계산: 라벨 기준 → viewport */
+    const OFFSET_X = 60;  // 네가 원한 좌측 오프셋
     const OFFSET_Y = 8;   // 라벨 아래 간격
     const pin = () => {
       const r = label.getBoundingClientRect();
-      // 말풍선 왼쪽은 라벨의 left + OFFSET_X
+      // 라벨이 아직 레이아웃 안 끝났으면(폭 0) 다음 프레임으로 미룸
+      if (!r.width && !r.height) return false;
+  
       const left = Math.round(r.left + OFFSET_X);
       const top  = Math.round(r.bottom + OFFSET_Y);
   
       bubble.style.left = left + 'px';
       bubble.style.top  = top  + 'px';
-  
-      // 꼬리 위치: 라벨의 텍스트 시작 지점 대비 유지(대략 20px)
       bubble.style.setProperty('--tail-left', '20px');
+      return true;
     };
   
-    /* --- show/hide --- */
+    /* 가시성 체크 */
+    const visible = () => {
+      const cs = getComputedStyle(bubble);
+      const br = bubble.getBoundingClientRect();
+      return cs.display !== 'none' && br.width > 0 && br.height > 0 && br.bottom >= 0 && br.right >= 0 && br.left <= innerWidth && br.top <= innerHeight;
+    };
+  
     const show = () => {
-      ensurePortaled();
+      portal();
+      bubble.classList.remove('debug-position');
       bubble.style.display = 'inline-flex';
       bubble.setAttribute('aria-hidden', 'false');
-      pin();
     };
     const hide = () => {
       bubble.style.display = 'none';
       bubble.setAttribute('aria-hidden', 'true');
     };
   
-    /* --- 초기 상태 --- */
+    /* 초기 표시 */
     const hidden = localStorage.getItem(KEY) === '1';
     if (!hidden) show();
   
-    /* --- 인터랙션 --- */
+    /* 레이아웃/비동기 대비: 다단계 재시도 */
+    const reflowAndPin = () => {
+      portal();
+      // 0ms, 16ms, 100ms, 300ms 순차 재시도(폰트/아이콘 지연 대비)
+      const tries = [0, 16, 100, 300];
+      tries.forEach((t, i) => {
+        setTimeout(() => {
+          const ok = pin();
+          if (i === tries.length - 1) {
+            // 마지막 시도 후에도 안 보이면 디버그 강제 위치로 띄움
+            if (!visible()) {
+              bubble.classList.add('debug-position');
+            }
+          }
+        }, t);
+      });
+    };
+  
+    // 최초 pin
+    if (!hidden) reflowAndPin();
+  
+    /* 상호작용 */
     close?.addEventListener('click', () => {
       localStorage.setItem(KEY, '1');
       hide();
@@ -498,11 +493,10 @@
       }
     });
   
-    /* --- 레이아웃 변화 대응 --- */
+    /* 레이아웃 변화 대응 */
     const onLayout = () => {
       if (localStorage.getItem(KEY) !== '1' && bubble.style.display !== 'none') {
-        ensurePortaled();
-        pin();
+        reflowAndPin();
       }
     };
     window.addEventListener('resize', onLayout);
@@ -511,14 +505,14 @@
       if (localStorage.getItem(KEY) === '1') hide();
       else { show(); onLayout(); }
     });
-  
-    /* --- 폰트 로드/아이콘 로드 등 지연 요소 이후 재계산 --- */
     window.addEventListener('load', onLayout);
-    // 라벨 텍스트/스타일 변경 감지해서 재핀
+  
+    // 라벨 DOM/스타일 변화 감지
     const mo = new MutationObserver(onLayout);
     mo.observe(label, { attributes: true, childList: true, subtree: true });
   })();
   </script>
+  
   
 
 
