@@ -21,10 +21,11 @@
            <li class="menu-item-wrapper hardware-wrapper">
             <span class="menu-label" id="hardware-label">컴퓨터 하드웨어</span>
               <!-- 🔔 붉은 말풍선 -->
-  <div class="hint-bubble" id="hardware-hint" role="tooltip" aria-hidden="true">
-    <button class="hint-close" type="button" aria-label="닫기">×</button>
-    <span class="hint-text">컴퓨터 살 때 참고하면 도움돼요!</span>
-  </div>
+              <div class="hint-bubble" id="hardware-hint" role="tooltip" aria-hidden="false"
+              style="display:inline-flex; outline:2px dashed rgba(255,0,0,.4);">
+           <button class="hint-close" type="button" aria-label="닫기">×</button>
+           <span class="hint-text">컴퓨터 살 때 참고하면 도움돼요!</span>
+         </div>
             <ul class="submenu">
               <li><a href="/<%= lang %>/hardware/cpu"           data-panel-link>CPU</a></li>
               <li><a href="/<%= lang %>/hardware/gpu"           data-panel-link>GPU</a></li>
