@@ -17,9 +17,6 @@
       white-space: nowrap;
       z-index: 2147483647;
       animation: bubbleFadeIn 0.25s ease forwards;
-
-      /* ✅ 추가: 스크롤/제스처 가로채지 않도록 */
-      pointer-events: none;
     }
 
     /* 말풍선 꼬리 */
@@ -49,9 +46,6 @@
       justify-content: center;
       align-items: center;
       transition: background 0.15s ease;
-
-      /* ✅ 추가: 닫기 버튼만 클릭 가능 */
-      pointer-events: auto;
     }
 
     .hint-bubble .hint-close:hover {
@@ -65,23 +59,18 @@
     }
 
     /* ============================
-       ⬇️ 오버플로우 관련
+       ⬇️ 추가: 오버플로우 잘림 방지
        ============================ */
-
-   /* ✅ 가로 스크롤 되살리면서 세로는 visible */
-.header-menu,
-.main-menu-container {
-  overflow-x: auto !important;
-  overflow-y: visible !important;  /* ⬅️ 여기 중요 */
-  -webkit-overflow-scrolling: touch;
-}
-
-/* ✅ 말풍선이 잘리지 않게 li는 overflow visible 유지 */
-.menu-item-wrapper.hardware-wrapper {
-  position: relative;
-  overflow: visible !important;   /* ⬅️ 추가 */
-  z-index: 10;
-}
+    .header-menu,
+    .main-menu-container,
+    .menu-item-wrapper.hardware-wrapper {
+      overflow: visible !important;
+    }
+    /* 팝업 기준점 및 레이어 보장 */
+    .menu-item-wrapper.hardware-wrapper {
+      position: relative; /* 말풍선 absolute 기준 */
+      z-index: 10;
+    }
   </style>
   <div class="header-top">
     <div class="top-controls">
