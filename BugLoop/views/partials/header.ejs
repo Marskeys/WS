@@ -4,7 +4,7 @@
     .hint-bubble {
       position: absolute;
       top: 36px; /* 라벨 기준 약간 아래 */
-      left: 60px;
+      left: 60px; /* 네가 지정한 값 유지 */
       display: inline-flex;
       align-items: center;
       background: #ff4d6d;
@@ -24,7 +24,7 @@
       content: "";
       position: absolute;
       top: -8px;
-      left: 20px;
+      left: 20px; /* 네가 지정한 값 유지 */
       border-width: 0 8px 8px 8px;
       border-style: solid;
       border-color: transparent transparent #ff4d6d transparent;
@@ -54,14 +54,22 @@
 
     /* 살짝 부드러운 등장 애니메이션 */
     @keyframes bubbleFadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(-5px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(-5px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================
+       ⬇️ 추가: 오버플로우 잘림 방지
+       ============================ */
+    .header-menu,
+    .main-menu-container,
+    .menu-item-wrapper.hardware-wrapper {
+      overflow: visible !important;
+    }
+    /* 팝업 기준점 및 레이어 보장 */
+    .menu-item-wrapper.hardware-wrapper {
+      position: relative; /* 말풍선 absolute 기준 */
+      z-index: 10;
     }
   </style>
   <div class="header-top">
@@ -88,7 +96,6 @@
               <!-- 🔔 붉은 말풍선 -->
 <div class="hint-bubble" id="hardware-hint" role="tooltip" aria-hidden="false"
      style="display:inline-flex; outline:2px dashed rgba(255,0,0,.4);">
- 
   <span class="hint-text">컴퓨터 살 때 참고하면 도움돼요!</span>
   <button class="hint-close" type="button" aria-label="닫기">×</button>
 </div>
@@ -466,6 +473,7 @@
     // 라이트/다크 모드 전환, 리사이즈 등 레이아웃 변화에도 자연스럽게 보이도록
     window.addEventListener('panel:navigated', () => {
       if (localStorage.getItem(KEY) === '1') hide();
+      else show(); /* ⬅️ 추가: 숨김 설정이 아니면 탭 전환 후에도 다시 표시 */
     });
   })();
   </script>
