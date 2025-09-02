@@ -122,4 +122,59 @@
   // ——— Subtle audio tick (very soft) ————————————————
   let audioCtx=null; let muted=true; // default muted for background use
   function ensureAudio(){ if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); } }
-  function tick(){ if(muted||!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=950; o.connect(g); g.connect(audioCtx.destination); const t=audioCtx.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValue
+  function tick(){ if(muted||!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=950; o.connect(g); g.connect(audioCtx.destination); const t=audioCtx.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.16,t+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t+0.08); o.start(t); o.stop(t+0.085); }
+  document.addEventListener('pointerdown',()=>{ if(!audioCtx){ ensureAudio(); } },{once:true});
+
+  // ——— Spin logic (auto) ————————————————————————————
+  let spinning=false;
+
+  function spinOnce(){
+    if(spinning) return; spinning=true;
+    const target = finalPick();
+
+    // random speed map for flicker (~compact aesthetic)
+    const base = 75 + Math.random()*40; // 75~115ms
+    const delay1 = 800 + Math.random()*300;  // brand stop
+    const delay2 = delay1 + 280 + Math.random()*220; // series stop
+    const delay3 = delay2 + 280 + Math.random()*220; // model stop
+
+    reels.forEach(r=>r.classList.add('spinning'));
+
+    const intv = [];
+    intv[0] = setInterval(()=>{ brandEl.textContent = pick(brands()); }, base);
+    intv[1] = setInterval(()=>{ const b=pick(brands()); seriesEl.textContent = pick(seriesOf(b)); }, base);
+    intv[2] = setInterval(()=>{ const b=pick(brands()); const s=pick(seriesOf(b)); modelEl.textContent = pick(modelsOf(b,s)); }, base);
+
+    const stop = (i, text)=>{
+      clearInterval(intv[i]);
+      [brandEl,seriesEl,modelEl][i].textContent = text;
+      reels[i].classList.remove('spinning');
+      reels[i].classList.add('snap','stopGlow');
+      setTimeout(()=>reels[i].classList.remove('snap','stopGlow'), 240);
+      tick();
+    };
+
+    setTimeout(()=> stop(0, target.b), delay1);
+    setTimeout(()=> stop(1, target.s), delay2);
+    setTimeout(()=>{
+      stop(2, target.m);
+      const full = composeFull(target.b, target.s, target.m);
+      $('caption').textContent = full;
+      spinning=false;
+    }, delay3);
+  }
+
+  function loop(){
+    spinOnce();
+    const pause = 1200 + Math.random()*1800; // 1.2s ~ 3s between rounds
+    setTimeout(loop, pause + 900); // include spin duration cushion
+  }
+
+  // Initial seed & start loop
+  (function init(){
+    const {b,s,m} = finalPick(); brandEl.textContent=b; seriesEl.textContent=s; modelEl.textContent=m; $('caption').textContent = composeFull(b,s,m);
+    setTimeout(loop, 800); // small intro delay
+  })();
+  </script>
+</body>
+</html>
