@@ -61,11 +61,23 @@
     /* ============================
        ⬇️ 추가: 오버플로우 잘림 방지
        ============================ */
-    .header-menu,
-    .main-menu-container,
-    .menu-item-wrapper.hardware-wrapper {
+/* ✅ 스크롤 컨테이너는 그대로 스크롤되게 */
+.main-menu-container {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
 
-    }
+/* 팝업은 뷰포트 기준으로 띄워서 클리핑 무시 */
+.hint-bubble {
+  position: fixed;            /* ← 핵심 */
+  top: -9999px; left: -9999px;/* 초기 오프스크린 */
+  z-index: 2147483647;
+  pointer-events: none;       /* 스크롤/휠 통과 */
+}
+.hint-bubble .hint-close {
+  pointer-events: auto;       /* 닫기만 클릭가능 */
+}
     /* 팝업 기준점 및 레이어 보장 */
     .menu-item-wrapper.hardware-wrapper {
       position: relative; /* 말풍선 absolute 기준 */
@@ -481,6 +493,51 @@
     });
   })();
   </script>
+
+<script>
+  (function(){
+    const bubble = document.getElementById('hardware-hint');
+    const label  = document.getElementById('hardware-label');
+    if (!bubble || !label) return;
+  
+    function placeBubble(){
+      const r = label.getBoundingClientRect();
+      // 라벨 왼쪽 + 20px, 라벨 아래 8px
+      bubble.style.left = (Math.round(r.left + 20)) + 'px';
+      bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
+      bubble.style.display = 'inline-flex';
+      bubble.setAttribute('aria-hidden','false');
+    }
+  
+    // 레이아웃 변화마다 재배치
+    const relayout = () => requestAnimationFrame(placeBubble);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', relayout, {once:true});
+    } else {
+      relayout();
+    }
+    window.addEventListener('resize', relayout);
+    // 어떤 스크롤이든 캐치(캡처 단계) → 헤더 내부 스크롤도 반영
+    window.addEventListener('scroll', relayout, true);
+    window.addEventListener('panel:navigated', relayout);
+  
+    // 닫기 동작(네 코드 유지)
+    const KEY = 'bugloop.hideHardwareHint';
+    const close = bubble.querySelector('.hint-close');
+    const hide = () => {
+      localStorage.setItem(KEY, '1');
+      bubble.style.display = 'none';
+      bubble.setAttribute('aria-hidden','true');
+      label?.focus?.();
+    };
+    close?.addEventListener('click', hide);
+    bubble.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+  
+    // 첫 진입 노출
+    if (localStorage.getItem(KEY) !== '1') placeBubble();
+  })();
+  </script>
+
 
 <!-- ✅ 메인 로직: header.js가 패널/탭 상태(복구, a11y 포함)를 전담 -->
 <script src="/assets/js/header.js"></script>
