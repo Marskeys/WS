@@ -445,82 +445,79 @@
 </script>
 
 <script>
-  (() => {
-    const KEY = 'bugloop.hideHardwareHint';
-    const wrapper = document.querySelector('.menu-item-wrapper.hardware-wrapper');
-    if (!wrapper) return;
+  (function(){
+    const bubble = document.getElementById('hardware-hint');
+    const label  = document.getElementById('hardware-label');
+    if (!bubble || !label) return;
   
-    const bubble = wrapper.querySelector('#hardware-hint');
-    const label  = wrapper.querySelector('#hardware-label');
-    const close  = wrapper.querySelector('.hint-close');
+    /* 1) 포털: 조상 transform 영향 제거 (fixed의 containing block 이슈 회피) */
+    if (bubble.parentNode !== document.body) {
+      bubble.style.position = 'fixed';        // 뷰포트 기준
+      bubble.style.left = '-9999px';
+      bubble.style.top  = '-9999px';
+      document.body.appendChild(bubble);      // ← body로 이동
+    }
   
-    const hidden = localStorage.getItem(KEY) === '1';
-    const show = () => {
-      if (!bubble) return;
+    /* 2) 기본 스타일: 이벤트 패스스루 */
+    bubble.style.pointerEvents = 'none';
+    bubble.querySelector('.hint-close')?.style && (bubble.querySelector('.hint-close').style.pointerEvents = 'auto');
+  
+    function placeBubble(){
+      const r = label.getBoundingClientRect();
+      bubble.style.left = (r.left + 20) + 'px';
+      bubble.style.top  = (r.bottom + 8) + 'px';
       bubble.style.display = 'inline-flex';
       bubble.setAttribute('aria-hidden', 'false');
-    };
-    const hide = () => {
-      if (!bubble) return;
-      bubble.style.display = 'none';
-      bubble.setAttribute('aria-hidden', 'true');
-    };
+    }
   
-    // 첫 진입 시(숨김 저장 없으면) 보여주기
-    if (!hidden) show();
+    /* 3) 패널 트랜지션 동안 매 프레임 추적 */
+    let followRAF = 0;
+    function startFollow(ms = 600){
+      const end = performance.now() + ms;
+      cancelFollow();
+      const tick = () => {
+        placeBubble();
+        if (performance.now() < end) followRAF = requestAnimationFrame(tick);
+      };
+      followRAF = requestAnimationFrame(tick);
+    }
+    function cancelFollow(){
+      if (followRAF) cancelAnimationFrame(followRAF), followRAF = 0;
+    }
   
-    // 닫기(X)
-    close?.addEventListener('click', () => {
-      localStorage.setItem(KEY, '1');
-      hide();
-      // 포커스 되돌리기 (접근성)
-      label?.focus?.();
-    });
+    /* 4) 즉시/지속 갱신 트리거들 */
+    const relayout = () => placeBubble();
   
-    // ESC로 닫기 (접근성)
-    bubble?.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        localStorage.setItem(KEY, '1');
-        hide();
-        label?.focus?.();
-      }
-    });
-  
-    // 라이트/다크 모드 전환, 리사이즈 등 레이아웃 변화에도 자연스럽게 보이도록
-    window.addEventListener('panel:navigated', () => {
-      if (localStorage.getItem(KEY) === '1') hide();
-      else show(); /* ⬅️ 추가: 숨김 설정이 아니면 탭 전환 후에도 다시 표시 */
-    });
-  })();
-  </script>
-
-<script>
-(function(){
-  const bubble = document.getElementById('hardware-hint');
-  const label  = document.getElementById('hardware-label');
-  if (!bubble || !label) return;
-
-  function placeBubble(){
-    const r = label.getBoundingClientRect();
-    bubble.style.left = (Math.round(r.left + 20)) + 'px';
-    bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
-    bubble.style.display = 'inline-flex';
-    bubble.setAttribute('aria-hidden', 'false');
-  }
-  
-    // 레이아웃 변화마다 재배치
-    const relayout = () => requestAnimationFrame(placeBubble);
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', relayout, {once:true});
+      document.addEventListener('DOMContentLoaded', relayout, { once:true });
     } else {
       relayout();
     }
-    window.addEventListener('resize', relayout);
-    // 어떤 스크롤이든 캐치(캡처 단계) → 헤더 내부 스크롤도 반영
-    window.addEventListener('scroll', relayout, true);
-    window.addEventListener('panel:navigated', relayout);
   
-    // 닫기 동작(네 코드 유지)
+    // 스크롤/리사이즈는 즉시
+    window.addEventListener('scroll', relayout, true);
+    window.addEventListener('resize', relayout);
+  
+    // 패널 토글 클릭 순간부터 추적 시작
+    document.querySelector('.toggle-extension')?.addEventListener('click', () => startFollow(800));
+  
+    // 레이아웃 변하는 주요 영역을 옵저브
+    const ro = new ResizeObserver(() => placeBubble());
+    ['.full-header-container', '.main-panel-only', 'body', 'html'].forEach(sel=>{
+      const el = document.querySelector(sel);
+      if (el) ro.observe(el);
+    });
+  
+    // 트랜지션 시작 시점에 따라붙기 (캡처 단계)
+    const transTargets = ['.sidebar-extension-panel', '.full-header-container', '.main-panel-only', '.header-top'];
+    document.addEventListener('transitionstart', (e) => {
+      if (transTargets.some(sel => e.target.matches?.(sel))) startFollow(e.elapsedTime ? e.elapsedTime*1000 + 200 : 700);
+    }, true);
+  
+    // 네가 이미 쓰는 커스텀 이벤트도 유지
+    window.addEventListener('panel:navigated', () => { placeBubble(); startFollow(400); });
+  
+    /* 5) 닫기 로직 (네 코드 유지) */
     const KEY = 'bugloop.hideHardwareHint';
     const close = bubble.querySelector('.hint-close');
     const hide = () => {
@@ -532,10 +529,10 @@
     close?.addEventListener('click', hide);
     bubble.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
   
-    // 첫 진입 노출
     if (localStorage.getItem(KEY) !== '1') placeBubble();
   })();
   </script>
+  
 
 
 <!-- ✅ 메인 로직: header.js가 패널/탭 상태(복구, a11y 포함)를 전담 -->
