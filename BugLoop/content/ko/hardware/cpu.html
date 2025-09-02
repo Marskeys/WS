@@ -30,110 +30,59 @@
 
     /* —— Card ——————————————————————————————————————————— */
     .card{
-      width:min(520px, 92vw);
-      padding:16px 16px 14px;
+      width:min(640px, 94vw);
+      padding:16px 18px 18px;
       border:1px solid var(--ring);
       border-radius:18px;
       background:var(--card);
       box-shadow:0 8px 28px rgba(0,0,0,.08);
       transition: box-shadow .3s ease;
     }
-    .card:hover{
-      box-shadow:0 12px 36px rgba(0,0,0,.12);
-    }
+    .card:hover{ box-shadow:0 12px 36px rgba(0,0,0,.12); }
 
-    .title{
-      display:flex; align-items:center; gap:10px; margin:0 0 10px;
-    }
-    .dot{
-      width:6px; height:6px; border-radius:999px;
-      background:var(--glow);
-      box-shadow:0 0 12px var(--glow);
-    }
-    .title h1{
-      font-size:14px;
-      margin:0;
-      font-weight:800;
-      letter-spacing:.3px;
-      text-transform:uppercase;
-    }
+    /* —— Head (title + illustration) ———————————————— */
+    .head{ display:flex; align-items:center; gap:14px; margin:0 0 12px; }
+    .head h1{ font-size:22px; font-weight:800; letter-spacing:.2px; margin:0; }
+    .hero-illus{ width:28px; height:28px; flex:0 0 auto; }
+    .hero-illus .chip{ fill:#eef6ff; stroke:#8dbdff; stroke-width:1.1; }
+    .hero-illus .pin{ stroke:#8dbdff; stroke-width:1.1; }
 
     /* —— Slot viewport —————————————————————————————— */
-    .viewport{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:8px;
-      padding:10px;
-      border-radius:14px;
-      border:1px solid var(--ring);
-      background:#f9f9fb;
-    }
-    .reel{
-      position:relative;
-      height:64px;
-      overflow:hidden;
-      border-radius:10px;
-      border:1px solid var(--ring);
-      background:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow: inset 0 4px 8px rgba(0,0,0,.05), inset 0 -4px 8px rgba(0,0,0,.04);
-    }
-    .slot-value{
-      font-weight:700;
-      font-size:18px;
-      text-align:center;
-      padding:0 6px;
-      white-space:nowrap;
-      color:var(--ink);
-    }
-    .spinning .slot-value{
-      filter: blur(1.1px) saturate(1.05);
-      opacity:.7;
-    }
+    .viewport{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:10px; border-radius:14px; border:1px solid var(--ring); background:#f9f9fb; }
+    .reel{ position:relative; height:64px; overflow:hidden; border-radius:10px; border:1px solid var(--ring); background:#fff; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 4px 8px rgba(0,0,0,.05), inset 0 -4px 8px rgba(0,0,0,.04); }
+    .slot-value{ font-weight:700; font-size:18px; text-align:center; padding:0 6px; white-space:nowrap; color:var(--ink); }
+    .spinning .slot-value{ filter: blur(1.1px) saturate(1.05); opacity:.7; }
 
-    @keyframes snap{
-      0%{ transform:translateY(-1px)}
-      60%{ transform:translateY(1px)}
-      100%{ transform:translateY(0)}
-    }
-    .snap{
-      animation: snap .12s ease-out;
-    }
-    .reel.stopGlow{
-      box-shadow: 0 0 0 1px var(--ring) inset, 0 0 16px rgba(75,168,255,.25);
-      transition: box-shadow .3s ease;
-    }
+    @keyframes snap{ 0%{ transform:translateY(-1px)} 60%{ transform:translateY(1px)} 100%{ transform:translateY(0)} }
+    .snap{ animation: snap .12s ease-out; }
+    .reel.stopGlow{ box-shadow: 0 0 0 1px var(--ring) inset, 0 0 16px rgba(75,168,255,.25); transition: box-shadow .3s ease; }
 
     /* Legend */
-    .legend{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:8px;
-      margin-top:8px;
-    }
-    .legend small{
-      display:block;
-      text-align:center;
-      color:var(--muted);
-      font-size:11.5px;
-    }
+    .legend{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
+    .legend small{ display:block; text-align:center; color:var(--muted); font-size:11.5px; }
 
     /* Caption */
-    .caption{
-      margin-top:10px;
-      color:var(--muted);
-      font-size:12px;
-      text-align:center;
-    }
+    .caption{ margin-top:10px; color:var(--muted); font-size:12px; text-align:center; }
+
+    /* —— Doc (temp body) ———————————————————————————— */
+    .doc{ margin-top:16px; border-top:1px dashed var(--ring); padding-top:14px; color:#2a2f36; }
+    .doc h2{ margin:0 0 8px; font-size:16px; letter-spacing:.2px; }
+    .doc ul{ margin:0; padding-left:16px; display:grid; grid-template-columns:1fr 1fr; gap:6px 14px; }
+    .doc li{ font-size:13px; color:#3b4351; }
+    @media (max-width:560px){ .doc ul{ grid-template-columns:1fr; } .head h1{ font-size:18px } }
   </style>
 </head>
 <body>
   <section class="card" aria-label="CPU Slot Trainer – Auto">
-    <div class="title">
-      <span class="dot" aria-hidden="true"></span>
-      <h1>CPU Slot Trainer · Auto</h1>
+    <div class="head">
+      <h1>컴퓨터 고를 때 CPU 판단하는 방법 &gt;</h1>
+      <!-- inline SVG illustration (CPU chip icon) -->
+      <svg class="hero-illus" viewBox="0 0 24 24" aria-hidden="true">
+        <rect class="chip" x="6" y="6" width="12" height="12" rx="2"/>
+        <rect x="9" y="9" width="6" height="6" rx="1.1" fill="#dcebff" stroke="#8dbdff" stroke-width="1"/>
+        <!-- pins -->
+        <path class="pin" d="M12 2v3M2 12h3M19 12h3M12 19v3M5 5l2.2 2.2M19 5l-2.2 2.2M5 19l2.2-2.2M19 19l-2.2-2.2" fill="none"/>
+      </svg>
     </div>
 
     <div class="viewport" aria-live="polite">
@@ -149,9 +98,29 @@
     </div>
 
     <p class="caption" id="caption">브랜드 → 시리즈 → 모델 순서로 자동 재생됩니다.</p>
+
+    <!-- 임시 본문 (강의용 요약 자리) -->
+    <article class="doc">
+      <h2>임시 본문</h2>
+      <ul>
+        <li>코어·스레드 수: 멀티태스킹/크리에이티브 작업 영향.</li>
+        <li>P/E 코어 구조: 전력 효율 vs 순간 성능 밸런스.</li>
+        <li>클럭(부스트): 짧은 작업의 체감 속도.</li>
+        <li>TDP/PL: 발열·소음·전력어댑터 크기와 직결.</li>
+        <li>캐시 용량: 반복 데이터 접근 성능.</li>
+        <li>제조 공정: 전력 효율과 발열 특성.</li>
+        <li>iGPU/NPU: 내장 그래픽, AI 가속 유무.</li>
+        <li>메모리 규격: DDR5/LPDDR5x, 채널 수.</li>
+        <li>PCIe 레인: GPU/SSD 확장성.</li>
+        <li>플랫폼/소켓: 업그레이드 가능성.</li>
+        <li>벤치마크/성능비: 가격 대비 체감.</li>
+        <li>배터리/소음: 실사용 환경 품질.</li>
+      </ul>
+    </article>
   </section>
 
   <script>
+    // ——— Data (brand → series → model) —————————————————————————
     const DATA = {
       "Intel": {
         "Core": ["i3","i5","i7","i9"],
@@ -196,25 +165,25 @@
 
     let spinning = false;
 
-    function spinOnce(){
+    function spinOnce(autoNext=true){
       if(spinning) return; spinning=true;
       const target = finalPick();
 
-      const base = 75 + Math.random()*40;
-      const delay1 = 800 + Math.random()*300;
-      const delay2 = delay1 + 280 + Math.random()*220;
-      const delay3 = delay2 + 280 + Math.random()*220;
+      const base = 75 + Math.random()*40;          // flicker speed
+      const delay1 = 800 + Math.random()*300;      // brand stop
+      const delay2 = delay1 + 280 + Math.random()*220; // series stop
+      const delay3 = delay2 + 280 + Math.random()*220; // model stop
 
       reels.forEach(r => r.classList.add('spinning'));
 
       const intv=[];
-      intv[0] = setInterval(()=> brandEl.textContent = pick(brands()), base);
-      intv[1] = setInterval(()=> seriesEl.textContent = pick(seriesOf(pick(brands()))), base);
-      intv[2] = setInterval(()=> modelEl.textContent = pick(modelsOf(pick(brands()), pick(seriesOf(pick(brands())))), base);
+      intv[0] = setInterval(()=>{ brandEl.textContent = pick(brands()); }, base);
+      intv[1] = setInterval(()=>{ const b=pick(brands()); seriesEl.textContent = pick(seriesOf(b)); }, base);
+      intv[2] = setInterval(()=>{ const b=pick(brands()); const s=pick(seriesOf(b)); modelEl.textContent = pick(modelsOf(b,s)); }, base);
 
       const stop = (i,text) => {
         clearInterval(intv[i]);
-        [brandEl,seriesEl,modelEl][i].textContent=text;
+        [brandEl,seriesEl,modelEl][i].textContent = text;
         reels[i].classList.remove('spinning');
         reels[i].classList.add('snap','stopGlow');
         setTimeout(()=>reels[i].classList.remove('snap','stopGlow'),240);
@@ -224,22 +193,21 @@
       setTimeout(()=>stop(1,target.s),delay2);
       setTimeout(()=>{
         stop(2,target.m);
-        $('caption').textContent=composeFull(target.b,target.s,target.m);
+        $('caption').textContent = composeFull(target.b,target.s,target.m);
         spinning=false;
+        if(autoNext){
+          const pause = 1100 + Math.random()*1800; // 자연스러운 쉬는 시간
+          setTimeout(()=>spinOnce(true), pause);
+        }
       },delay3);
     }
 
-    function loop(){
-      spinOnce();
-      const pause = 1200 + Math.random()*1800;
-      setTimeout(loop,pause+900);
-    }
-
+    // Seed + start
     (function init(){
       const {b,s,m} = finalPick();
       brandEl.textContent=b; seriesEl.textContent=s; modelEl.textContent=m;
       $('caption').textContent = composeFull(b,s,m);
-      setTimeout(loop,800);
+      setTimeout(()=>spinOnce(true),800);
     })();
   </script>
 </body>
