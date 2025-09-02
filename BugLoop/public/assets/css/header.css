@@ -958,6 +958,7 @@ html.dark .lang-option:hover { background-color: #333; }
   .header-top {
     position: relative;
     overflow: hidden;
+    margin-left:50px;
   }
   .header-top::before {
     content: '';
