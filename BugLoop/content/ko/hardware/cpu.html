@@ -3,20 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CPU Slot Trainer — Minimal Auto</title>
+  <title>CPU Slot Trainer — White Panel</title>
   <style>
-    /* —— Theme (sleek, compact) ——————————————————————————— */
+    /* —— Theme (bright panel, elegant) ——————————————————————————— */
     :root{
-      --bg:#0b0c10; --card:#0f1220; --ring:#1e2332; --ink:#eaf2ff; --muted:#8fa1ba;
-      --glow:#6ee7ff; --accent:#ff6ea3;
+      --bg:#f7f8fa;         /* 전체 배경 */
+      --card:#ffffff;       /* 카드 색상 */
+      --ring:#e1e6ef;       /* 테두리 */
+      --ink:#222;           /* 기본 글자색 */
+      --muted:#667085;      /* 부가 텍스트 */
+      --glow:#4ba8ff;       /* 블루 강조 */
+      --accent:#ff6ea3;     /* 포인트 컬러 */
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f8fc; --card:#ffffff; --ring:#e9eef6; --ink:#10131a; --muted:#5b687d; }
-    }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; background:radial-gradient(900px 420px at 50% -10%, #192034 0%, var(--bg) 60%);
+      margin:0;
+      background:var(--bg);
       font:14px/1.55 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, Helvetica, Arial;
       color:var(--ink);
       letter-spacing:.15px;
@@ -26,41 +30,111 @@
 
     /* —— Card ——————————————————————————————————————————— */
     .card{
-      width: min(520px, 92vw);
-      padding:16px 16px 14px; border:1px solid var(--ring); border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.06)), var(--card);
-      box-shadow:0 12px 28px rgba(0,0,0,.28);
+      width:min(520px, 92vw);
+      padding:16px 16px 14px;
+      border:1px solid var(--ring);
+      border-radius:18px;
+      background:var(--card);
+      box-shadow:0 8px 28px rgba(0,0,0,.08);
+      transition: box-shadow .3s ease;
     }
-    .title{ display:flex; align-items:center; gap:10px; margin:0 0 10px; }
-    .dot{ width:6px; height:6px; border-radius:999px; background:var(--glow); box-shadow:0 0 16px var(--glow); }
-    .title h1{ font-size:14px; margin:0; font-weight:800; letter-spacing:.3px; text-transform:uppercase; }
-
-    /* —— Slot viewport (compact) ———————————————————————— */
-    .viewport{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:10px; border-radius:14px; border:1px solid var(--ring); background:rgba(0,0,0,.05); }
-    .reel{ position:relative; height:64px; overflow:hidden; border-radius:10px; border:1px solid var(--ring);
-           background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.1));
-           display:flex; align-items:center; justify-content:center;
-           box-shadow: inset 0 10px 16px rgba(0,0,0,.20), inset 0 -8px 12px rgba(0,0,0,.15);
+    .card:hover{
+      box-shadow:0 12px 36px rgba(0,0,0,.12);
     }
-    .slot-value{ font-weight:800; font-size:18px; text-align:center; padding:0 6px; white-space:nowrap; }
-    .spinning .slot-value{ filter: blur(1.1px) saturate(1.06); opacity:.9; }
 
-    /* Snap + subtle highlight at stop */
-    @keyframes snap { 0%{ transform:translateY(-1px)} 60%{ transform:translateY(1px)} 100%{ transform:translateY(0)} }
-    .snap{ animation: snap .12s ease-out; }
-    .reel.stopGlow{ box-shadow: 0 0 0 1px var(--ring) inset, 0 0 16px rgba(110,231,255,.35); transition: box-shadow .3s ease; }
+    .title{
+      display:flex; align-items:center; gap:10px; margin:0 0 10px;
+    }
+    .dot{
+      width:6px; height:6px; border-radius:999px;
+      background:var(--glow);
+      box-shadow:0 0 12px var(--glow);
+    }
+    .title h1{
+      font-size:14px;
+      margin:0;
+      font-weight:800;
+      letter-spacing:.3px;
+      text-transform:uppercase;
+    }
 
-    /* Legend tiny labels */
-    .legend{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px }
-    .legend small{ display:block; text-align:center; color:var(--muted); font-size:11.5px }
+    /* —— Slot viewport —————————————————————————————— */
+    .viewport{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid var(--ring);
+      background:#f9f9fb;
+    }
+    .reel{
+      position:relative;
+      height:64px;
+      overflow:hidden;
+      border-radius:10px;
+      border:1px solid var(--ring);
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: inset 0 4px 8px rgba(0,0,0,.05), inset 0 -4px 8px rgba(0,0,0,.04);
+    }
+    .slot-value{
+      font-weight:700;
+      font-size:18px;
+      text-align:center;
+      padding:0 6px;
+      white-space:nowrap;
+      color:var(--ink);
+    }
+    .spinning .slot-value{
+      filter: blur(1.1px) saturate(1.05);
+      opacity:.7;
+    }
 
-    /* Tiny caption line */
-    .caption{ margin-top:10px; color:var(--muted); font-size:12px }
+    @keyframes snap{
+      0%{ transform:translateY(-1px)}
+      60%{ transform:translateY(1px)}
+      100%{ transform:translateY(0)}
+    }
+    .snap{
+      animation: snap .12s ease-out;
+    }
+    .reel.stopGlow{
+      box-shadow: 0 0 0 1px var(--ring) inset, 0 0 16px rgba(75,168,255,.25);
+      transition: box-shadow .3s ease;
+    }
+
+    /* Legend */
+    .legend{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .legend small{
+      display:block;
+      text-align:center;
+      color:var(--muted);
+      font-size:11.5px;
+    }
+
+    /* Caption */
+    .caption{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
   </style>
 </head>
 <body>
   <section class="card" aria-label="CPU Slot Trainer – Auto">
-    <div class="title"><span class="dot" aria-hidden="true"></span><h1>CPU Slot Trainer · Auto</h1></div>
+    <div class="title">
+      <span class="dot" aria-hidden="true"></span>
+      <h1>CPU Slot Trainer · Auto</h1>
+    </div>
 
     <div class="viewport" aria-live="polite">
       <div class="reel" data-role="brand" aria-label="브랜드"><div class="slot-value" id="brand">—</div></div>
@@ -78,103 +152,95 @@
   </section>
 
   <script>
-  // ===== Data (brand → series → model) =====================================
-  const DATA = {
-    "Intel": {
-      "Core": ["i3", "i5", "i7", "i9"],
-      "Core Ultra": ["5", "7", "9"],
-      "Pentium": ["Gold"],
-      "Celeron": ["N"],
-      "Xeon": ["W-2400", "W-3400"]
-    },
-    "AMD": {
-      "Ryzen": ["3", "5", "7", "9"],
-      "Threadripper": ["7000", "PRO 7000WX"],
-      "Athlon": ["3000G"],
-      "EPYC": ["9004"]
-    },
-    "Apple": { "M": ["M1","M1 Pro","M1 Max","M2","M2 Pro","M2 Max","M3","M3 Pro","M3 Max","M4"] },
-    "Qualcomm": { "Snapdragon": ["X Elite","X Plus","8cx Gen 3"] },
-    "Samsung": { "Exynos": ["2200","2400"] },
-    "MediaTek": { "Dimensity": ["9200","9300"], "Helio":["G95"] }
-  };
-
-  const $ = (id)=>document.getElementById(id);
-  const brandEl=$('brand'), seriesEl=$('series'), modelEl=$('model');
-  const reels=[brandEl.closest('.reel'), seriesEl.closest('.reel'), modelEl.closest('.reel')];
-
-  const pick = (arr)=> arr[Math.floor(Math.random()*arr.length)];
-  const brands = ()=> Object.keys(DATA);
-  const seriesOf = (b)=> Object.keys(DATA[b]);
-  const modelsOf = (b,s)=> DATA[b][s];
-
-  function finalPick(){
-    const b=pick(brands()); const s=pick(seriesOf(b)); const m=pick(modelsOf(b,s));
-    return {b,s,m};
-  }
-
-  function composeFull(b,s,m){
-    if(b==='Apple' && s==='M') return `${b} ${m}`;
-    if(b==='Intel' && s==='Core Ultra') return `${b} ${s} ${m}`;
-    return `${b} ${s} ${m}`;
-  }
-
-  // ——— Subtle audio tick (very soft) ————————————————
-  let audioCtx=null; let muted=true; // default muted for background use
-  function ensureAudio(){ if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); } }
-  function tick(){ if(muted||!audioCtx) return; const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.value=950; o.connect(g); g.connect(audioCtx.destination); const t=audioCtx.currentTime; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.16,t+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t+0.08); o.start(t); o.stop(t+0.085); }
-  document.addEventListener('pointerdown',()=>{ if(!audioCtx){ ensureAudio(); } },{once:true});
-
-  // ——— Spin logic (auto) ————————————————————————————
-  let spinning=false;
-
-  function spinOnce(){
-    if(spinning) return; spinning=true;
-    const target = finalPick();
-
-    // random speed map for flicker (~compact aesthetic)
-    const base = 75 + Math.random()*40; // 75~115ms
-    const delay1 = 800 + Math.random()*300;  // brand stop
-    const delay2 = delay1 + 280 + Math.random()*220; // series stop
-    const delay3 = delay2 + 280 + Math.random()*220; // model stop
-
-    reels.forEach(r=>r.classList.add('spinning'));
-
-    const intv = [];
-    intv[0] = setInterval(()=>{ brandEl.textContent = pick(brands()); }, base);
-    intv[1] = setInterval(()=>{ const b=pick(brands()); seriesEl.textContent = pick(seriesOf(b)); }, base);
-    intv[2] = setInterval(()=>{ const b=pick(brands()); const s=pick(seriesOf(b)); modelEl.textContent = pick(modelsOf(b,s)); }, base);
-
-    const stop = (i, text)=>{
-      clearInterval(intv[i]);
-      [brandEl,seriesEl,modelEl][i].textContent = text;
-      reels[i].classList.remove('spinning');
-      reels[i].classList.add('snap','stopGlow');
-      setTimeout(()=>reels[i].classList.remove('snap','stopGlow'), 240);
-      tick();
+    const DATA = {
+      "Intel": {
+        "Core": ["i3","i5","i7","i9"],
+        "Core Ultra": ["5","7","9"],
+        "Pentium": ["Gold"],
+        "Celeron": ["N"],
+        "Xeon": ["W-2400","W-3400"]
+      },
+      "AMD": {
+        "Ryzen": ["3","5","7","9"],
+        "Threadripper": ["7000","PRO 7000WX"],
+        "Athlon": ["3000G"],
+        "EPYC": ["9004"]
+      },
+      "Apple": { "M": ["M1","M1 Pro","M1 Max","M2","M2 Pro","M2 Max","M3","M3 Pro","M3 Max","M4"] },
+      "Qualcomm": { "Snapdragon": ["X Elite","X Plus","8cx Gen 3"] },
+      "Samsung": { "Exynos": ["2200","2400"] },
+      "MediaTek": { "Dimensity": ["9200","9300"], "Helio":["G95"] }
     };
 
-    setTimeout(()=> stop(0, target.b), delay1);
-    setTimeout(()=> stop(1, target.s), delay2);
-    setTimeout(()=>{
-      stop(2, target.m);
-      const full = composeFull(target.b, target.s, target.m);
-      $('caption').textContent = full;
-      spinning=false;
-    }, delay3);
-  }
+    const $ = id => document.getElementById(id);
+    const brandEl = $('brand'), seriesEl = $('series'), modelEl = $('model');
+    const reels = [brandEl.closest('.reel'), seriesEl.closest('.reel'), modelEl.closest('.reel')];
 
-  function loop(){
-    spinOnce();
-    const pause = 1200 + Math.random()*1800; // 1.2s ~ 3s between rounds
-    setTimeout(loop, pause + 900); // include spin duration cushion
-  }
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+    const brands = () => Object.keys(DATA);
+    const seriesOf = b => Object.keys(DATA[b]);
+    const modelsOf = (b,s) => DATA[b][s];
 
-  // Initial seed & start loop
-  (function init(){
-    const {b,s,m} = finalPick(); brandEl.textContent=b; seriesEl.textContent=s; modelEl.textContent=m; $('caption').textContent = composeFull(b,s,m);
-    setTimeout(loop, 800); // small intro delay
-  })();
+    function finalPick(){
+      const b = pick(brands());
+      const s = pick(seriesOf(b));
+      const m = pick(modelsOf(b,s));
+      return {b,s,m};
+    }
+
+    function composeFull(b,s,m){
+      if(b==='Apple' && s==='M') return `${b} ${m}`;
+      if(b==='Intel' && s==='Core Ultra') return `${b} ${s} ${m}`;
+      return `${b} ${s} ${m}`;
+    }
+
+    let spinning = false;
+
+    function spinOnce(){
+      if(spinning) return; spinning=true;
+      const target = finalPick();
+
+      const base = 75 + Math.random()*40;
+      const delay1 = 800 + Math.random()*300;
+      const delay2 = delay1 + 280 + Math.random()*220;
+      const delay3 = delay2 + 280 + Math.random()*220;
+
+      reels.forEach(r => r.classList.add('spinning'));
+
+      const intv=[];
+      intv[0] = setInterval(()=> brandEl.textContent = pick(brands()), base);
+      intv[1] = setInterval(()=> seriesEl.textContent = pick(seriesOf(pick(brands()))), base);
+      intv[2] = setInterval(()=> modelEl.textContent = pick(modelsOf(pick(brands()), pick(seriesOf(pick(brands())))), base);
+
+      const stop = (i,text) => {
+        clearInterval(intv[i]);
+        [brandEl,seriesEl,modelEl][i].textContent=text;
+        reels[i].classList.remove('spinning');
+        reels[i].classList.add('snap','stopGlow');
+        setTimeout(()=>reels[i].classList.remove('snap','stopGlow'),240);
+      };
+
+      setTimeout(()=>stop(0,target.b),delay1);
+      setTimeout(()=>stop(1,target.s),delay2);
+      setTimeout(()=>{
+        stop(2,target.m);
+        $('caption').textContent=composeFull(target.b,target.s,target.m);
+        spinning=false;
+      },delay3);
+    }
+
+    function loop(){
+      spinOnce();
+      const pause = 1200 + Math.random()*1800;
+      setTimeout(loop,pause+900);
+    }
+
+    (function init(){
+      const {b,s,m} = finalPick();
+      brandEl.textContent=b; seriesEl.textContent=s; modelEl.textContent=m;
+      $('caption').textContent = composeFull(b,s,m);
+      setTimeout(loop,800);
+    })();
   </script>
 </body>
 </html>
