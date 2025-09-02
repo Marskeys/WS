@@ -15,7 +15,7 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
       white-space: nowrap;
-      z-index: 2147483647;
+      z-index: 999999999 !important; /* ✅ 최상단 보장 */
       animation: bubbleFadeIn 0.25s ease forwards;
     }
   
@@ -58,32 +58,59 @@
     }
   
     /* =========================================
-       ⬇️ 헤더 가로 스크롤 복구 + 팝업 안 잘리기
+       ⬇️ 헤더 가로 스크롤 복구 + 스크롤바 숨김
        ========================================= */
   
-    /* 헤더 자체는 가로 스크롤 유지, 세로만 열어둠 */
+    /* 헤더 자체는 가로 스크롤 유지, 세로는 열어둠(팝업 안 잘림) */
     .header-menu{
-      overflow-x: auto;        /* ✅ 가로 스크롤 살리기 */
-      overflow-y: visible;     /* ✅ 세로는 열어 팝업 꼬리 안 잘림 */
-      -webkit-overflow-scrolling: touch; /* iOS 스크롤 부드럽게 */
+      overflow-x: auto;                  /* ✅ 가로 스크롤 살리기 */
+      overflow-y: visible;               /* ✅ 세로 열기 */
+      -webkit-overflow-scrolling: touch; /* iOS 부드럽게 */
+      position: relative;
+      z-index: 20;                       /* 팝업 아래 조상 레이어 업 */
     }
+    /* 가로 스크롤바 숨김 */
+    .header-menu::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
+    .header-menu{ scrollbar-width: none; -ms-overflow-style: none; } /* Firefox/IE */
   
     /* 메뉴 리스트가 한 줄로 이어지게 → 가로 스크롤 트리거 */
     .main-menu-container{
       display: flex;
-      flex-wrap: nowrap;       /* ✅ 줄바꿈 방지 */
-      width: max-content;      /* ✅ 내용 폭만큼만 → 스크롤 생김 */
-      overflow: visible !important; /* 팝업 안 잘림 */
-      gap: 0;                  /* 필요시 조정 */
+      flex-wrap: nowrap;                 /* ✅ 줄바꿈 방지 */
+      width: max-content;                /* ✅ 내용 폭만큼만 → 스크롤 생성 */
+      overflow: visible !important;      /* 팝업/꼬리 안 잘림 */
+      gap: 0;
+      position: relative;
+      z-index: 21;                       /* 헤더보다 한 단계 위 */
     }
   
-    /* 하드웨어 메뉴 아이템은 팝업 기준점 + 안 잘리게 */
+    /* 팝업 기준점 + 스택 최상단으로 끌어올리기 */
     .menu-item-wrapper.hardware-wrapper{
-      position: relative;      /* 말풍선 absolute 기준 */
+      position: relative;                /* 말풍선 absolute 기준 */
       overflow: visible !important;
-      z-index: 10;
+      z-index: 9999999;                  /* ✅ 사이드패널 등 위로 */
+    }
+  
+    /* ============================
+       ⬇️ 조상들의 오버플로우/스택 보정
+       ============================ */
+    .full-header-container,
+    .header-top,
+    .top-controls{
+      overflow: visible !important;      /* 조상에 숨김 걸려 있어도 열기 */
+      position: relative;
+      z-index: 15;                       /* 헤더 레이어 확보 */
+    }
+  
+    /* (선택) 사이드패널이 위에 덮는 경우를 방지하려면 살짝 낮춤
+       프로젝트 상황에 따라 조정 가능 */
+    .sidebar-wrapper,
+    .sidebar-extension-panel{
+      position: relative;
+      z-index: 5;
     }
   </style>
+  
   
   <div class="header-top">
     <div class="top-controls">
