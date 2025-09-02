@@ -1,61 +1,77 @@
 <div class="full-header-container" style="z-index:20000;">
 
-  <!-- ▼ 추가: 스타일 --------------------------------------------- -->
+  <!-- ▼ 스타일: 라벨에 붙는 말풍선(꼬리 포함) ----------------------- -->
   <style>
-    /* (옵션) 기존 구조에서 말풍선 잘림 방지 */
+    /* 말풍선 잘림 방지 + 기준점 */
     .header-menu,
     .main-menu-container,
-    .menu-item-wrapper.hardware-wrapper {
-      overflow: visible !important;
-    }
+    .menu-item-wrapper.hardware-wrapper { overflow: visible !important; }
     .menu-item-wrapper.hardware-wrapper { position: relative; }
 
-    /* 플로팅 하드웨어 힌트 - 조상 overflow, stacking 무시 */
-    .floating-hardware-hint {
-      position: fixed;
+    /* 라벨 옆 말풍선 */
+    .hint-bubble {
+      position: absolute;
+      top: 50%;
+      left: 100%;                /* 라벨 오른쪽 */
+      transform: translateY(-50%);
+      margin-left: 10px;
       background: #ff4d6d;
       color: #fff;
       border-radius: 12px;
       padding: 8px 12px;
-      line-height: 1.35;
       font-size: 0.85rem;
       white-space: nowrap;
+      display: none;             /* JS로 토글 */
+      align-items: center;
+      gap: 6px;
       box-shadow: 0 8px 16px rgba(255,77,109,.25);
-      z-index: 2147483647; /* 최상단 */
-      display: none;
+      z-index: 99999;
     }
-    .floating-hardware-hint::after{
-      content:"";
-      position:absolute;
-      left: -6px;
+    .hint-bubble[aria-hidden="false"] { display: inline-flex !important; }
+
+    /* 꼬리(라벨을 향함) */
+    .hint-bubble::before {
+      content: "";
+      position: absolute;
       top: 50%;
+      left: -6px;
       transform: translateY(-50%);
       border: 6px solid transparent;
       border-right-color: #ff4d6d;
     }
-    .floating-hardware-hint button.hint-close{
+
+    /* 닫기 버튼 */
+    .hint-bubble .hint-close {
       all: unset;
       cursor: pointer;
-      margin-right: 8px;
       font-weight: 700;
       line-height: 1;
+      padding: 0 2px;
     }
-    .floating-hardware-hint button.hint-close:focus-visible{
+    .hint-bubble .hint-close:focus-visible {
       outline: 2px solid #fff;
       outline-offset: 2px;
       border-radius: 4px;
     }
-    @media (max-width: 900px){
-      .floating-hardware-hint::after{
-        left: 14px; top: -6px; transform:none;
-        border-right-color: transparent; border-bottom-color:#ff4d6d;
+
+    /* 좁은 화면: 라벨 아래로 배치 + 꼬리 방향 변경 */
+    @media (max-width: 900px) {
+      .hint-bubble {
+        top: calc(100% + 6px);
+        left: 0;
+        transform: none;
+        margin-left: 0;
+      }
+      .hint-bubble::before {
+        top: -6px;
+        left: 14px;
+        transform: none;
+        border-right-color: transparent;
+        border-bottom-color: #ff4d6d;
       }
     }
-
-    /* (참고) inline hint-bubble을 잠궈둠(우리는 플로팅만 씀) */
-    .hint-bubble[aria-hidden="true"]{ display:none !important; }
   </style>
-  <!-- ▲ 추가: 스타일 --------------------------------------------- -->
+  <!-- ▲ 스타일 끝 -------------------------------------------------- -->
 
   <div class="header-top">
     <div class="top-controls">
@@ -79,9 +95,11 @@
            <li class="menu-item-wrapper hardware-wrapper">
             <span class="menu-label" id="hardware-label">컴퓨터 하드웨어</span>
 
-            <!-- 🔔 (비활성화) 붉은 말풍선 - 디버그용 요소는 기본 숨김.
-                 실제 표시는 아래의 'floating-hardware-hint'가 담당 -->
-            <div class="hint-bubble" id="hardware-hint" role="tooltip" aria-hidden="true"></div>
+            <!-- 🔔 라벨 옆 말풍선 (꼬리 포함) -->
+            <div class="hint-bubble" id="hardware-hint" role="tooltip" aria-hidden="true">
+              <button class="hint-close" type="button" aria-label="닫기">×</button>
+              <span class="hint-text">컴퓨터 살 때 참고하면 도움돼요!</span>
+            </div>
 
             <ul class="submenu">
               <li><a href="/<%= lang %>/hardware/cpu"           data-panel-link>CPU</a></li>
@@ -412,76 +430,40 @@
   })();
 </script>
 
-<!-- ===== 하드웨어 라벨 옆 붉은 말풍선: 플로팅 버전 ===== -->
+<!-- ===== 라벨 옆 말풍선 스크립트 (닫으면 다시 안 뜸) ===== -->
 <script>
 (function(){
-  const KEY = 'bugloop.hardwareHint.v3';
+  const KEY = 'bugloop.hardwareHint.v4';
   if (localStorage.getItem(KEY) === '1') return;
 
-  // 1) 라벨 찾기 (id 우선, 실패 시 텍스트 매칭)
-  let label = document.querySelector('.menu-item-wrapper .menu-label#hardware-label');
-  if (!label) {
-    document.querySelectorAll('.menu-item-wrapper .menu-label').forEach(el=>{
-      if(!label && el.textContent.trim() === '컴퓨터 하드웨어') label = el;
-    });
-  }
-  if (!label) return;
+  const wrapper = document.querySelector('.menu-item-wrapper.hardware-wrapper');
+  if (!wrapper) return;
 
-  // 2) 노드 만들고 body에 붙임 (조상 overflow 무시)
-  const hint = document.createElement('div');
-  hint.className = 'floating-hardware-hint';
-  hint.setAttribute('role','tooltip');
-  hint.setAttribute('aria-live','polite');
-  hint.innerHTML = `
-    <button class="hint-close" aria-label="닫기">×</button>
-    <span class="hint-text">컴퓨터 살 때 참고하면 도움돼요!</span>
-  `;
-  document.body.appendChild(hint);
+  const bubble = wrapper.querySelector('#hardware-hint');
+  const label  = wrapper.querySelector('#hardware-label');
+  const close  = wrapper.querySelector('.hint-close');
 
-  // 3) 위치 계산(라벨의 화면 좌표 기준으로 오른쪽에 붙임)
-  function place(){
-    const r = label.getBoundingClientRect();
-    // 먼저 보이게 해서 크기 측정
-    hint.style.display = 'inline-flex';
-    const top = Math.round(r.top + r.height/2 - hint.offsetHeight/2);
-    let left = Math.round(r.right + 8);
+  const show = () => { bubble?.setAttribute('aria-hidden', 'false'); };
+  const hide = () => { bubble?.setAttribute('aria-hidden', 'true');  };
 
-    // 화면 오른쪽 넘치면 왼쪽으로 붙임
-    const overflowRight = left + hint.offsetWidth + 8 > window.innerWidth;
-    if (!overflowRight) {
-      hint.style.left = `${left}px`;
-      hint.style.right = 'auto';
-      hint.style.top = `${Math.max(8, top)}px`;
-      // 꼬리 기본: 왼쪽에서 오른쪽 향함(기본 CSS)
-      hint.style.direction = 'ltr';
-    } else {
-      // 라벨 왼쪽에 붙이기
-      left = Math.round(r.left - 8 - hint.offsetWidth);
-      hint.style.left = `${Math.max(8, left)}px`;
-      hint.style.right = 'auto';
-      hint.style.top = `${Math.max(8, top)}px`;
-      // 간단 반전: 꼬리를 오른쪽으로 보이게
-      hint.style.direction = 'rtl';
-    }
-  }
+  // 첫 진입 시 보이기
+  show();
 
-  // 4) 닫기 동작 + 저장
-  hint.querySelector('.hint-close')?.addEventListener('click', ()=>{
-    localStorage.setItem(KEY,'1');
-    hint.remove();
-    label.focus?.();
+  // 닫기 → 저장
+  close?.addEventListener('click', () => {
+    localStorage.setItem(KEY, '1');
+    hide();
+    label?.focus?.();
   });
 
-  // 5) 첫 배치 + 리사이즈/스크롤 시 재배치
-  const placeSafely = ()=>{ try{ place(); }catch(e){} };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', placeSafely, {once:true});
-  } else {
-    placeSafely();
-  }
-  window.addEventListener('resize', placeSafely);
-  window.addEventListener('scroll', placeSafely, {passive:true});
-  window.addEventListener('panel:navigated', placeSafely);
+  // ESC로 닫기
+  bubble?.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      localStorage.setItem(KEY, '1');
+      hide();
+      label?.focus?.();
+    }
+  });
 })();
 </script>
 
