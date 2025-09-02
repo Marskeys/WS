@@ -1,4 +1,69 @@
 <div class="full-header-container" style="z-index:20000;">
+  <style>
+    /* ===== 팝업 말풍선 스타일 ===== */
+    .hint-bubble {
+      position: absolute;
+      top: 36px; /* 라벨 기준 약간 아래 */
+      left: 0;
+      display: inline-flex;
+      align-items: center;
+      background: #ff4d6d;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
+      white-space: nowrap;
+      z-index: 2147483647;
+      animation: bubbleFadeIn 0.25s ease forwards;
+    }
+
+    /* 말풍선 꼬리 */
+    .hint-bubble::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 20px;
+      border-width: 0 8px 8px 8px;
+      border-style: solid;
+      border-color: transparent transparent #ff4d6d transparent;
+    }
+
+    /* 닫기 버튼 */
+    .hint-bubble .hint-close {
+      all: unset;
+      cursor: pointer;
+      margin-left: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.15s ease;
+    }
+
+    .hint-bubble .hint-close:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* 살짝 부드러운 등장 애니메이션 */
+    @keyframes bubbleFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
   <div class="header-top">
     <div class="top-controls">
       <div class="left-controls">
