@@ -1,10 +1,10 @@
 <div class="full-header-container" style="z-index:20000;">
   <style>
-    /* ===== 팝업 말풍선 스타일 ===== */
+    /* ===== 팝업 말풍선 기본 ===== */
     .hint-bubble {
-      position: absolute;
-      top: 36px;              /* 라벨 기준 약간 아래 */
-      left: 60px;             /* 너가 지정한 값 유지 */
+      position: absolute;          /* 기본값: 부모 기준 (백업) */
+      top: 36px;
+      left: 60px;                  /* 너가 쓰던 값 유지 */
       display: inline-flex;
       align-items: center;
       background: #ff4d6d;
@@ -15,8 +15,17 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3);
       white-space: nowrap;
-      z-index: 999999999 !important; /* ✅ 최상단 보장 */
+      z-index: 2147483647;
       animation: bubbleFadeIn 0.25s ease forwards;
+      pointer-events: auto;
+    }
+  
+    /* ⛳️ viewport 기준 고정 모드 (조상 잘림/덮임 무력화) */
+    .hint-bubble.is-fixed {
+      position: fixed !important;
+      top: var(--hint-top, 0px);
+      left: var(--hint-left, 0px);
+      z-index: 2147483647 !important;    /* 최상단 */
     }
   
     /* 말풍선 꼬리 */
@@ -24,7 +33,7 @@
       content: "";
       position: absolute;
       top: -8px;
-      left: 20px;            /* 너가 지정한 값 유지 */
+      left: 20px;                  /* 너가 쓰던 값 유지 */
       border-width: 0 8px 8px 8px;
       border-style: solid;
       border-color: transparent transparent #ff4d6d transparent;
@@ -47,69 +56,49 @@
       align-items: center;
       transition: background 0.15s ease;
     }
-    .hint-bubble .hint-close:hover {
-      background: rgba(255, 255, 255, 0.35);
-    }
+    .hint-bubble .hint-close:hover { background: rgba(255, 255, 255, 0.35); }
   
-    /* 살짝 부드러운 등장 애니메이션 */
+    /* 살짝 부드러운 등장 */
     @keyframes bubbleFadeIn {
       0% { opacity: 0; transform: translateY(-5px); }
       100% { opacity: 1; transform: translateY(0); }
     }
   
     /* =========================================
-       ⬇️ 헤더 가로 스크롤 복구 + 스크롤바 숨김
+       헤더 가로 스크롤 유지 + 스크롤바 숨김
        ========================================= */
-  
-    /* 헤더 자체는 가로 스크롤 유지, 세로는 열어둠(팝업 안 잘림) */
     .header-menu{
-      overflow-x: auto;                  /* ✅ 가로 스크롤 살리기 */
-      overflow-y: visible;               /* ✅ 세로 열기 */
-      -webkit-overflow-scrolling: touch; /* iOS 부드럽게 */
+      overflow-x: auto;                 /* ✅ 가로 스크롤 유지 */
+      overflow-y: visible;              /* ✅ 세로는 열어 팝업 안 잘림 */
+      -webkit-overflow-scrolling: touch;
       position: relative;
-      z-index: 20;                       /* 팝업 아래 조상 레이어 업 */
     }
     /* 가로 스크롤바 숨김 */
-    .header-menu::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
+    .header-menu::-webkit-scrollbar{ display:none; }  /* Chrome/Safari */
     .header-menu{ scrollbar-width: none; -ms-overflow-style: none; } /* Firefox/IE */
   
-    /* 메뉴 리스트가 한 줄로 이어지게 → 가로 스크롤 트리거 */
     .main-menu-container{
       display: flex;
-      flex-wrap: nowrap;                 /* ✅ 줄바꿈 방지 */
-      width: max-content;                /* ✅ 내용 폭만큼만 → 스크롤 생성 */
-      overflow: visible !important;      /* 팝업/꼬리 안 잘림 */
-      gap: 0;
-      position: relative;
-      z-index: 21;                       /* 헤더보다 한 단계 위 */
-    }
-  
-    /* 팝업 기준점 + 스택 최상단으로 끌어올리기 */
-    .menu-item-wrapper.hardware-wrapper{
-      position: relative;                /* 말풍선 absolute 기준 */
+      flex-wrap: nowrap;                /* 한 줄 유지 → 가로 스크롤 */
+      width: max-content;
       overflow: visible !important;
-      z-index: 9999999;                  /* ✅ 사이드패널 등 위로 */
     }
   
-    /* ============================
-       ⬇️ 조상들의 오버플로우/스택 보정
-       ============================ */
+    .menu-item-wrapper.hardware-wrapper{
+      position: relative;               /* absolute 기준점 */
+      overflow: visible !important;
+      z-index: 10;
+    }
+  
+    /* 조상들은 보수적으로 열어둠(혹시 모를 잘림 방지) */
     .full-header-container,
     .header-top,
     .top-controls{
-      overflow: visible !important;      /* 조상에 숨김 걸려 있어도 열기 */
+      overflow: visible !important;
       position: relative;
-      z-index: 15;                       /* 헤더 레이어 확보 */
-    }
-  
-    /* (선택) 사이드패널이 위에 덮는 경우를 방지하려면 살짝 낮춤
-       프로젝트 상황에 따라 조정 가능 */
-    .sidebar-wrapper,
-    .sidebar-extension-panel{
-      position: relative;
-      z-index: 5;
     }
   </style>
+  
   
   
   <div class="header-top">
@@ -517,6 +506,67 @@
     });
   })();
   </script>
+
+<script>
+  (() => {
+    const KEY = 'bugloop.hideHardwareHint';
+    const wrapper = document.querySelector('.menu-item-wrapper.hardware-wrapper');
+    if (!wrapper) return;
+
+    const bubble = wrapper.querySelector('#hardware-hint');
+    const label  = wrapper.querySelector('#hardware-label');
+    const close  = wrapper.querySelector('.hint-close');
+
+    const hidden = localStorage.getItem(KEY) === '1';
+    const OFFSET_X = 60;  // 너가 쓰던 left 오프셋
+    const OFFSET_Y = 8;   // 라벨 아래 간격
+
+    const pin = () => {
+      if (!bubble || !label) return;
+      const r = label.getBoundingClientRect();
+      bubble.classList.add('is-fixed');
+      bubble.style.setProperty('--hint-top',  (r.bottom + OFFSET_Y) + 'px');
+      bubble.style.setProperty('--hint-left', (r.left + OFFSET_X) + 'px');
+    };
+
+    const show = () => {
+      if (!bubble) return;
+      bubble.style.display = 'inline-flex';
+      bubble.setAttribute('aria-hidden', 'false');
+      pin(); // ✅ viewport 기준으로 고정
+    };
+    const hide = () => {
+      if (!bubble) return;
+      bubble.style.display = 'none';
+      bubble.setAttribute('aria-hidden', 'true');
+    };
+
+    if (!hidden) show();
+
+    close?.addEventListener('click', () => {
+      localStorage.setItem(KEY, '1');
+      hide();
+      label?.focus?.();
+    });
+
+    bubble?.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        localStorage.setItem(KEY, '1');
+        hide();
+        label?.focus?.();
+      }
+    });
+
+    // 리사이즈/스크롤/내부 네비게이션에서도 위치 재고정
+    window.addEventListener('resize', pin);
+    window.addEventListener('scroll', pin, { passive: true });
+    window.addEventListener('panel:navigated', () => {
+      if (localStorage.getItem(KEY) === '1') hide();
+      else { show(); pin(); }
+    });
+  })();
+</script>
+
 
 <!-- ✅ 메인 로직: header.js가 패널/탭 상태(복구, a11y 포함)를 전담 -->
 <script src="/assets/js/header.js"></script>
