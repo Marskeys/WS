@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CPU Slot Trainer — Brand · Series · Model</title>
+  <style>
+    /* --- Base --------------------------------------------------------- */
+    :root{
+      --bg: #0b0c10;
+      --panel: #11131a;
+      --ink: #e8f0ff;
+      --muted: #a7b0c0;
+      --accent: #6ee7ff;
+      --accent-2: #ff6ea3;
+      --ring: #2a2f3b;
+      --ok: #34d399;
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f7f8fb; --panel:#ffffff; --ink:#101218; --muted:#536079; --ring:#e9edf5; }
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0; font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, "Apple SD Gothic Neo", Helvetica, Arial;
+      color:var(--ink); background:radial-gradient(1200px 600px at 50% -20%, #1a1f2a 0%, var(--bg) 50%);
+      letter-spacing: .1px;
+    }
+    main{ max-width:980px; margin:48px auto; padding:0 20px; }
+    h1{ font-weight:800; letter-spacing:.2px; margin:0 0 6px; }
+    .sub{ color:var(--muted); margin:0 0 24px; }
+
+    /* --- Machine ------------------------------------------------------ */
+    .machine{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.05)), var(--panel);
+      border:1px solid var(--ring);
+      border-radius:18px; padding:22px; box-shadow: 0 10px 28px rgba(0,0,0,.25);
+    }
+    .viewport{
+      display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;
+      border:1px solid var(--ring); border-radius:14px; padding:14px; background:rgba(0,0,0,.05);
+    }
+    .reel{
+      position:relative; height:90px; overflow:hidden; border-radius:10px;
+      background:linear-gradient(180deg, rgba(0,0,0,.08), rgba(255,255,255,.06));
+      border:1px solid var(--ring);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: inset 0 12px 18px rgba(0,0,0,.2), inset 0 -10px 16px rgba(0,0,0,.15);
+    }
+    .slot-value{ font-weight:800; font-size:26px; text-align:center; padding:0 8px; white-space:nowrap; }
+    .spinning .slot-value{ filter: blur(1.2px) saturate(1.1); opacity:.9; }
+
+    /* stop snap */
+    @keyframes snap {
+      0%{ transform:translateY(-2px); }
+      60%{ transform:translateY(1px); }
+      100%{ transform:translateY(0); }
+    }
+    .snap{ animation: snap .12s ease-out; }
+
+    /* Labels under reels */
+    .legend{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:10px; }
+    .legend small{ display:block; text-align:center; color:var(--muted); }
+
+    /* Result line */
+    .result{
+      margin-top:16px; font-size:15px; color:var(--muted);
+    }
+    .result b{ color:var(--ink); }
+
+    /* Controls */
+    .controls{ display:flex; align-items:center; gap:10px; margin-top:18px; flex-wrap:wrap; }
+    button, .toggle{ font:inherit; }
+    button{
+      background:linear-gradient(180deg, var(--accent), #3ec7ff); color:#00131a;
+      border:0; border-radius:12px; padding:10px 18px; font-weight:800; cursor:pointer; letter-spacing:.3px;
+      box-shadow:0 6px 16px rgba(62,199,255,.35);
+    }
+    button[disabled]{ opacity:.6; cursor:not-allowed; }
+    .toggle{ display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--ring); border-radius:12px; background:var(--panel); }
+    .speed{ display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--ring); border-radius:12px; }
+    .speed input{ width:160px; }
+
+    /* Help footnote */
+    .foot{ margin-top:18px; color:var(--muted); font-size:13px; }
+
+    /* Accessibility focus */
+    :focus-visible{ outline:3px solid var(--accent-2); outline-offset:2px; }
+
+    @media (max-width:640px){
+      .slot-value{ font-size:22px; }
+      .reel{ height:76px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>CPU Slot Trainer</h1>
+    <p class="sub">세 칸이 돌아가며 <b>브랜드 → 시리즈 → 모델</b>을 랜덤으로 학습합니다. Space/Enter = SPIN</p>
+
+    <section class="machine" aria-label="CPU Slot Machine">
+      <div class="viewport" aria-live="polite">
+        <div class="reel" data-role="brand" aria-label="브랜드">
+          <div class="slot-value" id="brand">—</div>
+        </div>
+        <div class="reel" data-role="series" aria-label="시리즈">
+          <div class="slot-value" id="series">—</div>
+        </div>
+        <div class="reel" data-role="model" aria-label="모델">
+          <div class="slot-value" id="model">—</div>
+        </div>
+      </div>
+      <div class="legend">
+        <small>① 브랜드</small>
+        <small>② 시리즈 이름</small>
+        <small>③ 모델 이름</small>
+      </div>
+
+      <div class="controls">
+        <button id="spinBtn" aria-label="돌리기">SPIN</button>
+        <label class="toggle"><input type="checkbox" id="auto"> 자동 반복</label>
+        <label class="speed">속도(빠름↔느림) <input type="range" id="speed" min="0" max="1" step="0.01" value="0.5"></label>
+      </div>
+
+      <div class="result" id="result" aria-live="polite"></div>
+      <div class="foot">작은 글씨 안내: ① 브랜드 · ② 시리즈 이름 · ③ 모델 이름. 멈출 때는 종속 규칙(브랜드→시리즈→모델)을 지켜서 조합됩니다.</div>
+    </section>
+  </main>
+
+  <script>
+  // ===== Data (brand → series → model) =====================================
+  const DATA = {
+    "Intel": {
+      "Core": ["i3", "i5", "i7", "i9"],
+      "Core Ultra": ["5", "7", "9"],
+      "Pentium": ["Gold"],
+      "Celeron": ["N"],
+      "Xeon": ["W-2400", "W-3400"]
+    },
+    "AMD": {
+      "Ryzen": ["3", "5", "7", "9"],
+      "Threadripper": ["7000", "PRO 7000WX"],
+      "Athlon": ["3000G"],
+      "EPYC": ["9004"]
+    },
+    "Apple": {
+      "M": ["M1", "M1 Pro", "M1 Max", "M2", "M2 Pro", "M2 Max", "M3", "M3 Pro", "M3 Max", "M4"]
+    },
+    "Qualcomm": {
+      "Snapdragon": ["X Elite", "X Plus", "8cx Gen 3"]
+    },
+    "Samsung": {
+      "Exynos": ["2200", "2400"]
+    },
+    "MediaTek": {
+      "Dimensity": ["9200", "9300"],
+      "Helio": ["G95"]
+    }
+  };
+
+  const brandEl = document.getElementById('brand');
+  const seriesEl = document.getElementById('series');
+  const modelEl  = document.getElementById('model');
+  const spinBtn  = document.getElementById('spinBtn');
+  const autoCb   = document.getElementById('auto');
+  const speedEl  = document.getElementById('speed');
+  const resultEl = document.getElementById('result');
+
+  const reels = [brandEl.closest('.reel'), seriesEl.closest('.reel'), modelEl.closest('.reel')];
+
+  // ===== Helpers ============================================================
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const brands = () => Object.keys(DATA);
+  const seriesOf = (b) => Object.keys(DATA[b]);
+  const modelsOf = (b, s) => DATA[b][s];
+
+  function randomAnySeries(){
+    const b = pick(brands());
+    return [b, pick(seriesOf(b))];
+  }
+  function randomAnyModel(){
+    const [b,s] = randomAnySeries();
+    return [b, s, pick(modelsOf(b,s))];
+  }
+
+  function finalPick(){
+    const b = pick(brands());
+    const s = pick(seriesOf(b));
+    const m = pick(modelsOf(b, s));
+    return { brand:b, series:s, model:m };
+  }
+
+  // Simple audio click for each stop (requires a user gesture first)
+  let audioCtx = null;
+  function ensureAudio(){ if(!audioCtx){ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); } }
+  function tick(){
+    if(!audioCtx) return; // in case user hasn't interacted yet
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'square';
+    o.frequency.value = 900;
+    o.connect(g); g.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.25, t + 0.006);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.085);
+    o.start(t); o.stop(t + 0.09);
+  }
+
+  let spinning = false;
+  let spinTimer = null;
+
+  function setDisplay({b, s, m}){
+    brandEl.textContent  = b;
+    seriesEl.textContent = s;
+    modelEl.textContent  = m;
+    const full = composeFull(b,s,m);
+    resultEl.innerHTML = `<b>${full}</b> — 조합 예시`;
+  }
+
+  function composeFull(b, s, m){
+    // Human-friendly concatenation rules
+    // Intel Core i7 / Core Ultra 7, AMD Ryzen 5, Apple M4, etc.
+    if(b === 'Apple' && s === 'M') return `${b} ${m}`;
+    if(b === 'Intel' && s === 'Core Ultra') return `${b} ${s} ${m}`;
+    return `${b} ${s} ${m}`;
+  }
+
+  function spinOnce(){
+    if(spinning) return;
+    spinning = true;
+    spinBtn.disabled = true;
+    ensureAudio();
+
+    const target = finalPick();
+
+    // Flicker intervals (lower = faster). Map slider 0..1 → speed factor.
+    const speedFactor = 0.25 + (1 - Number(speedEl.value)) * 1.25; // 0.25..1.5
+
+    const stopDelays = [1200, 1500, 1800].map((t,i)=> Math.round((t + Math.random()*240) * speedFactor));
+
+    // Add visual spinning state
+    reels.forEach(r => r.classList.add('spinning'));
+
+    // Timers per reel
+    const intervals = [];
+
+    // Reel 1: brand flicker
+    intervals[0] = setInterval(()=>{
+      brandEl.textContent = pick(brands());
+    }, Math.max(40, 90 * speedFactor));
+
+    // Reel 2: series flicker (any brand)
+    intervals[1] = setInterval(()=>{
+      const [b,s] = randomAnySeries();
+      seriesEl.textContent = s;
+    }, Math.max(40, 90 * speedFactor));
+
+    // Reel 3: model flicker (any brand/series)
+    intervals[2] = setInterval(()=>{
+      const triple = randomAnyModel();
+      modelEl.textContent = triple[2];
+    }, Math.max(40, 90 * speedFactor));
+
+    // Stops (sequential "딱딱딱")
+    setTimeout(()=>{
+      clearInterval(intervals[0]);
+      brandEl.textContent = target.brand;
+      reels[0].classList.remove('spinning');
+      reels[0].classList.add('snap'); setTimeout(()=>reels[0].classList.remove('snap'), 150);
+      tick();
+    }, stopDelays[0]);
+
+    setTimeout(()=>{
+      clearInterval(intervals[1]);
+      seriesEl.textContent = target.series;
+      reels[1].classList.remove('spinning');
+      reels[1].classList.add('snap'); setTimeout(()=>reels[1].classList.remove('snap'), 150);
+      tick();
+    }, stopDelays[1]);
+
+    setTimeout(()=>{
+      clearInterval(intervals[2]);
+      modelEl.textContent = target.model;
+      reels[2].classList.remove('spinning');
+      reels[2].classList.add('snap'); setTimeout(()=>reels[2].classList.remove('snap'), 150);
+      tick();
+
+      // Finalize
+      setDisplay({ b:target.brand, s:target.series, m:target.model });
+      spinning = false;
+      spinBtn.disabled = false;
+
+      if(autoCb.checked){
+        // slight pause before next spin
+        clearTimeout(spinTimer);
+        spinTimer = setTimeout(spinOnce, 900);
+      }
+    }, stopDelays[2]);
+  }
+
+  // Init with one example
+  (()=>{
+    const {brand, series, model} = finalPick();
+    setDisplay({ b:brand, s:series, m:model });
+  })();
+
+  // Events
+  spinBtn.addEventListener('click', ()=>{
+    if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    spinOnce();
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.code === 'Space' || e.code === 'Enter'){ e.preventDefault(); if(!spinning) spinBtn.click(); }
+  });
+
+  // If user disables Auto mid-run, ensure it stops after the current round
+  autoCb.addEventListener('change', ()=>{ if(!autoCb.checked) clearTimeout(spinTimer); });
+
+  </script>
+</body>
+</html>
