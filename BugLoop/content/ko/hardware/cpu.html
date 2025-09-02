@@ -99,24 +99,86 @@
 
     <p class="caption" id="caption">브랜드 → 시리즈 → 모델 순서로 자동 재생됩니다.</p>
 
-    <!-- 임시 본문 (강의용 요약 자리) -->
     <article class="doc">
-      <h2>임시 본문</h2>
-      <ul>
-        <li>코어·스레드 수: 멀티태스킹/크리에이티브 작업 영향.</li>
-        <li>P/E 코어 구조: 전력 효율 vs 순간 성능 밸런스.</li>
-        <li>클럭(부스트): 짧은 작업의 체감 속도.</li>
-        <li>TDP/PL: 발열·소음·전력어댑터 크기와 직결.</li>
-        <li>캐시 용량: 반복 데이터 접근 성능.</li>
-        <li>제조 공정: 전력 효율과 발열 특성.</li>
-        <li>iGPU/NPU: 내장 그래픽, AI 가속 유무.</li>
-        <li>메모리 규격: DDR5/LPDDR5x, 채널 수.</li>
-        <li>PCIe 레인: GPU/SSD 확장성.</li>
-        <li>플랫폼/소켓: 업그레이드 가능성.</li>
-        <li>벤치마크/성능비: 가격 대비 체감.</li>
-        <li>배터리/소음: 실사용 환경 품질.</li>
-      </ul>
-    </article>
+        <h2>한정된 재료, 무한한 가능성 — CPU라는 세계</h2>
+        <p>
+          우리는 가끔 새로운 경험을 하기 위해 많은 준비물이 필요하다고 느끼지만,
+          사실 경험을 만드는 것은 <strong>무한한 재료</strong>가 아니라
+          <strong>한정된 재료의 무한한 조합</strong>이다.
+          밀가루라는 제한된 재료 하나로도 반죽의 질감, 치대는 정도,
+          성형 방식, 조리 방법을 달리해 무궁무진한 맛의 세계를 창조해낸
+          인간의 지혜가 그 예다.
+        </p>
+        <p>
+          컴퓨터 역시 단 두 가지 상태, <strong>0과 1</strong>이라는 한정된 신호로
+          상상할 수 없는 세계를 만들어낸다. 우리가 보는 모든 이미지,
+          듣는 음악, 즐기는 게임, 편집하는 영상까지도
+          사실은 0과 1의 무한한 조합으로 이루어진 결과물이다.
+          그리고 이 무한한 가능성의 심장, 그 중심에 있는 것이 바로
+          <strong>CPU</strong>다.
+        </p>
+      
+        <h2>좋은 CPU를 선택하면 달라지는 경험</h2>
+        <ul>
+          <li><strong>빠른 반응성</strong> — 전원 켜면 기다림 없는 부팅, 앱 실행의 즉각성</li>
+          <li><strong>강력한 멀티태스킹</strong> — 브라우저 탭 수십 개 + 음악 + 편집 작업 동시 처리</li>
+          <li><strong>발열과 소음 최소화</strong> — 최신 저전력 아키텍처와 스마트 전력 제어</li>
+          <li><strong>내장 그래픽(iGPU)</strong> — 영상 편집·캐주얼 게임·4K 영상 재생까지 가능</li>
+          <li><strong>크리에이티브 작업 향상</strong> — 4K/8K 영상 편집, 대규모 오디오 프로젝트, RAW 이미지 처리</li>
+          <li><strong>AI·머신러닝 가속</strong> — NPU·AVX512 지원으로 로컬 AI 모델 실행 속도 대폭 향상</li>
+          <li><strong>게이밍 경험 극대화</strong> — 고주사율 환경에서 안정적인 프레임 유지 및 실시간 방송 송출</li>
+          <li><strong>최신 기술 호환성</strong> — PCIe 5.0, DDR5, LPDDR5x, NVMe 4.0 SSD 지원으로 미래 대비</li>
+        </ul>
+      
+        <h2>CPU의 내부 — 명령어 처리의 흐름</h2>
+        <p>
+          CPU의 본질은 명령어를 받아들이고 해석하며 실행하는 데 있다.
+          우리가 프로그램을 실행하면, 사실 CPU는 <strong>명령어 집합</strong>(Instruction Set Architecture, ISA)에 정의된
+          아주 단순한 동작들의 집합을 수행한다.
+        </p>
+        <ul>
+          <li><strong>명령어 인출(Fetch)</strong> — 메모리에서 명령어를 읽어 레지스터로 가져오기</li>
+          <li><strong>명령어 해독(Decode)</strong> — 제어 유닛(Control Unit)이 명령어를 해석해 동작을 결정</li>
+          <li><strong>실행(Execute)</strong> — ALU(산술논리연산장치)가 덧셈, 곱셈, 비교 등 연산 수행</li>
+          <li><strong>결과 저장(Write Back)</strong> — 연산 결과를 레지스터나 메모리에 다시 저장</li>
+        </ul>
+        <p>
+          이 단순한 4단계가 초당 수십억 번 반복되며,
+          우리는 그 위에서 음악을 듣고, 영화를 보고, AI 모델을 학습시킨다.
+          CPU의 성능은 결국 <strong>얼마나 빠르게, 얼마나 많은 명령어를 동시에</strong> 처리하느냐에 달려 있다.
+        </p>
+      
+        <h2>발열과 전력 관리</h2>
+        <p>
+          고성능 CPU의 가장 큰 과제 중 하나가 <strong>발열</strong>이다.
+          고클럭·고부하 연산을 처리할수록 소비 전력과 발열이 증가하기 때문이다.
+          이를 해결하기 위해 최신 CPU는 <strong>P코어(Performance Core)</strong>와
+          <strong>E코어(Efficiency Core)</strong>를 분리한 하이브리드 아키텍처를 채택한다.
+        </p>
+        <ul>
+          <li><strong>P코어</strong> — 고성능 단일 스레드 작업 전용</li>
+          <li><strong>E코어</strong> — 저전력 멀티태스킹 및 백그라운드 작업 전용</li>
+          <li><strong>스마트 스케줄링</strong> — OS와 하드웨어가 협력해 효율 극대화</li>
+        </ul>
+        <p>
+          또한 CPU는 <strong>TDP</strong>(Thermal Design Power)와 <strong>PL1/PL2</strong> 전력 제한을 활용해
+          발열을 제어한다. 이는 곧 팬 소음, 배터리 시간, 노트북의 휴대성까지 직결된다.
+        </p>
+      
+        <h2>미래의 CPU, 가능성의 확장</h2>
+        <p>
+          최신 CPU는 단순히 연산 성능을 높이는 데서 멈추지 않는다.
+          AI 전용 연산을 위한 <strong>NPU</strong>(Neural Processing Unit) 내장,
+          초고속 <strong>PCIe 5.0</strong> 지원, 저전력 고속 메모리인 <strong>DDR5/LPDDR5x</strong> 채택 등
+          컴퓨터 경험을 완전히 새롭게 바꾸는 혁신이 계속되고 있다.
+        </p>
+        <p>
+          결국 CPU를 고른다는 건 스펙을 선택하는 것이 아니라,
+          <strong>시간을 사는 것</strong>이고, <strong>가능성을 여는 것</strong>이며,
+          우리 경험의 경계를 확장하는 열쇠를 쥐는 것이다.
+        </p>
+      </article>
+      
   </section>
 
   <script>
