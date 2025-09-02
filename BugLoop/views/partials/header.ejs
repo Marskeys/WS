@@ -61,7 +61,7 @@
     /* ============================
        ⬇️ 추가: 오버플로우 잘림 방지
        ============================ */
-   
+    .header-menu,
     .main-menu-container,
     .menu-item-wrapper.hardware-wrapper {
       overflow: visible !important;
@@ -71,6 +71,10 @@
       position: relative; /* 말풍선 absolute 기준 */
       z-index: 10;
     }
+
+    /* ⬇️ 이 두 줄만 기존 스타일에 추가(또는 덮어쓰기) */
+.hint-bubble { pointer-events: none; }           /* 버블은 스크롤/휠 통과 */
+.hint-bubble .hint-close { pointer-events: auto; } /* 닫기 버튼만 클릭 가능 */
   </style>
   <div class="header-top">
     <div class="top-controls">
