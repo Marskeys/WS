@@ -1,49 +1,79 @@
 <div class="full-header-container" style="z-index:20000;">
-<style>
-  /* ===== 말풍선: body로 포털되어 fixed 배치 ===== */
-  .hint-bubble{
-    position: fixed; top:-9999px; left:-9999px;
-    display:inline-flex; align-items:center;
-    background:#ff4d6d; color:#fff;
-    font-size:.85rem; font-weight:500;
-    padding:8px 12px; border-radius:8px;
-    box-shadow:0 4px 12px rgba(255,77,109,.3);
-    white-space:nowrap;
-    z-index:2147483647 !important;
-    animation:bubbleFadeIn .25s ease forwards;
-    pointer-events:auto;
-  }
-  .hint-bubble::after{
-    content:"";
-    position:absolute; top:-8px; left:var(--tail-left, 20px);
-    border-width:0 8px 8px 8px; border-style:solid;
-    border-color:transparent transparent #ff4d6d transparent;
-  }
-  .hint-bubble .hint-close{
-    all:unset; cursor:pointer; margin-left:8px;
-    font-size:14px; font-weight:700; color:#fff;
-    background:rgba(255,255,255,.2); border-radius:50%;
-    width:18px; height:18px; display:flex; align-items:center; justify-content:center;
-    transition:background .15s ease;
-  }
-  .hint-bubble .hint-close:hover{ background:rgba(255,255,255,.35); }
-
-  @keyframes bubbleFadeIn{ 0%{opacity:0; transform:translateY(-5px);} 100%{opacity:1; transform:translateY(0);} }
-
-  /* 헤더 가로 스크롤 유지 + 스크롤바 숨김 */
-  .header-menu{ overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch; position:relative; }
-  .header-menu::-webkit-scrollbar{ display:none; }
-  .header-menu{ scrollbar-width:none; -ms-overflow-style:none; }
-  .main-menu-container{ display:flex; flex-wrap:nowrap; width:max-content; overflow:visible !important; }
-  .menu-item-wrapper.hardware-wrapper{ position:relative; overflow:visible !important; z-index:10; }
-  .full-header-container, .header-top, .top-controls{ overflow:visible !important; position:relative; }
-
-  /* 디버그 강제 위치(워치독이 안 떠 있으면 일시 적용) */
-  .hint-bubble.debug-position{
-    top: 72px !important; left: 16px !important; /* 화면 좌상단 안전지대 */
-  }
-</style>
-
+  <style>
+    /* ===== 말풍선: 기본은 body로 포털되어 fixed 배치 ===== */
+    .hint-bubble {
+      position: fixed;                  /* ✅ viewport 기준 */
+      top: -9999px; left: -9999px;      /* 초기 오프스크린 */
+      display: inline-flex;
+      align-items: center;
+      background: #ff4d6d;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(255,77,109,.3);
+      white-space: nowrap;
+      z-index: 2147483647 !important;   /* 최상단 보장 */
+      animation: bubbleFadeIn .25s ease forwards;
+      pointer-events: auto;
+    }
+    /* 말풍선 꼬리 (포털 후에도 정상 표시) */
+    .hint-bubble::after{
+      content:"";
+      position:absolute;
+      top: -8px;
+      left: var(--tail-left, 20px);     /* JS가 계산해서 넣어줌 */
+      border-width:0 8px 8px 8px;
+      border-style:solid;
+      border-color:transparent transparent #ff4d6d transparent;
+    }
+    /* 닫기 버튼 */
+    .hint-bubble .hint-close{
+      all: unset; cursor: pointer; margin-left: 8px;
+      font-size: 14px; font-weight: 700; color:#fff;
+      background: rgba(255,255,255,.2); border-radius: 50%;
+      width: 18px; height: 18px; display:flex; align-items:center; justify-content:center;
+      transition: background .15s ease;
+    }
+    .hint-bubble .hint-close:hover{ background: rgba(255,255,255,.35); }
+  
+    /* 부드러운 등장 */
+    @keyframes bubbleFadeIn{
+      0%{ opacity:0; transform: translateY(-5px); }
+      100%{ opacity:1; transform: translateY(0); }
+    }
+  
+    /* =========================================
+       헤더 가로 스크롤 유지 + 스크롤바 숨김
+       ========================================= */
+    .header-menu{
+      overflow-x: auto;                 /* ✅ 가로 스크롤 유지 */
+      overflow-y: visible;              /* ✅ 세로는 열어둠 */
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .header-menu::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
+    .header-menu{ scrollbar-width: none; -ms-overflow-style: none; } /* Firefox/IE */
+  
+    .main-menu-container{
+      display:flex; flex-wrap: nowrap; width:max-content;
+      overflow: visible !important;
+    }
+  
+    /* 기준 라벨 요소(하드웨어) 쪽은 기준점만 두면 됨 */
+    .menu-item-wrapper.hardware-wrapper{
+      position: relative;
+      overflow: visible !important;
+      z-index: 10;
+    }
+  
+    /* 혹시 모를 조상 클리핑 완화(안전망) */
+    .full-header-container, .header-top, .top-controls{
+      overflow: visible !important;
+      position: relative;
+    }
+  </style>
   
   
   
