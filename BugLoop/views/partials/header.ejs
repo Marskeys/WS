@@ -495,19 +495,18 @@
   </script>
 
 <script>
-  (function(){
-    const bubble = document.getElementById('hardware-hint');
-    const label  = document.getElementById('hardware-label');
-    if (!bubble || !label) return;
-  
-    function placeBubble(){
-      const r = label.getBoundingClientRect();
-      // 라벨 왼쪽 + 20px, 라벨 아래 8px
-      bubble.style.left = (Math.round(r.left + 20)) + 'px';
-      bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
-      bubble.style.display = 'inline-flex';
-      bubble.setAttribute('aria-hidden','false');
-    }
+(function(){
+  const bubble = document.getElementById('hardware-hint');
+  const label  = document.getElementById('hardware-label');
+  if (!bubble || !label) return;
+
+  function placeBubble(){
+    const r = label.getBoundingClientRect();
+    bubble.style.left = (Math.round(r.left + 20)) + 'px';
+    bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
+    bubble.style.display = 'inline-flex';
+    bubble.setAttribute('aria-hidden', 'false');
+  }
   
     // 레이아웃 변화마다 재배치
     const relayout = () => requestAnimationFrame(placeBubble);
