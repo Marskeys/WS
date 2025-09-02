@@ -68,27 +68,20 @@
        ⬇️ 오버플로우 관련
        ============================ */
 
-    /* ❌ 기존 가로 스크롤 막던 규칙 비활성화
-    .header-menu,
-    .main-menu-container,
-    .menu-item-wrapper.hardware-wrapper {
-      overflow: visible !important;
-    }
-    */
+   /* ✅ 가로 스크롤 되살리면서 세로는 visible */
+.header-menu,
+.main-menu-container {
+  overflow-x: auto !important;
+  overflow-y: visible !important;  /* ⬅️ 여기 중요 */
+  -webkit-overflow-scrolling: touch;
+}
 
-    /* ✅ 가로 스크롤 되살리기 */
-    .header-menu,
-    .main-menu-container {
-      overflow-x: auto !important;
-      overflow-y: visible !important;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* 팝업 기준점 및 레이어 보장 */
-    .menu-item-wrapper.hardware-wrapper {
-      position: relative; /* 말풍선 absolute 기준 */
-      z-index: 10;
-    }
+/* ✅ 말풍선이 잘리지 않게 li는 overflow visible 유지 */
+.menu-item-wrapper.hardware-wrapper {
+  position: relative;
+  overflow: visible !important;   /* ⬅️ 추가 */
+  z-index: 10;
+}
   </style>
   <div class="header-top">
     <div class="top-controls">
