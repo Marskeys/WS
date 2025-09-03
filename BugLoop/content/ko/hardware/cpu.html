@@ -1,4 +1,4 @@
-<!-- panel.ejs : 드롭다운 기반 챕터 뷰어 (anti-flicker + home 연동) -->
+<!-- panel.ejs : 드롭다운 기반 챕터 뷰어 (element-scoped init + anti-flicker + SPA 재장착 대응) -->
 <div id="chapters-panel" class="chapters-panel is-booting">
     <div class="chapters-toolbar">
       <label for="chapterSelect" class="sr-only">장 선택</label>
@@ -49,95 +49,88 @@
     </div>
   </div>
   
-  <!-- 스타일(필요 시 조정) -->
   <style>
     .chapters-panel { display: grid; gap: 12px; }
     .chapters-toolbar { display: flex; gap: 8px; align-items: center; }
     .chapters-select {
-      padding: 8px 10px; border: 1px solid #e1e6ef; border-radius: 10px; font-size: .95rem;
-      background: #fff;
+      padding: 8px 10px; border: 1px solid #e1e6ef; border-radius: 10px; font-size: .95rem; background: #fff;
     }
-    .chapter-content {
-      background: #fff; border: 1px solid #e1e6ef; border-radius: 14px; padding: 16px;
-      /* 초기 깜빡임 방지: 부팅 중엔 숨김 */
-      visibility: visible;
-    }
-    .chapters-panel.is-booting .chapter-content { visibility: hidden; }
+    .chapter-content { background: #fff; border: 1px solid #e1e6ef; border-radius: 14px; padding: 16px; }
+    .chapters-panel.is-booting .chapter-content { visibility: hidden; } /* anti-flicker */
   
     .chapter-title { margin: 0 0 8px; font-size: 1.1rem; }
     .chapter-section { display: none; }
     .chapter-section.active { display: block; }
-  
-    .sr-only {
-      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,1px,1px); border: 0;
-    }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,1px,1px); border: 0; }
   </style>
   
-  <!-- 동작 스크립트(중복 실행 가드 + 홈 연동) -->
   <script>
   (() => {
-    // ✅ 전역 가드: 동일 스크립트 중복 실행 방지
-    if (window.__chaptersPanelInit) return;
-    window.__chaptersPanelInit = true;
-  
-    const root = document.getElementById('chapters-panel');
-    const select = document.getElementById('chapterSelect');
-    const container = document.getElementById('chapterContent');
-    if (!root || !select || !container) return;
-  
     const KEY = 'chapter.current';
   
-    const showChapter = (val) => {
-      const sections = container.querySelectorAll('.chapter-section');
-      sections.forEach(sec => {
-        const active = sec.dataset.chapter === String(val);
-        sec.classList.toggle('active', active);
-        sec.setAttribute('aria-hidden', active ? 'false' : 'true');
+    function initPanel(root) {
+      if (!root || root.dataset.inited === '1') return; // 엘리먼트 단위 가드
+      const select = root.querySelector('#chapterSelect');
+      const container = root.querySelector('#chapterContent');
+      if (!select || !container) return;
+  
+      root.dataset.inited = '1';
+  
+      const showChapter = (val) => {
+        const sections = container.querySelectorAll('.chapter-section');
+        sections.forEach(sec => {
+          const active = sec.dataset.chapter === String(val);
+          sec.classList.toggle('active', active);
+          sec.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        try { history.replaceState(null, '', `#chapter=${val}`); } catch {}
+        try { localStorage.setItem(KEY, String(val)); } catch {}
+        container.focus({ preventScroll: false });
+      };
+  
+      // 초기값: 해시 > localStorage > select 기본값
+      const fromHash = (location.hash.match(/chapter=(\d+)/) || [])[1];
+      const saved = (() => { try { return localStorage.getItem(KEY); } catch { return null; } })();
+      const initial = fromHash ?? saved ?? select.value ?? '0';
+      select.value = initial;
+      showChapter(initial);
+  
+      // 표시 (anti-flicker 해제)
+      root.classList.remove('is-booting');
+  
+      // 변경 이벤트
+      select.addEventListener('change', (e) => showChapter(e.target.value));
+  
+      // 홈 버튼 연동
+      document.addEventListener('click', (ev) => {
+        const a = ev.target.closest('a.home-btn, a[href="/"], button.home-btn');
+        if (!a) return;
+        try { localStorage.removeItem(KEY); } catch {}
+        document.dispatchEvent(new CustomEvent('panel:home'));
       });
-      // 포커스 보조
-      container.focus({ preventScroll: false });
-      // 해시/로컬 저장
-      try { history.replaceState(null, '', `#chapter=${val}`); } catch {}
-      try { localStorage.setItem(KEY, String(val)); } catch {}
-    };
   
-    // 초기값: 해시 > localStorage > select 기본값
-    const fromHash = (location.hash.match(/chapter=(\d+)/) || [])[1];
-    let initial = fromHash;
-    if (!initial) {
-      try { initial = localStorage.getItem(KEY) || select.value; } catch { initial = select.value; }
+      document.addEventListener('panel:home', () => {
+        select.value = '0';
+        showChapter(0);
+      });
     }
-    select.value = initial;
-    showChapter(initial);
   
-    // 초기 부트 완료 → 표시
-    root.classList.remove('is-booting');
+    // 현재 DOM에 있는 패널 초기화
+    initPanel(document.getElementById('chapters-panel'));
   
-    // 드롭다운 변경
-    select.addEventListener('change', (e) => showChapter(e.target.value));
-  
-    // ✅ 홈 버튼 누르면 0장으로 복귀 + 저장 상태 초기화
-    document.addEventListener('click', (ev) => {
-      const a = ev.target.closest('a.home-btn, a[href="/"], button.home-btn');
-      if (!a) return;
-      try { localStorage.removeItem(KEY); } catch {}
-      // SPA 라우팅 쓰면 여기서 홈 패널 전환 함수 호출
-      // 예: window.showPanel && window.showPanel('home');
-      document.dispatchEvent(new CustomEvent('panel:home'));
+    // SPA: 새로 삽입되는 패널 자동 초기화
+    const mo = new MutationObserver((muts) => {
+      for (const m of muts) {
+        m.addedNodes && m.addedNodes.forEach(node => {
+          if (node.nodeType === 1) {
+            if (node.id === 'chapters-panel') initPanel(node);
+            const found = node.querySelector && node.querySelector('#chapters-panel');
+            if (found) initPanel(found);
+          }
+        });
+      }
     });
-  
-    // 커스텀 이벤트로도 제어 가능
-    document.addEventListener('panel:home', () => {
-      showChapter(0);
-      select.value = 0;
-    });
-  
-    // 외부에서 API로도 쓸 수 있게(옵션)
-    window.ChapterPanel = {
-      show: (n) => { select.value = String(n); showChapter(n); },
-      reset: () => { try { localStorage.removeItem(KEY); } catch {} select.value = 0; showChapter(0); }
-    };
+    mo.observe(document.documentElement, { childList: true, subtree: true });
   })();
   </script>
   
