@@ -1,218 +1,138 @@
 <!doctype html>
-<html lang="<%= (typeof lang !== 'undefined' ? lang : 'en') %>">
+<html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <title>MarsKeys • three.js Cube</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Inline CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>서경실·한주원 여행 루트</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#111827" />
   <style>
-    :root {
-      --bg: #0e1016;
-      --panel: rgba(255,255,255,.04);
-      --text: #cfd6e6;
-      --accent: #9bb4ff;
+    :root{
+      --bg: #0b1220;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --border: #1f2937;
+      --radius: 18px;
+      --gap: 16px;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow: hidden; /* full-canvas */
-    }
-    #app {
-      position: fixed; inset: 0;
-    }
-    canvas { display: block; outline: none; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,"Noto Sans KR",Helvetica,Arial,sans-serif; background:linear-gradient(180deg,#0b1220,#0f172a); color:var(--text)}
+    header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(120%) blur(8px); background:rgba(11,18,32,.72); border-bottom:1px solid var(--border)}
+    .wrap{max-width:780px; margin:0 auto; padding: 12px var(--gap)}
+    h1{margin:2px 0 6px; font-size:26px; letter-spacing:.2px}
+    .dates{color:var(--muted); font-size:14px}
+    main{padding: 16px var(--gap) 28px}
+    .card{background:rgba(17,24,39,.72); border:1px solid var(--border); border-radius:var(--radius); padding:14px}
 
-    /* small on-screen help */
-    .hint {
-      position: fixed; left: 12px; bottom: 12px;
-      padding: .55rem .7rem;
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: .7rem;
-      backdrop-filter: blur(4px);
-      user-select: none;
-      pointer-events: none;
-      color: var(--text);
-      font-size: 13px;
-      opacity: .9;
+    /* 아코디언 */
+    details.day{border:1px solid var(--border); border-radius:14px; background:#0b1220; margin:10px 0; overflow:hidden}
+    details.day[open]{background:#0e1627}
+    details.day summary{
+      list-style:none; cursor:pointer; padding:14px 44px 14px 14px; position:relative; font-size:17px; font-weight:700; display:flex; align-items:center; gap:10px
     }
-    .hint kbd {
-      font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      padding: 0 .35rem;
-      border-radius: .35rem;
-    }
+    details.day summary::marker{display:none}
+    .arrow{position:absolute; right:12px; top:0; bottom:0; display:grid; place-items:center; width:28px}
+    .arrow svg{width:18px; height:18px; transition:transform .2s ease}
+    details[open] .arrow svg{transform:rotate(180deg)}
 
-    /* optional watermark */
-    .brand {
-      position: fixed; right: 12px; top: 12px;
-      padding: .4rem .6rem;
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: .6rem;
-      backdrop-filter: blur(4px);
-      font-weight: 600; font-size: 13px; letter-spacing: .2px;
-      user-select: none;
-    }
+    ul.plan{list-style:none; margin:0; padding:0 12px 12px}
+    ul.plan li{display:grid; grid-template-columns:80px 1fr; gap:10px; align-items:start; padding:10px; border:1px solid var(--border); border-radius:10px; background:#0b1220; margin:8px 0}
+    .time{font:600 13px/1.3 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color:#cbd5e1}
+    .spot{font-size:15px}
+    .memo{color:var(--muted); font-size:13px; margin-top:4px}
+
+    .muted{color:var(--muted)}
   </style>
-
-  <!-- Import maps (CDN modules) -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.163.0/examples/jsm/"
-    }
-  }
-  </script>
 </head>
 <body>
-  <div id="app"></div>
-  <div class="hint">
-    <strong>Cube demo</strong> — <kbd>hover</kbd> grows • drag to orbit • scroll to zoom • tap = toggle
-  </div>
-  <div class="brand">MarsKeys · three.js</div>
+  <header>
+    <div class="wrap">
+      <h1 id="title">서경실과 한주원의 여행 루트</h1>
+      <div id="dateRange" class="dates">2025. 09. 13. (토) ~ 2025. 09. 15. (월)</div>
+    </div>
+  </header>
 
-  <!-- Inline JS -->
-  <script type="module">
-    import * as THREE from "three";
-    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+  <main class="wrap">
+    <section class="card">
+      <div class="muted" style="margin-bottom:8px">각 날짜 제목 오른쪽 화살표를 눌러 일정을 펼치세요.</div>
+      <div id="accordion"></div>
+    </section>
+  </main>
 
-    // --- basics
-    const rootEl = document.getElementById("app");
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0e1016);
-
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(2.2, 1.6, 2.2);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    rootEl.appendChild(renderer.domElement);
-
-    // --- lights
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x2b2b2b, 0.8);
-    scene.add(hemi);
-    const dir = new THREE.DirectionalLight(0xffffff, 1.1);
-    dir.position.set(3, 4, 2);
-    dir.castShadow = false;
-    scene.add(dir);
-
-    // --- optional ground
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(20, 20),
-      new THREE.MeshStandardMaterial({ color: 0x141826, roughness: 1, metalness: 0 })
-    );
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.5;
-    ground.receiveShadow = true;
-    scene.add(ground);
-
-    // --- controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.06;
-    controls.target.set(0, 0.25, 0);
-
-    // --- raycasting for hover
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-    let pointerInside = false;
-    function onPointerMove(e) {
-      const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      pointerInside = true;
-    }
-    function onPointerLeave() { pointerInside = false; }
-    renderer.domElement.addEventListener("pointermove", onPointerMove);
-    renderer.domElement.addEventListener("pointerleave", onPointerLeave);
-
-    // --- load GLB (export your Blender cube to /public/models/cube.glb)
-    const MODEL_URL = "/models/cube.glb";
-    const loader = new GLTFLoader();
-
-    let cubeRoot = null;
-    let hover = false;
-    let tapToggle = false;
-
-    loader.load(
-      MODEL_URL,
-      (gltf) => {
-        cubeRoot = gltf.scene;
-        cubeRoot.traverse((o) => {
-          if (o.isMesh) {
-            // If the exported material isn't PBR, swap to a decent standard one
-            if (!o.material || !("metalness" in o.material)) {
-              o.material = new THREE.MeshStandardMaterial({
-                color: 0x9bb4ff,
-                roughness: 0.45,
-                metalness: 0.2
-              });
-            }
-            o.castShadow = true;
-          }
-        });
-        cubeRoot.position.set(0, 0, 0);
-        scene.add(cubeRoot);
+  <script>
+    // ====== 설정 (필요 시 이 객체만 수정) ======
+    const itinerary = [
+      {
+        date: '2025-09-13', // 토
+        title: '9월 13일 (토)',
+        items: [
+          { time: '08:30', spot: '출발 / 창원 → 목적지', memo: '간단 간식, 물 준비' },
+          { time: '11:00', spot: '○○ 관광지', memo: '입장권 현장구매' },
+          { time: '12:30', spot: '점심 — 현지 맛집', memo: '기다림 있을 수 있음' },
+          { time: '15:00', spot: '체크인 — 숙소', memo: '신분증, 예약확인' },
+          { time: '18:00', spot: '저녁 — 근처 식당', memo: '소화 산책' }
+        ]
       },
-      undefined,
-      (err) => {
-        console.error("GLB load error:", err);
+      {
+        date: '2025-09-14', // 일
+        title: '9월 14일 (일)',
+        items: [
+          { time: '09:00', spot: '아침 식사', memo: '가볍게' },
+          { time: '10:30', spot: '○○ 박물관', memo: '주차장 B권장' },
+          { time: '13:00', spot: '점심 — 칼국수집', memo: '' },
+          { time: '15:00', spot: '카페 휴식', memo: '디저트' },
+          { time: '18:30', spot: '저녁 — 해산물', memo: '예약필요시 전화' }
+        ]
+      },
+      {
+        date: '2025-09-15', // 월
+        title: '9월 15일 (월)',
+        items: [
+          { time: '09:30', spot: '체크아웃', memo: '짐 확인' },
+          { time: '10:00', spot: '기념품 구매', memo: '' },
+          { time: '12:00', spot: '점심', memo: '' },
+          { time: '14:00', spot: '귀가 — 창원', memo: '안전 운전' }
+        ]
       }
-    );
+    ];
 
-    // --- mobile: tap toggles scale
-    renderer.domElement.addEventListener("pointerdown", () => { tapToggle = !tapToggle; });
+    // ====== 렌더링 ======
+    const $acc = document.getElementById('accordion');
+    $acc.innerHTML = itinerary.map(day => {
+      const items = day.items.map(it => `
+        <li>
+          <div class="time">${it.time}</div>
+          <div>
+            <div class="spot">${it.spot}</div>
+            ${it.memo ? `<div class="memo">${it.memo}</div>` : ''}
+          </div>
+        </li>`).join('');
+      return `
+        <details class="day">
+          <summary>
+            ${day.title}
+            <span class="arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </summary>
+          <ul class="plan">${items}</ul>
+        </details>`;
+    }).join('');
 
-    // --- resize
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // --- animate
-    const base = new THREE.Vector3(1, 1, 1);
-    const big  = new THREE.Vector3(1.35, 1.35, 1.35);
-    const clock = new THREE.Clock();
-
-    function tick() {
-      const dt = clock.getDelta();
-
-      if (cubeRoot) {
-        // hover detection (desktop)
-        if (pointerInside) {
-          raycaster.setFromCamera(pointer, camera);
-          const hits = raycaster.intersectObject(cubeRoot, true);
-          hover = hits.length > 0;
-        } else {
-          hover = false;
-        }
-
-        // scale with smooth lerp
-        const target = (hover || tapToggle) ? big : base;
-        cubeRoot.scale.lerp(target, 10 * dt);
-
-        // subtle idle rotation
-        cubeRoot.rotation.y += 0.4 * dt;
+    // 오늘 날짜에 맞는 섹션 자동 펼치기
+    try{
+      const today = new Date();
+      const ymd = today.toISOString().slice(0,10);
+      const idx = itinerary.findIndex(d => d.date === ymd);
+      if(idx >= 0){
+        const details = document.querySelectorAll('details.day')[idx];
+        if(details) details.setAttribute('open','');
       }
-
-      controls.update();
-      renderer.render(scene, camera);
-      requestAnimationFrame(tick);
-    }
-    tick();
+    }catch(e){}
   </script>
 </body>
 </html>
