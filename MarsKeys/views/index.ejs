@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>서경실·한주원 여행 루트</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#ffffff" />
   <style>
     :root{
@@ -64,43 +64,40 @@
   </main>
 
   <script>
-    // ====== 설정 (필요 시 이 객체만 수정) ======
     const itinerary = [
       {
-        date: '2025-09-13', // 토
+        date: '2025-09-13',
         title: '9월 13일 (토)',
         items: [
-          { time: '08:30', spot: '출발 / 창원 → 목적지', memo: '간단 간식, 물 준비' },
-          { time: '11:00', spot: '○○ 관광지', memo: '입장권 현장구매' },
-          { time: '12:30', spot: '점심 — 현지 맛집', memo: '기다림 있을 수 있음' },
-          { time: '15:00', spot: '체크인 — 숙소', memo: '신분증, 예약확인' },
-          { time: '18:00', spot: '저녁 — 근처 식당', memo: '소화 산책' }
+          { time: '13:20', spot: '결혼식', memo: '장소: 경남 창원시 마산합포구 해안대로 317 SKY VIEW HOTEL 13층' },
+          { time: '16:30', spot: '터미널로 이동 (카카오택시)', memo: '스카이뷰 호텔 앞 → 마산 남부 시외버스 터미널 · 소요 8분 · 예상 6,000원' },
+          { time: '17:12', spot: '시외버스: 마산 남부 → 통영 종합', memo: '소요 1시간 8분 · 요금 8,700원(인당)\n<버스 시간표> 16:20~17:28, 17:05~18:13, 17:12~18:20, 17:43~18:51, …' },
+          { time: '18:30', spot: '시내버스: 터미널 → 스탠포드 호텔 앤 리조트', memo: '노선 128/104/101/141 · 약 40분 · 요금 정보 미상(현장확인) · (정확한 출발시간 아님)' },
+          { time: '19:15', spot: '호텔 체크인 및 저녁/휴식', memo: '' }
         ]
       },
       {
-        date: '2025-09-14', // 일
+        date: '2025-09-14',
         title: '9월 14일 (일)',
         items: [
-          { time: '09:00', spot: '아침 식사', memo: '가볍게' },
-          { time: '10:30', spot: '○○ 박물관', memo: '주차장 B권장' },
-          { time: '13:00', spot: '점심 — 칼국수집', memo: '' },
-          { time: '15:00', spot: '카페 휴식', memo: '디저트' },
-          { time: '18:30', spot: '저녁 — 해산물', memo: '예약필요시 전화' }
+          { time: '08:00', spot: '호텔 조식', memo: '' },
+          { time: '10:00', spot: '추가 예정', memo: '' },
+          { time: '13:00', spot: '추가 예정', memo: '' },
+          { time: '16:00', spot: '추가 예정', memo: '' },
+          { time: '19:00', spot: '추가 예정', memo: '' }
         ]
       },
       {
-        date: '2025-09-15', // 월
+        date: '2025-09-15',
         title: '9월 15일 (월)',
         items: [
-          { time: '09:30', spot: '체크아웃', memo: '짐 확인' },
-          { time: '10:00', spot: '기념품 구매', memo: '' },
-          { time: '12:00', spot: '점심', memo: '' },
-          { time: '14:00', spot: '귀가 — 창원', memo: '안전 운전' }
+          { time: '09:00', spot: '추가 예정', memo: '' },
+          { time: '12:00', spot: '추가 예정', memo: '' },
+          { time: '15:00', spot: '추가 예정', memo: '' }
         ]
       }
     ];
 
-    // ====== 렌더링 ======
     const $acc = document.getElementById('accordion');
     $acc.innerHTML = itinerary.map(day => {
       const items = day.items.map(it => `
@@ -123,7 +120,6 @@
         </details>`;
     }).join('');
 
-    // 오늘 날짜에 맞는 섹션 자동 펼치기
     try{
       const today = new Date();
       const ymd = today.toISOString().slice(0,10);
