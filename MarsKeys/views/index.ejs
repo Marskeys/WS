@@ -6,42 +6,42 @@
   <title>서경실·한주원 여행 루트</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#111827" />
+  <meta name="theme-color" content="#ffffff" />
   <style>
     :root{
-      --bg: #ffffff;
-      --card: #dfe1e6;
-      --text: #010101;
-      --muted: #6b6f78;
-      --accent: #60a5fa;
-      --border: #1f2937;
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --border: #e5e7eb;
       --radius: 18px;
       --gap: 16px;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,"Noto Sans KR",Helvetica,Arial,sans-serif; background:linear-gradient(180deg,#0b1220,#0f172a); color:var(--text)}
-    header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(120%) blur(8px); background:rgba(11,18,32,.72); border-bottom:1px solid var(--border)}
+    body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,"Noto Sans KR",Helvetica,Arial,sans-serif; background:linear-gradient(180deg,#f8fafc,#f3f4f6); color:var(--text)}
+    header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(120%) blur(8px); background:rgba(255,255,255,.86); border-bottom:1px solid var(--border)}
     .wrap{max-width:780px; margin:0 auto; padding: 12px var(--gap)}
     h1{margin:2px 0 6px; font-size:26px; letter-spacing:.2px}
     .dates{color:var(--muted); font-size:14px}
     main{padding: 16px var(--gap) 28px}
-    .card{background:rgb(255, 255, 255); border:1px solid var(--border); border-radius:var(--radius); padding:14px}
+    .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px; box-shadow:0 6px 24px rgba(17,24,39,.06)}
 
     /* 아코디언 */
-    details.day{border:1px solid var(--border); border-radius:14px; background:#0b1220; margin:10px 0; overflow:hidden}
-    details.day[open]{background:#0e1627}
+    details.day{border:1px solid var(--border); border-radius:14px; background:#ffffff; margin:10px 0; overflow:hidden}
+    details.day[open]{background:#f9fafb}
     details.day summary{
       list-style:none; cursor:pointer; padding:14px 44px 14px 14px; position:relative; font-size:17px; font-weight:700; display:flex; align-items:center; gap:10px
     }
     details.day summary::marker{display:none}
     .arrow{position:absolute; right:12px; top:0; bottom:0; display:grid; place-items:center; width:28px}
-    .arrow svg{width:18px; height:18px; transition:transform .2s ease}
+    .arrow svg{width:18px; height:18px; transition:transform .2s ease; color:#374151}
     details[open] .arrow svg{transform:rotate(180deg)}
 
     ul.plan{list-style:none; margin:0; padding:0 12px 12px}
-    ul.plan li{display:grid; grid-template-columns:80px 1fr; gap:10px; align-items:start; padding:10px; border:1px solid var(--border); border-radius:10px; background:#0b1220; margin:8px 0}
-    .time{font:600 13px/1.3 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color:#cbd5e1}
+    ul.plan li{display:grid; grid-template-columns:80px 1fr; gap:10px; align-items:start; padding:10px; border:1px solid var(--border); border-radius:10px; background:#ffffff; margin:8px 0}
+    .time{font:600 13px/1.3 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color:#374151}
     .spot{font-size:15px}
     .memo{color:var(--muted); font-size:13px; margin-top:4px}
 
