@@ -34,7 +34,7 @@
       color: var(--accent);
     }
 
-    /* ========== 기존 hint bubble 코드 유지 ========== */
+    /* ===== 팝업 말풍선 스타일 ===== */
     .hint-bubble {
       position: absolute;
       top: 36px;
@@ -134,7 +134,7 @@
     </div>
   </div>
 
-  <!-- 🔹 기존 header-top (전체 유지) -->
+  <!-- 🔹 기존 헤더 -->
   <div class="header-top">
     <div class="top-controls">
       <div class="left-controls">
@@ -151,59 +151,34 @@
 
       <nav class="header-menu" aria-label="주 메뉴">
         <ul class="main-menu-container">
-          <!-- ✅ 하드웨어 카테고리 -->
           <li class="menu-item-wrapper hardware-wrapper">
             <span class="menu-label" id="hardware-label">컴퓨터 하드웨어</span>
             <ul class="submenu">
               <li><a href="/<%= lang %>/hardware/cpu" data-panel-link>CPU</a></li>
               <li><a href="/<%= lang %>/hardware/gpu" data-panel-link>GPU</a></li>
-              <li><a href="/<%= lang %>/hardware/ram" data-panel-link>메모리(RAM)</a></li>
-              <li><a href="/<%= lang %>/hardware/storage" data-panel-link>저장장치(SSD/HDD)</a></li>
+              <li><a href="/<%= lang %>/hardware/ram" data-panel-link>메모리</a></li>
+              <li><a href="/<%= lang %>/hardware/storage" data-panel-link>저장장치</a></li>
               <li><a href="/<%= lang %>/hardware/motherboard" data-panel-link>메인보드</a></li>
-              <li><a href="/<%= lang %>/hardware/psu" data-panel-link>파워서플라이(PSU)</a></li>
-              <li><a href="/<%= lang %>/hardware/case" data-panel-link>케이스</a></li>
-              <li><a href="/<%= lang %>/hardware/cooling" data-panel-link>쿨링(공랭/수랭)</a></li>
-              <li><a href="/<%= lang %>/hardware/monitor" data-panel-link>모니터</a></li>
-              <li><a href="/<%= lang %>/hardware/peripherals" data-panel-link>주변기기</a></li>
-              <li><a href="/<%= lang %>/hardware/network" data-panel-link>네트워크/Wi-Fi</a></li>
-              <li><a href="/<%= lang %>/hardware/os" data-panel-link>운영체제/드라이버</a></li>
-              <li><a href="/<%= lang %>/hardware/tools" data-panel-link>벤치마크</a></li>
-              <li><a href="/<%= lang %>/hardware/buying-guide" data-panel-link>구매가이드</a></li>
+              <li><a href="/<%= lang %>/hardware/psu" data-panel-link>파워서플라이</a></li>
+              <li><a href="/<%= lang %>/hardware/cooling" data-panel-link>쿨링</a></li>
             </ul>
           </li>
 
-          <!-- ✅ 프론트엔드 -->
           <li class="menu-item-wrapper">
             <span class="menu-label">프론트엔드</span>
             <ul class="submenu">
               <li><a href="/<%= lang %>/frontend/html" data-panel-link>HTML</a></li>
               <li><a href="/<%= lang %>/frontend/css" data-panel-link>CSS</a></li>
               <li><a href="/<%= lang %>/frontend/javascript" data-panel-link>JavaScript</a></li>
-              <li><a href="/<%= lang %>/frontend/react" data-panel-link>React</a></li>
-              <li><a href="/<%= lang %>/frontend/vue" data-panel-link>Vue</a></li>
-              <li><a href="/<%= lang %>/frontend/tailwind" data-panel-link>Tailwind</a></li>
             </ul>
           </li>
 
-          <!-- ✅ 백엔드 -->
           <li class="menu-item-wrapper">
             <span class="menu-label">백엔드</span>
             <ul class="submenu">
               <li><a href="/<%= lang %>/backend/nodejs" data-panel-link>Node.js</a></li>
               <li><a href="/<%= lang %>/backend/express" data-panel-link>Express</a></li>
               <li><a href="/<%= lang %>/backend/django" data-panel-link>Django</a></li>
-              <li><a href="/<%= lang %>/backend/flask" data-panel-link>Flask</a></li>
-              <li><a href="/<%= lang %>/backend/spring" data-panel-link>Spring</a></li>
-            </ul>
-          </li>
-
-          <!-- ✅ 기타 -->
-          <li class="menu-item-wrapper">
-            <span class="menu-label">기타</span>
-            <ul class="submenu">
-              <li><a href="/<%= lang %>/etc/webperformance" data-panel-link>웹 성능 최적화</a></li>
-              <li><a href="/<%= lang %>/etc/aria" data-panel-link>접근성(ARIA)</a></li>
-              <li><a href="/<%= lang %>/etc/electron" data-panel-link>Electron</a></li>
             </ul>
           </li>
         </ul>
@@ -220,14 +195,17 @@
                 case 'zh': flagCode = 'cn'; break;
                 case 'ja': flagCode = 'jp'; break;
                 case 'fr': flagCode = 'fr'; break;
-                default: flagCode = 'kr';
               }
             %>
             <span class="fi fi-<%= flagCode %>" aria-hidden="true"></span>
             <i class="fas fa-caret-down" aria-hidden="true"></i>
           </button>
+
           <ul id="langMenu" class="lang-menu" role="menu">
-            <% supportedLangs.forEach(langCode => { %>
+            <%
+              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+              supportedLangs.forEach(langCode => {
+            %>
               <li>
                 <a href="/<%= langCode %><%= currentPathWithoutLang %>"
                    class="lang-option <%= langCode === lang ? 'active-lang' : '' %>">
