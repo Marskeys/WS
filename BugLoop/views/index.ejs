@@ -20,6 +20,9 @@
       --primary:#217ee8;
       --primary-ink:#608b42;
     }
+    html, body {
+      height: 100%;
+    }
     html:not(.dark){
       --border:#d9d9d9;
       --bg:#000000;
@@ -32,12 +35,22 @@
       --primary-ink:#ffffff;
     }
 
-    body.light, body.dark { background: var(--bg); color: var(--ink); }
+    body.light, body.dark {
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh; /* ✅ 화면 높이 항상 채움 */
+      display: flex;
+      flex-direction: column;
+    }
 
     .app-shell{
       padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
       padding-top: calc(50px + 16px);
       margin-top: 50px;
+      flex: 1; /* ✅ 남는 공간을 채워서 아래까지 확장 */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
     }
 
     @media (max-width: 640px){
