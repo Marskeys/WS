@@ -4,7 +4,7 @@
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bug Loop Editor</title>
+  <title>Bug Loop</title>
   <style>
     :root{
       --chrome-gap:50px;
@@ -34,7 +34,6 @@
 
     body.light, body.dark { background: var(--bg); color: var(--ink); }
 
-    /* 앱 쉘: 모바일도 좌측 50px 여백 */
     .app-shell{
       padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
       padding-top: calc(50px + 16px);
@@ -48,166 +47,14 @@
       }
     }
 
-    /* 상단 바 */
-    .studio-bar{
-      display:flex; align-items:center; gap:10px;
-      background:var(--panel); border:1px solid var(--border);
-      border-radius: var(--radius); padding:10px 12px; margin-bottom:12px;
-    }
-    .studio-title{ font-weight:700; letter-spacing:.3px }
-    .studio-spacer{ flex:1 }
-    .btn{
-      border:1px solid var(--border); background:var(--panel-2);
-      border-radius:10px; padding:8px 12px; font-weight:600; cursor:pointer; color:var(--ink);
-    }
-    .btn{
-      font-size: 15px;
-    }
-    .btn:hover{ filter: brightness(1.05) }
-    .btn.primary{
-      background: var(--primary);
-      color: var(--primary-ink);
-      border-color: transparent;
-    }
-
-    @media (max-width: 640px) {
-      .studio-title {
-        font-size: 0.9em;
-      }
-    }
-
-    /* 레이아웃 */
-    .workbench{
-      display:grid; gap: var(--panel-gap);
-      grid-template-columns: 1fr;
-    }
-    @media (min-width:1024px){
-      .workbench{
-        grid-template-columns: 320px minmax(0,1fr) minmax(0,1fr);
-        align-items: stretch;
-      }
-    }
-
-    /* 좌측 선택창 (데스크탑 전용) */
-    .selector{
-      display:none;
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)) , var(--panel);
-      border:1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-    }
-    @media (min-width:1024px){ .selector{ display:block } }
-
-    .selector-header{
-      position: sticky; top: 0;
-      backdrop-filter: blur(6px);
-      background: linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,0));
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      display:flex; align-items:center; gap:10px;
-      font-weight: 700; letter-spacing: .2px;
-    }
-    .selector-actions{ margin-left:auto; display:flex; gap:8px; }
-    .icon-btn{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border:1px solid var(--border);
-      border-radius:10px; background:var(--panel-2); cursor:pointer; color:var(--ink);
-      font-weight:600;
-    }
-    .icon-btn svg{ width:16px; height:16px; }
-    .icon-btn:hover{ filter:brightness(1.05) }
-
-    .selector-list{ display:flex; flex-direction:column; padding: 6px; gap: 6px; max-height: calc(100vh - 220px); overflow: auto; }
-
-    .selector-item{
-      display:flex; align-items:center; gap:10px;
-      padding:10px 12px; border:1px solid transparent;
-      border-radius:10px; background:var(--panel-2); color:var(--ink-2);
-      transition: border-color .15s, background .15s, color .15s, transform .05s;
-    }
-    .selector-item:hover{ border-color:var(--border); color:var(--ink) }
-    .selector-item:active{ transform: translateY(1px); }
-    .selector-item.active{
-      color:var(--ink);
-      background: linear-gradient(180deg, rgba(124,158,255,.08), transparent), var(--panel-2);
-      border-color: var(--accent);
-      position: relative;
-    }
-    .selector-item.active::before{
-      content:""; position:absolute; left:-6px; top:8px; bottom:8px; width:3px; border-radius:3px; background:var(--accent);
-    }
-    .selector-item .tag{
-      margin-left:auto; font-size:.72rem; border:1px solid var(--border); background:rgba(127,127,127,.08);
-      padding:2px 8px; border-radius:999px; color:var(--ink-2);
-    }
-
-    /* 모바일 탭(모바일 전용) */
-    .mobile-tabs{ display:flex; gap:6px; margin-bottom:10px }
-    .mobile-tab{ flex:1; border:1px solid var(--border); background:var(--panel); padding:10px; border-radius:10px; font-weight:600 }
-    .mobile-tab.active{ outline:2px solid var(--accent) }
-    @media (min-width:1024px){ .mobile-tabs{ display:none } }
-
-    /* 에디터 카드 */
-    .editor-card{
-      background:var(--panel); border:1px solid var(--border); border-radius: var(--radius);
-      padding:12px; display:flex; flex-direction:column; gap:8px; min-height: 0;
-    }
-    .code-preview-title{ font-weight:700; margin:4px 0 6px }
-    .code-area{ flex:1; min-height:240px; }
-
-    textarea.code{
-      width:100%; height:100%;
-      border:1px solid var(--border); background:var(--panel-2);
-      border-radius:10px; padding:12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "D2Coding", monospace;
-      font-size:14px; color:var(--ink); outline:none; resize:vertical;
-      min-height: 360px;
-    }
-    @media (min-width:1024px){
-      textarea.code{ min-height: 620px; resize: none; }
-    }
-
-    /* 프리뷰 카드 */
-    .preview-card{
-      background:var(--panel); border:1px solid var(--border); border-radius: var(--radius);
-      overflow:hidden; display:flex; flex-direction:column;
-    }
-    .preview-bar{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--border) }
-    .preview-addr{ flex:1; border:1px solid var(--border); background:var(--panel-2); padding:6px 10px; border-radius:8px; font-size:12px; color:var(--ink-2) }
-    #code-preview-frame{ width:100%; height:420px; border:0; background:var(--panel-2) }
-
-    /* 🔴 깜빡이는 빨간 점 */
-    .rec-dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #ff4747;
-      animation: blink-rec 1s infinite;
-    }
-    @keyframes blink-rec {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    /* 상태바 */
     .statusbar{
       margin-top:12px; background:var(--panel); border:1px solid var(--border);
-      border-radius: var(--radius); padding:8px 12px; display:flex; gap:12px; color:var(--ink-2); font-size:.9rem;
+      border-radius: var(--radius); padding:8px 12px; display:flex; gap:12px;
+      color:var(--ink-2); font-size:.9rem;
     }
-
-    /* 모달(Assets) */
-    .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index: 9999; }
-    .modal{ width:min(680px, 92vw); background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px; }
-    .modal h3{ margin:0 0 8px 0 }
-    .modal form{ display:grid; grid-template-columns: 1fr 110px 120px; gap:8px; align-items:center }
-    .asset-list{ margin-top:10px; border-top:1px dashed var(--border); padding-top:10px; max-height: 40vh; overflow:auto }
-    .asset-pill{ display:flex; gap:10px; align-items:center; border:1px solid var(--border); background:var(--panel-2); padding:8px 10px; border-radius:10px; margin-bottom:8px }
-    .asset-pill code{ font-size:.85rem; color:var(--ink-2) }
-    .tag{ font-size:.75rem; border:1px solid var(--border); padding:2px 6px; border-radius:999px }
 
     .hidden{ display:none !important; }
 
-    /* Panel content only: slide-up + fade-in */
     .pjax-fade-enter {
       opacity: 0;
       transform: translateY(20px);
@@ -228,7 +75,8 @@
 <body class="light">
   <amp-auto-ads type="adsense"
         data-ad-client="ca-pub-2585969189290118">
-</amp-auto-ads>
+  </amp-auto-ads>
+
   <div id="preloader"><div class="spinner"></div></div>
 
   <%- include('partials/header') %>
@@ -239,349 +87,33 @@
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
      crossorigin="anonymous"></script>
-<!-- BugLoop_index -->
-<ins class="adsbygoogle"
-     style="display:block; margin-left:60px; margin-top:100px;"
-     data-ad-client="ca-pub-2585969189290118"
-     data-ad-slot="2419246715"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+
+  <!-- BugLoop_index 광고 -->
+  <ins class="adsbygoogle"
+       style="display:block; margin-left:60px; margin-top:100px;"
+       data-ad-client="ca-pub-2585969189290118"
+       data-ad-slot="2419246715"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 
   <div class="app-shell">
-    <div class="studio-bar">
-      <div class="studio-title">Bug Loop Editor</div>
-      <span class="studio-badge"></span>
-      <div class="studio-spacer"></div>
-      <button id="btn-run" class="btn primary">Run ⏎</button>
-      <button id="btn-assets" class="btn">Assets</button>
-    </div>
-
-    <div class="mobile-tabs" id="mobileTabs">
-      <button class="mobile-tab active" data-tab="html">HTML</button>
-      <button class="mobile-tab" data-tab="css">CSS</button>
-      <button class="mobile-tab" data-tab="js">JS</button>
-    </div>
-
-    <div class="workbench">
-      <aside class="selector" id="desktopSelector">
-        <div class="selector-header">
-          Files
-          <div class="selector-actions">
-            <button id="btn-download-all" class="icon-btn" title="Download files">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-                <path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M20 21H4a2 2 0 0 1-2-2v-4" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              Save
-            </button>
-          </div>
-        </div>
-        <div class="selector-list" role="tablist" aria-label="Editor files">
-          <button class="selector-item active" data-tab="html"><strong>index.html</strong><span class="tag">HTML</span></button>
-          <button class="selector-item" data-tab="css"><strong>styles.css</strong><span class="tag">CSS</span></button>
-          <button class="selector-item" data-tab="js"><strong>app.js</strong><span class="tag">JS</span></button>
-        </div>
-      </aside>
-
-      <section class="editor-card">
-        <h1 class="code-preview-title"><%= locale.editor["editor-title"] %></h1>
-
-        <div class="code-area">
-          <div id="code-editor-html" class="editor-pane">
-            <textarea id="code-preview-html-code" class="code">
-<header>
-  <%= locale.editor["example-html"] %>
-</header>
-            </textarea>
-          </div>
-
-          <div id="code-editor-css" class="editor-pane hidden">
-            <textarea id="code-preview-css-code" class="code">body {
-  background: #fff;
-  color: #222;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
-header {
-  background-color: #f0f4ff;
-  padding: 20px 0;
-}
-header h1 { margin: 0; color: #3366cc; }
-nav ul {
-  list-style: none; padding: 0; margin: 10px 0 0;
-  display: flex; justify-content: center; gap: 20px;
-}
-nav li { font-weight: bold; color: #444; }
-main { padding: 40px 20px; }
-section { margin-bottom: 40px; }
-h2 { color: #444; margin-bottom: 10px; }
-ul { list-style: none; padding: 0; }
-ul li { margin: 5px 0; font-size: 1.1rem; }
-footer {
-  background: #f9f9f9; padding: 20px 0; font-size: .9rem;
-  color: #888; border-top: 1px solid #eee;
-}
-            </textarea>
-          </div>
-
-          <div id="code-editor-js" class="editor-pane hidden">
-            <textarea id="code-preview-js-code" class="code">document.body.style.transform = 'scale(1.02)';</textarea>
-          </div>
-        </div>
-      </section>
-
-      <section class="preview-card">
-        <div class="preview-bar">
-          <span class="rec-dot" title="Live"></span>
-          <span class="studio-badge">Live Preview</span>
-          <div class="preview-addr">bugloop://preview</div>
-        </div>
-        <iframe id="code-preview-frame" sandbox="allow-scripts allow-forms"></iframe>
-      </section>
-    </div>
-
-    <div class="statusbar">
-      <span id="status-msg">Ready — Press Run to update preview</span>
-      <span>⌘/Ctrl+Enter: Run</span>
-      <span>⌘/Ctrl+B: Toggle Sidebar</span>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="assetsModal">
-    <div class="modal">
-      <h3>Assets</h3>
-      <p class="studio-badge">CSS/JS를 추가하면 프리뷰 head에 자동 주입됩니다.</p>
-      <form id="assetForm">
-        <input id="assetUrl" type="url" placeholder="https://cdn.example.com/library.min.js 또는 .css" />
-        <select id="assetType">
-          <option value="js">JS</option>
-          <option value="css">CSS</option>
-        </select>
-        <button type="submit" class="btn primary">Add URL</button>
-      </form>
-      <div style="margin-top:8px; display:flex; gap:8px; align-items:center">
-        <input type="file" id="assetFile" />
-        <select id="assetFileType">
-          <option value="js">JS</option>
-          <option value="css">CSS</option>
-        </select>
-        <button id="assetAddFile" class="btn">Add File</button>
-        <div class="studio-spacer"></div>
-        <button id="assetClose" class="btn">Close</button>
-      </div>
-      <div class="asset-list" id="assetList"></div>
-    </div>
+    <h1 style="font-weight:700; font-size:1.4rem;">Bug Loop</h1>
+    <p style="color:var(--ink-2); margin-top:8px;">
+      온라인 에디터 기능이 제거된 간결한 버전입니다.
+    </p>
   </div>
 
   <%- include('partials/scripts') %>
 
-  <script>
-    // ====== 요소 참조
-    const htmlInput = document.getElementById('code-preview-html-code');
-    const cssInput  = document.getElementById('code-preview-css-code');
-    const jsInput   = document.getElementById('code-preview-js-code');
-    const preview   = document.getElementById('code-preview-frame');
-
-    const desktopSelector = document.getElementById('desktopSelector');
-    const selectorItems = desktopSelector.querySelectorAll('.selector-item');
-
-    const mobileTabs = document.getElementById('mobileTabs');
-    const mobileTabButtons = mobileTabs.querySelectorAll('.mobile-tab');
-
-    const btnRun = document.getElementById('btn-run');
-
-    const btnAssets = document.getElementById('btn-assets');
-    const assetsModal = document.getElementById('assetsModal');
-    const assetForm = document.getElementById('assetForm');
-    const assetUrlEl = document.getElementById('assetUrl');
-    const assetTypeEl = document.getElementById('assetType');
-    const assetFileEl = document.getElementById('assetFile');
-    const assetFileTypeEl = document.getElementById('assetFileType');
-    const assetAddFileBtn = document.getElementById('assetAddFile');
-    const assetListEl = document.getElementById('assetList');
-    const assetClose = document.getElementById('assetClose');
-
-    const btnDownloadAll = document.getElementById('btn-download-all');
-
-    const statusMsg = document.getElementById('status-msg');
-
-    // ====== 상태
-    let currentTab = 'html';
-    const assets = [];
-
-    // ====== 탭 전환 (데스크탑 선택창)
-    selectorItems.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        selectorItems.forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        setTab(btn.dataset.tab);
-      });
-    });
-
-    // ====== 모바일 탭
-    mobileTabButtons.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        mobileTabButtons.forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        setTab(btn.dataset.tab);
-      });
-    });
-
-    function setTab(tab){
-      currentTab = tab;
-      document.getElementById('code-editor-html').classList.toggle('hidden', tab!=='html');
-      document.getElementById('code-editor-css').classList.toggle('hidden',  tab!=='css');
-      document.getElementById('code-editor-js').classList.toggle('hidden',   tab!=='js');
-      status('Editing ' + tab.toUpperCase());
-    }
-
-    // ====== 프리뷰 빌드 (Run 눌러야 반영)
-    function buildSrcDoc(){
-      const html = htmlInput.value;
-      const cssContent = cssInput.value + `
-@media screen and (max-width: 768px) {
-  body { font-size: 80% !important; }
-  h1, h2, h3, h4, h5, h6, p, li, nav, footer, main, section {
-    transform: scale(0.95); transform-origin: top center;
-  }
-}
-`;
-      const cssTag = `<style>${cssContent.replace(/<\/style>/g,'<\\/style>')}</style>`;
-      const jsTag  = `<script>${jsInput.value.replace(/<\/script>/g,'<\\/script>')}<\/script>`;
-
-      const assetTags = assets.map(a=>{
-        if(a.type==='css'){
-          return `<link rel="stylesheet" href="${a.src}">`;
-        }else{
-          return `<script src="${a.src}"><\/script>`;
-        }
-      }).join('\n');
-
-      return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-${assetTags}
-${cssTag}
-</head>
-<body>
-${html}
-${jsTag}
-</body>
-</html>`;
-    }
-
-    function updatePreview(){
-      preview.srcdoc = buildSrcDoc();
-      status('Preview updated');
-    }
-
-    // 자동 미리보기 제거 → Run/단축키로만 갱신
-    btnRun.addEventListener('click', updatePreview);
-    window.addEventListener('keydown', (e)=>{
-      const cmd = e.metaKey || e.ctrlKey;
-      if(cmd && e.key.toLowerCase()==='enter'){ e.preventDefault(); updatePreview(); }
-      if(cmd && e.key.toLowerCase()==='b'){ e.preventDefault(); document.querySelector('.selector')?.classList.toggle('hidden'); }
-    });
-
-    // ====== Assets: 모달 열기/닫기
-    btnAssets.addEventListener('click', ()=> assetsModal.style.display='flex');
-    assetClose.addEventListener('click', ()=> assetsModal.style.display='none');
-    assetsModal.addEventListener('click', (e)=>{ if(e.target===assetsModal) assetsModal.style.display='none'; });
-
-    // ====== Assets: URL 추가
-    assetForm.addEventListener('submit', (e)=>{
-      e.preventDefault();
-      const url = assetUrlEl.value.trim();
-      const type = assetTypeEl.value;
-      if(!url) return;
-      addAsset({type, src:url, label:url, isBlob:false});
-      assetUrlEl.value='';
-    });
-
-    // ====== Assets: 파일 추가 (Blob URL)
-    assetAddFileBtn.addEventListener('click', ()=>{
-      const f = assetFileEl.files?.[0];
-      if(!f) return;
-      const type = assetFileTypeEl.value;
-      const url = URL.createObjectURL(f);
-      addAsset({type, src:url, label:f.name, isBlob:true});
-      assetFileEl.value='';
-    });
-
-    function addAsset(a){
-      const id = 'asset_'+Math.random().toString(36).slice(2,9);
-      assets.push({...a, id});
-      renderAssetList();
-      status(`Asset added: ${a.label} (press Run to apply)`);
-    }
-
-    function removeAsset(id){
-      const idx = assets.findIndex(x=>x.id===id);
-      if(idx>=0){
-        const a = assets[idx];
-        if(a.isBlob) try{ URL.revokeObjectURL(a.src); }catch{}
-        assets.splice(idx,1);
-        renderAssetList();
-        status('Asset removed (press Run to apply)');
-      }
-    }
-
-    function renderAssetList(){
-      assetListEl.innerHTML = '';
-      assets.forEach(a=>{
-        const row = document.createElement('div');
-        row.className='asset-pill';
-        row.innerHTML = `
-          <span class="tag">${a.type.toUpperCase()}</span>
-          <code title="${a.label}">${a.label}</code>
-          <div style="flex:1"></div>
-          <button class="btn" data-id="${a.id}">Remove</button>
-        `;
-        row.querySelector('button').addEventListener('click', ()=> removeAsset(a.id));
-        assetListEl.appendChild(row);
-      });
-      if(!assets.length){
-        const empty = document.createElement('div');
-        empty.className='studio-badge';
-        empty.textContent = 'No assets added yet.';
-        assetListEl.appendChild(empty);
-      }
-    }
-
-    // ====== Download files
-    btnDownloadAll.addEventListener('click', ()=>{
-      downloadFile('index.html', htmlInput.value.trim());
-      downloadFile('styles.css', cssInput.value.trim());
-      downloadFile('app.js', jsInput.value.trim());
-      status('Files downloaded');
-    });
-
-    function downloadFile(filename, content){
-      const blob = new Blob([content], {type: 'text/plain'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = filename; a.click();
-      setTimeout(()=>URL.revokeObjectURL(url), 500);
-    }
-
-    function status(msg){ statusMsg.textContent = msg; }
-
-    // 초기 탭 상태
-    window.addEventListener('DOMContentLoaded', ()=> setTab('html'));
-  </script>
-
+  <!-- 패널 네비게이션 및 전환 로직 -->
   <script>
   (() => {
     const panelRoot = document.getElementById('panel-root');
     const preloader = document.getElementById('preloader');
 
-    /* ---------- 히스토리 패치 ---------- */
     (function patchHistory(){
       const _ps = history.pushState, _rs = history.replaceState;
       history.pushState = function(...args){ const r = _ps.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
@@ -589,7 +121,6 @@ ${jsTag}
       window.addEventListener('popstate', ()=> window.dispatchEvent(new Event('locationchange')));
     })();
 
-    /* ---------- 메뉴 클릭 가로채기 (캡처 단계) ---------- */
     document.addEventListener('click', onDocClick, true);
     function onDocClick(e){
       const a = e.target.closest('a[data-panel-link], .submenu a');
@@ -597,12 +128,10 @@ ${jsTag}
       if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const url = new URL(a.href, location.origin);
       if (url.origin !== location.origin || url.hash) return;
-
       e.preventDefault();
-      navigateAndSwap(a.href, /*push=*/true);
+      navigateAndSwap(a.href, true);
     }
 
-    /* ---------- location 변경 시 패널 교체 ---------- */
     window.addEventListener('locationchange', () => {
       swapPanel(location.href);
     });
@@ -610,38 +139,28 @@ ${jsTag}
     async function navigateAndSwap(url, push) {
       if (push) history.pushState({panel:true}, '', url);
       else history.replaceState(history.state, '', url);
-      // 실제 교체는 locationchange 리스너에서 수행
     }
 
     async function swapPanel(url) {
       try {
         setLoading(true);
-
-        // 서버 프래그먼트 힌트(옵션)
         const fURL = new URL(url, location.origin);
         fURL.searchParams.set('partial', '1');
-
         const res = await fetch(fURL.toString(), {
           headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/fragment, text/html;q=0.9' },
           credentials: 'same-origin',
           cache: 'no-cache'
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-
         const html = await res.text();
         const frag = extractPanel(html);
         if (!frag) { location.replace(url); return; }
 
-        // 🔁 새 패널 DOM 주입
         panelRoot.replaceChildren(frag);
         runScripts(panelRoot);
 
-        // 🎯 "컨텐츠 영역"만 슬라이드 업 페이드 (배경/프레임은 그대로)
         const fadeTarget =
           panelRoot.querySelector('[data-panel-fade-target]') ||
-          panelRoot.querySelector('.sidebar-extension-panel .tab-content.active') ||
-          panelRoot.querySelector('.sidebar-extension-panel .tab-container') ||
-          panelRoot.querySelector('.sidebar-extension-panel') ||
           panelRoot.querySelector('.panel-body, main, .content, section') ||
           panelRoot.firstElementChild;
 
@@ -660,7 +179,6 @@ ${jsTag}
       }
     }
 
-    /* ---------- 도우미: 패널 추출/스크립트 실행 ---------- */
     function extractPanel(html) {
       if (!/<\/?html[\s>]/i.test(html)) {
         const wrap = document.createElement('div');
@@ -687,7 +205,6 @@ ${jsTag}
       });
     }
 
-    /* ---------- 메뉴 active 처리 ---------- */
     function updateActiveMenu(url) {
       const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
       document.querySelectorAll('.submenu a').forEach(a => {
@@ -699,7 +216,6 @@ ${jsTag}
       });
     }
 
-    /* ---------- 헤더 .connector 라벨 동기화 ---------- */
     function updateConnector(url) {
       try {
         const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
@@ -725,7 +241,6 @@ ${jsTag}
       preloader.style.display = on ? 'block' : 'none';
     }
 
-    // 초기 진입 시 동기화
     window.addEventListener('DOMContentLoaded', () => {
       updateActiveMenu(location.href);
       updateConnector(location.href);
