@@ -20,9 +20,11 @@
       --primary:#217ee8;
       --primary-ink:#608b42;
     }
+
     html, body {
       height: 100%;
     }
+
     html:not(.dark){
       --border:#d9d9d9;
       --bg:#000000;
@@ -38,7 +40,7 @@
     body.light, body.dark {
       background: var(--bg);
       color: var(--ink);
-      min-height: 100vh; /* ✅ 화면 높이 항상 채움 */
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -47,7 +49,7 @@
       padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
       padding-top: calc(50px + 16px);
       margin-top: 180px;
-      flex: 1; /* ✅ 남는 공간을 채워서 아래까지 확장 */
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -60,7 +62,6 @@
       }
     }
 
-    /* 🔹 타이틀 헤드 스타일 */
     .section-title {
       color: #fff;
       font-size: 1.8rem;
@@ -70,9 +71,15 @@
     }
 
     .statusbar{
-      margin-top:12px; background:var(--panel); border:1px solid var(--border);
-      border-radius: var(--radius); padding:8px 12px; display:flex; gap:12px;
-      color:var(--ink-2); font-size:.9rem;
+      margin-top:12px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding:8px 12px;
+      display:flex;
+      gap:12px;
+      color:var(--ink-2);
+      font-size:.9rem;
     }
 
     .hidden{ display:none !important; }
@@ -87,10 +94,100 @@
       transform: translateY(0);
       transition: transform .28s cubic-bezier(.22,1,.36,1), opacity .28s ease;
     }
-    @media (prefers-reduced-motion: reduce){
-      .pjax-fade-enter { opacity: 1; transform: none; }
-      .pjax-fade-enter-active { transition: none; }
+
+    /* 🔹 캐러셀 */
+    .carousel-section {
+      margin-top: 60px;
     }
+
+    .section-subtitle {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--ink);
+    }
+
+    .carousel-container {
+      overflow-x: auto;
+      display: flex;
+      gap: 16px;
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 16px;
+    }
+
+    .carousel-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 140px;
+      flex-shrink: 0;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      scroll-snap-align: start;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .carousel-item:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 4px 10px rgba(0,0,0,.3);
+    }
+
+    .carousel-item img {
+      width: 100%;
+      border-radius: var(--radius);
+      height: 190px;
+      object-fit: cover;
+    }
+
+    .carousel-item p {
+      margin-top: 8px;
+      font-size: .9rem;
+      color: var(--ink-2);
+    }
+
+    /* 🔹 목차 */
+    .book-toc {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 20px;
+      padding: 16px 20px;
+      color: var(--ink);
+      transition: all .3s ease;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .book-toc.show {
+      max-height: 500px;
+      opacity: 1;
+    }
+
+    .book-toc h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+
+    .book-toc ul {
+      margin: 0;
+      padding-left: 16px;
+      list-style: disc;
+    }
+
+    .book-toc li {
+      margin-bottom: 6px;
+      font-size: .95rem;
+      color: var(--ink-2);
+    }
+
   </style>
 </head>
 
@@ -109,6 +206,57 @@
     <p style="color:var(--ink-2); margin-top:8px;">
       온라인 에디터 기능이 제거된 간결한 버전입니다.
     </p>
+
+    <!-- 🔹 캐러셀 시작 -->
+    <div class="carousel-section">
+      <h2 class="section-subtitle">📚 연재 중인 시리즈</h2>
+      <div class="carousel-container">
+        <div class="carousel">
+          <div class="carousel-item" data-index="0">
+            <img src="/assets/img/book1.jpg" alt="귀여운 음향학">
+            <p>귀여운 음향학</p>
+          </div>
+          <div class="carousel-item" data-index="1">
+            <img src="/assets/img/book2.jpg" alt="피아노 치는 프로듀서">
+            <p>피아노 치는 프로듀서</p>
+          </div>
+          <div class="carousel-item" data-index="2">
+            <img src="/assets/img/book3.jpg" alt="당신의 곁에, 아주 사적인 복지 가이드">
+            <p>당신의 곁에, 아주 사적인 복지 가이드</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔹 펼쳐질 목차 -->
+      <div class="book-toc" id="toc-0">
+        <h3>귀여운 음향학 목차</h3>
+        <ul>
+          <li>1장. 진동의 본질</li>
+          <li>2장. 파동의 성질</li>
+          <li>3장. 음향학과 감각의 관계</li>
+        </ul>
+      </div>
+
+      <div class="book-toc" id="toc-1">
+        <h3>피아노 치는 프로듀서 목차</h3>
+        <ul>
+          <li>1장. 반주의 구조 이해</li>
+          <li>2장. 코드 보이싱의 예술</li>
+          <li>3장. 리듬의 설계와 다이내믹</li>
+        </ul>
+      </div>
+
+      <div class="book-toc" id="toc-2">
+        <h3>당신의 곁에, 아주 사적인 복지 가이드 목차</h3>
+        <ul>
+          <li>1장. 복지의 언어</li>
+          <li>2장. 제도의 이면 읽기</li>
+          <li>3장. 진짜 ‘도움’이란 무엇인가</li>
+        </ul>
+      </div>
+    </div>
+    <!-- 🔹 캐러셀 끝 -->
+
   </div>
 
   <%- include('partials/scripts') %>
@@ -118,6 +266,7 @@
     const panelRoot = document.getElementById('panel-root');
     const preloader = document.getElementById('preloader');
 
+    // PJAX 관련 코드 유지
     (function patchHistory(){
       const _ps = history.pushState, _rs = history.replaceState;
       history.pushState = function(...args){ const r = _ps.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
@@ -162,19 +311,6 @@
 
         panelRoot.replaceChildren(frag);
         runScripts(panelRoot);
-
-        const fadeTarget =
-          panelRoot.querySelector('[data-panel-fade-target]') ||
-          panelRoot.querySelector('.panel-body, main, .content, section') ||
-          panelRoot.firstElementChild;
-
-        if (fadeTarget) {
-          fadeTarget.classList.add('pjax-fade-enter');
-          requestAnimationFrame(() => fadeTarget.classList.add('pjax-fade-enter-active'));
-        }
-
-        updateActiveMenu(url);
-        updateConnector(url);
       } catch (err) {
         console.error('[PJAX] swapPanel error:', err);
         location.replace(url);
@@ -209,49 +345,24 @@
       });
     }
 
-    function updateActiveMenu(url) {
-      const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
-      document.querySelectorAll('.submenu a').forEach(a => {
-        const href = (a.getAttribute('href') || '').replace(/\/$/, '');
-        const is = href === path;
-        a.classList.toggle('active', is);
-        const label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
-        if (label) label.classList.toggle('active-label', is);
-      });
-    }
-
-    function updateConnector(url) {
-      try {
-        const path = new URL(url, location.origin).pathname.replace(/\/$/, '');
-        let activeLink = document.querySelector(`.submenu a[href="${path}"]`);
-        if (!activeLink) {
-          activeLink = Array.from(document.querySelectorAll('.submenu a'))
-            .find(a => (a.getAttribute('href') || '').replace(/\/$/, '') === path);
-        }
-        let label = (activeLink?.textContent || '').trim();
-        if (!label) {
-          const meta = document.querySelector('#panel-root #panel-meta');
-          label = meta?.dataset?.panelTitle?.trim();
-        }
-        if (!label) label = 'Welcome';
-        document.querySelectorAll('.connector').forEach(el => { el.textContent = label; });
-      } catch (e) {
-        document.querySelectorAll('.connector').forEach(el => { el.textContent = 'Welcome'; });
-      }
-    }
-
     function setLoading(on) {
       if (!preloader) return;
       preloader.style.display = on ? 'block' : 'none';
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      updateActiveMenu(location.href);
-      updateConnector(location.href);
+    // 🔹 캐러셀 클릭 이벤트
+    document.querySelectorAll('.carousel-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const index = item.dataset.index;
+        const toc = document.getElementById(`toc-${index}`);
+        document.querySelectorAll('.book-toc').forEach(el => {
+          if (el !== toc) el.classList.remove('show');
+        });
+        toc.classList.toggle('show');
+      });
     });
   })();
   </script>
 
-  
 </body>
 </html>
