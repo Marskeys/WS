@@ -21,9 +21,7 @@
       --primary-ink:#608b42;
     }
 
-    html, body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
 
     html:not(.dark){
       --border:#d9d9d9;
@@ -70,122 +68,90 @@
       letter-spacing: 0.5px;
     }
 
-    .statusbar{
-      margin-top:12px;
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      padding:8px 12px;
-      display:flex;
-      gap:12px;
-      color:var(--ink-2);
-      font-size:.9rem;
-    }
-
-    .hidden{ display:none !important; }
-
-    .pjax-fade-enter {
-      opacity: 0;
-      transform: translateY(20px);
-      will-change: transform, opacity;
-    }
-    .pjax-fade-enter-active {
-      opacity: 1;
-      transform: translateY(0);
-      transition: transform .28s cubic-bezier(.22,1,.36,1), opacity .28s ease;
-    }
-
-    /* 🔹 캐러셀 */
-    .carousel-section {
-      margin-top: 60px;
-    }
-
-    .section-subtitle {
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      color: var(--ink);
-    }
-
-    .carousel-container {
-      overflow-x: auto;
-      display: flex;
-      gap: 16px;
-      padding-bottom: 8px;
-      scroll-snap-type: x mandatory;
-    }
-
+    /* === 🔹 캐러셀 === */
     .carousel {
       display: flex;
-      gap: 16px;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 8px;
     }
 
-    .carousel-item {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      width: 140px;
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .book-card {
       flex-shrink: 0;
-      text-align: center;
-      padding: 10px;
-      cursor: pointer;
-      scroll-snap-align: start;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-
-    .carousel-item:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 4px 10px rgba(0,0,0,.3);
-    }
-
-    .carousel-item img {
-      width: 100%;
-      border-radius: var(--radius);
-      height: 190px;
-      object-fit: cover;
-    }
-
-    .carousel-item p {
-      margin-top: 8px;
-      font-size: .9rem;
-      color: var(--ink-2);
-    }
-
-    /* 🔹 목차 */
-    .book-toc {
+      width: 220px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      margin-top: 20px;
-      padding: 16px 20px;
+      overflow: hidden;
       color: var(--ink);
-      transition: all .3s ease;
+      transition: all 0.3s ease;
+      scroll-snap-align: start;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .book-info {
+      padding: 12px;
+      text-align: center;
+    }
+
+    .book-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--ink);
+    }
+
+    /* 🔹 확장 시 목차 영역 */
+    .book-toc {
+      background: var(--panel-2);
+      color: var(--ink-2);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
       max-height: 0;
       overflow: hidden;
+      transition: all 0.35s ease;
+      padding: 0 16px;
       opacity: 0;
     }
 
-    .book-toc.show {
-      max-height: 500px;
+    .book-card.expanded .book-toc {
+      padding: 16px;
+      max-height: 300px;
       opacity: 1;
     }
 
-    .book-toc h3 {
-      font-size: 1.1rem;
-      margin-bottom: 10px;
+    .book-toc h4 {
+      margin: 0 0 8px 0;
       color: var(--primary);
+      font-size: 0.95rem;
     }
 
     .book-toc ul {
       margin: 0;
-      padding-left: 16px;
+      padding-left: 18px;
       list-style: disc;
     }
 
     .book-toc li {
       margin-bottom: 6px;
-      font-size: .95rem;
-      color: var(--ink-2);
     }
 
   </style>
@@ -193,7 +159,6 @@
 
 <body class="light">
   <div id="preloader"><div class="spinner"></div></div>
-
   <%- include('partials/header') %>
 
   <div id="panel-root" data-pjax-scope>
@@ -207,162 +172,65 @@
       온라인 에디터 기능이 제거된 간결한 버전입니다.
     </p>
 
-    <!-- 🔹 캐러셀 시작 -->
-    <div class="carousel-section">
-      <h2 class="section-subtitle">📚 연재 중인 시리즈</h2>
-      <div class="carousel-container">
-        <div class="carousel">
-          <div class="carousel-item" data-index="0">
-            <img src="/assets/img/book1.jpg" alt="귀여운 음향학">
-            <p>귀여운 음향학</p>
-          </div>
-          <div class="carousel-item" data-index="1">
-            <img src="/assets/img/book2.jpg" alt="피아노 치는 프로듀서">
-            <p>피아노 치는 프로듀서</p>
-          </div>
-          <div class="carousel-item" data-index="2">
-            <img src="/assets/img/book3.jpg" alt="당신의 곁에, 아주 사적인 복지 가이드">
-            <p>당신의 곁에, 아주 사적인 복지 가이드</p>
-          </div>
+    <!-- 🔹 캐러셀 -->
+    <div class="carousel">
+      <div class="book-card" data-index="0">
+        <img class="book-cover" src="/assets/img/book1.jpg" alt="귀여운 음향학">
+        <div class="book-info"><div class="book-title">귀여운 음향학</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 진동의 본질</li>
+            <li>2장. 파동의 성질</li>
+            <li>3장. 음향학과 감각의 관계</li>
+          </ul>
         </div>
       </div>
 
-      <!-- 🔹 펼쳐질 목차 -->
-      <div class="book-toc" id="toc-0">
-        <h3>귀여운 음향학 목차</h3>
-        <ul>
-          <li>1장. 진동의 본질</li>
-          <li>2장. 파동의 성질</li>
-          <li>3장. 음향학과 감각의 관계</li>
-        </ul>
+      <div class="book-card" data-index="1">
+        <img class="book-cover" src="/assets/img/book2.jpg" alt="피아노 치는 프로듀서">
+        <div class="book-info"><div class="book-title">피아노 치는 프로듀서</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 반주의 구조 이해</li>
+            <li>2장. 코드 보이싱의 예술</li>
+            <li>3장. 리듬의 설계와 다이내믹</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="book-toc" id="toc-1">
-        <h3>피아노 치는 프로듀서 목차</h3>
-        <ul>
-          <li>1장. 반주의 구조 이해</li>
-          <li>2장. 코드 보이싱의 예술</li>
-          <li>3장. 리듬의 설계와 다이내믹</li>
-        </ul>
-      </div>
-
-      <div class="book-toc" id="toc-2">
-        <h3>당신의 곁에, 아주 사적인 복지 가이드 목차</h3>
-        <ul>
-          <li>1장. 복지의 언어</li>
-          <li>2장. 제도의 이면 읽기</li>
-          <li>3장. 진짜 ‘도움’이란 무엇인가</li>
-        </ul>
+      <div class="book-card" data-index="2">
+        <img class="book-cover" src="/assets/img/book3.jpg" alt="당신의 곁에, 아주 사적인 복지 가이드">
+        <div class="book-info"><div class="book-title">당신의 곁에, 아주 사적인 복지 가이드</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 복지의 언어</li>
+            <li>2장. 제도의 이면 읽기</li>
+            <li>3장. 진짜 ‘도움’이란 무엇인가</li>
+          </ul>
+        </div>
       </div>
     </div>
-    <!-- 🔹 캐러셀 끝 -->
-
   </div>
 
   <%- include('partials/scripts') %>
 
   <script>
   (() => {
-    const panelRoot = document.getElementById('panel-root');
-    const preloader = document.getElementById('preloader');
-
-    // PJAX 관련 코드 유지
-    (function patchHistory(){
-      const _ps = history.pushState, _rs = history.replaceState;
-      history.pushState = function(...args){ const r = _ps.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
-      history.replaceState = function(...args){ const r = _rs.apply(this, args); window.dispatchEvent(new Event('locationchange')); return r; }
-      window.addEventListener('popstate', ()=> window.dispatchEvent(new Event('locationchange')));
-    })();
-
-    document.addEventListener('click', onDocClick, true);
-    function onDocClick(e){
-      const a = e.target.closest('a[data-panel-link], .submenu a');
-      if (!a) return;
-      if (a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      const url = new URL(a.href, location.origin);
-      if (url.origin !== location.origin || url.hash) return;
-      e.preventDefault();
-      navigateAndSwap(a.href, true);
-    }
-
-    window.addEventListener('locationchange', () => {
-      swapPanel(location.href);
-    });
-
-    async function navigateAndSwap(url, push) {
-      if (push) history.pushState({panel:true}, '', url);
-      else history.replaceState(history.state, '', url);
-    }
-
-    async function swapPanel(url) {
-      try {
-        setLoading(true);
-        const fURL = new URL(url, location.origin);
-        fURL.searchParams.set('partial', '1');
-        const res = await fetch(fURL.toString(), {
-          headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/fragment, text/html;q=0.9' },
-          credentials: 'same-origin',
-          cache: 'no-cache'
+    // 카드 클릭 시 확장/축소
+    document.querySelectorAll('.book-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // 이미 열려 있던 다른 카드 닫기
+        document.querySelectorAll('.book-card').forEach(c => {
+          if (c !== card) c.classList.remove('expanded');
         });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const html = await res.text();
-        const frag = extractPanel(html);
-        if (!frag) { location.replace(url); return; }
-
-        panelRoot.replaceChildren(frag);
-        runScripts(panelRoot);
-      } catch (err) {
-        console.error('[PJAX] swapPanel error:', err);
-        location.replace(url);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    function extractPanel(html) {
-      if (!/<\/?html[\s>]/i.test(html)) {
-        const wrap = document.createElement('div');
-        wrap.innerHTML = html;
-        const node = wrap.querySelector('#panel-root, [data-panel-fragment], .panel-root') || wrap;
-        const df = document.createDocumentFragment();
-        node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
-        return df;
-      }
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      const node = doc.querySelector('#panel-root, [data-panel-fragment], .panel-root');
-      if (!node) return null;
-      const df = document.createDocumentFragment();
-      node.childNodes.forEach(n => df.appendChild(n.cloneNode(true)));
-      return df;
-    }
-
-    function runScripts(root) {
-      root.querySelectorAll('script').forEach(old => {
-        const s = document.createElement('script');
-        for (const {name, value} of [...old.attributes]) s.setAttribute(name, value);
-        s.textContent = old.textContent;
-        old.replaceWith(s);
-      });
-    }
-
-    function setLoading(on) {
-      if (!preloader) return;
-      preloader.style.display = on ? 'block' : 'none';
-    }
-
-    // 🔹 캐러셀 클릭 이벤트
-    document.querySelectorAll('.carousel-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const index = item.dataset.index;
-        const toc = document.getElementById(`toc-${index}`);
-        document.querySelectorAll('.book-toc').forEach(el => {
-          if (el !== toc) el.classList.remove('show');
-        });
-        toc.classList.toggle('show');
+        // 현재 카드 토글
+        card.classList.toggle('expanded');
       });
     });
   })();
   </script>
-
 </body>
 </html>
