@@ -251,5 +251,21 @@
     });
   })();
   </script>
+
+  <script>
+  window.addEventListener("load", adjustAppShellMargin);
+  window.addEventListener("resize", adjustAppShellMargin);
+
+  function adjustAppShellMargin() {
+    const panel = document.getElementById("panel-root");
+    const appShell = document.querySelector(".app-shell");
+    if (!panel || !appShell) return;
+
+    // 패널 실제 높이 계산
+    const panelHeight = panel.offsetHeight;
+    // app-shell을 패널 높이만큼 내림
+    appShell.style.marginTop = `${panelHeight + 16}px`; // 여유 여백 약간 추가
+  }
+</script>
 </body>
 </html>
