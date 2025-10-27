@@ -83,7 +83,7 @@
 
     .book-card {
       flex-shrink: 0;
-      width: 220px;
+      width: 230px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -103,20 +103,37 @@
 
     .book-cover {
       width: 100%;
-      height: 320px;
+      height: 360px; /* ⬆ 세로 조금 늘림 */
       object-fit: cover;
       display: block;
     }
 
     .book-info {
-      padding: 12px;
+      padding: 14px 10px;
       text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--panel-2);
     }
 
     .book-title {
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: var(--ink);
+      line-height: 1.4;
+      white-space: normal;
+      word-break: keep-all;
+      letter-spacing: 0.3px;
+    }
+
+    .book-title::after {
+      content: "";
+      display: block;
+      width: 40%;
+      height: 2px;
+      background: var(--primary);
+      margin: 8px auto 0;
+      border-radius: 1px;
+      opacity: 0.7;
     }
 
     /* 🔹 확장 시 목차 영역 */
@@ -169,6 +186,7 @@
 
     <!-- 🔹 캐러셀 -->
     <div class="carousel">
+
       <div class="book-card" data-index="0">
         <img class="book-cover" src="/assets/images/book1.gif" alt="귀여운 음향학">
         <div class="book-info"><div class="book-title">귀여운 음향학</div></div>
@@ -183,8 +201,21 @@
       </div>
 
       <div class="book-card" data-index="1">
-        <img class="book-cover" src="/assets/images/book2.gif" alt="피아노 치는 프로듀서">
-        <div class="book-info"><div class="book-title">피아노 치는 프로듀서</div></div>
+        <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+        <div class="book-info"><div class="book-title">미완성 고통</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 불완전함의 철학</li>
+            <li>2장. 창작과 결핍</li>
+            <li>3장. 완성이라는 환상</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="book-card" data-index="2">
+        <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+        <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
         <div class="book-toc">
           <h4>목차</h4>
           <ul>
@@ -195,31 +226,19 @@
         </div>
       </div>
 
-      <div class="book-card" data-index="2">
-        <img class="book-cover" src="/assets/images/book3.gif" alt="당신의 곁에, 아주 사적인 복지 가이드">
-        <div class="book-info"><div class="book-title">당신의 곁에, 아주 사적인 복지 가이드</div></div>
+      <div class="book-card" data-index="3">
+        <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
+        <div class="book-info"><div class="book-title">계산의 온기</div></div>
         <div class="book-toc">
           <h4>목차</h4>
           <ul>
-            <li>1장. 복지의 언어</li>
-            <li>2장. 제도의 이면 읽기</li>
-            <li>3장. 진짜 ‘도움’이란 무엇인가</li>
+            <li>1장. 기계와 인간의 경계</li>
+            <li>2장. 연산의 감정</li>
+            <li>3장. 알고리즘의 온도</li>
           </ul>
         </div>
       </div>
 
-      <div class="book-card" data-index="3">
-        <img class="book-cover" src="/assets/images/book4.gif" alt="미완성의 고통">
-        <div class="book-info"><div class="book-title">미완성의 고통</div></div>
-        <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 불완전함의 철학</li>
-            <li>2장. 창작과 결핍</li>
-            <li>3장. 완성이라는 환상</li>
-          </ul>
-        </div>
-      </div>
     </div>
   </div>
 
