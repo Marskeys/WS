@@ -153,7 +153,6 @@
     .book-toc li {
       margin-bottom: 6px;
     }
-
   </style>
 </head>
 
@@ -167,12 +166,11 @@
 
   <div class="app-shell">
     <h1 class="section-title">연재 중인 글</h1>
- 
 
     <!-- 🔹 캐러셀 -->
     <div class="carousel">
       <div class="book-card" data-index="0">
-        <img class="book-cover" src="/assets/img/book1.jpg" alt="귀여운 음향학">
+        <img class="book-cover" src="/assets/images/book1.gif" alt="귀여운 음향학">
         <div class="book-info"><div class="book-title">귀여운 음향학</div></div>
         <div class="book-toc">
           <h4>목차</h4>
@@ -185,7 +183,7 @@
       </div>
 
       <div class="book-card" data-index="1">
-        <img class="book-cover" src="/assets/img/book2.jpg" alt="피아노 치는 프로듀서">
+        <img class="book-cover" src="/assets/images/book2.gif" alt="피아노 치는 프로듀서">
         <div class="book-info"><div class="book-title">피아노 치는 프로듀서</div></div>
         <div class="book-toc">
           <h4>목차</h4>
@@ -198,7 +196,7 @@
       </div>
 
       <div class="book-card" data-index="2">
-        <img class="book-cover" src="/assets/img/book3.jpg" alt="당신의 곁에, 아주 사적인 복지 가이드">
+        <img class="book-cover" src="/assets/images/book3.gif" alt="당신의 곁에, 아주 사적인 복지 가이드">
         <div class="book-info"><div class="book-title">당신의 곁에, 아주 사적인 복지 가이드</div></div>
         <div class="book-toc">
           <h4>목차</h4>
@@ -206,6 +204,19 @@
             <li>1장. 복지의 언어</li>
             <li>2장. 제도의 이면 읽기</li>
             <li>3장. 진짜 ‘도움’이란 무엇인가</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="book-card" data-index="3">
+        <img class="book-cover" src="/assets/images/book4.gif" alt="미완성의 고통">
+        <div class="book-info"><div class="book-title">미완성의 고통</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 불완전함의 철학</li>
+            <li>2장. 창작과 결핍</li>
+            <li>3장. 완성이라는 환상</li>
           </ul>
         </div>
       </div>
@@ -219,11 +230,9 @@
     // 카드 클릭 시 확장/축소
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        // 이미 열려 있던 다른 카드 닫기
         document.querySelectorAll('.book-card').forEach(c => {
           if (c !== card) c.classList.remove('expanded');
         });
-        // 현재 카드 토글
         card.classList.toggle('expanded');
       });
     });
