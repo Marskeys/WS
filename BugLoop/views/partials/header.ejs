@@ -9,7 +9,6 @@
                            pathWithoutLang.startsWith('/edit');
         %>
         <% if (showLogo) { %>
-          <!-- ✅ 홈은 패널만 교체 -->
           <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
         <% } %>
       </div>
@@ -17,124 +16,46 @@
       <nav class="header-menu" aria-label="주 메뉴">
         <ul class="main-menu-container">
 
-          <!-- ✅ YouTube 로고 추가 -->
-<a href="https://www.youtube.com" target="_blank" aria-label="YouTube 바로가기">
-  <img src="/assets/images/youtube.png" alt="YouTube"
-       style="height:28px; width:auto; vertical-align:middle; margin-left: 3px; margin-right:3px;">
-</a>
+          <a href="https://www.youtube.com" target="_blank" aria-label="YouTube 바로가기">
+            <img src="/assets/images/youtube.png" alt="YouTube"
+                 style="height:28px; width:auto; vertical-align:middle; margin-left: 3px; margin-right:3px;">
+          </a>
 
-           
           <li class="menu-item-wrapper">
             <span class="menu-label">리뷰</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/frontend/html"        data-panel-link>HTML</a></li>
-              <li><a href="/<%= lang %>/frontend/css"         data-panel-link>CSS</a></li>
-              <li><a href="/<%= lang %>/frontend/javascript"  data-panel-link>JavaScript</a></li>
-              <li><a href="/<%= lang %>/frontend/react"       data-panel-link>React</a></li>
-              <li><a href="/<%= lang %>/frontend/vue"         data-panel-link>Vue</a></li>
-              <li><a href="/<%= lang %>/frontend/angular"     data-panel-link>Angular</a></li>
-              <li><a href="/<%= lang %>/frontend/svelte"      data-panel-link>Svelte</a></li>
-              <li><a href="/<%= lang %>/frontend/tailwind"    data-panel-link>Tailwind</a></li>
-              <li><a href="/<%= lang %>/frontend/bootstrap"   data-panel-link>Bootstrap</a></li>
-              <li><a href="/<%= lang %>/frontend/webpack"     data-panel-link>Webpack</a></li>
-              <li><a href="/<%= lang %>/frontend/vite"        data-panel-link>Vite</a></li>
-              <li><a href="/<%= lang %>/frontend/pwa"         data-panel-link>PWA</a></li>
+              <li><a href="/<%= lang %>/review/book" data-panel-link>도서</a></li>
+              <li><a href="/<%= lang %>/review/movie" data-panel-link>영화/드라마</a></li>
+              <li><a href="/<%= lang %>/review/game" data-panel-link>게임</a></li>
+              <li><a href="/<%= lang %>/review/gadget" data-panel-link>IT 기기</a></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
-            <span class="menu-label">백엔드</span>
+            <span class="menu-label">오디오북</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/backend/nodejs"       data-panel-link>Node.js</a></li>
-              <li><a href="/<%= lang %>/backend/express"      data-panel-link>Express</a></li>
-              <li><a href="/<%= lang %>/backend/django"       data-panel-link>Django</a></li>
-              <li><a href="/<%= lang %>/backend/flask"        data-panel-link>Flask</a></li>
-              <li><a href="/<%= lang %>/backend/fastapi"      data-panel-link>FastAPI</a></li>
-              <li><a href="/<%= lang %>/backend/spring"       data-panel-link>Spring</a></li>
-              <li><a href="/<%= lang %>/backend/php"          data-panel-link>PHP</a></li>
-              <li><a href="/<%= lang %>/backend/laravel"      data-panel-link>Laravel</a></li>
-              <li><a href="/<%= lang %>/backend/rails"        data-panel-link>Rails</a></li>
-              <li><a href="/<%= lang %>/backend/go"           data-panel-link>Go</a></li>
-              <li><a href="/<%= lang %>/backend/restapi"      data-panel-link>REST API</a></li>
-              <li><a href="/<%= lang %>/backend/graphql"      data-panel-link>GraphQL</a></li>
+              <li><a href="/<%= lang %>/audiobook/classic" data-panel-link>고전 문학</a></li>
+              <li><a href="/<%= lang %>/audiobook/selfhelp" data-panel-link>자기 계발</a></li>
+              <li><a href="/<%= lang %>/audiobook/language" data-panel-link>어학 학습</a></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
-            <span class="menu-label">데이터베이스</span>
+            <span class="menu-label">음악 콘텐츠</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/database/mysql"        data-panel-link>MySQL</a></li>
-              <li><a href="/<%= lang %>/database/postgresql"   data-panel-link>PostgreSQL</a></li>
-              <li><a href="/<%= lang %>/database/mongodb"      data-panel-link>MongoDB</a></li>
-              <li><a href="/<%= lang %>/database/redis"        data-panel-link>Redis</a></li>
-              <li><a href="/<%= lang %>/database/oracle"       data-panel-link>Oracle</a></li>
-              <li><a href="/<%= lang %>/database/sqlite"       data-panel-link>SQLite</a></li>
-              <li><a href="/<%= lang %>/database/elasticsearch"data-panel-link>ElasticSearch</a></li>
-              <li><a href="/<%= lang %>/database/influxdb"     data-panel-link>InfluxDB</a></li>
-              <li><a href="/<%= lang %>/database/timescaledb"  data-panel-link>TimescaleDB</a></li>
+              <li><a href="/<%= lang %>/music/kpop" data-panel-link>K-POP 최신곡</a></li>
+              <li><a href="/<%= lang %>/music/classic" data-panel-link>클래식 명곡</a></li>
+              <li><a href="/<%= lang %>/music/ost" data-panel-link>영화/드라마 OST</a></li>
+              <li><a href="/<%= lang %>/music/indie" data-panel-link>인디 음악</a></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
-            <span class="menu-label">네트워크/인프라</span>
+            <span class="menu-label">두뇌 게임</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/network/http"        data-panel-link>HTTP</a></li>
-              <li><a href="/<%= lang %>/network/https"       data-panel-link>HTTPS</a></li>
-              <li><a href="/<%= lang %>/network/dns"         data-panel-link>DNS</a></li>
-              <li><a href="/<%= lang %>/network/tcpip"       data-panel-link>TCP/IP</a></li>
-              <li><a href="/<%= lang %>/network/websocket"   data-panel-link>WebSocket</a></li>
-              <li><a href="/<%= lang %>/network/cdn"         data-panel-link>CDN</a></li>
-              <li><a href="/<%= lang %>/network/docker"      data-panel-link>Docker</a></li>
-              <li><a href="/<%= lang %>/network/kubernetes"  data-panel-link>Kubernetes</a></li>
-              <li><a href="/<%= lang %>/network/aws"         data-panel-link>AWS</a></li>
-              <li><a href="/<%= lang %>/network/gcp"         data-panel-link>GCP</a></li>
-              <li><a href="/<%= lang %>/network/azure"       data-panel-link>Azure</a></li>
-              <li><a href="/<%= lang %>/network/nginx"       data-panel-link>Nginx</a></li>
-              <li><a href="/<%= lang %>/network/apache"      data-panel-link>Apache</a></li>
-            </ul>
-          </li>
-
-          <li class="menu-item-wrapper">
-            <span class="menu-label">보안</span>
-            <ul class="submenu">
-              <li><a href="/<%= lang %>/security/jwt"          data-panel-link>JWT</a></li>
-              <li><a href="/<%= lang %>/security/oauth2"       data-panel-link>OAuth2</a></li>
-              <li><a href="/<%= lang %>/security/xss"          data-panel-link>XSS</a></li>
-              <li><a href="/<%= lang %>/security/csrf"         data-panel-link>CSRF</a></li>
-              <li><a href="/<%= lang %>/security/sqlinjection" data-panel-link>SQL Injection</a></li>
-              <li><a href="/<%= lang %>/security/https"        data-panel-link>HTTPS</a></li>
-              <li><a href="/<%= lang %>/security/tls"          data-panel-link>TLS</a></li>
-              <li><a href="/<%= lang %>/security/waf"          data-panel-link>WAF</a></li>
-              <li><a href="/<%= lang %>/security/vpn"          data-panel-link>VPN</a></li>
-              <li><a href="/<%= lang %>/security/ddos"         data-panel-link>DDoS</a></li>
-              <li><a href="/<%= lang %>/security/owasptop10"   data-panel-link>OWASP Top 10</a></li>
-            </ul>
-          </li>
-
-          <li class="menu-item-wrapper">
-            <span class="menu-label">DevOps/운영</span>
-            <ul class="submenu">
-              <li><a href="/<%= lang %>/devops/git"            data-panel-link>Git</a></li>
-              <li><a href="/<%= lang %>/devops/githubactions"  data-panel-link>GitHub Actions</a></li>
-              <li><a href="/<%= lang %>/devops/jenkins"        data-panel-link>Jenkins</a></li>
-              <li><a href="/<%= lang %>/devops/cicd"           data-panel-link>CI/CD</a></li>
-              <li><a href="/<%= lang %>/devops/prometheus"     data-panel-link>Prometheus</a></li>
-              <li><a href="/<%= lang %>/devops/grafana"        data-panel-link>Grafana</a></li>
-              <li><a href="/<%= lang %>/devops/elkstack"       data-panel-link>ELK Stack</a></li>
-              <li><a href="/<%= lang %>/devops/bluegreen"      data-panel-link>Blue-Green</a></li>
-            </ul>
-          </li>
-
-          <li class="menu-item-wrapper">
-            <span class="menu-label">기타</span>
-            <ul class="submenu">
-              <li><a href="/<%= lang %>/etc/webperformance"   data-panel-link>웹 성능 최적화</a></li>
-              <li><a href="/<%= lang %>/etc/lighthouse"       data-panel-link>Lighthouse</a></li>
-              <li><a href="/<%= lang %>/etc/corewebvitals"    data-panel-link>Core Web Vitals</a></li>
-              <li><a href="/<%= lang %>/etc/aria"             data-panel-link>ARIA</a></li>
-              <li><a href="/<%= lang %>/etc/webassembly"      data-panel-link>WebAssembly</a></li>
-              <li><a href="/<%= lang %>/etc/electron"         data-panel-link>Electron</a></li>
-              <li><a href="/<%= lang %>/etc/reactnative"      data-panel-link>React Native</a></li>
+              <li><a href="/<%= lang %>/braingame/quiz" data-panel-link>상식 퀴즈</a></li>
+              <li><a href="/<%= lang %>/braingame/memory" data-panel-link>기억력 테스트</a></li>
+              <li><a href="/<%= lang %>/braingame/logic" data-panel-link>논리 퍼즐</a></li>
             </ul>
           </li>
         </ul>
@@ -163,7 +84,6 @@
             %>
             <% supportedLangs.forEach(langCode => { %>
               <li role="none">
-                <!-- 🔸 언어 변경은 전체 새로고침 유지 (data-panel-link 추가 안 함) -->
                 <a href="/<%= langCode %><%= currentPathWithoutLang %>"
                    class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
                    role="menuitem">
@@ -205,7 +125,6 @@
 
         <% if (user) { %>
           <% if (Number(user.is_admin) === 1) { %>
-            <!-- 🔸 글쓰기는 전체뷰가 안전 -->
             <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
               <i class="fas fa-pen" aria-hidden="true"></i>
             </a>
@@ -222,17 +141,14 @@
           <img src="/assets/images/BugLoop2.png" alt="BugLoop" loading="lazy" />
         </div>
         <div class="tab-container"></div>
-        <!-- ✅ 프로필 탭: 증명사진 느낌 About 카드 -->
         <div class="tab-content" data-tab="profile" style="display: none;">
           <%- include('./profile', { locale }) %>
         </div>
 
         <% if (typeof posts !== 'undefined') { %>
-          <!-- ✅ 서치 탭: 상단 검색바 + 테이블 템플릿 -->
           <div class="tab-content" data-tab="search" style="display: none;">
             <section class="search-tab">
              
-              <!-- 숨겨진 템플릿: header.js가 클론 후 #sidebar-table로 이름 바꿔 사용 -->
               <div id="sidebar-table-template" data-lang="<%= lang %>">
                 <%- include('table') %>
               </div>
@@ -249,7 +165,6 @@
           <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
             <div class="auth-buttons">
               <% if (user) { %>
-                <!-- 🔸 로그아웃은 전체 내비게이션 유지 -->
                 <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
               <% } else { %>
                 <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
@@ -275,7 +190,6 @@
   </aside>
 </div>
 
-<!-- ===== 상단 메뉴 현재 경로 하이라이트 ===== -->
 <script>
   (function(){
     var path = location.pathname.replace(/\/$/, '');
@@ -290,7 +204,6 @@
   })();
 </script>
 
-<!-- ===== 홈 아이콘/로고 활성화: 경로 기준 ===== -->
 <script>
   (() => {
     const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
@@ -341,8 +254,8 @@
     if (!bubble || !label) return;
   
     /** ─────────────────────────────────────────────────────────
-     *  0) 상수/유틸
-     *  ───────────────────────────────────────────────────────── */
+     * 0) 상수/유틸
+     * ───────────────────────────────────────────────────────── */
     const KEY = 'bugloop.hideHardwareHint';
   
     const isShown = () =>
@@ -360,9 +273,9 @@
     }
   
     /** ─────────────────────────────────────────────────────────
-     *  1) 포털: 조상 overflow/transform 영향 제거
-     *     (fixed 기준을 뷰포트로 고정)
-     *  ───────────────────────────────────────────────────────── */
+     * 1) 포털: 조상 overflow/transform 영향 제거
+     * (fixed 기준을 뷰포트로 고정)
+     * ───────────────────────────────────────────────────────── */
     if (bubble.parentNode !== document.body) {
       bubble.style.position = 'fixed';
       bubble.style.left = '-9999px';
@@ -376,8 +289,8 @@
     if (closeBtn) closeBtn.style.pointerEvents = 'auto';
   
     /** ─────────────────────────────────────────────────────────
-     *  2) 위치 계산: 라벨 기준 여백(좌:20px, 상:8px)
-     *  ───────────────────────────────────────────────────────── */
+     * 2) 위치 계산: 라벨 기준 여백(좌:20px, 상:8px)
+     * ───────────────────────────────────────────────────────── */
     function placeBubble(){
       const r = label.getBoundingClientRect();
       bubble.style.left = (Math.round(r.left + 20)) + 'px';
@@ -386,8 +299,8 @@
     }
   
     /** ─────────────────────────────────────────────────────────
-     *  3) 애니메이션/전환 동안 프레임 추적 (rAF 루프)
-     *  ───────────────────────────────────────────────────────── */
+     * 3) 애니메이션/전환 동안 프레임 추적 (rAF 루프)
+     * ───────────────────────────────────────────────────────── */
     let followRAF = 0;
     function cancelFollow(){
       if (followRAF) cancelAnimationFrame(followRAF), followRAF = 0;
@@ -403,8 +316,8 @@
     }
   
     /** ─────────────────────────────────────────────────────────
-     *  4) 트리거들: 즉시/지속 갱신
-     *  ───────────────────────────────────────────────────────── */
+     * 4) 트리거들: 즉시/지속 갱신
+     * ───────────────────────────────────────────────────────── */
     // 초기 배치
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', placeBubble, { once:true });
@@ -444,8 +357,8 @@
     }, true);
   
     /** ─────────────────────────────────────────────────────────
-     *  5) 닫기(X) + 전역 ESC
-     *  ───────────────────────────────────────────────────────── */
+     * 5) 닫기(X) + 전역 ESC
+     * ───────────────────────────────────────────────────────── */
     closeBtn?.addEventListener('click', hide);
   
     // 버블은 pointer-events:none → 키입력은 document에서 처리
@@ -461,6 +374,5 @@
   
 
 
-<!-- ✅ 메인 로직: header.js가 패널/탭 상태(복구, a11y 포함)를 전담 -->
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
