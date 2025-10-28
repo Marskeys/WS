@@ -1,145 +1,33 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BugLoop Header</title>
-  <style>
-    /* 🚀 서브메뉴 간격 및 시각 정돈 */
-    .header-menu .submenu li a,
-    .header-menu .submenu li span {
-      padding-top: 14px;
-      padding-bottom: 14px;
-      display: block;
-      line-height: 1.5;
-      transition: background 0.2s ease, color 0.2s ease;
-    }
+<style>
+/* 🚀 서브메뉴 간격 조정을 위한 스타일 */
+.header-menu .submenu li a,
+.header-menu .submenu li span {
+  /* 상하 패딩을 8px로 설정하여 간격을 넓힙니다. 이 값을 조정하여 간격을 변경할 수 있습니다. */
+  padding-top: 8px;
+  padding-bottom: 8px;
+  /* 링크나 텍스트가 <li>의 전체 너비를 차지하도록 설정 */
+  display: block; 
+}
+</style>
 
-    /* 서브메뉴 전체 여백 */
-    .header-menu .submenu {
-      padding: 10px 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    /* 서브메뉴 항목 간 구분선 */
-    .header-menu .submenu li:not(:last-child) {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    }
-
-    /* 비활성 메뉴 스타일 */
-    .header-menu .submenu li .disabled-menu {
-      color: #aaa;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    /* 마우스오버 효과 */
-    .header-menu .submenu li a:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-
-    /* 전체 헤더 구조 */
-    .full-header-container {
-      background: #121212;
-      color: #eaeaea;
-      font-family: 'Pretendard', sans-serif;
-      position: relative;
-      width: 100%;
-      border-bottom: 1px solid #2b2b2b;
-    }
-
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 24px;
-    }
-
-    .main-menu-container {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .menu-item-wrapper {
-      position: relative;
-    }
-
-    .menu-label {
-      cursor: pointer;
-      font-weight: 600;
-      color: #f1f1f1;
-      transition: color 0.2s ease;
-    }
-
-    .menu-item-wrapper:hover .menu-label {
-      color: #00f5d4;
-    }
-
-    /* 서브메뉴 박스 */
-    .menu-item-wrapper .submenu {
-      position: absolute;
-      top: 110%;
-      left: 0;
-      background: #1a1a1a;
-      border: 1px solid #2b2b2b;
-      border-radius: 8px;
-      min-width: 200px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-      display: none;
-      z-index: 999;
-    }
-
-    .menu-item-wrapper:hover .submenu {
-      display: block;
-    }
-
-    .light-switch {
-      cursor: pointer;
-    }
-
-    .auth-btn {
-      display: inline-block;
-      margin: 4px;
-      padding: 6px 12px;
-      background: #217ee8;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .auth-btn.logout {
-      background: #444;
-    }
-
-    small {
-      color: #777;
-    }
-
-  </style>
-</head>
-
-<body>
-  <div class="full-header-container" style="z-index:20000;">
-    <div class="header-top">
-      <div class="top-controls">
-        <div class="left-controls">
-          <a href="/" class="logo-link" aria-label="BugLoop 홈">
-            <img src="/assets/images/BugLoop.png" alt="BugLoop" style="height:28px; vertical-align:middle;">
-          </a>
-        </div>
+<div class="full-header-container" style="z-index:20000;">
+  <div class="header-top">
+    <div class="top-controls">
+      <div class="left-controls">
+        <%
+          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+                           pathWithoutLang.startsWith('/post') ||
+                           pathWithoutLang.startsWith('/edit');
+        %>
+        <% if (showLogo) { %>
+          <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
+        <% } %>
       </div>
 
       <nav class="header-menu" aria-label="주 메뉴">
         <ul class="main-menu-container">
+
           <a href="https://www.youtube.com" target="_blank" aria-label="YouTube 바로가기">
             <img src="/assets/images/youtube.png" alt="YouTube"
                  style="height:28px; width:auto; vertical-align:middle; margin-left: 3px; margin-right:3px;">
@@ -148,86 +36,354 @@
           <li class="menu-item-wrapper">
             <span class="menu-label">리뷰</span>
             <ul class="submenu">
-              <li><a href="/review/book">북스 팔마 2 프로</a></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
+              <li><a href="/<%= lang %>/review/book" data-panel-link>북스 팔마 2 프로</a></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">오디오북</span>
             <ul class="submenu">
-              <li><span class="disabled-menu">귀여운 음향학</span></li>
-              <li><span class="disabled-menu">피아노 치는 프로듀서: 신비한 반주법</span></li>
-              <li><span class="disabled-menu">미완성 고통</span></li>
-              <li><span class="disabled-menu">계산의 온기</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">귀여운 음향학</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">피아노 치는 프로듀서: 신비한 반주법</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">미완성 고통</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">계산의 온기</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">음악 콘텐츠</span>
             <ul class="submenu">
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">두뇌 게임</span>
             <ul class="submenu">
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
-              <li><span class="disabled-menu">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">&nbsp;</span></li>
             </ul>
           </li>
         </ul>
       </nav>
 
-      <div class="right-controls">
+      <div class="right-controls" id="right-controls">
+        <div class="language-dropdown">
+          <button id="langToggle" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu">
+            <%
+              let flagCode = lang;
+              switch(lang) {
+                case 'ko': flagCode = 'kr'; break;
+                case 'en': flagCode = 'gb'; break;
+                case 'zh': flagCode = 'cn'; break;
+                case 'ja': flagCode = 'jp'; break;
+                case 'fr': flagCode = 'fr'; break;
+                default: flagCode = 'kr';
+              }
+            %>
+            <span class="fi fi-<%= flagCode %>" aria-hidden="true"></span>
+            <i class="fas fa-caret-down" aria-hidden="true"></i>
+          </button>
+          <ul id="langMenu" class="lang-menu" role="menu">
+            <%
+              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+            %>
+            <% supportedLangs.forEach(langCode => { %>
+              <li role="none">
+                <a href="/<%= langCode %><%= currentPathWithoutLang %>"
+                   class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
+                   role="menuitem">
+                  <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
+                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                </a>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+
         <div class="light-switch" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0" id="mode-toggle-accessible">
           <span class="switch-label"><span class="switch-handle"></span></span>
         </div>
       </div>
     </div>
+  </div>
 
-    <aside class="side-panel main-panel-only">
-      <div class="sidebar-wrapper">
-        <nav class="vscode-sidebar" aria-label="패널 사이드바" role="tablist">
-          <a href="#" class="sidebar-icon toggle-extension" title="패널 열기/닫기"><i class="fas fa-chevron-left"></i></a>
-          <a href="/" class="sidebar-icon logo" title="BugLoop 홈">
-            <img src="/assets/images/BugLoop.png" alt="BugLoop">
-          </a>
-          <a href="/" class="sidebar-icon" title="홈"><i class="fas fa-home"></i></a>
-          <a href="#" class="sidebar-icon" title="프로필"><i class="fas fa-user"></i></a>
-          <a href="#" class="sidebar-icon" title="검색"><i class="fas fa-search"></i></a>
-          <a href="#" class="sidebar-icon" title="설정"><i class="fas fa-cog"></i></a>
-        </nav>
+  <aside class="side-panel main-panel-only">
+    <div class="sidebar-wrapper">
+      <nav class="vscode-sidebar" aria-label="패널 사이드바" role="tablist">
+        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </a>
 
-        <div class="sidebar-extension-panel">
-          <div class="panel-logo">
-            <img src="/assets/images/BugLoop.png" alt="BugLoop" loading="lazy" />
+        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" data-panel-link title="BugLoop 홈" aria-label="BugLoop 홈" aria-selected="false">
+          <img src="/assets/images/BugLoop.png" alt="BugLoop">
+        </a>
+        <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" data-panel-link title="홈" aria-selected="false">
+          <i class="fas fa-home" aria-hidden="true"></i>
+        </a>
+
+        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필" aria-selected="false" role="tab">
+          <i class="fas fa-user" aria-hidden="true"></i>
+        </a>
+        <a href="#" class="sidebar-icon" data-tab="search" title="검색" aria-selected="false" role="tab">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </a>
+
+        <% if (user) { %>
+          <% if (Number(user.is_admin) === 1) { %>
+            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
+              <i class="fas fa-pen" aria-hidden="true"></i>
+            </a>
+          <% } %>
+        <% } %>
+
+        <a href="#" class="sidebar-icon" data-tab="settings" title="설정" aria-selected="false" aria-pressed="false" role="button">
+          <i class="fas fa-cog" aria-hidden="true"></i>
+        </a>
+      </nav>
+
+      <div class="sidebar-extension-panel">
+        <div class="panel-logo">
+          <img src="/assets/images/BugLoop.png" alt="BugLoop" loading="lazy" />
+        </div>
+        <div class="tab-container"></div>
+        <div class="tab-content" data-tab="profile" style="display: none;">
+          <%- include('./profile', { locale }) %>
+        </div>
+
+        <% if (typeof posts !== 'undefined') { %>
+          <div class="tab-content" data-tab="search" style="display: none;">
+            <section class="search-tab">
+             
+              <div id="sidebar-table-template" data-lang="<%= lang %>">
+                <%- include('table') %>
+              </div>
+            </section>
+          </div>
+        <% } %>
+
+        <div class="panel-footer">
+          <% if (user) { %>
+            <div class="greeting" style="text-align: center; margin-top: 10px; font-weight: bold;">
+              <%= user.nickname %>님, 안녕하세요!
+            </div>
+          <% } %>
+          <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
+            <div class="auth-buttons">
+              <% if (user) { %>
+                <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
+              <% } else { %>
+                <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
+                <button class="auth-btn login" id="login" type="button">로그인</button>
+              <% } %>
+            </div>
+          <% } %>
+
+          <div id="login-form-container" class="login-form-container hidden">
+            <form id="login-form" method="POST" action="/login">
+              <input type="text" name="id" placeholder="아이디" required />
+              <input type="password" name="password" placeholder="비밀번호" required />
+              <button type="submit">로그인</button>
+            </form>
           </div>
 
-          <div class="panel-footer">
-            <div class="greeting" style="text-align: center; margin-top: 10px; font-weight: bold;">
-              동선님, 안녕하세요!
-            </div>
-            <div class="auth-buttons">
-              <a href="/logout" class="auth-btn logout">로그아웃</a>
-            </div>
-            <div class="real-footer">
-              <small>© 2025 Bug Loop</small>
-            </div>
+          <div class="real-footer">
+            <small>© 2025 Bug Loop</small>
           </div>
         </div>
       </div>
-    </aside>
-  </div>
+    </div>
+  </aside>
+</div>
 
-  <script src="/assets/js/header.js"></script>
-  <script src="/assets/js/global.js"></script>
-</body>
-</html>
+<script>
+  (function(){
+    var path = location.pathname.replace(/\/$/, '');
+    document.querySelectorAll('.submenu a').forEach(function(a){
+      var href = (a.getAttribute('href') || '').replace(/\/$/, '');
+      if (href === path) {
+        a.classList.add('active');
+        var label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
+        if (label) label.classList.add('active-label');
+      }
+    });
+  })();
+</script>
+
+<script>
+  (() => {
+    const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
+    const stripLang = (p) => {
+      const path = (p || location.pathname).replace(/[#?].*$/, '');
+      const noLang = path.replace(/^\/(ko|en|fr|zh|ja)(?:\/|$)/, '');
+      return noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
+    };
+    const isHomePath = (p) => stripLang(p) === '/';
+    const setHomeActive = (flag) => {
+      homeEls.forEach(el => {
+        el.classList.toggle('active', flag);
+        el.querySelector('i')?.classList.toggle('active', flag);
+      });
+    };
+    const sync = () => setHomeActive(isHomePath(location.pathname));
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', sync, { once: true });
+    } else {
+      sync();
+    }
+
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-panel-link]');
+      if (!a) return;
+      const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
+      setHomeActive(isHomePath(pn));
+    });
+    window.addEventListener('popstate', sync);
+
+    ['pushState','replaceState'].forEach(fn => {
+      const orig = history[fn];
+      history[fn] = function(...args){
+        const ret = orig.apply(this, args);
+        window.dispatchEvent(new Event('panel:navigated'));
+        return ret;
+      };
+    });
+    window.addEventListener('panel:navigated', sync);
+  })();
+</script>
+
+<script>
+  (function(){
+    const bubble = document.getElementById('hardware-hint');
+    const label  = document.getElementById('hardware-label');
+    if (!bubble || !label) return;
+  
+    /** ─────────────────────────────────────────────────────────
+     * 0) 상수/유틸
+     * ───────────────────────────────────────────────────────── */
+    const KEY = 'bugloop.hideHardwareHint';
+  
+    const isShown = () =>
+      bubble.style.display !== 'none' && bubble.getAttribute('aria-hidden') !== 'true';
+  
+    function show(){
+      bubble.style.display = 'inline-flex';
+      bubble.setAttribute('aria-hidden', 'false');
+    }
+    function hide(){
+      localStorage.setItem(KEY, '1');
+      bubble.style.display = 'none';
+      bubble.setAttribute('aria-hidden', 'true');
+      label?.focus?.();
+    }
+  
+    /** ─────────────────────────────────────────────────────────
+     * 1) 포털: 조상 overflow/transform 영향 제거
+     * (fixed 기준을 뷰포트로 고정)
+     * ───────────────────────────────────────────────────────── */
+    if (bubble.parentNode !== document.body) {
+      bubble.style.position = 'fixed';
+      bubble.style.left = '-9999px';
+      bubble.style.top  = '-9999px';
+      document.body.appendChild(bubble);
+    }
+  
+    // 이벤트 패스스루: 스크롤 막지 않게
+    bubble.style.pointerEvents = 'none';
+    const closeBtn = bubble.querySelector('.hint-close');
+    if (closeBtn) closeBtn.style.pointerEvents = 'auto';
+  
+    /** ─────────────────────────────────────────────────────────
+     * 2) 위치 계산: 라벨 기준 여백(좌:20px, 상:8px)
+     * ───────────────────────────────────────────────────────── */
+    function placeBubble(){
+      const r = label.getBoundingClientRect();
+      bubble.style.left = (Math.round(r.left + 20)) + 'px';
+      bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
+      if (!isShown() && localStorage.getItem(KEY) !== '1') show();
+    }
+  
+    /** ─────────────────────────────────────────────────────────
+     * 3) 애니메이션/전환 동안 프레임 추적 (rAF 루프)
+     * ───────────────────────────────────────────────────────── */
+    let followRAF = 0;
+    function cancelFollow(){
+      if (followRAF) cancelAnimationFrame(followRAF), followRAF = 0;
+    }
+    function startFollow(ms = 600){
+      const end = performance.now() + ms;
+      cancelFollow();
+      const tick = () => {
+        placeBubble();
+        if (performance.now() < end) followRAF = requestAnimationFrame(tick);
+      };
+      followRAF = requestAnimationFrame(tick);
+    }
+  
+    /** ─────────────────────────────────────────────────────────
+     * 4) 트리거들: 즉시/지속 갱신
+     * ───────────────────────────────────────────────────────── */
+    // 초기 배치
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', placeBubble, { once:true });
+    } else {
+      placeBubble();
+    }
+  
+    // 스크롤/리사이즈 즉시 반영
+    window.addEventListener('scroll', placeBubble, { capture:true, passive:true });
+    window.addEventListener('resize', placeBubble);
+  
+    // 패널 토글 클릭 시점부터 따라붙기
+    document.querySelector('.toggle-extension')?.addEventListener('click', () => {
+      placeBubble();
+      startFollow(800);
+    });
+  
+    // 커스텀 내비 이벤트(네 코드 유지)
+    window.addEventListener('panel:navigated', () => {
+      placeBubble();
+      startFollow(400);
+    });
+  
+    // 레이아웃 크기 변화 감지(헤더/패널/메인 래퍼 등)
+    const ro = new ResizeObserver(() => placeBubble());
+    ['.full-header-container', '.main-panel-only', '.header-top', 'body', 'html']
+      .forEach(sel => { const el = document.querySelector(sel); if (el) ro.observe(el); });
+  
+    // 트랜지션 시작 프레임부터 rAF 추적 (캡처 단계)
+    const transTargets = ['.sidebar-extension-panel', '.full-header-container', '.main-panel-only', '.header-top'];
+    document.addEventListener('transitionstart', (e) => {
+      if (transTargets.some(sel => e.target.matches?.(sel))) {
+        placeBubble();
+        // e.elapsedTime은 start 시점엔 0일 수 있음 → 기본 700ms + 200ms 여유
+        startFollow((e.elapsedTime ? e.elapsedTime * 1000 : 500) + 400);
+      }
+    }, true);
+  
+    /** ─────────────────────────────────────────────────────────
+     * 5) 닫기(X) + 전역 ESC
+     * ───────────────────────────────────────────────────────── */
+    closeBtn?.addEventListener('click', hide);
+  
+    // 버블은 pointer-events:none → 키입력은 document에서 처리
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isShown()) hide();
+    }, true);
+  
+    // 첫 진입 자동 노출(사용자가 숨기지 않았다면)
+    if (localStorage.getItem(KEY) !== '1') show();
+  })();
+</script>
+  
+  
+<script src="/assets/js/header.js"></script>
+<script src="/assets/js/global.js"></script>
