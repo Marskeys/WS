@@ -1,5 +1,5 @@
 <style>
-/* 🚀 서브메뉴 간격 조정을 위한 스타일 */
+/* 🚀 서브메뉴 간격 및 폰트/정렬 조정을 위한 스타일 */
 .header-menu .submenu li a,
 .header-menu .submenu li span {
   /* 상하 패딩을 8px로 설정하여 간격을 넓힙니다. 이 값을 조정하여 간격을 변경할 수 있습니다. */
@@ -7,6 +7,17 @@
   padding-bottom: 8px;
   /* 링크나 텍스트가 <li>의 전체 너비를 차지하도록 설정 */
   display: block; 
+  
+  /* ✨ 새로 추가된 폰트 크기 통일 및 수직 정렬 */
+  font-size: 14px; /* 모든 서브메뉴 항목의 폰트 크기 통일 */
+  vertical-align: middle; /* 텍스트가 위로 쏠리는 현상 방지 */
+}
+
+/* 추가: YouTube 로고 수직 중앙 정렬을 위해 main-menu-container에 flex 적용 */
+.header-menu .main-menu-container {
+    display: flex;
+    align-items: center; /* 모든 항목을 수직 중앙 정렬 */
+    height: 100%; /* 부모 요소의 높이를 채우도록 설정 */
 }
 </style>
 
