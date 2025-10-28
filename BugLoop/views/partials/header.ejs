@@ -25,37 +25,37 @@
             <span class="menu-label">리뷰</span>
             <ul class="submenu">
               <li><a href="/<%= lang %>/review/book" data-panel-link>북스 팔마 2 프로</a></li>
-              <li><a href="/<%= lang %>/review/movie" data-panel-link>영화/드라마</a></li>
-              <li><a href="/<%= lang %>/review/game" data-panel-link>게임</a></li>
-              <li><a href="/<%= lang %>/review/gadget" data-panel-link>IT 기기</a></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">영화/드라마 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">게임 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">IT 기기 (출시 준비 중...)</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">오디오북</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/audiobook/classic" data-panel-link>고전 문학</a></li>
-              <li><a href="/<%= lang %>/audiobook/selfhelp" data-panel-link>자기 계발</a></li>
-              <li><a href="/<%= lang %>/audiobook/language" data-panel-link>어학 학습</a></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">고전 문학 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">자기 계발 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">어학 학습 (출시 준비 중...)</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">음악 콘텐츠</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/music/kpop" data-panel-link>K-POP 최신곡</a></li>
-              <li><a href="/<%= lang %>/music/classic" data-panel-link>클래식 명곡</a></li>
-              <li><a href="/<%= lang %>/music/ost" data-panel-link>영화/드라마 OST</a></li>
-              <li><a href="/<%= lang %>/music/indie" data-panel-link>인디 음악</a></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">K-POP 최신곡 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">클래식 명곡 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">영화/드라마 OST (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">인디 음악 (출시 준비 중...)</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">두뇌 게임</span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/braingame/quiz" data-panel-link>상식 퀴즈</a></li>
-              <li><a href="/<%= lang %>/braingame/memory" data-panel-link>기억력 테스트</a></li>
-              <li><a href="/<%= lang %>/braingame/logic" data-panel-link>논리 퍼즐</a></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">상식 퀴즈 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">기억력 테스트 (출시 준비 중...)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">논리 퍼즐 (출시 준비 중...)</span></li>
             </ul>
           </li>
         </ul>
@@ -369,10 +369,8 @@
     // 첫 진입 자동 노출(사용자가 숨기지 않았다면)
     if (localStorage.getItem(KEY) !== '1') show();
   })();
-  </script>
+</script>
   
   
-
-
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
