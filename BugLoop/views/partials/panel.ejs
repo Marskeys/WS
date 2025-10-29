@@ -165,14 +165,15 @@
       }
     }
 
-    /* 💻 데스크탑에서만 좌우 여백 넓히기 (최종 적용) */
+    /* 💻 데스크탑에서 항상 좌우 여백 넓히기 (사이드패널 열림 여부 무관) */
     @media (min-width: 769px) {
-      body.panel-open #mini-lecture {
+      #mini-lecture {
         left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.25) !important;
         right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.25) !important;
       }
     }
 </style>
+
   
 <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
   <div class="panel-card">
