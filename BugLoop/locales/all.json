@@ -41,11 +41,11 @@
     "editor": {
       "editor-title": "BugLoop 편집기",
       "preview-label": "실시간 미리보기",
-      "example-html": "<header>\\n  <h1>나의 첫 번째 웹페이지</h1>\\n  <nav>\\n    <ul>\\n      <li>홈</li>\\n      <li>소개</li>\\n      <li>연락처</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>환영합니다!</h2>\\n    <p>이것은 아주 기초적인 HTML 예시입니다.</p>\\n  </section>\\n\\n  <section>\\n    <h2>내가 좋아하는 것들</h2>\\n    <ul>\\n      <li>고양이</li>\\n      <li>코딩</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 한동선의 블로그</p>\\n</footer>"
+      "example-html": "<header>\\n  <h1>나의 첫 번째 웹페이지</h1>\\n  <nav>\\n    <ul>\\n      <li>홈</li>\\n      <li>소개</li>\\n      <li>연락처</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>환영합니다!</h2>\\n    <p>이것은 아주 기초적인 HTML 예시입니다。</p>\\n  </section>\\n\\n  <section>\\n    <h2>내가 좋아하는 것들</h2>\\n    <ul>\\n      <li>고양이</li>\\n      <li>코딩</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 한동선의 블로그</p>\\n</footer>"
     },
     "panel": {
-      "title": "학습 패널",
-      "body": "메뉴에서 항목을 누르면 이 패널에 해당 튜토리얼이 표시됩니다. 아래의 HTML 에디터에서 직접 실습할 수 있으며, 하단의 리사이저를 드래그해 높이를 조절할 수 있습니다. 위로 끌어 올리면 헤더 아래로 완전히 숨겼다가, 다시 아래로 당겨 꺼낼 수 있습니다.",
+      "title": "전자책 전문 작가 버그루프",
+      "body": "책이라는 것은 영화의 자막과도 같다. 책을 제대로 읽기 위해서는 경험(기억) 혹은 경험에 대한 욕구(상상력), 둘 중 하나는 반드시 필요하다. 전통적인 의미에서의 책은 하나의 방향을 향해 활자를 늘어 놓은 형태로 존재한다. 그러나 전자책은 다르다. 이 특성을 이용하면 책의 맨 첫 장에서 마지막 장까지 단숨에 이동할 수 있으며, 활자 사이에 오디오나 비디오와 같은 다른 차원의 매체를 인용할 수도 있다. 전자책은 단순히 복제와 출판이 용이한 책이 아니다. 그 이상이다! 그 가치를 탐구하는 여정에 대한 기록이 바로 이 블로그이다.",
       "chips": []
     }
   },
@@ -94,8 +94,8 @@
       "example-html": "<header>\\n  <h1>My First Web Page</h1>\\n  <nav>\\n    <ul>\\n      <li>Home</li>\\n      <li>About</li>\\n      <li>Contact</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>Welcome!</h2>\\n    <p>This is a simple HTML example.</p>\\n  </section>\\n\\n  <section>\\n    <h2>Things I Love</h2>\\n    <ul>\\n      <li>Cats</li>\\n      <li>Coding</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 Dongsun Han’s Blog</p>\\n</footer>"
     },
     "panel": {
-      "title": "Study Panel",
-      "body": "When you select a menu item, its tutorial appears here. Below, you can try it directly in the HTML editor. Drag the bottom handle to resize, or push it up to hide the drawer under the header and pull down to reveal it again.",
+      "title": "E-book Author Bug Loop",
+      "body": "A book is like a film subtitle. To properly read a book, one must have either experience (memory) or the desire for experience (imagination). Traditional books exist in a form where the text is laid out in one direction. However, e-books are different. This characteristic allows one to jump from the first page to the last page instantly, and also to cite other media like audio or video between the characters. E-books are not merely books that are easy to copy and publish. They are more than that! This blog is a record of the journey to explore that value.",
       "chips": []
     }
   },
@@ -144,8 +144,8 @@
       "example-html": "<header>\\n  <h1>Ma première page Web</h1>\\n  <nav>\\n    <ul>\\n      <li>Accueil</li>\\n      <li>À propos</li>\\n      <li>Contact</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>Bienvenue !</h2>\\n    <p>Ceci est un exemple simple en HTML.</p>\\n  </section>\\n\\n  <section>\\n    <h2>Ce que j’aime</h2>\\n    <ul>\\n      <li>Les chats</li>\\n      <li>Coder</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 Blog de Dongsun Han</p>\\n</footer>"
     },
     "panel": {
-      "title": "Volet d’apprentissage",
-      "body": "Cliquez sur un élément du menu pour afficher son tutoriel ici. Vous pouvez pratiquer dans l’éditeur HTML ci-dessous. Faites glisser la poignée inférieure pour ajuster la hauteur, ou cachez/affichez le volet en le poussant vers le haut ou vers le bas.",
+      "title": "Auteur d'E-books Bug Loop",
+      "body": "Le livre est comme le sous-titre d'un film. Pour bien le lire, il est essentiel d'avoir soit l'expérience (mémoire), soit le désir d'expérience (imagination). Au sens traditionnel, le livre existe sous une forme où les caractères sont disposés dans une seule direction. Cependant, l'e-book est différent. Cette caractéristique permet de se déplacer instantanément du début à la fin du livre, et d'inclure d'autres médias tels que l'audio ou la vidéo entre les caractères. L'e-book n'est pas seulement un livre facile à copier et à publier. Il est plus que cela ! Ce blog est le récit du voyage visant à explorer cette valeur.",
       "chips": []
     }
   },
@@ -153,6 +153,25 @@
     "meta": {
       "title": "Bug Loop | 电子书专业作家的博客",
       "description": "承载着一位深爱文字媒介的人所拥有的独特思考的博客。"
+    },
+    "tableHeaders": {
+      "number": "编号",
+      "title": "标题",
+      "author": "作者",
+      "category": "分类",
+      "date": "日期",
+      "views": "浏览量"
+    },
+    "tabs": {
+      "allPosts": "所有文章",
+      "searchResults": "搜索结果"
+    },
+    "search": {
+      "resultsFor": "搜索结果: '%s'",
+      "placeholder": "网站开发者的日记"
+    },
+    "ui": {
+      "tocButton": "📑 目录"
     },
     "profile": {
       "profile-title": "作家团队",
@@ -168,12 +187,41 @@
       "profile-name3": "世东善",
       "profile-bio3": "重度视障者，曾在勒芒大学学习物理学，在勒芒美院学习声音设计，后因环境不适而退学。如今专注于开发促进身心健康与可持续幸福的数字工具。",
       "profile-tags3": ["#脉络膜萎缩", "#声音设计", "#物理学", "#视障", "#健康科技"]
+    },
+    "editor": {
+      "editor-title": "在线HTML编辑器",
+      "preview-label": "实时预览",
+      "example-html": "<header>\\n  <h1>我的第一个网页</h1>\\n  <nav>\\n    <ul>\\n      <li>主页</li>\\n      <li>关于</li>\\n      <li>联系</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>欢迎！</h2>\\n    <p>这是一个简单的HTML示例。</p>\\n  </section>\\n\\n  <section>\\n    <h2>我喜欢的事物</h2>\\n    <ul>\\n      <li>猫</li>\\n      <li>编码</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 韩东善的博客</p>\\n</footer>"
+    },
+    "panel": {
+      "title": "电子书专业作家 Bug Loop",
+      "body": "书就像电影的字幕。要正确地阅读一本书，经验（记忆）或对经验的渴望（想象力）二者中必不可少。传统意义上的书以文字沿一个方向排列的形式存在。然而，电子书不同。利用其特性，可以瞬间从书的第一页跳到最后一页，还可以在文字之间引用音频或视频等不同维度的媒体。电子书不仅仅是便于复制和出版的书。它超越了这些！本博客就是探索其价值的旅程记录。",
+      "chips": []
     }
   },
   "ja": {
     "meta": {
       "title": "Bug Loop | 電子書籍専門作家のブログ",
       "description": "「書くこと」という媒体を深く愛する一人の人間のユニークな悩みを綴ったブログ。"
+    },
+    "tableHeaders": {
+      "number": "番号",
+      "title": "タイトル",
+      "author": "著者",
+      "category": "カテゴリ",
+      "date": "日付",
+      "views": "閲覧数"
+    },
+    "tabs": {
+      "allPosts": "全ての記事",
+      "searchResults": "検索結果"
+    },
+    "search": {
+      "resultsFor": "「%s」の検索結果",
+      "placeholder": "サイト開発者の日記"
+    },
+    "ui": {
+      "tocButton": "📑 目次"
     },
     "profile": {
       "profile-title": "作家陣",
@@ -189,6 +237,16 @@
       "profile-name3": "セドンソン",
       "profile-bio3": "重度の視覚障害があり、ルマン大学で物理学を、ルマン美術学院でサウンドデザインを学びましたが、環境に馴染めず中退。現在は心身の健康と持続的な幸福をテーマにアプリやツールを開発しています。",
       "profile-tags3": ["#コロイデレミア", "#サウンドデザイン", "#物理学", "#視覚障害", "#ヘルステック"]
+    },
+    "editor": {
+      "editor-title": "オンラインHTMLエディター",
+      "preview-label": "ライブプレビュー",
+      "example-html": "<header>\\n  <h1>私の最初のウェブページ</h1>\\n  <nav>\\n    <ul>\\n      <li>ホーム</li>\\n      <li>概要</li>\\n      <li>連絡先</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>ようこそ！</h2>\\n    <p>これは非常に基本的なHTMLの例です。</p>\\n  </section>\\n\\n  <section>\\n    <h2>好きなもの</h2>\\n    <ul>\\n      <li>猫</li>\\n      <li>コーディング</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 ハン・ドンソンのブログ</p>\\n</footer>"
+    },
+    "panel": {
+      "title": "電子書籍専門作家 Bug Loop",
+      "body": "本というものは映画の字幕と同じだ。本を正しく読むためには、経験（記憶）あるいは経験に対する欲求（想像力）、そのどちらか一方は必ず必要だ。伝統的な意味での本は、一つの方向に向かって活字を並べた形で存在する。しかし、電子書籍は違う。この特性を利用すれば、本の最初のページから最後のページまで一瞬で移動でき、活字の間にオーディオやビデオのような別の次元の媒体を引用することもできる。電子書籍は単に複製と出版が容易な本ではない。それ以上だ！このブログは、その価値を探求する旅の記録である。",
+      "chips": []
     }
   }
 }
