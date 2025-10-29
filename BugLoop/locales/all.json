@@ -41,212 +41,216 @@
     "editor": {
       "editor-title": "BugLoop 편집기",
       "preview-label": "실시간 미리보기",
-      "example-html": "<header>\\n  <h1>나의 첫 번째 웹페이지</h1>\\n  <nav>\\n    <ul>\\n      <li>홈</li>\\n      <li>소개</li>\\n      <li>연락처</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>환영합니다!</h2>\\n    <p>이것은 아주 기초적인 HTML 예시입니다。</p>\\n  </section>\\n\\n  <section>\\n    <h2>내가 좋아하는 것들</h2>\\n    <ul>\\n      <li>고양이</li>\\n      <li>코딩</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 한동선의 블로그</p>\\n</footer>"
+      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다.</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>
+      <li>코딩</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 한동선의 블로그</p>\n</footer>"
     },
     "panel": {
       "title": "전자책 전문 작가 버그루프",
-      "body": "책이라는 것은 영화의 자막과도 같다. 책을 제대로 읽기 위해서는 경험(기억) 혹은 경험에 대한 욕구(상상력), 둘 중 하나는 반드시 필요하다.\n\n전통적인 의미에서의 책은 하나의 방향을 향해 활자를 늘어 놓은 형태로 존재한다. 그러나 전자책은 다르다. 이 특성을 이용하면 책의 맨 첫 장에서 마지막 장까지 단숨에 이동할 수 있으며, 활자 사이에 오디오나 비디오와 같은 다른 차원의 매체를 인용할 수도 있다.\n\n전자책은 단순히 복제와 출판이 용이한 책이 아니다. 그 이상이다! 그 가치를 탐구하는 여정에 대한 기록이 바로 이 블로그이다.",
+      "body": "책이라는 것은 영화의 자막과도 같다.\n\n책을 제대로 읽기 위해서는 경험(기억) 혹은 경험에 대한 욕구(상상력), 둘 중 하나는 반드시 필요하다. 글자라는 것은 무심한 시선으로 스윽 보자면 그저 이리저리 그어진 선에 불과하다. 그런데 선의 얽힘 사이에서 만들어지는 의미가 진정 실감되기 위해서는 그것과 독자 사이의 관계가 먼저 형성되어 있어야 하는데, 이 역할을 하는 것이 바로 한 개인의 내면이라는 스크린 위에 쏘아진 — 자기 자신만 유일하게 온전한 형태로 볼 수 있는 장면, 즉 기억과 상상력인 것이다.\n\n전통적인 의미에서의 책은 하나의 방향을 향해 활자를 늘어 놓은 형태로 존재한다. 그러나 전자책은 다르다. 전자(Electron)는 전기적인 기운을 내뿜는 알맹이를 지칭하는데, 이 기운에 조그마한 변화만 생겨도 그 전기적 요동은 빛의 속도로 전파가 된다. 이 특성을 이용하면 책의 맨 첫 장에서 마지막 장까지 단숨에 이동할 수 있으며, 활자 사이에 오디오나 비디오와 같은 다른 차원의 매체를 인용할 수도 있다. 이는 모두 글에 대한 경험을 풍부하게 하는 긍정적인 역할을 한다.\n\n전자책은 단순히 복제와 출판이 용이한 책이 아니다. 그 이상이다! 그 가치를 탐구하는 여정에 대한 기록이 바로 이 블로그이다.",
       "chips": []
     }
   },
-  "en": {
-    "meta": {
-      "title": "Bug Loop | Blog of a Professional E-book Author",
-      "description": "A blog containing the unique reflections of a person who deeply cherishes the medium of writing."
-    },
-    "tableHeaders": {
-      "number": "No.",
-      "title": "Title",
-      "author": "Author",
-      "category": "Category",
-      "date": "Date",
-      "views": "Views"
-    },
-    "tabs": {
-      "allPosts": "All Posts",
-      "searchResults": "Search Results"
-    },
-    "search": {
-      "resultsFor": "Search results for '%s'",
-      "placeholder": "Developer’s personal notes"
-    },
-    "ui": {
-      "tocButton": "📑 Table of Contents"
-    },
-    "profile": {
-      "profile-title": "Authors",
-      "profile-job1": "Information and Communications Technology (ICT)",
-      "profile-name1": "Dongsun Han",
-      "profile-bio1": "A lifelong learner majoring in Computer Science and Hacking & Information Security at Hanyang Cyber University. Enjoys writing as a means of genuine, thoughtful communication.",
-      "profile-tags1": ["#WebDevelopment", "#CyberUniversity", "#eBookLover", "#WebDesign"],
-      "profile-job2": "Music and Acoustics",
-      "profile-name2": "Dudongsun",
-      "profile-bio2": "After earning a B.A. in Composition from Hanyang University, he studied Acoustics for two years in the Engineering Science program at Le Mans University (France). Passionate about creating unbounded music and the tools (virtual instruments) that make it possible.",
-      "profile-tags2": ["#ElectronicMusic", "#Acoustics"],
-      "profile-job3": "Cognitive Games and Health",
-      "profile-name3": "Sedongsun",
-      "profile-bio3": "Severely visually impaired, he studied Physics at Le Mans University and Sound Design at Le Mans Beaux-Arts before leaving due to adjustment difficulties. He now focuses on digital health and happiness through brain games and wellness tools.",
-      "profile-tags3": ["#Choroideremia", "#SoundDesign", "#Physics", "#VisualImpairment", "#HealthTech"]
-    },
-    "editor": {
-      "editor-title": "Online HTML Editor",
-      "preview-label": "Live Preview",
-      "example-html": "<header>\\n  <h1>My First Web Page</h1>\\n  <nav>\\n    <ul>\\n      <li>Home</li>\\n      <li>About</li>\\n      <li>Contact</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>Welcome!</h2>\\n    <p>This is a simple HTML example.</p>\\n  </section>\\n\\n  <section>\\n    <h2>Things I Love</h2>\\n    <ul>\\n      <li>Cats</li>\\n      <li>Coding</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 Dongsun Han’s Blog</p>\\n</footer>"
-    },
-    "panel": {
-      "title": "E-book Author Bug Loop",
-      "body": "A book is like a film subtitle. To properly read a book, one must have either experience (memory) or the desire for experience (imagination).\n\nTraditional books exist in a form where the text is laid out in one direction. However, e-books are different. This characteristic allows one to jump from the first page to the last page instantly, and also to cite other media like audio or video between the characters.\n\nE-books are not merely books that are easy to copy and publish. They are more than that! This blog is a record of the journey to explore that value.",
-      "chips": []
-    }
+"en": {
+  "meta": {
+    "title": "Bug Loop | Blog of a Digital Book Writer",
+    "description": "A blog that captures the intimate reflections of a writer who truly loves the medium of writing."
   },
-  "fr": {
-    "meta": {
-      "title": "Bug Loop | Le blog d'un auteur professionnel d'e-books",
-      "description": "Un blog rassemblant les réflexions singulières d'une personne qui aime profondément le médium de l'écriture."
-    },
-    "tableHeaders": {
-      "number": "N°",
-      "title": "Titre",
-      "author": "Auteur",
-      "category": "Catégorie",
-      "date": "Date",
-      "views": "Vues"
-    },
-    "tabs": {
-      "allPosts": "Tous les articles",
-      "searchResults": "Résultats de recherche"
-    },
-    "search": {
-      "resultsFor": "Résultats pour « %s »",
-      "placeholder": "Notes du développeur du site"
-    },
-    "ui": {
-      "tocButton": "📑 Table des matières"
-    },
-    "profile": {
-      "profile-title": "Auteurs",
-      "profile-job1": "Technologies de l'Information et de la Communication (TIC)",
-      "profile-name1": "Dongsun Han",
-      "profile-bio1": "Étudiant adulte à l’Université Cyber Hanyang, spécialisé en informatique et sécurité/hacking. Apprécie une communication sincère et réfléchie à travers l’écriture.",
-      "profile-tags1": ["#DévWeb", "#UnivEnLigne", "#AmourDesLivresNumériques", "#DesignWeb"],
-      "profile-job2": "Musique et Acoustique",
-      "profile-name2": "Dudongsun",
-      "profile-bio2": "Après une licence en composition (Université Hanyang), il a étudié deux ans l’acoustique dans le programme de sciences de l’ingénieur à l’Université du Mans. Il s’intéresse à la musique libre et aux instruments virtuels qui la rendent possible.",
-      "profile-tags2": ["#MusiqueÉlectronique", "#Acoustique"],
-      "profile-job3": "Jeux Cognitifs et Santé",
-      "profile-name3": "Sedongsun",
-      "profile-bio3": "Atteint d’une déficience visuelle sévère, il a étudié la physique et le design sonore au Mans, avant d’interrompre ses études. Il développe désormais des outils numériques liés à la santé, au bien-être et au bonheur durable.",
-      "profile-tags3": ["#Choroïdérémie", "#SoundDesign", "#Physique", "#DéficienceVisuelle", "#HealthTech"]
-    },
-    "editor": {
-      "editor-title": "Éditeur HTML en ligne",
-      "preview-label": "Aperçu en direct",
-      "example-html": "<header>\\n  <h1>Ma première page Web</h1>\\n  <nav>\\n    <ul>\\n      <li>Accueil</li>\\n      <li>À propos</li>\\n      <li>Contact</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>Bienvenue !</h2>\\n    <p>Ceci est un exemple simple en HTML。</p>\\n  </section>\\n\\n  <section>\\n    <h2>Ce que j’aime</h2>\\n    <ul>\\n      <li>Les chats</li>\\n      <li>Coder</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 Blog de Dongsun Han</p>\\n</footer>"
-    },
-    "panel": {
-      "title": "Auteur d'E-books Bug Loop",
-      "body": "Le livre est comme le sous-titre d'un film. Pour bien le lire, il est essentiel d'avoir soit l'expérience (mémoire), soit le désir d'expérience (imagination).\n\nAu sens traditionnel, le livre existe sous une forme où les caractères sont disposés dans une seule direction. Cependant, l'e-book est différent. Cette caractéristique permet de se déplacer instantanément du début à la fin du livre, et d'inclure d'autres médias tels que l'audio ou la vidéo entre les caractères.\n\nL'e-book n'est pas seulement un livre facile à copier et à publier. Il est plus que cela ! Ce blog est le récit du voyage visant à explorer cette valeur.",
-      "chips": []
-    }
+  "tableHeaders": {
+    "number": "No.",
+    "title": "Title",
+    "author": "Author",
+    "category": "Category",
+    "date": "Date",
+    "views": "Views"
   },
-  "zh": {
-    "meta": {
-      "title": "Bug Loop | 电子书专业作家的博客",
-      "description": "承载着一位深爱文字媒介的人所拥有的独特思考的博客。"
-    },
-    "tableHeaders": {
-      "number": "编号",
-      "title": "标题",
-      "author": "作者",
-      "category": "分类",
-      "date": "日期",
-      "views": "浏览量"
-    },
-    "tabs": {
-      "allPosts": "所有文章",
-      "searchResults": "搜索结果"
-    },
-    "search": {
-      "resultsFor": "搜索结果: '%s'",
-      "placeholder": "网站开发者的日记"
-    },
-    "ui": {
-      "tocButton": "📑 目录"
-    },
-    "profile": {
-      "profile-title": "作家团队",
-      "profile-job1": "信息通信技术 (ICT) 负责人",
-      "profile-name1": "韩东善",
-      "profile-bio1": "目前就读于汉阳网络大学，主修计算机科学与黑客安全的成年学生。喜欢通过写作进行真诚而深入的交流。",
-      "profile-tags1": ["#网页开发", "#网络大学", "#电子书爱好者", "#网页设计"],
-      "profile-job2": "音乐与声学负责人",
-      "profile-name2": "杜东善",
-      "profile-bio2": "在汉阳大学获得作曲学士后，于法国勒芒大学工程学声学课程学习两年。专注于无目的的自由音乐与支持其实现的虚拟乐器开发。",
-      "profile-tags2": ["#电子音乐", "#声学"],
-      "profile-job3": "脑力游戏与健康负责人",
-      "profile-name3": "世东善",
-      "profile-bio3": "重度视障者，曾在勒芒大学学习物理学，在勒芒美院学习声音设计，后因环境不适而退学。如今专注于开发促进身心健康与可持续幸福的数字工具。",
-      "profile-tags3": ["#脉络膜萎缩", "#声音设计", "#物理学", "#视障", "#健康科技"]
-    },
-    "editor": {
-      "editor-title": "在线HTML编辑器",
-      "preview-label": "实时预览",
-      "example-html": "<header>\\n  <h1>我的第一个网页</h1>\\n  <nav>\\n    <ul>\\n      <li>主页</li>\\n      <li>关于</li>\\n      <li>联系</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>欢迎！</h2>\\n    <p>这是一个简单的HTML示例。</p>\\n  </section>\\n\\n  <section>\\n    <h2>我喜欢的事物</h2>\\n    <ul>\\n      <li>猫</li>\\n      <li>编码</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 韩东善的博客</p>\\n</footer>"
-    },
-    "panel": {
-      "title": "电子书专业作家 Bug Loop",
-      "body": "书就像电影的字幕。要正确地阅读一本书，经验（记忆）或对经验的渴望（想象力）二者中必不可少。\n\n传统意义上的书以文字沿一个方向排列的形式存在。然而，电子书不同。利用其特性，可以瞬间从书的第一页跳到最后一页，还可以在文字之间引用音频或视频等不同维度的媒体。\n\n电子书不仅仅是便于复制和出版的书。它超越了这些！本博客就是探索其价值的旅程记录。",
-      "chips": []
-    }
+  "tabs": {
+    "allPosts": "All Posts",
+    "searchResults": "Search Results"
   },
-  "ja": {
-    "meta": {
-      "title": "Bug Loop | 電子書籍専門作家のブログ",
-      "description": "「書くこと」という媒体を深く愛する一人の人間のユニークな悩みを綴ったブログ。"
-    },
-    "tableHeaders": {
-      "number": "番号",
-      "title": "タイトル",
-      "author": "著者",
-      "category": "カテゴリ",
-      "date": "日付",
-      "views": "閲覧数"
-    },
-    "tabs": {
-      "allPosts": "全ての記事",
-      "searchResults": "検索結果"
-    },
-    "search": {
-      "resultsFor": "「%s」の検索結果",
-      "placeholder": "サイト開発者の日記"
-    },
-    "ui": {
-      "tocButton": "📑 目次"
-    },
-    "profile": {
-      "profile-title": "作家陣",
-      "profile-job1": "情報通信技術 担当",
-      "profile-name1": "ハン・ドンソン",
-      "profile-bio1": "現在、漢陽サイバー大学でコンピュータ工学とハッキング／情報セキュリティを専攻している社会人学生。文章を通じて真摯で深い交流を楽しんでいます。",
-      "profile-tags1": ["#Web開発", "#サイバー大学", "#電子書籍好き", "#Webデザイン"],
-      "profile-job2": "音楽および音響学 担当",
-      "profile-name2": "ドゥドンソン",
-      "profile-bio2": "漢陽大学で作曲学士を取得後、フランス・ルマン大学で音響学を2年間学びました。目的に縛られない自由な音楽と、それを可能にするツール（バーチャル楽器）の開発に情熱を注いでいます。",
-      "profile-tags2": ["#電子音楽", "#音響学"],
-      "profile-job3": "脳トレおよび健康 担当",
-      "profile-name3": "セドンソン",
-      "profile-bio3": "重度の視覚障害があり、ルマン大学で物理学を、ルマン美術学院でサウンドデザインを学びましたが、環境に馴染めず中退。現在は心身の健康と持続的な幸福をテーマにアプリやツールを開発しています。",
-      "profile-tags3": ["#コロイデレミア", "#サウンドデザイン", "#物理学", "#視覚障害", "#ヘルステック"]
-    },
-    "editor": {
-      "editor-title": "オンラインHTMLエディター",
-      "preview-label": "ライブプレビュー",
-      "example-html": "<header>\\n  <h1>私の最初のウェブページ</h1>\\n  <nav>\\n    <ul>\\n      <li>ホーム</li>\\n      <li>概要</li>\\n      <li>連絡先</li>\\n    </ul>\\n  </nav>\\n</header>\\n\\n<main>\\n  <section>\\n    <h2>ようこそ！</h2>\\n    <p>これは非常に基本的なHTMLの例です。</p>\\n  </section>\\n\\n  <section>\\n    <h2>好きなもの</h2>\\n    <ul>\\n      <li>猫</li>\\n      <li>コーディング</li>\\n    </ul>\\n  </section>\\n</main>\\n\\n<footer>\\n  <p>&copy; 2025 ハン・ドンソンのブログ</p>\\n</footer>"
-    },
-    "panel": {
-      "title": "電子書籍専門作家 Bug Loop",
-      "body": "本というものは映画の字幕と同じだ。本を正しく読むためには、経験（記憶）あるいは経験に対する欲求（想像力）、そのどちらか一方は必ず必要だ。\n\n伝統的な意味での本は、一つの方向に向かって活字を並べた形で存在する。しかし、電子書籍は違う。この特性を利用すれば、本の最初のページから最後のページまで一瞬で移動でき、活字の間にオーディオやビデオのような別の次元の媒体を引用することもできる。\n\n電子書籍は単に複製と出版が容易な本ではない。それ以上だ！このブログは、その価値を探求する旅の記録である。",
-      "chips": []
-    }
+  "search": {
+    "resultsFor": "Search results for '%s'",
+    "placeholder": "Developer’s personal journal"
+  },
+  "ui": {
+    "tocButton": "📑 Table of Contents"
+  },
+  "profile": {
+    "profile-title": "Authors",
+    "profile-job1": "Information and Communications Technology (ICT)",
+    "profile-name1": "Dongsun Han",
+    "profile-bio1": "A lifelong learner majoring in Computer Science and Hacking & Information Security at Hanyang Cyber University. He finds joy in honest, reflective communication through writing.",
+    "profile-tags1": ["#WebDevelopment", "#CyberUniversity", "#DigitalBookLover", "#WebDesign"],
+    "profile-job2": "Music and Acoustics",
+    "profile-name2": "Dudongsun",
+    "profile-bio2": "After earning a B.A. in Composition from Hanyang University, he studied Acoustics for two years at Le Mans University in France. Passionate about creating music that isn’t bound by purpose, and the tools—virtual instruments—that make such freedom possible.",
+    "profile-tags2": ["#ElectronicMusic", "#Acoustics"],
+    "profile-job3": "Cognitive Games and Health",
+    "profile-name3": "Sedongsun",
+    "profile-bio3": "A visually impaired developer who once studied Physics at Le Mans University and Sound Design at Le Mans Beaux-Arts before leaving due to misalignment with the academic atmosphere. Now he dedicates himself to exploring digital wellness, inner stability, and sustainable happiness through technology.",
+    "profile-tags3": ["#Choroideremia", "#SoundDesign", "#Physics", "#VisualImpairment", "#HealthTech"]
+  },
+  "editor": {
+    "editor-title": "BugLoop Editor",
+    "preview-label": "Live Preview",
+    "example-html": "<header>\n  <h1>My First Web Page</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a simple HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Love</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dongsun Han’s Blog</p>\n</footer>"
+  },
+  "panel": {
+    "title": "Bug Loop — The Digital Book Writer",
+    "body": "A book is like subtitles to a movie.\n\nTo truly read a book, one must hold either experience (memory) or the desire for it (imagination). Letters, when glanced at without intent, are merely lines drawn here and there. But for the meaning woven between those lines to come alive, a connection must first form between the text and the reader. That bridge is the inner screen of one’s mind — where scenes are projected that only the self can fully perceive: memory and imagination.\n\nIn its traditional form, a book exists as text flowing in one direction. But an e-book is different. The word 'electron' refers to a tiny entity that emits an electric force — even a subtle fluctuation in it spreads at the speed of light. Through this nature, a reader can leap from the first page to the last in an instant, and weave in media from other dimensions such as sound and motion. These layers deepen and enrich the act of reading.\n\nAn e-book is not merely a book made easy to copy or distribute. It is something far greater — a living medium of light and language. This blog is a record of my journey to explore what that means.",
+    "chips": []
+  }
+}
+,
+ "fr": {
+  "meta": {
+    "title": "Bug Loop | Le blog d’un écrivain du livre numérique",
+    "description": "Un espace qui recueille les réflexions d’un auteur passionné par le médium de l’écriture et la matière même du texte."
+  },
+  "tableHeaders": {
+    "number": "N°",
+    "title": "Titre",
+    "author": "Auteur",
+    "category": "Catégorie",
+    "date": "Date",
+    "views": "Vues"
+  },
+  "tabs": {
+    "allPosts": "Tous les articles",
+    "searchResults": "Résultats de recherche"
+  },
+  "search": {
+    "resultsFor": "Résultats pour « %s »",
+    "placeholder": "Carnet personnel du développeur"
+  },
+  "ui": {
+    "tocButton": "📑 Table des matières"
+  },
+  "profile": {
+    "profile-title": "Auteurs",
+    "profile-job1": "Technologies de l'information et de la communication (TIC)",
+    "profile-name1": "Dongsun Han",
+    "profile-bio1": "Étudiant adulte à l’Université Cyber Hanyang, spécialisé en informatique et en sécurité/hacking. Il recherche dans l’écriture une forme de communication sincère et réfléchie.",
+    "profile-tags1": ["#DévWeb", "#UniversitéEnLigne", "#LivresNumériques", "#DesignWeb"],
+    "profile-job2": "Musique et acoustique",
+    "profile-name2": "Dudongsun",
+    "profile-bio2": "Titulaire d’une licence en composition (Université Hanyang), il a étudié pendant deux ans l’acoustique à l’Université du Mans. Passionné par la musique affranchie de toute finalité et par les instruments virtuels qui la rendent possible.",
+    "profile-tags2": ["#MusiqueÉlectronique", "#Acoustique"],
+    "profile-job3": "Jeux cognitifs et bien-être",
+    "profile-name3": "Sedongsun",
+    "profile-bio3": "Déficient visuel, il a étudié la physique et le design sonore au Mans avant de se consacrer à la création d’outils numériques dédiés à la santé intérieure et au bonheur durable.",
+    "profile-tags3": ["#Choroïdérémie", "#SoundDesign", "#Physique", "#DéficienceVisuelle", "#HealthTech"]
+  },
+  "editor": {
+    "editor-title": "Éditeur BugLoop",
+    "preview-label": "Aperçu en direct",
+    "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un simple exemple en HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j’aime</h2>\n    <ul>\n      <li>Les chats</li>\n      <li>Coder</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dongsun Han</p>\n</footer>"
+  },
+  "panel": {
+    "title": "Bug Loop — L’écrivain du livre numérique",
+    "body": "Un livre est comme les sous-titres d’un film.\n\nPour lire véritablement un livre, il faut posséder soit l’expérience (la mémoire), soit le désir d’en faire l’expérience (l’imagination). Les lettres, vues d’un œil distrait, ne sont que des traits tracés au hasard. Mais pour que le sens né de leur enchevêtrement prenne vie, un lien doit d’abord se former entre le texte et le lecteur. Ce lien, c’est l’écran intérieur où se projettent des scènes que seul soi-même peut percevoir dans leur forme complète : la mémoire et l’imagination.\n\nDans sa forme traditionnelle, le livre s’étend dans une seule direction. Le livre numérique, lui, est différent. L’électron désigne une particule qui émet une énergie électrique ; et la moindre variation de cette énergie se propage à la vitesse de la lumière. Grâce à cette nature, on peut passer instantanément de la première à la dernière page, ou entrelacer les mots d’autres dimensions — sons, images, mouvements. Ces couches multiples enrichissent l’expérience de la lecture.\n\nUn livre numérique n’est pas simplement un livre facile à reproduire ou à publier. C’est bien plus que cela : un médium vivant de lumière et de langage. Ce blog est le journal d’un voyage à la recherche de sa véritable valeur.",
+    "chips": []
+  }
+}
+,
+ "zh": {
+  "meta": {
+    "title": "Bug Loop | 数字书写者的博客",
+    "description": "一个属于深深爱着文字媒介的人的思想空间，记录他在语言与光之间的探索。"
+  },
+  "tableHeaders": {
+    "number": "编号",
+    "title": "标题",
+    "author": "作者",
+    "category": "分类",
+    "date": "日期",
+    "views": "浏览量"
+  },
+  "tabs": {
+    "allPosts": "全部文章",
+    "searchResults": "搜索结果"
+  },
+  "search": {
+    "resultsFor": "关于「%s」的搜索结果",
+    "placeholder": "开发者的个人笔记"
+  },
+  "ui": {
+    "tocButton": "📑 目录"
+  },
+  "profile": {
+    "profile-title": "作者群",
+    "profile-job1": "信息与通信技术 (ICT)",
+    "profile-name1": "韩东善",
+    "profile-bio1": "现就读于汉阳网络大学，主修计算机科学与黑客安全。热爱通过文字进行真诚而深刻的交流。",
+    "profile-tags1": ["#网页开发", "#网络大学", "#电子书爱好者", "#网页设计"],
+    "profile-job2": "音乐与声学",
+    "profile-name2": "杜东善",
+    "profile-bio2": "毕业于汉阳大学作曲系，后在法国勒芒大学工程科学专业学习声学两年。热衷于创作不受目的束缚的自由音乐，以及实现这种自由的虚拟乐器。",
+    "profile-tags2": ["#电子音乐", "#声学"],
+    "profile-job3": "认知游戏与健康",
+    "profile-name3": "世东善",
+    "profile-bio3": "重度视障者，曾在勒芒大学学习物理学，在勒芒美术学院学习声音设计，后因环境不合而退学。如今专注于开发与身心平衡和持久幸福相关的数字工具。",
+    "profile-tags3": ["#脉络膜萎缩", "#声音设计", "#物理学", "#视障", "#健康科技"]
+  },
+  "editor": {
+    "editor-title": "BugLoop 编辑器",
+    "preview-label": "实时预览",
+    "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个简单的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的事物</h2>\n    <ul>\n      <li>猫</li>\n      <li>编程</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 韩东善的博客</p>\n</footer>"
+  },
+  "panel": {
+    "title": "Bug Loop — 数字书写者",
+    "body": "书，就像电影的字幕。\n\n要真正读懂一本书，人必须拥有两样东西之一：经验（记忆），或对经验的渴望（想象）。文字，在漫不经心的目光下，只是几笔线条的交错。然而，唯有当读者与文字之间产生联系，那些线条间编织出的意义才能真正被感知。承担这一角色的，是内心的屏幕——在那上面投射着只属于自己的完整画面：记忆与想象。\n\n传统意义上的书，是沿着单一方向排列的文字。而电子书不同。电子（electron）是一种释放电能的微粒，哪怕最细微的变化，也会以光速传递。借助这一特性，我们可以在瞬间跨越书页，从第一页跃向最后一页，也可以在文字之间穿插声音与影像等多维媒介。这一切，都让阅读成为更丰富的体验。\n\n电子书不只是易于复制与出版的书籍。它是更深层的存在——一个由光与语言组成的活体媒介。本博客，正是我探索其真正价值的旅程记录。",
+    "chips": []
+  }
+}
+,
+  
+"ja": {
+  "meta": {
+    "title": "Bug Loop | デジタルブックライターのブログ",
+    "description": "言葉という媒体を深く愛し、その本質を探求する一人の書き手による思索の記録。"
+  },
+  "tableHeaders": {
+    "number": "番号",
+    "title": "タイトル",
+    "author": "作者",
+    "category": "カテゴリ",
+    "date": "日付",
+    "views": "閲覧数"
+  },
+  "tabs": {
+    "allPosts": "すべての記事",
+    "searchResults": "検索結果"
+  },
+  "search": {
+    "resultsFor": "「%s」の検索結果",
+    "placeholder": "開発者の個人ノート"
+  },
+  "ui": {
+    "tocButton": "📑 目次"
+  },
+  "profile": {
+    "profile-title": "著者",
+    "profile-job1": "情報通信技術（ICT）担当",
+    "profile-name1": "ハン・ドンソン",
+    "profile-bio1": "現在、漢陽サイバー大学でコンピュータ工学とハッキング／情報セキュリティを専攻中。文章を通じて誠実で深い対話を楽しんでいる。",
+    "profile-tags1": ["#Web開発", "#サイバー大学", "#デジタルブック愛好家", "#Webデザイン"],
+    "profile-job2": "音楽・音響学担当",
+    "profile-name2": "ドゥドンソン",
+    "profile-bio2": "漢陽大学で作曲を学んだ後、フランス・ルマン大学で音響学を2年間専攻。目的に縛られない自由な音楽と、それを支える仮想楽器の開発に情熱を注いでいる。",
+    "profile-tags2": ["#電子音楽", "#音響学"],
+    "profile-job3": "脳トレ・健康担当",
+    "profile-name3": "セドンソン",
+    "profile-bio3": "重度の視覚障害を持ち、ルマン大学で物理学、ルマン美術学院でサウンドデザインを学んだ経験を持つ。現在は心身の健康と持続的な幸福をテーマにデジタルツールを開発している。",
+    "profile-tags3": ["#コロイデレミア", "#サウンドデザイン", "#物理学", "#視覚障害", "#ヘルステック"]
+  },
+  "editor": {
+    "editor-title": "BugLoop エディター",
+    "preview-label": "リアルタイムプレビュー",
+    "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>連絡先</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これは基本的な HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 ハン・ドンソンのブログ</p>\n</footer>"
+  },
+  "panel": {
+    "title": "Bug Loop — デジタルブックライター",
+    "body": "本というものは、映画の字幕のようなものだ。\n\n本を真に読むためには、経験（記憶）か、経験への欲求（想像力）のどちらかが必要である。文字とは、無関心な視線で眺めれば、ただ無数の線にすぎない。しかし、その線の絡み合いから生まれる意味を本当に感じ取るためには、まず読者と文字とのあいだに関係が築かれなければならない。その役割を担うのが、内なるスクリーンに映し出されるシーン——自分だけが完全な形で見ることができる記憶と想像の光景である。\n\n伝統的な意味での本は、一方向に並べられた活字の集合である。だが、電子書籍は違う。エレクトロン（電子）とは、電気的な力を放つ粒子のこと。その力がわずかに変化するだけで、その揺らぎは光の速さで広がっていく。この特性によって、読者は一瞬で最初のページから最後のページへと跳び、文字のあいだに音や映像といった異なる次元のメディアを織り交ぜることができる。それらはすべて、読むという体験をより豊かにする。\n\n電子書籍は、単に複製や出版が容易な書物ではない。それはもっと深い存在——光と言葉でできた、生きたメディアなのだ。このブログは、その価値を探し求める旅の記録である。",
+    "chips": []
   }
 }
