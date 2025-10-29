@@ -1,9 +1,11 @@
 <div class="video-panel">
-  <iframe
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&loop=1&playlist=dQw4w9WgXcQ"
-    allow="autoplay; encrypted-media; picture-in-picture"
-    allowfullscreen>
-  </iframe>
+  <div class="video-frame">
+    <iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&loop=1&playlist=dQw4w9WgXcQ&showinfo=0&vq=hd1080"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
 </div>
 
 <style>
@@ -15,10 +17,20 @@
   background: #000;
 }
 
-.video-panel iframe {
+/* 유튜브 플레이어 여백 제거 + 화면 확대 */
+.video-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%) scale(1.3); /* 💥 확대해서 검은 여백 제거 */
+  transform-origin: center center;
+}
+
+.video-frame iframe {
   width: 100%;
   height: 100%;
   border: 0;
-  object-fit: fill; /* ✅ 가로 꽉 채움 (비율 무시) */
 }
 </style>
