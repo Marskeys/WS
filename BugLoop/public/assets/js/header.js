@@ -520,11 +520,11 @@ if (!backdrop) {
   });
 }
 
-// ==== 헤더 메뉴 클릭 시 패널 내용만 AJAX로 교체 (사이드바 유지 버전) ====
+// ==== 헤더 메뉴 클릭 시 패널 내부만 AJAX로 교체 (사이드바 유지 & 작동 확인 버전) ====
 document.addEventListener('click', async (e) => {
   const link = e.target.closest('a[data-panel-link]');
   if (!link) return;
-  if (e.ctrlKey || e.metaKey || e.button === 1) return;
+  if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
   e.preventDefault();
 
   const href = link.getAttribute('href');
@@ -535,29 +535,26 @@ document.addEventListener('click', async (e) => {
     if (!res.ok) throw new Error('패널 로드 실패: ' + res.status);
     const html = await res.text();
 
-    // 새 문서 파싱
+    // 응답 HTML 파싱
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
-    // 새 패널 내부 콘텐츠 찾기
-    const newContent =
-      temp.querySelector('.tab-container') ||
-      temp.querySelector('.panel-content') ||
-      temp.querySelector('#mini-lecture');
+    // 새 패널 내부 구조 찾기
+    const newPanelContent = temp.querySelector('.sidebar-extension-panel');
+    const currentPanelContent = document.querySelector('.sidebar-extension-panel');
 
-    // 현재 패널의 교체 대상 찾기
-    const currentContent =
-      document.querySelector('.tab-container') ||
-      document.querySelector('.panel-content') ||
-      document.querySelector('#mini-lecture');
+    if (newPanelContent && currentPanelContent) {
+      // 🔥 사이드바 유지 + 내부 교체
+      currentPanelContent.replaceWith(newPanelContent);
 
-    if (newContent && currentContent) {
-      currentContent.replaceChildren(...newContent.childNodes);
+      // URL 및 상태 동기화
       history.pushState({}, '', href);
       window.dispatchEvent(new Event('panel:navigated'));
+
+      // 새로 불러온 내부 스크립트 다시 연결
       if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
     } else {
-      // 안전장치: 예상 영역 없을 경우 전체 이동
+      // 백업: 못 찾으면 전체 이동
       location.href = href;
     }
   } catch (err) {
