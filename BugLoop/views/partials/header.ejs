@@ -408,6 +408,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (panel) {
           panel.innerHTML = html;
           panel.scrollTo(0, 0);
+
+            if (typeof initPanelResizer === 'function') initPanelResizer();
+            
         }
       } catch (err) {
         console.error('패널 로드 오류:', err);

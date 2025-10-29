@@ -350,5 +350,38 @@
       bind();
     }
   })();
+
+  function initPanelResizer() {
+  const panel = document.querySelector('#mini-lecture');
+  const resizer = document.querySelector('#panel-resizer');
+  if (!panel || !resizer) return;
+
+  let isResizing = false;
+  let startY, startHeight;
+
+  resizer.onmousedown = e => {
+    isResizing = true;
+    startY = e.clientY;
+    startHeight = parseInt(window.getComputedStyle(panel).height, 10);
+    document.body.style.cursor = 'ns-resize';
+  };
+
+  window.onmousemove = e => {
+    if (!isResizing) return;
+    const dy = e.clientY - startY;
+    panel.style.height = `${startHeight + dy}px`;
+  };
+
+  window.onmouseup = () => {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.cursor = '';
+    }
+  };
+}
+
+document.addEventListener('DOMContentLoaded', initPanelResizer);
+
   </script>
+  
   
