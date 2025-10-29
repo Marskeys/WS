@@ -20,14 +20,14 @@
     /* 컨테이너 */
     #mini-lecture{
       position: fixed;
- top: var(--header-h, 0);
+      top: var(--header-h, 0);
       z-index: 40;
       left:  calc(var(--ide-w) + var(--gut));
       right: var(--gut);
       height: var(--panel-h);
       min-height: 20px;
       display: grid;
- grid-template-rows: minmax(0, 1fr) 20px;
+      grid-template-rows: minmax(0, 1fr) 20px;
       overflow: hidden;
   
       box-shadow:
@@ -41,7 +41,7 @@
     /* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
     body.panel-open #mini-lecture{
       left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
- right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+      right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
     }
   
     @media (max-width: 768px){
@@ -61,6 +61,12 @@
  }
     }
   
+    @media (min-width: 769px) {
+  :root {
+    --panel-w: 200px; /* 데스크탑에서만 절반 */
+  }
+}
+
     /* 패널 내용(자체 스크롤 + 체이닝 차단) */
     #mini-lecture .panel-card{
       background: #fffffff3;
