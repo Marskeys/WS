@@ -2,22 +2,25 @@
 /* 🚀 서브메뉴 간격 및 폰트/정렬 조정을 위한 스타일 */
 .header-menu .submenu li a,
 .header-menu .submenu li span {
-  /* 상하 패딩을 8px로 설정하여 간격을 넓힙니다. 이 값을 조정하여 간격을 변경할 수 있습니다. */
+  /* 상하 패딩을 8px로 설정하여 간격을 넓힙니다.
+ 이 값을 조정하여 간격을 변경할 수 있습니다. */
   padding-top: 8px;
   padding-bottom: 8px;
-  /* 링크나 텍스트가 <li>의 전체 너비를 차지하도록 설정 */
-  display: block; 
-  
-  /* ✨ 새로 추가된 폰트 크기 통일 및 수직 정렬 */
-  font-size: 14px; /* 모든 서브메뉴 항목의 폰트 크기 통일 */
-  vertical-align: middle; /* 텍스트가 위로 쏠리는 현상 방지 */
+ /* 링크나 텍스트가 <li>의 전체 너비를 차지하도록 설정 */
+  display: block;
+ /* ✨ 새로 추가된 폰트 크기 통일 및 수직 정렬 */
+  font-size: 14px;
+ /* 모든 서브메뉴 항목의 폰트 크기 통일 */
+  vertical-align: middle;
+ /* 텍스트가 위로 쏠리는 현상 방지 */
 }
 
 /* 추가: YouTube 로고 수직 중앙 정렬을 위해 main-menu-container에 flex 적용 */
 .header-menu .main-menu-container {
     display: flex;
-    align-items: center; /* 모든 항목을 수직 중앙 정렬 */
-    height: 100%; /* 부모 요소의 높이를 채우도록 설정 */
+ align-items: center; /* 모든 항목을 수직 중앙 정렬 */
+    height: 100%;
+ /* 부모 요소의 높이를 채우도록 설정 */
 }
 </style>
 
@@ -27,10 +30,10 @@
       <div class="left-controls">
         <%
           const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-          const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
+ const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                            pathWithoutLang.startsWith('/post') ||
                            pathWithoutLang.startsWith('/edit');
-        %>
+ %>
         <% if (showLogo) { %>
           <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
         <% } %>
@@ -41,45 +44,59 @@
 
           <a href="https://www.youtube.com" target="_blank" aria-label="YouTube 바로가기">
             <img src="/assets/images/youtube.png" alt="YouTube"
-                 style="height:28px; width:auto; vertical-align:middle; margin-left: 3px; margin-right:3px;">
+         
+         style="height:28px; width:auto; vertical-align:middle; margin-left: 3px; margin-right:3px;">
           </a>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">리뷰</span>
             <ul class="submenu">
               <li><a href="/<%= lang %>/review/book" data-panel-link>북스 팔마 2 프로</a></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (1)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa; cursor: 
+ not-allowed;">콘텐츠 대기 중 (1)</span></li>
               <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (2)</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (3)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (3)</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">오디오북</span>
             <ul class="submenu">
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">귀여운 음향학</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">피아노 치는 프로듀서: 신비한 반주법</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">미완성 고통</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">계산의 온기</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">귀여운 음향학</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">피아노 치는 프로듀서: 신비한 반주법</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">미완성 고통</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">계산의 온기</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">음악 콘텐츠</span>
             <ul class="submenu">
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (1)</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (2)</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (3)</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (4)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (1)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (2)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (3)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (4)</span></li>
             </ul>
           </li>
 
           <li class="menu-item-wrapper">
             <span class="menu-label">두뇌 게임</span>
             <ul class="submenu">
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (1)</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (2)</span></li>
-              <li><span class="disabled-menu" style="color: #aaa; cursor: not-allowed;">콘텐츠 대기 중 (3)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (1)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (2)</span></li>
+              <li><span class="disabled-menu" style="color: #aaa;
+ cursor: not-allowed;">콘텐츠 대기 중 (3)</span></li>
             </ul>
           </li>
         </ul>
@@ -89,33 +106,39 @@
         <div class="language-dropdown">
           <button id="langToggle" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu">
             <%
-              let flagCode = lang;
+              let flagCode 
+ = lang;
               switch(lang) {
                 case 'ko': flagCode = 'kr'; break;
                 case 'en': flagCode = 'gb'; break;
                 case 'zh': flagCode = 'cn'; break;
-                case 'ja': flagCode = 'jp'; break;
+                case 'ja': flagCode = 'jp'; 
+ break;
                 case 'fr': flagCode = 'fr'; break;
                 default: flagCode = 'kr';
               }
             %>
             <span class="fi fi-<%= flagCode %>" aria-hidden="true"></span>
             <i class="fas fa-caret-down" aria-hidden="true"></i>
-          </button>
+  
+         </button>
           <ul id="langMenu" class="lang-menu" role="menu">
             <%
               const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
-            %>
+ %>
             <% supportedLangs.forEach(langCode => { %>
               <li role="none">
                 <a href="/<%= langCode %><%= currentPathWithoutLang %>"
                    class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
                    role="menuitem">
+ 
                   <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
                   <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
                 </a>
-              </li>
-            <% }); %>
+          
+      </li>
+            <% });
+ %>
           </ul>
         </div>
 
@@ -129,7 +152,8 @@
   <aside class="side-panel main-panel-only">
     <div class="sidebar-wrapper">
       <nav class="vscode-sidebar" aria-label="패널 사이드바" role="tablist">
-        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
+        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" 
+ aria-label="패널 열기/닫기">
           <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </a>
 
@@ -140,6 +164,7 @@
           <i class="fas fa-home" aria-hidden="true"></i>
         </a>
 
+ 
         <a href="#" class="sidebar-icon" data-tab="profile" title="프로필" aria-selected="false" role="tab">
           <i class="fas fa-user" aria-hidden="true"></i>
         </a>
@@ -149,7 +174,8 @@
 
         <% if (user) { %>
           <% if (Number(user.is_admin) === 1) { %>
-            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
+   
+          <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
               <i class="fas fa-pen" aria-hidden="true"></i>
             </a>
           <% } %>
@@ -157,7 +183,8 @@
 
         <a href="#" class="sidebar-icon" data-tab="settings" title="설정" aria-selected="false" aria-pressed="false" role="button">
           <i class="fas fa-cog" aria-hidden="true"></i>
-        </a>
+     
+     </a>
       </nav>
 
       <div class="sidebar-extension-panel">
@@ -169,29 +196,34 @@
           <%- include('./profile', { locale }) %>
         </div>
 
-        <% if (typeof posts !== 'undefined') { %>
+        <% 
+ if (typeof posts !== 'undefined') { %>
           <div class="tab-content" data-tab="search" style="display: none;">
             <section class="search-tab">
              
               <div id="sidebar-table-template" data-lang="<%= lang %>">
                 <%- include('table') %>
               </div>
-            </section>
+    
+         </section>
           </div>
         <% } %>
 
         <div class="panel-footer">
           <% if (user) { %>
-            <div class="greeting" style="text-align: center; margin-top: 10px; font-weight: bold;">
+            <div class="greeting" style="text-align: center;
+ margin-top: 10px; font-weight: bold;">
               <%= user.nickname %>님, 안녕하세요!
             </div>
           <% } %>
           <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
             <div class="auth-buttons">
               <% if (user) { %>
-                <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
+     
+               <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
               <% } else { %>
-                <a class="auth-btn signup" onclick="return false;" style="pointer-events: none; opacity: 0.5; cursor: not-allowed;">회원가입</a>
+                <a class="auth-btn signup" onclick="return false;" style="pointer-events: none;
+ opacity: 0.5; cursor: not-allowed;">회원가입</a>
                 <button class="auth-btn login" id="login" type="button">로그인</button>
               <% } %>
             </div>
@@ -199,7 +231,8 @@
 
           <div id="login-form-container" class="login-form-container hidden">
             <form id="login-form" method="POST" action="/login">
-              <input type="text" name="id" placeholder="아이디" required />
+         
+           <input type="text" name="id" placeholder="아이디" required />
               <input type="password" name="password" placeholder="비밀번호" required />
               <button type="submit">로그인</button>
             </form>
@@ -207,7 +240,8 @@
 
           <div class="real-footer">
             <small>© 2025 Bug Loop</small>
-          </div>
+        
+    </div>
         </div>
       </div>
     </div>
@@ -222,7 +256,7 @@
       if (href === path) {
         a.classList.add('active');
         var label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
-        if (label) label.classList.add('active-label');
+ if (label) label.classList.add('active-label');
       }
     });
   })();
@@ -238,7 +272,8 @@
     };
     const isHomePath = (p) => stripLang(p) === '/';
     const setHomeActive = (flag) => {
-      homeEls.forEach(el => {
+      homeEls.forEach(el => 
+ {
         el.classList.toggle('active', flag);
         el.querySelector('i')?.classList.toggle('active', flag);
       });
@@ -254,12 +289,12 @@
     document.addEventListener('click', (e) => {
       const a = e.target.closest('a[data-panel-link]');
       if (!a) return;
-      const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
+    
+    const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
       setHomeActive(isHomePath(pn));
     });
     window.addEventListener('popstate', sync);
-
-    ['pushState','replaceState'].forEach(fn => {
+ ['pushState','replaceState'].forEach(fn => {
       const orig = history[fn];
       history[fn] = function(...args){
         const ret = orig.apply(this, args);
@@ -267,7 +302,7 @@
         return ret;
       };
     });
-    window.addEventListener('panel:navigated', sync);
+ window.addEventListener('panel:navigated', sync);
   })();
 </script>
 
@@ -281,20 +316,18 @@
      * 0) 상수/유틸
      * ───────────────────────────────────────────────────────── */
     const KEY = 'bugloop.hideHardwareHint';
-  
-    const isShown = () =>
+ const isShown = () =>
       bubble.style.display !== 'none' && bubble.getAttribute('aria-hidden') !== 'true';
-  
-    function show(){
+ function show(){
       bubble.style.display = 'inline-flex';
       bubble.setAttribute('aria-hidden', 'false');
-    }
+ }
     function hide(){
       localStorage.setItem(KEY, '1');
       bubble.style.display = 'none';
       bubble.setAttribute('aria-hidden', 'true');
       label?.focus?.();
-    }
+ }
   
     /** ─────────────────────────────────────────────────────────
      * 1) 포털: 조상 overflow/transform 영향 제거
@@ -302,14 +335,14 @@
      * ───────────────────────────────────────────────────────── */
     if (bubble.parentNode !== document.body) {
       bubble.style.position = 'fixed';
-      bubble.style.left = '-9999px';
+ bubble.style.left = '-9999px';
       bubble.style.top  = '-9999px';
       document.body.appendChild(bubble);
     }
   
     // 이벤트 패스스루: 스크롤 막지 않게
     bubble.style.pointerEvents = 'none';
-    const closeBtn = bubble.querySelector('.hint-close');
+ const closeBtn = bubble.querySelector('.hint-close');
     if (closeBtn) closeBtn.style.pointerEvents = 'auto';
   
     /** ─────────────────────────────────────────────────────────
@@ -317,27 +350,27 @@
      * ───────────────────────────────────────────────────────── */
     function placeBubble(){
       const r = label.getBoundingClientRect();
-      bubble.style.left = (Math.round(r.left + 20)) + 'px';
+ bubble.style.left = (Math.round(r.left + 20)) + 'px';
       bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
-      if (!isShown() && localStorage.getItem(KEY) !== '1') show();
+ if (!isShown() && localStorage.getItem(KEY) !== '1') show();
     }
   
     /** ─────────────────────────────────────────────────────────
      * 3) 애니메이션/전환 동안 프레임 추적 (rAF 루프)
      * ───────────────────────────────────────────────────────── */
     let followRAF = 0;
-    function cancelFollow(){
+ function cancelFollow(){
       if (followRAF) cancelAnimationFrame(followRAF), followRAF = 0;
-    }
+ }
     function startFollow(ms = 600){
       const end = performance.now() + ms;
       cancelFollow();
-      const tick = () => {
+ const tick = () => {
         placeBubble();
-        if (performance.now() < end) followRAF = requestAnimationFrame(tick);
+ if (performance.now() < end) followRAF = requestAnimationFrame(tick);
       };
       followRAF = requestAnimationFrame(tick);
-    }
+ }
   
     /** ─────────────────────────────────────────────────────────
      * 4) 트리거들: 즉시/지속 갱신
@@ -345,55 +378,49 @@
     // 초기 배치
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', placeBubble, { once:true });
-    } else {
+ } else {
       placeBubble();
     }
   
     // 스크롤/리사이즈 즉시 반영
     window.addEventListener('scroll', placeBubble, { capture:true, passive:true });
-    window.addEventListener('resize', placeBubble);
+ window.addEventListener('resize', placeBubble);
   
     // 패널 토글 클릭 시점부터 따라붙기
     document.querySelector('.toggle-extension')?.addEventListener('click', () => {
       placeBubble();
       startFollow(800);
     });
-  
-    // 커스텀 내비 이벤트(네 코드 유지)
+ // 커스텀 내비 이벤트(네 코드 유지)
     window.addEventListener('panel:navigated', () => {
       placeBubble();
       startFollow(400);
     });
-  
-    // 레이아웃 크기 변화 감지(헤더/패널/메인 래퍼 등)
+ // 레이아웃 크기 변화 감지(헤더/패널/메인 래퍼 등)
     const ro = new ResizeObserver(() => placeBubble());
-    ['.full-header-container', '.main-panel-only', '.header-top', 'body', 'html']
+ ['.full-header-container', '.main-panel-only', '.header-top', 'body', 'html']
       .forEach(sel => { const el = document.querySelector(sel); if (el) ro.observe(el); });
-  
-    // 트랜지션 시작 프레임부터 rAF 추적 (캡처 단계)
+ // 트랜지션 시작 프레임부터 rAF 추적 (캡처 단계)
     const transTargets = ['.sidebar-extension-panel', '.full-header-container', '.main-panel-only', '.header-top'];
-    document.addEventListener('transitionstart', (e) => {
+ document.addEventListener('transitionstart', (e) => {
       if (transTargets.some(sel => e.target.matches?.(sel))) {
         placeBubble();
         // e.elapsedTime은 start 시점엔 0일 수 있음 → 기본 700ms + 200ms 여유
         startFollow((e.elapsedTime ? e.elapsedTime * 1000 : 500) + 400);
       }
     }, true);
-  
-    /** ─────────────────────────────────────────────────────────
+ /** ─────────────────────────────────────────────────────────
      * 5) 닫기(X) + 전역 ESC
      * ───────────────────────────────────────────────────────── */
     closeBtn?.addEventListener('click', hide);
-  
-    // 버블은 pointer-events:none → 키입력은 document에서 처리
+ // 버블은 pointer-events:none → 키입력은 document에서 처리
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && isShown()) hide();
     }, true);
-  
-    // 첫 진입 자동 노출(사용자가 숨기지 않았다면)
+ // 첫 진입 자동 노출(사용자가 숨기지 않았다면)
     if (localStorage.getItem(KEY) !== '1') show();
   })();
-</script>
+ </script>
   
   <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -406,10 +433,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const html = await res.text();
         const panel = document.querySelector('#mini-lecture');
         if (panel) {
-          panel.innerHTML = html;
+      
+         panel.innerHTML = html;
           panel.scrollTo(0, 0);
 
-            if (typeof initPanelResizer === 'function') initPanelResizer();
+          // 💡 추가된 코드: 패널 로드 후 리사이저 및 스크롤 캡처 재초기화
+          if (typeof window.initPanelResizer === 'function') {
+              window.initPanelResizer();
+          }
+          if (typeof window.bindPanelScrollTrap === 'function') {
+              window.bindPanelScrollTrap();
+          }
             
         }
       } catch (err) {
@@ -418,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-</script>
+ </script>
 
 
 <script src="/assets/js/header.js"></script>
