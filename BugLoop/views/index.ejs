@@ -44,6 +44,7 @@
     }
 
     .app-shell{
+      /* 하단 패딩은 원래대로 복구 (spacer가 공간을 담당) */
       padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
       padding-top: calc(50px + 16px);
       margin-top: 180px;
@@ -56,8 +57,19 @@
     @media (max-width: 640px){
       .app-shell{
         padding-left: 16px;
+        /* 하단 패딩은 원래대로 복구 */
+        padding-bottom: 16px;
         margin-top: 250px;
       }
+    }
+    
+    /* 🔹 투명한 Spacer 스타일 */
+    .spacer {
+      /* 뷰포트 높이의 50%를 빈 공간으로 만듭니다. (스크롤 유도) */
+      height: 50vh; 
+      min-height: 300px; 
+      width: 100%;
+      background: transparent;
     }
 
     .section-title {
@@ -184,7 +196,6 @@
   <div class="app-shell">
     <h1 class="section-title">연재 중인 글</h1>
 
-    <!-- 🔹 캐러셀 -->
     <div class="carousel">
 
       <div class="book-card" data-index="0">
@@ -240,6 +251,9 @@
       </div>
 
     </div>
+    
+    <div class="spacer"></div>
+    
   </div>
 
   <%- include('partials/scripts') %>
