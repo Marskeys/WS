@@ -535,8 +535,8 @@ if (!backdrop) {
 }
 
 // ==== 리사이저 다시 활성화 ====
-const panel = document.querySelector('#mini-lecture');
-const resizer = panel?.querySelector('.panel-resizer');
+const panel   = document.querySelector('#mini-lecture');
+const resizer = document.querySelector('#panel-resizer'); // ✅
 
 if (panel && resizer) {
   let isResizing = false;
