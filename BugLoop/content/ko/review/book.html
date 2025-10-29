@@ -1,6 +1,6 @@
 <div class="video-panel">
   <iframe
-    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&playsinline=1&controls=1&rel=0&loop=1&playlist=dQw4w9WgXcQ"
+    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&loop=1&playlist=dQw4w9WgXcQ"
     title="YouTube video player"
     frameborder="0"
     allow="autoplay; encrypted-media; picture-in-picture"
@@ -13,24 +13,24 @@
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 400px; /* 🧩 패널 높이 0 방지용 */
   overflow: hidden;
   background: #000;
 }
 
-/* 영상 꽉 채우기 */
+/* 유튜브가 패널 안에서 실제로 꽉 차게 */
 .video-panel iframe {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 177.78vh;  /* 16:9 비율 유지 */
   height: 100vh;
-  transform: translate(-50%, -50%) scale(1.25);
+  transform: translate(-50%, -50%) scale(1.25); /* 🎯 여백 없애기 */
   transform-origin: center center;
   border: 0;
-  pointer-events: auto; /* ✅ 마우스 인터랙션 가능 */
 }
 
-/* 가로 비율 우세 시 조정 */
+/* 화면이 넓은 경우(가로 비율 우세)엔 width 기준으로 다시 조정 */
 @media (min-aspect-ratio: 16/9) {
   .video-panel iframe {
     width: 100vw;
