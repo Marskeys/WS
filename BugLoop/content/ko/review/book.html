@@ -10,23 +10,20 @@
 </div>
 
 <style>
-  /* 🎬 패널 안 유튜브 영상 스타일 (가로 꽉 채우기 + 여백 제거 버전) */
+  /* 🎬 패널 안 유튜브 영상 (absolute 없는 버전) */
   .video-wrapper {
-    position: relative;
     width: 100%;
-    padding-bottom: 0;      /* 비율 강제 없음 */
+    background: #000;
     overflow: hidden;
     border-radius: 12px;
-    background: #000;       /* 여백이 생겨도 검은색으로 */
   }
 
   .video-wrapper iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120%;            /* ⬅ 살짝 키워서 여백 완전히 제거 */
-    height: 120%;
-    transform: translate(-50%, -50%);
+    width: 100%;
+    aspect-ratio: 16 / 9; /* ✅ 반응형 비율 유지 */
+    height: auto;
     border: 0;
+    transform: scale(1.25); /* ✅ 약간 확대해서 양옆 여백 제거 */
+    transform-origin: center center;
   }
 </style>
