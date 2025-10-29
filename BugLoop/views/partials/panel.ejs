@@ -7,6 +7,13 @@
       --gut: 2.5vw;      /* 양옆 여백 비율 */
     }
   
+    /* 데스크탑(769px 이상)에서만 패널 너비를 절반(200px)로 */
+@media (min-width: 769px) {
+  :root {
+    --panel-w: 200px;
+  }
+}
+
     @media (max-width: 768px){
       :root {--panel-h-default: 220px; --panel-h: var(--panel-h-default);}
     }
