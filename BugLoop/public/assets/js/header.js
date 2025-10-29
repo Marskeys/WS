@@ -520,11 +520,11 @@ if (!backdrop) {
   });
 }
 
-// ==== 헤더 메뉴의 data-panel-link 클릭 시 패널만 AJAX로 갱신 (겹침 방지 수정 버전) ====
+// ==== 헤더 메뉴 클릭 시 패널 내용만 AJAX로 교체 (사이드바 유지 버전) ====
 document.addEventListener('click', async (e) => {
   const link = e.target.closest('a[data-panel-link]');
   if (!link) return;
-  if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
+  if (e.ctrlKey || e.metaKey || e.button === 1) return;
   e.preventDefault();
 
   const href = link.getAttribute('href');
@@ -539,30 +539,27 @@ document.addEventListener('click', async (e) => {
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
-    // 새 패널 루트 추출
-    const newPanel = temp.querySelector('.main-panel-only, #mini-lecture');
-    if (!newPanel) {
-      location.href = href; // 패널 못 찾으면 전체 이동
-      return;
-    }
+    // 새 패널 내부 콘텐츠 찾기
+    const newContent =
+      temp.querySelector('.tab-container') ||
+      temp.querySelector('.panel-content') ||
+      temp.querySelector('#mini-lecture');
 
-    // 현재 패널 루트 찾기
-    const currentPanel = document.querySelector('.main-panel-only, #mini-lecture');
-    if (!currentPanel) {
+    // 현재 패널의 교체 대상 찾기
+    const currentContent =
+      document.querySelector('.tab-container') ||
+      document.querySelector('.panel-content') ||
+      document.querySelector('#mini-lecture');
+
+    if (newContent && currentContent) {
+      currentContent.replaceChildren(...newContent.childNodes);
+      history.pushState({}, '', href);
+      window.dispatchEvent(new Event('panel:navigated'));
+      if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
+    } else {
+      // 안전장치: 예상 영역 없을 경우 전체 이동
       location.href = href;
-      return;
     }
-
-    // 완전 교체: 부모에 새 패널 노드를 통째로 넣고 기존 삭제
-    const parent = currentPanel.parentNode;
-    parent.replaceChild(newPanel, currentPanel);
-
-    // URL 갱신
-    history.pushState({}, '', href);
-    window.dispatchEvent(new Event('panel:navigated'));
-
-    // 내부 이벤트 다시 연결
-    if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
   } catch (err) {
     console.error('헤더 패널 로드 오류:', err);
     location.href = href;
