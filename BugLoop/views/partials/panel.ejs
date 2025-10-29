@@ -38,6 +38,14 @@
         0  0     0   1px  rgba(0,0,0,.28);
  }
   
+ /* 💻 데스크탑에서만 (#mini-lecture 좌우 여백 넓히기) */
+@media (min-width: 769px) {
+  body.panel-open #mini-lecture {
+    left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.25);
+    right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.25);
+  }
+}
+
     /* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
     body.panel-open #mini-lecture{
       left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
@@ -66,7 +74,6 @@
     --panel-w: 200px; /* 데스크탑에서만 절반 */
   }
 }
-
     /* 패널 내용(자체 스크롤 + 체이닝 차단) */
     #mini-lecture .panel-card{
       background: #fffffff3;
