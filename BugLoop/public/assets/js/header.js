@@ -520,3 +520,35 @@ if (!backdrop) {
   });
 }
 
+// ==== 리사이저 다시 활성화 ====
+const panel = document.querySelector('#mini-lecture');
+const resizer = panel?.querySelector('.panel-resizer');
+
+if (panel && resizer) {
+  let isResizing = false;
+  let startY, startHeight;
+
+  resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startY = e.clientY;
+    startHeight = parseInt(window.getComputedStyle(panel).height, 10);
+    document.body.style.cursor = 'ns-resize';
+    document.body.style.userSelect = 'none';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    const dy = e.clientY - startY;
+    const newHeight = startHeight + dy;
+    panel.style.height = `${Math.max(120, newHeight)}px`;
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+  });
+}
+
