@@ -1,27 +1,352 @@
-<!-- panel.ejs -->
-<div class="video-wrapper">
-  <iframe
-    src="https://www.youtube.com/embed/VIDEO_ID"
-    title="YouTube video"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-  ></iframe>
-</div>
-
 <style>
-  /* 🎬 패널 안 유튜브 영상 스타일 */
-  .video-wrapper {
-    position: relative;
-    width: 100%;        /* 패널 가로폭에 꽉 차게 */
-    max-width: 100%;
-    overflow: hidden;
-    border-radius: 12px; /* 패널 스타일에 맞게 둥글게 (선택사항) */
-  }
-
-  .video-wrapper iframe {
-    display: block;
-    width: 100%;        /* 가로 전체 채움 */
-    height: 400px;      /* 기본 세로 높이 (원하면 자유롭게 변경 가능) */
-  }
-</style>
+    :root { --header-h: 30px;   --panel-h-default: 150px; --panel-h: var(--panel-h-default);}
+  
+    :root{
+      --ide-w: 50px;     /* VSCode 사이드바 폭 */
+      --panel-w: 400px;  /* 확장 패널 폭 */
+      --gut: 2.5vw;      /* 양옆 여백 비율 */
+    }
+  
+    @media (max-width: 768px){
+      :root {--panel-h-default: 220px; --panel-h: var(--panel-h-default);}
+    }
+  
+    /* 컨테이너 */
+    #mini-lecture{
+      position: fixed;
+      top: var(--header-h, 0);
+      z-index: 40;
+      left:  calc(var(--ide-w) + var(--gut));
+      right: var(--gut);
+      height: var(--panel-h);
+      min-height: 20px;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) 20px;
+      overflow: hidden;
+  
+      box-shadow:
+        0 60px 140px -30px rgba(0,0,0,.70),
+        0 30px  70px -20px rgba(0,0,0,.60),
+        0 14px  30px -10px rgba(0,0,0,.50),
+        0  2px   8px  -2px rgba(0,0,0,.45),
+        0  0     0   1px  rgba(0,0,0,.28);
+    }
+  
+    /* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
+    body.panel-open #mini-lecture{
+      left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+      right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+    }
+  
+    @media (max-width: 768px){
+      :root{
+        --ide-w: 0px;
+        --panel-w: 0px;
+      }
+      body, body.panel-open{ padding-left: 0 !important; }
+      #mini-lecture{
+        top: 77px;
+        left: 15px !important;
+        right: 15px !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding-left: 0 !important;
+      }
+    }
+  
+    /* 패널 내용(자체 스크롤 + 체이닝 차단) */
+    #mini-lecture .panel-card{
+      background: #f6f6f6;
+      color: #000000;
+      border: 1px solid #333;
+      border-bottom: 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      padding: 16px;
+      overflow: auto;
+      min-height: 0;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+  
+    #mini-lecture .connector{
+      display: inline-block;
+      margin-bottom: 8px;
+      background: #000;
+      color: #fff;
+      border: 1px solid #333;
+      border-bottom: 0;
+      border-radius: 10px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+  
+    .chip{
+      display: inline-block;
+      margin-top: 8px;
+      margin-right: 6px;
+      background: #1a1a1a;
+      color: #ddd;
+      border: 1px solid #333;
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+  
+    /* 리사이저 (모바일 터치 안전 설정 포함) */
+    #panel-resizer{
+      grid-row: 2;
+      height: 18px;
+      border: 0;
+      cursor: ns-resize;
+      background: #313131;
+      transition: background .15s ease, box-shadow .15s ease;
+      position: relative;
+  
+      /* 터치 제스처/선택 끔 */
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* 손가락 히트영역 살짝 확대 */
+    @media (pointer: coarse){
+      #panel-resizer{ height: 18px; }
+    }
+  
+    #panel-resizer::before{
+      content: "";
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px; height: 4px; border-radius: 999px;
+      background: linear-gradient(90deg, #777, #aaa, #777);
+      opacity: .9;
+    }
+    #panel-resizer::after{
+      content: "";
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px; height: 20px;
+      pointer-events: none;
+      color: #666;
+      opacity: .55;
+      background: radial-gradient(currentColor 1px, transparent 2px) 0 50%/10px 8px repeat-x;
+    }
+    #panel-resizer:hover,
+    #panel-resizer:focus-visible,
+    body.resizing #panel-resizer{
+      background: #181818;
+      box-shadow: inset 0 0 0 1px #444, 0 0 0 2px rgba(255,255,255,.05);
+    }
+    #panel-resizer:hover::before,
+    #panel-resizer:focus-visible::before{
+      transform: translate(-50%, -50%) scaleX(1.08);
+    }
+  
+    @media (max-width: 640px){
+      #mini-lecture{ height: var(--panel-h); min-height: 20px; }
+    }
+  
+    body.resizing{ user-select: none; overflow: hidden; }
+  </style>
+  
+  <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
+    <div class="panel-card">
+     
+      <% if (panelData && panelData.html) { %>
+        <div class="panel-body"><%- panelData.html %></div>
+      <% } else { %>
+        <h3 style="margin:0 0 6px 0"><%= panelData.title %></h3>
+        <p style="margin:0;opacity:.9"><%= panelData.body %></p>
+      <% } %>
+    </div>
+  
+    <div id="panel-resizer"
+         role="separator"
+         aria-orientation="horizontal"
+         aria-label="패널 높이 조절"
+         aria-valuemin="20"   aria-valuemax="800"
+         aria-valuenow="500"
+         tabindex="0"
+         title="드래그하거나 ↑/↓ 키로 높이 조절"></div>
+  </div>
+  
+  <script>
+  /* ===== 패널 리사이저 (Pointer Events 통일) ===== */
+  (function(){
+    const root = document.documentElement;
+    const resizer = document.getElementById('panel-resizer');
+    if(!resizer) return;
+  
+    const MIN = parseInt(resizer.getAttribute('aria-valuemin'), 10) || 20;
+    const MAX = parseInt(resizer.getAttribute('aria-valuemax'), 10) || 800;
+    const STEP = 16, BIG = 64;
+    const VAR = '--panel-h';
+    const KEY = 'miniPanelH_session';
+  
+    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(p);
+  
+    const getDefaultPx = () => {
+      const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
+      return parseInt(v, 10) || 500;
+    };
+  
+    const clamp = v => Math.max(MIN, Math.min(MAX, v|0));
+  
+    const setH = (h, save=false) => {
+      const n = clamp(parseInt(h, 10));
+      root.style.setProperty(VAR, n + 'px');
+      resizer.setAttribute('aria-valuenow', String(n));
+      if (save) sessionStorage.setItem(KEY, n + 'px');
+      window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
+    };
+  
+    (function init(){
+      if (isHomePath(location.pathname)) {
+        sessionStorage.removeItem(KEY);
+        root.style.removeProperty(VAR);
+        resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
+      } else {
+        const saved = sessionStorage.getItem(KEY);
+        if (saved) setH(saved, false);
+        else root.style.removeProperty(VAR);
+      }
+    })();
+  
+    let startY = 0, startH = 0, dragging = false, pid = null;
+  
+    const onPointerDown = (e) => {
+      e.preventDefault();
+      dragging = true;
+      pid = e.pointerId;
+      resizer.setPointerCapture?.(pid);
+      document.body.classList.add('resizing');
+      startY = e.clientY;
+      startH = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+    };
+  
+    const onPointerMove = (e) => {
+      if(!dragging) return;
+      if(pid != null && e.pointerId != null && e.pointerId !== pid) return;
+      const h = startH + (e.clientY - startY);
+      setH(h);
+    };
+  
+    const endDrag = () => {
+      if(!dragging) return;
+      dragging = false;
+      try { resizer.releasePointerCapture?.(pid); } catch {}
+      pid = null;
+      document.body.classList.remove('resizing');
+      const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+      setH(cur, true);
+    };
+  
+    resizer.addEventListener('pointerdown', onPointerDown);
+    resizer.addEventListener('pointermove', onPointerMove);
+    resizer.addEventListener('pointerup', endDrag);
+    resizer.addEventListener('pointercancel', endDrag);
+  
+    /* 키보드 접근성 */
+    resizer.addEventListener('keydown', (e) => {
+      let delta = 0;
+      if (e.key === 'ArrowUp')   delta = -STEP;
+      if (e.key === 'ArrowDown') delta =  STEP;
+      if (e.key === 'PageUp')    delta = -BIG;
+      if (e.key === 'PageDown')  delta =  BIG;
+      if (delta !== 0) {
+        e.preventDefault();
+        const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
+        setH(cur + delta, true);
+      }
+    });
+  })();
+  </script>
+  
+  <script>
+  /* ===== 패널 내부 스크롤 캡처 (리사이징 중에는 비간섭) ===== */
+  (function(){
+    let scroller, panel;
+    let touchY = 0;
+  
+    function ref(){
+      panel   = document.getElementById('mini-lecture');
+      scroller= panel?.querySelector('.panel-card') || null;
+    }
+  
+    function onPanelWheel(e){
+      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
+      if (!panel || !scroller) return;
+      e.preventDefault();
+      e.stopPropagation();
+      scroller.scrollTop  += e.deltaY;
+      scroller.scrollLeft += e.deltaX || 0;
+    }
+  
+    function onPanelTouchStart(e){
+      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
+      if (!panel || !scroller) return;
+      touchY = e.touches[0].clientY;
+    }
+    function onPanelTouchMove(e){
+      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
+      if (!panel || !scroller) return;
+      const y = e.touches[0].clientY;
+      const delta = touchY - y;
+      touchY = y;
+      e.preventDefault();
+      e.stopPropagation();
+      scroller.scrollTop += delta;
+    }
+  
+    function bind(){
+      ref();
+      if (!panel || !scroller) return;
+  
+      panel.addEventListener('wheel', onPanelWheel, { passive:false, capture:true });
+      panel.addEventListener('touchstart', onPanelTouchStart, { passive:true,  capture:true });
+      panel.addEventListener('touchmove',  onPanelTouchMove,  { passive:false, capture:true });
+  
+      /* 내용 교체 감지 → 참조 갱신 */
+      const mo = new MutationObserver(() => {
+        const cur = panel.querySelector('.panel-card');
+        if (cur !== scroller) { unbind(); bind(); }
+      });
+      mo.observe(panel, { childList:true, subtree:true });
+  
+      /* 리사이즈/라우팅 후에도 유지 */
+      const reb = () => { unbind(); bind(); };
+      window.addEventListener('mini-panel-resized', reb);
+      window.addEventListener('resize', reb);
+      const _ps = history.pushState, _rs = history.replaceState;
+      history.pushState    = function(){ const r=_ps.apply(this, arguments); setTimeout(reb,0); return r; };
+      history.replaceState = function(){ const r=_rs.apply(this, arguments); setTimeout(reb,0); return r; };
+      window.addEventListener('popstate', () => setTimeout(reb,0));
+  
+      panel.__trap_cleanup = () => {
+        try{
+          panel.removeEventListener('wheel', onPanelWheel, { capture:true });
+          panel.removeEventListener('touchstart', onPanelTouchStart, { capture:true });
+          panel.removeEventListener('touchmove', onPanelTouchMove, { capture:true });
+          mo.disconnect();
+          window.removeEventListener('mini-panel-resized', reb);
+          window.removeEventListener('resize', reb);
+        }catch(e){}
+      };
+    }
+  
+    function unbind(){
+      if (panel?.__trap_cleanup) panel.__trap_cleanup();
+      panel = scroller = null;
+    }
+  
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bind, { once:true });
+    } else {
+      bind();
+    }
+  })();
+  </script>
+  
