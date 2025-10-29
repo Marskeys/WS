@@ -395,6 +395,28 @@
   })();
 </script>
   
-  
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-panel-link]').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const url = link.getAttribute('href');
+      try {
+        const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+        const html = await res.text();
+        const panel = document.querySelector('#mini-lecture');
+        if (panel) {
+          panel.innerHTML = html;
+          panel.scrollTo(0, 0);
+        }
+      } catch (err) {
+        console.error('패널 로드 오류:', err);
+      }
+    });
+  });
+});
+</script>
+
+
 <script src="/assets/js/header.js"></script>
 <script src="/assets/js/global.js"></script>
