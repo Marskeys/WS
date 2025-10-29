@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Full-Bleed YouTube</title>
+  <style>
+    /* 화면 가득 채우기 (검은 여백 없이, 필요시 살짝 크롭) */
+    html, body { height: 100%; margin: 0; }
+    .video-wrap {
+      position: fixed; inset: 0;
+      background: #000; overflow: hidden;
+      width: 100vw; height: 100vh;
+    }
+    /* 기본: 화면이 세로로 길 때 → 높이를 기준으로 채우고 가로는 오버플로우 */
+    .video-wrap iframe {
+      position: absolute; top: 50%; left: 50%;
+      height: 100vh; width: 177.78vh; /* 16:9 = 1.7778 × height */
+      transform: translate(-50%, -50%);
+      border: 0;
+    }
+    /* 화면이 가로로 넓을 때 → 너비를 기준으로 채우고 세로는 오버플로우 */
+    @media (min-aspect-ratio: 16/9) {
+      .video-wrap iframe {
+        width: 100vw; height: 56.25vw; /* 9/16 = 0.5625 × width */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="video-wrap">
+    <!-- 🔁 임시 영상: VIDEO_ID만 바꾸면 됨 -->
+    <iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&playsinline=1&controls=0&rel=0&loop=1&playlist=dQw4w9WgXcQ"
+      title="YouTube video"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      allowfullscreen>
+    </iframe>
+  </div>
+</body>
+</html>
