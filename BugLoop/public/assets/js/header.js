@@ -520,3 +520,42 @@ if (!backdrop) {
   });
 }
 
+// ==== 헤더 메뉴의 data-panel-link 클릭 시 패널만 AJAX로 갱신 ====
+document.addEventListener('click', async (e) => {
+  const link = e.target.closest('a[data-panel-link]');
+  if (!link) return;
+  if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
+  e.preventDefault();
+
+  const href = link.getAttribute('href');
+  if (!href) return;
+
+  try {
+    const res = await fetch(href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    const html = await res.text();
+
+    // 새 문서에서 패널 부분 추출
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    const newPanel = temp.querySelector('.main-panel-only') || temp.querySelector('#mini-lecture');
+
+    // 현재 패널 영역 교체
+    const currentPanel = document.querySelector('.main-panel-only') || document.querySelector('#mini-lecture');
+    if (newPanel && currentPanel) {
+      currentPanel.innerHTML = newPanel.innerHTML;
+
+      // URL 갱신
+      history.pushState({}, '', href);
+      window.dispatchEvent(new Event('panel:navigated'));
+
+      // 새로 로드된 내부 이벤트 다시 바인딩
+      if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
+    } else {
+      // 패널을 찾지 못하면 전체 이동 (안전 처리)
+      location.href = href;
+    }
+  } catch (err) {
+    console.error('헤더 패널 로드 실패:', err);
+    location.href = href;
+  }
+});
