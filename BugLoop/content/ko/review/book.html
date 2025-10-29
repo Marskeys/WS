@@ -1,7 +1,7 @@
 <!-- panel.ejs -->
 <div class="video-wrapper">
   <iframe
-    src="https://www.youtube.com/embed/ktvTqknDobU"
+    src="https://www.youtube.com/embed/ktvTqknDobU?rel=0&modestbranding=1&playsinline=1"
     title="YouTube Creators Official"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -10,18 +10,23 @@
 </div>
 
 <style>
-  /* 🎬 패널 안 유튜브 영상 스타일 */
+  /* 🎬 패널 안 유튜브 영상 스타일 (가로 꽉 채우기 + 여백 제거 버전) */
   .video-wrapper {
     position: relative;
-    width: 100%;          /* 패널 가로폭에 꽉 차게 */
-    max-width: 100%;
+    width: 100%;
+    padding-bottom: 0;      /* 비율 강제 없음 */
     overflow: hidden;
-    border-radius: 12px;  /* 패널 스타일에 맞게 둥글게 (선택사항) */
+    border-radius: 12px;
+    background: #000;       /* 여백이 생겨도 검은색으로 */
   }
 
   .video-wrapper iframe {
-    display: block;
-    width: 100%;          /* 가로 전체 채움 */
-    height: 400px;        /* 기본 세로 높이 (원하면 자유롭게 변경 가능) */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;            /* ⬅ 살짝 키워서 여백 완전히 제거 */
+    height: 120%;
+    transform: translate(-50%, -50%);
+    border: 0;
   }
 </style>
