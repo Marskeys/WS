@@ -535,8 +535,8 @@ if (!backdrop) {
 }
 
 // ==== 리사이저 다시 활성화 ====
-const panel   = document.querySelector('#mini-lecture');
-const resizer = document.querySelector('#panel-resizer'); // ✅
+const panel = document.querySelector('#mini-lecture');
+const resizer = panel?.querySelector('.panel-resizer');
 
 if (panel && resizer) {
   let isResizing = false;
@@ -554,8 +554,7 @@ if (panel && resizer) {
     if (!isResizing) return;
     const dy = e.clientY - startY;
     const newHeight = startHeight + dy;
-  panel.style.setProperty('--panel-h', `${Math.max(120, newHeight)}px`);
-
+    panel.style.height = `${Math.max(120, newHeight)}px`;
   });
 
   window.addEventListener('mouseup', () => {
