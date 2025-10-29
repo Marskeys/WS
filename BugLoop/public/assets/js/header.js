@@ -554,7 +554,8 @@ if (panel && resizer) {
     if (!isResizing) return;
     const dy = e.clientY - startY;
     const newHeight = startHeight + dy;
-    panel.style.height = `${Math.max(120, newHeight)}px`;
+  panel.style.setProperty('--panel-h', `${Math.max(120, newHeight)}px`);
+
   });
 
   window.addEventListener('mouseup', () => {
