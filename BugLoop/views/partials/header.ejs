@@ -29,7 +29,8 @@
     <div class="top-controls">
       <div class="left-controls">
         <%
-          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+          // 📌 변경 사항: 정규식에 'es' 추가
+          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
  const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                            pathWithoutLang.startsWith('/post') ||
                            pathWithoutLang.startsWith('/edit');
@@ -115,6 +116,8 @@
                 case 'ja': flagCode = 'jp'; 
  break;
                 case 'fr': flagCode = 'fr'; break;
+                // 📌 변경 사항: 스페인어 플래그 코드 추가
+                case 'es': flagCode = 'es'; break; 
                 default: flagCode = 'kr';
               }
             %>
@@ -124,7 +127,8 @@
          </button>
           <ul id="langMenu" class="lang-menu" role="menu">
             <%
-              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja)/, '');
+              // 📌 변경 사항: 정규식에 'es' 추가
+              const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
  %>
             <% supportedLangs.forEach(langCode => { %>
               <li role="none">
@@ -133,7 +137,18 @@
                    role="menuitem">
  
                   <span class="fi fi-<%= (langCode === 'ko' ? 'kr' : (langCode === 'en' ? 'gb' : (langCode === 'zh' ? 'cn' : (langCode === 'ja' ? 'jp' : langCode)))) %>"></span>
-                  <%= {ko: '한국어', en: 'English', fr: 'Français', zh: '简体中文', ja: '日本語'}[langCode] %>
+                  <% 
+                    const langNames = {
+                      ko: '한국어', 
+                      en: 'English', 
+                      fr: 'Français', 
+                      zh: '简体中文', 
+                      ja: '日本語',
+                      // 📌 변경 사항: 스페인어 메뉴 텍스트 추가
+                      es: 'Español' 
+                    };
+                  %>
+                  <%= langNames[langCode] || langCode %>
                 </a>
           
       </li>
@@ -267,7 +282,8 @@
     const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
     const stripLang = (p) => {
       const path = (p || location.pathname).replace(/[#?].*$/, '');
-      const noLang = path.replace(/^\/(ko|en|fr|zh|ja)(?:\/|$)/, '');
+      // 📌 변경 사항: 정규식에 'es' 추가
+      const noLang = path.replace(/^\/(ko|en|fr|zh|ja|es)(?:\/|$)/, '');
       return noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
     };
     const isHomePath = (p) => stripLang(p) === '/';
@@ -424,6 +440,9 @@
  </script>
   
   <script>
+  // ⚠️ 주의: 이 스크립트는 서버 파일 수정과 관계없이, 언어 목록을 하드코딩된 값에서 가져와 처리합니다.
+  // 서버 파일(`app.js`)에서 `supportedLangs` 배열이 EJS 로컬 변수로 잘 전달되고 있고,
+  // 언어 코드(`es`)는 플래그 이미지 (`fi-es`)가 있는 것으로 가정하고 처리했습니다.
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-panel-link]').forEach(link => {
     link.addEventListener('click', async (e) => {

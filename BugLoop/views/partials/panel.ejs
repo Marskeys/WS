@@ -1,5 +1,5 @@
 <style>
-    :root { --header-h: 30px;   --panel-h-default: 150px;
+    :root { var(--header-h): 30px;   --panel-h-default: 150px;
  --panel-h: var(--panel-h-default);}
   
     :root{
@@ -214,7 +214,8 @@
     const VAR = '--panel-h';
  const KEY = 'miniPanelH_session';
   
-    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(p);
+    // 📌 변경 사항: 정규식에 'es' 추가
+    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja|es)\/?$/.test(p);
  const getDefaultPx = () => {
       const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
  return parseInt(v, 10) || 500;

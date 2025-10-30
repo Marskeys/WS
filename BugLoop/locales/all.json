@@ -248,5 +248,55 @@
       "body": "本というものは、映画の字幕のようなものだ。<br><br>本を真に読むためには、経験（記憶）か、経験への欲求（想像力）のどちらかが必要である。文字とは、無関心な視線で眺めれば、ただ無数の線にすぎない。しかし、その線の絡み合いから生まれる意味を本当に感じ取るためには、まず読者と文字とのあいだに関係が築かれなければならない。その役割を担うのが、内なるスクリーンに映し出されるシーン——自分だけが完全な形で見ることができる記憶と想像の光景である。<br><br>伝統的な意味での本は、一方向に並べられた活字の集合である。だが、電子書籍は違う。エレクトロン（電子）とは、電気的な力を放つ粒子のこと。その力がわずかに変化するだけで、その揺らぎは光の速さで広がっていく。この特性によって、読者は一瞬で最初のページから最後のページへと跳び、文字のあいだに音や映像といった異なる次元のメディアを織り交ぜることができる。それらはすべて、読むという体験をより豊かにする。<br><br>電子書籍は、単に複製や出版が容易な書物ではない。それはもっと深い存在——光と言葉でできた、生きたメディアなのだ。このブログは、その価値を探し求める旅の記録である。",
       "chips": []
     }
+  },
+  "es": {
+    "meta": {
+      "title": "Bug Loop | El blog de un escritor de libros digitales",
+      "description": "Un blog que recoge las singulares reflexiones de un ser humano que ama profundamente el medio de la escritura."
+    },
+    "tableHeaders": {
+      "number": "N.º",
+      "title": "Título",
+      "author": "Autor",
+      "category": "Categoría",
+      "date": "Fecha",
+      "views": "Vistas"
+    },
+    "tabs": {
+      "allPosts": "Todas las publicaciones",
+      "searchResults": "Resultados de la búsqueda"
+    },
+    "search": {
+      "resultsFor": "Resultados de la búsqueda para '%s'",
+      "placeholder": "Diario personal del desarrollador"
+    },
+    "ui": {
+      "tocButton": "📑 Tabla de contenido"
+    },
+    "profile": {
+      "profile-title": "Autores",
+      "profile-job1": "Tecnologías de la Información y Comunicación (TIC)",
+      "profile-name1": "Dongsun Han",
+      "profile-bio1": "Estudiante de edad avanzada en la Universidad Cibernética de Hanyang, especializado en Ingeniería Informática y Seguridad Informática. Disfruta de la comunicación sincera y profunda a través de la escritura.",
+      "profile-tags1": ["#DesarrolloWeb", "#UniversidadCibernética", "#AmantedelLibroDigital", "#DiseñoWeb"],
+      "profile-job2": "Música y Acústica",
+      "profile-name2": "Dudongsun",
+      "profile-bio2": "Licenciado en Composición por la Universidad de Hanyang, estudió Acústica durante dos años en el programa de fundamentos de ingeniería de la Universidad de Le Mans, Francia. Le interesa la música libre de propósitos y el desarrollo de las herramientas (instrumentos virtuales) que la hacen posible.",
+      "profile-tags2": ["#MúsicaElectrónica", "#Acústica"],
+      "profile-job3": "Juegos Cognitivos y Salud",
+      "profile-name3": "Sedongsun",
+      "profile-bio3": "Una persona con discapacidad visual grave que estudió Física en la Universidad de Le Mans y Diseño de Sonido en Le Mans Beaux-Arts, pero abandonó ambos por falta de adaptación. Reflexiona constantemente sobre la salud física y mental y la felicidad sostenible, y desarrolla aplicaciones y herramientas relacionadas.",
+      "profile-tags3": ["#Coroideremia", "#DiseñodeSonido", "#Física", "#DiscapacidadVisual", "#TecnologíaSaludable"]
+    },
+    "editor": {
+      "editor-title": "Editor BugLoop",
+      "preview-label": "Vista previa en tiempo real",
+      "example-html": "<header>\n  <h1>Mi Primera Página Web</h1>\n  <nav>\n    <ul>\n      <li>Inicio</li>\n      <li>Acerca de</li>\n      <li>Contacto</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>¡Bienvenido!</h2>\n    <p>Este es un ejemplo básico de HTML.</p>\n  </section>\n\n  <section>\n    <h2>Cosas que me encantan</h2>\n    <ul>\n      <li>Gatos</li>\n      <li>Programación</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dongsun Han</p>\n</footer>"
+    },
+    "panel": {
+      "title": "Bug Loop — El escritor de libros digitales",
+      "body": "Un libro es como los subtítulos de una película.<br><br>Para leer un libro de verdad, se necesita una de estas dos cosas: experiencia (memoria) o el deseo de tenerla (imaginación). Las letras, vistas con indiferencia, no son más que líneas garabateadas. Sin embargo, para que el significado que se teje entre esas líneas se sienta realmente, primero debe formarse una relación entre el texto y el lector. El papel de este intermediario lo juega la pantalla interior del individuo, donde se proyectan escenas que solo uno mismo puede ver en su forma completa: la memoria y la imaginación.<br><br>El libro en su sentido tradicional existe como caracteres dispuestos en una sola dirección. Pero el libro digital es diferente. El electrón es una partícula que emite energía eléctrica, y hasta el cambio más mínimo en esa energía se propaga a la velocidad de la luz. Esta propiedad permite saltar de la primera a la última página al instante, e incluir medios de otra dimensión, como audio o vídeo, entre los caracteres. Todo esto contribuye positivamente a enriquecer la experiencia de la escritura.<br><br>Un libro digital no es simplemente un libro fácil de copiar y publicar. ¡Es mucho más que eso! Este blog es un registro del viaje de exploración de su valor.",
+      "chips": []
+    }
   }
 }

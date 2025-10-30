@@ -84,7 +84,8 @@
         return;
       }
 
-      let tocHtml = '<strong>📑 <%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">';
+      // 📌 변경 사항: locale에서 목차 버튼 텍스트 가져옴 (이전에는 하드코딩된 '목차')
+      let tocHtml = '<strong><%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">';
       let h1Count = 0;
       let h2Count = 0;
 

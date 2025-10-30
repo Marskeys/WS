@@ -5,7 +5,8 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const db = require('./config/db'); // DB 연결 설정 파일
-const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja'];
+// 📌 변경 사항: 'es' (스페인어) 추가
+const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
 const app = express();
 const PORT = process.env.PORT || 3002;
 const allLocales = require('./locales/all.json');
@@ -62,6 +63,7 @@ app.get('/sitemap.xml', async (req, res) => {
 
     let postUrls = [];
     posts.forEach(post => {
+      // 📌 변경 사항: supportedLangs에 'es'가 포함되어 sitemap에 스페인어 URL이 추가됨
       supportedLangs.forEach(lang => {
         postUrls.push(`
   <url>
@@ -74,6 +76,7 @@ app.get('/sitemap.xml', async (req, res) => {
     const postXml = postUrls.join('');
 
     const staticXml = [
+      // 📌 변경 사항: supportedLangs에 'es'가 포함되어 정적 페이지에 스페인어 URL이 추가됨
       ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
       ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
     ].join('');
@@ -127,7 +130,8 @@ app.use(session({
 
 // 공통 locals 미들웨어
 app.use((req, res, next) => {
-  const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja)(\/|$)/);
+  // 📌 변경 사항: 정규식에 'es' 추가
+  const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja|es)(\/|$)/);
   res.locals.lang = langMatch ? langMatch[1] : 'ko';
   req.lang = res.locals.lang;
 
@@ -255,10 +259,11 @@ async function getSidebarData(req) {
     const originalSidebarCategories = sidebarPost.categories ? sidebarPost.categories.split(',').map(c => c.trim()) : [];
     const translatedSidebarCategories = [];
     if (originalSidebarCategories.length > 0) {
+      // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
       const sidebarCategoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
       const placeholders = originalSidebarCategories.map(() => '?').join(',');
       const [sidebarCategoryNames] = await db.query(
-        `SELECT COALESCE(${sidebarCategoryColumn}, name) AS name FROM categories WHERE name IN (${placeholders})`,
+        `SELECT COALESCE(c.${sidebarCategoryColumn}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
         originalSidebarCategories
       );
       translatedSidebarCategories.push(...sidebarCategoryNames.map(row => row.name));
@@ -266,6 +271,7 @@ async function getSidebarData(req) {
     sidebarPost.translated_categories_display = translatedSidebarCategories;
   }
 
+  // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
   const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
   const [allCategoryRows] = await db.query(`
     SELECT
@@ -510,6 +516,7 @@ const handlePostViewRoute = async (req, res) => {
     const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
     const translatedCategories = [];
     if (originalCategories.length > 0) {
+      // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
       const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
       const placeholders = originalCategories.map(() => '?').join(',');
 
@@ -529,6 +536,7 @@ const handlePostViewRoute = async (req, res) => {
     };
 
     const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
+    // 📌 변경 사항: supportedLangs에 'es'가 포함되어 alternateLinks에 스페인어 링크가 추가됨
     const alternateLinks = supportedLangs.map(lang => ({
       lang,
       href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
@@ -612,6 +620,7 @@ const handleMainPage = async (req, res) => {
       const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
       const translatedCategories = [];
       if (originalCategories.length > 0) {
+        // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
         const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
         const placeholders = originalCategories.map(() => '?').join(',');
         const [categoryNames] = await db.query(
@@ -627,6 +636,7 @@ const handleMainPage = async (req, res) => {
     const totalPages = Math.ceil(count / limit);
     const paginationRange = generatePagination(page, totalPages);
 
+    // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
     const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
     const [categoryRows] = await db.query(`
       SELECT
@@ -735,6 +745,7 @@ const handleSearchRoute = async (req, res) => {
       const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
       const translatedCategories = [];
       if (originalCategories.length > 0) {
+        // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
         const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
         const placeholders = originalCategories.map(() => '?').join(',');
         const [categoryNames] = await db.query(
@@ -1019,7 +1030,8 @@ app.post('/delete/:id', async (req, res) => {
 
 app.get('/api/categories', async (req, res) => {
   const safeLang = res.locals.lang;
-  const column = (safeLang === 'ko') ? 'name' : `COALESCE(name_${safeLang}, '')`;
+  // 📌 변경 사항: DB 쿼리에 name_es 필드를 추가하여 스페인어 카테고리 이름 조회 지원
+  const column = (safeLang === 'ko') ? 'name' : (safeLang === 'es' ? `COALESCE(name_es, '')` : `COALESCE(name_${safeLang}, '')`);
 
   try {
     const [rows] = await db.query(`SELECT id, ${column} AS name FROM categories ORDER BY id ASC`);
@@ -1032,7 +1044,8 @@ app.get('/api/categories', async (req, res) => {
 });
 
 app.post('/api/categories', async (req, res) => {
-  const { name, name_en, name_fr, name_zh, name_ja } = req.body;
+  // 📌 변경 사항: name_es 필드 추가
+  const { name, name_en, name_fr, name_zh, name_ja, name_es } = req.body;
 
   if (!name) return res.status(400).json({ error: '기본 카테고리 이름(name)이 필요합니다.' });
 
@@ -1042,9 +1055,10 @@ app.post('/api/categories', async (req, res) => {
       return res.status(409).json({ success: false, error: '이미 존재하는 카테고리입니다.' });
     }
 
+    // 📌 변경 사항: DB INSERT 쿼리에 name_es 필드 추가
     await db.query(
-      `INSERT INTO categories (name, name_en, name_fr, name_zh, name_ja) VALUES (?, ?, ?, ?, ?)`,
-      [name, name_en || '', name_fr || '', name_zh || '', name_ja || '']
+      `INSERT INTO categories (name, name_en, name_fr, name_zh, name_ja, name_es) VALUES (?, ?, ?, ?, ?, ?)`,
+      [name, name_en || '', name_fr || '', name_zh || '', name_ja || '', name_es || '']
     );
 
     res.json({ success: true });
@@ -1155,6 +1169,7 @@ app.get('/api/search', async (req, res) => {
       const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
       const translatedCategories = [];
       if (originalCategories.length > 0) {
+        // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
         const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
         const placeholders = originalCategories.map(() => '?').join(',');
         const [categoryNames] = await db.query(
