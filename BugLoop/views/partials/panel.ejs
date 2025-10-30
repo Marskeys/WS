@@ -1,5 +1,5 @@
 <style>
-    :root { var(--header-h): 30px;   --panel-h-default: 200px;
+    :root { --header-h: 30px;   --panel-h-default: 150px;
  --panel-h: var(--panel-h-default);}
   
     :root{
@@ -38,7 +38,7 @@
         0  0     0   1px  rgba(0,0,0,.28);
  }
   
- /* 💻 데스크톱에서만 (#mini-lecture 좌우 여백 넓히기) */
+ /* 💻 데스크탑에서만 (#mini-lecture 좌우 여백 넓히기) */
 @media (min-width: 769px) {
   body.panel-open #mini-lecture {
     left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.25);
@@ -76,8 +76,7 @@
       border: 1px solid #333;
       border-bottom: 0;
       box-shadow: 0 10px 30px rgba(0,0,0,.4);
-      /* 📌 변경 사항: 상단 패딩을 30px로 늘림 */
-      padding: 50px 16px 16px 16px;
+      padding: 16px;
       overflow: auto;
       min-height: 0;
  overscroll-behavior: contain;
@@ -86,8 +85,7 @@
   
     #mini-lecture .connector{
       display: inline-block;
-      /* 📌 margin-bottom은 그대로 유지 */
-      margin-bottom: 8px; 
+ margin-bottom: 8px;
       background: #000;
       color: #fff;
       border: 1px solid #333;
@@ -178,7 +176,7 @@
       <% if (panelData && panelData.html) { %>
         <div class="panel-body"><%- panelData.html %></div>
       <% } else { %>
-        <h3 style="margin:0 0 13px 0"><%= panelData.title %></h3>
+        <h3 style="margin:0 0 px 0"><%= panelData.title %></h3>
       <p style="margin:0;opacity:.9"><%- panelData.body %></p>
 
       <% } %>
@@ -216,8 +214,7 @@
     const VAR = '--panel-h';
  const KEY = 'miniPanelH_session';
   
-    // 📌 변경 사항: 정규식에 'es' 추가
-    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja|es)\/?$/.test(p);
+    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(p);
  const getDefaultPx = () => {
       const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
  return parseInt(v, 10) || 500;
