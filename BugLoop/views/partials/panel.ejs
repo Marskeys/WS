@@ -1,6 +1,11 @@
 <style>
-    :root { var(--header-h): 80px;   --panel-h-default: 150px;
- --panel-h: var(--panel-h-default);}
+    :root { 
+        --header-h: 30px; 
+        --panel-h-default: 150px;
+        --panel-h: var(--panel-h-default);
+        /* 📌 추가: 패널 상단 여백 변수 정의 */
+        --panel-top-margin: 50px; 
+    }
   
     :root{
       --ide-w: 50px;
@@ -13,14 +18,19 @@
   
 
     @media (max-width: 768px){
-      :root {--panel-h-default: 220px;
- --panel-h: var(--panel-h-default);}
+      :root {
+        --panel-h-default: 220px;
+        --panel-h: var(--panel-h-default);
+        /* 📌 모바일에서도 여백을 유지 */
+        --panel-top-margin: 15px; /* 모바일에서는 여백을 줄여 15px로 조정 (선택 사항) */
+      }
     }
   
     /* 컨테이너 */
     #mini-lecture{
       position: fixed;
-      top: var(--header-h, 0);
+      /* 📌 변경 사항: 상단 위치를 헤더 높이 + 여백으로 설정 */
+      top: calc(var(--header-h, 0) + var(--panel-top-margin));
       z-index: 40;
       left:  calc(var(--ide-w) + var(--gut));
       right: var(--gut);
@@ -54,14 +64,15 @@
     @media (max-width: 768px){
       :root{
         --ide-w: 0px;
- --panel-w: 0px;
+        --panel-w: 0px;
       }
       body, body.panel-open{ padding-left: 0 !important;
  }
       #mini-lecture{
-        top: 77px;
+        /* 📌 변경 사항: 모바일에서도 헤더 높이(77px) + 여백을 고려하도록 수정 */
+        top: calc(77px + var(--panel-top-margin)); 
         left: 15px !important;
- right: 15px !important;
+        right: 15px !important;
         width: auto !important;
         margin: 0 !important;
         padding-left: 0 !important;
