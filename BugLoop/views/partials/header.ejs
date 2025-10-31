@@ -169,21 +169,28 @@ html:not(.dark) .theme-toggle-btn {
     position: fixed;
     bottom: 0;
     left: 0;
-    z-index: 100; /* 상단 헤더보다 낮아야 할 수도 있음 */
+    z-index: 100; 
     height: 60px; /* 탭 바 높이 설정 */
     padding: 0;
     border-top: 1px solid var(--vscode-sideBar-border, #444); /* 탭 바 상단 구분선 */
     background: var(--vscode-sideBar-background, #333); /* 탭 바 배경색 */
   }
   
-  /* 2. 기존 사이드바 전용 요소들 숨기거나 조정 */
-  .vscode-sidebar .toggle-extension,
+  /* 2. 기존 사이드바 전용 요소들 조정 */
+  /* 토글 버튼과 로고를 숨기지 않고, 상단 헤더에 숨겨진 채로 둡니다. */
+  /* 단, .logo는 모바일 탭 바에 맞게 숨김 처리 */
   .vscode-sidebar .logo {
     display: none !important; /* 모바일 하단 탭 바에서는 이 요소들을 숨김 */
   }
-
+  
+  /* 사이드바 토글 버튼: 하단 탭 바에서는 숨김 처리 (상단 헤더에 따로 토글 버튼이 있어야 함) */
+  /* 현재 코드에서 토글 버튼은 사이드바 안에 있지만, 모바일 탭 바에 넣지 않기 위해 다시 숨김 처리합니다. */
+  .vscode-sidebar .toggle-extension {
+    display: none !important;
+  }
+  
   /* 3. 모든 탭 버튼을 균등하게 배열 */
-  /* 일반 탭 버튼 (.sidebar-icon) */
+  /* 일반 탭 버튼 (.sidebar-icon): 토글 버튼과 로고를 제외한 나머지 탭 버튼 */
   .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
     flex-grow: 1; /* 가로 공간 균등 분배 */
     flex-basis: 0;
@@ -198,21 +205,20 @@ html:not(.dark) .theme-toggle-btn {
   
   /* 4. 언어/테마 영역을 탭처럼 통합 */
   .sidebar-lang-theme {
-    flex-direction: row; /* 이미 row지만 명시 */
+    flex-direction: row;
     flex-grow: 2; /* 두 개의 탭 공간을 차지하도록 설정 (언어 + 테마) */
     flex-basis: 0;
     height: 100%;
-    margin: 0; /* margin-top: auto 제거 */
+    margin: 0; 
     padding: 0;
-    /* 언어/테마 영역 내에서 균등 분할 */
     display: flex; 
-    border-top: none; /* 상단 구분선 제거 */
+    border-top: none;
   }
 
   /* 언어 드롭다운과 테마 토글 버튼을 탭 내부의 하위 탭처럼 균등 분할 */
   .sidebar-lang-theme .language-dropdown,
   .sidebar-lang-theme .theme-toggle-btn {
-    flex-grow: 1; /* 언어/테마 영역 내에서 균등 분할 */
+    flex-grow: 1; 
     flex-basis: 0;
     height: 100%; 
     display: flex;
@@ -674,7 +680,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.removeEventListener('mousedown', onDocDown, { capture:true });
     window.removeEventListener('scroll', closeMenu);
-    window.removeEventListener('resize', closeMenu);
     document.removeEventListener('keydown', onKey);
 
     // 포커스 반환
