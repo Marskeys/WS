@@ -16,7 +16,7 @@
   height: 100%;
 }
 
-/* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 ====== */
+/* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 (다크 모드 기준) ====== */
 .sidebar-lang-theme {
   margin-top: 12px;
   padding: 10px 8px;
@@ -28,9 +28,8 @@
 
 .sidebar-lang-theme .lang-btn {
   background: none;
-  /* 🚫 테두리 제거 */
   border: none;
-  color: var(--ink-1, #fff);
+  color: var(--ink-1, #fff); /* Dark Mode */
   cursor: pointer;
   font-size: 14px;
   display: inline-flex;
@@ -45,20 +44,20 @@
   outline-offset: 2px;
 }
 
-/* 언어 메뉴(기본은 사내부에 렌더되지만, 열릴 때 body로 포털 이동 + fixed 배치) */
+/* 언어 메뉴 (기본: 다크 모드) */
 .lang-menu {
-  position: absolute; /* 초기 위치(닫힌 상태) */
+  position: absolute;
   inset: auto auto auto auto;
   list-style: none;
   margin: 6px 0 0 0;
   padding: 6px 0;
   min-width: 160px;
-  background: var(--panel-1, #181a1f);
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25));
+  background: var(--panel-1, #181a1f); /* Dark Mode */
+  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(0,0,0,0.35);
   display: none;
-  z-index: 2147483646; /* 최최상단 */
+  z-index: 2147483646;
 }
 
 .lang-menu[aria-hidden="false"] {
@@ -74,14 +73,14 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  color: var(--ink-1, #fff);
+  color: var(--ink-1, #fff); /* Dark Mode */
   text-decoration: none;
   font-size: 14px;
 }
 
 .lang-menu a.lang-option:hover,
 .lang-menu a.lang-option:focus {
-  background: var(--panel-2, #22262e);
+  background: var(--panel-2, #22262e); /* Dark Mode */
   outline: none;
 }
 
@@ -89,12 +88,28 @@
   font-weight: 700;
 }
 
+/* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
+html:not(.dark) .lang-menu {
+  background: var(--panel-1, #fff); 
+  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
+}
+
+html:not(.dark) .lang-menu a.lang-option {
+  color: var(--ink-1, #181a1f); 
+}
+
+html:not(.dark) .lang-menu a.lang-option:hover,
+html:not(.dark) .lang-menu a.lang-option:focus {
+  background: var(--panel-2, #f0f0f0); 
+}
+
+
 /* ✅ 새 라이트/다크모드 토글 버튼 스타일 (해/달 아이콘) */
 .theme-toggle-btn {
   background: none;
-  /* 🚫 테두리 제거 */
   border: none;
-  color: var(--ink-1, #fff); /* 기본(다크) 색상 */
+  color: var(--ink-1, #fff); /* Dark Mode 기본 색상 */
   cursor: pointer;
   width: 38px;
   height: 38px;
@@ -103,14 +118,13 @@
   align-items: center;
   border-radius: 10px;
   transition: all 0.2s ease;
-  font-size: 18px; /* 아이콘 크기 */
+  font-size: 18px;
   line-height: 1;
 }
 
-/* 라이트 모드일 때(html[data-theme='light'] 기준) 아이콘 색상 변경 */
-[data-theme="light"] .theme-toggle-btn {
-  color: var(--ink-1, #181a1f); /* 라이트 모드일 때(밝은) 색상 */
-  /* 🚫 테두리 제거 */
+/* 💡 라이트 모드일 때 아이콘 색상 변경 (html:not(.dark) 사용) */
+html:not(.dark) .theme-toggle-btn {
+  color: var(--ink-1, #181a1f); /* Light Mode 색상 */
   border: none;
 }
 
@@ -121,7 +135,7 @@
 
 /* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
 .lang-menu.lang-menu--portal {
-  position: fixed; /* 뷰포트 기준! */
+  position: fixed;
   z-index: 2147483646;
 }
 
@@ -131,7 +145,6 @@
   outline-offset: -2px;
 }
 </style>
-
 <div class="full-header-container" style="z-index:20000;">
   <div class="header-top">
     <div class="top-controls">
@@ -244,7 +257,7 @@
                 }
               %>
               <span class="fi fi-<%= flagCode %>"></span>
-              </button>
+            </button>
 
             <ul id="langMenuSidebar" class="lang-menu" role="menu" aria-hidden="true">
               <%
@@ -464,20 +477,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
 /* ======================================================
-   ⚙️ 언어 드롭다운(포털) + ✅ 새 테마 토글(해/달) 스크립트
+   ⚙️ 언어 드롭다운(포털) + ✅ 새 테마 토글(.dark 클래스 방식) 스크립트
 ====================================================== */
 (function(){
   const langBtn = document.getElementById('langToggleSidebar');
   const langMenu = document.getElementById('langMenuSidebar');
-  const themeToggleBtn = document.getElementById('theme-toggle-sidebar'); // ✅ 새 버튼
+  const themeToggleBtn = document.getElementById('theme-toggle-sidebar');
 
   const THEME_KEY = 'bugloop.theme';
   const htmlEl = document.documentElement;
 
-  /* ------------------- ✅ 새 테마 로직 ------------------- */
+  /* ------------------- ✅ 새 테마 로직 (.dark 클래스 적용) ------------------- */
   const updateTheme = (theme) => {
     const isDark = theme === 'dark';
-    htmlEl.setAttribute('data-theme', theme);
+    
+    // 💡 data-theme 대신 클래스 .dark를 토글
+    // htmlEl.removeAttribute('data-theme'); // data-theme 속성 사용하지 않으므로 제거
+    htmlEl.classList.toggle('dark', isDark);
+
     localStorage.setItem(THEME_KEY, theme);
     // 아이콘 업데이트 (다크 모드면 해, 라이트 모드면 달)
     themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
@@ -487,13 +504,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const initTheme = () => {
     const saved = localStorage.getItem(THEME_KEY);
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // saved가 없으면 OS 설정 따름
     const initialTheme = (saved === 'dark' || (!saved && prefersDark)) ? 'dark' : 'light';
     updateTheme(initialTheme);
   };
 
   const toggleTheme = () => {
-    const currentTheme = htmlEl.getAttribute('data-theme');
-    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    // 현재 dark 클래스가 있으면 'light'로, 없으면 'dark'로 토글
+    const currentIsDark = htmlEl.classList.contains('dark');
+    const nextTheme = currentIsDark ? 'light' : 'dark';
     updateTheme(nextTheme);
   };
 
