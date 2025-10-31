@@ -6,41 +6,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bug Loop</title>
   <style>
+    /* ---------------------------------------------------- */
+    /* 💡 라이트 모드 (html:not(.dark) / 기본값) */
+    /* ---------------------------------------------------- */
     :root{
       --chrome-gap:50px;
       --panel-gap:16px;
       --radius:12px;
-      --border:#2b2b2b;
-      --bg:#1b1b1b;
-      --panel:#121212;
-      --panel-2:#0e0e0e;
-      --ink:#eaeaea;
-      --ink-2:#b7b7b7;
-      --accent:#00f5d4;
+      /* Light Mode Colors */
+      --border:#d9d9d9;
+      --bg:#f3f3f6; /* 배경: 매우 밝은 회색 */
+      --panel:#ffffff; /* 패널: 흰색 */
+      --panel-2:#f0f0ff; /* 보조 패널: 아주 옅은 파랑/회색 */
+      --ink:#1f1f1f; /* 잉크: 거의 검은색 */
+      --ink-2:#5a5a5a; /* 보조 잉크: 회색 */
+      --accent:#3c6df0; /* 강조: 파란색 계열 */
+      --primary:#217ee8; /* 주요 요소: 파란색 */
+      --primary-ink:#ffffff; /* 주요 요소 위 글자색 (대비 확보) */
+    }
+
+    /* ---------------------------------------------------- */
+    /* 🌙 다크 모드 (html.dark) */
+    /* ---------------------------------------------------- */
+    html.dark{
+      /* Dark Mode Colors */
+      --border:#2b2b2b; /* 테두리: 짙은 회색 */
+      --bg:#121212; /* 배경: 매우 어두운 회색 (AMOLED-friendly) */
+      --panel:#1b1b1b; /* 패널: 어두운 회색 */
+      --panel-2:#0e0e0e; /* 보조 패널: 가장 어두운 회색 */
+      --ink:#eaeaea; /* 잉크: 거의 흰색 */
+      --ink-2:#b7b7b7; /* 보조 잉크: 밝은 회색 */
+      --accent:#00f5d4; /* 강조: 청록색 계열 (Dark Mode 대비 강화를 위해 변경) */
       --primary:#217ee8;
-      --primary-ink:#608b42;
+      --primary-ink:#608b42; /* 주요 요소 위 글자색 (예시 유지) */
     }
 
     html, body { height: 100%; }
 
-    html:not(.dark){
-      --border:#d9d9d9;
-      --bg:#000000;
-      --panel:#ffffff;
-      --panel-2:#f3f3f6;
-      --ink:#1f1f1f;
-      --ink-2:#5a5a5a;
-      --accent:#3c6df0;
-      --primary:#217ee8;
-      --primary-ink:#ffffff;
-    }
-
-    body.light, body.dark {
+    /* body의 기본 스타일은 변수를 따르도록 통일 */
+    body {
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: background 0.3s, color 0.3s; /* 색상 전환 애니메이션 추가 */
     }
 
     .app-shell{
@@ -73,12 +83,18 @@
     }
 
     .section-title {
-      color: #fff;
+      /* 📌 변경: var(--ink) 사용 */
+      color: var(--ink); 
       font-size: 1.8rem;
       font-weight: 700;
       margin-bottom: 24px;
       letter-spacing: 0.5px;
     }
+    /* 📌 다크 모드에서 섹션 제목의 대비를 위해 폰트 색상을 강조색으로 설정 (선택 사항) */
+    html.dark .section-title {
+        color: var(--accent);
+    }
+
 
     /* === 🔹 캐러셀 === */
     .carousel {
@@ -96,22 +112,36 @@
     .book-card {
       flex-shrink: 0;
       width: 230px;
+      /* 📌 변경: var(--panel) 사용 */
       background: var(--panel);
+      /* 📌 변경: var(--border) 사용 */
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
+      /* 📌 변경: var(--ink) 사용 */
       color: var(--ink);
       transition: all 0.3s ease;
       scroll-snap-align: start;
       cursor: pointer;
+      /* 📌 그림자 색상도 다크 모드에 맞게 조정될 수 있도록 투명도만 지정 */
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       position: relative;
     }
 
     .book-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      /* 📌 그림자 색상도 다크 모드에 맞게 조정 */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
+    
+    /* 📌 다크 모드에서 그림자 명암 조절 */
+    html.dark .book-card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    html.dark .book-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+    }
+
 
     .book-cover {
       width: 100%;
@@ -123,13 +153,16 @@
     .book-info {
       padding: 14px 10px;
       text-align: center;
+      /* 📌 변경: var(--border) 사용 */
       border-top: 1px solid var(--border);
+      /* 📌 변경: var(--panel-2) 사용 */
       background: var(--panel-2);
     }
 
     .book-title {
       font-weight: 600;
       font-size: 1.05rem;
+      /* 📌 변경: var(--ink) 사용 */
       color: var(--ink);
       line-height: 1.4;
       white-space: normal;
@@ -142,6 +175,7 @@
       display: block;
       width: 40%;
       height: 2px;
+      /* 📌 변경: var(--primary) 사용 */
       background: var(--primary);
       margin: 8px auto 0;
       border-radius: 1px;
@@ -150,9 +184,12 @@
 
     /* 🔹 확장 시 목차 영역 */
     .book-toc {
+      /* 📌 변경: var(--panel-2) 사용 */
       background: var(--panel-2);
+      /* 📌 변경: var(--ink-2) 사용 */
       color: var(--ink-2);
       font-size: 0.9rem;
+      /* 📌 변경: var(--border) 사용 */
       border-top: 1px solid var(--border);
       max-height: 0;
       overflow: hidden;
@@ -169,6 +206,7 @@
 
     .book-toc h4 {
       margin: 0 0 8px 0;
+      /* 📌 변경: var(--primary) 사용 */
       color: var(--primary);
       font-size: 0.95rem;
     }
