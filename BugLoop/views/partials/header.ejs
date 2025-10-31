@@ -28,7 +28,8 @@
 
 .sidebar-lang-theme .lang-btn {
   background: none;
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25));
+  /* 🚫 테두리 제거 */
+  border: none;
   color: var(--ink-1, #fff);
   cursor: pointer;
   font-size: 14px;
@@ -88,12 +89,11 @@
   font-weight: 700;
 }
 
-/* 🚫 기존 .light-switch 관련 CSS는 삭제됨 */
-
 /* ✅ 새 라이트/다크모드 토글 버튼 스타일 (해/달 아이콘) */
 .theme-toggle-btn {
   background: none;
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25));
+  /* 🚫 테두리 제거 */
+  border: none;
   color: var(--ink-1, #fff); /* 기본(다크) 색상 */
   cursor: pointer;
   width: 38px;
@@ -110,7 +110,8 @@
 /* 라이트 모드일 때(html[data-theme='light'] 기준) 아이콘 색상 변경 */
 [data-theme="light"] .theme-toggle-btn {
   color: var(--ink-1, #181a1f); /* 라이트 모드일 때(밝은) 색상 */
-  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
+  /* 🚫 테두리 제거 */
+  border: none;
 }
 
 .theme-toggle-btn:focus {
@@ -227,10 +228,6 @@
           <% } %>
         <% } %>
 
-        <a href="#" class="sidebar-icon" data-tab="settings" title="설정" aria-selected="false" aria-pressed="false" role="button">
-          <i class="fas fa-cog" aria-hidden="true"></i>
-        </a>
-
         <div class="sidebar-lang-theme">
           <div class="language-dropdown">
             <button id="langToggleSidebar" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenuSidebar">
@@ -247,8 +244,7 @@
                 }
               %>
               <span class="fi fi-<%= flagCode %>"></span>
-              <i class="fas fa-caret-down" aria-hidden="true"></i>
-            </button>
+              </button>
 
             <ul id="langMenuSidebar" class="lang-menu" role="menu" aria-hidden="true">
               <%
