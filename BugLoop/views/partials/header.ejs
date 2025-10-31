@@ -247,8 +247,8 @@ html:not(.dark) .theme-toggle-btn {
     width: 38px; 
     height: 38px;
     border-radius: 50%; 
-    /* ✅ 오른쪽 마진을 8px로 유지하여 최종 화면 끝 여백을 확보합니다. */
-    margin: 0 **8px** 0 0; 
+    /* ❗ 최종 수정: 마진을 0으로 설정하여 화면 경계에 딱 붙입니다. */
+    margin: **0**; 
     background: var(--vscode-sideBar-background, #333); 
     border: 1px solid var(--vscode-sideBar-border, #444);
   }
