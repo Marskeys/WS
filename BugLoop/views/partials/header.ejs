@@ -168,7 +168,9 @@ html:not(.dark) .theme-toggle-btn {
     display: flex;
     flex-direction: row; /* 모든 요소 가로 배열 */
     width: 100%;
-    /* 나머지 탭 바를 화면 하단에 고정하고 싶다면: */
+    /* ✅ 수정: 가로 스크롤 가능하게 설정 */
+    overflow-x: auto; 
+    
     position: fixed;
     bottom: 0;
     left: 0;
@@ -178,17 +180,29 @@ html:not(.dark) .theme-toggle-btn {
     border-top: 1px solid var(--vscode-sideBar-border, #444); /* 탭 바 상단 구분선 */
     background: var(--vscode-sideBar-background, #333); /* 탭 바 배경색 */
   }
+
+  /* ✅ 수정: 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
+  .vscode-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  /* IE, Edge, Firefox의 스크롤 바 숨김 처리 */
+  .vscode-sidebar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
   
   /* 2. 기존 사이드바 전용 요소들 조정 */
   .vscode-sidebar .logo {
     display: none !important; /* 모바일 하단 탭 바에서는 이 요소들을 숨김 */
   }
   
-  /* ✅ 수정: 사이드바 토글 버튼을 다시 보이게 하고, 탭 버튼처럼 균등 분할 */
+  /* ✅ 수정: 사이드바 토글 버튼 (가로 스크롤에 포함, 축소 방지, 최소 너비) */
   .vscode-sidebar .toggle-extension {
-    display: flex !important; /* 다시 보이게 처리 */
-    flex-grow: 1; /* 가로 공간 균등 분배에 참여 */
+    display: flex !important; 
+    flex-grow: 1; 
     flex-basis: 0;
+    flex-shrink: 0; /* 축소 방지 */
+    min-width: 60px; /* 최소 너비 지정 */
     height: 100%;
     width: auto;
     justify-content: center;
@@ -198,10 +212,12 @@ html:not(.dark) .theme-toggle-btn {
   }
   
   /* 3. 모든 탭 버튼을 균등하게 배열 */
-  /* 일반 탭 버튼 (.sidebar-icon): 로고와 토글 버튼을 제외한 나머지 탭 버튼 */
+  /* 일반 탭 버튼 (.sidebar-icon) */
   .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
     flex-grow: 1; /* 가로 공간 균등 분배 */
     flex-basis: 0;
+    flex-shrink: 0; /* 축소 방지 */
+    min-width: 60px; /* 최소 너비 지정 */
     height: 100%;
     width: auto;
     display: flex;
@@ -216,13 +232,15 @@ html:not(.dark) .theme-toggle-btn {
     flex-direction: row;
     flex-grow: 2; /* 두 개의 탭 공간을 차지하도록 설정 (언어 + 테마) */
     flex-basis: 0;
+    flex-shrink: 0; /* 축소 방지 */
+    min-width: 120px; /* 최소 너비 지정 (60px * 2) */
     height: 100%;
     margin: 0; 
     padding: 0;
     display: flex; 
     border-top: none;
     align-items: center; 
-    justify-content: center; /* 버튼들을 중앙에 오도록 정렬 */
+    justify-content: center; 
   }
 
   /* 언어 드롭다운을 탭처럼 균등 분할 */
@@ -243,7 +261,6 @@ html:not(.dark) .theme-toggle-btn {
     height: 38px;
     border-radius: 50%; /* 둥근 모양 유지 */
     margin: 0 5px; /* 양쪽에 약간의 마진 추가 */
-    /* 모바일 탭 바에 통합되었으므로, 배경색/경계선은 기본 정의(.theme-toggle-btn)를 따르고, 탭 스타일 오버라이드를 제거 */
     background: var(--vscode-sideBar-background, #333); 
     border: 1px solid var(--vscode-sideBar-border, #444);
   }
@@ -256,7 +273,6 @@ html:not(.dark) .theme-toggle-btn {
     justify-content: center; 
     align-items: center;
     padding: 0; 
-    /* 모바일 탭 바에 통합되었으므로, 배경색/경계선 제거 */
     background: none;
     border: none;
   }
