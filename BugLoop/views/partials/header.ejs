@@ -157,21 +157,27 @@ html:not(.dark) .theme-toggle-btn {
 }
 
 /* ---------------------------------------------------- */
-/* 🆕 모바일 최적화: 언어 드롭다운/테마 토글 가로 배열 (768px 이하) */
+/* 🆕 모바일 최적화: 탭 버튼 정렬 및 언어 드롭다운/테마 토글 가로 배열 (768px 이하) */
 /* ---------------------------------------------------- */
 @media (max-width: 768px) {
-  /* 탭 버튼처럼 가로 배열 및 균등 너비 적용 */
+  /* 탭 버튼 컨테이너: 세로 배열이 기본이 되도록 명시적으로 Flexbox 설정 */
+  .vscode-sidebar {
+    display: flex;
+    flex-direction: column; /* 세로 배열로 강제: 기존 탭 버튼 겹침 현상 해결 */
+    height: 100%; /* 부모의 높이를 차지하도록 설정 */
+  }
+
+  /* 언어/테마 영역: 가로 배열 및 하단에 고정되도록 조정 */
   .sidebar-lang-theme {
     flex-direction: row; /* 가로 배열로 변경 */
     justify-content: space-around; 
     width: 100%;
     align-items: center;
     padding: 0; 
-    margin-top: 0; 
+    margin-top: auto; /* 중요: 상단 탭 버튼이 차지하고 남은 공간을 밀어내고 하단에 붙도록 함 */
     gap: 0;
-    /* 탭 버튼과 유사한 높이를 주기 위해 최소 높이 설정 */
     min-height: 48px; 
-    border-top: 1px solid var(--vscode-sideBar-background, #252526); /* 탭 영역 구분선 (기존 탭 버튼 색상으로) */
+    border-top: 1px solid var(--vscode-sideBar-background, #252526);
   }
 
   /* 언어 드롭다운과 테마 버튼을 탭 버튼처럼 균등 분할 */
