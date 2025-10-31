@@ -1,3 +1,102 @@
+<!-- 🌗 해 ↔ 달 다크모드 토글 -->
+<style>
+/* 공통 색상 전환 */
+:root {
+  --transition-speed: 0.4s;
+}
+html[data-theme="light"], :root:not([data-theme]) {
+  --bg: #fff;
+  --fg: #111;
+}
+html[data-theme="dark"] {
+  --bg: #0d0d0d;
+  --fg: #f1f1f1;
+}
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+/* 해·달 전환 토글 스타일 */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform var(--transition-speed) ease;
+}
+
+.theme-toggle svg {
+  width: 24px;
+  height: 24px;
+  transition: transform var(--transition-speed) ease, fill var(--transition-speed) ease;
+  fill: var(--fg);
+}
+
+/* 다크모드 시 달로 회전 */
+html[data-theme="dark"] .theme-toggle svg {
+  transform: rotate(180deg);
+  fill: var(--fg);
+}
+
+/* 호버 효과 */
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+</style>
+
+<!-- ✅ 교체할 부분 -->
+<div class="light-switch" id="mode-toggle-accessible" role="switch" aria-checked="false" aria-label="다크 모드 전환" tabindex="0">
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+    <!-- ☀️🌙 해/달 SVG -->
+    <svg viewBox="0 0 24 24" class="sun-moon">
+      <mask id="moon-mask">
+        <rect x="0" y="0" width="100%" height="100%" fill="white" />
+        <circle cx="24" cy="10" r="6" fill="black" />
+      </mask>
+      <circle cx="12" cy="12" r="6" class="sun" mask="url(#moon-mask)"/>
+      <g class="rays">
+        <circle cx="12" cy="3" r="1.5" />
+        <circle cx="12" cy="21" r="1.5" />
+        <circle cx="3" cy="12" r="1.5" />
+        <circle cx="21" cy="12" r="1.5" />
+        <circle cx="5" cy="5" r="1.5" />
+        <circle cx="19" cy="5" r="1.5" />
+        <circle cx="5" cy="19" r="1.5" />
+        <circle cx="19" cy="19" r="1.5" />
+      </g>
+    </svg>
+  </button>
+</div>
+
+<script>
+(function() {
+  const toggle = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+
+  // 저장된 테마 불러오기
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    root.setAttribute('data-theme', savedTheme);
+  }
+
+  // 테마 토글 동작
+  toggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    toggle.setAttribute('aria-label', next === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환');
+  });
+})();
+</script>
+
 <style>
 /* 🚀 서브메뉴 간격 및 폰트/정렬 조정을 위한 스타일 */
 .header-menu .submenu li a,
