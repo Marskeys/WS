@@ -212,45 +212,42 @@ html:not(.dark) .theme-toggle-btn {
     border-radius: 0;
   }
 
-  /* 4. ✅ 언어/테마 영역에도 고정 너비 적용 (스크롤을 유도) */
+  /* 4. ✅ 언어/테마 영역 조정: 오른쪽 끝에 정렬 */
   .sidebar-lang-theme {
     flex-direction: row;
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
     flex-grow: 0; 
     flex-shrink: 0; 
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 110px; /* 언어/테마 영역의 고정 너비 설정 */
-    height: 100%;
-    margin: 0; 
+    /* ❗ width: 110px 제거 */
+    /* ❗ justify-content: center; 제거 */
+    /* ✅ margin-left: auto로 오른쪽으로 밀어냅니다. */
+    margin: 0 0 0 **auto**; 
     padding: 0;
+    /* height: 100%; */
     display: flex; 
     border-top: none;
     align-items: center; 
-    justify-content: center; 
-    /* 모바일에서도 간격 줄임 */
     gap: 5px; 
   }
 
   /* 언어 드롭다운의 너비 조정 */
   .sidebar-lang-theme .language-dropdown {
-    flex-grow: 1; /* 이 영역 내에서는 유연하게 */
+    flex-grow: 1; 
     flex-basis: 0;
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 60px; 
+    width: 60px; /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
     height: 100%; 
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
-  /* 다크 모드 버튼은 고정된 크기 유지 */
+  /* 다크 모드 버튼 */
   .sidebar-lang-theme .theme-toggle-btn {
     flex-grow: 0; 
     flex-basis: auto;
     width: 38px; 
     height: 38px;
     border-radius: 50%; 
-    /* ❗ 수정: 오른쪽 마진을 8px로 다시 설정 */
+    /* ✅ 오른쪽 마진을 8px로 유지하여 최종 화면 끝 여백을 확보합니다. */
     margin: 0 **8px** 0 0; 
     background: var(--vscode-sideBar-background, #333); 
     border: 1px solid var(--vscode-sideBar-border, #444);
@@ -270,7 +267,6 @@ html:not(.dark) .theme-toggle-btn {
 
   /* 언어 버튼만 오른쪽 경계선 추가 */
   .sidebar-lang-theme .language-dropdown {
-    /* ✅ 수정: 사이드바 배경색 대신 border 색상으로 변경하여 명확하게 분리 */
     border-right: 1px solid var(--vscode-sideBar-border, #444);
   }
 }
