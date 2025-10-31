@@ -1,21 +1,4 @@
 <style>
-/* CSS 변수 설정 (다크/라이트 모드에 따라 변경) */
-:root {
-  --panel-1: #181a1f; /* 기본 다크 배경 */
-  --panel-2: #22262e; /* 다크 호버 배경 */
-  --ink-1: #fff; /* 기본 다크 텍스트 */
-  --ink-3: rgba(255,255,255,0.25); /* 기본 다크 경계선 */
-  --accent: #6cf; /* 강조 색상 */
-}
-
-/* 라이트 모드 (html:not(.dark)으로 지정) */
-html:not(.dark) {
-  --panel-1: #fff;
-  --panel-2: #f0f0f0;
-  --ink-1: #181a1f;
-  --ink-3: rgba(0,0,0,0.15);
-}
-
 /* ====== 기존 서브메뉴 간격/정렬 ====== */
 .header-menu .submenu li a,
 .header-menu .submenu li span {
@@ -60,7 +43,7 @@ html:not(.dark) {
 .sidebar-lang-theme .lang-btn:focus {
   outline: none;
 }
-/* 접근성 강화를 위해 focus-visible은 유지 */
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
 .sidebar-lang-theme .lang-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
@@ -75,8 +58,8 @@ html:not(.dark) {
   margin: 6px 0 0 0;
   padding: 6px 0;
   min-width: 160px;
-  background: var(--panel-1); /* 다크 모드 */
-  border: 1px solid var(--ink-3); /* 다크 모드 */
+  background: var(--panel-1, #181a1f); /* Dark Mode */
+  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(0,0,0,0.35);
   display: none;
@@ -87,36 +70,44 @@ html:not(.dark) {
   display: block;
 }
 
+.lang-menu li {
+  white-space: nowrap;
+}
+
 .lang-menu a.lang-option {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  color: var(--ink-1); /* 다크 모드 */
+  color: var(--ink-1, #fff); /* Dark Mode */
   text-decoration: none;
   font-size: 14px;
 }
 
 .lang-menu a.lang-option:hover,
 .lang-menu a.lang-option:focus {
-  background: var(--panel-2); /* 다크 모드 */
+  background: var(--panel-2, #22262e); /* Dark Mode */
   outline: none;
+}
+
+.lang-menu a.lang-option.active-lang {
+  font-weight: 700;
 }
 
 /* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
 html:not(.dark) .lang-menu {
-  background: var(--panel-1); 
-  border: 1px solid var(--ink-3);
+  background: var(--panel-1, #fff); 
+  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
   box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
 }
 
 html:not(.dark) .lang-menu a.lang-option {
-  color: var(--ink-1); 
+  color: var(--ink-1, #181a1f); 
 }
 
 html:not(.dark) .lang-menu a.lang-option:hover,
 html:not(.dark) .lang-menu a.lang-option:focus {
-  background: var(--panel-2); 
+  background: var(--panel-2, #f0f0f0); 
 }
 
 
@@ -147,13 +138,13 @@ html:not(.dark) .theme-toggle-btn {
 .theme-toggle-btn:focus {
   outline: none;
 }
-/* 접근성 강화를 위해 focus-visible은 유지 */
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
 .theme-toggle-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
 
-/* 포털 배치용 클래스 */
+/* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
 .lang-menu.lang-menu--portal {
   position: fixed;
   z-index: 2147483646;
@@ -164,79 +155,12 @@ html:not(.dark) .theme-toggle-btn {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: -2px;
 }
-
-/* ====================================================== */
-/* 📱 모바일 레이아웃 수정: 미디어 쿼리 (Max 768px) */
-/* ====================================================== */
-@media (max-width: 768px) {
-  /* 상단 메뉴바 숨김 */
-  .full-header-container .header-top {
-      display: none;
-  }
-
-  /* 1. 사이드바(.vscode-sidebar)를 가로로 정렬 */
-  .side-panel {
-    /* 모바일에서는 사이드 패널의 너비와 위치를 상단 고정 바로 보이도록 설정 */
-    width: 100%; 
-    position: fixed; 
-    top: 0;
-    left: 0;
-    z-index: 19000;
-  }
-  
-  /* 사이드바 래퍼 높이 고정 (상단바처럼 보이게) */
-  .sidebar-wrapper {
-    height: 50px; 
-    overflow: hidden; /* 확장 패널 숨김 */
-  }
-
-  /* 아이콘 컨테이너를 가로 정렬 플렉스 컨테이너로 설정 */
-  .vscode-sidebar {
-    height: 50px;
-    display: flex;
-    flex-direction: row; /* 탭 버튼들을 가로로 나란히 배치 */
-    align-items: center;
-    justify-content: space-around; /* 버튼들을 균등하게 배치 */
-    width: 100%;
-    padding: 0 8px; /* 좌우 패딩만 추가 */
-    overflow-x: auto; 
-  }
-  
-  /* 아이콘의 크기와 간격 조정 */
-  .vscode-sidebar a.sidebar-icon {
-    flex-shrink: 0;
-    width: 40px; 
-    height: 40px; 
-    margin: 5px 0; 
-    line-height: 40px;
-  }
-  
-  /* 로고, 토글 버튼, 언어/테마 영역 숨김 */
-  .vscode-sidebar a.logo,
-  .vscode-sidebar .toggle-extension,
-  .sidebar-lang-theme {
-    display: none; 
-  }
-
-  /* 나머지 확장 패널 부분은 모바일에서 숨김 처리 */
-  .sidebar-extension-panel {
-    display: none;
-  }
-}
 </style>
-
 <div class="full-header-container" style="z-index:20000;">
   <div class="header-top">
     <div class="top-controls">
       <div class="left-controls">
         <%
-          // EJS 변수가 상위 템플릿에서 전달된다고 가정합니다.
-          // 여기서 다시 선언하면 Cannot access 'lang' before initialization 에러가 납니다. 
-          // 하지만 EJS 환경이 아니면 undefined 에러가 나므로, 안전하게 사용하기 위해 
-          // `typeof`로 체크하거나 상위 EJS 파일에서 변수를 반드시 정의해야 합니다.
-          
-          // EJS가 실행되는 환경에서 `lang` 변수가 정의되어 있다고 가정합니다.
-
           const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
           const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                            pathWithoutLang.startsWith('/post') ||
@@ -263,8 +187,36 @@ html:not(.dark) .theme-toggle-btn {
               <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (3)</span></li>
             </ul>
           </li>
-          
-          </ul>
+
+          <li class="menu-item-wrapper">
+            <span class="menu-label">오디오북</span>
+            <ul class="submenu">
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">귀여운 음향학</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">피아노 치는 프로듀서: 신비한 반주법</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">미완성 고통</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">계산의 온기</span></li>
+            </ul>
+          </li>
+
+          <li class="menu-item-wrapper">
+            <span class="menu-label">음악 콘텐츠</span>
+            <ul class="submenu">
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (3)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (4)</span></li>
+            </ul>
+          </li>
+
+          <li class="menu-item-wrapper">
+            <span class="menu-label">두뇌 게임</span>
+            <ul class="submenu">
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (3)</span></li>
+            </ul>
+          </li>
+        </ul>
       </nav>
 
       <div class="right-controls" id="right-controls" hidden></div>
@@ -396,9 +348,148 @@ html:not(.dark) .theme-toggle-btn {
 </div>
 
 <script>
+/* ====== 서브메뉴 활성화 동기 ====== */
+(function(){
+  var path = location.pathname.replace(/\/$/, '');
+  document.querySelectorAll('.submenu a').forEach(function(a){
+    var href = (a.getAttribute('href') || '').replace(/\/$/, '');
+    if (href === path) {
+      a.classList.add('active');
+      var label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
+      if (label) label.classList.add('active-label');
+    }
+  });
+})();
+</script>
+
+<script>
+/* ====== 홈 아이콘 active 동기 ====== */
+(() => {
+  const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
+  const stripLang = (p) => {
+    const path = (p || location.pathname).replace(/[#?].*$/, '');
+    const noLang = path.replace(/^\/(ko|en|fr|zh|ja|es)(?:\/|$)/, '');
+    return noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
+  };
+  const isHomePath = (p) => stripLang(p) === '/';
+  const setHomeActive = (flag) => {
+    homeEls.forEach(el => {
+      el.classList.toggle('active', flag);
+      el.querySelector('i')?.classList.toggle('active', flag);
+    });
+  };
+  const sync = () => setHomeActive(isHomePath(location.pathname));
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sync, { once: true });
+  } else {
+    sync();
+  }
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-panel-link]');
+    if (!a) return;
+    const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
+    setHomeActive(isHomePath(pn));
+  });
+
+  window.addEventListener('popstate', sync);
+  ['pushState','replaceState'].forEach(fn => {
+    const orig = history[fn];
+    history[fn] = function(...args){
+      const ret = orig.apply(this, args);
+      window.dispatchEvent(new Event('panel:navigated'));
+      return ret;
+    };
+  });
+  window.addEventListener('panel:navigated', sync);
+})();
+</script>
+
+<script>
+/* ====== 하드웨어 힌트(기존 코드 유지) ====== */
+(function(){
+  const bubble = document.getElementById('hardware-hint');
+  const label  = document.getElementById('hardware-label');
+  if (!bubble || !label) return;
+
+  const KEY = 'bugloop.hideHardwareHint';
+  const isShown = () => bubble.style.display !== 'none' && bubble.getAttribute('aria-hidden') !== 'true';
+  function show(){ bubble.style.display = 'inline-flex'; bubble.setAttribute('aria-hidden','false'); }
+  function hide(){ localStorage.setItem(KEY,'1'); bubble.style.display = 'none'; bubble.setAttribute('aria-hidden','true'); label?.focus?.(); }
+
+  if (bubble.parentNode !== document.body) { bubble.style.position = 'fixed'; bubble.style.left = '-9999px'; bubble.style.top = '-9999px'; document.body.appendChild(bubble); }
+  bubble.style.pointerEvents = 'none';
+  const closeBtn = bubble.querySelector('.hint-close'); if (closeBtn) closeBtn.style.pointerEvents = 'auto';
+
+  function placeBubble(){
+    const r = label.getBoundingClientRect();
+    bubble.style.left = (Math.round(r.left + 20)) + 'px';
+    bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
+    if (!isShown() && localStorage.getItem(KEY) !== '1') show();
+  }
+
+  let followRAF = 0;
+  function cancelFollow(){ if (followRAF) cancelAnimationFrame(followRAF), followRAF = 0; }
+  function startFollow(ms = 600){
+    const end = performance.now() + ms;
+    cancelFollow();
+    const tick = () => { placeBubble(); if (performance.now() < end) followRAF = requestAnimationFrame(tick); };
+    followRAF = requestAnimationFrame(tick);
+  }
+
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', placeBubble, { once:true }); } else { placeBubble(); }
+  window.addEventListener('scroll', placeBubble, { capture:true, passive:true });
+  window.addEventListener('resize', placeBubble);
+  document.querySelector('.toggle-extension')?.addEventListener('click', () => { placeBubble(); startFollow(800); });
+  window.addEventListener('panel:navigated', () => { placeBubble(); startFollow(400); });
+
+  const ro = new ResizeObserver(() => placeBubble());
+  ['.full-header-container','.main-panel-only','.header-top','body','html'].forEach(sel => { const el=document.querySelector(sel); if (el) ro.observe(el); });
+
+  document.addEventListener('transitionstart', (e) => {
+    const targets = ['.sidebar-extension-panel','.full-header-container','.main-panel-only','.header-top'];
+    if (targets.some(sel => e.target.matches?.(sel))) {
+      placeBubble();
+      startFollow((e.elapsedTime ? e.elapsedTime*1000 : 500) + 400);
+    }
+  }, true);
+
+  closeBtn?.addEventListener('click', hide);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isShown()) hide(); }, true);
+  if (localStorage.getItem(KEY) !== '1') show();
+})();
+</script>
+
+<script>
+/* ====== 패널로딩(AJAX) 기존 코드 유지 ====== */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-panel-link]').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const url = link.getAttribute('href');
+      try {
+        const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+        const html = await res.text();
+        const panel = document.querySelector('#mini-lecture');
+        if (panel) {
+          panel.innerHTML = html;
+          panel.scrollTo(0, 0);
+          if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
+          if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
+        }
+      } catch (err) {
+        console.error('패널 로드 오류:', err);
+      }
+    });
+  });
+});
+</script>
+
+<script>
 /* ======================================================
-   ⚙️ 테마 토글 (.dark 클래스 방식) 및 언어 드롭다운 로직
-   ====================================================== */
+   ⚙️ 언어 드롭다운(포털) + ✅ 새 테마 토글(.dark 클래스 방식) 스크립트
+====================================================== */
 (function(){
   const langBtn = document.getElementById('langToggleSidebar');
   const langMenu = document.getElementById('langMenuSidebar');
@@ -407,15 +498,14 @@ html:not(.dark) .theme-toggle-btn {
   const THEME_KEY = 'bugloop.theme';
   const htmlEl = document.documentElement;
 
-  /* ------------------- ✅ 테마 로직 (.dark 클래스 적용) ------------------- */
+  /* ------------------- ✅ 새 테마 로직 (.dark 클래스 적용) ------------------- */
   const updateTheme = (theme) => {
     const isDark = theme === 'dark';
     
-    // .dark 클래스를 토글하여 테마 적용
     htmlEl.classList.toggle('dark', isDark);
 
     localStorage.setItem(THEME_KEY, theme);
-    // 아이콘 업데이트 (다크 모드면 해, 라이트 모드면 달)
+    // 아이콘 업데이트 (다크 모드면 해(sun), 라이트 모드면 달(moon))
     themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
     themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
   };
@@ -443,8 +533,8 @@ html:not(.dark) .theme-toggle-btn {
   /* ---------------------------------------------------- */
 
 
-  /* ---------- 언어 메뉴 포털 로직 ---------- */
-  if (!langBtn || !langMenu) return;
+  /* ---------- 기존 언어 메뉴 포털 로직 유지 ---------- */
+  if (!langBtn || !langMenu) return; // 언어 버튼/메뉴 없으면 이후 로직 스킵
 
   let isOpen = false;
   let lastFocus = null;
@@ -454,12 +544,14 @@ html:not(.dark) .theme-toggle-btn {
     isOpen = true;
     lastFocus = document.activeElement;
 
+    // aria
     langBtn.setAttribute('aria-expanded','true');
     langMenu.setAttribute('aria-hidden','false');
 
+    // body로 포털 이동 + 고정 좌표 계산
     const r = langBtn.getBoundingClientRect();
-    const top = Math.round(r.bottom + 6);
-    const left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 200)));
+    const top = Math.round(r.bottom + 6); // 버튼 바로 아래
+    const left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 200))); // 화면 밖 방지
     const minW = Math.max(r.width, 160);
 
     langMenu.classList.add('lang-menu--portal');
@@ -470,10 +562,12 @@ html:not(.dark) .theme-toggle-btn {
       minWidth: minW + 'px'
     });
 
+    // 첫 포커스(현재 언어)
     const current = langMenu.querySelector('.lang-option.active-lang') || langMenu.querySelector('.lang-option');
     current?.setAttribute('tabindex','0');
     current?.focus();
 
+    // 외부 클릭/스크롤/리사이즈/ESC로 닫기
     setTimeout(() => {
       document.addEventListener('mousedown', onDocDown, { capture:true });
       window.addEventListener('scroll', closeMenu, { passive:true });
@@ -488,7 +582,10 @@ html:not(.dark) .theme-toggle-btn {
     langBtn.setAttribute('aria-expanded','false');
     langMenu.setAttribute('aria-hidden','true');
 
+    // 탭 순서 복구
     langMenu.querySelectorAll('.lang-option').forEach(a => a.setAttribute('tabindex','-1'));
+
+    // 메뉴를 다시 원래 자리(토글 버튼 바로 뒤 형제)로 되돌림
     const holder = langBtn.parentElement;
     holder && holder.appendChild(langMenu);
     langMenu.classList.remove('lang-menu--portal');
@@ -499,6 +596,7 @@ html:not(.dark) .theme-toggle-btn {
     window.removeEventListener('resize', closeMenu);
     document.removeEventListener('keydown', onKey);
 
+    // 포커스 반환
     lastFocus?.focus?.();
   };
 
@@ -511,6 +609,7 @@ html:not(.dark) .theme-toggle-btn {
   const onKey = (e) => {
     if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); return; }
 
+    // 간단한 메뉴 키보드 내비게이션
     const items = Array.from(langMenu.querySelectorAll('.lang-option'));
     const idx = items.indexOf(document.activeElement);
     if (e.key === 'ArrowDown') {
@@ -532,6 +631,7 @@ html:not(.dark) .theme-toggle-btn {
     isOpen ? closeMenu() : openMenu();
   });
 
+  // 버튼에서 Space/Enter로도 열기
   langBtn.addEventListener('keydown', (e) => {
     if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') {
       e.preventDefault();
@@ -540,3 +640,6 @@ html:not(.dark) .theme-toggle-btn {
   });
 })();
 </script>
+
+<script src="/assets/js/header.js"></script>
+<script src="/assets/js/global.js"></script>
