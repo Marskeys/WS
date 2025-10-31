@@ -21,7 +21,7 @@
   margin-top: 12px;
   padding: 10px 8px;
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* 데스크톱 기본: 세로 배열 */
   align-items: center;
   gap: 10px;
 }
@@ -154,6 +154,52 @@ html:not(.dark) .theme-toggle-btn {
 .lang-menu a.lang-option:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: -2px;
+}
+
+/* ---------------------------------------------------- */
+/* 🆕 모바일 최적화: 언어 드롭다운/테마 토글 가로 배열 (768px 이하) */
+/* ---------------------------------------------------- */
+@media (max-width: 768px) {
+  /* 탭 버튼처럼 가로 배열 및 균등 너비 적용 */
+  .sidebar-lang-theme {
+    flex-direction: row; /* 가로 배열로 변경 */
+    justify-content: space-around; 
+    width: 100%;
+    align-items: center;
+    padding: 0; 
+    margin-top: 0; 
+    gap: 0;
+    /* 탭 버튼과 유사한 높이를 주기 위해 최소 높이 설정 */
+    min-height: 48px; 
+    border-top: 1px solid var(--vscode-sideBar-background, #252526); /* 탭 영역 구분선 (기존 탭 버튼 색상으로) */
+  }
+
+  /* 언어 드롭다운과 테마 버튼을 탭 버튼처럼 균등 분할 */
+  .sidebar-lang-theme .language-dropdown,
+  .sidebar-lang-theme .theme-toggle-btn {
+    flex-grow: 1; 
+    flex-basis: 0;
+    height: 100%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* 버튼 자체 스타일 조정 */
+  .sidebar-lang-theme .lang-btn,
+  .sidebar-lang-theme .theme-toggle-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 0; 
+    justify-content: center; 
+    align-items: center;
+    padding: 0; 
+  }
+
+  /* 버튼 간의 시각적 구분 추가 (선택사항) */
+  .sidebar-lang-theme .language-dropdown {
+    border-right: 1px solid var(--vscode-sideBar-background, #252526);
+  }
 }
 </style>
 <div class="full-header-container" style="z-index:20000;">
