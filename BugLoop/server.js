@@ -1247,10 +1247,10 @@ app.get('/_slugtest', (req, res) => {
   res.type('text').send(out);
 });
 
-// ✅ 언어별 독립 콘텐츠 페이지 라우트
-app.get('/:lang/articles/:page', (req, res) => {
-  const { lang, page } = req.params;
-  const filePath = path.join(__dirname, 'content', lang, 'articles', `${page}.html`);
+// ✅ 언어 + 폴더 + 폴더 + 페이지 구조만 잡음
+app.get('/:lang/:section/:subsection/:page', (req, res) => {
+  const { lang, section, subsection, page } = req.params;
+  const filePath = path.join(__dirname, 'content', lang, section, subsection, `${page}.html`);
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).render('404');
@@ -1263,7 +1263,7 @@ app.get('/:lang/articles/:page', (req, res) => {
   });
 });
 
-// 패널 라우팅
+// ✅ 패널 라우팅 (기존 3단계용)
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
