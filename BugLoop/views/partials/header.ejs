@@ -39,10 +39,16 @@
   padding: 6px 10px;
 }
 
+/* 🚫 언어 선택 버튼 포커스(클릭/탭) 테두리 제거 */
 .sidebar-lang-theme .lang-btn:focus {
+  outline: none;
+}
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+.sidebar-lang-theme .lang-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
+
 
 /* 언어 메뉴 (기본: 다크 모드) */
 .lang-menu {
@@ -109,7 +115,7 @@ html:not(.dark) .lang-menu a.lang-option:focus {
 .theme-toggle-btn {
   background: none;
   border: none;
-  color: var(--ink-1, #fff); /* Dark Mode 기본 색상 */
+  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
   cursor: pointer;
   width: 38px;
   height: 38px;
@@ -122,13 +128,18 @@ html:not(.dark) .lang-menu a.lang-option:focus {
   line-height: 1;
 }
 
-/* 💡 라이트 모드일 때 아이콘 색상 변경 (html:not(.dark) 사용) */
+/* 💡 라이트 모드일 때도 아이콘 색상을 흰색으로 고정 (사이드바 배경색에 맞춤) */
 html:not(.dark) .theme-toggle-btn {
-  color: var(--ink-1, #181a1f); /* Light Mode 색상 */
+  color: #fff; /* 흰색으로 명시적 고정 */
   border: none;
 }
 
+/* 🚫 테마 토글 버튼 포커스(클릭/탭) 테두리 제거 */
 .theme-toggle-btn:focus {
+  outline: none;
+}
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+.theme-toggle-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
@@ -491,12 +502,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateTheme = (theme) => {
     const isDark = theme === 'dark';
     
-    // 💡 data-theme 대신 클래스 .dark를 토글
-    // htmlEl.removeAttribute('data-theme'); // data-theme 속성 사용하지 않으므로 제거
     htmlEl.classList.toggle('dark', isDark);
 
     localStorage.setItem(THEME_KEY, theme);
-    // 아이콘 업데이트 (다크 모드면 해, 라이트 모드면 달)
+    // 아이콘 업데이트 (다크 모드면 해(sun), 라이트 모드면 달(moon))
     themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
     themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
   };
@@ -504,13 +513,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const initTheme = () => {
     const saved = localStorage.getItem(THEME_KEY);
     const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    // saved가 없으면 OS 설정 따름
     const initialTheme = (saved === 'dark' || (!saved && prefersDark)) ? 'dark' : 'light';
     updateTheme(initialTheme);
   };
 
   const toggleTheme = () => {
-    // 현재 dark 클래스가 있으면 'light'로, 없으면 'dark'로 토글
     const currentIsDark = htmlEl.classList.contains('dark');
     const nextTheme = currentIsDark ? 'light' : 'dark';
     updateTheme(nextTheme);
