@@ -1247,6 +1247,22 @@ app.get('/_slugtest', (req, res) => {
   res.type('text').send(out);
 });
 
+// ✅ 언어별 독립 콘텐츠 페이지 라우트
+app.get('/:lang/articles/:page', (req, res) => {
+  const { lang, page } = req.params;
+  const filePath = path.join(__dirname, 'content', lang, 'articles', `${page}.html`);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).render('404');
+  }
+
+  const htmlContent = fs.readFileSync(filePath, 'utf8');
+  res.render('content-page', {
+    lang,
+    htmlContent
+  });
+});
+
 // 패널 라우팅
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
