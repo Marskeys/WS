@@ -219,7 +219,8 @@ html:not(.dark) .theme-toggle-btn {
     /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
     flex-grow: 0; 
     flex-shrink: 0; 
-    width: 130px; /* ✅ 언어/테마 영역의 고정 너비 설정 */
+    /* ❗ 수정: 너비를 130px -> 110px로 축소 */
+    width: 110px; /* ✅ 언어/테마 영역의 고정 너비 설정 */
     height: 100%;
     margin: 0; 
     padding: 0;
@@ -227,7 +228,7 @@ html:not(.dark) .theme-toggle-btn {
     border-top: none;
     align-items: center; 
     justify-content: center; 
-    /* ✅ 수정: 모바일에서도 간격 줄임 */
+    /* 모바일에서도 간격 줄임 */
     gap: 5px; 
   }
 
@@ -235,7 +236,8 @@ html:not(.dark) .theme-toggle-btn {
   .sidebar-lang-theme .language-dropdown {
     flex-grow: 1; /* 이 영역 내에서는 유연하게 */
     flex-basis: 0;
-    width: 70px; 
+    /* ❗ 수정: 너비를 70px -> 60px로 축소 */
+    width: 60px; 
     height: 100%; 
     display: flex;
     justify-content: center;
@@ -249,8 +251,8 @@ html:not(.dark) .theme-toggle-btn {
     width: 38px; 
     height: 38px;
     border-radius: 50%; 
-    /* ✅ 수정: 간격을 5px로 줄였으므로 margin-left만 5px 유지 */
-    margin: 0 5px 0 0; 
+    /* ❗ 수정: 외부 마진을 0으로 설정 */
+    margin: 0; 
     background: var(--vscode-sideBar-background, #333); 
     border: 1px solid var(--vscode-sideBar-border, #444);
   }
