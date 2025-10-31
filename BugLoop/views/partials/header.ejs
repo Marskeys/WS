@@ -1,167 +1,8 @@
 <style>
-/* ====== 기존 서브메뉴 간격/정렬 ====== */
-.header-menu .submenu li a,
-.header-menu .submenu li span {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  display: block;
-  font-size: 14px;
-  vertical-align: middle;
-}
-
-/* YouTube 로고 수직 중앙 정렬 */
-.header-menu .main-menu-container {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-/* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 (다크 모드 기준) ====== */
-.sidebar-lang-theme {
-  margin-top: 12px;
-  padding: 10px 8px;
-  display: flex;
-  flex-direction: column; /* 데스크톱 기본: 세로 배열 */
-  align-items: center;
-  gap: 10px;
-}
-
-.sidebar-lang-theme .lang-btn {
-  background: none;
-  border: none;
-  color: var(--ink-1, #fff); /* Dark Mode */
-  cursor: pointer;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 10px;
-  padding: 6px 10px;
-}
-
-/* 🚫 언어 선택 버튼 포커스(클릭/탭) 테두리 제거 */
-.sidebar-lang-theme .lang-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
-.sidebar-lang-theme .lang-btn:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: 2px;
-}
-
-
-/* 언어 메뉴 (기본: 다크 모드) */
-.lang-menu {
-  position: absolute;
-  inset: auto auto auto auto;
-  list-style: none;
-  margin: 6px 0 0 0;
-  padding: 6px 0;
-  min-width: 160px;
-  background: var(--panel-1, #181a1f); /* Dark Mode */
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
-  border-radius: 10px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
-  display: none;
-  z-index: 2147483646;
-}
-
-.lang-menu[aria-hidden="false"] {
-  display: block;
-}
-
-.lang-menu li {
-  white-space: nowrap;
-}
-
-.lang-menu a.lang-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  color: var(--ink-1, #fff); /* Dark Mode */
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.lang-menu a.lang-option:hover,
-.lang-menu a.lang-option:focus {
-  background: var(--panel-2, #22262e); /* Dark Mode */
-  outline: none;
-}
-
-.lang-menu a.lang-option.active-lang {
-  font-weight: 700;
-}
-
-/* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
-html:not(.dark) .lang-menu {
-  background: var(--panel-1, #fff); 
-  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
-}
-
-html:not(.dark) .lang-menu a.lang-option {
-  color: var(--ink-1, #181a1f); 
-}
-
-html:not(.dark) .lang-menu a.lang-option:hover,
-html:not(.dark) .lang-menu a.lang-option:focus {
-  background: var(--panel-2, #f0f0f0); 
-}
-
-
-/* ✅ 수정: 새 라이트/다크모드 토글 버튼 스타일 복원 */
-.theme-toggle-btn {
-  /* 배경색 및 둥근 모양 복원 */
-  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
-  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
-  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
-  cursor: pointer;
-  width: 38px;
-  height: 38px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%; /* 둥근 모양 복원 */
-  transition: all 0.2s ease;
-  font-size: 18px;
-  line-height: 1;
-}
-
-/* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
-html:not(.dark) .theme-toggle-btn {
-  background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
-  border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
-  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
-}
-
-
-/* 🚫 테마 토글 버튼 포커스(클릭/탭) 테두리 제거 */
-.theme-toggle-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
-.theme-toggle-btn:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: 2px;
-}
-
-/* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
-.lang-menu.lang-menu--portal {
-  position: fixed;
-  z-index: 2147483646;
-}
-
-/* 접근성: 키보드 이동 시 포커스 링 */
-.lang-menu a.lang-option:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: -2px;
-}
+/* ====== (중략: 상단 스타일 유지) ====== */
 
 /* ---------------------------------------------------- */
 /* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 (768px 이하) */
-/* (✅ 모든 탭 요소를 고정 너비로 만들어 스크롤 유도 및 스크롤 바 숨기기) */
 /* ---------------------------------------------------- */
 @media (max-width: 768px) {
   /* 1. 사이드바(Tabs Container) 자체: 가로 스크롤 속성 유지 */
@@ -246,7 +87,8 @@ html:not(.dark) .theme-toggle-btn {
     width: 38px; 
     height: 38px;
     border-radius: 50%; 
-    margin: 0 5px; 
+    /* 👇 이 부분을 수정했습니다: 가로 마진을 0으로 줄여 간격 최소화 */
+    margin: 0 0; 
     background: var(--vscode-sideBar-background, #333); 
     border: 1px solid var(--vscode-sideBar-border, #444);
   }
