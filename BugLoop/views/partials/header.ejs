@@ -341,7 +341,6 @@ html:not(.dark) .theme-toggle-btn {
            style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
     </a>
 
-    <!-- 리뷰 -->
     <li class="menu-item-wrapper">
       <span class="menu-label"><%= h.review %></span>
       <ul class="submenu">
@@ -352,7 +351,6 @@ html:not(.dark) .theme-toggle-btn {
       </ul>
     </li>
 
-    <!-- 오디오북 -->
     <li class="menu-item-wrapper">
       <span class="menu-label"><%= h.audiobook %></span>
       <ul class="submenu">
@@ -363,7 +361,6 @@ html:not(.dark) .theme-toggle-btn {
       </ul>
     </li>
 
-    <!-- 음악 콘텐츠 -->
     <li class="menu-item-wrapper">
       <span class="menu-label"><%= h.music %></span>
       <ul class="submenu">
@@ -374,7 +371,6 @@ html:not(.dark) .theme-toggle-btn {
       </ul>
     </li>
 
-    <!-- 두뇌 게임 -->
     <li class="menu-item-wrapper">
       <span class="menu-label"><%= h.game %></span>
       <ul class="submenu">
@@ -384,7 +380,6 @@ html:not(.dark) .theme-toggle-btn {
       </ul>
     </li>
 
-    <!-- 🌟 2027 광고 배너 -->
     <li class="menu-item-wrapper special-label">
       <span class="menu-label">
         <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
@@ -524,16 +519,53 @@ html:not(.dark) .theme-toggle-btn {
 
 <script>
 /* ====== (스크립트 시작) ====== */
-/* ====== 서브메뉴 활성화 동기 ====== */
+/* 🚀 수정됨: 서브메뉴 활성화 동기 - AJAX 환경 지원 및 클릭 시 즉시 활성화 */
 (function(){
-  var path = location.pathname.replace(/\/$/, '');
-  document.querySelectorAll('.submenu a').forEach(function(a){
-    var href = (a.getAttribute('href') || '').replace(/\/$/, '');
-    if (href === path) {
-      a.classList.add('active');
-      var label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
+  const stripPath = (p) => (p || location.pathname).replace(/[#?].*$/, '').replace(/\/$/, '');
+  
+  // 1. 모든 활성화 클래스를 제거하고 현재 경로에 맞춰 다시 적용하는 함수
+  const syncMenuActivity = () => {
+    const path = stripPath(location.pathname);
+
+    // 모든 활성화 클래스 제거
+    document.querySelectorAll('.submenu a.active').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.menu-label.active-label').forEach(l => l.classList.remove('active-label'));
+
+    // 현재 경로와 일치하는 메뉴 항목 찾기 및 활성화
+    document.querySelectorAll('.submenu a').forEach(function(a){
+      const href = stripPath(a.getAttribute('href') || '');
+      
+      if (href === path) {
+        a.classList.add('active');
+        const label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
+        if (label) label.classList.add('active-label');
+      }
+    });
+  };
+
+  // 2. 초기 로드 시 실행
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncMenuActivity, { once: true });
+  } else {
+    syncMenuActivity();
+  }
+  
+  // 3. 페이지가 AJAX/history API로 변경되었을 때 재실행
+  window.addEventListener('popstate', syncMenuActivity);
+  window.addEventListener('panel:navigated', syncMenuActivity); // custom event 활용
+
+  // 4. 서브메뉴 항목 클릭 시 즉시 활성화 스타일 적용 (UX 개선)
+  document.querySelectorAll('.submenu a[data-panel-link]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      // 기존 활성화 제거
+      document.querySelectorAll('.submenu a.active').forEach(a => a.classList.remove('active'));
+      document.querySelectorAll('.menu-label.active-label').forEach(l => l.classList.remove('active-label'));
+      
+      // 클릭한 요소 활성화
+      e.currentTarget.classList.add('active');
+      const label = e.currentTarget.closest('.menu-item-wrapper')?.querySelector('.menu-label');
       if (label) label.classList.add('active-label');
-    }
+    });
   });
 })();
 </script>
