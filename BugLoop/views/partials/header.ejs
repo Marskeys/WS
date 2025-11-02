@@ -1,3 +1,5 @@
+<% const h = locale.header; %>
+
 <style>
 /* ====== 기존 서브메뉴 간격/정렬 ====== */
 .header-menu .submenu li a,
@@ -16,21 +18,20 @@
   height: 100%;
 }
 
-/* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 (다크 모드 기준) ====== */
+/* ====== 사이드바 언어/테마 영역 ====== */
 .sidebar-lang-theme {
   margin-top: 12px;
   padding: 10px 8px;
   display: flex;
-  flex-direction: column; /* 데스크톱 기본: 세로 배열 */
+  flex-direction: column;
   align-items: center;
-  /* ✅ 수정: 다크모드/언어버튼 사이의 여백을 10px에서 5px로 줄임 */
   gap: 5px; 
 }
 
 .sidebar-lang-theme .lang-btn {
   background: none;
   border: none;
-  color: var(--ink-1, #fff); /* Dark Mode */
+  color: var(--ink-1, #fff);
   cursor: pointer;
   font-size: 14px;
   display: inline-flex;
@@ -40,18 +41,14 @@
   padding: 6px 10px;
 }
 
-/* 🚫 언어 선택 버튼 포커스(클릭/탭) 테두리 제거 */
 .sidebar-lang-theme .lang-btn:focus {
   outline: none;
 }
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
 .sidebar-lang-theme .lang-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
 
-
-/* 언어 메뉴 (기본: 다크 모드) */
 .lang-menu {
   position: absolute;
   inset: auto auto auto auto;
@@ -59,222 +56,86 @@
   margin: 6px 0 0 0;
   padding: 6px 0;
   min-width: 160px;
-  background: var(--panel-1, #181a1f); /* Dark Mode */
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
+  background: var(--panel-1, #181a1f);
+  border: 1px solid var(--ink-3, rgba(255,255,255,0.25));
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(0,0,0,0.35);
   display: none;
   z-index: 2147483646;
 }
-
-.lang-menu[aria-hidden="false"] {
-  display: block;
-}
-
-.lang-menu li {
-  white-space: nowrap;
-}
+.lang-menu[aria-hidden="false"] { display: block; }
+.lang-menu li { white-space: nowrap; }
 
 .lang-menu a.lang-option {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  color: var(--ink-1, #fff); /* Dark Mode */
+  color: var(--ink-1, #fff);
   text-decoration: none;
   font-size: 14px;
 }
 
 .lang-menu a.lang-option:hover,
 .lang-menu a.lang-option:focus {
-  background: var(--panel-2, #22262e); /* Dark Mode */
+  background: var(--panel-2, #22262e);
   outline: none;
 }
+.lang-menu a.lang-option.active-lang { font-weight: 700; }
 
-.lang-menu a.lang-option.active-lang {
-  font-weight: 700;
-}
-
-/* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
 html:not(.dark) .lang-menu {
-  background: var(--panel-1, #fff); 
-  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.15);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
 }
-
-html:not(.dark) .lang-menu a.lang-option {
-  color: var(--ink-1, #181a1f); 
-}
-
+html:not(.dark) .lang-menu a.lang-option { color: #181a1f; }
 html:not(.dark) .lang-menu a.lang-option:hover,
 html:not(.dark) .lang-menu a.lang-option:focus {
-  background: var(--panel-2, #f0f0f0); 
+  background: #f0f0f0;
 }
 
-
-/* ✅ 수정: 새 라이트/다크모드 토글 버튼 스타일 복원 */
+/* ✅ 테마 토글 버튼 */
 .theme-toggle-btn {
-  /* 배경색 및 둥근 모양 복원 */
-  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
-  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
-  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
+  background: var(--vscode-sideBar-background, #333);
+  border: 1px solid var(--vscode-sideBar-border, #444);
+  color: var(--ink-1, #fff);
   cursor: pointer;
   width: 38px;
   height: 38px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%; /* 둥근 모양 복원 */
+  border-radius: 50%;
   transition: all 0.2s ease;
   font-size: 18px;
   line-height: 1;
 }
-
-/* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
 html:not(.dark) .theme-toggle-btn {
-  background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
-  border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
-  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
+  background: #f3f3f3;
+  border: 1px solid #ccc;
+  color: #333;
 }
-
-
-/* 🚫 테마 토글 버튼 포커스(클릭/탭) 테두리 제거 */
-.theme-toggle-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+.theme-toggle-btn:focus { outline: none; }
 .theme-toggle-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
 
-/* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
-.lang-menu.lang-menu--portal {
-  position: fixed;
-  z-index: 2147483646;
+/* 🎨 2027 서비스 라벨 스타일 */
+.special-label {
+  margin-left: 18px;
 }
-
-/* 접근성: 키보드 이동 시 포커스 링 */
-.lang-menu a.lang-option:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: -2px;
-}
-
-/* ---------------------------------------------------- */
-/* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 (768px 이하) */
-/* ---------------------------------------------------- */
-@media (max-width: 768px) {
-  /* 1. 사이드바(Tabs Container) 자체: 가로 스크롤 속성 유지 */
-  .vscode-sidebar {
-    display: flex;
-    flex-direction: row; 
-    width: 100%;
-    /* ✅ 가로 스크롤 가능하게 설정 */
-    overflow-x: auto; 
-    
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 100; 
-    height: 60px; 
-    padding: 0;
-    border-top: 1px solid var(--vscode-sideBar-border, #444); 
-    background: var(--vscode-sideBar-background, #333); 
-  }
-
-  /* ✅ 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
-  .vscode-sidebar::-webkit-scrollbar {
-    display: none;
-  }
-  /* IE, Edge, Firefox의 스크롤 바 숨김 처리 */
-  .vscode-sidebar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  /* 2. 기존 사이드바 전용 요소들 조정 */
-  .vscode-sidebar .logo {
-    display: none !important;
-  }
-  
-  /* 3. ✅ 모든 탭 버튼에 고정 너비 적용 (스크롤을 유도) */
-  .vscode-sidebar .toggle-extension,
-  .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
-    flex-grow: 0; 
-    flex-shrink: 0; /* 축소 방지 유지 */
-    width: 70px; /* ✅ 각 탭 버튼의 고정 너비 설정 */
-    height: 100%;
-    display: flex !important; 
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    border-radius: 0;
-  }
-
-  /* 4. ✅ 언어/테마 영역에도 고정 너비 적용 (스크롤을 유도) */
-  .sidebar-lang-theme {
-    flex-direction: row;
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
-    flex-grow: 0; 
-    flex-shrink: 0; 
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 110px; /* 언어/테마 영역의 고정 너비 설정 */
-    height: 100%;
-    margin: 0; 
-    padding: 0;
-    display: flex; 
-    border-top: none;
-    align-items: center; 
-    justify-content: center; 
-    /* 모바일에서도 간격 줄임 */
-    gap: 5px; 
-  }
-
-  /* 언어 드롭다운의 너비 조정 */
-  .sidebar-lang-theme .language-dropdown {
-    flex-grow: 1; /* 이 영역 내에서는 유연하게 */
-    flex-basis: 0;
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 60px; 
-    height: 100%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* 다크 모드 버튼은 고정된 크기 유지 */
-  .sidebar-lang-theme .theme-toggle-btn {
-    flex-grow: 0; 
-    flex-basis: auto;
-    width: 38px; 
-    height: 38px;
-    border-radius: 50%; 
-    /* ❗ 수정: 오른쪽 마진을 8px로 다시 설정 */
-    margin: 0 8px 0 0; 
-    background: var(--vscode-sideBar-background, #333); 
-    border: 1px solid var(--vscode-sideBar-border, #444);
-  }
-
-  /* 언어 버튼 자체 스타일 조정 */
-  .sidebar-lang-theme .lang-btn {
-    width: 100%;
-    height: 100%;
-    border-radius: 0; 
-    justify-content: center; 
-    align-items: center;
-    padding: 0; 
-    background: none;
-    border: none;
-  }
-
-  /* 언어 버튼만 오른쪽 경계선 추가 */
-  .sidebar-lang-theme .language-dropdown {
-    /* ✅ 수정: 사이드바 배경색 대신 border 색상으로 변경하여 명확하게 분리 */
-    border-right: 1px solid var(--vscode-sideBar-border, #444);
-  }
+.special-label .menu-label {
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.3px;
 }
 </style>
+
 <div class="full-header-container" style="z-index:20000;">
   <div class="header-top">
     <div class="top-controls">
@@ -297,43 +158,52 @@ html:not(.dark) .theme-toggle-btn {
                  style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
           </a>
 
+          <!-- 리뷰 -->
           <li class="menu-item-wrapper">
-            <span class="menu-label">리뷰</span>
+            <span class="menu-label"><%= h.review %></span>
             <ul class="submenu">
-              <li><a href="/<%= lang %>/review/book" data-panel-link>북스 팔마 2 프로</a></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (1)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (2)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (3)</span></li>
+              <li><a href="/<%= lang %>/review/book" data-panel-link><%= h.palma2pro %></a></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (3)</span></li>
             </ul>
           </li>
 
+          <!-- 오디오북 -->
           <li class="menu-item-wrapper">
-            <span class="menu-label">오디오북</span>
+            <span class="menu-label"><%= h.audiobook %></span>
             <ul class="submenu">
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">귀여운 음향학</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">피아노 치는 프로듀서: 신비한 반주법</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">미완성 고통</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">계산의 온기</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">귀여운 음향학</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">피아노 치는 프로듀서: 신비한 반주법</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">미완성 고통</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">계산의 온기</span></li>
             </ul>
           </li>
 
+          <!-- 음악 콘텐츠 -->
           <li class="menu-item-wrapper">
-            <span class="menu-label">음악 콘텐츠</span>
+            <span class="menu-label"><%= h.music %></span>
             <ul class="submenu">
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (1)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (2)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (3)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (4)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (3)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (4)</span></li>
             </ul>
           </li>
 
+          <!-- 두뇌 게임 -->
           <li class="menu-item-wrapper">
-            <span class="menu-label">두뇌 게임</span>
+            <span class="menu-label"><%= h.game %></span>
             <ul class="submenu">
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (1)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (2)</span></li>
-              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;">콘텐츠 대기 중 (3)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa;">Coming soon (3)</span></li>
             </ul>
+          </li>
+
+          <!-- 🎉 2027 서비스 라벨 -->
+          <li class="menu-item-wrapper special-label">
+            <span class="menu-label"><%= h.futureService %></span>
           </li>
         </ul>
       </nav>
@@ -341,129 +211,6 @@ html:not(.dark) .theme-toggle-btn {
       <div class="right-controls" id="right-controls" hidden></div>
     </div>
   </div>
-
-  <aside class="side-panel main-panel-only">
-    <div class="sidebar-wrapper">
-      <nav class="vscode-sidebar" aria-label="패널 사이드바" role="tablist">
-        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
-          <i class="fas fa-chevron-left" aria-hidden="true"></i>
-        </a>
-
-        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" title="BugLoop 홈" aria-label="BugLoop 홈" aria-selected="false">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop">
-        </a>
-        <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" title="홈" aria-selected="false">
-          <i class="fas fa-home" aria-hidden="true"></i>
-        </a>
-
-        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필" aria-selected="false" role="tab">
-          <i class="fas fa-user" aria-hidden="true"></i>
-        </a>
-        <a href="#" class="sidebar-icon" data-tab="search" title="검색" aria-selected="false" role="tab">
-          <i class="fas fa-search" aria-hidden="true"></i>
-        </a>
-
-        <% if (user) { %>
-          <% if (Number(user.is_admin) === 1) { %>
-            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
-              <i class="fas fa-pen" aria-hidden="true"></i>
-            </a>
-          <% } %>
-        <% } %>
-
-        <div class="sidebar-lang-theme">
-          <div class="language-dropdown">
-            <button id="langToggleSidebar" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenuSidebar">
-              <%
-                let flagCode = lang;
-                switch(lang) {
-                  case 'ko': flagCode = 'kr'; break;
-                  case 'en': flagCode = 'gb'; break;
-                  case 'zh': flagCode = 'cn'; break;
-                  case 'ja': flagCode = 'jp'; break;
-                  case 'fr': flagCode = 'fr'; break;
-                  case 'es': flagCode = 'es'; break;
-                  default: flagCode = 'kr';
-                }
-              %>
-              <span class="fi fi-<%= flagCode %>"></span>
-            </button>
-
-            <ul id="langMenuSidebar" class="lang-menu" role="menu" aria-hidden="true">
-              <%
-                const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
-                const langNames = { ko:'한국어', en:'English', fr:'Français', zh:'简体中文', ja:'日本語', es:'Español' };
-              %>
-              <% (supportedLangs || ['ko','en','fr','zh','ja','es']).forEach(function(langCode){ %>
-                <li role="none">
-                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                     class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
-                     role="menuitem" tabindex="-1">
-                    <span class="fi fi-<%= (langCode==='ko'?'kr':(langCode==='en'?'gb':(langCode==='zh'?'cn':(langCode==='ja'?'jp':langCode)))) %>"></span>
-                    <%= langNames[langCode] || langCode %>
-                  </a>
-                </li>
-              <% }); %>
-            </ul>
-          </div>
-          
-          <button id="theme-toggle-sidebar" class="theme-toggle-btn" aria-label="테마 전환: 라이트/다크 모드" title="테마 전환">
-            <i class="fas fa-moon" aria-hidden="true"></i>
-          </button>
-        </div>
-        </nav>
-
-      <div class="sidebar-extension-panel">
-        <div class="panel-logo">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop" loading="lazy" />
-        </div>
-        <div class="tab-container"></div>
-
-        <div class="tab-content" data-tab="profile" style="display: none;">
-          <%- include('./profile', { locale }) %>
-        </div>
-
-        <% if (typeof posts !== 'undefined') { %>
-          <div class="tab-content" data-tab="search" style="display: none;">
-            <section class="search-tab">
-              <div id="sidebar-table-template" data-lang="<%= lang %>">
-                <%- include('table') %>
-              </div>
-            </section>
-          </div>
-        <% } %>
-
-        <div class="panel-footer">
-          <% if (user) { %>
-            <div class="greeting" style="text-align:center; margin-top:10px; font-weight:bold;">
-              <%= user.nickname %>님, 안녕하세요!
-            </div>
-          <% } %>
-
-          <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-            <div class="auth-buttons">
-              <% if (user) { %>
-                <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
-              <% } else { %>
-                <a class="auth-btn signup" onclick="return false;" style="pointer-events:none; opacity:.5; cursor:not-allowed;">회원가입</a>
-                <button class="auth-btn login" id="login" type="button">로그인</button>
-              <% } %>
-            </div>
-          <% } %>
-
-          <div id="login-form-container" class="login-form-container hidden">
-            <form id="login-form" method="POST" action="/login">
-              <input type="text" name="id" placeholder="아이디" required />
-              <input type="password" name="password" placeholder="비밀번호" required />
-              <button type="submit">로그인</button>
-            </form>
-          </div>
-
-          <div class="real-footer"><small>© 2025 Bug Loop</small></div>
-        </div>
-      </div>
-    </div>
-  </aside>
 </div>
 
 <script>
