@@ -11,6 +11,19 @@
   vertical-align: middle;
 }
 
+.special-label .menu-label {
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+}
+
+
 /* YouTube 로고 수직 중앙 정렬 */
 .header-menu .main-menu-container {
   display: flex;
@@ -292,7 +305,7 @@ html:not(.dark) .theme-toggle-btn {
         <% } %>
       </div>
 
-     <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
+    <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
   <ul class="main-menu-container">
     <a href="https://www.youtube.com/@ebook.bugloop"
        target="_blank"
@@ -343,6 +356,14 @@ html:not(.dark) .theme-toggle-btn {
         <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
         <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
       </ul>
+    </li>
+
+    <!-- 🌟 2027 광고 배너 -->
+    <li class="menu-item-wrapper special-label">
+      <span class="menu-label">
+        <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
+        <%= h.futureService %>
+      </span>
     </li>
   </ul>
 </nav>
