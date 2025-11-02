@@ -171,7 +171,7 @@
   
   <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
     <div class="panel-card">
-      <span class="connector">Welcome</span>
+      <span class="connector" id="panel-title-connector">Welcome</span>
        
       <% if (panelData && panelData.html) { %>
         <div class="panel-body"><%- panelData.html %></div>
@@ -391,4 +391,53 @@ window.initPanelResizer(); // 최초 로드 시 실행
       bind();
     }
   })();
+
+/* 🌟 추가된 스크립트: 메뉴 이름으로 패널 제목 변경 🌟 */
+(function() {
+    const panelTitle = document.getElementById('panel-title-connector');
+    if (!panelTitle) return;
+
+    // 1. 메뉴 클릭 이벤트 리스너 설정
+    const updateTitleOnMenuClick = (e) => {
+        const link = e.target.closest('a[data-panel-link]');
+        if (!link) return;
+        
+        // 클릭된 요소의 텍스트 콘텐츠를 가져옵니다.
+        const menuText = link.textContent.trim();
+        
+        // 패널 제목을 업데이트합니다.
+        panelTitle.textContent = menuText;
+
+        // 메뉴 클릭 시 패널을 열어주는 로직이 필요할 수 있습니다.
+        // 예를 들어, body.panel-open 클래스를 추가하거나 패널 상태를 변경하는 함수를 호출합니다.
+    };
+
+    // 2. 초기 로드 시 현재 URL과 일치하는 메뉴를 찾아 제목 설정
+    const setInitialTitle = () => {
+        const path = location.pathname.replace(/[#?].*$/, '').replace(/\/$/, '');
+        const currentLink = document.querySelector(`.header-menu .submenu a[href$="${path}"]`);
+
+        if (currentLink) {
+             panelTitle.textContent = currentLink.textContent.trim();
+        } else {
+             // 일치하는 메뉴가 없거나 초기 홈 화면일 경우 'Welcome' 유지 (또는 사용자 정의)
+             panelTitle.textContent = 'Welcome';
+        }
+    };
+    
+    // document 전체에서 data-panel-link가 있는 요소의 클릭을 감지합니다.
+    document.addEventListener('click', updateTitleOnMenuClick);
+
+    // 페이지 이동이 history API를 통해 일어날 때 제목 동기화
+    window.addEventListener('popstate', setInitialTitle);
+    window.addEventListener('panel:navigated', setInitialTitle);
+
+    // 초기 실행
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setInitialTitle, { once: true });
+    } else {
+      setInitialTitle();
+    }
+
+})();
   </script>
