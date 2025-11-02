@@ -176,6 +176,31 @@ html:not(.dark) .theme-toggle-btn {
   outline-offset: -2px;
 }
 
+/* 1️⃣ 활성화된 서브메뉴 항목 */
+.submenu a.active {
+  color: #00c6ff;
+  font-weight: 700;
+  position: relative;
+}
+
+.submenu a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
+  border-radius: 2px;
+}
+
+/* 2️⃣ 활성화된 메인 메뉴 라벨 */
+.menu-label.active-label {
+  color: #00c6ff;
+  text-shadow: 0 0 8px rgba(0, 114, 255, 0.6);
+  font-weight: 700;
+}
+
 /* ---------------------------------------------------- */
 /* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 (768px 이하) */
 /* ---------------------------------------------------- */
