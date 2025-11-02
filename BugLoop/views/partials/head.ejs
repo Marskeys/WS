@@ -1,23 +1,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<title><%= (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'Bug Loop') %></title>
+
 <%
-  // ===== 현재 언어 설정 및 fallback =====
-  const langKey = (typeof lang === 'string' && locale?.[lang]) ? lang : 'ko';
-
-  // ===== 메타데이터 우선순위 =====
-  // 1️⃣ 라우터에서 넘겨준 metaTitle/metaDescription
-  // 2️⃣ locale[lang].meta.title / locale[lang].meta.description
-  // 3️⃣ 기본값
-  const metaData = locale?.[langKey]?.meta || {};
-  const rawTitle = (typeof metaTitle === 'string' && metaTitle.trim())
-    ? metaTitle.trim()
-    : (metaData.title || 'Bug Loop');
-
+  // ===== Meta description (page override > locale default) =====
   const rawDesc = (typeof metaDescription === 'string' && metaDescription.trim())
     ? metaDescription.trim()
-    : (metaData.description || '웹 개발자 블로그 | 전자책과 코드를 사랑하는 사람의 기록');
-
+    : (locale?.meta?.description || "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!");
   const DESC = rawDesc.length > 160 ? (rawDesc.slice(0,157) + '…') : rawDesc;
 
   // ===== Canonical / OG helpers =====
@@ -26,10 +16,8 @@
   const canonicalUrl = (typeof canonical === 'string' && canonical.trim()) ? canonical.trim() : (SITE_ORIGIN + path);
   const ogImage = (typeof metaImage === 'string' && metaImage.trim()) ? metaImage.trim() : '/assets/logo.png';
   const OG_IMAGE_ABS = /^https?:\/\//.test(ogImage) ? ogImage : (SITE_ORIGIN + ogImage);
-  const PAGE_TITLE = rawTitle;
+  const PAGE_TITLE = (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'Bug Loop');
 %>
-
-<title><%= PAGE_TITLE %></title>
 
 <meta name="description" content="<%= DESC %>" />
 <meta property="og:title" content="<%= PAGE_TITLE %>" />
@@ -55,14 +43,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR&display=swap" rel="stylesheet" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@100..900&display=swap" rel="stylesheet" />
 
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<!-- Asta Sans (Google Fonts, variable; wght 100..900) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@100..900&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" as="style" crossorigin
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
 
+      
 <!-- CSS -->
 <link rel="stylesheet" href="/assets/css/header.css" />
 <link rel="stylesheet" href="/assets/css/style.css" />
@@ -72,7 +63,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
 
 <script async custom-element="amp-auto-ads"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
 
 <!-- Preload key images -->
 <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
