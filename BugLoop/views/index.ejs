@@ -210,14 +210,21 @@
       /* 📌 변경: var(--primary) 사용 */
       color: var(--primary);
       font-size: 0.95rem;
+      text-align: center;
     }
-    /* 섹션 제목 스타일 */
+
+    /* ---------------------------------------------------- */
+    /* 💡 목차 들여쓰기 & 디자인 스타일 (추가) */
+    /* ---------------------------------------------------- */
+    /* 섹션 제목 스타일 (h5) */
     .book-toc h5 {
       margin: 12px 0 6px 0;
       color: var(--ink); /* 섹션 제목은 잉크 색상으로 강조 */
       font-size: 1rem;
       font-weight: 600;
+      /* 들여쓰기 없음 (최상위) */
     }
+
     /* 소제목 (chapter) 리스트 스타일 */
     .book-toc ul {
       margin: 0 0 12px 0;
@@ -225,16 +232,63 @@
       list-style: none; /* 최상위 목록 스타일 제거 */
     }
 
-    .book-toc ul ul {
-      margin: 0 0 0 0;
-      padding-left: 18px;
-      list-style: disc; /* 하위 목록에 디스크 스타일 적용 */
+    /* 1단계 들여쓰기 (Chapter Title) */
+    .book-toc > .paginated-toc > ul > li > ul {
+      margin: 0;
+      padding-left: 14px; /* 들여쓰기 */
+      list-style: none; /* 들여쓰기 된 곳도 기본적으로 점 제거 */
     }
 
+    .book-toc > .paginated-toc > ul > li > ul > li {
+        color: var(--ink-2); /* 챕터 제목은 보조 잉크색 */
+        font-weight: 500;
+    }
+
+    /* 2단계 들여쓰기 (Sub-Chapter Title) */
+    .book-toc > .paginated-toc > ul > li > ul > li > ul {
+      margin: 4px 0 0 0;
+      padding-left: 18px; /* 추가 들여쓰기 */
+      list-style: disc; /* 하위 목록에 디스크 스타일 적용 */
+    }
+    
     .book-toc li {
       margin-bottom: 4px;
       line-height: 1.4;
     }
+    
+    /* ---------------------------------------------------- */
+    /* 💡 페이지네이션 스타일 (추가) */
+    /* ---------------------------------------------------- */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .pagination-number {
+      padding: 0 8px;
+      cursor: pointer;
+      color: var(--ink-2);
+      transition: color 0.2s;
+    }
+
+    .pagination-number:hover {
+      color: var(--primary);
+    }
+
+    .pagination-number.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pagination-divider {
+      color: var(--border); /* 세로줄 색상 */
+      margin: 0 2px;
+    }
+
   </style>
 </head>
 
@@ -251,8 +305,21 @@
 
     <div class="carousel">
 
-    <!-- ✅ 귀여운 음향학 JSON 렌더링 -->
-      <div class="book-card" data-index="0">
+    <% 
+        const tocData = locale.books.cute_acoustics.toc;
+        // 한 페이지에 표시할 섹션(h5) 수
+        const itemsPerPage = 3; 
+        const totalSections = tocData.length;
+        const totalPages = Math.ceil(totalSections / itemsPerPage);
+        const paginatedToc = [];
+
+        for (let i = 0; i < totalPages; i++) {
+            const start = i * itemsPerPage;
+            const end = start + itemsPerPage;
+            paginatedToc.push(tocData.slice(start, end));
+        }
+    %>
+    <div class="book-card" data-index="0" data-book-id="cute-acoustics">
         <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
         <div class="book-info">
           <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
@@ -262,25 +329,40 @@
         </div>
         <div class="book-toc">
           <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
-          <ul>
-            <% locale.books.cute_acoustics.toc.forEach(section => { %>
-              <li>
-                <h5><%= section.section %></h5>
-                <ul>
-                  <% section.chapters.forEach(ch => { %>
-                    <li><%= ch.title %></li>
-                    <% if (ch.sub) { %>
-                      <ul>
-                        <% ch.sub.forEach(sub => { %>
-                          <li><%= sub.title %></li>
-                        <% }) %>
-                      </ul>
-                    <% } %>
-                  <% }) %>
-                </ul>
-              </li>
+          
+          <div class="pagination" data-book-id="cute-acoustics-pagination">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage('cute-acoustics', <%= i %>)">
+                    <%= i %>
+                </span>
+                <% if (i < totalPages) { %>
+                    <span class="pagination-divider">|</span>
+                <% } %>
+            <% } %>
+          </div>
+
+          <div class="paginated-toc" data-book-id="cute-acoustics-toc">
+            <% paginatedToc[0].forEach(section => { %>
+                <li>
+                  <h5><%= section.section %></h5>
+                  <ul>
+                    <% section.chapters.forEach(ch => { %>
+                      <li><%= ch.title %></li>
+                      <% if (ch.sub) { %>
+                        <ul>
+                          <% ch.sub.forEach(sub => { %>
+                            <li><%= sub.title %></li>
+                          <% }) %>
+                        </ul>
+                      <% } %>
+                    <% }) %>
+                  </ul>
+                </li>
             <% }) %>
-          </ul>
+          </div>
+          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+              총 <%= totalSections %>개 섹션
+          </div>
         </div>
       </div>
 
@@ -335,6 +417,70 @@
 
   <script>
   (() => {
+    // 서버에서 전달된 목차 데이터 (EJS 템플릿에서 직접 접근)
+    const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
+    const itemsPerPage = 3;
+    const totalPages = Math.ceil(tocData.length / itemsPerPage);
+    const paginatedToc = [];
+
+    for (let i = 0; i < totalPages; i++) {
+        const start = i * itemsPerPage;
+        const end = start + itemsPerPage;
+        paginatedToc.push(tocData.slice(start, end));
+    }
+
+    // 목차를 HTML 문자열로 변환하는 함수
+    const renderTocPage = (pageIndex) => {
+        const sections = paginatedToc[pageIndex - 1]; // pageIndex는 1부터 시작
+        if (!sections) return '';
+
+        let html = '<ul>';
+        sections.forEach(section => {
+            html += `
+                <li>
+                    <h5>${section.section}</h5>
+                    <ul>
+            `;
+            section.chapters.forEach(ch => {
+                html += `<li>${ch.title}</li>`;
+                if (ch.sub) {
+                    html += '<ul>';
+                    ch.sub.forEach(sub => {
+                        html += `<li>${sub.title}</li>`;
+                    });
+                    html += '</ul>';
+                }
+            });
+            html += `
+                    </ul>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        return html;
+    };
+
+    // 페이지 전환 함수 (onclick 이벤트에서 호출)
+    window.changePage = (bookId, pageNumber) => {
+        if (bookId !== 'cute-acoustics') return;
+
+        const tocContainer = document.querySelector(`[data-book-id="cute-acoustics-toc"]`);
+        const paginationContainer = document.querySelector(`[data-book-id="cute-acoustics-pagination"]`);
+        
+        if (tocContainer && paginationContainer) {
+            // 목차 내용 업데이트
+            tocContainer.innerHTML = renderTocPage(pageNumber);
+
+            // 페이지네이션 활성 상태 업데이트
+            paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent.trim()) === pageNumber) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    };
+    
     // 카드 클릭 시 확장/축소
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
@@ -344,82 +490,10 @@
         card.classList.toggle('expanded');
       });
     });
+
   })();
   </script>
 
-  <script>
-(() => {
-  // 카드 클릭 시 확장/축소
-  document.querySelectorAll('.book-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.book-card').forEach(c => {
-        if (c !== card) c.classList.remove('expanded');
-      });
-      card.classList.toggle('expanded');
-    });
-  });
-
-  /* === 🎯 페이지네이션 기능 (귀여운 음향학 전용) === */
-  const tocContainer = document.querySelector('.book-card[data-index="0"] .book-toc ul');
-  const sections = Array.from(tocContainer.children);
-  const itemsPerPage = 3; // 한 페이지당 표시할 섹션 수
-  let currentPage = 1;
-  const totalPages = Math.ceil(sections.length / itemsPerPage);
-
-  // 1️⃣ 페이지네이션 컨트롤러 만들기
-  const pagination = document.createElement('div');
-  pagination.classList.add('toc-pagination');
-  pagination.style.cssText = `
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    margin-top:12px;
-    font-size:0.85rem;
-  `;
-  tocContainer.parentElement.appendChild(pagination);
-
-  // 2️⃣ 섹션 표시 함수
-  function renderPage(page) {
-    sections.forEach((section, i) => {
-      section.style.display =
-        i >= (page - 1) * itemsPerPage && i < page * itemsPerPage ? 'block' : 'none';
-    });
-
-    pagination.innerHTML = '';
-    const prev = document.createElement('button');
-    prev.textContent = '◀';
-    prev.disabled = page === 1;
-    const next = document.createElement('button');
-    next.textContent = '▶';
-    next.disabled = page === totalPages;
-
-    prev.onclick = () => { currentPage--; renderPage(currentPage); };
-    next.onclick = () => { currentPage++; renderPage(currentPage); };
-
-    const info = document.createElement('span');
-    info.textContent = `${page} / ${totalPages}`;
-
-    [prev, info, next].forEach(el => {
-      el.style.cssText = `
-        background: var(--panel);
-        border: 1px solid var(--border);
-        color: var(--ink);
-        padding: 2px 8px;
-        border-radius: 6px;
-        cursor: pointer;
-      `;
-    });
-
-    pagination.appendChild(prev);
-    pagination.appendChild(info);
-    pagination.appendChild(next);
-  }
-
-  // 초기 렌더링
-  renderPage(currentPage);
-})();
-</script>
-
-
+  
 </body>
 </html>
