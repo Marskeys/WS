@@ -62,6 +62,377 @@
       "title": "전자책 전문 작가 버그루프",
       "body": "책이라는 것은 영화의 자막과도 같다.<br><br>책을 제대로 읽기 위해서는 경험(기억) 혹은 경험에 대한 욕구(상상력), 둘 중 하나는 반드시 필요하다. 글자라는 것은 무심한 시선으로 스윽 보자면 그저 이리저리 그어진 선에 불과하다. 그런데 선의 얽힘 사이에서 만들어지는 의미가 진정 실감되기 위해서는 그것과 독자 사이의 관계가 먼저 형성되어 있어야 하는데, 이 역할을 하는 것이 바로 한 개인의 내면이라는 스크린 위에 쏘아진 — 자기 자신만 유일하게 온전한 형태로 볼 수 있는 장면, 즉 기억과 상상력인 것이다.<br><br>전통적인 의미에서의 책은 하나의 방향을 향해 활자를 늘어 놓은 형태로 존재한다. 그러나 전자책은 다르다. 전자(Electron)는 전기적인 기운을 내뿜는 알맹이를 지칭하는데, 이 기운에 조그마한 변화만 생겨도 그 전기적 요동은 빛의 속도로 전파가 된다. 이 특성을 이용하면 책의 맨 첫 장에서 마지막 장까지 단숨에 이동할 수 있으며, 활자 사이에 오디오나 비디오와 같은 다른 차원의 매체를 인용할 수도 있다. 이는 모두 글에 대한 경험을 풍부하게 하는 긍정적인 역할을 한다.<br><br>전자책은 단순히 복제와 출판이 용이한 책이 아니다. 그 이상이다! 그 가치를 탐구하는 여정에 대한 기록이 바로 이 블로그이다.",
       "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "귀여운 음향학",
+        "author": "두동선",
+        "toc": [
+          {
+            "section": "서문",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "귀여운 음향학 서문"
+              },
+              {
+                "id": "afterword",
+                "title": "덧붙이는 말"
+              }
+            ]
+          },
+          {
+            "section": "1. 우주의 법칙",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "관성: 변하지 않으려는 성질"
+              },
+              {
+                "id": "1-1-1",
+                "title": "변화와 힘"
+              },
+              {
+                "id": "1-2",
+                "title": "힘은 에너지를 전달하는 문"
+              },
+              {
+                "id": "1-2-1",
+                "title": "두 종류의 에너지"
+              },
+              {
+                "id": "1-2-2",
+                "title": "에너지 보존의 법칙"
+              },
+              {
+                "id": "1-2-3",
+                "title": "요약"
+              },
+              {
+                "id": "1-3",
+                "title": "장(Fields)과 입자 (심화)"
+              },
+              {
+                "id": "1-3-1",
+                "title": "원자의 구조"
+              },
+              {
+                "id": "1-3-2",
+                "title": "장이란?"
+              },
+              {
+                "id": "1-3-3",
+                "title": "전자가 궁금하다!"
+              },
+              {
+                "id": "1-3-4",
+                "title": "기본 입자 더 들어가기"
+              },
+              {
+                "id": "1-3-5",
+                "title": "인간도 확률적 존재이다?"
+              }
+            ]
+          },
+          {
+            "section": "2. 진동과 파동",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "진동: 소리를 발생시키는 특별한 움직임"
+              },
+              {
+                "id": "2-2",
+                "title": "진동의 준비물: 관성과 복원력"
+              },
+              {
+                "id": "2-3",
+                "title": "유체역학 맛보기"
+              },
+              {
+                "id": "2-4",
+                "title": "음원과 매질"
+              },
+              {
+                "id": "2-5",
+                "title": "공기의 무작위 열운동과 확산"
+              },
+              {
+                "id": "2-6",
+                "title": "공기의 탄성"
+              },
+              {
+                "id": "2-7",
+                "title": "공기의 진동 원리: 압축과 희박"
+              }
+            ]
+          },
+          {
+            "section": "3. 기초 수학",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "모델이란?"
+              },
+              {
+                "id": "3-2",
+                "title": "물리량: 복잡한 현상을 모델링하기 위한 첫 단계"
+              },
+              {
+                "id": "3-3",
+                "title": "운동량과 힘의 모델링"
+              },
+              {
+                "id": "3-3-1",
+                "title": "관성의 수학적 표현: 운동량"
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: 힘이라는 추상적 개념을 모델링하다"
+              },
+              {
+                "id": "3-4",
+                "title": "후크의 법칙: 진동체의 수학적 표현"
+              },
+              {
+                "id": "3-5",
+                "title": "삼각함수",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "함수란?"
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "비례와 비율"
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "비율의 미학 0: 비율의 신비한 힘"
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "비율의 미학 1: 직각삼각형의 비밀"
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "비율의 미학 2: 우주의 낭만과 삼각함수"
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "비율의 미학 3: 라디안과 무차원의 각도"
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "비율의 미학 4: 미분"
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "도함수: 찰나의 변화를 나타내는 함수"
+              },
+              {
+                "id": "3-7",
+                "title": "삼각함수의 도함수"
+              },
+              {
+                "id": "3-8",
+                "title": "후크의 법칙을 풀다: 단순조화진동"
+              }
+            ]
+          },
+          {
+            "section": "4. 소리의 성질",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "주기성과 주파수"
+              },
+              {
+                "id": "4-2",
+                "title": "고유주파수"
+              },
+              {
+                "id": "4-3",
+                "title": "공진"
+              },
+              {
+                "id": "4-4",
+                "title": "파동방정식"
+              },
+              {
+                "id": "4-5",
+                "title": "모드와 배음"
+              },
+              {
+                "id": "4-6",
+                "title": "음악음향학 맛보기"
+              },
+              {
+                "id": "4-7",
+                "title": "조율법"
+              }
+            ]
+          },
+          {
+            "section": "5. 공간",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "건축의 구조"
+              },
+              {
+                "id": "5-2",
+                "title": "음향적 특성들"
+              },
+              {
+                "id": "5-2-1",
+                "title": "반사"
+              },
+              {
+                "id": "5-2-2",
+                "title": "흡음"
+              },
+              {
+                "id": "5-2-3",
+                "title": "굴절"
+              },
+              {
+                "id": "5-2-4",
+                "title": "회절"
+              },
+              {
+                "id": "5-2-5",
+                "title": "간섭"
+              },
+              {
+                "id": "5-3",
+                "title": "건축음향학 맛보기"
+              }
+            ]
+          },
+          {
+            "section": "6. 오디오 신호",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "자유 진동과 강제 진동"
+              },
+              {
+                "id": "6-2",
+                "title": "전자기학 맛보기"
+              },
+              {
+                "id": "6-2-1",
+                "title": "맥스웰 방정식"
+              },
+              {
+                "id": "6-3",
+                "title": "신호란?"
+              },
+              {
+                "id": "6-4",
+                "title": "디지털-아날로그 변환"
+              },
+              {
+                "id": "6-5",
+                "title": "녹음의 원리"
+              },
+              {
+                "id": "6-5-1",
+                "title": "마이크"
+              },
+              {
+                "id": "6-5-2",
+                "title": "스피커"
+              },
+              {
+                "id": "6-6",
+                "title": "오디오 신호"
+              },
+              {
+                "id": "6-6-1",
+                "title": "분석"
+              },
+              {
+                "id": "6-6-2",
+                "title": "합성"
+              },
+              {
+                "id": "6-6-3",
+                "title": "처리"
+              },
+              {
+                "id": "6-6-4",
+                "title": "저장"
+              },
+              {
+                "id": "6-7",
+                "title": "전자음향학 맛보기"
+              }
+            ]
+          },
+          {
+            "section": "7. 한발 더 남았다: 심화 수학",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "푸리에 분석"
+              },
+              {
+                "id": "7-2",
+                "title": "푸리에 합성"
+              }
+            ]
+          },
+          {
+            "section": "8. 음성과 소통",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "귀"
+              },
+              {
+                "id": "8-1-1",
+                "title": "귀의 구조"
+              },
+              {
+                "id": "8-1-2",
+                "title": "귀와 뇌의 연결"
+              },
+              {
+                "id": "8-1-3",
+                "title": "이명"
+              },
+              {
+                "id": "8-1-4",
+                "title": "보청기"
+              },
+              {
+                "id": "8-1-5",
+                "title": "심리음향학 맛보기"
+              },
+              {
+                "id": "8-2",
+                "title": "말"
+              },
+              {
+                "id": "8-2-1",
+                "title": "얼굴의 음향학적 구조"
+              },
+              {
+                "id": "8-2-2",
+                "title": "발성"
+              },
+              {
+                "id": "8-3",
+                "title": "음성음향학 맛보기"
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "en": {
@@ -127,6 +498,377 @@
       "title": "Bug Loop — The Digital Book Writer",
       "body": "A book is like subtitles to a movie.<br><br>To truly read a book, one must hold either experience (memory) or the desire for it (imagination). Letters, when glanced at without intent, are merely lines drawn here and there. But for the meaning woven between those lines to come alive, a connection must first form between the text and the reader. That bridge is the inner screen of one’s mind — where scenes are projected that only the self can fully perceive: memory and imagination.<br><br>In its traditional form, a book exists as text flowing in one direction. But an e-book is different. The word 'electron' refers to a tiny entity that emits an electric force — even a subtle fluctuation in it spreads at the speed of light. Through this nature, a reader can leap from the first page to the last in an instant, and weave in media from other dimensions such as sound and motion. These layers deepen and enrich the act of reading.<br><br>An e-book is not merely a book made easy to copy or distribute. It is something far greater — a living medium of light and language. This blog is a record of my journey to explore what that means.",
       "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "Cute Acoustics",
+        "author": "Dudongsun",
+        "toc": [
+          {
+            "section": "Preface",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "Preface to Cute Acoustics"
+              },
+              {
+                "id": "afterword",
+                "title": "Afterword"
+              }
+            ]
+          },
+          {
+            "section": "1. Laws of the Universe",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "Inertia: The Property of Resisting Change"
+              },
+              {
+                "id": "1-1-1",
+                "title": "Change and Force"
+              },
+              {
+                "id": "1-2",
+                "title": "Force is the Door that Transmits Energy"
+              },
+              {
+                "id": "1-2-1",
+                "title": "Two Types of Energy"
+              },
+              {
+                "id": "1-2-2",
+                "title": "Law of Conservation of Energy"
+              },
+              {
+                "id": "1-2-3",
+                "title": "Summary"
+              },
+              {
+                "id": "1-3",
+                "title": "Fields and Particles (Advanced)"
+              },
+              {
+                "id": "1-3-1",
+                "title": "Structure of the Atom"
+              },
+              {
+                "id": "1-3-2",
+                "title": "What is a Field?"
+              },
+              {
+                "id": "1-3-3",
+                "title": "Curious about Electrons!"
+              },
+              {
+                "id": "1-3-4",
+                "title": "Diving Deeper into Elementary Particles"
+              },
+              {
+                "id": "1-3-5",
+                "title": "Are Humans also Probabilistic Beings?"
+              }
+            ]
+          },
+          {
+            "section": "2. Vibration and Wave",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "Vibration: The Special Movement that Creates Sound"
+              },
+              {
+                "id": "2-2",
+                "title": "Prerequisites for Vibration: Inertia and Restoring Force"
+              },
+              {
+                "id": "2-3",
+                "title": "A Taste of Fluid Dynamics"
+              },
+              {
+                "id": "2-4",
+                "title": "Sound Source and Medium"
+              },
+              {
+                "id": "2-5",
+                "title": "Random Thermal Motion and Diffusion of Air"
+              },
+              {
+                "id": "2-6",
+                "title": "Elasticity of Air"
+              },
+              {
+                "id": "2-7",
+                "title": "Principle of Air Vibration: Compression and Rarefaction"
+              }
+            ]
+          },
+          {
+            "section": "3. Basic Mathematics",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "What is a Model?"
+              },
+              {
+                "id": "3-2",
+                "title": "Physical Quantities: The First Step to Modeling Complex Phenomena"
+              },
+              {
+                "id": "3-3",
+                "title": "Modeling Momentum and Force"
+              },
+              {
+                "id": "3-3-1",
+                "title": "Mathematical Expression of Inertia: Momentum"
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: Modeling the Abstract Concept of Force"
+              },
+              {
+                "id": "3-4",
+                "title": "Hooke's Law: Mathematical Expression of a Vibrating Body"
+              },
+              {
+                "id": "3-5",
+                "title": "Trigonometric Functions",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "What is a Function?"
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "Proportion and Ratio"
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "The Aesthetics of Ratio 0: The Mysterious Power of Ratio"
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "The Aesthetics of Ratio 1: The Secret of the Right Triangle"
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "The Aesthetics of Ratio 2: The Romance of the Universe and Trigonometric Functions"
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "The Aesthetics of Ratio 3: Radian and Dimensionless Angle"
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "The Aesthetics of Ratio 4: Differentiation"
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "Derivative: A Function Representing Instantaneous Change"
+              },
+              {
+                "id": "3-7",
+                "title": "Derivatives of Trigonometric Functions"
+              },
+              {
+                "id": "3-8",
+                "title": "Solving Hooke's Law: Simple Harmonic Motion"
+              }
+            ]
+          },
+          {
+            "section": "4. Properties of Sound",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "Periodicity and Frequency"
+              },
+              {
+                "id": "4-2",
+                "title": "Natural Frequency"
+              },
+              {
+                "id": "4-3",
+                "title": "Resonance"
+              },
+              {
+                "id": "4-4",
+                "title": "Wave Equation"
+              },
+              {
+                "id": "4-5",
+                "title": "Modes and Harmonics"
+              },
+              {
+                "id": "4-6",
+                "title": "A Taste of Musical Acoustics"
+              },
+              {
+                "id": "4-7",
+                "title": "Tuning Systems"
+              }
+            ]
+          },
+          {
+            "section": "5. Space",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "Structure of Architecture"
+              },
+              {
+                "id": "5-2",
+                "title": "Acoustic Characteristics"
+              },
+              {
+                "id": "5-2-1",
+                "title": "Reflection"
+              },
+              {
+                "id": "5-2-2",
+                "title": "Absorption"
+              },
+              {
+                "id": "5-2-3",
+                "title": "Refraction"
+              },
+              {
+                "id": "5-2-4",
+                "title": "Diffraction"
+              },
+              {
+                "id": "5-2-5",
+                "title": "Interference"
+              },
+              {
+                "id": "5-3",
+                "title": "A Taste of Architectural Acoustics"
+              }
+            ]
+          },
+          {
+            "section": "6. Audio Signal",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "Free Vibration and Forced Vibration"
+              },
+              {
+                "id": "6-2",
+                "title": "A Taste of Electromagnetism"
+              },
+              {
+                "id": "6-2-1",
+                "title": "Maxwell's Equations"
+              },
+              {
+                "id": "6-3",
+                "title": "What is a Signal?"
+              },
+              {
+                "id": "6-4",
+                "title": "Digital-to-Analog Conversion"
+              },
+              {
+                "id": "6-5",
+                "title": "Principles of Recording"
+              },
+              {
+                "id": "6-5-1",
+                "title": "Microphone"
+              },
+              {
+                "id": "6-5-2",
+                "title": "Speaker"
+              },
+              {
+                "id": "6-6",
+                "title": "Audio Signal"
+              },
+              {
+                "id": "6-6-1",
+                "title": "Analysis"
+              },
+              {
+                "id": "6-6-2",
+                "title": "Synthesis"
+              },
+              {
+                "id": "6-6-3",
+                "title": "Processing"
+              },
+              {
+                "id": "6-6-4",
+                "title": "Storage"
+              },
+              {
+                "id": "6-7",
+                "title": "A Taste of Electroacoustics"
+              }
+            ]
+          },
+          {
+            "section": "7. One Step Further: Advanced Mathematics",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "Fourier Analysis"
+              },
+              {
+                "id": "7-2",
+                "title": "Fourier Synthesis"
+              }
+            ]
+          },
+          {
+            "section": "8. Voice and Communication",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "The Ear"
+              },
+              {
+                "id": "8-1-1",
+                "title": "Structure of the Ear"
+              },
+              {
+                "id": "8-1-2",
+                "title": "Connection Between the Ear and Brain"
+              },
+              {
+                "id": "8-1-3",
+                "title": "Tinnitus"
+              },
+              {
+                "id": "8-1-4",
+                "title": "Hearing Aids"
+              },
+              {
+                "id": "8-1-5",
+                "title": "A Taste of Psychoacoustics"
+              },
+              {
+                "id": "8-2",
+                "title": "Speech"
+              },
+              {
+                "id": "8-2-1",
+                "title": "Acoustic Structure of the Face"
+              },
+              {
+                "id": "8-2-2",
+                "title": "Vocalization"
+              },
+              {
+                "id": "8-3",
+                "title": "A Taste of Speech Acoustics"
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "fr": {
@@ -161,7 +903,7 @@
       "profile-tags1": ["#DévWeb", "#UniversitéEnLigne", "#LivresNumériques", "#DesignWeb"],
       "profile-job2": "Musique et acoustique",
       "profile-name2": "Dudongsun",
-      "profile-bio2": "Titulaire d’une licence en composition (Université Hanyang), il a étudié pendant deux ans l’acoustique à l’Université du Mans. Passionné par la musique affranchie de toute finalité et par les instruments virtuels qui la rendent possible.",
+      "profile-bio2": "Après avoir obtenu une licence en composition (Université Hanyang), il a étudié pendant deux ans l’acoustique à l’Université du Mans. Passionné par la musique affranchie de toute finalité et par les instruments virtuels qui la rendent possible.",
       "profile-tags2": ["#MusiqueÉlectronique", "#Acoustique"],
       "profile-job3": "Jeux cognitifs et bien-être",
       "profile-name3": "Sedongsun",
@@ -192,6 +934,377 @@
       "title": "Bug Loop — L’écrivain du livre numérique",
       "body": "Un livre est comme les sous-titres d’un film.<br><br>Pour lire véritablement un livre, il faut posséder soit l’expérience (la mémoire), soit le désir d’en faire l’expérience (l’imagination). Les lettres, vues d’un œil distrait, ne sont que des traits tracés au hasard. Mais pour que le sens né de leur enchevêtrement prenne vie, un lien doit d’abord se former entre le texte et le lecteur. Ce lien, c’est l’écran intérieur où se projettent des scènes que seul soi-même peut percevoir dans leur forme complète : la mémoire et l’imagination.<br><br>Dans sa forme traditionnelle, le livre s’étend dans une seule direction. Le livre numérique, lui, est différent. L’électron désigne une particule qui émet une énergie électrique ; et la moindre variation de cette énergie se propage à la vitesse de la lumière. Grâce à cette nature, on peut passer instantanément de la première à la dernière page, ou entrelacer les mots d’autres dimensions — sons, images, mouvements. Ces couches multiples enrichissent l’expérience de la lecture.<br><br>Un livre numérique n’est pas simplement un livre facile à reproduire ou à publier. C’est bien plus que cela : un médium vivant de lumière et de langage. Ce blog est le journal d’un voyage à la recherche de sa véritable valeur.",
       "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "Acoustique Mignonne",
+        "author": "Dudongsun",
+        "toc": [
+          {
+            "section": "Préface",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "Préface à l'Acoustique Mignonne"
+              },
+              {
+                "id": "afterword",
+                "title": "Postface"
+              }
+            ]
+          },
+          {
+            "section": "1. Les Lois de l'Univers",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "Inertie : La Propriété de Résister au Changement"
+              },
+              {
+                "id": "1-1-1",
+                "title": "Changement et Force"
+              },
+              {
+                "id": "1-2",
+                "title": "La Force est la Porte qui Transmet l'Énergie"
+              },
+              {
+                "id": "1-2-1",
+                "title": "Deux Types d'Énergie"
+              },
+              {
+                "id": "1-2-2",
+                "title": "Loi de Conservation de l'Énergie"
+              },
+              {
+                "id": "1-2-3",
+                "title": "Résumé"
+              },
+              {
+                "id": "1-3",
+                "title": "Champs et Particules (Avancé)"
+              },
+              {
+                "id": "1-3-1",
+                "title": "Structure de l'Atome"
+              },
+              {
+                "id": "1-3-2",
+                "title": "Qu'est-ce qu'un Champ ?"
+              },
+              {
+                "id": "1-3-3",
+                "title": "Les Électrons m'Intriguent !"
+              },
+              {
+                "id": "1-3-4",
+                "title": "Approfondissement des Particules Élémentaires"
+              },
+              {
+                "id": "1-3-5",
+                "title": "Les Humains sont-ils aussi des Êtres Probabilistes ?"
+              }
+            ]
+          },
+          {
+            "section": "2. Vibration et Onde",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "Vibration : Le Mouvement Spécial qui Crée le Son"
+              },
+              {
+                "id": "2-2",
+                "title": "Prérequis de la Vibration : Inertie et Force de Rappel"
+              },
+              {
+                "id": "2-3",
+                "title": "Un Aperçu de la Dynamique des Fluides"
+              },
+              {
+                "id": "2-4",
+                "title": "Source Sonore et Milieu"
+              },
+              {
+                "id": "2-5",
+                "title": "Mouvement Thermique Aléatoire et Diffusion de l'Air"
+              },
+              {
+                "id": "2-6",
+                "title": "Élasticité de l'Air"
+              },
+              {
+                "id": "2-7",
+                "title": "Principe de la Vibration de l'Air : Compression et Raréfaction"
+              }
+            ]
+          },
+          {
+            "section": "3. Mathématiques de Base",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "Qu'est-ce qu'un Modèle ?"
+              },
+              {
+                "id": "3-2",
+                "title": "Grandeurs Physiques : Le Premier Pas vers la Modélisation de Phénomènes Complexes"
+              },
+              {
+                "id": "3-3",
+                "title": "Modélisation de l'Impulsion et de la Force"
+              },
+              {
+                "id": "3-3-1",
+                "title": "Expression Mathématique de l'Inertie : L'Impulsion"
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma : Modéliser le Concept Abstrait de Force"
+              },
+              {
+                "id": "3-4",
+                "title": "Loi de Hooke : Expression Mathématique d'un Corps Vibrant"
+              },
+              {
+                "id": "3-5",
+                "title": "Fonctions Trigonométriques",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "Qu'est-ce qu'une Fonction ?"
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "Proportion et Taux"
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "L'Esthétique du Taux 0 : Le Pouvoir Mystérieux du Taux"
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "L'Esthétique du Taux 1 : Le Secret du Triangle Rectangle"
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "L'Esthétique du Taux 2 : La Romance de l'Univers et les Fonctions Trigonométriques"
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "L'Esthétique du Taux 3 : Radian et Angle Sans Dimension"
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "L'Esthétique du Taux 4 : La Différentiation"
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "Dérivée : Une Fonction Représentant le Changement Instantané"
+              },
+              {
+                "id": "3-7",
+                "title": "Dérivées des Fonctions Trigonométriques"
+              },
+              {
+                "id": "3-8",
+                "title": "Résoudre la Loi de Hooke : Mouvement Harmonique Simple"
+              }
+            ]
+          },
+          {
+            "section": "4. Propriétés du Son",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "Périodicité et Fréquence"
+              },
+              {
+                "id": "4-2",
+                "title": "Fréquence Propre"
+              },
+              {
+                "id": "4-3",
+                "title": "Résonance"
+              },
+              {
+                "id": "4-4",
+                "title": "Équation d'Onde"
+              },
+              {
+                "id": "4-5",
+                "title": "Modes et Harmoniques"
+              },
+              {
+                "id": "4-6",
+                "title": "Un Aperçu de l'Acoustique Musicale"
+              },
+              {
+                "id": "4-7",
+                "title": "Systèmes d'Accord"
+              }
+            ]
+          },
+          {
+            "section": "5. Espace",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "Structure de l'Architecture"
+              },
+              {
+                "id": "5-2",
+                "title": "Caractéristiques Acoustiques"
+              },
+              {
+                "id": "5-2-1",
+                "title": "Réflexion"
+              },
+              {
+                "id": "5-2-2",
+                "title": "Absorption"
+              },
+              {
+                "id": "5-2-3",
+                "title": "Réfraction"
+              },
+              {
+                "id": "5-2-4",
+                "title": "Diffraction"
+              },
+              {
+                "id": "5-2-5",
+                "title": "Interférence"
+              },
+              {
+                "id": "5-3",
+                "title": "Un Aperçu de l'Acoustique Architecturale"
+              }
+            ]
+          },
+          {
+            "section": "6. Signal Audio",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "Vibration Libre et Vibration Forcée"
+              },
+              {
+                "id": "6-2",
+                "title": "Un Aperçu de l'Électromagnétisme"
+              },
+              {
+                "id": "6-2-1",
+                "title": "Équations de Maxwell"
+              },
+              {
+                "id": "6-3",
+                "title": "Qu'est-ce qu'un Signal ?"
+              },
+              {
+                "id": "6-4",
+                "title": "Conversion Numérique-Analogique"
+              },
+              {
+                "id": "6-5",
+                "title": "Principes de l'Enregistrement"
+              },
+              {
+                "id": "6-5-1",
+                "title": "Microphone"
+              },
+              {
+                "id": "6-5-2",
+                "title": "Haut-parleur"
+              },
+              {
+                "id": "6-6",
+                "title": "Signal Audio"
+              },
+              {
+                "id": "6-6-1",
+                "title": "Analyse"
+              },
+              {
+                "id": "6-6-2",
+                "title": "Synthèse"
+              },
+              {
+                "id": "6-6-3",
+                "title": "Traitement"
+              },
+              {
+                "id": "6-6-4",
+                "title": "Stockage"
+              },
+              {
+                "id": "6-7",
+                "title": "Un Aperçu de l'Électroacoustique"
+              }
+            ]
+          },
+          {
+            "section": "7. Un Pas de Plus : Mathématiques Avancées",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "Analyse de Fourier"
+              },
+              {
+                "id": "7-2",
+                "title": "Synthèse de Fourier"
+              }
+            ]
+          },
+          {
+            "section": "8. Voix et Communication",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "L'Oreille"
+              },
+              {
+                "id": "8-1-1",
+                "title": "Structure de l'Oreille"
+              },
+              {
+                "id": "8-1-2",
+                "title": "Connexion entre l'Oreille et le Cerveau"
+              },
+              {
+                "id": "8-1-3",
+                "title": "Acouphènes"
+              },
+              {
+                "id": "8-1-4",
+                "title": "Aides Auditives"
+              },
+              {
+                "id": "8-1-5",
+                "title": "Un Aperçu de la Psychoacoustique"
+              },
+              {
+                "id": "8-2",
+                "title": "La Parole"
+              },
+              {
+                "id": "8-2-1",
+                "title": "Structure Acoustique du Visage"
+              },
+              {
+                "id": "8-2-2",
+                "title": "Vocalisation"
+              },
+              {
+                "id": "8-3",
+                "title": "Un Aperçu de l'Acoustique de la Parole"
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "zh": {
@@ -257,6 +1370,377 @@
       "title": "Bug Loop — 数字书写者",
       "body": "书，就像电影的字幕。<br><br>要真正读懂一本书，人必须拥有两样东西之一：经验（记忆），或对经验的渴望（想象）。文字，在漫不经心的目光下，只是几笔线条的交错。然而，唯有当读者与文字之间产生联系，那些线条间编织出的意义才能真正被感知。承担这一角色的，是内心的屏幕——在那上面投射着只属于自己的完整画面：记忆与想象。<br><br>传统意义上的书，是沿着单一方向排列的文字。而电子书不同。电子（electron）是一种释放电能的微粒，哪怕最细微的变化，也会以光速传递。借助这一特性，我们可以在瞬间跨越书页，从第一页跃向最后一页，也可以在文字之间穿插声音与影像等多维媒介。这一切，都让阅读成为更丰富的体验。<br><br>电子书不只是易于复制与出版的书籍。它是更深层的存在——一个由光与语言组成的活体媒介。本博客，正是我探索其真正价值的旅程记录。",
       "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "可爱的声学",
+        "author": "杜东善",
+        "toc": [
+          {
+            "section": "序言",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "可爱的声学 序言"
+              },
+              {
+                "id": "afterword",
+                "title": "附言"
+              }
+            ]
+          },
+          {
+            "section": "1. 宇宙的法则",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "惯性：拒绝变化的性质"
+              },
+              {
+                "id": "1-1-1",
+                "title": "变化与力"
+              },
+              {
+                "id": "1-2",
+                "title": "力是传递能量的门"
+              },
+              {
+                "id": "1-2-1",
+                "title": "两种能量"
+              },
+              {
+                "id": "1-2-2",
+                "title": "能量守恒定律"
+              },
+              {
+                "id": "1-2-3",
+                "title": "摘要"
+              },
+              {
+                "id": "1-3",
+                "title": "场和粒子 (进阶)"
+              },
+              {
+                "id": "1-3-1",
+                "title": "原子的结构"
+              },
+              {
+                "id": "1-3-2",
+                "title": "什么是场？"
+              },
+              {
+                "id": "1-3-3",
+                "title": "好奇电子！"
+              },
+              {
+                "id": "1-3-4",
+                "title": "深入探讨基本粒子"
+              },
+              {
+                "id": "1-3-5",
+                "title": "人类也是概率性存在吗？"
+              }
+            ]
+          },
+          {
+            "section": "2. 振动与波",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "振动：产生声音的特殊运动"
+              },
+              {
+                "id": "2-2",
+                "title": "振动的准备：惯性与恢复力"
+              },
+              {
+                "id": "2-3",
+                "title": "流体力学尝鲜"
+              },
+              {
+                "id": "2-4",
+                "title": "音源与介质"
+              },
+              {
+                "id": "2-5",
+                "title": "空气的随机热运动与扩散"
+              },
+              {
+                "id": "2-6",
+                "title": "空气的弹性"
+              },
+              {
+                "id": "2-7",
+                "title": "空气振动原理：压缩与稀薄"
+              }
+            ]
+          },
+          {
+            "section": "3. 基础数学",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "什么是模型？"
+              },
+              {
+                "id": "3-2",
+                "title": "物理量：建模复杂现象的第一步"
+              },
+              {
+                "id": "3-3",
+                "title": "动量与力的建模"
+              },
+              {
+                "id": "3-3-1",
+                "title": "惯性的数学表示：动量"
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma：对力这一抽象概念的建模"
+              },
+              {
+                "id": "3-4",
+                "title": "胡克定律：振动物体的数学表示"
+              },
+              {
+                "id": "3-5",
+                "title": "三角函数",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "什么是函数？"
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "比例与比率"
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "比率的美学 0：比率的神秘力量"
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "比率的美学 1：直角三角形的秘密"
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "比率的美学 2：宇宙的浪漫与三角函数"
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "比率的美学 3：弧度与无量纲角"
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "比率的美学 4：微分"
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "导数：表示瞬间变化的函数"
+              },
+              {
+                "id": "3-7",
+                "title": "三角函数的导数"
+              },
+              {
+                "id": "3-8",
+                "title": "解读胡克定律：简谐振动"
+              }
+            ]
+          },
+          {
+            "section": "4. 声音的性质",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "周期性与频率"
+              },
+              {
+                "id": "4-2",
+                "title": "固有频率"
+              },
+              {
+                "id": "4-3",
+                "title": "共振"
+              },
+              {
+                "id": "4-4",
+                "title": "波动方程"
+              },
+              {
+                "id": "4-5",
+                "title": "模式与泛音"
+              },
+              {
+                "id": "4-6",
+                "title": "音乐声学尝鲜"
+              },
+              {
+                "id": "4-7",
+                "title": "调律法"
+              }
+            ]
+          },
+          {
+            "section": "5. 空间",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "建筑的结构"
+              },
+              {
+                "id": "5-2",
+                "title": "声学特性"
+              },
+              {
+                "id": "5-2-1",
+                "title": "反射"
+              },
+              {
+                "id": "5-2-2",
+                "title": "吸收"
+              },
+              {
+                "id": "5-2-3",
+                "title": "折射"
+              },
+              {
+                "id": "5-2-4",
+                "title": "衍射"
+              },
+              {
+                "id": "5-2-5",
+                "title": "干涉"
+              },
+              {
+                "id": "5-3",
+                "title": "建筑声学尝鲜"
+              }
+            ]
+          },
+          {
+            "section": "6. 音频信号",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "自由振动与受迫振动"
+              },
+              {
+                "id": "6-2",
+                "title": "电磁学尝鲜"
+              },
+              {
+                "id": "6-2-1",
+                "title": "麦克斯韦方程"
+              },
+              {
+                "id": "6-3",
+                "title": "什么是信号？"
+              },
+              {
+                "id": "6-4",
+                "title": "数字-模拟转换"
+              },
+              {
+                "id": "6-5",
+                "title": "录音的原理"
+              },
+              {
+                "id": "6-5-1",
+                "title": "麦克风"
+              },
+              {
+                "id": "6-5-2",
+                "title": "扬声器"
+              },
+              {
+                "id": "6-6",
+                "title": "音频信号"
+              },
+              {
+                "id": "6-6-1",
+                "title": "分析"
+              },
+              {
+                "id": "6-6-2",
+                "title": "合成"
+              },
+              {
+                "id": "6-6-3",
+                "title": "处理"
+              },
+              {
+                "id": "6-6-4",
+                "title": "存储"
+              },
+              {
+                "id": "6-7",
+                "title": "电子声学尝鲜"
+              }
+            ]
+          },
+          {
+            "section": "7. 更进一步：进阶数学",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "傅里叶分析"
+              },
+              {
+                "id": "7-2",
+                "title": "傅里叶合成"
+              }
+            ]
+          },
+          {
+            "section": "8. 声音与沟通",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "耳朵"
+              },
+              {
+                "id": "8-1-1",
+                "title": "耳朵的结构"
+              },
+              {
+                "id": "8-1-2",
+                "title": "耳朵与大脑的连接"
+              },
+              {
+                "id": "8-1-3",
+                "title": "耳鸣"
+              },
+              {
+                "id": "8-1-4",
+                "title": "助听器"
+              },
+              {
+                "id": "8-1-5",
+                "title": "心理声学尝鲜"
+              },
+              {
+                "id": "8-2",
+                "title": "语音"
+              },
+              {
+                "id": "8-2-1",
+                "title": "面部的声学结构"
+              },
+              {
+                "id": "8-2-2",
+                "title": "发声"
+              },
+              {
+                "id": "8-3",
+                "title": "语音声学尝鲜"
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "ja": {
@@ -322,6 +1806,377 @@
       "title": "Bug Loop — デジタルブックライター",
       "body": "本というものは、映画の字幕のようなものだ。<br><br>本を真に読むためには、経験（記憶）か、経験への欲求（想像力）のどちらかが必要である。文字とは、無関心な視線で眺めれば、ただ無数の線にすぎない。しかし、その線の絡み合いから生まれる意味を本当に感じ取るためには、まず読者と文字とのあいだに関係が築かれなければならない。その役割を担うのが、内なるスクリーンに映し出されるシーン——自分だけが完全な形で見ることができる記憶と想像の光景である。<br><br>伝統的な意味での本は、一方向に並べられた活字の集合である。だが、電子書籍は違う。エレクトロン（電子）とは、電気的な力を放つ粒子のこと。その力がわずかに変化するだけで、その揺らぎは光の速さで広がっていく。この特性によって、読者は一瞬で最初のページから最後のページへと跳び、文字のあいだに音や映像といった異なる次元のメディアを織り交ぜることができる。それらはすべて、読むという体験をより豊かにする。<br><br>電子書籍は、単に複製や出版が容易な書物ではない。それはもっと深い存在——光と言葉でできた、生きたメディアなのだ。このブログは、その価値を探し求める旅の記録である。",
       "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "可愛い音響学",
+        "author": "ドゥドンソン",
+        "toc": [
+          {
+            "section": "序文",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "可愛い音響学 序文"
+              },
+              {
+                "id": "afterword",
+                "title": "追記"
+              }
+            ]
+          },
+          {
+            "section": "1. 宇宙の法則",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "慣性：変わろうとしない性質"
+              },
+              {
+                "id": "1-1-1",
+                "title": "変化と力"
+              },
+              {
+                "id": "1-2",
+                "title": "力はエネルギーを伝達する扉"
+              },
+              {
+                "id": "1-2-1",
+                "title": "2種類のエネルギー"
+              },
+              {
+                "id": "1-2-2",
+                "title": "エネルギー保存の法則"
+              },
+              {
+                "id": "1-2-3",
+                "title": "要約"
+              },
+              {
+                "id": "1-3",
+                "title": "場（フィールド）と粒子（発展）"
+              },
+              {
+                "id": "1-3-1",
+                "title": "原子構造"
+              },
+              {
+                "id": "1-3-2",
+                "title": "場とは何か？"
+              },
+              {
+                "id": "1-3-3",
+                "title": "電子について知りたい！"
+              },
+              {
+                "id": "1-3-4",
+                "title": "基本粒子への更なる探求"
+              },
+              {
+                "id": "1-3-5",
+                "title": "人間も確率的な存在なのか？"
+              }
+            ]
+          },
+          {
+            "section": "2. 振動と波動",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "振動：音を発生させる特別な動き"
+              },
+              {
+                "id": "2-2",
+                "title": "振動の必需品：慣性と復元力"
+              },
+              {
+                "id": "2-3",
+                "title": "流体力学の入門"
+              },
+              {
+                "id": "2-4",
+                "title": "音源と媒質"
+              },
+              {
+                "id": "2-5",
+                "title": "空気のランダムな熱運動と拡散"
+              },
+              {
+                "id": "2-6",
+                "title": "空気の弾性"
+              },
+              {
+                "id": "2-7",
+                "title": "空気の振動原理：圧縮と希薄"
+              }
+            ]
+          },
+          {
+            "section": "3. 基礎数学",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "モデルとは？"
+              },
+              {
+                "id": "3-2",
+                "title": "物理量：複雑な現象をモデル化するための第一歩"
+              },
+              {
+                "id": "3-3",
+                "title": "運動量と力のモデル化"
+              },
+              {
+                "id": "3-3-1",
+                "title": "慣性の数学的表現：運動量"
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma：力という抽象概念をモデル化する"
+              },
+              {
+                "id": "3-4",
+                "title": "フックの法則：振動体の数学的表現"
+              },
+              {
+                "id": "3-5",
+                "title": "三角関数",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "関数とは？"
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "比例と比率"
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "比率の美学 0：比率の神秘的な力"
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "比率の美学 1：直角三角形の秘密"
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "比率の美学 2：宇宙のロマンと三角関数"
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "比率の美学 3：ラジアンと無次元の角度"
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "比率の美学 4：微分"
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "導関数：刹那の変化を表す関数"
+              },
+              {
+                "id": "3-7",
+                "title": "三角関数の導関数"
+              },
+              {
+                "id": "3-8",
+                "title": "フックの法則を解く：単振動"
+              }
+            ]
+          },
+          {
+            "section": "4. 音の性質",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "周期性と周波数"
+              },
+              {
+                "id": "4-2",
+                "title": "固有周波数"
+              },
+              {
+                "id": "4-3",
+                "title": "共振"
+              },
+              {
+                "id": "4-4",
+                "title": "波動方程式"
+              },
+              {
+                "id": "4-5",
+                "title": "モードと倍音"
+              },
+              {
+                "id": "4-6",
+                "title": "音楽音響学の入門"
+              },
+              {
+                "id": "4-7",
+                "title": "調律法"
+              }
+            ]
+          },
+          {
+            "section": "5. 空間",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "建築の構造"
+              },
+              {
+                "id": "5-2",
+                "title": "音響的特性"
+              },
+              {
+                "id": "5-2-1",
+                "title": "反射"
+              },
+              {
+                "id": "5-2-2",
+                "title": "吸音"
+              },
+              {
+                "id": "5-2-3",
+                "title": "屈折"
+              },
+              {
+                "id": "5-2-4",
+                "title": "回折"
+              },
+              {
+                "id": "5-2-5",
+                "title": "干渉"
+              },
+              {
+                "id": "5-3",
+                "title": "建築音響学の入門"
+              }
+            ]
+          },
+          {
+            "section": "6. オーディオ信号",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "自由振動と強制振動"
+              },
+              {
+                "id": "6-2",
+                "title": "電磁気学の入門"
+              },
+              {
+                "id": "6-2-1",
+                "title": "マクスウェルの方程式"
+              },
+              {
+                "id": "6-3",
+                "title": "信号とは？"
+              },
+              {
+                "id": "6-4",
+                "title": "デジタル-アナログ変換"
+              },
+              {
+                "id": "6-5",
+                "title": "録音の原理"
+              },
+              {
+                "id": "6-5-1",
+                "title": "マイク"
+              },
+              {
+                "id": "6-5-2",
+                "title": "スピーカー"
+              },
+              {
+                "id": "6-6",
+                "title": "オーディオ信号"
+              },
+              {
+                "id": "6-6-1",
+                "title": "分析"
+              },
+              {
+                "id": "6-6-2",
+                "title": "合成"
+              },
+              {
+                "id": "6-6-3",
+                "title": "処理"
+              },
+              {
+                "id": "6-6-4",
+                "title": "保存"
+              },
+              {
+                "id": "6-7",
+                "title": "電気音響学の入門"
+              }
+            ]
+          },
+          {
+            "section": "7. あともう一歩：深化数学",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "フーリエ解析"
+              },
+              {
+                "id": "7-2",
+                "title": "フーリエ合成"
+              }
+            ]
+          },
+          {
+            "section": "8. 音声とコミュニケーション",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "耳"
+              },
+              {
+                "id": "8-1-1",
+                "title": "耳の構造"
+              },
+              {
+                "id": "8-1-2",
+                "title": "耳と脳の連携"
+              },
+              {
+                "id": "8-1-3",
+                "title": "耳鳴り"
+              },
+              {
+                "id": "8-1-4",
+                "title": "補聴器"
+              },
+              {
+                "id": "8-1-5",
+                "title": "心理音響学の入門"
+              },
+              {
+                "id": "8-2",
+                "title": "言葉"
+              },
+              {
+                "id": "8-2-1",
+                "title": "顔の音響的構造"
+              },
+              {
+                "id": "8-2-2",
+                "title": "発声"
+              },
+              {
+                "id": "8-3",
+                "title": "音声音響学の入門"
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "es": {
@@ -387,6 +2242,377 @@
       "title": "Bug Loop — El escritor de libros digitales",
       "body": "Un libro es como los subtítulos de una película.<br><br>Para leer un libro de verdad, se necesita una de estas dos cosas: experiencia (memoria) o el deseo de tenerla (imaginación). Las letras, vistas con indiferencia, no son más que líneas garabateadas. Sin embargo, para que el significado que se teje entre esas líneas se sienta realmente, primero debe formarse una relación entre el texto y el lector. El papel de este intermediario lo juega la pantalla interior del individuo, donde se proyectan escenas que solo uno mismo puede ver en su forma completa: la memoria y la imaginación.<br><br>El libro en su sentido tradicional existe como caracteres dispuestos en una sola dirección. Pero el libro digital es diferente. El electrón es una partícula que emite energía eléctrica, y hasta el cambio más mínimo en esa energía se propaga a la velocidad de la luz. Esta propiedad permite saltar de la primera a la última página al instante, e incluir medios de otra dimensión, como audio o vídeo, entre los caracteres. Todo esto contribuye positivamente a enriquecer la experiencia de la escritura.<br><br>Un libro digital no es simplemente un libro fácil de copiar y publicar. ¡Es mucho más que eso! Este blog es un registro del viaje de exploración de su valor.",
       "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "Acústica Linda",
+        "author": "Dudongsun",
+        "toc": [
+          {
+            "section": "Prefacio",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "Prefacio de Acústica Linda"
+              },
+              {
+                "id": "afterword",
+                "title": "Palabras Adicionales"
+              }
+            ]
+          },
+          {
+            "section": "1. Leyes del Universo",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "Inercia: La Propiedad de Resistir al Cambio"
+              },
+              {
+                "id": "1-1-1",
+                "title": "Cambio y Fuerza"
+              },
+              {
+                "id": "1-2",
+                "title": "La Fuerza es la Puerta que Transmite Energía"
+              },
+              {
+                "id": "1-2-1",
+                "title": "Dos Tipos de Energía"
+              },
+              {
+                "id": "1-2-2",
+                "title": "Ley de Conservación de la Energía"
+              },
+              {
+                "id": "1-2-3",
+                "title": "Resumen"
+              },
+              {
+                "id": "1-3",
+                "title": "Campos y Partículas (Avanzado)"
+              },
+              {
+                "id": "1-3-1",
+                "title": "Estructura del Átomo"
+              },
+              {
+                "id": "1-3-2",
+                "title": "¿Qué es un Campo?"
+              },
+              {
+                "id": "1-3-3",
+                "title": "¡Curioso sobre los Electrones!"
+              },
+              {
+                "id": "1-3-4",
+                "title": "Profundizando en las Partículas Elementales"
+              },
+              {
+                "id": "1-3-5",
+                "title": "¿Son los Humanos Seres Probabilísticos también?"
+              }
+            ]
+          },
+          {
+            "section": "2. Vibración y Onda",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "Vibración: El Movimiento Especial que Crea el Sonido"
+              },
+              {
+                "id": "2-2",
+                "title": "Requisitos para la Vibración: Inercia y Fuerza Restauradora"
+              },
+              {
+                "id": "2-3",
+                "title": "Una Introducción a la Dinámica de Fluidos"
+              },
+              {
+                "id": "2-4",
+                "title": "Fuente Sonora y Medio"
+              },
+              {
+                "id": "2-5",
+                "title": "Movimiento Térmico Aleatorio y Difusión del Aire"
+              },
+              {
+                "id": "2-6",
+                "title": "Elasticidad del Aire"
+              },
+              {
+                "id": "2-7",
+                "title": "Principio de Vibración del Aire: Compresión y Rarefacción"
+              }
+            ]
+          },
+          {
+            "section": "3. Matemáticas Básicas",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "¿Qué es un Modelo?"
+              },
+              {
+                "id": "3-2",
+                "title": "Magnitudes Físicas: El Primer Paso para Modelar Fenómenos Complejos"
+              },
+              {
+                "id": "3-3",
+                "title": "Modelado de Momento y Fuerza"
+              },
+              {
+                "id": "3-3-1",
+                "title": "Expresión Matemática de la Inercia: Momento"
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: Modelando el Concepto Abstracto de Fuerza"
+              },
+              {
+                "id": "3-4",
+                "title": "Ley de Hooke: Expresión Matemática de un Cuerpo Vibrante"
+              },
+              {
+                "id": "3-5",
+                "title": "Funciones Trigonométricas",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "¿Qué es una Función?"
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "Proporción y Razón"
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "La Estética de la Razón 0: El Poder Misterioso de la Razón"
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "La Estética de la Razón 1: El Secreto del Triángulo Rectángulo"
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "La Estética de la Razón 2: El Romance del Universo y las Funciones Trigonométricas"
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "La Estética de la Razón 3: Radián y Ángulo Adimensional"
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "La Estética de la Razón 4: Diferenciación"
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "Derivada: Una Función que Representa el Cambio Instantáneo"
+              },
+              {
+                "id": "3-7",
+                "title": "Derivadas de las Funciones Trigonométricas"
+              },
+              {
+                "id": "3-8",
+                "title": "Resolviendo la Ley de Hooke: Movimiento Armónico Simple"
+              }
+            ]
+          },
+          {
+            "section": "4. Propiedades del Sonido",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "Periodicidad y Frecuencia"
+              },
+              {
+                "id": "4-2",
+                "title": "Frecuencia Natural"
+              },
+              {
+                "id": "4-3",
+                "title": "Resonancia"
+              },
+              {
+                "id": "4-4",
+                "title": "Ecuación de Onda"
+              },
+              {
+                "id": "4-5",
+                "title": "Modos y Armónicos"
+              },
+              {
+                "id": "4-6",
+                "title": "Una Introducción a la Acústica Musical"
+              },
+              {
+                "id": "4-7",
+                "title": "Sistemas de Afinación"
+              }
+            ]
+          },
+          {
+            "section": "5. Espacio",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "Estructura de la Arquitectura"
+              },
+              {
+                "id": "5-2",
+                "title": "Características Acústicas"
+              },
+              {
+                "id": "5-2-1",
+                "title": "Reflexión"
+              },
+              {
+                "id": "5-2-2",
+                "title": "Absorción"
+              },
+              {
+                "id": "5-2-3",
+                "title": "Refracción"
+              },
+              {
+                "id": "5-2-4",
+                "title": "Difracción"
+              },
+              {
+                "id": "5-2-5",
+                "title": "Interferencia"
+              },
+              {
+                "id": "5-3",
+                "title": "Una Introducción a la Acústica Arquitectónica"
+              }
+            ]
+          },
+          {
+            "section": "6. Señal de Audio",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "Vibración Libre y Vibración Forzada"
+              },
+              {
+                "id": "6-2",
+                "title": "Una Introducción al Electromagnetismo"
+              },
+              {
+                "id": "6-2-1",
+                "title": "Ecuaciones de Maxwell"
+              },
+              {
+                "id": "6-3",
+                "title": "¿Qué es una Señal?"
+              },
+              {
+                "id": "6-4",
+                "title": "Conversión Digital-Analógica"
+              },
+              {
+                "id": "6-5",
+                "title": "Principios de la Grabación"
+              },
+              {
+                "id": "6-5-1",
+                "title": "Micrófono"
+              },
+              {
+                "id": "6-5-2",
+                "title": "Altavoz"
+              },
+              {
+                "id": "6-6",
+                "title": "Señal de Audio"
+              },
+              {
+                "id": "6-6-1",
+                "title": "Análisis"
+              },
+              {
+                "id": "6-6-2",
+                "title": "Síntesis"
+              },
+              {
+                "id": "6-6-3",
+                "title": "Procesamiento"
+              },
+              {
+                "id": "6-6-4",
+                "title": "Almacenamiento"
+              },
+              {
+                "id": "6-7",
+                "title": "Una Introducción a la Electroacústica"
+              }
+            ]
+          },
+          {
+            "section": "7. Un Paso Más Allá: Matemáticas Avanzadas",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "Análisis de Fourier"
+              },
+              {
+                "id": "7-2",
+                "title": "Síntesis de Fourier"
+              }
+            ]
+          },
+          {
+            "section": "8. Voz y Comunicación",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "El Oído"
+              },
+              {
+                "id": "8-1-1",
+                "title": "Estructura del Oído"
+              },
+              {
+                "id": "8-1-2",
+                "title": "Conexión entre el Oído y el Cerebro"
+              },
+              {
+                "id": "8-1-3",
+                "title": "Tinnitus"
+              },
+              {
+                "id": "8-1-4",
+                "title": "Audífonos"
+              },
+              {
+                "id": "8-1-5",
+                "title": "Una Introducción a la Psicoacústica"
+              },
+              {
+                "id": "8-2",
+                "title": "El Habla"
+              },
+              {
+                "id": "8-2-1",
+                "title": "Estructura Acústica del Rostro"
+              },
+              {
+                "id": "8-2-2",
+                "title": "Vocalización"
+              },
+              {
+                "id": "8-3",
+                "title": "Una Introducción a la Acústica del Habla"
+              }
+            ]
+          }
+        ]
+      }
     }
   }
 }
