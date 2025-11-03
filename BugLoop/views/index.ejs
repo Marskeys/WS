@@ -251,140 +251,35 @@
 
     <div class="carousel">
 
+    <!-- ✅ 귀여운 음향학 JSON 렌더링 -->
       <div class="book-card" data-index="0">
-        <img class="book-cover" src="/assets/images/book1.gif" alt="귀여운 음향학">
-        <div class="book-info"><div class="book-title">귀여운 음향학</div></div>
+        <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+        <div class="book-info">
+          <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
+          <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+            저자: <%= locale.books.cute_acoustics.author %>
+          </div>
+        </div>
         <div class="book-toc">
-          <h4>귀여운 음향학 목차</h4>
+          <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
           <ul>
-            <li>
-              <h5>서문</h5>
-              <ul>
-                <li>귀여운 음향학 서문</li>
-                <li>덧붙이는 말</li>
-              </ul>
-            </li>
-            <li>
-              <h5>1. 우주의 법칙</h5>
-              <ul>
-                <li>관성: 변하지 않으려는 성질</li>
-                <li>변화와 힘</li>
-                <li>힘은 에너지를 전달하는 문</li>
-                <li>두 종류의 에너지</li>
-                <li>에너지 보존의 법칙</li>
-                <li>요약</li>
-                <li>장(Fields)과 입자 (심화)</li>
-                <li>원자의 구조</li>
-                <li>장이란?</li>
-                <li>전자가 궁금하다!</li>
-                <li>기본 입자 더 들어가기</li>
-                <li>인간도 확률적 존재이다?</li>
-              </ul>
-            </li>
-            <li>
-              <h5>2. 진동과 파동</h5>
-              <ul>
-                <li>진동: 소리를 발생시키는 특별한 움직임</li>
-                <li>진동의 준비물: 관성과 복원력</li>
-                <li>유체역학 맛보기</li>
-                <li>음원과 매질</li>
-                <li>공기의 무작위 열운동과 확산</li>
-                <li>공기의 탄성</li>
-                <li>공기의 진동 원리: 압축과 희박</li>
-              </ul>
-            </li>
-            <li>
-              <h5>3. 기초 수학</h5>
-              <ul>
-                <li>모델이란?</li>
-                <li>물리량: 복잡한 현상을 모델링하기 위한 첫 단계</li>
-                <li>운동량과 힘의 모델링</li>
-                <li>관성의 수학적 표현: 운동량</li>
-                <li>F = ma: 힘이라는 추상적 개념을 모델링하다</li>
-                <li>후크의 법칙: 진동체의 수학적 표현</li>
-                <li>
-                  삼각함수
-                  <ul>
-                    <li>함수란?</li>
-                    <li>비례와 비율</li>
-                    <li>비율의 미학 0: 비율의 신비한 힘</li>
-                    <li>비율의 미학 1: 직각삼각형의 비밀</li>
-                    <li>비율의 미학 2: 우주의 낭만과 삼각함수</li>
-                    <li>비율의 미학 3: 라디안과 무차원의 각도</li>
-                    <li>비율의 미학 4: 미분</li>
-                  </ul>
-                </li>
-                <li>도함수: 찰나의 변화를 나타내는 함수</li>
-                <li>삼각함수의 도함수</li>
-                <li>후크의 법칙을 풀다: 단순조화진동</li>
-              </ul>
-            </li>
-            <li>
-              <h5>4. 소리의 성질</h5>
-              <ul>
-                <li>주기성과 주파수</li>
-                <li>고유주파수</li>
-                <li>공진</li>
-                <li>파동방정식</li>
-                <li>모드와 배음</li>
-                <li>음악음향학 맛보기</li>
-                <li>조율법</li>
-              </ul>
-            </li>
-            <li>
-              <h5>5. 공간</h5>
-              <ul>
-                <li>건축의 구조</li>
-                <li>음향적 특성들</li>
-                <li>반사</li>
-                <li>흡음</li>
-                <li>굴절</li>
-                <li>회절</li>
-                <li>간섭</li>
-                <li>건축음향학 맛보기</li>
-              </ul>
-            </li>
-            <li>
-              <h5>6. 오디오 신호</h5>
-              <ul>
-                <li>자유 진동과 강제 진동</li>
-                <li>전자기학 맛보기</li>
-                <li>맥스웰 방정식</li>
-                <li>신호란?</li>
-                <li>디지털-아날로그 변환</li>
-                <li>녹음의 원리</li>
-                <li>마이크</li>
-                <li>스피커</li>
-                <li>오디오 신호</li>
-                <li>분석</li>
-                <li>합성</li>
-                <li>처리</li>
-                <li>저장</li>
-                <li>전자음향학 맛보기</li>
-              </ul>
-            </li>
-            <li>
-              <h5>7. 한발 더 남았다: 심화 수학</h5>
-              <ul>
-                <li>푸리에 분석</li>
-                <li>푸리에 합성</li>
-              </ul>
-            </li>
-            <li>
-              <h5>8. 음성과 소통</h5>
-              <ul>
-                <li>귀</li>
-                <li>귀의 구조</li>
-                <li>귀와 뇌의 연결</li>
-                <li>이명</li>
-                <li>보청기</li>
-                <li>심리음향학 맛보기</li>
-                <li>말</li>
-                <li>얼굴의 음향학적 구조</li>
-                <li>발성</li>
-                <li>음성음향학 맛보기</li>
-              </ul>
-            </li>
+            <% locale.books.cute_acoustics.toc.forEach(section => { %>
+              <li>
+                <h5><%= section.section %></h5>
+                <ul>
+                  <% section.chapters.forEach(ch => { %>
+                    <li><%= ch.title %></li>
+                    <% if (ch.sub) { %>
+                      <ul>
+                        <% ch.sub.forEach(sub => { %>
+                          <li><%= sub.title %></li>
+                        <% }) %>
+                      </ul>
+                    <% } %>
+                  <% }) %>
+                </ul>
+              </li>
+            <% }) %>
           </ul>
         </div>
       </div>
