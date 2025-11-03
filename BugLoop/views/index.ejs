@@ -418,7 +418,7 @@
 
   <script>
   (() => {
-    // 서버에서 전달된 목차 데이터 (EJS 템플릿에서 직접 접근)
+    // 서버에서 전달된 목차 데이터
     const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
     const itemsPerPage = 3;
     const totalPages = Math.ceil(tocData.length / itemsPerPage);
@@ -430,9 +430,9 @@
         paginatedToc.push(tocData.slice(start, end));
     }
 
-    // 목차를 HTML 문자열로 변환하는 함수
+    // 목차를 HTML 문자열로 변환하는 함수 (이전과 동일)
     const renderTocPage = (pageIndex) => {
-        const sections = paginatedToc[pageIndex - 1]; // pageIndex는 1부터 시작
+        const sections = paginatedToc[pageIndex - 1]; 
         if (!sections) return '';
 
         let html = '<ul>';
@@ -462,9 +462,8 @@
     };
 
     // 페이지 전환 함수 (onclick 이벤트에서 호출)
-    // 🚨 수정: event 인수를 받고, 전파를 막는 로직 추가
     window.changePage = (event, bookId, pageNumber) => {
-        // 이벤트 버블링(상위 card 클릭)을 막아 목차가 닫히는 것을 방지
+        // 🚨 수정: 이벤트 버블링 차단 (가장 중요)
         event.stopPropagation(); 
 
         if (bookId !== 'cute-acoustics') return;
@@ -473,10 +472,8 @@
         const paginationContainer = document.querySelector(`[data-book-id="cute-acoustics-pagination"]`);
         
         if (tocContainer && paginationContainer) {
-            // 목차 내용 업데이트
             tocContainer.innerHTML = renderTocPage(pageNumber);
 
-            // 페이지네이션 활성 상태 업데이트
             paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
                 btn.classList.remove('active');
                 if (parseInt(btn.textContent.trim()) === pageNumber) {
@@ -486,23 +483,20 @@
         }
     };
     
-    // 카드 클릭 시 확장/축소 (단일 카드만 열리도록 수정)
+    // 카드 클릭 시 확장/축소 로직
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        // 모든 카드에 대해 반복하여
+        // 모든 카드를 순회하며 닫고, 현재 카드만 토글
         document.querySelectorAll('.book-card').forEach(c => {
-          // 현재 클릭된 카드가 아니면
+          // 현재 클릭된 카드가 아니면 닫기
           if (c !== card) {
-            // expanded 클래스를 제거 (닫기)
             c.classList.remove('expanded');
           }
         });
-        // 현재 클릭된 카드는 상태를 토글 (열기/닫기)
+        // 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded');
       });
     });
-    // 참고: 위의 `forEach` 로직은 이미 "하나만 열기"를 구현하고 있으며, 
-    // 이제 페이지네이션 클릭이 이 로직을 방해하지 않게 되었습니다.
 
   })();
   </script>
