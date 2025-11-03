@@ -214,7 +214,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* 💡 목차 들여쓰기 & 디자인 스타일 (추가) */
+    /* 💡 목차 들여쓰기 & 디자인 스타일 */
     /* ---------------------------------------------------- */
     /* 섹션 제목 스타일 (h5) */
     .book-toc h5 {
@@ -222,7 +222,6 @@
       color: var(--ink); /* 섹션 제목은 잉크 색상으로 강조 */
       font-size: 1rem;
       font-weight: 600;
-      /* 들여쓰기 없음 (최상위) */
     }
 
     /* 소제목 (chapter) 리스트 스타일 */
@@ -257,7 +256,7 @@
     }
     
     /* ---------------------------------------------------- */
-    /* 💡 페이지네이션 스타일 (추가) */
+    /* 💡 페이지네이션 스타일 */
     /* ---------------------------------------------------- */
     .pagination {
       display: flex;
@@ -332,7 +331,7 @@
           
           <div class="pagination" data-book-id="cute-acoustics-pagination">
             <% for(let i = 1; i <= totalPages; i++) { %>
-                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage('cute-acoustics', <%= i %>)">
+                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
                     <%= i %>
                 </span>
                 <% if (i < totalPages) { %>
@@ -342,23 +341,25 @@
           </div>
 
           <div class="paginated-toc" data-book-id="cute-acoustics-toc">
-            <% paginatedToc[0].forEach(section => { %>
-                <li>
-                  <h5><%= section.section %></h5>
-                  <ul>
-                    <% section.chapters.forEach(ch => { %>
-                      <li><%= ch.title %></li>
-                      <% if (ch.sub) { %>
-                        <ul>
-                          <% ch.sub.forEach(sub => { %>
-                            <li><%= sub.title %></li>
-                          <% }) %>
-                        </ul>
-                      <% } %>
-                    <% }) %>
-                  </ul>
-                </li>
-            <% }) %>
+            <ul>
+              <% paginatedToc[0].forEach(section => { %>
+                  <li>
+                    <h5><%= section.section %></h5>
+                    <ul>
+                      <% section.chapters.forEach(ch => { %>
+                        <li><%= ch.title %></li>
+                        <% if (ch.sub) { %>
+                          <ul>
+                            <% ch.sub.forEach(sub => { %>
+                              <li><%= sub.title %></li>
+                            <% }) %>
+                          </ul>
+                        <% } %>
+                      <% }) %>
+                    </ul>
+                  </li>
+              <% }) %>
+            </ul>
           </div>
           <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
               총 <%= totalSections %>개 섹션
@@ -461,7 +462,11 @@
     };
 
     // 페이지 전환 함수 (onclick 이벤트에서 호출)
-    window.changePage = (bookId, pageNumber) => {
+    // 🚨 수정: event 인수를 받고, 전파를 막는 로직 추가
+    window.changePage = (event, bookId, pageNumber) => {
+        // 이벤트 버블링(상위 card 클릭)을 막아 목차가 닫히는 것을 방지
+        event.stopPropagation(); 
+
         if (bookId !== 'cute-acoustics') return;
 
         const tocContainer = document.querySelector(`[data-book-id="cute-acoustics-toc"]`);
@@ -481,15 +486,23 @@
         }
     };
     
-    // 카드 클릭 시 확장/축소
+    // 카드 클릭 시 확장/축소 (단일 카드만 열리도록 수정)
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
+        // 모든 카드에 대해 반복하여
         document.querySelectorAll('.book-card').forEach(c => {
-          if (c !== card) c.classList.remove('expanded');
+          // 현재 클릭된 카드가 아니면
+          if (c !== card) {
+            // expanded 클래스를 제거 (닫기)
+            c.classList.remove('expanded');
+          }
         });
+        // 현재 클릭된 카드는 상태를 토글 (열기/닫기)
         card.classList.toggle('expanded');
       });
     });
+    // 참고: 위의 `forEach` 로직은 이미 "하나만 열기"를 구현하고 있으며, 
+    // 이제 페이지네이션 클릭이 이 로직을 방해하지 않게 되었습니다.
 
   })();
   </script>
