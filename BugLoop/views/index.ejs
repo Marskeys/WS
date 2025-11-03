@@ -1,899 +1,506 @@
-<% const h = locale.header; %>
+<!DOCTYPE html>
+<html class="dark" lang="<%= lang %>">
+<head>
+  <%- include('partials/head') %>
+  <link rel="stylesheet" href="/assets/css/index.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bug Loop</title>
+  <style>
+    /* ---------------------------------------------------- */
+    /* 💡 라이트 모드 (html:not(.dark) / 기본값) */
+    /* ---------------------------------------------------- */
+    :root{
+      --chrome-gap:50px;
+      --panel-gap:16px;
+      --radius:12px;
+      /* Light Mode Colors */
+      --border:#d9d9d9;
+      --bg:#f3f3f6; /* 배경: 매우 밝은 회색 */
+      --panel:#ffffff; /* 패널: 흰색 */
+      --panel-2:#f0f0ff; /* 보조 패널: 아주 옅은 파랑/회색 */
+      --ink:#1f1f1f; /* 잉크: 거의 검은색 */
+      --ink-2:#5a5a5a; /* 보조 잉크: 회색 */
+      --accent:#3c6df0; /* 강조: 파란색 계열 */
+      --primary:#217ee8; /* 주요 요소: 파란색 */
+      --primary-ink:#ffffff; /* 주요 요소 위 글자색 (대비 확보) */
+    }
 
-<style>
-/* ====== 기존 서브메뉴 간격/정렬 ====== */
-.header-menu .submenu li a,
-.header-menu .submenu li span {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  display: block;
-  font-size: 14px;
-  vertical-align: middle;
-}
+    /* ---------------------------------------------------- */
+    /* 🌙 다크 모드 (html.dark) */
+    /* ---------------------------------------------------- */
+    html.dark{
+      /* Dark Mode Colors */
+      --border:#2b2b2b; /* 테두리: 짙은 회색 */
+      --bg:#121212; /* 배경: 매우 어두운 회색 (AMOLED-friendly) */
+      --panel:#1b1b1b; /* 패널: 어두운 회색 */
+      --panel-2:#0e0e0e; /* 보조 패널: 가장 어두운 회색 */
+      --ink:#eaeaea; /* 잉크: 거의 흰색 */
+      --ink-2:#b7b7b7; /* 보조 잉크: 밝은 회색 */
+      --accent:#00f5d4; /* 강조: 청록색 계열 (Dark Mode 대비 강화를 위해 변경) */
+      --primary:#217ee8;
+      --primary-ink:#608b42; /* 주요 요소 위 글자색 (예시 유지) */
+    }
 
-/* 🚀 수정 1: 메뉴 들여쓰기 (Level) */
-.header-menu .submenu li {
-  /* 기본 메뉴 들여쓰기 */
-  padding-left: 10px; 
-}
-.header-menu .submenu li a,
-.header-menu .submenu li span {
-  /* 메뉴 내용물은 들여쓰기 없이 유지 */
-  padding-left: 0; 
-}
+    html, body { height: 100%; }
 
-/* 🚀 수정 2: 서브메뉴 링크 스타일 적용 */
-.header-menu .submenu li a:not(.active) {
-  /* 비활성화 상태의 링크에만 밑줄 효과를 옅게 적용 */
-  color: #fff; /* 다크 모드 기본 색상 */
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.2);
-  text-underline-offset: 3px;
-  transition: text-decoration-color 0.2s ease;
-}
+    /* body의 기본 스타일은 변수를 따르도록 통일 */
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, color 0.3s; /* 색상 전환 애니메이션 추가 */
+    }
 
-.header-menu .submenu li a:hover:not(.active) {
-  text-decoration-color: rgba(255, 255, 255, 0.7);
-}
+    .app-shell{
+      /* 하단 패딩은 원래대로 복구 (spacer가 공간을 담당) */
+      padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
+      padding-top: calc(50px + 16px);
+      margin-top: 180px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
 
-
-/* 🚀 수정 3: 일반 메뉴 라벨에 그라데이션 배경 및 그림자 적용 */
-.menu-label {
-  /* 일반 메뉴 라벨의 기본 스타일 */
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 0.3px;
-  display: inline-flex;
-  align-items: center;
-  
-  /* ✅ 수정: 기본 상태의 배경색을 그라데이션으로 변경 */
-  background: linear-gradient(90deg, #00C6FF 10%, #0072FF 90%) !important; 
-  /* ✅ 수정: 기본 상태의 그림자를 약하게 적용 */
-  box-shadow: 0 0 4px rgba(0, 114, 255, 0.4);
-}
-
-/* special-label은 기본 menu-label 스타일을 상속받도록 조정 */
-.special-label .menu-label {
-    /* 기존 스타일 유지 (아이콘 등) */
-    color: #fff;
-}
-
-
-/* YouTube 로고 수직 중앙 정렬 */
-.header-menu .main-menu-container {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-/* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 (다크 모드 기준) ====== */
-.sidebar-lang-theme {
-  margin-top: 12px;
-  padding: 10px 8px;
-  display: flex;
-  flex-direction: column; /* 데스크톱 기본: 세로 배열 */
-  align-items: center;
-  /* ✅ 수정: 다크모드/언어버튼 사이의 여백을 10px에서 5px로 줄임 */
-  gap: 5px; 
-}
-
-.sidebar-lang-theme .lang-btn {
-  background: none;
-  border: none;
-  color: var(--ink-1, #fff); /* Dark Mode */
-  cursor: pointer;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 10px;
-  padding: 6px 10px;
-}
-
-/* 🚫 언어 선택 버튼 포커스(클릭/탭) 테두리 제거 */
-.sidebar-lang-theme .lang-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
-.sidebar-lang-theme .lang-btn:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: 2px;
-}
-
-
-/* 언어 메뉴 (기본: 다크 모드) */
-.lang-menu {
-  position: absolute;
-  inset: auto auto auto auto;
-  list-style: none;
-  margin: 6px 0 0 0;
-  padding: 6px 0;
-  min-width: 160px;
-  background: var(--panel-1, #181a1f); /* Dark Mode */
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
-  border-radius: 10px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
-  display: none;
-  z-index: 2147483646;
-}
-
-.lang-menu[aria-hidden="false"] {
-  display: block;
-}
-
-.lang-menu li {
-  white-space: nowrap;
-}
-
-.lang-menu a.lang-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  color: var(--ink-1, #fff); /* Dark Mode */
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.lang-menu a.lang-option:hover,
-.lang-menu a.lang-option:focus {
-  background: var(--panel-2, #22262e); /* Dark Mode */
-  outline: none;
-}
-
-.lang-menu a.lang-option.active-lang {
-  font-weight: 700;
-}
-
-/* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
-html:not(.dark) .lang-menu {
-  background: var(--panel-1, #fff); 
-  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
-}
-
-html:not(.dark) .lang-menu a.lang-option {
-  color: var(--ink-1, #181a1f); 
-}
-
-html:not(.dark) .lang-menu a.lang-option:hover,
-html:not(.dark) .lang-menu a.lang-option:focus {
-  background: var(--panel-2, #f0f0f0); 
-}
-
-
-/* ✅ 수정: 새 라이트/다크모드 토글 버튼 스타일 복원 */
-.theme-toggle-btn {
-  /* 배경색 및 둥근 모양 복원 */
-  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
-  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
-  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
-  cursor: pointer;
-  width: 38px;
-  height: 38px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%; /* 둥근 모양 복원 */
-  transition: all 0.2s ease;
-  font-size: 18px;
-  line-height: 1;
-}
-
-/* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
-html:not(.dark) .theme-toggle-btn {
-  background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
-  border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
-  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
-}
-
-
-/* 🚫 테마 토글 버튼 포커스(클릭/탭) 테두리 제거 */
-.theme-toggle-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
-.theme-toggle-btn:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: 2px;
-}
-
-/* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
-.lang-menu.lang-menu--portal {
-  position: fixed;
-  z-index: 2147483646;
-}
-
-/* 접근성: 키보드 이동 시 포커스 링 */
-.lang-menu a.lang-option:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: -2px;
-}
-
-/* 1️⃣ 활성화된 서브메뉴 항목 */
-.submenu a.active {
-  color: #00c6ff;
-  font-weight: 700;
-  position: relative;
-}
-
-.submenu a.active::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
-  border-radius: 2px;
-}
-
-/* 2️⃣ 활성화된 메인 메뉴 라벨 */
-.menu-label.active-label {
-  /* 글씨색은 흰색 유지 */
-  color: #fff; 
-  /* 배경은 이미 .menu-label에서 그라데이션을 사용하고 있으므로, 그림자만 강화 */
-  box-shadow: 0 0 16px rgba(0, 114, 255, 1); /* 그림자 강하게 */
-  text-shadow: none; 
-  font-weight: 700;
-}
-
-/* 🚀 수정 4: "연재 중인 글" 등 비활성화 메뉴의 색상 수정 */
-.disabled-menu {
-  /* 다크 모드에서 항상 흰색으로 보이도록 강제 (기존 #aaa 대신) */
-  color: #fff !important; 
-  opacity: 0.6; /* 비활성화된 느낌을 주기 위해 투명도 적용 */
-}
-
-/* ---------------------------------------------------- */
-/* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 (768px 이하) */
-/* ---------------------------------------------------- */
-@media (max-width: 768px) {
-  /* 1. 사이드바(Tabs Container) 자체: 가로 스크롤 속성 유지 */
-  .vscode-sidebar {
-    display: flex;
-    flex-direction: row; 
-    width: 100%;
-    /* ✅ 가로 스크롤 가능하게 설정 */
-    overflow-x: auto; 
+    @media (max-width: 640px){
+      .app-shell{
+        padding-left: 16px;
+        /* 하단 패딩은 원래대로 복구 */
+        padding-bottom: 16px;
+        margin-top: 250px;
+      }
+    }
     
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 100; 
-    height: 60px; 
-    padding: 0;
-    border-top: 1px solid var(--vscode-sideBar-border, #444); 
-    background: var(--vscode-sideBar-background, #333); 
-  }
+    /* 🔹 투명한 Spacer 스타일 */
+    .spacer {
+      /* 뷰포트 높이의 50%를 빈 공간으로 만듭니다. (스크롤 유도) */
+      height: 50vh; 
+      min-height: 300px; 
+      width: 100%;
+      background: transparent;
+    }
 
-  /* ✅ 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
-  .vscode-sidebar::-webkit-scrollbar {
-    display: none;
-  }
-  /* IE, Edge, Firefox의 스크롤 바 숨김 처리 */
-  .vscode-sidebar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  /* 2. 기존 사이드바 전용 요소들 조정 */
-  .vscode-sidebar .logo {
-    display: none !important;
-  }
-  
-  /* 3. ✅ 모든 탭 버튼에 고정 너비 적용 (스크롤을 유도) */
-  .vscode-sidebar .toggle-extension,
-  .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
-    flex-grow: 0; 
-    flex-shrink: 0; /* 축소 방지 유지 */
-    width: 70px; /* ✅ 각 탭 버튼의 고정 너비 설정 */
-    height: 100%;
-    display: flex !important; 
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    border-radius: 0;
-  }
+    .section-title {
+      /* 📌 변경: var(--ink) 사용 */
+      color: var(--ink); 
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+    }
+    /* 📌 다크 모드에서 섹션 제목의 대비를 위해 폰트 색상을 강조색으로 설정 (선택 사항) */
+    html.dark .section-title {
+        color: var(--accent);
+    }
 
-  /* 4. ✅ 언어/테마 영역에도 고정 너비 적용 (스크롤을 유도) */
-  .sidebar-lang-theme {
-    flex-direction: row;
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
-    flex-grow: 0; 
-    flex-shrink: 0; 
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 110px; /* 언어/테마 영역의 고정 너비 설정 */
-    height: 100%;
-    margin: 0; 
-    padding: 0;
-    display: flex; 
-    border-top: none;
-    align-items: center; 
-    justify-content: center; 
-    /* 모바일에서도 간격 줄임 */
-    gap: 5px; 
-  }
 
-  /* 언어 드롭다운의 너비 조정 */
-  .sidebar-lang-theme .language-dropdown {
-    flex-grow: 1; /* 이 영역 내에서는 유연하게 */
-    flex-basis: 0;
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 60px; 
-    height: 100%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* 다크 모드 버튼은 고정된 크기 유지 */
-  .sidebar-lang-theme .theme-toggle-btn {
-    flex-grow: 0; 
-    flex-basis: auto;
-    width: 38px; 
-    height: 38px;
-    border-radius: 50%; 
-    /* ❗ 수정: 오른쪽 마진을 8px로 다시 설정 */
-    margin: 0 8px 0 0; 
-    background: var(--vscode-sideBar-background, #333); 
-    border: 1px solid var(--vscode-sideBar-border, #444);
-  }
+    /* === 🔹 캐러셀 === */
+    .carousel {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 8px;
+    }
 
-  /* 언어 버튼 자체 스타일 조정 */
-  .sidebar-lang-theme .lang-btn {
-    width: 100%;
-    height: 100%;
-    border-radius: 0; 
-    justify-content: center; 
-    align-items: center;
-    padding: 0; 
-    background: none;
-    border: none;
-  }
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
 
-  /* 언어 버튼만 오른쪽 경계선 추가 */
-  .sidebar-lang-theme .language-dropdown {
-    /* ✅ 수정: 사이드바 배경색 대신 border 색상으로 변경하여 명확하게 분리 */
-    border-right: 1px solid var(--vscode-sideBar-border, #444);
-  }
-}
-</style>
-<div class="full-header-container" style="z-index:20000;">
-  <div class="header-top">
-    <div class="top-controls">
-      <div class="left-controls">
-        <%
-          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
-          const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
-                           pathWithoutLang.startsWith('/post') ||
-                           pathWithoutLang.startsWith('/edit');
-        %>
-        <% if (showLogo) { %>
-          <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
-        <% } %>
-      </div>
+    .book-card {
+      flex-shrink: 0;
+      width: 230px;
+      /* 📌 변경: var(--panel) 사용 */
+      background: var(--panel);
+      /* 📌 변경: var(--border) 사용 */
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      /* 📌 변경: var(--ink) 사용 */
+      color: var(--ink);
+      transition: all 0.3s ease;
+      scroll-snap-align: start;
+      cursor: pointer;
+      /* 📌 그림자 색상도 다크 모드에 맞게 조정될 수 있도록 투명도만 지정 */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      position: relative;
+    }
 
-    <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
-  <ul class="main-menu-container">
-    <a href="https://www.youtube.com/@ebook.bugloop"
-       target="_blank"
-       aria-label="<%= h.youtubeLink || 'YouTube' %>">
-      <img src="/assets/images/youtube.png"
-           alt="YouTube"
-           style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
-    </a>
+    .book-card:hover {
+      transform: translateY(-4px);
+      /* 📌 그림자 색상도 다크 모드에 맞게 조정 */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    
+    /* 📌 다크 모드에서 그림자 명암 조절 */
+    html.dark .book-card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    html.dark .book-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+    }
 
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.review %></span>
-      <ul class="submenu">
-        <li><a href="/<%= lang %>/review/book" data-panel-link><%= h.palma2pro %></a></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-      </ul>
-    </li>
 
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.audiobook %></span>
-      <ul class="submenu">
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.cuteacoustics %></span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.producer %></span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.unfinished %></span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.warmth %></span></li>
-      </ul>
-    </li>
+    .book-cover {
+      width: 100%;
+      height: 360px; /* ⬆ 세로 조금 늘림 */
+      object-fit: cover;
+      display: block;
+    }
 
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.music %></span>
-      <ul class="submenu">
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (4)</span></li>
-      </ul>
-    </li>
+    .book-info {
+      padding: 14px 10px;
+      text-align: center;
+      /* 📌 변경: var(--border) 사용 */
+      border-top: 1px solid var(--border);
+      /* 📌 변경: var(--panel-2) 사용 */
+      background: var(--panel-2);
+    }
 
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.game %></span>
-      <ul class="submenu">
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-        <li><span class="disabled-menu" style="cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-      </ul>
-    </li>
+    .book-title {
+      font-weight: 600;
+      font-size: 1.05rem;
+      /* 📌 변경: var(--ink) 사용 */
+      color: var(--ink);
+      line-height: 1.4;
+      white-space: normal;
+      word-break: keep-all;
+      letter-spacing: 0.3px;
+    }
 
-    <li class="menu-item-wrapper special-label">
-      <span class="menu-label">
-        <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
-        <%= h.futureService %>
-      </span>
-    </li>
-  </ul>
-</nav>
+    .book-title::after {
+      content: "";
+      display: block;
+      width: 40%;
+      height: 2px;
+      /* 📌 변경: var(--primary) 사용 */
+      background: var(--primary);
+      margin: 8px auto 0;
+      border-radius: 1px;
+      opacity: 0.7;
+    }
 
-      <div class="right-controls" id="right-controls" hidden></div>
-    </div>
+    /* 🔹 확장 시 목차 영역 */
+    .book-toc {
+      /* 📌 변경: var(--panel-2) 사용 */
+      background: var(--panel-2);
+      /* 📌 변경: var(--ink-2) 사용 */
+      color: var(--ink-2);
+      font-size: 0.9rem;
+      /* 📌 변경: var(--border) 사용 */
+      border-top: 1px solid var(--border);
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.35s ease;
+      padding: 0 16px;
+      opacity: 0;
+    }
+    
+    /* 🚨 주의: max-height를 충분히 높게 설정해야 합니다. 목차가 길기 때문에 300px로는 부족할 수 있습니다. */
+    .book-card.expanded .book-toc {
+      padding: 16px;
+      max-height: 2000px; /* 충분히 큰 값으로 변경 */
+      opacity: 1;
+    }
+
+    .book-toc h4 {
+      margin: 0 0 8px 0;
+      /* 📌 변경: var(--primary) 사용 */
+      color: var(--primary);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 💡 목차 들여쓰기 & 디자인 스타일 */
+    /* ---------------------------------------------------- */
+    /* 섹션 제목 스타일 (h5) */
+    .book-toc h5 {
+      margin: 12px 0 6px 0;
+      color: var(--ink); /* 섹션 제목은 잉크 색상으로 강조 */
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* 소제목 (chapter) 리스트 스타일 */
+    .book-toc ul {
+      margin: 0 0 12px 0;
+      padding-left: 0;
+      list-style: none; /* 최상위 목록 스타일 제거 */
+    }
+
+    /* 1단계 들여쓰기 (Chapter Title) */
+    .book-toc > .paginated-toc > ul > li > ul {
+      margin: 0;
+      padding-left: 14px; /* 들여쓰기 */
+      list-style: none; /* 들여쓰기 된 곳도 기본적으로 점 제거 */
+    }
+
+    .book-toc > .paginated-toc > ul > li > ul > li {
+        color: var(--ink-2); /* 챕터 제목은 보조 잉크색 */
+        font-weight: 500;
+    }
+
+    /* 2단계 들여쓰기 (Sub-Chapter Title) */
+    .book-toc > .paginated-toc > ul > li > ul > li > ul {
+      margin: 4px 0 0 0;
+      padding-left: 18px; /* 추가 들여쓰기 */
+      list-style: disc; /* 하위 목록에 디스크 스타일 적용 */
+    }
+    
+    .book-toc li {
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    
+    /* ---------------------------------------------------- */
+    /* 💡 페이지네이션 스타일 */
+    /* ---------------------------------------------------- */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .pagination-number {
+      padding: 0 8px;
+      cursor: pointer;
+      color: var(--ink-2);
+      transition: color 0.2s;
+    }
+
+    .pagination-number:hover {
+      color: var(--primary);
+    }
+
+    .pagination-number.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pagination-divider {
+      color: var(--border); /* 세로줄 색상 */
+      margin: 0 2px;
+    }
+
+  </style>
+</head>
+
+<body class="light">
+  <div id="preloader"><div class="spinner"></div></div>
+  <%- include('partials/header') %>
+
+  <div id="panel-root" data-pjax-scope>
+    <%- include('partials/panel') %>
   </div>
 
-  <aside class="side-panel main-panel-only">
-    <div class="sidebar-wrapper">
-      <nav class="vscode-sidebar" aria-label="패널 사이드바" role="tablist">
-        <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
-          <i class="fas fa-chevron-left" aria-hidden="true"></i>
-        </a>
+  <div class="app-shell">
+    <h1 class="section-title">연재 중인 글</h1>
 
-        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" title="BugLoop 홈" aria-label="BugLoop 홈" aria-selected="false">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop">
-        </a>
-        <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" title="홈" aria-selected="false">
-          <i class="fas fa-home" aria-hidden="true"></i>
-        </a>
+    <div class="carousel">
 
-        <a href="#" class="sidebar-icon" data-tab="profile" title="프로필" aria-selected="false" role="tab">
-          <i class="fas fa-user" aria-hidden="true"></i>
-        </a>
-        <a href="#" class="sidebar-icon" data-tab="search" title="검색" aria-selected="false" role="tab">
-          <i class="fas fa-search" aria-hidden="true"></i>
-        </a>
+    <% 
+        const tocData = locale.books.cute_acoustics.toc;
+        // 한 페이지에 표시할 섹션(h5) 수
+        const itemsPerPage = 3; 
+        const totalSections = tocData.length;
+        const totalPages = Math.ceil(totalSections / itemsPerPage);
+        const paginatedToc = [];
 
-        <% if (user) { %>
-          <% if (Number(user.is_admin) === 1) { %>
-            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
-              <i class="fas fa-pen" aria-hidden="true"></i>
-            </a>
-          <% } %>
-        <% } %>
+        for (let i = 0; i < totalPages; i++) {
+            const start = i * itemsPerPage;
+            const end = start + itemsPerPage;
+            paginatedToc.push(tocData.slice(start, end));
+        }
+    %>
+    <div class="book-card" data-index="0" data-book-id="cute-acoustics">
+        <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+        <div class="book-info">
+          <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
+          <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+            저자: <%= locale.books.cute_acoustics.author %>
+          </div>
+        </div>
+        <div class="book-toc">
+          <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
+          
+          <div class="pagination" data-book-id="cute-acoustics-pagination">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
+                    <%= i %>
+                </span>
+                <% if (i < totalPages) { %>
+                    <span class="pagination-divider">|</span>
+                <% } %>
+            <% } %>
+          </div>
 
-        <div class="sidebar-lang-theme">
-          <div class="language-dropdown">
-            <button id="langToggleSidebar" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenuSidebar">
-              <%
-                let flagCode = lang;
-                switch(lang) {
-                  case 'ko': flagCode = 'kr'; break;
-                  case 'en': flagCode = 'gb'; break;
-                  case 'zh': flagCode = 'cn'; break;
-                  case 'ja': flagCode = 'jp'; break;
-                  case 'fr': flagCode = 'fr'; break;
-                  case 'es': flagCode = 'es'; break;
-                  default: flagCode = 'kr';
-                }
-              %>
-              <span class="fi fi-<%= flagCode %>"></span>
-            </button>
-
-            <ul id="langMenuSidebar" class="lang-menu" role="menu" aria-hidden="true">
-              <%
-                const currentPathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
-                const langNames = { ko:'한국어', en:'English', fr:'Français', zh:'简体中文', ja:'日本語', es:'Español' };
-              %>
-              <% (supportedLangs || ['ko','en','fr','zh','ja','es']).forEach(function(langCode){ %>
-                <li role="none">
-                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                     class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
-                     role="menuitem" tabindex="-1">
-                    <span class="fi fi-<%= (langCode==='ko'?'kr':(langCode==='en'?'gb':(langCode==='zh'?'cn':(langCode==='ja'?'jp':langCode)))) %>"></span>
-                    <%= langNames[langCode] || langCode %>
-                  </a>
-                </li>
-              <% }); %>
+          <div class="paginated-toc" data-book-id="cute-acoustics-toc">
+            <ul>
+              <% paginatedToc[0].forEach(section => { %>
+                  <li>
+                    <h5><%= section.section %></h5>
+                    <ul>
+                      <% section.chapters.forEach(ch => { %>
+                        <li><%= ch.title %></li>
+                        <% if (ch.sub) { %>
+                          <ul>
+                            <% ch.sub.forEach(sub => { %>
+                              <li><%= sub.title %></li>
+                            <% }) %>
+                          </ul>
+                        <% } %>
+                      <% }) %>
+                    </ul>
+                  </li>
+              <% }) %>
             </ul>
           </div>
-          
-          <button id="theme-toggle-sidebar" class="theme-toggle-btn" aria-label="테마 전환: 라이트/다크 모드" title="테마 전환">
-            <i class="fas fa-moon" aria-hidden="true"></i>
-          </button>
-        </div>
-        </nav>
-
-      <div class="sidebar-extension-panel">
-        <div class="panel-logo">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop" loading="lazy" />
-        </div>
-        <div class="tab-container"></div>
-
-        <div class="tab-content" data-tab="profile" style="display: none;">
-          <%- include('./profile', { locale }) %>
-        </div>
-
-        <% if (typeof posts !== 'undefined') { %>
-          <div class="tab-content" data-tab="search" style="display: none;">
-            <section class="search-tab">
-              <div id="sidebar-table-template" data-lang="<%= lang %>">
-                <%- include('table') %>
-              </div>
-            </section>
+          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+              총 <%= totalSections %>개 섹션
           </div>
-        <% } %>
-
-        <div class="panel-footer">
-          <% if (user) { %>
-            <div class="greeting" style="text-align:center; margin-top:10px; font-weight:bold;">
-              <%= user.nickname %>님, 안녕하세요!
-            </div>
-          <% } %>
-
-          <% if (currentPath !== '/signup' && currentPath !== '/login') { %>
-            <div class="auth-buttons">
-              <% if (user) { %>
-                <a href="/<%= lang %>/logout" class="auth-btn logout">로그아웃</a>
-              <% } else { %>
-                <a class="auth-btn signup" onclick="return false;" style="pointer-events:none; opacity:.5; cursor:not-allowed;">회원가입</a>
-                <button class="auth-btn login" id="login" type="button">로그인</button>
-              <% } %>
-            </div>
-          <% } %>
-
-          <div id="login-form-container" class="login-form-container hidden">
-            <form id="login-form" method="POST" action="/login">
-              <input type="text" name="id" placeholder="아이디" required />
-              <input type="password" name="password" placeholder="비밀번호" required />
-              <button type="submit">로그인</button>
-            </form>
-          </div>
-
-          <div class="real-footer"><small>© 2025 Bug Loop</small></div>
         </div>
       </div>
+
+      <div class="book-card" data-index="1">
+        <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+        <div class="book-info"><div class="book-title">미완성 고통</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 불완전함의 철학</li>
+            <li>2장. 창작과 결핍</li>
+            <li>3장. 완성이라는 환상</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="book-card" data-index="2">
+        <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+        <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 반주의 구조 이해</li>
+            <li>2장. 코드 보이싱의 예술</li>
+            <li>3장. 리듬의 설계와 다이내믹</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="book-card" data-index="3">
+        <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
+        <div class="book-info"><div class="book-title">계산의 온기</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 기계와 인간의 경계</li>
+            <li>2장. 연산의 감정</li>
+            <li>3장. 알고리즘의 온도</li>
+          </ul>
+        </div>
+      </div>
+
     </div>
-  </aside>
-</div>
-
-<script>
-/* ====== (스크립트 시작) ====== */
-/* 🚀 수정됨: 서브메뉴 활성화 동기 - AJAX 환경 지원 및 클릭 시 즉시 활성화 */
-(function(){
-  const stripPath = (p) => (p || location.pathname).replace(/[#?].*$/, '').replace(/\/$/, '');
-  
-  // 1. 모든 활성화 클래스를 제거하고 현재 경로에 맞춰 다시 적용하는 함수
-  const syncMenuActivity = () => {
-    const path = stripPath(location.pathname);
-
-    // 모든 활성화 클래스 제거
-    document.querySelectorAll('.submenu a.active').forEach(a => a.classList.remove('active'));
-    document.querySelectorAll('.menu-label.active-label').forEach(l => l.classList.remove('active-label'));
-
-    // 현재 경로와 일치하는 메뉴 항목 찾기 및 활성화
-    document.querySelectorAll('.submenu a').forEach(function(a){
-      const href = stripPath(a.getAttribute('href') || '');
-      
-      if (href === path) {
-        a.classList.add('active');
-        const label = a.closest('.menu-item-wrapper')?.querySelector('.menu-label');
-        if (label) label.classList.add('active-label');
-      }
-    });
-  };
-
-  // 2. 초기 로드 시 실행
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncMenuActivity, { once: true });
-  } else {
-    syncMenuActivity();
-  }
-  
-  // 3. 페이지가 AJAX/history API로 변경되었을 때 재실행
-  window.addEventListener('popstate', syncMenuActivity);
-  window.addEventListener('panel:navigated', syncMenuActivity); // custom event 활용
-
-  // 4. 서브메뉴 항목 클릭 시 즉시 활성화 스타일 적용 (UX 개선)
-  document.querySelectorAll('.submenu a[data-panel-link]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      // 기존 활성화 제거
-      document.querySelectorAll('.submenu a.active').forEach(a => a.classList.remove('active'));
-      document.querySelectorAll('.menu-label.active-label').forEach(l => l.classList.remove('active-label'));
-      
-      // 클릭한 요소 활성화
-      e.currentTarget.classList.add('active');
-      const label = e.currentTarget.closest('.menu-item-wrapper')?.querySelector('.menu-label');
-      if (label) label.classList.add('active-label');
-    });
-  });
-})();
-</script>
-
-<script>
-/* ====== 홈 아이콘 active 동기 ====== */
-(() => {
-  const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
-  const stripLang = (p) => {
-    const path = (p || location.pathname).replace(/[#?].*$/, '');
-    const noLang = path.replace(/^\/(ko|en|fr|zh|ja|es)(?:\/|$)/, '');
-    return noLang === '' ? '/' : noLang.replace(/\/$/, '') || '/';
-  };
-  const isHomePath = (p) => stripLang(p) === '/';
-  const setHomeActive = (flag) => {
-    homeEls.forEach(el => {
-      el.classList.toggle('active', flag);
-      el.querySelector('i')?.classList.toggle('active', flag);
-    });
-  };
-  const sync = () => setHomeActive(isHomePath(location.pathname));
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', sync, { once: true });
-  } else {
-    sync();
-  }
-
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[data-panel-link]');
-    if (!a) return;
-    const pn = new URL(a.getAttribute('href') || '/', location.origin).pathname;
-    setHomeActive(isHomePath(pn));
-  });
-
-  window.addEventListener('popstate', sync);
-  ['pushState','replaceState'].forEach(fn => {
-    const orig = history[fn];
-    history[fn] = function(...args){
-      const ret = orig.apply(this, args);
-      window.dispatchEvent(new Event('panel:navigated'));
-      return ret;
-    };
-  });
-  window.addEventListener('panel:navigated', sync);
-})();
-</script>
-
-<script>
-/* ====== 하드웨어 힌트(기존 코드 유지) ====== */
-(function(){
-  const bubble = document.getElementById('hardware-hint');
-  const label  = document.getElementById('hardware-label');
-  if (!bubble || !label) return;
-
-  const KEY = 'bugloop.hideHardwareHint';
-  const isShown = () => bubble.style.display !== 'none' && bubble.getAttribute('aria-hidden') !== 'true';
-  function show(){ bubble.style.display = 'inline-flex'; bubble.setAttribute('aria-hidden','false'); }
-  function hide(){ localStorage.setItem(KEY,'1'); bubble.style.display = 'none'; bubble.setAttribute('aria-hidden','true'); label?.focus?.(); }
-
-  if (bubble.parentNode !== document.body) { bubble.style.position = 'fixed'; bubble.style.left = '-9999px'; bubble.style.top = '-9999px'; document.body.appendChild(bubble); }
-  bubble.style.pointerEvents = 'none';
-  const closeBtn = bubble.querySelector('.hint-close'); if (closeBtn) closeBtn.style.pointerEvents = 'auto';
-
-  function placeBubble(){
-    const r = label.getBoundingClientRect();
-    bubble.style.left = (Math.round(r.left + 20)) + 'px';
-    bubble.style.top  = (Math.round(r.bottom + 8)) + 'px';
-    if (!isShown() && localStorage.getItem(KEY) !== '1') show();
-  }
-
-  let followRAF = 0;
-  function cancelFollow(){ if (followRAF) cancelAnimationFrame(followRAF), followRAF = 0; }
-  function startFollow(ms = 600){
-    const end = performance.now() + ms;
-    cancelFollow();
-    const tick = () => { placeBubble(); if (performance.now() < end) followRAF = requestAnimationFrame(tick); };
-    followRAF = requestAnimationFrame(tick);
-  }
-
-  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', placeBubble, { once:true }); } else { placeBubble(); }
-  window.addEventListener('scroll', placeBubble, { capture:true, passive:true });
-  window.addEventListener('resize', placeBubble);
-  document.querySelector('.toggle-extension')?.addEventListener('click', () => { placeBubble(); startFollow(800); });
-  window.addEventListener('panel:navigated', () => { placeBubble(); startFollow(400); });
-
-  const ro = new ResizeObserver(() => placeBubble());
-  ['.full-header-container','.main-panel-only','.header-top','body','html'].forEach(sel => { const el=document.querySelector(sel); if (el) ro.observe(el); });
-
-  document.addEventListener('transitionstart', (e) => {
-    const targets = ['.sidebar-extension-panel','.full-header-container','.main-panel-only','.header-top'];
-    if (targets.some(sel => e.target.matches?.(sel))) {
-      placeBubble();
-      startFollow((e.elapsedTime ? e.elapsedTime*1000 : 500) + 400);
-    }
-  }, true);
-
-  closeBtn?.addEventListener('click', hide);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isShown()) hide(); }, true);
-  if (localStorage.getItem(KEY) !== '1') show();
-})();
-</script>
-
-<script>
-/* ====== 패널로딩(AJAX) 기존 코드 유지 ====== */
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-panel-link]').forEach(link => {
-    link.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const url = link.getAttribute('href');
-      try {
-        const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
-        const html = await res.text();
-        const panel = document.querySelector('#mini-lecture');
-        if (panel) {
-          panel.innerHTML = html;
-          panel.scrollTo(0, 0);
-          if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
-          if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
-        }
-      } catch (err) {
-        console.error('패널 로드 오류:', err);
-      }
-    });
-  });
-});
-</script>
-
-<script>
-/* ======================================================
-   ⚙️ 언어 드롭다운(포털) + ✅ 새 테마 토글(.dark 클래스 방식) 스크립트
-====================================================== */
-(function(){
-  const langBtn = document.getElementById('langToggleSidebar');
-  const langMenu = document.getElementById('langMenuSidebar');
-  const themeToggleBtn = document.getElementById('theme-toggle-sidebar');
-
-  const THEME_KEY = 'bugloop.theme';
-  const htmlEl = document.documentElement;
-
-  /* ------------------- ✅ 새 테마 로직 (.dark 클래스 적용) ------------------- */
-  const updateTheme = (theme) => {
-    const isDark = theme === 'dark';
     
-    htmlEl.classList.toggle('dark', isDark);
+    <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
 
-    localStorage.setItem(THEME_KEY, theme);
-    // 아이콘 업데이트 (다크 모드면 해(sun), 라이트 모드면 달(moon))
-    themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-    themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
-  };
+    <div class="spacer"></div>
+    
+  </div>
 
-  const initTheme = () => {
-    const saved = localStorage.getItem(THEME_KEY);
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = (saved === 'dark' || (!saved && prefersDark)) ? 'dark' : 'light';
-    updateTheme(initialTheme);
-  };
+  <%- include('partials/scripts') %>
 
-  const toggleTheme = () => {
-    const currentIsDark = htmlEl.classList.contains('dark');
-    const nextTheme = currentIsDark ? 'light' : 'dark';
-    updateTheme(nextTheme);
-  };
+  <script>
+  (() => {
+    // 서버에서 전달된 목차 데이터
+    const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
+    const itemsPerPage = 3;
+    const totalPages = Math.ceil(tocData.length / itemsPerPage);
+    const paginatedToc = [];
 
-  themeToggleBtn?.addEventListener('click', toggleTheme);
-  themeToggleBtn?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTheme(); }
-  });
+    for (let i = 0; i < totalPages; i++) {
+        const start = i * itemsPerPage;
+        const end = start + itemsPerPage;
+        paginatedToc.push(tocData.slice(start, end));
+    }
 
-  // 초기 테마 설정
-  initTheme();
-  /* ---------------------------------------------------- */
+    // 목차를 HTML 문자열로 변환하는 함수 (이전과 동일)
+    const renderTocPage = (pageIndex) => {
+        const sections = paginatedToc[pageIndex - 1]; 
+        if (!sections) return '';
 
+        let html = '<ul>';
+        sections.forEach(section => {
+            html += `
+                <li>
+                    <h5>${section.section}</h5>
+                    <ul>
+            `;
+            section.chapters.forEach(ch => {
+                html += `<li>${ch.title}</li>`;
+                if (ch.sub) {
+                    html += '<ul>';
+                    ch.sub.forEach(sub => {
+                        html += `<li>${sub.title}</li>`;
+                    });
+                    html += '</ul>';
+                }
+            });
+            html += `
+                    </ul>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        return html;
+    };
 
-  /* ---------- 기존 언어 메뉴 포털 로직 유지 ---------- */
-  if (!langBtn || !langMenu) return; // 언어 버튼/메뉴 없으면 이후 로직 스킵
+    // 페이지 전환 함수 (onclick 이벤트에서 호출)
+    window.changePage = (event, bookId, pageNumber) => {
+        // 🚨 수정: 이벤트 버블링 차단 (가장 중요)
+        event.stopPropagation(); 
 
-  let isOpen = false;
-  let lastFocus = null;
+        if (bookId !== 'cute-acoustics') return;
 
-  const openMenu = () => {
-    if (isOpen) return;
-    isOpen = true;
-    lastFocus = document.activeElement;
+        const tocContainer = document.querySelector(`[data-book-id="cute-acoustics-toc"]`);
+        const paginationContainer = document.querySelector(`[data-book-id="cute-acoustics-pagination"]`);
+        
+        if (tocContainer && paginationContainer) {
+            tocContainer.innerHTML = renderTocPage(pageNumber);
 
-    // aria
-    langBtn.setAttribute('aria-expanded','true');
-    langMenu.setAttribute('aria-hidden','false');
-
-    // body로 포털 이동 + 고정 좌표 계산
-    const r = langBtn.getBoundingClientRect();
-    const top = Math.round(r.bottom + 6); // 버튼 바로 아래
-    const left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 200))); // 화면 밖 방지
-    const minW = Math.max(r.width, 160);
-
-    langMenu.classList.add('lang-menu--portal');
-    document.body.appendChild(langMenu);
-    Object.assign(langMenu.style, {
-      top: top + 'px',
-      left: left + 'px',
-      minWidth: minW + 'px'
+            paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
+                btn.classList.remove('active');
+                if (parseInt(btn.textContent.trim()) === pageNumber) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    };
+    
+    // 카드 클릭 시 확장/축소 로직
+    document.querySelectorAll('.book-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // 모든 카드를 순회하며 닫고, 현재 카드만 토글
+        document.querySelectorAll('.book-card').forEach(c => {
+          // 현재 클릭된 카드가 아니면 닫기
+          if (c !== card) {
+            c.classList.remove('expanded');
+          }
+        });
+        // 현재 클릭된 카드의 expanded 상태 토글
+        card.classList.toggle('expanded');
+      });
     });
 
-    // 첫 포커스(현재 언어)
-    const current = langMenu.querySelector('.lang-option.active-lang') || langMenu.querySelector('.lang-option');
-    current?.setAttribute('tabindex','0');
-    current?.focus();
+  })();
+  </script>
 
-    // 외부 클릭/스크롤/리사이즈/ESC로 닫기
-    setTimeout(() => {
-      document.addEventListener('mousedown', onDocDown, { capture:true });
-      window.addEventListener('scroll', closeMenu, { passive:true });
-      window.addEventListener('resize', closeMenu);
-      document.addEventListener('keydown', onKey);
-    }, 0);
-  };
-
-  const closeMenu = () => {
-    if (!isOpen) return;
-    isOpen = false;
-    langBtn.setAttribute('aria-expanded','false');
-    langMenu.setAttribute('aria-hidden','true');
-
-    // 탭 순서 복구
-    langMenu.querySelectorAll('.lang-option').forEach(a => a.setAttribute('tabindex','-1'));
-
-    // 메뉴를 다시 원래 자리(토글 버튼 바로 뒤 형제)로 되돌림
-    const holder = langBtn.parentElement;
-    holder && holder.appendChild(langMenu);
-    langMenu.classList.remove('lang-menu--portal');
-    langMenu.removeAttribute('style');
-
-    document.removeEventListener('mousedown', onDocDown, { capture:true });
-    window.removeEventListener('scroll', closeMenu);
-    document.removeEventListener('keydown', onKey);
-
-    // 포커스 반환
-    lastFocus?.focus?.();
-  };
-
-  const onDocDown = (e) => {
-    if (e.target === langBtn || langBtn.contains(e.target)) return;
-    if (e.target === langMenu || langMenu.contains(e.target)) return;
-    closeMenu();
-  };
-
-  const onKey = (e) => {
-    if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); return; }
-
-    // 간단한 메뉴 키보드 내비게이션
-    const items = Array.from(langMenu.querySelectorAll('.lang-option'));
-    const idx = items.indexOf(document.activeElement);
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      const next = items[(idx + 1 + items.length) % items.length];
-      next?.focus();
-    }
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const prev = items[(idx - 1 + items.length) % items.length];
-      prev?.focus();
-    }
-    if (e.key === 'Home') { e.preventDefault(); items[0]?.focus(); }
-    if (e.key === 'End')  { e.preventDefault(); items[items.length-1]?.focus(); }
-  };
-
-  langBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    isOpen ? closeMenu() : openMenu();
-  });
-
-  // 버튼에서 Space/Enter로도 열기
-  langBtn.addEventListener('keydown', (e) => {
-    if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      openMenu();
-    }
-  });
-})();
-</script>
-
-<script src="/assets/js/header.js"></script>
-<script src="/assets/js/global.js"></script>
+  
+</body>
+</html>
