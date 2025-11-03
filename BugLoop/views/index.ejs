@@ -346,5 +346,80 @@
     });
   })();
   </script>
+
+  <script>
+(() => {
+  // 카드 클릭 시 확장/축소
+  document.querySelectorAll('.book-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.book-card').forEach(c => {
+        if (c !== card) c.classList.remove('expanded');
+      });
+      card.classList.toggle('expanded');
+    });
+  });
+
+  /* === 🎯 페이지네이션 기능 (귀여운 음향학 전용) === */
+  const tocContainer = document.querySelector('.book-card[data-index="0"] .book-toc ul');
+  const sections = Array.from(tocContainer.children);
+  const itemsPerPage = 3; // 한 페이지당 표시할 섹션 수
+  let currentPage = 1;
+  const totalPages = Math.ceil(sections.length / itemsPerPage);
+
+  // 1️⃣ 페이지네이션 컨트롤러 만들기
+  const pagination = document.createElement('div');
+  pagination.classList.add('toc-pagination');
+  pagination.style.cssText = `
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-top:12px;
+    font-size:0.85rem;
+  `;
+  tocContainer.parentElement.appendChild(pagination);
+
+  // 2️⃣ 섹션 표시 함수
+  function renderPage(page) {
+    sections.forEach((section, i) => {
+      section.style.display =
+        i >= (page - 1) * itemsPerPage && i < page * itemsPerPage ? 'block' : 'none';
+    });
+
+    pagination.innerHTML = '';
+    const prev = document.createElement('button');
+    prev.textContent = '◀';
+    prev.disabled = page === 1;
+    const next = document.createElement('button');
+    next.textContent = '▶';
+    next.disabled = page === totalPages;
+
+    prev.onclick = () => { currentPage--; renderPage(currentPage); };
+    next.onclick = () => { currentPage++; renderPage(currentPage); };
+
+    const info = document.createElement('span');
+    info.textContent = `${page} / ${totalPages}`;
+
+    [prev, info, next].forEach(el => {
+      el.style.cssText = `
+        background: var(--panel);
+        border: 1px solid var(--border);
+        color: var(--ink);
+        padding: 2px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+      `;
+    });
+
+    pagination.appendChild(prev);
+    pagination.appendChild(info);
+    pagination.appendChild(next);
+  }
+
+  // 초기 렌더링
+  renderPage(currentPage);
+})();
+</script>
+
+
 </body>
 </html>
