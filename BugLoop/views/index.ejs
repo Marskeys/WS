@@ -306,7 +306,6 @@
 
     <% 
         const tocData = locale.books.cute_acoustics.toc;
-        // 한 페이지에 표시할 섹션(h5) 수
         const itemsPerPage = 3; 
         const totalSections = tocData.length;
         const totalPages = Math.ceil(totalSections / itemsPerPage);
@@ -347,14 +346,26 @@
                     <h5><%= section.section %></h5>
                     <ul>
                       <% section.chapters.forEach(ch => { %>
-                        <li><%= ch.title %></li>
-                        <% if (ch.sub) { %>
-                          <ul>
-                            <% ch.sub.forEach(sub => { %>
-                              <li><%= sub.title %></li>
-                            <% }) %>
-                          </ul>
-                        <% } %>
+                        <li>
+                          <% if (ch.url) { %>
+                            <a href="<%= ch.url %>" class="toc-link"><%= ch.title %></a>
+                          <% } else { %>
+                            <%= ch.title %>
+                          <% } %>
+                          <% if (ch.sub) { %>
+                            <ul>
+                              <% ch.sub.forEach(sub => { %>
+                                <li>
+                                  <% if (sub.url) { %>
+                                    <a href="<%= sub.url %>" class="toc-link"><%= sub.title %></a>
+                                  <% } else { %>
+                                    <%= sub.title %>
+                                  <% } %>
+                                </li>
+                              <% }) %>
+                            </ul>
+                          <% } %>
+                        </li>
                       <% }) %>
                     </ul>
                   </li>
@@ -416,9 +427,20 @@
 
   <%- include('partials/scripts') %>
 
+  <style>
+    .toc-link {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .toc-link:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+  </style>
+
   <script>
   (() => {
-    // 서버에서 전달된 목차 데이터
     const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
     const itemsPerPage = 3;
     const totalPages = Math.ceil(tocData.length / itemsPerPage);
@@ -430,7 +452,7 @@
         paginatedToc.push(tocData.slice(start, end));
     }
 
-    // 목차를 HTML 문자열로 변환하는 함수 (이전과 동일)
+    // 페이지별 목차 HTML 렌더링 (링크 포함)
     const renderTocPage = (pageIndex) => {
         const sections = paginatedToc[pageIndex - 1]; 
         if (!sections) return '';
@@ -443,14 +465,20 @@
                     <ul>
             `;
             section.chapters.forEach(ch => {
-                html += `<li>${ch.title}</li>`;
+                html += `<li>`;
+                if (ch.url) html += `<a href="${ch.url}" class="toc-link">${ch.title}</a>`;
+                else html += `${ch.title}`;
                 if (ch.sub) {
                     html += '<ul>';
                     ch.sub.forEach(sub => {
-                        html += `<li>${sub.title}</li>`;
+                        html += `<li>`;
+                        if (sub.url) html += `<a href="${sub.url}" class="toc-link">${sub.title}</a>`;
+                        else html += `${sub.title}`;
+                        html += `</li>`;
                     });
                     html += '</ul>';
                 }
+                html += `</li>`;
             });
             html += `
                     </ul>
@@ -461,11 +489,9 @@
         return html;
     };
 
-    // 페이지 전환 함수 (onclick 이벤트에서 호출)
+    // 페이지 전환
     window.changePage = (event, bookId, pageNumber) => {
-        // 🚨 수정: 이벤트 버블링 차단 (가장 중요)
         event.stopPropagation(); 
-
         if (bookId !== 'cute-acoustics') return;
 
         const tocContainer = document.querySelector(`[data-book-id="cute-acoustics-toc"]`);
@@ -473,34 +499,25 @@
         
         if (tocContainer && paginationContainer) {
             tocContainer.innerHTML = renderTocPage(pageNumber);
-
             paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
                 btn.classList.remove('active');
-                if (parseInt(btn.textContent.trim()) === pageNumber) {
-                    btn.classList.add('active');
-                }
+                if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
             });
         }
     };
     
-    // 카드 클릭 시 확장/축소 로직
+    // 카드 클릭시 토글
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        // 모든 카드를 순회하며 닫고, 현재 카드만 토글
         document.querySelectorAll('.book-card').forEach(c => {
-          // 현재 클릭된 카드가 아니면 닫기
-          if (c !== card) {
-            c.classList.remove('expanded');
-          }
+          if (c !== card) c.classList.remove('expanded');
         });
-        // 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded');
       });
     });
 
   })();
   </script>
-
-  
 </body>
+
 </html>
