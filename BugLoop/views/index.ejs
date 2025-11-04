@@ -342,30 +342,35 @@
           <div class="paginated-toc" data-book-id="cute-acoustics-toc">
             <ul>
               <% paginatedToc[0].forEach(section => { %>
-                  <li>
-                    <h5><%= section.section %></h5>
-                    <ul>
-                      <% section.chapters.forEach(ch => { %>
-                        <li>
-                          <% if (ch.url) { %>
-                            <a href="<%= ch.url %>" class="toc-link"><%= ch.title %></a>
-                          <% } else { %>
-                            <%= ch.title %>
-                          <% } %>
-                          <% if (ch.sub) { %>
-                            <ul>
-                              <% ch.sub.forEach(sub => { %>
-                                <li>
-                                  <% if (sub.url) { %>
-                                    <a href="<%= sub.url %>" class="toc-link"><%= sub.title %></a>
-                                  <% } else { %>
-                                    <%= sub.title %>
-                                  <% } %>
-                                </li>
-                              <% }) %>
-                            </ul>
-                          <% } %>
-                        </li>
+                <li>
+  <h5><%= section.section %></h5>
+  <ul>
+    <% section.chapters.forEach(ch => { %>
+      <li>
+        <% if (ch.url) { %>
+          <a href="/<%= lang %>/books/cuteAcoustics/<%= ch.url %>" class="toc-link"><%= ch.title %></a>
+        <% } else { %>
+          <%= ch.title %>
+        <% } %>
+
+        <% if (ch.sub) { %>
+          <ul>
+            <% ch.sub.forEach(sub => { %>
+              <li>
+                <% if (sub.url) { %>
+                  <a href="/<%= lang %>/books/cuteAcoustics/<%= sub.url %>" class="toc-link"><%= sub.title %></a>
+                <% } else { %>
+                  <%= sub.title %>
+                <% } %>
+              </li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+</li>
+
                       <% }) %>
                     </ul>
                   </li>
