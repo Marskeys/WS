@@ -15,46 +15,40 @@
       --radius:12px;
       /* Light Mode Colors */
       --border:#d9d9d9;
-      --bg:#f3f3f6; /* 배경: 매우 밝은 회색 */
-      --panel:#ffffff; /* 패널: 흰색 */
-      --panel-2:#f0f0ff; /* 보조 패널: 아주 옅은 파랑/회색 */
-      --ink:#1f1f1f; /* 잉크: 거의 검은색 */
-      --ink-2:#5a5a5a; /* 보조 잉크: 회색 */
-      --accent:#3c6df0; /* 강조: 파란색 계열 */
-      --primary:#217ee8; /* 주요 요소: 파란색 */
-      --primary-ink:#ffffff; /* 주요 요소 위 글자색 (대비 확보) */
+      --bg:#f3f3f6;
+      --panel:#ffffff;
+      --panel-2:#f0f0ff;
+      --ink:#1f1f1f;
+      --ink-2:#5a5a5a;
+      --accent:#3c6df0;
+      --primary:#217ee8;
+      --primary-ink:#ffffff;
     }
 
-    /* ---------------------------------------------------- */
-    /* 🌙 다크 모드 (html.dark) */
-    /* ---------------------------------------------------- */
     html.dark{
-      /* Dark Mode Colors */
-      --border:#2b2b2b; /* 테두리: 짙은 회색 */
-      --bg:#121212; /* 배경: 매우 어두운 회색 (AMOLED-friendly) */
-      --panel:#1b1b1b; /* 패널: 어두운 회색 */
-      --panel-2:#0e0e0e; /* 보조 패널: 가장 어두운 회색 */
-      --ink:#eaeaea; /* 잉크: 거의 흰색 */
-      --ink-2:#b7b7b7; /* 보조 잉크: 밝은 회색 */
-      --accent:#00f5d4; /* 강조: 청록색 계열 (Dark Mode 대비 강화를 위해 변경) */
+      --border:#2b2b2b;
+      --bg:#121212;
+      --panel:#1b1b1b;
+      --panel-2:#0e0e0e;
+      --ink:#eaeaea;
+      --ink-2:#b7b7b7;
+      --accent:#00f5d4;
       --primary:#217ee8;
-      --primary-ink:#608b42; /* 주요 요소 위 글자색 (예시 유지) */
+      --primary-ink:#608b42;
     }
 
     html, body { height: 100%; }
 
-    /* body의 기본 스타일은 변수를 따르도록 통일 */
     body {
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      transition: background 0.3s, color 0.3s; /* 색상 전환 애니메이션 추가 */
+      transition: background 0.3s, color 0.3s;
     }
 
     .app-shell{
-      /* 하단 패딩은 원래대로 복구 (spacer가 공간을 담당) */
       padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
       padding-top: calc(50px + 16px);
       margin-top: 180px;
@@ -67,36 +61,29 @@
     @media (max-width: 640px){
       .app-shell{
         padding-left: 16px;
-        /* 하단 패딩은 원래대로 복구 */
         padding-bottom: 16px;
         margin-top: 250px;
       }
     }
-    
-    /* 🔹 투명한 Spacer 스타일 */
+
     .spacer {
-      /* 뷰포트 높이의 50%를 빈 공간으로 만듭니다. (스크롤 유도) */
-      height: 50vh; 
-      min-height: 300px; 
+      height: 50vh;
+      min-height: 300px;
       width: 100%;
       background: transparent;
     }
 
     .section-title {
-      /* 📌 변경: var(--ink) 사용 */
-      color: var(--ink); 
+      color: var(--ink);
       font-size: 1.8rem;
       font-weight: 700;
       margin-bottom: 24px;
       letter-spacing: 0.5px;
     }
-    /* 📌 다크 모드에서 섹션 제목의 대비를 위해 폰트 색상을 강조색으로 설정 (선택 사항) */
     html.dark .section-title {
         color: var(--accent);
     }
 
-
-    /* === 🔹 캐러셀 === */
     .carousel {
       display: flex;
       gap: 20px;
@@ -105,47 +92,34 @@
       padding-bottom: 8px;
     }
 
-    .carousel::-webkit-scrollbar {
-      display: none;
-    }
+    .carousel::-webkit-scrollbar { display: none; }
 
     .book-card {
       flex-shrink: 0;
       width: 230px;
-      /* 📌 변경: var(--panel) 사용 */
       background: var(--panel);
-      /* 📌 변경: var(--border) 사용 */
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
-      /* 📌 변경: var(--ink) 사용 */
       color: var(--ink);
       transition: all 0.3s ease;
       scroll-snap-align: start;
       cursor: pointer;
-      /* 📌 그림자 색상도 다크 모드에 맞게 조정될 수 있도록 투명도만 지정 */
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       position: relative;
     }
 
     .book-card:hover {
       transform: translateY(-4px);
-      /* 📌 그림자 색상도 다크 모드에 맞게 조정 */
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
-    
-    /* 📌 다크 모드에서 그림자 명암 조절 */
-    html.dark .book-card {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-    html.dark .book-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-    }
 
+    html.dark .book-card { box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+    html.dark .book-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.7); }
 
     .book-cover {
       width: 100%;
-      height: 360px; /* ⬆ 세로 조금 늘림 */
+      height: 360px;
       object-fit: cover;
       display: block;
     }
@@ -153,16 +127,13 @@
     .book-info {
       padding: 14px 10px;
       text-align: center;
-      /* 📌 변경: var(--border) 사용 */
       border-top: 1px solid var(--border);
-      /* 📌 변경: var(--panel-2) 사용 */
       background: var(--panel-2);
     }
 
     .book-title {
       font-weight: 600;
       font-size: 1.05rem;
-      /* 📌 변경: var(--ink) 사용 */
       color: var(--ink);
       line-height: 1.4;
       white-space: normal;
@@ -175,21 +146,16 @@
       display: block;
       width: 40%;
       height: 2px;
-      /* 📌 변경: var(--primary) 사용 */
       background: var(--primary);
       margin: 8px auto 0;
       border-radius: 1px;
       opacity: 0.7;
     }
 
-    /* 🔹 확장 시 목차 영역 */
     .book-toc {
-      /* 📌 변경: var(--panel-2) 사용 */
       background: var(--panel-2);
-      /* 📌 변경: var(--ink-2) 사용 */
       color: var(--ink-2);
       font-size: 0.9rem;
-      /* 📌 변경: var(--border) 사용 */
       border-top: 1px solid var(--border);
       max-height: 0;
       overflow: hidden;
@@ -197,67 +163,54 @@
       padding: 0 16px;
       opacity: 0;
     }
-    
-    /* 🚨 주의: max-height를 충분히 높게 설정해야 합니다. 목차가 길기 때문에 300px로는 부족할 수 있습니다. */
     .book-card.expanded .book-toc {
       padding: 16px;
-      max-height: 2000px; /* 충분히 큰 값으로 변경 */
+      max-height: 2000px;
       opacity: 1;
     }
 
     .book-toc h4 {
       margin: 0 0 8px 0;
-      /* 📌 변경: var(--primary) 사용 */
       color: var(--primary);
       font-size: 0.95rem;
       text-align: center;
     }
 
-    /* ---------------------------------------------------- */
-    /* 💡 목차 들여쓰기 & 디자인 스타일 */
-    /* ---------------------------------------------------- */
-    /* 섹션 제목 스타일 (h5) */
     .book-toc h5 {
       margin: 12px 0 6px 0;
-      color: var(--ink); /* 섹션 제목은 잉크 색상으로 강조 */
+      color: var(--ink);
       font-size: 1rem;
       font-weight: 600;
     }
 
-    /* 소제목 (chapter) 리스트 스타일 */
     .book-toc ul {
       margin: 0 0 12px 0;
       padding-left: 0;
-      list-style: none; /* 최상위 목록 스타일 제거 */
+      list-style: none;
     }
 
-    /* 1단계 들여쓰기 (Chapter Title) */
     .book-toc > .paginated-toc > ul > li > ul {
       margin: 0;
-      padding-left: 14px; /* 들여쓰기 */
-      list-style: none; /* 들여쓰기 된 곳도 기본적으로 점 제거 */
+      padding-left: 14px;
+      list-style: none;
     }
 
     .book-toc > .paginated-toc > ul > li > ul > li {
-        color: var(--ink-2); /* 챕터 제목은 보조 잉크색 */
-        font-weight: 500;
+      color: var(--ink-2);
+      font-weight: 500;
     }
 
-    /* 2단계 들여쓰기 (Sub-Chapter Title) */
     .book-toc > .paginated-toc > ul > li > ul > li > ul {
       margin: 4px 0 0 0;
-      padding-left: 18px; /* 추가 들여쓰기 */
-      list-style: disc; /* 하위 목록에 디스크 스타일 적용 */
+      padding-left: 18px;
+      list-style: disc;
     }
     
     .book-toc li {
       margin-bottom: 4px;
       line-height: 1.4;
     }
-    
-    /* ---------------------------------------------------- */
-    /* 💡 페이지네이션 스타일 */
-    /* ---------------------------------------------------- */
+
     .pagination {
       display: flex;
       justify-content: center;
@@ -274,20 +227,36 @@
       transition: color 0.2s;
     }
 
-    .pagination-number:hover {
-      color: var(--primary);
-    }
-
+    .pagination-number:hover { color: var(--primary); }
     .pagination-number.active {
       color: var(--primary);
       font-weight: 700;
     }
 
     .pagination-divider {
-      color: var(--border); /* 세로줄 색상 */
+      color: var(--border);
       margin: 0 2px;
     }
 
+    /* ✅ 링크 활성/비활성 스타일 */
+    .toc-link {
+      text-decoration: none;
+      transition: color 0.2s, opacity 0.2s;
+    }
+    .toc-link.active {
+      color: var(--primary);
+      cursor: pointer;
+    }
+    .toc-link.active:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    .toc-link.disabled {
+      color: var(--ink-2);
+      opacity: 0.6;
+      cursor: default;
+      pointer-events: none;
+    }
   </style>
 </head>
 
@@ -305,141 +274,125 @@
     <div class="carousel">
 
     <% 
-        const tocData = locale.books.cute_acoustics.toc;
-        const itemsPerPage = 3; 
-        const totalSections = tocData.length;
-        const totalPages = Math.ceil(totalSections / itemsPerPage);
-        const paginatedToc = [];
+      const tocData = locale.books.cute_acoustics.toc;
+      const itemsPerPage = 3; 
+      const totalSections = tocData.length;
+      const totalPages = Math.ceil(totalSections / itemsPerPage);
+      const paginatedToc = [];
 
-        for (let i = 0; i < totalPages; i++) {
-            const start = i * itemsPerPage;
-            const end = start + itemsPerPage;
-            paginatedToc.push(tocData.slice(start, end));
-        }
+      for (let i = 0; i < totalPages; i++) {
+        const start = i * itemsPerPage;
+        const end = start + itemsPerPage;
+        paginatedToc.push(tocData.slice(start, end));
+      }
     %>
+
     <div class="book-card" data-index="0" data-book-id="cute-acoustics">
-        <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
-        <div class="book-info">
-          <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
-          <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-            저자: <%= locale.books.cute_acoustics.author %>
-          </div>
+      <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+      <div class="book-info">
+        <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
+        <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+          저자: <%= locale.books.cute_acoustics.author %>
         </div>
-        <div class="book-toc">
-          <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
-          
-          <div class="pagination" data-book-id="cute-acoustics-pagination">
-            <% for(let i = 1; i <= totalPages; i++) { %>
-                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
-                    <%= i %>
-                </span>
-                <% if (i < totalPages) { %>
-                    <span class="pagination-divider">|</span>
-                <% } %>
-            <% } %>
-          </div>
+      </div>
+      <div class="book-toc">
+        <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
+        
+        <div class="pagination" data-book-id="cute-acoustics-pagination">
+          <% for(let i = 1; i <= totalPages; i++) { %>
+            <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
+              <%= i %>
+            </span>
+            <% if (i < totalPages) { %><span class="pagination-divider">|</span><% } %>
+          <% } %>
+        </div>
 
-          <div class="paginated-toc" data-book-id="cute-acoustics-toc">
-            <ul>
-              <% paginatedToc[0].forEach(section => { %>
- <li>
-  <h5><%= section.section %></h5>
-  <ul>
-    <% section.chapters.forEach(ch => { %>
-      <li>
-        <% if (ch.url) { %>
-          <a href="/<%= lang %>/books/cuteAcoustics/<%= ch.url %>" class="toc-link"><%= ch.title %></a>
-        <% } else { %>
-          <%= ch.title %>
-        <% } %>
-
-        <% if (ch.sub) { %>
+        <div class="paginated-toc" data-book-id="cute-acoustics-toc">
           <ul>
-            <% ch.sub.forEach(sub => { %>
+            <% paginatedToc[0].forEach(section => { %>
               <li>
-                <% if (sub.url) { %>
-                  <a href="/<%= lang %>/books/cuteAcoustics/<%= sub.url %>" class="toc-link"><%= sub.title %></a>
-                <% } else { %>
-                  <%= sub.title %>
-                <% } %>
+                <h5><%= section.section %></h5>
+                <ul>
+                  <% section.chapters.forEach(ch => { %>
+                    <li>
+                      <% if (ch.url) { %>
+                        <a href="/<%= lang %>/books/cuteAcoustics/<%= ch.url %>" class="toc-link active"><%= ch.title %></a>
+                      <% } else { %>
+                        <span class="toc-link disabled"><%= ch.title %></span>
+                      <% } %>
+                      <% if (ch.sub) { %>
+                        <ul>
+                          <% ch.sub.forEach(sub => { %>
+                            <li>
+                              <% if (sub.url) { %>
+                                <a href="/<%= lang %>/books/cuteAcoustics/<%= sub.url %>" class="toc-link active"><%= sub.title %></a>
+                              <% } else { %>
+                                <span class="toc-link disabled"><%= sub.title %></span>
+                              <% } %>
+                            </li>
+                          <% }) %>
+                        </ul>
+                      <% } %>
+                    </li>
+                  <% }) %>
+                </ul>
               </li>
             <% }) %>
           </ul>
-        <% } %>
-      </li>
-    <% }) %>
-  </ul>
-</li>
-
-              <% }) %>
-            </ul>
-          </div>
-          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-              총 <%= totalSections %>개 섹션
-          </div>
+        </div>
+        <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+          총 <%= totalSections %>개 섹션
         </div>
       </div>
+    </div>
 
-      <div class="book-card" data-index="1">
-        <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
-        <div class="book-info"><div class="book-title">미완성 고통</div></div>
-        <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 불완전함의 철학</li>
-            <li>2장. 창작과 결핍</li>
-            <li>3장. 완성이라는 환상</li>
-          </ul>
-        </div>
+    <!-- 나머지 카드 동일 유지 -->
+    <div class="book-card" data-index="1">
+      <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+      <div class="book-info"><div class="book-title">미완성 고통</div></div>
+      <div class="book-toc">
+        <h4>목차</h4>
+        <ul>
+          <li>1장. 불완전함의 철학</li>
+          <li>2장. 창작과 결핍</li>
+          <li>3장. 완성이라는 환상</li>
+        </ul>
       </div>
+    </div>
 
-      <div class="book-card" data-index="2">
-        <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
-        <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
-        <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 반주의 구조 이해</li>
-            <li>2장. 코드 보이싱의 예술</li>
-            <li>3장. 리듬의 설계와 다이내믹</li>
-          </ul>
-        </div>
+    <div class="book-card" data-index="2">
+      <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+      <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
+      <div class="book-toc">
+        <h4>목차</h4>
+        <ul>
+          <li>1장. 반주의 구조 이해</li>
+          <li>2장. 코드 보이싱의 예술</li>
+          <li>3장. 리듬의 설계와 다이내믹</li>
+        </ul>
       </div>
+    </div>
 
-      <div class="book-card" data-index="3">
-        <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
-        <div class="book-info"><div class="book-title">계산의 온기</div></div>
-        <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 기계와 인간의 경계</li>
-            <li>2장. 연산의 감정</li>
-            <li>3장. 알고리즘의 온도</li>
-          </ul>
-        </div>
+    <div class="book-card" data-index="3">
+      <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
+      <div class="book-info"><div class="book-title">계산의 온기</div></div>
+      <div class="book-toc">
+        <h4>목차</h4>
+        <ul>
+          <li>1장. 기계와 인간의 경계</li>
+          <li>2장. 연산의 감정</li>
+          <li>3장. 알고리즘의 온도</li>
+        </ul>
       </div>
+    </div>
 
     </div>
     
     <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
-
     <div class="spacer"></div>
-    
   </div>
 
   <%- include('partials/scripts') %>
-
-  <style>
-    .toc-link {
-      color: var(--primary);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .toc-link:hover {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-  </style>
 
   <script>
   (() => {
@@ -449,77 +402,64 @@
     const paginatedToc = [];
 
     for (let i = 0; i < totalPages; i++) {
-        const start = i * itemsPerPage;
-        const end = start + itemsPerPage;
-        paginatedToc.push(tocData.slice(start, end));
+      const start = i * itemsPerPage;
+      const end = start + itemsPerPage;
+      paginatedToc.push(tocData.slice(start, end));
     }
 
-    // 페이지별 목차 HTML 렌더링 (링크 포함)
     const renderTocPage = (pageIndex) => {
-        const sections = paginatedToc[pageIndex - 1]; 
-        if (!sections) return '';
-
-        let html = '<ul>';
-        sections.forEach(section => {
-            html += `
-                <li>
-                    <h5>${section.section}</h5>
-                    <ul>
-            `;
-            section.chapters.forEach(ch => {
-                html += `<li>`;
-                if (ch.url) html += `<a href="${ch.url}" class="toc-link">${ch.title}</a>`;
-                else html += `${ch.title}`;
-                if (ch.sub) {
-                    html += '<ul>';
-                    ch.sub.forEach(sub => {
-                        html += `<li>`;
-                        if (sub.url) html += `<a href="${sub.url}" class="toc-link">${sub.title}</a>`;
-                        else html += `${sub.title}`;
-                        html += `</li>`;
-                    });
-                    html += '</ul>';
-                }
-                html += `</li>`;
+      const sections = paginatedToc[pageIndex - 1];
+      if (!sections) return '';
+      let html = '<ul>';
+      sections.forEach(section => {
+        html += `<li><h5>${section.section}</h5><ul>`;
+        section.chapters.forEach(ch => {
+          html += `<li>`;
+          if (ch.url)
+            html += `<a href="/<%= lang %>/books/cuteAcoustics/${ch.url}" class="toc-link active">${ch.title}</a>`;
+          else
+            html += `<span class="toc-link disabled">${ch.title}</span>`;
+          if (ch.sub) {
+            html += '<ul>';
+            ch.sub.forEach(sub => {
+              html += `<li>`;
+              if (sub.url)
+                html += `<a href="/<%= lang %>/books/cuteAcoustics/${sub.url}" class="toc-link active">${sub.title}</a>`;
+              else
+                html += `<span class="toc-link disabled">${sub.title}</span>`;
+              html += `</li>`;
             });
-            html += `
-                    </ul>
-                </li>
-            `;
+            html += '</ul>';
+          }
+          html += `</li>`;
         });
-        html += '</ul>';
-        return html;
+        html += `</ul></li>`;
+      });
+      html += '</ul>';
+      return html;
     };
 
-    // 페이지 전환
     window.changePage = (event, bookId, pageNumber) => {
-        event.stopPropagation(); 
-        if (bookId !== 'cute-acoustics') return;
-
-        const tocContainer = document.querySelector(`[data-book-id="cute-acoustics-toc"]`);
-        const paginationContainer = document.querySelector(`[data-book-id="cute-acoustics-pagination"]`);
-        
-        if (tocContainer && paginationContainer) {
-            tocContainer.innerHTML = renderTocPage(pageNumber);
-            paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
-                btn.classList.remove('active');
-                if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
-            });
-        }
+      event.stopPropagation();
+      if (bookId !== 'cute-acoustics') return;
+      const tocContainer = document.querySelector('[data-book-id="cute-acoustics-toc"]');
+      const paginationContainer = document.querySelector('[data-book-id="cute-acoustics-pagination"]');
+      if (tocContainer && paginationContainer) {
+        tocContainer.innerHTML = renderTocPage(pageNumber);
+        paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
+          btn.classList.remove('active');
+          if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
+        });
+      }
     };
-    
-    // 카드 클릭시 토글
+
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        document.querySelectorAll('.book-card').forEach(c => {
-          if (c !== card) c.classList.remove('expanded');
-        });
+        document.querySelectorAll('.book-card').forEach(c => { if (c !== card) c.classList.remove('expanded'); });
         card.classList.toggle('expanded');
       });
     });
-
   })();
   </script>
 </body>
-
 </html>
