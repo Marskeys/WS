@@ -80,8 +80,10 @@
       margin-bottom: 24px;
       letter-spacing: 0.5px;
     }
+    /* 다크모드 글로우 효과 적용 */
     html.dark .section-title {
         color: var(--accent);
+        text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
     }
 
     .carousel {
@@ -346,7 +348,6 @@
       </div>
     </div>
 
-    <!-- 나머지 카드 동일 유지 -->
     <div class="book-card" data-index="1">
       <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
       <div class="book-info"><div class="book-title">미완성 고통</div></div>
