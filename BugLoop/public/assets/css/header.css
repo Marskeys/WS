@@ -13,7 +13,7 @@
   border: 0 !important;
 }
 
-/* 모바일에서만 표시 (하단 탭 바에서는 다시 숨겨짐) */
+/* 모바일에서만 표시 */
 @media (max-width: 640px) {
   .vscode-sidebar .sidebar-icon.logo {
     display: flex !important;
@@ -849,7 +849,7 @@ html.dark .lang-option:hover { background-color: #333; }
   .full-header-container {
     display: flex;
     flex-direction: column;
-    position: fixed; /* 상단 고정 */
+    position: fixed;
     top: 0; left: 0;
     width: 100%;
     z-index: var(--z-header);
@@ -859,7 +859,7 @@ html.dark .lang-option:hover { background-color: #333; }
   /* 헤더 상단바 (메뉴 줄) */
   .header-top {
     order: 1;
-    position: relative; /* fixed 대신 relative 사용 */
+    position: relative;
     width: 100%;
     height: auto;
     padding: 0;
@@ -882,51 +882,25 @@ html.dark .lang-option:hover { background-color: #333; }
 
   .sidebar-wrapper { width: 100%; }
 
-  /* VSCode 사이드바 (가로형) - 하단 고정 탭바로 완전히 재정의 */
+  /* VSCode 사이드바 (가로형) */
   .vscode-sidebar {
-    /* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 */
-    display: flex;
-    flex-direction: row; 
     width: 100% !important;
-    height: 60px !important; /* 높이 설정 */
-    padding: 0;
-    position: fixed !important; /* 하단 고정 */
-    bottom: 0;
-    left: 0;
-    z-index: 100; /* 헤더보다 높게 */
-    border-top: 1px solid var(--vscode-sideBar-border, #444); 
-    background: var(--vscode-sideBar-background, #333); 
-    
-    /* ✅ 가로 스크롤 가능하게 설정 */
-    overflow-x: auto; 
-    overflow-y: hidden;
-    justify-content: flex-start; /* 아이콘을 왼쪽부터 정렬 */
+    height: 50px !important;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 10px;
+    position: static !important;
+    gap: 6px;
+    z-index: 0;
   }
 
-  /* ✅ 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
-  .vscode-sidebar::-webkit-scrollbar {
-    display: none;
-  }
-  /* IE, Edge, Firefox의 스크롤 바 숨김 처리 */
-  .vscode-sidebar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  /* 아이콘: 고정 너비 및 스크롤 유도 */
+  /* 아이콘: 1칸씩 균등 분배 */
   .vscode-sidebar .sidebar-icon {
-    flex-grow: 0 !important; 
-    flex-shrink: 0 !important; /* 축소 방지 유지 */
-    width: 70px !important; /* ✅ 각 탭 버튼의 고정 너비 설정 */
-    height: 100% !important;
+    width: auto !important;
+    flex: 1 1 0 !important;
     min-width: 0 !important;
     padding: 0 !important;
-    border-radius: 0;
-  }
-  
-  /* 탭 바에서 로고는 완전히 숨김 */
-  .vscode-sidebar .sidebar-icon.logo {
-    display: none !important;
+    height: 100% !important;
   }
 
   /* 모바일 상단바에서 활성화 바(underline) 제거 */
@@ -939,15 +913,14 @@ html.dark .lang-option:hover { background-color: #333; }
   /* 확장 패널 (모바일 오버레이) */
   .sidebar-extension-panel {
     position: absolute !important;
-    top: 0 !important; /* 헤더 바로 아래부터 시작 */
+    top: 50px !important;
     left: 0 !important; right: 0 !important;
     width: 100% !important;
-    height: 100vh !important;
+    height: calc(100vh - 50px) !important;
     min-width: 0 !important;
     max-width: none !important;
     border-right: none !important;
     z-index: 1000 !important;
-    padding-bottom: 60px; /* 하단 탭 바 높이만큼 패딩 추가 */
   }
   .sidebar-extension-panel.open {
     transform: translateX(0) !important;
@@ -978,54 +951,6 @@ html.dark .lang-option:hover { background-color: #333; }
   .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
   .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
   .auth-btn.logout { margin-right: 0 !important; }
-  
-  /* ✅ 언어/테마 영역 (하단 탭 바 안에 포함) */
-  .sidebar-lang-theme {
-    flex-direction: row;
-    flex-grow: 0; 
-    flex-shrink: 0; 
-    width: 110px; /* 고정 너비 설정 */
-    height: 100%;
-    margin: 0; 
-    padding: 0;
-    display: flex; 
-    border-top: none;
-    align-items: center; 
-    justify-content: center; 
-    gap: 5px; 
-  }
-
-  /* 언어 드롭다운의 너비 조정 */
-  .sidebar-lang-theme .language-dropdown {
-    flex-grow: 1; 
-    flex-basis: 0;
-    width: 60px; 
-    height: 100%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-right: 1px solid var(--vscode-sideBar-border, #444); /* 분리선 */
-  }
-  
-  /* 다크 모드 버튼은 고정된 크기 유지 */
-  .sidebar-lang-theme .theme-toggle-btn {
-    flex-grow: 0; 
-    flex-basis: auto;
-    width: 38px; 
-    height: 38px;
-    border-radius: 50%; 
-    margin: 0 8px 0 0; 
-  }
-
-  /* 언어 버튼 자체 스타일 조정 */
-  .sidebar-lang-theme .lang-btn {
-    width: 100%;
-    height: 100%;
-    border-radius: 0; 
-    justify-content: center; 
-    align-items: center;
-    padding: 0; 
-  }
 }
 
 /* 670px 이하에서 메뉴 라인에 블러 필터 적용 */
@@ -1282,4 +1207,119 @@ html:not(.dark) .theme-toggle-btn {
   color: #e9d25e;
   text-shadow: 0 0 8px rgba(0, 114, 255, 0.6);
   font-weight: 700;
+}
+
+/* ---------------------------------------------------- */
+/* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 (768px 이하) */
+/* ---------------------------------------------------- */
+@media (max-width: 768px) {
+  /* 1. 사이드바(Tabs Container) 자체: 가로 스크롤 속성 유지 */
+  .vscode-sidebar {
+    display: flex;
+    flex-direction: row; 
+    width: 100%;
+    /* ✅ 가로 스크롤 가능하게 설정 */
+    overflow-x: auto; 
+    
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100; 
+    height: 60px; 
+    padding: 0;
+    border-top: 1px solid var(--vscode-sideBar-border, #444); 
+    background: var(--vscode-sideBar-background, #333); 
+  }
+
+  /* ✅ 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
+  .vscode-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  /* IE, Edge, Firefox의 스크롤 바 숨김 처리 */
+  .vscode-sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* 2. 기존 사이드바 전용 요소들 조정 */
+  .vscode-sidebar .logo {
+    display: none !important;
+  }
+  
+  /* 3. ✅ 모든 탭 버튼에 고정 너비 적용 (스크롤을 유도) */
+  .vscode-sidebar .toggle-extension,
+  .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
+    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
+    flex-grow: 0; 
+    flex-shrink: 0; /* 축소 방지 유지 */
+    width: 70px; /* ✅ 각 탭 버튼의 고정 너비 설정 */
+    height: 100%;
+    display: flex !important; 
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  /* 4. ✅ 언어/테마 영역에도 고정 너비 적용 (스크롤을 유도) */
+  .sidebar-lang-theme {
+    flex-direction: row;
+    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
+    flex-grow: 0; 
+    flex-shrink: 0; 
+    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
+    width: 110px; /* 언어/테마 영역의 고정 너비 설정 */
+    height: 100%;
+    margin: 0; 
+    padding: 0;
+    display: flex; 
+    border-top: none;
+    align-items: center; 
+    justify-content: center; 
+    /* 모바일에서도 간격 줄임 */
+    gap: 5px; 
+  }
+
+  /* 언어 드롭다운의 너비 조정 */
+  .sidebar-lang-theme .language-dropdown {
+    flex-grow: 1; /* 이 영역 내에서는 유연하게 */
+    flex-basis: 0;
+    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
+    width: 60px; 
+    height: 100%; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* 다크 모드 버튼은 고정된 크기 유지 */
+  .sidebar-lang-theme .theme-toggle-btn {
+    flex-grow: 0; 
+    flex-basis: auto;
+    width: 38px; 
+    height: 38px;
+    border-radius: 50%; 
+    /* ❗ 수정: 오른쪽 마진을 8px로 다시 설정 */
+    margin: 0 8px 0 0; 
+    background: var(--vscode-sideBar-background, #333); 
+    border: 1px solid var(--vscode-sideBar-border, #444);
+  }
+
+  /* 언어 버튼 자체 스타일 조정 */
+  .sidebar-lang-theme .lang-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 0; 
+    justify-content: center; 
+    align-items: center;
+    padding: 0; 
+    background: none;
+    border: none;
+  }
+
+  /* 언어 버튼만 오른쪽 경계선 추가 */
+  .sidebar-lang-theme .language-dropdown {
+    /* ✅ 수정: 사이드바 배경색 대신 border 색상으로 변경하여 명확하게 분리 */
+    border-right: 1px solid var(--vscode-sideBar-border, #444);
+  }
 }
