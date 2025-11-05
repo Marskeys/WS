@@ -638,7 +638,7 @@ html.dark{
   left: 0;
   top: 0;
   z-index: 10;
-background: linear-gradient(90deg, #6dca03 0%, #4CAF50 100%) !important;
+  background: linear-gradient(90deg, #4fd1c5 0%, #3182ce 100%) !important;
   font-size: 0.95rem;
   font-weight: 500;
   color: #fff;
@@ -653,7 +653,7 @@ background: linear-gradient(90deg, #6dca03 0%, #4CAF50 100%) !important;
 .menu-label.active,
 .menu-label[aria-current="true"],
 .menu-label[aria-expanded="true"] {
-  color: var(--highlight-color, #b50000) !important;
+  color: var(--highlight-color, #00adb5) !important;
   background-color: #111;
 }
 .menu-label:focus-visible {
