@@ -923,6 +923,16 @@ html.dark .lang-option:hover { background-color: #333; }
     pointer-events: auto; /* !important 제거 */
   }
 
+  /* 데스크톱(769px 이상)에서만 확장 패널이 열릴 때 왼쪽 마진 50px 적용 */
+  @media (min-width: 769px) {
+  .sidebar-extension-panel.open {
+    /* 50px은 .vscode-sidebar의 너비에 해당하여, 패널이 사이드바 옆으로 밀려나게 함 */
+    margin-left: 50px;
+    /* transition 속성을 유지하여 부드럽게 열리도록 보장 */
+    transition: transform 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+  }
+}
+
   /* 기타 모바일 헤더 내부 */
   .top-controls {
     flex-direction: row;
