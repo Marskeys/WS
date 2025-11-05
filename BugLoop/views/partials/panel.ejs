@@ -1,414 +1,459 @@
 <style>
-    :root { --header-h: 30px;   --panel-h-default: 150px;
- --panel-h: var(--panel-h-default);}
-  
-    :root{
-      --ide-w: 50px;
-/* VSCode 사이드바 폭 */
-      --panel-w: 400px;
-/* 확장 패널 폭 */
-      --gut: 2.5vw;
-/* 양옆 여백 비율 */
-    }
-  
+/* ========================================= */
+/* 1. ⚙️ CSS 변수 설정 */
+/* ========================================= */
 
-    @media (max-width: 768px){
-      :root {--panel-h-default: 220px;
- --panel-h: var(--panel-h-default);}
-    }
+:root {
+  /* 패널 높이 (기본값 및 현재값) */
+  --header-h: 30px;            /* 헤더 높이 */
+  --panel-h-default: 150px;
+  --panel-h: var(--panel-h-default);
+
+  /* 레이아웃 폭 */
+  --ide-w: 50px;               /* VSCode 사이드바(IDE) 폭 */
+  --panel-w: 400px;            /* 확장 패널 폭 (데스크탑 기준) */
+  --gut: 2.5vw;                /* 양옆 여백 비율 */
+}
+
+/* 모바일 기본 높이 설정 (max-width: 768px) */
+@media (max-width: 768px) {
+  :root {
+    --panel-h-default: 220px;
+    --panel-h: var(--panel-h-default);
+    /* 모바일에서는 ide와 panel 폭을 0으로 설정 */
+    --ide-w: 0px;
+    --panel-w: 0px;
+  }
+}
+
+/* ========================================= */
+/* 2. 🗄️ #mini-lecture 컨테이너 (Fixed) */
+/* ========================================= */
+
+#mini-lecture {
+  position: fixed;
+  top: var(--header-h, 0);
+  z-index: 40;
   
-    /* 컨테이너 */
-    #mini-lecture{
-      position: fixed;
-      top: var(--header-h, 0);
-      z-index: 40;
-      left:  calc(var(--ide-w) + var(--gut));
-      right: var(--gut);
-      height: var(--panel-h);
-      min-height: 20px;
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) 20px;
-      overflow: hidden;
+  /* 기본 위치 (닫힌 상태) */
+  left: calc(var(--ide-w) + var(--gut));
+  right: var(--gut);
   
-      box-shadow:
-        0 60px 140px -30px rgba(0,0,0,.70),
-        0 30px  70px -20px rgba(0,0,0,.60),
-        0 14px  30px -10px rgba(0,0,0,.50),
-        0  2px   8px  -2px rgba(0,0,0,.45),
-        0  0     0   1px  rgba(0,0,0,.28);
- }
+  height: var(--panel-h);
+  min-height: 20px;
   
- /* 💻 데스크탑에서만 (#mini-lecture 좌우 여백 넓히기) */
+  /* 내용(1fr) + 리사이저(20px) */
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 20px; 
+  overflow: hidden;
+
+  /* 그림자 효과 */
+  box-shadow:
+    0 60px 140px -30px rgba(0,0,0,.70),
+    0 30px 70px -20px rgba(0,0,0,.60),
+    0 14px 30px -10px rgba(0,0,0,.50),
+    0 2px 8px -2px rgba(0,0,0,.45),
+    0 0 0 1px rgba(0,0,0,.28);
+}
+
+/* 2-1. 패널 열림 상태 (body.panel-open) - 일반 여백 */
+body.panel-open #mini-lecture {
+  /* 열린 상태: (IDE + 패널 폭) 제외한 나머지 영역의 2.5% 여백 */
+  left: calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+  right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
+}
+
+/* 2-2. 데스크탑 (min-width: 769px) - 좌우 여백 넓히기 */
 @media (min-width: 769px) {
   body.panel-open #mini-lecture {
-    left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.25);
+    /* (IDE + 패널 폭) 제외한 나머지 영역의 25% 여백으로 더 넓힘 */
+    left: calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.25);
     right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.25);
   }
 }
-    /* 열림 상태: (ide 50px + 패널 360px) 제외한 나머지의 2.5% 여백 */
-    body.panel-open #mini-lecture{
-      left:  calc(var(--ide-w) + var(--panel-w) + (100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
-      right: calc((100vw - (var(--ide-w) + var(--panel-w))) * 0.025);
-    }
-  
-    @media (max-width: 768px){
-      :root{
-        --ide-w: 0px;
- --panel-w: 0px;
-      }
-      body, body.panel-open{ padding-left: 0 !important;
- }
-      #mini-lecture{
-        top: 77px;
-        left: 15px !important;
- right: 15px !important;
-        width: auto !important;
-        margin: 0 !important;
-        padding-left: 0 !important;
- }
-    }
-  
 
-    /* 패널 내용(자체 스크롤 + 체이닝 차단) */
-    #mini-lecture .panel-card{
-      background: #1a8b47f3;
- color: #000000;
-      border: 1px solid #333;
-      border-bottom: 0;
-      box-shadow: 0 10px 30px rgba(0,0,0,.4);
-      padding: 16px;
-      overflow: auto;
-      min-height: 0;
- overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-    }
+/* 2-3. 모바일 (max-width: 768px) - 고정 마진/패딩 사용 */
+@media (max-width: 768px) {
+  body, body.panel-open {
+    padding-left: 0 !important;
+  }
+  #mini-lecture {
+    top: 77px;
+    left: 15px !important;
+    right: 15px !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+  }
+}
+
+/* 2-4. 드래그 중 본문 스크롤 및 선택 방지 */
+body.resizing { 
+  user-select: none; 
+  overflow: hidden;
+}
+
+/* ========================================= */
+/* 3. 📝 패널 내용 요소 */
+/* ========================================= */
+
+/* 3-1. 패널 내용 영역 (.panel-card) */
+#mini-lecture .panel-card {
+  background: #1a8b47f3;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-bottom: 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  padding: 16px;
+  overflow: auto; /* 자체 스크롤 */
+  min-height: 0;
+  overscroll-behavior: contain; /* 스크롤 체이닝 방지 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 3-2. 제목 커넥터 (.connector) */
+#mini-lecture .connector {
+  display: inline-block;
+  margin-bottom: 8px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #333;
+  border-bottom: 0;
+  border-radius: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 3-3. 칩 스타일 (.chip) */
+.chip {
+  display: inline-block;
+  margin-top: 8px;
+  margin-right: 6px;
+  background: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #333;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+/* ========================================= */
+/* 4. 🎚️ 리사이저 (#panel-resizer) */
+/* ========================================= */
+
+#panel-resizer {
+  grid-row: 2; /* 그리드 2번째 행 */
+  height: 18px;
+  border: 0;
+  cursor: ns-resize;
+  background: #313131;
+  transition: background .15s ease, box-shadow .15s ease;
+  position: relative;
   
-    #mini-lecture .connector{
-      display: inline-block;
- margin-bottom: 8px;
-      background: #000;
-      color: #fff;
-      border: 1px solid #333;
-      border-bottom: 0;
-      border-radius: 10px;
-      padding: 4px 10px;
-      font-size: 12px;
- font-weight: 700;
-    }
-  
-    .chip{
-      display: inline-block;
-      margin-top: 8px;
-      margin-right: 6px;
- background: #1a1a1a;
-      color: #ddd;
-      border: 1px solid #333;
-      padding: 6px 10px;
-      font-size: 12px;
- }
-  
-    /* 리사이저 (모바일 터치 안전 설정 포함) */
-    #panel-resizer{
-      grid-row: 2;
- height: 18px;
-      border: 0;
-      cursor: ns-resize;
-      background: #313131;
-      transition: background .15s ease, box-shadow .15s ease;
-      position: relative;
- /* 터치 제스처/선택 끔 */
-      touch-action: none;
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-      -webkit-tap-highlight-color: transparent;
- }
-    /* 손가락 히트영역 살짝 확대 */
-    @media (pointer: coarse){
-      #panel-resizer{ height: 18px;
- }
-    }
-  
-    #panel-resizer::before{
-      content: "";
-      position: absolute;
- left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-      width: 70px; height: 4px; border-radius: 999px;
-      background: linear-gradient(90deg, #777, #aaa, #777);
-      opacity: .9;
- }
-    #panel-resizer::after{
-      content: "";
-      position: absolute;
-      left: 50%; top: 50%;
- transform: translate(-50%, -50%);
-      width: 70px; height: 20px;
-      pointer-events: none;
-      color: #666;
-      opacity: .55;
- background: radial-gradient(currentColor 1px, transparent 2px) 0 50%/10px 8px repeat-x;
-    }
-    #panel-resizer:hover,
-    #panel-resizer:focus-visible,
-    body.resizing #panel-resizer{
-      background: #181818;
- box-shadow: inset 0 0 0 1px #444, 0 0 0 2px rgba(255,255,255,.05);
- }
-    #panel-resizer:hover::before,
-    #panel-resizer:focus-visible::before{
-      transform: translate(-50%, -50%) scaleX(1.08);
- }
-  
-    @media (max-width: 640px){
-      #mini-lecture{ height: var(--panel-h); min-height: 20px;
- }
-    }
-  
-    body.resizing{ user-select: none; overflow: hidden;
- }
-  </style>
-  
-  <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
-    <div class="panel-card">
-      <span class="connector" id="panel-title-connector">Welcome</span>
-       
-      <% if (panelData && panelData.html) { %>
-        <div class="panel-body"><%- panelData.html %></div>
-      <% } else { %>
-        <h3 style="margin:0 0 px 0"><%= panelData.title %></h3>
+  /* 터치 및 사용자 선택 방지 */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 4-1. 포인터(터치) 크기 확대 */
+@media (pointer: coarse) {
+  #panel-resizer { 
+    height: 18px;
+  }
+}
+
+/* 4-2. 리사이저 핸들 (::before) */
+#panel-resizer::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px; height: 4px; border-radius: 999px;
+  background: linear-gradient(90deg, #777, #aaa, #777);
+  opacity: .9;
+}
+
+/* 4-3. 도트 패턴 (::after) */
+#panel-resizer::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px; height: 20px;
+  pointer-events: none;
+  color: #666;
+  opacity: .55;
+  background: radial-gradient(currentColor 1px, transparent 2px) 0 50%/10px 8px repeat-x;
+}
+
+/* 4-4. 호버/포커스/드래그 상태 스타일 */
+#panel-resizer:hover,
+#panel-resizer:focus-visible,
+body.resizing #panel-resizer {
+  background: #181818;
+  box-shadow: inset 0 0 0 1px #444, 0 0 0 2px rgba(255,255,255,.05);
+}
+
+#panel-resizer:hover::before,
+#panel-resizer:focus-visible::before {
+  transform: translate(-50%, -50%) scaleX(1.08);
+}
+
+/* 4-5. 작은 모바일 높이 재확인 */
+@media (max-width: 640px) {
+  #mini-lecture { height: var(--panel-h); min-height: 20px; }
+}
+</style>
+
+<div id="mini-lecture" role="region" aria-label="미니 강의 패널">
+  <div class="panel-card">
+    <span class="connector" id="panel-title-connector">Welcome</span>
+     
+    <% if (panelData && panelData.html) { %>
+      <div class="panel-body"><%- panelData.html %></div>
+    <% } else { %>
+      <h3 style="margin:0 0 0 0"><%= panelData.title %></h3>
       <p style="margin:0;opacity:.9"><%- panelData.body %></p>
-
-      <% } %>
-    
- </div>
-  
-    <div id="panel-resizer"
-         role="separator"
-         aria-orientation="horizontal"
-         aria-label="패널 높이 조절"
-         aria-valuemin="20"   aria-valuemax="800"
-         aria-valuenow="500"
-         tabindex="0"
-         title="드래그하거나 ↑/↓ 키로 높이 조절"></div>
+    <% } %>
   </div>
-  
-  <script>
-  /* ===== 패널 리사이저 (Pointer Events 통일) ===== */
-  window.initPanelResizer = function(){
-   
+
+  <div id="panel-resizer"
+       role="separator"
+       aria-orientation="horizontal"
+       aria-label="패널 높이 조절"
+       aria-valuemin="20"   
+       aria-valuemax="800"
+       aria-valuenow="500"
+       tabindex="0"
+       title="드래그하거나 ↑/↓ 키로 높이 조절">
+  </div>
+</div>
+
+<script>
+/* ========================================= */
+/* 1. 📏 패널 리사이저 (높이 조절) 로직 */
+/* ========================================= */
+window.initPanelResizer = function() {
   const root = document.documentElement;
-    const resizer = document.getElementById('panel-resizer');
-    if(!resizer) return;
+  const resizer = document.getElementById('panel-resizer');
+  if (!resizer) return;
 
-    // 기존 리스너 제거 (재호출 시 중복 바인딩 방지)
-    if (resizer.__bound_cleanup) {
-        resizer.__bound_cleanup();
-        delete resizer.__bound_cleanup;
-    }
-  
-    const MIN = parseInt(resizer.getAttribute('aria-valuemin'), 10) ||
- 20;
-    const MAX = parseInt(resizer.getAttribute('aria-valuemax'), 10) || 800;
-    const STEP = 16, BIG = 64;
-    const VAR = '--panel-h';
- const KEY = 'miniPanelH_session';
-  
-    const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(p);
- const getDefaultPx = () => {
-      const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
- return parseInt(v, 10) || 500;
-    };
-  
-    const clamp = v => Math.max(MIN, Math.min(MAX, v|0));
- const setH = (h, save=false) => {
-      const n = clamp(parseInt(h, 10));
- root.style.setProperty(VAR, n + 'px');
-      resizer.setAttribute('aria-valuenow', String(n));
-      if (save) sessionStorage.setItem(KEY, n + 'px');
-      window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
- };
-  
-    (function init(){
-      if (isHomePath(location.pathname)) {
-        sessionStorage.removeItem(KEY);
-        root.style.removeProperty(VAR);
-        resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
-      } else {
-        const saved = sessionStorage.getItem(KEY);
-        if (saved) setH(saved, false);
-        else root.style.removeProperty(VAR);
-      }
-    })();
- let startY = 0, startH = 0, dragging = false, pid = null;
- const onPointerDown = (e) => {
-      e.preventDefault();
-      dragging = true;
-      pid = e.pointerId;
-      resizer.setPointerCapture?.(pid);
-      document.body.classList.add('resizing');
- startY = e.clientY;
-      startH = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
-    };
-  
-    const onPointerMove = (e) => {
-      if(!dragging) return;
- if(pid != null && e.pointerId != null && e.pointerId !== pid) return;
-      const h = startH + (e.clientY - startY);
- setH(h);
-    };
-  
-    const endDrag = () => {
-      if(!dragging) return;
-      dragging = false;
- try { resizer.releasePointerCapture?.(pid); } catch {}
-      pid = null;
-      document.body.classList.remove('resizing');
-      const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) ||
- getDefaultPx();
-      setH(cur, true);
-    };
-    
-    // 키보드 핸들러를 별도로 정의하여 removeEventListener에서 사용할 수 있도록 합니다.
-    const onKeyDown = (e) => {
-      let delta = 0;
-      if (e.key === 'ArrowUp')   delta = -STEP;
-      if (e.key === 'ArrowDown') delta =  STEP;
-      if (e.key === 'PageUp')    delta = -BIG;
-      if (e.key === 'PageDown')  delta =  BIG;
-      if (delta !== 0) {
-        e.preventDefault();
-       
-  const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR),10) || getDefaultPx();
-        setH(cur + delta, true);
-      }
-    };
-  
-    resizer.addEventListener('pointerdown', onPointerDown);
-    resizer.addEventListener('pointermove', onPointerMove);
-    resizer.addEventListener('pointerup', endDrag);
-    resizer.addEventListener('pointercancel', endDrag);
- /* 키보드 접근성 */
-    resizer.addEventListener('keydown', onKeyDown); // 수정된 핸들러 사용
-    
-    // 정리(cleanup) 함수를 엘리먼트에 저장
-    resizer.__bound_cleanup = () => {
-      resizer.removeEventListener('pointerdown', onPointerDown);
-      resizer.removeEventListener('pointermove', onPointerMove);
-      resizer.removeEventListener('pointerup', endDrag);
-      resizer.removeEventListener('pointercancel', endDrag);
-      resizer.removeEventListener('keydown', onKeyDown);
-    };
-};
-window.initPanelResizer(); // 최초 로드 시 실행
+  // 기존 리스너 제거 (재호출 시 중복 바인딩 방지)
+  if (resizer.__bound_cleanup) {
+    resizer.__bound_cleanup();
+    delete resizer.__bound_cleanup;
+  }
 
-  /* ===== 패널 내부 스크롤 캡처 (리사이징 중에는 비간섭) ===== */
-  (function(){
-    // 스크롤 캡처 로직을 전역에서 호출 가능하도록 'bind' 함수를 노출합니다.
-    window.bindPanelScrollTrap = bind; // 💡 bind 함수를 전역에 노출
+  // 상수 정의
+  const MIN = parseInt(resizer.getAttribute('aria-valuemin'), 10) || 20;
+  const MAX = parseInt(resizer.getAttribute('aria-valuemax'), 10) || 800;
+  const STEP = 16, BIG = 64; // 키보드 조절 단위
+  const VAR = '--panel-h';    // CSS 변수명
+  const KEY = 'miniPanelH_session'; // sessionStorage 키
+  
+  // 헬퍼 함수
+  const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja)\/?$/.test(p);
+  const getDefaultPx = () => {
+    const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '500px';
+    return parseInt(v, 10) || 500;
+  };
+  const clamp = v => Math.max(MIN, Math.min(MAX, v | 0));
+  
+  /** 높이를 설정하고 필요 시 세션에 저장 */
+  const setH = (h, save = false) => {
+    const n = clamp(parseInt(h, 10));
+    root.style.setProperty(VAR, n + 'px');
+    resizer.setAttribute('aria-valuenow', String(n));
+    if (save) sessionStorage.setItem(KEY, n + 'px');
+    window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
+  };
 
-    let scroller, panel;
-    let touchY = 0;
-  
-    function ref(){
-      panel   = document.getElementById('mini-lecture');
-      scroller= panel?.querySelector('.panel-card') || null;
-    }
-  
-    function onPanelWheel(e){
-      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
-      if (!panel || !scroller) return;
-      e.preventDefault();
-  
-     e.stopPropagation();
-      scroller.scrollTop  += e.deltaY;
-      scroller.scrollLeft += e.deltaX || 0;
-    }
-  
-    function onPanelTouchStart(e){
-      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
-      if (!panel || !scroller) return;
-      touchY = e.touches[0].clientY;
-    }
-    function onPanelTouchMove(e){
-      if (document.body.classList.contains('resizing')) return; /* 드래그 중 비간섭 */
-      if (!panel || !scroller) return;
-   
-    const y = e.touches[0].clientY;
-      const delta = touchY - y;
-      touchY = y;
- e.preventDefault();
-      e.stopPropagation();
-      scroller.scrollTop += delta;
-    }
-  
-    function bind(){
-      ref();
- if (!panel || !scroller) return;
-  
-      panel.addEventListener('wheel', onPanelWheel, { passive:false, capture:true });
-      panel.addEventListener('touchstart', onPanelTouchStart, { passive:true,  capture:true });
- panel.addEventListener('touchmove',  onPanelTouchMove,  { passive:false, capture:true });
-  
-      /* 내용 교체 감지 → 참조 갱신 */
-      const mo = new MutationObserver(() => {
-        const cur = panel.querySelector('.panel-card');
-        if (cur !== scroller) { unbind(); bind(); }
-      });
- mo.observe(panel, { childList:true, subtree:true });
-  
-      /* 리사이즈/라우팅 후에도 유지 */
-      const reb = () => { unbind();
- bind(); };
-      window.addEventListener('mini-panel-resized', reb);
-      window.addEventListener('resize', reb);
-      const _ps = history.pushState, _rs = history.replaceState;
- history.pushState    = function(){ const r=_ps.apply(this, arguments); setTimeout(reb,0); return r; };
-      history.replaceState = function(){ const r=_rs.apply(this, arguments); setTimeout(reb,0);
- return r; };
-      window.addEventListener('popstate', () => setTimeout(reb,0));
-  
-      panel.__trap_cleanup = () => {
-        try{
-          panel.removeEventListener('wheel', onPanelWheel, { capture:true });
- panel.removeEventListener('touchstart', onPanelTouchStart, { capture:true });
-          panel.removeEventListener('touchmove', onPanelTouchMove, { capture:true });
-          mo.disconnect();
-          window.removeEventListener('mini-panel-resized', reb);
-          window.removeEventListener('resize', reb);
- }catch(e){}
-      };
-    }
-  
-    function unbind(){
-      if (panel?.__trap_cleanup) panel.__trap_cleanup();
- panel = scroller = null;
-    }
-  
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', bind, { once:true });
- } else {
-      bind();
+  // 초기화 (세션/홈 경로 처리)
+  (function init() {
+    if (isHomePath(location.pathname)) {
+      sessionStorage.removeItem(KEY);
+      root.style.removeProperty(VAR);
+      resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
+    } else {
+      const saved = sessionStorage.getItem(KEY);
+      if (saved) setH(saved, false);
+      else root.style.removeProperty(VAR);
     }
   })();
-  </script>
+  
+  // 드래그 상태 변수
+  let startY = 0, startH = 0, dragging = false, pid = null;
 
----
+  /* 이벤트 핸들러 */
+  const onPointerDown = (e) => {
+    e.preventDefault();
+    dragging = true;
+    pid = e.pointerId;
+    resizer.setPointerCapture?.(pid); 
+    document.body.classList.add('resizing');
+    startY = e.clientY;
+    startH = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
+  };
 
-## 🚀 수정된 AJAX 로딩 스크립트 (핵심)
+  const onPointerMove = (e) => {
+    if (!dragging || (pid != null && e.pointerId != null && e.pointerId !== pid)) return;
+    const h = startH + (e.clientY - startY);
+    setH(h);
+  };
 
-이 부분이 제목이 리셋되는 문제를 해결한 부분입니다.
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    try { resizer.releasePointerCapture?.(pid); } catch (e) {}
+    pid = null;
+    document.body.classList.remove('resizing');
+    const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
+    setH(cur, true); 
+  };
+  
+  const onKeyDown = (e) => {
+    let delta = 0;
+    if      (e.key === 'ArrowUp')   delta = -STEP;
+    else if (e.key === 'ArrowDown') delta =  STEP;
+    else if (e.key === 'PageUp')    delta = -BIG;
+    else if (e.key === 'PageDown')  delta =  BIG;
 
-```javascript
-<script>
-/* ====== 패널로딩(AJAX) 기존 코드 유지 (✅ 제목 업데이트 기능 추가) ====== */
+    if (delta !== 0) {
+      e.preventDefault();
+      const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
+      setH(cur + delta, true);
+    }
+  };
+
+  /* 이벤트 리스너 등록 */
+  resizer.addEventListener('pointerdown', onPointerDown);
+  // document에 move/up/cancel을 걸어 패널 밖으로 나가도 드래그 유지
+  document.addEventListener('pointermove', onPointerMove); 
+  document.addEventListener('pointerup', endDrag);
+  document.addEventListener('pointercancel', endDrag);
+  resizer.addEventListener('keydown', onKeyDown); 
+
+  // 정리 함수 저장
+  resizer.__bound_cleanup = () => {
+    resizer.removeEventListener('pointerdown', onPointerDown);
+    document.removeEventListener('pointermove', onPointerMove);
+    document.removeEventListener('pointerup', endDrag);
+    document.removeEventListener('pointercancel', endDrag);
+    resizer.removeEventListener('keydown', onKeyDown);
+  };
+};
+
+window.initPanelResizer(); // 최초 실행
+
+/* ========================================= */
+/* 2. 🖱️ 패널 스크롤 캡처 (스크롤 체이닝 방지) 로직 */
+/* ========================================= */
+(function() {
+  window.bindPanelScrollTrap = bind; // 전역에 함수 노출
+
+  let scroller, panel;
+  let touchY = 0;
+  
+  function ref() {
+    panel = document.getElementById('mini-lecture');
+    scroller = panel?.querySelector('.panel-card') || null;
+  }
+  
+  // 휠 이벤트
+  function onPanelWheel(e) {
+    if (document.body.classList.contains('resizing') || !scroller) return;
+    e.preventDefault();
+    e.stopPropagation(); // 상위 요소 스크롤 차단
+    scroller.scrollTop += e.deltaY;
+    scroller.scrollLeft += e.deltaX || 0;
+  }
+  
+  // 터치 시작
+  function onPanelTouchStart(e) {
+    if (document.body.classList.contains('resizing') || !scroller) return;
+    touchY = e.touches[0].clientY;
+  }
+  
+  // 터치 이동
+  function onPanelTouchMove(e) {
+    if (document.body.classList.contains('resizing') || !scroller) return;
+    const y = e.touches[0].clientY;
+    const delta = touchY - y;
+    touchY = y;
+    e.preventDefault();
+    e.stopPropagation(); // 상위 요소 스크롤 차단
+    scroller.scrollTop += delta;
+  }
+  
+  /** 이벤트 리스너 바인딩 */
+  function bind() {
+    ref();
+    if (!panel || !scroller) return;
+  
+    // 휠/터치 이벤트 리스너 등록 (capture:true로 이벤트 캡처링)
+    panel.addEventListener('wheel', onPanelWheel, { passive: false, capture: true });
+    panel.addEventListener('touchstart', onPanelTouchStart, { passive: true, capture: true });
+    panel.addEventListener('touchmove', onPanelTouchMove, { passive: false, capture: true });
+  
+    // 내용 교체 감지 → 재바인딩
+    const mo = new MutationObserver(() => {
+      const cur = panel.querySelector('.panel-card');
+      if (cur !== scroller) { unbind(); bind(); }
+    });
+    mo.observe(panel, { childList: true, subtree: true });
+  
+    // 리사이즈/라우팅 발생 시 재바인딩
+    const reb = () => { unbind(); bind(); };
+    window.addEventListener('mini-panel-resized', reb);
+    window.addEventListener('resize', reb);
+    
+    // history API 덮어쓰기 (라우팅 감지)
+    const _ps = history.pushState, _rs = history.replaceState;
+    history.pushState = function() { const r = _ps.apply(this, arguments); setTimeout(reb, 0); return r; };
+    history.replaceState = function() { const r = _rs.apply(this, arguments); setTimeout(reb, 0); return r; };
+    window.addEventListener('popstate', () => setTimeout(reb, 0));
+  
+    // 정리 함수
+    panel.__trap_cleanup = () => {
+      try {
+        panel.removeEventListener('wheel', onPanelWheel, { capture: true });
+        panel.removeEventListener('touchstart', onPanelTouchStart, { capture: true });
+        panel.removeEventListener('touchmove', onPanelTouchMove, { capture: true });
+        mo.disconnect();
+        window.removeEventListener('mini-panel-resized', reb);
+        window.removeEventListener('resize', reb);
+      } catch (e) {}
+    };
+  }
+  
+  /** 이벤트 리스너 언바인딩 */
+  function unbind() {
+    if (panel?.__trap_cleanup) panel.__trap_cleanup();
+    panel = scroller = null;
+  }
+  
+  // DOM 로드 완료 시 실행
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bind, { once: true });
+  } else {
+    bind();
+  }
+})();
+
+
+/* ========================================= */
+/* 3. 🌐 패널 로딩 (AJAX) 및 제목 업데이트 로직 */
+/* ========================================= */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-panel-link]').forEach(link => {
     link.addEventListener('click', async (e) => {
       e.preventDefault();
       
       const url = link.getAttribute('href');
-      // 1. 클릭된 메뉴의 텍스트를 저장합니다.
+      // 1. 클릭된 메뉴의 텍스트를 저장합니다. (제목 업데이트용)
       const menuText = link.textContent.trim(); 
       
       try {
@@ -417,16 +462,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const panel = document.querySelector('#mini-lecture');
 
         if (panel) {
-          // 2. 패널 콘텐츠를 삽입합니다. (이때 제목이 'Welcome'으로 덮어씌워집니다.)
+          // 2. 패널 콘텐츠를 삽입합니다. (EJS 템플릿의 내용이 로드됨)
           panel.innerHTML = html; 
           
-          // 3. 덮어씌워진 후, 다시 저장해둔 메뉴 이름으로 제목을 업데이트합니다.
+          // 3. 삽입 후, 저장해둔 메뉴 이름으로 제목을 **다시** 업데이트합니다.
           const titleConnector = document.getElementById('panel-title-connector');
           if (titleConnector) {
              titleConnector.textContent = menuText;
           }
 
           panel.scrollTo(0, 0);
+          // 리사이저와 스크롤 트랩 재초기화
           if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
           if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
         }
