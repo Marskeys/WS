@@ -34,7 +34,7 @@
       flex-direction: column;
       height: 100vh;
       
-      /* ✨ 수정: 모바일에서 세로 스크롤 및 덜컹거림 방지 */
+      /* 모바일에서 세로 스크롤 및 덜컹거림 방지 */
       touch-action: pan-x; 
       overscroll-behavior-y: contain;
     }
@@ -119,7 +119,12 @@
     .page {
       width: 80%;
       max-width: 800px;
-      height: calc(100vh - 100px); 
+      
+      /* ✨ 수정: 높이 조정으로 하단 잘림 방지 */
+      height: 90%; 
+      max-height: calc(100vh - 100px); 
+      margin-bottom: 20px; 
+      
       background: white;
       border-radius: 16px;
       padding: 40px;
@@ -161,8 +166,18 @@
     
     .page-text {
         flex: 1;
-        overflow-y: auto; /* 페이지 내에서 내용이 길 경우 스크롤 허용 */
+        overflow-y: auto;
         white-space: pre-wrap;
+        /* ✨ 수정: 페이지 인덱스가 있는 하단 영역 침범 방지 */
+        padding-bottom: 20px; 
+    }
+    
+    .page-index {
+        flex-shrink: 0; /* 페이지 번호가 스크롤에 영향을 받지 않도록 고정 */
+        text-align: center;
+        font-weight: 500;
+        color: #888;
+        padding-top: 10px;
     }
 
     /* =========================================================
@@ -225,6 +240,7 @@
       .page {
         width: 95%;
         padding: 20px;
+        /* 모바일에서는 높이를 조금 더 여유롭게 조정 */
         height: calc(100vh - 80px); 
       }
       .header-btn { padding: 6px 8px; }
@@ -428,7 +444,7 @@
       // 터치 시작 시 세로 스크롤 방지
       e.preventDefault(); 
       touchStartX = e.changedTouches[0].screenX;
-    });
+    }, { passive: false });
     
     document.body.addEventListener("touchmove", (e) => {
       // 터치 이동 중 세로 스크롤 방지
