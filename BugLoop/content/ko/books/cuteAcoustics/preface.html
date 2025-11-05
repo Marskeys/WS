@@ -141,7 +141,7 @@
     .toc {
       position: absolute;
       top: 0;
-      right: -300px;
+      right: -300px; /* 목차 너비만큼 오른쪽으로 이동시켜 숨김 */
       width: 300px;
       height: 100%;
       background: #222;
@@ -201,9 +201,7 @@
     <button id="nextBtn" class="nav-btn">〉</button>
     
     <button id="homeBtn" class="top-btn">🏠 홈</button>
-    
     <button id="darkModeToggle" class="top-btn">🌙 다크 모드</button>
-    
     <button id="tocToggle" class="top-btn">📖 목차</button>
 
     <div class="page" id="page">
@@ -238,7 +236,8 @@
     const tocEl = document.getElementById("toc");
     const bodyEl = document.body;
     const darkModeToggle = document.getElementById("darkModeToggle");
-    const initialDarkMode = localStorage.getItem('darkMode') === 'true'; // 저장된 설정 확인
+    // 로컬 저장소에서 설정 불러오기
+    const initialDarkMode = localStorage.getItem('darkMode') === 'true';
 
     // 다크 모드 상태를 설정하고 버튼 텍스트를 업데이트하는 함수
     function setDarkMode(isDark) {
@@ -253,7 +252,7 @@
         }
     }
     
-    // 초기 모드 설정 (저장된 설정이 없으면 기본 라이트 모드로)
+    // 초기 모드 설정 
     setDarkMode(initialDarkMode);
 
     function renderPage() {
