@@ -53,12 +53,12 @@
     }
     
     /* =========================================================
-       헤더 스타일 (추가)
+       헤더 스타일 
        ========================================================= */
     .app-header {
         width: 100%;
-        height: 50px; /* 헤더 높이 설정 */
-        background: #000; /* 검은색 배경 */
+        height: 50px; 
+        background: #000; 
         color: white;
         display: flex;
         justify-content: space-between;
@@ -66,7 +66,7 @@
         padding: 0 20px;
         box-sizing: border-box;
         position: relative;
-        z-index: 50; /* 페이지보다 위에 있도록 설정 */
+        z-index: 50; 
     }
     
     .header-title {
@@ -78,17 +78,16 @@
     
     .header-controls {
         display: flex;
-        gap: 10px; /* 버튼 간 간격 */
+        gap: 10px; 
     }
     
     /* =========================================================
-       뷰어 및 버튼 스타일 (수정/재배치)
+       뷰어 및 버튼 스타일 
        ========================================================= */
 
     .viewer {
       position: relative;
       width: 100%;
-      /* 뷰어가 나머지 높이를 모두 차지하도록 설정 */
       flex: 1; 
       display: flex;
       justify-content: center;
@@ -97,10 +96,9 @@
     }
 
     .page {
-      /* 헤더 공간 확보로 인해 높이 조정 필요 */
       width: 80%;
       max-width: 800px;
-      height: calc(100vh - 100px); /* 뷰어 높이에 맞게 조정 */
+      height: calc(100vh - 100px); 
       background: white;
       border-radius: 16px;
       padding: 40px;
@@ -123,7 +121,7 @@
     .header-btn {
         background: none;
         color: white;
-        border: 1px solid #444; /* 테두리 추가 */
+        border: 1px solid #444; 
         border-radius: 4px;
         padding: 8px 10px;
         cursor: pointer;
@@ -144,7 +142,7 @@
         border-color: #666;
     }
     
-    /* 네비게이션 버튼 (좌우 화살표)은 기존 위치 유지 */
+    /* 네비게이션 버튼 (좌우 화살표) 위치 조정 (데스크탑) */
     .nav-btn {
       position: absolute;
       top: 50%;
@@ -166,14 +164,19 @@
         background: rgba(85, 85, 85, 0.8);
     }
 
-    #prevBtn { left: 10px; }
-    #nextBtn { right: 10px; }
+    /* ✨ 수정: 페이지 중앙(400px)에서 약간 더 안쪽으로 배치 */
+    #prevBtn { 
+        left: calc(50% - 450px); 
+    }
+    #nextBtn { 
+        right: calc(50% - 450px); 
+    }
 
-    /* 목차 패널 스타일은 유지 */
+    /* 목차 패널 스타일 */
     .toc {
       position: absolute;
       top: 0;
-      right: -300px; 
+      right: -300px; /* 목차 너비만큼 오른쪽으로 이동시켜 숨김 */
       width: 300px;
       height: 100%;
       background: #222;
@@ -199,11 +202,15 @@
       .page {
         width: 95%;
         padding: 20px;
-        height: calc(100vh - 80px); /* 모바일 헤더 높이에 맞게 조정 */
+        height: calc(100vh - 80px); 
       }
       .header-btn {
         padding: 6px 8px;
       }
+      
+      /* ✨ 수정: 모바일에서는 좌우 버튼을 다시 가장자리로 이동 */
+      #prevBtn { left: 10px; }
+      #nextBtn { right: 10px; }
     }
   </style>
 </head>
@@ -263,24 +270,20 @@
     const tocEl = document.getElementById("toc");
     const bodyEl = document.body;
     const darkModeToggle = document.getElementById("darkModeToggle");
-    const darkModeIcon = darkModeToggle.querySelector('i'); // 아이콘 요소 선택
-    const darkModeLabel = document.getElementById("darkModeLabel"); // 텍스트 라벨 선택
+    const darkModeIcon = darkModeToggle.querySelector('i'); 
+    const darkModeLabel = document.getElementById("darkModeLabel"); 
     
-    // 로컬 저장소에서 설정 불러오기
     const initialDarkMode = localStorage.getItem('darkMode') === 'true';
 
-    // 다크 모드 상태를 설정하고 버튼 아이콘 및 텍스트를 업데이트하는 함수
     function setDarkMode(isDark) {
         if (isDark) {
             bodyEl.classList.add("dark");
-            // 달 아이콘 -> 해 아이콘으로 변경
             darkModeIcon.classList.remove("fa-moon");
             darkModeIcon.classList.add("fa-sun");
             darkModeLabel.innerText = "라이트 모드";
             localStorage.setItem('darkMode', 'true');
         } else {
             bodyEl.classList.remove("dark");
-            // 해 아이콘 -> 달 아이콘으로 변경
             darkModeIcon.classList.remove("fa-sun");
             darkModeIcon.classList.add("fa-moon");
             darkModeLabel.innerText = "다크 모드";
@@ -288,7 +291,6 @@
         }
     }
     
-    // 초기 모드 설정 
     setDarkMode(initialDarkMode);
 
     function renderPage() {
@@ -324,10 +326,9 @@
       tocEl.classList.toggle("open");
     };
     document.getElementById("homeBtn").onclick = () => {
-      window.location.href = "/"; // 홈으로 이동
+      window.location.href = "/"; 
     };
     
-    // 다크 모드 토글 이벤트 리스너
     darkModeToggle.onclick = () => {
         const isDark = !bodyEl.classList.contains("dark");
         setDarkMode(isDark);
@@ -336,22 +337,26 @@
     renderTOC();
     renderPage();
 
-    // 모바일에서 슬라이드로 페이지 넘어가기
+    // 모바일에서 슬라이드로 페이지 넘어가기 (기존 기능 유지)
     let touchStartX = 0;
     let touchEndX = 0;
     
+    // 이 터치 이벤트는 body 전체에 적용되어 모바일에서 슬라이드 넘김을 처리합니다.
     document.body.addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].screenX;
     });
     
     document.body.addEventListener("touchend", (e) => {
       touchEndX = e.changedTouches[0].screenX;
+      // 50픽셀 이상 왼쪽으로 슬라이드 (다음 페이지)
       if (touchStartX - touchEndX > 50) {
         if (currentPage < pages.length - 1) {
           currentPage++;
           renderPage();
         }
-      } else if (touchEndX - touchStartX > 50) {
+      } 
+      // 50픽셀 이상 오른쪽으로 슬라이드 (이전 페이지)
+      else if (touchEndX - touchStartX > 50) {
         if (currentPage > 0) {
           currentPage--;
           renderPage();
