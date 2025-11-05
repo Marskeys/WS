@@ -6,33 +6,101 @@
   <title>귀여운 음향학 서문</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
-    /* ... (기존 CSS 스타일 유지) ... */
+    /* =========================================================
+       Fonts: Pretendard 폰트 시스템 적용
+       ========================================================= */
+    /* ✅ Pretendard Variable: 모든 굵기 포함 + font-display: swap */
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
+    
+    /* ✅ 일본어/중국어(Simple) 폴백 유지 */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+    /* ===== Global font family ===== */
+    :root{
+      /* 메인: Pretendard → 실패 시 KR 폴백 순서 */
+      --font-sans: "Pretendard Variable", "Pretendard",
+                   -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+                   "Noto Sans KR", "Noto Sans", sans-serif;
+      --tracking-body: -0.003em;
+      --lh-body:        1.55;
+      --lh-heading:     1.25;
+    }
+
     body {
       margin: 0;
-      font-family: "Noto Serif KR", serif;
+      /* 폰트 적용 */
+      font-family: var(--font-sans);
+      letter-spacing: var(--tracking-body);
+      line-height: var(--lh-body);
       background: #f5f5f5;
-      overflow: hidden; /* 스크롤 완전 금지 */
-      transition: background 0.3s, color 0.3s; /* 다크모드 전환 시 부드럽게 */
+      overflow: hidden; 
+      transition: background 0.3s, color 0.3s;
+      /* 헤더 공간 확보를 위해 viewer 위치 조정 */
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    /* 🇰🇷 한국어 페이지에서 '초미세' 자간 */
+    :lang(ko), .lang-ko {
+      letter-spacing: -0.0020em;
     }
 
     body.dark {
       background: #121212;
       color: #f5f5f5;
     }
+    
+    /* =========================================================
+       헤더 스타일 (추가)
+       ========================================================= */
+    .app-header {
+        width: 100%;
+        height: 50px; /* 헤더 높이 설정 */
+        background: #000; /* 검은색 배경 */
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 50; /* 페이지보다 위에 있도록 설정 */
+    }
+    
+    .header-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-left: 10px;
+        letter-spacing: -0.01em;
+    }
+    
+    .header-controls {
+        display: flex;
+        gap: 10px; /* 버튼 간 간격 */
+    }
+    
+    /* =========================================================
+       뷰어 및 버튼 스타일 (수정/재배치)
+       ========================================================= */
 
     .viewer {
       position: relative;
       width: 100%;
-      height: 100vh;
+      /* 뷰어가 나머지 높이를 모두 차지하도록 설정 */
+      flex: 1; 
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden; /* 목차 숨김을 위해 필수 */
     }
 
     .page {
+      /* 헤더 공간 확보로 인해 높이 조정 필요 */
       width: 80%;
       max-width: 800px;
-      height: 90vh;
+      height: calc(100vh - 100px); /* 뷰어 높이에 맞게 조정 */
       background: white;
       border-radius: 16px;
       padding: 40px;
@@ -50,45 +118,44 @@
       color: #f5f5f5;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-size: 20px;
-      color: #666;
-      margin-top: 0;
+    
+    /* 헤더 내 버튼 스타일 */
+    .header-btn {
+        background: none;
+        color: white;
+        border: 1px solid #444; /* 테두리 추가 */
+        border-radius: 4px;
+        padding: 8px 10px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background 0.2s, border-color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
     }
     
-    body.dark h2 {
-      color: #bbb;
+    .header-btn i {
+        font-size: 16px;
     }
 
-    .page-text {
-      flex: 1;
-      overflow: hidden;
-      white-space: pre-wrap;
+    .header-btn:hover {
+        background: #222;
+        border-color: #666;
     }
-
-    .page-index {
-      text-align: right;
-      color: #aaa;
-      font-size: 14px;
-    }
-
+    
+    /* 네비게이션 버튼 (좌우 화살표)은 기존 위치 유지 */
     .nav-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: #333;
+      background: rgba(51, 51, 51, 0.8);
       color: white;
       border: none;
       border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      font-size: 22px;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
       cursor: pointer;
       opacity: 0.7;
       transition: opacity 0.3s, background 0.3s;
@@ -96,65 +163,17 @@
     }
     
     body.dark .nav-btn {
-        background: #555;
+        background: rgba(85, 85, 85, 0.8);
     }
 
-    .nav-btn:hover {
-      opacity: 1;
-    }
+    #prevBtn { left: 10px; }
+    #nextBtn { right: 10px; }
 
-    #prevBtn { left: 30px; }
-    #nextBtn { right: 30px; }
-    
-    /* 상단 버튼 공통 스타일 */
-    .top-btn {
-        position: absolute;
-        top: 30px;
-        background: #0066ff; /* 버튼 배경색 통일 */
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 14px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background 0.3s, opacity 0.3s;
-        z-index: 10;
-        /* 아이콘 버튼의 텍스트가 없어졌으므로 패딩 조정 가능 */
-        /* padding: 10px; */ 
-    }
-    /* 아이콘에만 적용되는 스타일 */
-    .top-btn i {
-        margin-right: 5px; /* 아이콘과 텍스트 사이 간격 */
-    }
-    /* 텍스트가 없는 버튼을 위해 padding 조정 */
-    #homeBtn, #darkModeToggle, #tocToggle {
-        padding: 10px; /* 아이콘만 있을 때 더 정사각형에 가깝게 */
-    }
-
-
-    .top-btn:hover {
-        background: #0055e6;
-    }
-
-    body.dark .top-btn {
-        background: #4a90e2;
-    }
-    
-    body.dark .top-btn:hover {
-        background: #5b9ce6;
-    }
-
-    /* 홈 버튼 위치 */
-    #homeBtn { left: 30px; }
-
-    /* 다크모드/목차 버튼 위치 */
-    #darkModeToggle { right: 85px; } /* 버튼 크기가 작아졌으므로 간격 재조정 */
-    #tocToggle { right: 30px; } /* 기존 위치 유지 */
-
+    /* 목차 패널 스타일은 유지 */
     .toc {
       position: absolute;
       top: 0;
-      right: -300px; /* 목차 너비만큼 오른쪽으로 이동시켜 숨김 */
+      right: -300px; 
       width: 300px;
       height: 100%;
       background: #222;
@@ -168,56 +187,49 @@
     .toc.open {
       right: 0;
     }
-
-    .toc h3 {
-      margin-top: 0;
-    }
-
-    .toc li {
-      margin: 12px 0;
-      cursor: pointer;
-      color: #bbb;
-    }
-
-    .toc li:hover {
-      color: white;
-    }
-
+    
+    /* 미디어 쿼리 조정 */
     @media (max-width: 768px) {
+      .app-header {
+        padding: 0 10px;
+      }
+      .header-title {
+        font-size: 16px;
+      }
       .page {
         width: 95%;
         padding: 20px;
+        height: calc(100vh - 80px); /* 모바일 헤더 높이에 맞게 조정 */
       }
-
-      .nav-btn {
-        font-size: 18px;
-        width: 40px;
-        height: 40px;
+      .header-btn {
+        padding: 6px 8px;
       }
-      
-      .top-btn {
-        padding: 8px; /* 아이콘 버튼에 맞게 조정 */
-        font-size: 16px; /* 아이콘이므로 폰트 크기 조정 */
-        top: 15px;
-      }
-      
-      #homeBtn { left: 15px; }
-      #darkModeToggle { right: 70px; } /* 버튼 크기에 맞게 조정 */
-      #tocToggle { right: 15px; }
     }
   </style>
 </head>
 <body>
+    
+  <header class="app-header">
+      <div class="header-title">귀여운 음향학 서문</div>
+      <div class="header-controls">
+          <button id="homeBtn" class="header-btn" title="홈으로 이동">
+              <i class="fas fa-home"></i> 홈
+          </button>
+          
+          <button id="darkModeToggle" class="header-btn" title="테마 전환">
+              <i class="fas fa-moon"></i> 
+              <span id="darkModeLabel">다크 모드</span>
+          </button>
+          
+          <button id="tocToggle" class="header-btn" title="목차 보기">
+              <i class="fas fa-list"></i> 목차
+          </button>
+      </div>
+  </header>
 
   <div class="viewer">
     <button id="prevBtn" class="nav-btn">〈</button>
     <button id="nextBtn" class="nav-btn">〉</button>
-    
-    <button id="homeBtn" class="top-btn" title="홈으로 이동"><i class="fas fa-home"></i></button>
-    
-    <button id="darkModeToggle" class="top-btn" title="테마 전환"><i class="fas fa-moon"></i></button>
-    
-    <button id="tocToggle" class="top-btn" title="목차 보기"><i class="fas fa-list"></i></button>
 
     <div class="page" id="page">
       <div class="page-text" id="pageText"></div>
@@ -252,23 +264,26 @@
     const bodyEl = document.body;
     const darkModeToggle = document.getElementById("darkModeToggle");
     const darkModeIcon = darkModeToggle.querySelector('i'); // 아이콘 요소 선택
+    const darkModeLabel = document.getElementById("darkModeLabel"); // 텍스트 라벨 선택
     
     // 로컬 저장소에서 설정 불러오기
     const initialDarkMode = localStorage.getItem('darkMode') === 'true';
 
-    // 다크 모드 상태를 설정하고 버튼 아이콘을 업데이트하는 함수
+    // 다크 모드 상태를 설정하고 버튼 아이콘 및 텍스트를 업데이트하는 함수
     function setDarkMode(isDark) {
         if (isDark) {
             bodyEl.classList.add("dark");
             // 달 아이콘 -> 해 아이콘으로 변경
             darkModeIcon.classList.remove("fa-moon");
             darkModeIcon.classList.add("fa-sun");
+            darkModeLabel.innerText = "라이트 모드";
             localStorage.setItem('darkMode', 'true');
         } else {
             bodyEl.classList.remove("dark");
             // 해 아이콘 -> 달 아이콘으로 변경
             darkModeIcon.classList.remove("fa-sun");
             darkModeIcon.classList.add("fa-moon");
+            darkModeLabel.innerText = "다크 모드";
             localStorage.setItem('darkMode', 'false');
         }
     }
