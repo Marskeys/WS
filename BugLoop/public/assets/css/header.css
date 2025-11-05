@@ -1,0 +1,1010 @@
+/* ======================
+   🔹 Sidebar Logo: 모바일 전용
+   - 데스크톱: 완전 숨김(공간 0)
+   - 모바일(<=640px): 보이기
+====================== */
+
+/* 기본값: 전부 숨김(공간도 없음) */
+.vscode-sidebar .sidebar-icon.logo,
+.vscode-sidebar .sidebar-icon.logo img {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* 모바일에서만 표시 */
+@media (max-width: 640px) {
+  .vscode-sidebar .sidebar-icon.logo {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex: 1 1 0 !important; /* 1/n 분배 */
+  }
+  .vscode-sidebar .sidebar-icon.logo img {
+    display: block !important;
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    transition: transform .15s ease, opacity .15s ease, filter .15s ease;
+  }
+}
+
+/* 데스크톱 호버 효과 (모바일 영향 X) */
+@media (min-width: 769px) {
+  .vscode-sidebar .sidebar-icon.logo:hover img,
+  .vscode-sidebar .sidebar-icon.logo.active img {
+    transform: scale(1.06);
+    opacity: 0.95;
+  }
+}
+
+
+/* ======================
+   🔹 전역 변수
+====================== */
+:root {
+  --highlight-color: #00adb5;
+  --panel-hero-height: 155px;
+  --hero-overlap: 50px;
+  --z-header: 20000;
+  --z-head-inner: 3;
+}
+html.dark{
+  /* 다크에서 한 단계 더 높게 */
+  --z-header: 40000;
+  --z-head-inner: 10;
+}
+
+
+/* ======================
+   🔹 공통 스타일 & 유틸리티
+====================== */
+.hidden { display: none; }
+
+#right-controls {
+  display: none !important;
+  position: relative;
+  z-index: 1000001 !important;
+  pointer-events: auto;
+}
+#right-controls.is-active { display: flex !important; }
+
+/* 탭 컨텐츠 전환 */
+.tab-content { display: none; }
+.tab-content[style*="display: block"] { display: block !important; }
+
+
+/* ======================
+   🔹 사이드바 아이콘
+====================== */
+.sidebar-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0;
+  color: rgba(255, 255, 255, 0.626);
+  text-align: center;
+  border: none;
+  background: none;
+  outline: none;
+  margin: 0;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  z-index: 9999;
+}
+.sidebar-icon i {
+  background: none !important;
+  outline: none;
+  box-shadow: none;
+}
+.sidebar-icon:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.sidebar-icon.active {
+  color: var(--highlight-color, #fff);
+  background: transparent;
+}
+
+/* hover는 데스크탑 넓이 이상일 때만 */
+@media (min-width: 769px) {
+  .sidebar-icon:hover {
+    color: var(--highlight-color, #fff);
+    background: transparent;
+  }
+}
+
+/* 토글 확장 버튼 */
+.sidebar-icon.toggle-extension {
+  background: none !important;
+  color: #ccc;
+  cursor: pointer;
+}
+.sidebar-icon.toggle-extension:hover {
+  background: #333;
+  color: #fff;
+}
+.sidebar-icon.toggle-extension.active,
+.sidebar-icon.toggle-extension:focus {
+  background: none !important;
+  color: #fff !important;
+}
+
+/* VSCode 사이드바 내부 아이콘 활성화 (원래 흰색 유지) */
+.vscode-sidebar { --highlight-color: #fff; }
+.vscode-sidebar .sidebar-icon.active,
+.vscode-sidebar .sidebar-icon[aria-current="page"],
+.vscode-sidebar .sidebar-icon[aria-selected="true"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
+.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
+  color: #fff !important;
+}
+
+/* ======================================================================
+   ✅ PATCH: 설정 아이콘 시각 상태를 'is-active'로만 제어
+   - 닫힘 상태에서는 hover/active/focus/aria-*에 영향받지 않고 회색 고정
+   - 열림(is-active)일 때만 흰색
+   ====================================================================== */
+.sidebar-icon[data-tab="settings"] {
+  --settings-idle: rgba(255, 255, 255, 0.626);
+  color: var(--settings-idle);
+}
+/* 열림 상태: 흰색 */
+.sidebar-icon[data-tab="settings"].is-active {
+  color: #fff !important;
+  background: transparent !important;
+}
+/* 닫힘 상태: 어떤 상호작용/속성에도 흰색으로 변하지 않도록 강제 */
+.sidebar-icon[data-tab="settings"]:not(.is-active),
+.sidebar-icon[data-tab="settings"]:not(.is-active).active,
+.sidebar-icon[data-tab="settings"]:not(.is-active):hover,
+.sidebar-icon[data-tab="settings"]:not(.is-active):focus,
+.sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
+.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
+.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
+.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
+  color: var(--settings-idle) !important;
+  background: none !important;
+}
+/* VSCode 컨테이너 안에서도 동일하게 무력화(우선순위 보강) */
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active),
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active).active,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):hover,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
+  color: var(--settings-idle) !important;
+  background: none !important;
+}
+
+
+/* ======================
+   🔹 사이드 패널 레이아웃
+====================== */
+.side-panel.main-panel-only {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  width: auto;
+  z-index: 30;
+  pointer-events: none;
+}
+.side-panel.main-panel-only.open { pointer-events: auto; }
+
+.sidebar-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.vscode-sidebar {
+  width: 50px;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+  height: 100vh;
+  z-index: 99990;
+  pointer-events: auto !important;
+}
+
+.sidebar-extension-panel {
+  position: relative !important;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  width: 400px;
+  min-width: 400px;
+  max-width: 400px;
+  background-color: #237f17;
+  color: rgb(210, 210, 210);
+  padding: 10px 16px;
+  border-right: 1px solid #ff00008f;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 3s ease, opacity 0.3s ease;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sidebar-extension-panel::-webkit-scrollbar { display: none; }
+.sidebar-extension-panel.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 패널 상단 배경 이미지 */
+
+.sidebar-extension-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 패널 컨텐츠 상단 여백 (히어로와 겹침 보정) */
+.sidebar-extension-panel .tab-content {
+
+}
+
+
+/* ======================
+   🔹 확장 패널 내부 공통
+====================== */
+.sidebar-extension-panel h3 { font-size: 14px; margin-bottom: 10px; }
+.sidebar-extension-panel ul { list-style: none; padding: 0; margin: 0; }
+.sidebar-extension-panel li { margin: 5px 0; }
+.sidebar-extension-panel a { color: #fff; text-decoration: none; font-size: 14px; }
+.sidebar-extension-panel a:hover { text-decoration: underline; }
+
+
+/* ======================
+   🔹 패널 푸터 (하단 고정)
+====================== */
+.panel-footer {
+  margin-top: auto;
+  flex-shrink: 0;
+  padding: 10px;
+  border-top: 1px solid #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.real-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #ffffff;
+  margin-top: 10px;
+  border-top: 1px solid #ffffff;
+  margin-bottom: 80px;
+  padding-top: 8px;
+}
+
+
+/* =========================================================
+   ✅ PROFILE TAB — 증명사진 느낌 About 카드
+   (이 섹션이 기존 프로필 관련 '찌꺼기'를 대체합니다)
+   ========================================================= */
+.profile-tab { position: relative; z-index: 1; }
+
+.profile-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 14px;
+  align-items: start;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+}
+
+/* 아바타 컬럼: 중앙 정렬 */
+.avatar-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 프레임 ❌ 제거 — 이미지 자체가 프레임을 가지고 있으므로 불필요 */
+.avatar-frame {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 96px;
+  /* aspect-ratio, border, shadow 다 제거 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent; /* 배경도 투명 */
+  border: none;
+  box-shadow: none;
+}
+
+/* 실제 이미지: 원형 프레임이 이미지에 있으므로 그냥 100% 채움 */
+.avatar-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0; /* 이미지 자체가 둥글게 되어있으므로 따로 적용 불필요 */
+}
+.profile-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 증명사진 꽉 채우기 */
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.info-col { min-width: 0; }
+.profile-name {
+  margin: 2px 0 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .2px;
+}
+.profile-bio {
+  margin: 0 0 10px;
+  color: #ffffff;
+  line-height: 1.55;
+  font-size: .95rem;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06);
+  color: #eaeaea;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: .8rem;
+  letter-spacing: .1px;
+}
+
+.profile-social {
+  display: flex;
+  gap: 10px;
+}
+.profile-social a {
+  color: #ddd;
+  font-size: 1.05rem;
+  transition: transform .15s ease, color .15s ease, text-shadow .15s ease;
+}
+.profile-social a:hover {
+  color: var(--highlight-color, #00adb5);
+  transform: translateY(-1px);
+  text-shadow: 0 0 12px rgba(0,173,181,0.45);
+}
+
+/* 모바일 정렬 */
+@media (max-width: 480px){
+  .profile-card { grid-template-columns: 80px 1fr; padding: 12px; gap: 12px; }
+  .avatar-frame { max-width: 76px; }
+}
+
+
+/* =========================================================
+   ✅ SEARCH TAB — 상단 검색바 + 테이블
+   (기존 search-tab 마진/포지션 보정 규칙 제거됨)
+   ========================================================= */
+.search-tab { position: relative; z-index: 1; }
+
+/* 상단 고정 검색바 */
+.search-form {
+  position: sticky;   /* 스크롤 내려도 검색바 고정 */
+  top: calc(var(--hero-overlap) - 10px);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 28px 1fr auto; /* 아이콘, 입력, 버튼 */
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #323232;
+  background: #0c0c0c;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+.search-form:focus-within {
+  border-color: var(--highlight-color, #00adb5);
+  box-shadow: 0 0 0 3px rgba(0,173,181,0.15);
+}
+
+.search-icon {
+  color: #a7a7a7;
+  font-size: .95rem;
+  text-align: center;
+}
+
+.search-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #f1f1f1;
+  font-size: .95rem;
+  line-height: 1.1;
+}
+.search-input::placeholder { color: #8f8f8f; }
+
+/* 제출 버튼 */
+.search-form .submit-btn {
+  border: 1px solid rgba(255,255,255,0.25);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.search-form .submit-btn:hover {
+  border-color: rgba(255,255,255,0.45);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
+  transform: translateY(-1px);
+}
+
+/* 테이블 템플릿 여백 */
+#sidebar-table-template, #sidebar-table {
+  margin-top: 8px;
+}
+
+/* 모바일: 검색바 여백/크기 조정 */
+@media (max-width: 670px){
+  .search-form { grid-template-columns: 24px 1fr auto; padding: 8px 10px; gap: 8px; }
+  .search-form .submit-btn { padding: 7px 10px; border-radius: 8px; font-size: .85rem; }
+}
+
+/* VSCode 사이드바 아이콘 미세조정(프로필/검색) */
+.vscode-sidebar .sidebar-icon[data-tab="profile"].active,
+.vscode-sidebar .sidebar-icon[data-tab="search"].active {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(255,255,255,0.35);
+}
+
+
+/* ======================
+   🔹 인증 버튼 (로그인, 가입 등)
+====================== */
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+}
+.auth-btn {
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  padding: 10px;
+  border-radius: 6px;
+}
+.auth-btn.login {
+  border-radius: 999px;
+  font-size: 1.2rem;
+}
+.auth-btn.login:hover {
+  background-color: rgba(255, 255, 200, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+}
+.auth-btn.signup {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 6px 4px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+  box-shadow: none;
+}
+.auth-btn.signup:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+}
+.auth-btn.write-post {
+  margin-left: 10px;
+  font-size: 0.85rem;
+  padding: 4px 10px !important;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
+  background-color: #000;
+}
+.auth-btn.write-post:hover {
+  color: lightblue;
+  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
+  background-color: rgba(255, 255, 200, 0.05);
+  border-color: rgba(255, 255, 180, 0.8);
+}
+.auth-btn.logout {
+  font-size: 0.85rem;
+  border-radius: 999px;
+  padding: 8px 10px;
+}
+.auth-btn.logout:hover {
+  background-color: rgba(255, 255, 200, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 180, 0.8);
+  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
+}
+
+
+/* ======================
+   🔹 로그인 폼
+====================== */
+.login-form-container {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #ffffff;
+}
+#login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#login-form input {
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #444;
+  color: #6c6b6b;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+#login-form button {
+  padding: 10px;
+  background-color: #641df1;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+#login-form button:hover { background-color: #4c16b9; }
+
+
+/* ==================================
+   🔹 헤더 & 메뉴 레이아웃
+================================== */
+.header-top {
+  width: 100%;
+  height: 30px;
+  padding: 20px 23px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 11px;
+  z-index: 1;
+  transition: background 0.4s ease;
+  background: #000;
+  overflow: visible !important;
+}
+.top-controls {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.left-controls {
+  flex-shrink: 0;
+  padding-right: 15px;
+}
+.header-menu {
+  flex-grow: 1;
+  min-width: 0;
+  flex-shrink: 1;
+}
+.main-menu-container {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100%;
+}
+.main-menu-container::-webkit-scrollbar { display: none; }
+.menu-item-wrapper {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  align-items: center;
+}
+.menu-label {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 10;
+background: linear-gradient(90deg, #6dca03 0%, #4CAF50 100%) !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.main-menu-container { display: flex; gap: 15px; }
+
+.menu-label.active,
+.menu-label[aria-current="true"],
+.menu-label[aria-expanded="true"] {
+  color: var(--highlight-color, #00adb5) !important;
+  background-color: #111;
+}
+.menu-label:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.submenu {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 10px;
+  white-space: nowrap;
+}
+.submenu li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+}
+.submenu li a:hover { color: #007BFF; }
+.submenu a:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.submenu a.active,
+.submenu a[aria-current="page"],
+.submenu li.active > a {
+  color: var(--highlight-color, #00adb5) !important;
+  font-weight: 700;
+  border-bottom: 2px solid currentColor;
+}
+.header-top.scrolled .menu-label,
+.header-top.scrolled .submenu li a { color: #fff; }
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  z-index: 1000;
+  flex-basis: 100px;
+  padding-left: 2px;
+  flex-shrink: 0;
+  margin-left: auto;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ==================================
+   🔹 라이트 모드 & 언어 선택
+================================== */
+.light-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  border-top: none;
+  margin-top: 0;
+  margin-right: 5px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.light-switch .switch-label {
+  width: 36px;
+  height: 20px;
+  background-color: #888;
+  border-radius: 999px;
+  position: relative;
+  transition: background-color 0.3s ease;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.light-switch .switch-handle {
+  position: absolute;
+  top: 2.5px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  background: linear-gradient(to bottom, #fff, #ccc);
+  border-radius: 50%;
+  transition: left 0.3s ease, background 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.light-switch[aria-checked="true"] .switch-handle {
+  left: calc(100% - 2px - 15px);
+  background: linear-gradient(to bottom, #eee, #bbb);
+}
+.light-switch[aria-checked="true"] .switch-label {
+  background-color: #50504b;
+}
+
+.language-dropdown {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  /* 드롭다운 메뉴를 위한 새로운 스태킹 컨텍스트 생성 */
+  z-index: 99991; /* vscode-sidebar보다 높게 설정 */
+}
+.lang-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.lang-btn .fi {
+  width: 1.5rem;
+  height: 1.2rem;
+}
+.lang-menu {
+  display: none;
+  position: absolute;
+  top: calc(90% + 5px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100000;
+  max-width: 120px;
+  padding: 5px 0;
+  list-style: none;
+}
+.lang-menu.show { display: block; }
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lang-option:hover { background-color: #f5f5f5; }
+.lang-option.active-lang {
+  font-weight: bold;
+  color: var(--highlight-color, #00adb5);
+}
+html.dark .lang-menu {
+  background: #222;
+  border-color: #444;
+  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
+}
+html.dark .lang-option { color: #eee; }
+html.dark .lang-option:hover { background-color: #333; }
+
+/* 모바일↓ */
+@media (max-width:670px){
+  .lang-menu{ font-size:13px; }
+}
+
+
+/* ==================================
+   🔹 반응형 (모바일)
+================================== */
+@media (max-width: 768px) {
+  /* 데스크톱 전용 메뉴 숨김 */
+  .desktop-menu { display: none; }
+  .main-menu { font-size: 8px; }
+
+  /* 헤더 컨테이너 */
+  .full-header-container {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: var(--z-header);
+    isolation: isolate; /* 자식 스택 분리 */
+  }
+
+  /* 헤더 상단바 (메뉴 줄) */
+  .header-top {
+    order: 1;
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    left: 0;
+    align-items: center;
+    z-index: var(--z-head-inner);
+    overflow: visible !important;
+  }
+
+  /* 사이드바 줄 */
+  .side-panel.main-panel-only {
+    order: 2;
+    position: relative;
+    left: 0; right: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  .sidebar-wrapper { width: 100%; }
+
+  /* VSCode 사이드바 (가로형) */
+  .vscode-sidebar {
+    width: 100% !important;
+    height: 50px !important;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 10px;
+    position: static !important;
+    gap: 6px;
+    z-index: 0;
+  }
+
+  /* 아이콘: 1칸씩 균등 분배 */
+  .vscode-sidebar .sidebar-icon {
+    width: auto !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+  }
+
+  /* 모바일 상단바에서 활성화 바(underline) 제거 */
+  .vscode-sidebar .sidebar-icon.active::after,
+  .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
+  .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
+    content: none !important;
+  }
+
+  /* 확장 패널 (모바일 오버레이) */
+  .sidebar-extension-panel {
+    position: absolute !important;
+    top: 50px !important;
+    left: 0 !important; right: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 50px) !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    border-right: none !important;
+    z-index: 1000 !important;
+  }
+  .sidebar-extension-panel.open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* 기타 모바일 헤더 내부 */
+  .top-controls {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .left-controls { display: none; }
+  .header-menu {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .main-menu-container { padding: 0 10px; }
+
+  .right-controls {
+    display: none !important; /* #right-controls 규칙을 따르도록 함 */
+  }
+  #right-controls.is-active {
+    display: flex !important;
+  }
+
+  .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
+  .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
+  .auth-btn.logout { margin-right: 0 !important; }
+}
+
+/* 670px 이하에서 메뉴 라인에 블러 필터 적용 */
+@media (max-width: 670px) {
+  .header-top {
+    position: relative;
+    overflow: hidden;
+    z-index: 3;
+  }
+  .header-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1;
+  }
+}
+
+/* === 모바일 헤더 레이어/드롭다운 안전장치 === */
+@media (max-width: 768px) {
+  html.dark .header-top::before {
+    z-index: 0 !important;
+    pointer-events: none;
+  }
+  .language-dropdown { position: relative; z-index: calc(var(--z-head-inner) + 1); }
+  .lang-menu { position: absolute; z-index: calc(var(--z-head-inner) + 2); }
+}
+
+/* === 메뉴 열릴 때 최상위 고정 (transform/blur 간섭 방지) === */
+.language-dropdown.open .lang-menu,
+.language-dropdown[aria-expanded="true"] .lang-menu{
+  position: fixed;              /* 다크모드에서 transform/blur 스택 피하기 */
+  top: var(--header-h, 30px);
+  right: 12px;
+  left: auto;
+  z-index: calc(var(--z-header) + 10);
+}
+
+/* 패널 로고 영역: 가운데 정렬 */
+.sidebar-extension-panel .panel-logo{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+/* 로고 이미지: 너무 크지 않게 */
+.sidebar-extension-panel .panel-logo img{
+  display: block;
+  width: min(80%, 250px); /* 컨테이너의 60% 또는 180px 중 작은 값 */
+  height: auto;           /* 비율 유지 */
+}
+

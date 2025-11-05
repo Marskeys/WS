@@ -1,1025 +1,6 @@
 <% const h = locale.header; %>
+
 <style>
-/* ======================
-   🔹 Sidebar Logo: 모바일 전용
-   - 데스크톱: 완전 숨김(공간 0)
-   - 모바일(<=640px): 보이기
-====================== */
-
-/* 기본값: 전부 숨김(공간도 없음) */
-.vscode-sidebar .sidebar-icon.logo,
-.vscode-sidebar .sidebar-icon.logo img {
-  display: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-
-/* 모바일에서만 표시 */
-@media (max-width: 640px) {
-  .vscode-sidebar .sidebar-icon.logo {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 0 !important;
-    margin: 0 !important;
-    flex: 1 1 0 !important; /* 1/n 분배 */
-  }
-  .vscode-sidebar .sidebar-icon.logo img {
-    display: block !important;
-    height: 45px;
-    width: auto;
-    object-fit: contain;
-    image-rendering: -webkit-optimize-contrast;
-    transition: transform .15s ease, opacity .15s ease, filter .15s ease;
-  }
-}
-
-/* 데스크톱 호버 효과 (모바일 영향 X) */
-@media (min-width: 769px) {
-  .vscode-sidebar .sidebar-icon.logo:hover img,
-  .vscode-sidebar .sidebar-icon.logo.active img {
-    transform: scale(1.06);
-    opacity: 0.95;
-  }
-}
-
-
-/* ======================
-   🔹 전역 변수
-====================== */
-:root {
-  --highlight-color: #00adb5;
-  --panel-hero-height: 155px;
-  --hero-overlap: 50px;
-  --z-header: 20000;
-  --z-head-inner: 3;
-  /* ejs에 있던 변수 */
-  --ink-1: #fff;
-  --ink-3: rgba(255,255,255,0.25);
-  --panel-1: #181a1f;
-  --panel-2: #22262e;
-  --accent: #6cf;
-  --vscode-sideBar-background: #333;
-  --vscode-sideBar-border: #444;
-}
-html.dark{
-  /* 다크에서 한 단계 더 높게 */
-  --z-header: 40000;
-  --z-head-inner: 10;
-}
-html:not(.dark) {
-  /* 라이트 모드 변수 재정의 */
-  --ink-1: #181a1f;
-  --ink-3: rgba(0,0,0,0.15);
-  --panel-1: #fff;
-  --panel-2: #f0f0f0;
-  --vscode-sideBar-background: #f3f3f3;
-  --vscode-sideBar-border: #ccc;
-}
-
-
-/* ======================
-   🔹 공통 스타일 & 유틸리티
-====================== */
-.hidden { display: none; }
-
-#right-controls {
-  display: none !important;
-  position: relative;
-  z-index: 1000001 !important;
-  pointer-events: auto;
-}
-#right-controls.is-active { display: flex !important; }
-
-/* 탭 컨텐츠 전환 */
-.tab-content { display: none; }
-.tab-content[style*="display: block"] { display: block !important; }
-
-
-/* ======================
-   🔹 사이드바 아이콘
-====================== */
-.sidebar-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 12px 0;
-  color: rgba(255, 255, 255, 0.626);
-  text-align: center;
-  border: none;
-  background: none;
-  outline: none;
-  margin: 0;
-  transition: color 0.2s ease;
-  text-decoration: none;
-  z-index: 9999;
-}
-.sidebar-icon i {
-  background: none !important;
-  outline: none;
-  box-shadow: none;
-}
-.sidebar-icon:focus-visible {
-  outline: 2px solid var(--highlight-color, #00adb5);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-.sidebar-icon.active {
-  color: var(--highlight-color, #fff);
-  background: transparent;
-}
-
-/* hover는 데스크탑 넓이 이상일 때만 */
-@media (min-width: 769px) {
-  .sidebar-icon:hover {
-    color: var(--highlight-color, #fff);
-    background: transparent;
-  }
-}
-
-/* 토글 확장 버튼 */
-.sidebar-icon.toggle-extension {
-  background: none !important;
-  color: #ccc;
-  cursor: pointer;
-}
-.sidebar-icon.toggle-extension:hover {
-  background: #333;
-  color: #fff;
-}
-.sidebar-icon.toggle-extension.active,
-.sidebar-icon.toggle-extension:focus {
-  background: none !important;
-  color: #fff !important;
-}
-
-/* VSCode 사이드바 내부 아이콘 활성화 (원래 흰색 유지) */
-.vscode-sidebar { --highlight-color: #fff; }
-.vscode-sidebar .sidebar-icon.active,
-.vscode-sidebar .sidebar-icon[aria-current="page"],
-.vscode-sidebar .sidebar-icon[aria-selected="true"],
-.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
-.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
-  color: #fff !important;
-}
-
-/* ======================================================================
-   ✅ PATCH: 설정 아이콘 시각 상태를 'is-active'로만 제어
-   ====================================================================== */
-.sidebar-icon[data-tab="settings"] {
-  --settings-idle: rgba(255, 255, 255, 0.626);
-  color: var(--settings-idle);
-}
-/* 열림 상태: 흰색 */
-.sidebar-icon[data-tab="settings"].is-active {
-  color: #fff !important;
-  background: transparent !important;
-}
-/* 닫힘 상태: 어떤 상호작용/속성에도 흰색으로 변하지 않도록 강제 */
-.sidebar-icon[data-tab="settings"]:not(.is-active),
-.sidebar-icon[data-tab="settings"]:not(.is-active).active,
-.sidebar-icon[data-tab="settings"]:not(.is-active):hover,
-.sidebar-icon[data-tab="settings"]:not(.is-active):focus,
-.sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
-.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
-.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
-.sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
-  color: var(--settings-idle) !important;
-  background: none !important;
-}
-/* VSCode 컨테이너 안에서도 동일하게 무력화(우선순위 보강) */
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active),
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active).active,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):hover,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
-  color: var(--settings-idle) !important;
-  background: none !important;
-}
-
-
-/* ======================
-   🔹 사이드 패널 레이아웃
-====================== */
-.side-panel.main-panel-only {
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: row;
-  height: auto;
-  width: auto;
-  z-index: 30;
-  pointer-events: none;
-}
-.side-panel.main-panel-only.open { pointer-events: auto; }
-
-.sidebar-wrapper {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-}
-
-.vscode-sidebar {
-  width: 50px;
-  background-color: #1e1e1e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 10px;
-  height: 100vh;
-  z-index: 99990;
-  pointer-events: auto !important;
-}
-
-.sidebar-extension-panel {
-  position: relative !important;
-  box-sizing: border-box;
-  top: 0;
-  left: 0;
-  width: 400px;
-  min-width: 400px;
-  max-width: 400px;
-  background-color: #237f17;
-  color: rgb(210, 210, 210);
-  padding: 10px 16px;
-  border-right: 1px solid #ff00008f;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  transform: translateX(-100%);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 3s ease, opacity 0.3s ease;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.sidebar-extension-panel::-webkit-scrollbar { display: none; }
-.sidebar-extension-panel.open {
-  transform: translateX(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* 패널 상단 배경 이미지 */
-
-.sidebar-extension-panel > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* 패널 컨텐츠 상단 여백 (히어로와 겹침 보정) - (이 부분은 내용이 없어 주석처리) */
-
-
-/* ======================
-   🔹 확장 패널 내부 공통
-====================== */
-.sidebar-extension-panel h3 { font-size: 14px; margin-bottom: 10px; }
-.sidebar-extension-panel ul { list-style: none; padding: 0; margin: 0; }
-.sidebar-extension-panel li { margin: 5px 0; }
-.sidebar-extension-panel a { color: #fff; text-decoration: none; font-size: 14px; }
-.sidebar-extension-panel a:hover { text-decoration: underline; }
-
-
-/* ======================
-   🔹 패널 푸터 (하단 고정)
-====================== */
-.panel-footer {
-  margin-top: auto;
-  flex-shrink: 0;
-  padding: 10px;
-  border-top: 1px solid #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.real-footer {
-  text-align: center;
-  font-size: 0.75rem;
-  color: #ffffff;
-  margin-top: 10px;
-  border-top: 1px solid #ffffff;
-  margin-bottom: 80px;
-  padding-top: 8px;
-}
-
-
-/* =========================================================
-   ✅ PROFILE TAB — 증명사진 느낌 About 카드
-   ========================================================= */
-.profile-tab { position: relative; z-index: 1; }
-
-.profile-card {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 14px;
-  align-items: start;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
-}
-
-/* 아바타 컬럼: 중앙 정렬 */
-.avatar-col {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* 프레임 ❌ 제거 — 이미지 자체가 프레임을 가지고 있으므로 불필요 */
-.avatar-frame {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  max-width: 96px;
-  /* aspect-ratio, border, shadow 다 제거 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent; /* 배경도 투명 */
-  border: none;
-  box-shadow: none;
-}
-
-/* 실제 이미지: 원형 프레임이 이미지에 있으므로 그냥 100% 채움 */
-.avatar-frame img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 0; /* 이미지 자체가 둥글게 되어있으므로 따로 적용 불필요 */
-}
-.profile-avatar {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 증명사진 꽉 채우기 */
-  image-rendering: -webkit-optimize-contrast;
-}
-
-.info-col { min-width: 0; }
-.profile-name {
-  margin: 2px 0 6px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: .2px;
-}
-.profile-bio {
-  margin: 0 0 10px;
-  color: #ffffff;
-  line-height: 1.55;
-  font-size: .95rem;
-}
-
-.profile-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0 0 8px;
-  padding: 0;
-  list-style: none;
-}
-.tag-pill {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.06);
-  color: #eaeaea;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: .8rem;
-  letter-spacing: .1px;
-}
-
-.profile-social {
-  display: flex;
-  gap: 10px;
-}
-.profile-social a {
-  color: #ddd;
-  font-size: 1.05rem;
-  transition: transform .15s ease, color .15s ease, text-shadow .15s ease;
-}
-.profile-social a:hover {
-  color: var(--highlight-color, #00adb5);
-  transform: translateY(-1px);
-  text-shadow: 0 0 12px rgba(0,173,181,0.45);
-}
-
-/* 모바일 정렬 */
-@media (max-width: 480px){
-  .profile-card { grid-template-columns: 80px 1fr; padding: 12px; gap: 12px; }
-  .avatar-frame { max-width: 76px; }
-}
-
-
-/* =========================================================
-   ✅ SEARCH TAB — 상단 검색바 + 테이블
-   ========================================================= */
-.search-tab { position: relative; z-index: 1; }
-
-/* 상단 고정 검색바 */
-.search-form {
-  position: sticky;   /* 스크롤 내려도 검색바 고정 */
-  top: calc(var(--hero-overlap) - 10px);
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 28px 1fr auto; /* 아이콘, 입력, 버튼 */
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid #323232;
-  background: #0c0c0c;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-}
-.search-form:focus-within {
-  border-color: var(--highlight-color, #00adb5);
-  box-shadow: 0 0 0 3px rgba(0,173,181,0.15);
-}
-
-.search-icon {
-  color: #a7a7a7;
-  font-size: .95rem;
-  text-align: center;
-}
-
-.search-input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #f1f1f1;
-  font-size: .95rem;
-  line-height: 1.1;
-}
-.search-input::placeholder { color: #8f8f8f; }
-
-/* 제출 버튼 */
-.search-form .submit-btn {
-  border: 1px solid rgba(255,255,255,0.25);
-  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: .9rem;
-  cursor: pointer;
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-}
-.search-form .submit-btn:hover {
-  border-color: rgba(255,255,255,0.45);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
-  transform: translateY(-1px);
-}
-
-/* 테이블 템플릿 여백 */
-#sidebar-table-template, #sidebar-table {
-  margin-top: 8px;
-}
-
-/* 모바일: 검색바 여백/크기 조정 */
-@media (max-width: 670px){
-  .search-form { grid-template-columns: 24px 1fr auto; padding: 8px 10px; gap: 8px; }
-  .search-form .submit-btn { padding: 7px 10px; border-radius: 8px; font-size: .85rem; }
-}
-
-/* VSCode 사이드바 아이콘 미세조정(프로필/검색) */
-.vscode-sidebar .sidebar-icon[data-tab="profile"].active,
-.vscode-sidebar .sidebar-icon[data-tab="search"].active {
-  color: #fff !important;
-  text-shadow: 0 0 10px rgba(255,255,255,0.35);
-}
-
-
-/* ======================
-   🔹 인증 버튼 (로그인, 가입 등)
-====================== */
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-  width: 100%;
-}
-.auth-btn {
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 600;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
-  background-color: transparent;
-  color: #fff;
-  border: 1px solid #fff;
-  padding: 10px;
-  border-radius: 6px;
-}
-.auth-btn.login {
-  border-radius: 999px;
-  font-size: 1.2rem;
-}
-.auth-btn.login:hover {
-  background-color: rgba(255, 255, 200, 0.05);
-  color: #fff;
-  border-color: rgba(255, 255, 180, 0.8);
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-}
-.auth-btn.signup {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 0.9rem;
-  padding: 6px 4px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  box-shadow: none;
-}
-.auth-btn.signup:hover {
-  color: lightblue;
-  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-}
-.auth-btn.write-post {
-  margin-left: 10px;
-  font-size: 0.85rem;
-  padding: 4px 10px !important;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.35);
-  background-color: #000;
-}
-.auth-btn.write-post:hover {
-  color: lightblue;
-  text-shadow: 0 0 10px rgba(255, 230, 120, 0.8);
-  background-color: rgba(255, 255, 200, 0.05);
-  border-color: rgba(255, 255, 180, 0.8);
-}
-.auth-btn.logout {
-  font-size: 0.85rem;
-  border-radius: 999px;
-  padding: 8px 10px;
-}
-.auth-btn.logout:hover {
-  background-color: rgba(255, 255, 200, 0.05);
-  color: #fff;
-  border-color: rgba(255, 255, 180, 0.8);
-  box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
-}
-
-
-/* ======================
-   🔹 로그인 폼
-====================== */
-.login-form-container {
-  margin-top: 10px;
-  padding: 10px;
-  border-top: 1px solid #ffffff;
-}
-#login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-#login-form input {
-  padding: 10px;
-  background-color: #ffffff;
-  border: 1px solid #444;
-  color: #6c6b6b;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-#login-form button {
-  padding: 10px;
-  background-color: #641df1;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-#login-form button:hover { background-color: #4c16b9; }
-
-
-/* ==================================
-   🔹 헤더 & 메뉴 레이아웃
-================================== */
-.header-top {
-  width: 100%;
-  height: 30px;
-  padding: 20px 23px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 11px;
-  z-index: 1;
-  transition: background 0.4s ease;
-  background: #000;
-  overflow: visible !important;
-}
-.top-controls {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-.left-controls {
-  flex-shrink: 0;
-  padding-right: 15px;
-}
-.header-menu {
-  flex-grow: 1;
-  min-width: 0;
-  flex-shrink: 1;
-}
-.main-menu-container {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  height: 100%;
-}
-.main-menu-container::-webkit-scrollbar { display: none; }
-.menu-item-wrapper {
-  display: flex;
-  flex-shrink: 0;
-  gap: 10px;
-  align-items: center;
-}
-.menu-label {
-  position: sticky;
-  left: 0;
-  top: 0;
-  z-index: 10;
-  background: linear-gradient(90deg, #6dca03 0%, #4CAF50 100%) !important;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #fff;
-  white-space: nowrap;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.main-menu-container { display: flex; gap: 15px; }
-
-.menu-label.active,
-.menu-label[aria-current="true"],
-.menu-label[aria-expanded="true"] {
-  color: var(--highlight-color, #00adb5) !important;
-  background-color: #111;
-}
-.menu-label:focus-visible {
-  outline: 2px solid var(--highlight-color, #00adb5);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-.submenu {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 10px;
-  white-space: nowrap;
-}
-.submenu li a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 0.85rem;
-  transition: color 0.2s ease;
-}
-.submenu li a:hover { color: #007BFF; }
-.submenu a:focus-visible {
-  outline: 2px solid var(--highlight-color, #00adb5);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-.submenu a.active,
-.submenu a[aria-current="page"],
-.submenu li.active > a {
-  color: var(--highlight-color, #00adb5) !important;
-  font-weight: 700;
-  border-bottom: 2px solid currentColor;
-}
-.header-top.scrolled .menu-label,
-.header-top.scrolled .submenu li a { color: #fff; }
-.right-controls {
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  z-index: 1000;
-  flex-basis: 100px;
-  padding-left: 2px;
-  flex-shrink: 0;
-  margin-left: auto;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
-}
-
-
-/* ==================================
-   🔹 라이트 모드 & 언어 선택
-================================== */
-.light-switch {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 20px;
-  cursor: pointer;
-  border-top: none;
-  margin-top: 0;
-  margin-right: 5px;
-  padding: 0;
-  flex-shrink: 0;
-}
-.light-switch .switch-label {
-  width: 36px;
-  height: 20px;
-  background-color: #888;
-  border-radius: 999px;
-  position: relative;
-  transition: background-color 0.3s ease;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-}
-.light-switch .switch-handle {
-  position: absolute;
-  top: 2.5px;
-  left: 2px;
-  width: 15px;
-  height: 15px;
-  background: linear-gradient(to bottom, #fff, #ccc);
-  border-radius: 50%;
-  transition: left 0.3s ease, background 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-.light-switch[aria-checked="true"] .switch-handle {
-  left: calc(100% - 2px - 15px);
-  background: linear-gradient(to bottom, #eee, #bbb);
-}
-.light-switch[aria-checked="true"] .switch-label {
-  background-color: #50504b;
-}
-
-.language-dropdown {
-  position: relative;
-  display: inline-block;
-  flex-shrink: 0;
-  /* 드롭다운 메뉴를 위한 새로운 스태킹 컨텍스트 생성 */
-  z-index: 99991; /* vscode-sidebar보다 높게 설정 */
-}
-.lang-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 5px 10px;
-}
-.lang-btn .fi {
-  width: 1.5rem;
-  height: 1.2rem;
-}
-.lang-menu {
-  display: none;
-  position: absolute;
-  top: calc(90% + 5px);
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 100000;
-  max-width: 120px;
-  padding: 5px 0;
-  list-style: none;
-}
-.lang-menu.show { display: block; }
-.lang-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 8px 12px;
-  color: #333;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.lang-option:hover { background-color: #f5f5f5; }
-.lang-option.active-lang {
-  font-weight: bold;
-  color: var(--highlight-color, #00adb5);
-}
-html.dark .lang-menu {
-  background: #222;
-  border-color: #444;
-  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
-}
-html.dark .lang-option { color: #eee; }
-html.dark .lang-option:hover { background-color: #333; }
-
-/* 모바일↓ */
-@media (max-width:670px){
-  .lang-menu{ font-size:13px; }
-}
-
-
-/* ==================================
-   🔹 반응형 (모바일)
-================================== */
-@media (max-width: 768px) {
-  /* 데스크톱 전용 메뉴 숨김 */
-  .desktop-menu { display: none; }
-  .main-menu { font-size: 8px; }
-
-  /* 헤더 컨테이너 */
-  .full-header-container {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    z-index: var(--z-header);
-    isolation: isolate; /* 자식 스택 분리 */
-  }
-
-  /* 헤더 상단바 (메뉴 줄) */
-  .header-top {
-    order: 1;
-    position: relative;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    left: 0;
-    align-items: center;
-    z-index: var(--z-head-inner);
-    overflow: visible !important;
-  }
-
-  /* 사이드바 줄 */
-  .side-panel.main-panel-only {
-    order: 2;
-    position: relative;
-    left: 0; right: 0;
-    width: 100%;
-    height: auto;
-    pointer-events: auto;
-    z-index: 1;
-  }
-
-  .sidebar-wrapper { width: 100%; }
-
-  /* VSCode 사이드바 (가로형) */
-  .vscode-sidebar {
-    width: 100% !important;
-    height: 50px !important;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 10px;
-    position: static !important;
-    gap: 6px;
-    z-index: 0;
-  }
-
-  /* 아이콘: 1칸씩 균등 분배 */
-  .vscode-sidebar .sidebar-icon {
-    width: auto !important;
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    height: 100% !important;
-  }
-
-  /* 모바일 상단바에서 활성화 바(underline) 제거 */
-  .vscode-sidebar .sidebar-icon.active::after,
-  .vscode-sidebar .sidebar-icon[aria-current="page"]::after,
-  .vscode-sidebar .sidebar-icon[aria-selected="true"]::after {
-    content: none !important;
-  }
-
-  /* 확장 패널 (모바일 오버레이) */
-  .sidebar-extension-panel {
-    position: absolute !important;
-    top: 50px !important;
-    left: 0 !important; right: 0 !important;
-    width: 100% !important;
-    height: calc(100vh - 50px) !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    border-right: none !important;
-    z-index: 1000 !important;
-  }
-  .sidebar-extension-panel.open {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  /* 기타 모바일 헤더 내부 */
-  .top-controls {
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-  }
-  .left-controls { display: none; }
-  .header-menu {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-  .main-menu-container { padding: 0 10px; }
-
-  .right-controls {
-    display: none !important; /* #right-controls 규칙을 따르도록 함 */
-  }
-  #right-controls.is-active {
-    display: flex !important;
-  }
-
-  .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
-  .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
-  .auth-btn.logout { margin-right: 0 !important; }
-}
-
-/* 670px 이하에서 메뉴 라인에 블러 필터 적용 */
-@media (max-width: 670px) {
-  .header-top {
-    position: relative;
-    overflow: hidden;
-    z-index: 3;
-  }
-  .header-top::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 100%;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    z-index: 1;
-  }
-}
-
-/* === 모바일 헤더 레이어/드롭다운 안전장치 === */
-@media (max-width: 768px) {
-  html.dark .header-top::before {
-    z-index: 0 !important;
-    pointer-events: none;
-  }
-  .language-dropdown { position: relative; z-index: calc(var(--z-head-inner) + 1); }
-  .lang-menu { position: absolute; z-index: calc(var(--z-head-inner) + 2); }
-}
-
-/* === 메뉴 열릴 때 최상위 고정 (transform/blur 간섭 방지) === */
-.language-dropdown.open .lang-menu,
-.language-dropdown[aria-expanded="true"] .lang-menu{
-  position: fixed;              /* 다크모드에서 transform/blur 스택 피하기 */
-  top: var(--header-h, 30px);
-  right: 12px;
-  left: auto;
-  z-index: calc(var(--z-header) + 10);
-}
-
-/* 패널 로고 영역: 가운데 정렬 */
-.sidebar-extension-panel .panel-logo{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 12px;
-}
-
-/* 로고 이미지: 너무 크지 않게 */
-.sidebar-extension-panel .panel-logo img{
-  display: block;
-  width: min(80%, 250px); /* 컨테이너의 60% 또는 180px 중 작은 값 */
-  height: auto;           /* 비율 유지 */
-}
-
 /* ====== 기존 서브메뉴 간격/정렬 ====== */
 .header-menu .submenu li a,
 .header-menu .submenu li span {
@@ -1065,7 +46,7 @@ html.dark .lang-option:hover { background-color: #333; }
 .sidebar-lang-theme .lang-btn {
   background: none;
   border: none;
-  color: var(--ink-1); /* Dark Mode */
+  color: var(--ink-1, #fff); /* Dark Mode */
   cursor: pointer;
   font-size: 14px;
   display: inline-flex;
@@ -1081,7 +62,7 @@ html.dark .lang-option:hover { background-color: #333; }
 }
 /* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
 .sidebar-lang-theme .lang-btn:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
 
@@ -1094,8 +75,8 @@ html.dark .lang-option:hover { background-color: #333; }
   margin: 6px 0 0 0;
   padding: 6px 0;
   min-width: 160px;
-  background: var(--panel-1); /* Dark Mode */
-  border: 1px solid var(--ink-3); /* Dark Mode */
+  background: var(--panel-1, #181a1f); /* Dark Mode */
+  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(0,0,0,0.35);
   display: none;
@@ -1115,14 +96,14 @@ html.dark .lang-option:hover { background-color: #333; }
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  color: var(--ink-1); /* Dark Mode */
+  color: var(--ink-1, #fff); /* Dark Mode */
   text-decoration: none;
   font-size: 14px;
 }
 
 .lang-menu a.lang-option:hover,
 .lang-menu a.lang-option:focus {
-  background: var(--panel-2); /* Dark Mode */
+  background: var(--panel-2, #22262e); /* Dark Mode */
   outline: none;
 }
 
@@ -1132,27 +113,27 @@ html.dark .lang-option:hover { background-color: #333; }
 
 /* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
 html:not(.dark) .lang-menu {
-  background: var(--panel-1); 
-  border: 1px solid var(--ink-3);
+  background: var(--panel-1, #fff); 
+  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
   box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
 }
 
 html:not(.dark) .lang-menu a.lang-option {
-  color: var(--ink-1); 
+  color: var(--ink-1, #181a1f); 
 }
 
 html:not(.dark) .lang-menu a.lang-option:hover,
 html:not(.dark) .lang-menu a.lang-option:focus {
-  background: var(--panel-2); 
+  background: var(--panel-2, #f0f0f0); 
 }
 
 
 /* ✅ 수정: 새 라이트/다크모드 토글 버튼 스타일 복원 */
 .theme-toggle-btn {
   /* 배경색 및 둥근 모양 복원 */
-  background: var(--vscode-sideBar-background); /* 사이드바 배경색과 동일 */
-  border: 1px solid var(--vscode-sideBar-border); /* 경계선 추가 */
-  color: var(--ink-1); /* Dark Mode 기본 색상: 흰색 */
+  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
+  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
+  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
   cursor: pointer;
   width: 38px;
   height: 38px;
@@ -1167,9 +148,9 @@ html:not(.dark) .lang-menu a.lang-option:focus {
 
 /* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
 html:not(.dark) .theme-toggle-btn {
-  background: var(--vscode-sideBar-background); /* 라이트 모드 사이드바 배경색 */
-  border: 1px solid var(--vscode-sideBar-border); /* 라이트 모드 경계선 */
-  color: var(--ink-1); /* 라이트 모드 아이콘 색상: 검은색 */
+  background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
+  border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
+  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
 }
 
 
@@ -1179,7 +160,7 @@ html:not(.dark) .theme-toggle-btn {
 }
 /* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
 .theme-toggle-btn:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
 }
 
@@ -1191,7 +172,7 @@ html:not(.dark) .theme-toggle-btn {
 
 /* 접근성: 키보드 이동 시 포커스 링 */
 .lang-menu a.lang-option:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent, #6cf);
   outline-offset: -2px;
 }
 
@@ -1216,7 +197,7 @@ html:not(.dark) .theme-toggle-btn {
 /* 2️⃣ 활성화된 메인 메뉴 라벨 (✅ 수정됨: 배경색 파란색, 글씨 흰색 유지) */
 .menu-label.active-label {
   /* 글씨색을 흰색으로 강제 유지 (기존에 #eeab67에서 변경) */
-  color: #fff !important; 
+  color: #fff; 
   /* 파란색 배경 효과 추가 (배경색 및 그림자) */
   background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%) !important;
   box-shadow: 0 0 12px rgba(0, 114, 255, 0.8);
@@ -1243,8 +224,8 @@ html:not(.dark) .theme-toggle-btn {
     z-index: 100; 
     height: 60px; 
     padding: 0;
-    border-top: 1px solid var(--vscode-sideBar-border); 
-    background: var(--vscode-sideBar-background); 
+    border-top: 1px solid var(--vscode-sideBar-border, #444); 
+    background: var(--vscode-sideBar-background, #333); 
   }
 
   /* ✅ 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
@@ -1317,8 +298,8 @@ html:not(.dark) .theme-toggle-btn {
     border-radius: 50%; 
     /* ❗ 수정: 오른쪽 마진을 8px로 다시 설정 */
     margin: 0 8px 0 0; 
-    background: var(--vscode-sideBar-background); 
-    border: 1px solid var(--vscode-sideBar-border);
+    background: var(--vscode-sideBar-background, #333); 
+    border: 1px solid var(--vscode-sideBar-border, #444);
   }
 
   /* 언어 버튼 자체 스타일 조정 */
@@ -1336,7 +317,7 @@ html:not(.dark) .theme-toggle-btn {
   /* 언어 버튼만 오른쪽 경계선 추가 */
   .sidebar-lang-theme .language-dropdown {
     /* ✅ 수정: 사이드바 배경색 대신 border 색상으로 변경하여 명확하게 분리 */
-    border-right: 1px solid var(--vscode-sideBar-border);
+    border-right: 1px solid var(--vscode-sideBar-border, #444);
   }
 }
 </style>
@@ -1446,10 +427,6 @@ html:not(.dark) .theme-toggle-btn {
           <% } %>
         <% } %>
 
-        <a href="#" class="sidebar-icon" data-tab="settings" title="설정" aria-selected="false" role="tab">
-          <i class="fas fa-cog" aria-hidden="true"></i>
-        </a>
-
         <div class="sidebar-lang-theme">
           <div class="language-dropdown">
             <button id="langToggleSidebar" class="lang-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenuSidebar">
@@ -1546,612 +523,8 @@ html:not(.dark) .theme-toggle-btn {
 </div>
 
 <script>
-// ===== header.js (patched, FINAL) + Theme/Lang Logic =====
-document.addEventListener('DOMContentLoaded', () => {
-  // ==== 요소 선택 ====
-  const icons = document.querySelectorAll('.sidebar-icon[data-tab]');
-  const extensionPanel = document.querySelector('.sidebar-extension-panel');
-  const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
-  const toggleIcon = toggleExtensionBtn?.querySelector('i');
-  const container = document.querySelector('.tab-container');
-  const loginBtn = document.getElementById('login');
-  const loginFormContainer = document.getElementById('login-form-container');
-  const sidePanel = document.querySelector('.side-panel.main-panel-only');
-  const settingsIcon = document.querySelector('a[data-tab="settings"]');
-  const rightControls = document.getElementById('right-controls');
-
-  let blinkRemoved = false;
-
-  // ==== 활성 탭 상태 저장 키 ====
-  const ACTIVE_KEY = 'sidebar.activeTab';
-
-  // ==== 홈/글쓰기/토글 제외한 탭 판단 ====
-  const isNonHomeTabIcon = (el) =>
-    el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
-
-  function clearNonHomeTabActives() {
-    icons.forEach(i => { if (isNonHomeTabIcon(i)) i.classList.remove('active'); });
-  }
-
-  // ==== 현재 보이는 탭 이름 추정 ====
-  function getActiveTabName() {
-    // 1) 래퍼에 저장된 최근 탭
-    const fromDOM = extensionPanel?.dataset.activeTab;
-    if (fromDOM) return fromDOM;
-
-    // 2) 컨테이너의 현재 콘텐츠 루트(.tab-content[data-tab])
-    const fromContainer = container?.querySelector('.tab-content[data-tab]')?.dataset?.tab;
-    if (fromContainer) return fromContainer;
-
-    // 3) 세션 저장값
-    const fromStore = sessionStorage.getItem(ACTIVE_KEY);
-    if (fromStore) return fromStore;
-
-    return null;
-  }
-
-  // ==== 아이콘 활성화 적용(+상태 저장) ====
-  function setActiveIcon(name) {
-    clearNonHomeTabActives();
-    if (!name) return;
-    const selectedIcon = document.querySelector(`.sidebar-icon[data-tab="${name}"]`);
-    selectedIcon?.classList.add('active');
-    if (extensionPanel) extensionPanel.dataset.activeTab = name;
-    sessionStorage.setItem(ACTIVE_KEY, name);
-  }
-
-  // ==== 패널 다시 열릴 때 활성 탭 복구 ====
-  function restoreActive() {
-    const name = getActiveTabName();
-    if (name) setActiveIcon(name);
-  }
-
-  // ✅ sidePanel 초기 처리 (처음부터 열려 있을 수 있으므로)
-  if (extensionPanel?.classList.contains('open')) {
-    sidePanel?.classList.add('open');
-    sidePanel?.style.setProperty('pointer-events', 'auto');
-    restoreActive(); // 처음부터 열려있다면 아이콘 동기화
-  } else {
-    sidePanel?.classList.remove('open');
-    sidePanel?.style.setProperty('pointer-events', 'none');
-  }
-
-  // ==== 언어 드롭다운 이벤트 바인딩 함수 (내부 탭 컨텐츠용) ====
-  function bindLangDropdown(context = document) {
-    const $ = (sel, root = context) => root.querySelector(sel);
-    // langToggle, langMenu는 전체 스크립트에서 포털 로직으로 처리됨.
-    // 여기서는 동적으로 삽입된 컨텐츠 내의 드롭다운만 처리하거나,
-    // 전체 로직을 재사용할 경우 이 함수는 빈 함수로 남겨둠.
-    // NOTE: 여기서는 전체 스크립트의 포털 로직이 DOMContentLoaded 이후에 실행되므로,
-    // 동적으로 삽입되는 #sidebar-table 내부의 언어 선택 기능을 위해
-    // 이 함수가 필요하다고 가정하고, 기존 header.js의 함수를 사용합니다.
-    const langToggle = $('#langToggleSidebar', context); // 동적으로 삽드를 위해 ID 사용
-    const langMenu = $('#langMenuSidebar', context);
-    if (langToggle && langMenu) {
-        // NOTE: 기존 header.js에 있던 단순 토글 로직은 포털 로직으로 대체되었음.
-        // 여기서는 bindLangDropdown이 loadPanelHTML에서 호출되므로,
-        // 이미 전역으로 바인딩된 포털 로직을 재사용하고, 추가적인 바인딩은 생략합니다.
-    }
-  }
-
-  // ==== 패널 전용 상태(URL 쿼리) 관리 ====
-  const PANEL_QS_CATEGORY = 'p_category'; // 패널 전용 쿼리 (경로는 유지)
-  const PANEL_QS_Q        = 'p_q';
-  const PANEL_QS_PAGE     = 'p_page';
-
-  function getPanelStateFromURL() {
-    const usp = new URLSearchParams(location.search);
-    const state = {
-      category: usp.get(PANEL_QS_CATEGORY),
-      q:        usp.get(PANEL_QS_Q),
-      page:     parseInt(usp.get(PANEL_QS_PAGE) || '1', 10)
-    };
-    if (!state.category && !state.q) return null;
-    if (!Number.isFinite(state.page) || state.page < 1) state.page = 1;
-    return state;
-  }
-
-  function pushPanelStateToURL(state, replace = false) {
-    const usp = new URLSearchParams(location.search);
-    // 기존 패널 키 제거
-    usp.delete(PANEL_QS_CATEGORY);
-    usp.delete(PANEL_QS_Q);
-    usp.delete(PANEL_QS_PAGE);
-
-    if (state.category) usp.set(PANEL_QS_CATEGORY, state.category);
-    if (state.q)        usp.set(PANEL_QS_Q, state.q);
-    if (state.page && state.page > 1) usp.set(PANEL_QS_PAGE, String(state.page));
-
-    const newUrl = location.pathname + (usp.toString() ? `?${usp.toString()}` : '') + location.hash;
-    const fn = replace ? 'replaceState' : 'pushState';
-    history[fn](state, '', newUrl);
-  }
-
-  // ==== 탭 열기 함수 ====
-  function openTab(selectedTab) {
-    if (!extensionPanel?.classList.contains('open')) {
-      extensionPanel?.classList.add('open');
-      document.body.classList.add('panel-open');
-      toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
-      sidePanel?.classList.add('open');
-      sidePanel?.style.setProperty('pointer-events', 'auto');
-    }
-
-    const original = document.querySelector(`.tab-content[data-tab="${selectedTab}"]`);
-    if (original && container) {
-      const clone = original.cloneNode(true);
-      clone.style.display = 'block';
-      container.replaceChildren(clone);
-
-      // 템플릿 id → 런타임 id로 교체
-      const tmpl = clone.querySelector('#sidebar-table-template');
-      if (tmpl) tmpl.id = 'sidebar-table';
-
-      bindLangDropdown(clone);
-      if (typeof bindPanelInnerEvents === 'function') bindPanelInnerEvents();
-    }
-
-    // 상태 & 아이콘 활성화 저장
-    setActiveIcon(selectedTab);
-  }
-  
-  // NOTE: loadPanelHTML에서 bindPanelInnerEvents를 호출할 때
-  // 이 함수가 정의되어 있지 않으면 오류가 발생하므로, 정의를 보장합니다.
-  function bindPanelInnerEvents() {
-    const root =
-      document.querySelector('.tab-container #sidebar-table') ||
-      document.querySelector('.tab-container #sidebar-table-template');
-    if (!root) return;
-
-    // 카테고리 탭
-    root.querySelectorAll('a[data-panel-link="category"]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        if (e.ctrlKey || e.metaKey || e.button === 1) return; // 새탭 허용
-        e.preventDefault();
-        const cat = a.getAttribute('data-category') || new URL(a.href, location.origin).searchParams.get('category') || 'all';
-        const state = { category: cat, q: null, page: 1 };
-        pushPanelStateToURL(state);
-        loadPanelHTML(state);
-      }, { once: true });
-    });
-
-    // 폴백: href만 있는 경우
-    root.querySelectorAll('.tabs a[href*="?category="]:not([data-panel-link="category"])').forEach(a => {
-      a.addEventListener('click', (e) => {
-        if (e.ctrlKey || e.metaKey || e.button === 1) return;
-        e.preventDefault();
-        const cat = new URL(a.href, location.origin).searchParams.get('category') || 'all';
-        const state = { category: cat, q: null, page: 1 };
-        pushPanelStateToURL(state);
-        loadPanelHTML(state);
-      }, { once: true });
-    });
-
-    // 검색 폼
-    root.querySelectorAll('form[data-panel-search="1"]').forEach(form => {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const fd = new FormData(form);
-        const q = (fd.get('q') || '').toString().trim();
-        if (!q) return;
-        const state = { q, category: null, page: 1 };
-        pushPanelStateToURL(state);
-        loadPanelHTML(state);
-      }, { once: true });
-    });
-
-    // 폴백: 일반 검색 폼
-    root.querySelectorAll('form.search-form:not([data-panel-search="1"])').forEach(form => {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const fd = new FormData(form);
-        const q = (fd.get('q') || '').toString().trim();
-        if (!q) return;
-        const state = { q, category: null, page: 1 };
-        pushPanelStateToURL(state);
-        loadPanelHTML(state);
-      }, { once: true });
-    });
-
-    // 페이지네이션
-    root.querySelectorAll('.pagination a.page-link').forEach(a => {
-      a.addEventListener('click', (e) => {
-        if (e.ctrlKey || e.metaKey || e.button === 1) return;
-        e.preventDefault();
-        const u = new URL(a.href, location.origin);
-        const page = parseInt(u.searchParams.get('page') || '1', 10);
-
-        const cur = getPanelStateFromURL() || {};
-        const state = {
-          q: cur.q || null,
-          category: cur.category || (cur.q ? null : 'all'),
-          page: Number.isFinite(page) && page > 1 ? page : 1
-        };
-        pushPanelStateToURL(state);
-        loadPanelHTML(state);
-      }, { once: true });
-    });
-  }
-
-  // ==== 패널 HTML 부분 렌더 로더 ====
-  async function loadPanelHTML(state) {
-    try {
-      // 검색/카테고리 전용 탭 시각화
-      openTab('search');
-
-      let sidebarTable =
-        document.querySelector('.tab-container #sidebar-table') ||
-        document.querySelector('.tab-container #sidebar-table-template');
-      if (!sidebarTable) return;
-      if (sidebarTable.id === 'sidebar-table-template') {
-        sidebarTable.id = 'sidebar-table';
-      }
-
-      const lang = sidebarTable.dataset.lang || location.pathname.split('/').filter(Boolean)[0] || 'ko';
-      const base = state.q
-        ? `/${lang}/search?panel=1&q=${encodeURIComponent(state.q)}`
-        : `/${lang}/?panel=1&category=${encodeURIComponent(state.category || 'all')}`;
-      const url = state.page && state.page > 1 ? `${base}&page=${state.page}` : base;
-
-      // 패널 열림 보장
-      if (!extensionPanel?.classList.contains('open')) {
-        extensionPanel?.classList.add('open');
-        document.body.classList.add('panel-open');
-        sidePanel?.classList.add('open');
-        sidePanel?.style.setProperty('pointer-events', 'auto');
-      }
-
-      const res = await fetch(url, { headers: { 'X-Requested-With': 'fetch' } });
-      if (!res.ok) throw new Error(`panel fetch failed: ${res.status}`);
-      const html = await res.text();
-      sidebarTable.innerHTML = html;
-
-      // ✅ 새로 삽입된 script 태그 수동 실행
-      sidebarTable.querySelectorAll("script").forEach((oldScript) => {
-        const newScript = document.createElement("script");
-        if (oldScript.src) {
-          newScript.src = oldScript.src;
-        } else {
-          newScript.textContent = oldScript.textContent;
-        }
-        document.body.appendChild(newScript);
-        oldScript.remove();
-      });
-
-      // 새 DOM 이벤트 바인딩
-      bindPanelInnerEvents();
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-
-  // ==== 탭 클릭 ====
-  icons.forEach(icon => {
-    icon.addEventListener('click', (e) => {
-      const selectedTab = icon.dataset.tab;
-      if (selectedTab === 'write' || selectedTab === 'home' || selectedTab === 'settings') {
-        return;
-      }
-      if (icon.classList.contains('toggle-extension')) return;
-      e.preventDefault();
-      openTab(selectedTab);
-    });
-  });
-
-  // ==== 패널 토글 ====
-  toggleExtensionBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const isNowOpen = extensionPanel?.classList.toggle('open');
-    toggleIcon?.classList.toggle('fa-chevron-left');
-    toggleIcon?.classList.toggle('fa-chevron-right');
-
-    if (!blinkRemoved) {
-      toggleExtensionBtn.classList.remove('blink-highlight');
-      blinkRemoved = true;
-    }
-
-    if (isNowOpen) {
-      document.body.classList.add('panel-open');
-      sidePanel?.classList.add('open');
-      sidePanel?.style.setProperty('pointer-events', 'auto');
-      // 👉 다시 열릴 때 마지막 탭 아이콘 복구
-      restoreActive();
-    } else {
-      document.body.classList.remove('panel-open');
-      sidePanel?.classList.remove('open');
-      sidePanel?.style.setProperty('pointer-events', 'none');
-      // 패널 닫힐 때 아이콘은 지우되, 상태(extensionPanel.dataset.activeTab)는 보존
-      clearNonHomeTabActives();
-    }
-  });
-
-  // ==== 컨테이너 변경 감지 → 아이콘 동기화 ====
-  if (container) {
-    const mo = new MutationObserver(() => {
-      if (extensionPanel?.classList.contains('open')) {
-        const name = container.querySelector('.tab-content[data-tab]')?.dataset?.tab;
-        if (name) setActiveIcon(name);
-      }
-    });
-    mo.observe(container, { childList: true, subtree: false });
-  }
-
-  // ==== URL 기반 탭 초기 열기 ====
-  const path = location.pathname;
-  const searchParams = new URLSearchParams(location.search);
-  const isSearch = path.includes('/search') || searchParams.has('q');
-  const isFiltered = searchParams.has('category');
-
-  // 검색/필터일 때 자동 오픈
-  if (isSearch || isFiltered) {
-    requestAnimationFrame(() => setTimeout(() => openTab('search'), 10));
-  }
-  // 글쓰기 컨텍스트일 때(전역 isWrite가 true라면) 검색 탭 열기
-  if (typeof isWrite !== 'undefined' && isWrite) {
-    requestAnimationFrame(() => setTimeout(() => openTab('search'), 10));
-  }
-
-  // 패널 전용 상태 있으면 부분 렌더
-  const initialState = getPanelStateFromURL();
-  if (initialState) {
-    pushPanelStateToURL(initialState, true);
-    loadPanelHTML(initialState);
-  } else {
-    bindPanelInnerEvents(); // 서버 렌더 기본 테이블에 바인딩
-  }
-
-  // ==== 로그인 버튼 ====
-  if (loginBtn && loginFormContainer) {
-    loginBtn.addEventListener('click', () => {
-      loginFormContainer.classList.toggle('hidden');
-    });
-  }
-
-  // ==== 언어 드롭다운 초기 바인딩 (이 부분은 아래의 독립된 포털 스크립트로 대체됨) ====
-  // bindLangDropdown(document);
-
-  // ==== 설정 아이콘 & right-controls ====
-  function syncSettingsVisual() {
-    const open = rightControls?.classList.contains('is-active');
-    settingsIcon?.classList.toggle('is-active', open); // 색상은 이 클래스로만
-    settingsIcon?.classList.remove('active');          // 탭용 active 잔존 제거
-    settingsIcon?.setAttribute('aria-pressed', open ? 'true' : 'false');
-    if (!open) settingsIcon?.blur();
-  }
-
-  // 데스크톱 초기값: 켜두기(기존 의도 유지)
-  if (settingsIcon && rightControls && window.innerWidth >= 1024) {
-    rightControls.classList.add('is-active');
-    syncSettingsVisual();
-  }
-
-  settingsIcon?.addEventListener('click', (e) => {
-    e.preventDefault();
-    rightControls?.classList.toggle('is-active');
-    syncSettingsVisual();
-  });
-
-  // 외부 스크립트/리사이즈 등으로 클래스 변경 시 동기화
-  if (settingsIcon && rightControls) {
-    const mo = new MutationObserver(() => syncSettingsVisual());
-    mo.observe(rightControls, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  // ==== 히스토리 뒤/앞으로 ====
-  window.addEventListener('popstate', () => {
-    const st = getPanelStateFromURL();
-    if (st) {
-      loadPanelHTML(st);
-    } else {
-      bindPanelInnerEvents();
-      // 패널 상태가 사라졌다면, 현재 보이는 탭 기준으로 아이콘 동기화
-      restoreActive();
-    }
-  });
-});
-
-
-// ===== lang-menu 포털: 중복 초기화/헤더 교체/다크 전환까지 안정화 (기존 header.js 내용) =====
-(function () {
-  if (window.__langPortalInit) return; // 중복 방지
-  window.__langPortalInit = true;
-
-  // NOTE: EJS 파일에 이미 #langToggleSidebar, #langMenuSidebar가 정의되어 있으므로,
-  // 이 스크립트가 해당 요소를 찾도록 수정
-  let dd = document.getElementById('langToggleSidebar')?.closest('.language-dropdown');
-  let menu = document.getElementById('langMenuSidebar');
-  let placeholder = null, inBody = false;
-
-  const qs = (s, r = document) => r.querySelector(s);
-  
-  // 요소 재확인 및 바인딩 준비
-  function find() {
-    dd = document.getElementById('langToggleSidebar')?.closest('.language-dropdown');
-    menu = document.getElementById('langMenuSidebar');
-    return !!(dd && menu);
-  }
-
-  // 위치 계산(두 번의 rAF로 레이아웃 안정 후 측정)
-  const raf2 = cb => requestAnimationFrame(() => requestAnimationFrame(cb));
-  function place() {
-    if (!dd || !menu) return;
-    const r = dd.getBoundingClientRect();
-    // 메뉴가 body로 나간 뒤 처음엔 width가 0일 수 있어 숨긴 채 측정
-    menu.style.visibility = 'hidden';
-    menu.style.display = 'block';
-    const mw = menu.offsetWidth || 220; // 최소 가정
-    const vw = document.documentElement.clientWidth;
-
-    // 모바일 하단바에서는 오른쪽 정렬을 유지하되, 버튼 위에 표시 (위치 계산 수정)
-    let isMobileBar = window.innerWidth <= 768 && dd.closest('.vscode-sidebar');
-    let left;
-    let top;
-
-    if (isMobileBar) {
-        // 모바일 하단 탭바: 버튼 위에 표시
-        top = Math.round(r.top - menu.offsetHeight - 8); 
-        left = Math.round(r.right - mw); // 오른쪽 정렬
-        if (left < 8) left = Math.min(Math.round(r.left), vw - mw - 8); // 화면 밖 방지
-    } else {
-        // 데스크탑: 버튼 아래에 표시 (기존 로직)
-        top = Math.round(r.bottom) + 'px';
-        left = Math.round(r.right - mw); // 오른쪽 정렬
-        if (left < 8) left = Math.min(Math.round(r.left), vw - mw - 8); // 화면 밖 방지
-    }
-
-
-    menu.style.position = 'fixed';
-    menu.style.top = Math.round(top) + 'px';
-    menu.style.left = left + 'px';
-    menu.style.zIndex = '2147483000';       // 최상단
-    menu.style.pointerEvents = 'auto';
-    menu.style.visibility = 'visible';
-  }
-
-  function open() {
-    if (inBody || !menu || !dd) return;
-    
-    // EJS에 있던 langMenu 포털 로직은 이 함수로 대체 (중복 방지)
-    const langBtn = dd.querySelector('#langToggleSidebar');
-    langBtn.setAttribute('aria-expanded','true');
-    menu.setAttribute('aria-hidden','false');
-
-
-    placeholder = document.createComment('lang-menu-placeholder');
-    dd.replaceChild(placeholder, menu);
-    document.body.appendChild(menu);
-    inBody = true;
-    raf2(place);
-    window.addEventListener('scroll', place, { passive: true });
-    window.addEventListener('resize', place);
-  }
-
-  function close() {
-    if (!inBody || !menu || !placeholder || !dd) return;
-
-    const langBtn = dd.querySelector('#langToggleSidebar');
-    langBtn.setAttribute('aria-expanded','false');
-    menu.setAttribute('aria-hidden','true');
-    
-    placeholder.parentNode && placeholder.parentNode.replaceChild(menu, placeholder);
-    inBody = false;
-    menu.removeAttribute('style'); // 원복
-    window.removeEventListener('scroll', place);
-    window.removeEventListener('resize', place);
-  }
-
-  function toggle(toOpen) { (toOpen ? open : close)(); }
-
-  // 트리거(캡쳐 단계로 한 번만 받기)
-  function onTrigger(e) {
-    if (!dd) return;
-    // 메뉴 내부 클릭은 무시
-    if (menu && menu.contains(e.target)) return;
-    if (!dd.contains(e.target)) return;
-
-    const langBtn = dd.querySelector('#langToggleSidebar');
-    const expanded = langBtn.getAttribute('aria-expanded') === 'true';
-    toggle(!expanded);
-  }
-
-  function outside(e) {
-    if (!inBody) return;
-    if (menu.contains(e.target) || dd.contains(e.target)) return;
-    const langBtn = dd.querySelector('#langToggleSidebar');
-    langBtn.setAttribute('aria-expanded', 'false');
-    close();
-  }
-
-  // 바인딩/재바인딩
-  function bind() {
-    document.removeEventListener('click', onTrigger, true);
-    document.removeEventListener('mousedown', outside, true);
-    if (!find()) return;
-    document.addEventListener('click', onTrigger, true);
-    document.addEventListener('mousedown', outside, true);
-  }
-
-  bind();
-
-  // 헤더 교체/다크 전환 감지 → 재바인딩/재배치
-  const mo = new MutationObserver((muts) => {
-    let needRebind = false, needPlace = false;
-    for (const m of muts) {
-      if (m.type === 'childList') {
-        // 헤더가 교체되면 dd/menu 참조가 끊김 → 리바인딩
-        if (!document.contains(dd) || !document.contains(menu)) {
-          close();
-          needRebind = true;
-          break;
-        }
-      } else if (m.type === 'attributes' &&
-                 m.target === document.documentElement &&
-                 m.attributeName === 'class') {
-        // html.dark 토글 시 위치 재계산
-        if (inBody) needPlace = true;
-      }
-    }
-    if (needRebind) bind();
-    if (needPlace) raf2(place);
-  });
-  mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-  // body.childList만 관찰 (헤더가 body에 종속되어 있다고 가정)
-  mo.observe(document.body, { childList: true, subtree: false });
-})();
-
-// ==== 패널 백드롭 생성 (기존 header.js 내용) ====
-let backdrop = document.querySelector('.panel-backdrop');
-if (!backdrop) {
-  backdrop = document.createElement('div');
-  backdrop.className = 'panel-backdrop';
-  document.body.appendChild(backdrop);
-
-  // 딤 영역을 클릭하면 패널 닫기
-  backdrop.addEventListener('click', () => {
-    const extensionPanel = document.querySelector('.sidebar-extension-panel');
-    const toggleExtensionBtn = document.querySelector('.sidebar-icon.toggle-extension');
-    if (extensionPanel?.classList.contains('open')) {
-      toggleExtensionBtn?.click(); // 기존 토글 로직 재사용
-    }
-  });
-}
-
-// ==== 리사이저 다시 활성화 (기존 header.js 내용, #mini-lecture 요소가 EJS에 없으므로 주석 처리) ====
-/*
-const panel = document.querySelector('#mini-lecture');
-const resizer = panel?.querySelector('.panel-resizer');
-
-if (panel && resizer) {
-  let isResizing = false;
-  let startY, startHeight;
-
-  resizer.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    startY = e.clientY;
-    startHeight = parseInt(window.getComputedStyle(panel).height, 10);
-    document.body.style.cursor = 'ns-resize';
-    document.body.style.userSelect = 'none';
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isResizing) return;
-    const dy = e.clientY - startY;
-    const newHeight = startHeight + dy;
-    panel.style.height = `${Math.max(120, newHeight)}px`;
-  });
-
-  window.addEventListener('mouseup', () => {
-    if (isResizing) {
-      isResizing = false;
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-    }
-  });
-}
-*/
-
-// ===== 기존 EJS 내 서브메뉴 활성화 동기 로직 (재정리) =====
+/* ====== (스크립트 시작) ====== */
+/* 🚀 수정됨: 서브메뉴 활성화 동기 - AJAX 환경 지원 및 클릭 시 즉시 활성화 */
 (function(){
   const stripPath = (p) => (p || location.pathname).replace(/[#?].*$/, '').replace(/\/$/, '');
   
@@ -2200,8 +573,10 @@ if (panel && resizer) {
     });
   });
 })();
+</script>
 
-// ===== 기존 EJS 내 홈 아이콘 active 동기 로직 (재정리) =====
+<script>
+/* ====== 홈 아이콘 active 동기 ====== */
 (() => {
   const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
   const stripLang = (p) => {
@@ -2242,13 +617,11 @@ if (panel && resizer) {
   });
   window.addEventListener('panel:navigated', sync);
 })();
+</script>
 
-
-// ===== 하드웨어 힌트 로직 (EJS에 해당 요소가 없으나 기능 유지) =====
-/*
+<script>
+/* ====== 하드웨어 힌트(기존 코드 유지) ====== */
 (function(){
-  // NOTE: EJS에 'hardware-hint'와 'hardware-label' 요소가 없어 이 코드는 현재 실행되지 않습니다.
-  // 기능 보존을 위해 코드는 유지하되, 요소가 없으면 return 됩니다.
   const bubble = document.getElementById('hardware-hint');
   const label  = document.getElementById('hardware-label');
   if (!bubble || !label) return;
@@ -2299,23 +672,15 @@ if (panel && resizer) {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isShown()) hide(); }, true);
   if (localStorage.getItem(KEY) !== '1') show();
 })();
-*/
+</script>
 
-
-// ===== 패널로딩(AJAX) 로직 (재정리) =====
+<script>
+/* ====== 패널로딩(AJAX) 기존 코드 유지 ====== */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-panel-link]').forEach(link => {
     link.addEventListener('click', async (e) => {
       e.preventDefault();
       const url = link.getAttribute('href');
-      
-      // NOTE: EJS HTML에 #mini-lecture 요소가 없으므로,
-      // AJAX 로직이 패널 컨텐츠 로딩 로직(loadPanelHTML)과 겹치거나
-      // 충돌이 발생할 가능성이 있습니다.
-      // 여기서는 기존 AJAX 로직을 유지하되, 패널 로딩 부분은 비활성화하고,
-      // 새로운 패널 기능이 loadPanelHTML을 통해 처리되도록 유도합니다.
-      
-      /*
       try {
         const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
         const html = await res.text();
@@ -2329,13 +694,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         console.error('패널 로드 오류:', err);
       }
-      */
     });
   });
 });
+</script>
 
-
-// ===== 언어 드롭다운/테마 토글 로직 (재정리/유지) =====
+<script>
+/* ======================================================
+   ⚙️ 언어 드롭다운(포털) + ✅ 새 테마 토글(.dark 클래스 방식) 스크립트
+====================================================== */
 (function(){
   const langBtn = document.getElementById('langToggleSidebar');
   const langMenu = document.getElementById('langMenuSidebar');
@@ -2352,10 +719,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem(THEME_KEY, theme);
     // 아이콘 업데이트 (다크 모드면 해(sun), 라이트 모드면 달(moon))
-    if (themeToggleBtn) {
-      themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-      themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
-    }
+    themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
   };
 
   const initTheme = () => {
@@ -2396,21 +761,27 @@ document.addEventListener('DOMContentLoaded', () => {
     langBtn.setAttribute('aria-expanded','true');
     langMenu.setAttribute('aria-hidden','false');
 
-    // NOTE: 포털 로직은 위쪽 'lang-menu 포털' 스크립트에서 DOMContentLoaded 이후 실행되므로,
-    // 이 함수 내에서는 포털 이동 및 좌표 계산을 생략하고, 'lang-menu 포털' 스크립트가
-    // 포털 로직을 실행했다고 가정합니다. (실제로는 중복 실행 방지를 위해 합쳐야 함)
-    // 여기서는 `header.js`와 EJS `<script>`가 분리되어 실행되는 환경을 가정하지 않고
-    // 최종적으로 하나의 파일에 통합된 상태로 가정하므로, 위쪽 포털 스크립트가 실행되었다고 판단하고
-    // 이 함수는 간단하게 aria 속성만 처리합니다.
-    
-    // 포털 스크립트가 메뉴를 띄우는 역할을 하므로, 여기서는 포커스만 이동합니다.
-    setTimeout(() => {
-      // 첫 포커스(현재 언어)
-      const current = langMenu.querySelector('.lang-option.active-lang') || langMenu.querySelector('.lang-option');
-      current?.setAttribute('tabindex','0');
-      current?.focus();
+    // body로 포털 이동 + 고정 좌표 계산
+    const r = langBtn.getBoundingClientRect();
+    const top = Math.round(r.bottom + 6); // 버튼 바로 아래
+    const left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 200))); // 화면 밖 방지
+    const minW = Math.max(r.width, 160);
 
-      // 외부 클릭/스크롤/리사이즈/ESC로 닫기
+    langMenu.classList.add('lang-menu--portal');
+    document.body.appendChild(langMenu);
+    Object.assign(langMenu.style, {
+      top: top + 'px',
+      left: left + 'px',
+      minWidth: minW + 'px'
+    });
+
+    // 첫 포커스(현재 언어)
+    const current = langMenu.querySelector('.lang-option.active-lang') || langMenu.querySelector('.lang-option');
+    current?.setAttribute('tabindex','0');
+    current?.focus();
+
+    // 외부 클릭/스크롤/리사이즈/ESC로 닫기
+    setTimeout(() => {
       document.addEventListener('mousedown', onDocDown, { capture:true });
       window.addEventListener('scroll', closeMenu, { passive:true });
       window.addEventListener('resize', closeMenu);
@@ -2427,11 +798,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 탭 순서 복구
     langMenu.querySelectorAll('.lang-option').forEach(a => a.setAttribute('tabindex','-1'));
 
+    // 메뉴를 다시 원래 자리(토글 버튼 바로 뒤 형제)로 되돌림
+    const holder = langBtn.parentElement;
+    holder && holder.appendChild(langMenu);
+    langMenu.classList.remove('lang-menu--portal');
+    langMenu.removeAttribute('style');
+
     document.removeEventListener('mousedown', onDocDown, { capture:true });
     window.removeEventListener('scroll', closeMenu);
     document.removeEventListener('keydown', onKey);
-    
-    // NOTE: 포털 스크립트가 메뉴를 DOM에서 제거/원복하므로, 여기서는 포커스만 반환합니다.
 
     // 포커스 반환
     lastFocus?.focus?.();
@@ -2477,3 +852,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 })();
 </script>
+
+<script src="/assets/js/header.js"></script>
+<script src="/assets/js/global.js"></script>
