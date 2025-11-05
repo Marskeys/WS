@@ -819,6 +819,7 @@ html.dark .lang-option:hover { background-color: #333; }
 
   /* VSCode 사이드바 (가로형) */
   .vscode-sidebar {
+    /* ❗ 이 블록은 '최종 수정' 섹션에 의해 대부분 덮어쓰여집니다. */
     width: 100% !important;
     height: 50px !important;
     flex-direction: row;
@@ -831,6 +832,7 @@ html.dark .lang-option:hover { background-color: #333; }
 
   /* 아이콘: 1칸씩 균등 분배 */
   .vscode-sidebar .sidebar-icon {
+    /* ❗ 이 블록은 '최종 수정' 섹션에 의해 덮어쓰여집니다. */
     width: auto !important;
     flex: 1 1 0 !important;
     min-width: 0 !important;
@@ -980,8 +982,7 @@ html.dark .lang-option:hover { background-color: #333; }
   display: flex;
   flex-direction: column; /* 데스크톱 기본: 세로 배열 */
   align-items: center;
-  /* ✅ 수정: 다크모드/언어버튼 사이의 여백을 10px에서 5px로 줄임 */
-  gap: 5px; 
+  gap: 5px; /* 다크모드/언어버튼 사이의 여백 */
 }
 
 .sidebar-lang-theme .lang-btn {
@@ -1001,7 +1002,7 @@ html.dark .lang-option:hover { background-color: #333; }
 .sidebar-lang-theme .lang-btn:focus {
   outline: none;
 }
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장합니다. */
 .sidebar-lang-theme .lang-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
@@ -1099,7 +1100,7 @@ html:not(.dark) .theme-toggle-btn {
 .theme-toggle-btn:focus {
   outline: none;
 }
-/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장합니다. */
 .theme-toggle-btn:focus-visible {
   outline: 2px solid var(--accent, #6cf);
   outline-offset: 2px;
@@ -1182,10 +1183,10 @@ html:not(.dark) .theme-toggle-btn {
   /* 3. ✅ 모든 탭 버튼에 고정 너비 적용 (스크롤을 유도) */
   .vscode-sidebar .toggle-extension,
   .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
+    /* 화면 크기에 맞춰 커지지 않도록 합니다. */
     flex-grow: 0; 
-    flex-shrink: 0; /* 축소 방지 유지 */
-    width: 70px; /* ✅ 각 탭 버튼의 고정 너비 설정 */
+    flex-shrink: 0; 
+    width: 70px; /* 각 탭 버튼의 고정 너비 설정 */
     height: 100%;
     display: flex !important; 
     justify-content: center;
@@ -1194,31 +1195,33 @@ html:not(.dark) .theme-toggle-btn {
     border-radius: 0;
   }
 
-  /* 4. ✅ 언어/테마 영역에도 고정 너비 적용 (스크롤을 유도) */
+  /* 4. ✅ 언어/테마 영역 스타일 통합 및 조정 */
   .sidebar-lang-theme {
     flex-direction: row;
-    /* 👇 화면 크기에 맞춰 커지지 않도록 합니다. */
     flex-grow: 0; 
     flex-shrink: 0; 
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 110px; /* 언어/테마 영역의 고정 너비 설정 */
+    /* 언어/테마 영역의 고정 너비 설정 (60px + 38px + 5px + 8px = 111px, 110px으로 유지) */
+    width: 110px; 
     height: 100%;
-    margin: 0; 
+    margin: 0 0 0 auto; /* 오른쪽으로 밀기 */
     padding: 0;
     display: flex; 
     border-top: none;
     align-items: center; 
     justify-content: center; 
-    /* 모바일에서도 간격 줄임 */
     gap: 5px; 
+    /* ❗ 오른쪽 정렬을 위해 border-left를 추가합니다. */
+    border-left: 1px solid var(--vscode-sideBar-border, #444); 
   }
 
   /* 언어 드롭다운의 너비 조정 */
   .sidebar-lang-theme .language-dropdown {
+    /* 더 이상 border-right가 필요 없습니다. border-left는 .sidebar-lang-theme로 이동 */
+    border-right: none; /* 중복 스타일 제거 (뒤의 것이 적용되도록) */
+    
     flex-grow: 1; /* 이 영역 내에서는 유연하게 */
     flex-basis: 0;
-    /* 언어 드롭다운 패딩 줄임으로 인한 너비 축소 */
-    width: 60px; 
+    width: 60px; /* 언어 드롭다운의 고정 너비 설정 */
     height: 100%; 
     display: flex;
     justify-content: center;
@@ -1232,7 +1235,6 @@ html:not(.dark) .theme-toggle-btn {
     width: 38px; 
     height: 38px;
     border-radius: 50%; 
-    /* ❗ 수정: 오른쪽 마진을 8px로 다시 설정 */
     margin: 0 8px 0 0; 
     background: var(--vscode-sideBar-background, #333); 
     border: 1px solid var(--vscode-sideBar-border, #444);
@@ -1248,11 +1250,5 @@ html:not(.dark) .theme-toggle-btn {
     padding: 0; 
     background: none;
     border: none;
-  }
-
-  /* 언어 버튼만 오른쪽 경계선 추가 */
-  .sidebar-lang-theme .language-dropdown {
-    /* ✅ 수정: 사이드바 배경색 대신 border 색상으로 변경하여 명확하게 분리 */
-    border-right: 1px solid var(--vscode-sideBar-border, #444);
   }
 }
