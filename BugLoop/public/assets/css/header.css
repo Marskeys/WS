@@ -653,7 +653,7 @@ background: linear-gradient(90deg, #6dca03 0%, #4CAF50 100%) !important;
 .menu-label.active,
 .menu-label[aria-current="true"],
 .menu-label[aria-expanded="true"] {
-  color: var(--highlight-color, #00adb5) !important;
+  color: var(--highlight-color, #b50000) !important;
   background-color: #111;
 }
 .menu-label:focus-visible {
@@ -1137,7 +1137,7 @@ html:not(.dark) .theme-toggle-btn {
 
 /* 2️⃣ 활성화된 메인 메뉴 라벨 */
 .menu-label.active-label {
-  color: #e9d25e;
+  color: #ffffff;
   text-shadow: 0 0 8px rgba(0, 114, 255, 0.6);
   font-weight: 700;
 }
