@@ -14,14 +14,12 @@ html.dark{
   --z-head-inner: 10;
 }
 
+---
+
 /* ======================
    🔹 공통 스타일 & 유틸리티
 ====================== */
 .hidden { display: none; }
-
-/* 탭 컨텐츠 전환 */
-.tab-content { display: none; }
-.tab-content[style*="display: block"] { display: block !important; }
 
 /* 오른쪽 컨트롤 */
 #right-controls {
@@ -32,10 +30,15 @@ html.dark{
 }
 #right-controls.is-active { display: flex !important; }
 
+/* 탭 컨텐츠 전환 */
+.tab-content { display: none; }
+.tab-content[style*="display: block"] { display: block !important; }
 
-/* ======================
+---
+
+/* ==================================
    🔹 헤더 & 메뉴 레이아웃
-====================== */
+================================== */
 .header-top {
   width: 100%;
   height: 30px;
@@ -64,24 +67,15 @@ html.dark{
   flex-shrink: 0;
   padding-right: 15px;
 }
-.right-controls {
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  z-index: 1000;
-  flex-basis: 100px;
-  padding-left: 2px;
-  flex-shrink: 0;
-  margin-left: auto;
-  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
-}
 
 .header-menu {
   flex-grow: 1;
   min-width: 0;
   flex-shrink: 1;
 }
-.main-menu-container {
+
+/* YouTube 로고 수직 중앙 정렬 */
+.header-menu .main-menu-container {
   list-style: none;
   display: flex;
   margin: 0;
@@ -93,7 +87,7 @@ html.dark{
   -ms-overflow-style: none;
   height: 100%;
   gap: 15px; /* main-menu-container에도 gap 적용 */
-  align-items: center; /* YouTube 로고 수직 중앙 정렬 */
+  align-items: center; 
 }
 .main-menu-container::-webkit-scrollbar { display: none; }
 
@@ -103,6 +97,7 @@ html.dark{
   gap: 10px;
   align-items: center;
 }
+
 .menu-label {
   position: sticky;
   left: 0;
@@ -123,17 +118,18 @@ html.dark{
   color: var(--highlight-color, #00adb5) !important;
   background-color: #111;
 }
-.menu-label:focus-visible {
-  outline: 2px solid var(--highlight-color, #00adb5);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
 /* 2️⃣ 활성화된 메인 메뉴 라벨 */
 .menu-label.active-label {
   color: #e9d25e;
   text-shadow: 0 0 8px rgba(0, 114, 255, 0.6);
   font-weight: 700;
 }
+.menu-label:focus-visible {
+  outline: 2px solid var(--highlight-color, #00adb5);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 .special-label .menu-label {
   background: transparent !important;
   color: #fff;
@@ -147,6 +143,7 @@ html.dark{
   box-shadow: 0 0 12px rgba(0, 114, 255, 0.4);
 }
 
+
 .submenu {
   display: flex;
   list-style: none;
@@ -155,6 +152,7 @@ html.dark{
   gap: 10px;
   white-space: nowrap;
 }
+/* ====== 기존 서브메뉴 간격/정렬 ====== */
 .submenu li a,
 .header-menu .submenu li span {
   text-decoration: none;
@@ -197,219 +195,19 @@ html.dark{
   border-radius: 2px;
 }
 
-
-/* ======================
-   🔹 라이트 모드 토글
-====================== */
-.light-switch {
+.right-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 20px;
-  cursor: pointer;
-  border-top: none;
-  margin-top: 0;
-  margin-right: 5px;
-  padding: 0;
+  gap: 1px;
+  z-index: 1000;
+  flex-basis: 100px;
+  padding-left: 2px;
   flex-shrink: 0;
-}
-.light-switch .switch-label {
-  width: 36px;
-  height: 20px;
-  background-color: #888;
-  border-radius: 999px;
-  position: relative;
-  transition: background-color 0.3s ease;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-}
-.light-switch .switch-handle {
-  position: absolute;
-  top: 2.5px;
-  left: 2px;
-  width: 15px;
-  height: 15px;
-  background: linear-gradient(to bottom, #fff, #ccc);
-  border-radius: 50%;
-  transition: left 0.3s ease, background 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-.light-switch[aria-checked="true"] .switch-handle {
-  left: calc(100% - 2px - 15px);
-  background: linear-gradient(to bottom, #eee, #bbb);
-}
-.light-switch[aria-checked="true"] .switch-label {
-  background-color: #50504b;
+  margin-left: auto;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* ✅ 새 라이트/다크모드 토글 버튼 스타일 */
-.theme-toggle-btn {
-  /* 배경색 및 둥근 모양 복원 */
-  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
-  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
-  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
-  cursor: pointer;
-  width: 38px;
-  height: 38px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%; /* 둥근 모양 복원 */
-  transition: all 0.2s ease;
-  font-size: 18px;
-  line-height: 1;
-}
-/* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
-html:not(.dark) .theme-toggle-btn {
-  background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
-  border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
-  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
-}
-/* 🚫 테마 토글 버튼 포커스(클릭/탭) 테두리 제거 */
-.theme-toggle-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지 */
-.theme-toggle-btn:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: 2px;
-}
-
-
-/* ======================
-   🔹 언어 선택 드롭다운
-====================== */
-.language-dropdown {
-  position: relative;
-  display: inline-block;
-  flex-shrink: 0;
-  /* 드롭다운 메뉴를 위한 새로운 스태킹 컨텍스트 생성 */
-  z-index: 99991; /* vscode-sidebar보다 높게 설정 */
-}
-.lang-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 5px 10px;
-}
-.lang-btn .fi {
-  width: 1.5rem;
-  height: 1.2rem;
-}
-
-/* 언어 메뉴 (기본: 다크 모드) */
-.lang-menu {
-  display: none;
-  position: absolute;
-  top: calc(90% + 5px);
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 100000;
-  max-width: 120px;
-  padding: 5px 0;
-  list-style: none;
-
-  /* 새 스타일 (다크 모드 기준) */
-  inset: auto auto auto auto;
-  margin: 6px 0 0 0;
-  min-width: 160px;
-  background: var(--panel-1, #181a1f); /* Dark Mode */
-  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
-  border-radius: 10px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
-  z-index: 2147483646;
-}
-.lang-menu.show { display: block; }
-.lang-menu[aria-hidden="false"] { display: block; }
-/* 모바일↓ */
-@media (max-width:670px){
-  .lang-menu{ font-size:13px; }
-}
-/* === 메뉴 열릴 때 최상위 고정 (transform/blur 간섭 방지) === */
-.language-dropdown.open .lang-menu,
-.language-dropdown[aria-expanded="true"] .lang-menu{
-  position: fixed;              /* 다크모드에서 transform/blur 스택 피하기 */
-  top: var(--header-h, 30px);
-  right: 12px;
-  left: auto;
-  z-index: calc(var(--z-header) + 10);
-}
-/* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
-.lang-menu.lang-menu--portal {
-  position: fixed;
-  z-index: 2147483646;
-}
-
-.lang-menu li { white-space: nowrap; }
-
-.lang-option {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 8px 12px;
-  color: #333;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.lang-option:hover { background-color: #f5f5f5; }
-.lang-option.active-lang {
-  font-weight: bold;
-  color: var(--highlight-color, #00adb5);
-}
-
-/* 새 스타일 적용 */
-.lang-menu a.lang-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  color: var(--ink-1, #fff); /* Dark Mode */
-  text-decoration: none;
-  font-size: 14px;
-}
-.lang-menu a.lang-option:hover,
-.lang-menu a.lang-option:focus {
-  background: var(--panel-2, #22262e); /* Dark Mode */
-  outline: none;
-}
-.lang-menu a.lang-option.active-lang {
-  font-weight: 700;
-}
-/* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
-html:not(.dark) .lang-menu {
-  background: var(--panel-1, #fff); 
-  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
-}
-html:not(.dark) .lang-menu a.lang-option {
-  color: var(--ink-1, #181a1f); 
-}
-html:not(.dark) .lang-menu a.lang-option:hover,
-html:not(.dark) .lang-menu a.lang-option:focus {
-  background: var(--panel-2, #f0f0f0); 
-}
-/* 접근성: 키보드 이동 시 포커스 링 */
-.lang-menu a.lang-option:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: -2px;
-}
-
-html.dark .lang-menu {
-  background: #222;
-  border-color: #444;
-  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
-}
-html.dark .lang-option { color: #eee; }
-html.dark .lang-option:hover { background-color: #333; }
-
+---
 
 /* ======================
    🔹 사이드 패널 레이아웃
@@ -475,6 +273,7 @@ html.dark .lang-option:hover { background-color: #333; }
   opacity: 1;
   pointer-events: auto;
 }
+
 /* 패널 상단 배경 이미지 */
 .sidebar-extension-panel > * {
   position: relative;
@@ -496,6 +295,7 @@ html.dark .lang-option:hover { background-color: #333; }
   height: auto;           /* 비율 유지 */
 }
 
+---
 
 /* ======================
    🔹 확장 패널 내부 공통
@@ -506,6 +306,7 @@ html.dark .lang-option:hover { background-color: #333; }
 .sidebar-extension-panel a { color: #fff; text-decoration: none; font-size: 14px; }
 .sidebar-extension-panel a:hover { text-decoration: underline; }
 
+---
 
 /* ======================
    🔹 패널 푸터 (하단 고정)
@@ -529,6 +330,7 @@ html.dark .lang-option:hover { background-color: #333; }
   padding-top: 8px;
 }
 
+---
 
 /* ======================
    🔹 사이드바 아이콘
@@ -563,30 +365,13 @@ html.dark .lang-option:hover { background-color: #333; }
   color: var(--highlight-color, #fff);
   background: transparent;
 }
-/* VSCode 사이드바 내부 아이콘 활성화 (원래 흰색 유지) */
-.vscode-sidebar { --highlight-color: #fff; }
-.vscode-sidebar .sidebar-icon.active,
-.vscode-sidebar .sidebar-icon[aria-current="page"],
-.vscode-sidebar .sidebar-icon[aria-selected="true"],
-.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
-.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
-  color: #fff !important;
-}
-/* VSCode 사이드바 아이콘 미세조정(프로필/검색) */
-.vscode-sidebar .sidebar-icon[data-tab="profile"].active,
-.vscode-sidebar .sidebar-icon[data-tab="search"].active {
-  color: #fff !important;
-  text-shadow: 0 0 10px rgba(255,255,255,0.35);
-}
-
-/* 데스크탑 넓이 이상일 때만 호버 효과 */
+/* hover는 데스크탑 넓이 이상일 때만 */
 @media (min-width: 769px) {
   .sidebar-icon:hover {
     color: var(--highlight-color, #fff);
     background: transparent;
   }
 }
-
 /* 토글 확장 버튼 */
 .sidebar-icon.toggle-extension {
   background: none !important;
@@ -603,9 +388,28 @@ html.dark .lang-option:hover { background-color: #333; }
   color: #fff !important;
 }
 
+/* VSCode 사이드바 내부 아이콘 활성화 (원래 흰색 유지) */
+.vscode-sidebar { --highlight-color: #fff; }
+.vscode-sidebar .sidebar-icon.active,
+.vscode-sidebar .sidebar-icon[aria-current="page"],
+.vscode-sidebar .sidebar-icon[aria-selected="true"],
+.vscode-sidebar .sidebar-icon[data-tab="settings"].is-active,
+.vscode-sidebar .sidebar-icon[data-tab="settings"][aria-expanded="true"] {
+  color: #fff !important;
+}
+/* VSCode 사이드바 아이콘 미세조정(프로필/검색) */
+.vscode-sidebar .sidebar-icon[data-tab="profile"].active,
+.vscode-sidebar .sidebar-icon[data-tab="search"].active {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(255,255,255,0.35);
+}
+
+---
 
 /* ======================
    🔹 Sidebar Logo: 모바일 전용
+   - 데스크톱: 완전 숨김(공간 0)
+   - 모바일(<=640px): 보이기
 ====================== */
 /* 기본값: 전부 숨김(공간도 없음) */
 .vscode-sidebar .sidebar-icon.logo,
@@ -643,10 +447,13 @@ html.dark .lang-option:hover { background-color: #333; }
   }
 }
 
+---
 
-/* ======================
+/* ======================================================================
    ✅ PATCH: 설정 아이콘 시각 상태를 'is-active'로만 제어
-====================== */
+   - 닫힘 상태에서는 hover/active/focus/aria-*에 영향받지 않고 회색 고정
+   - 열림(is-active)일 때만 흰색
+====================================================================== */
 .sidebar-icon[data-tab="settings"] {
   --settings-idle: rgba(255, 255, 255, 0.626);
   color: var(--settings-idle);
@@ -681,10 +488,12 @@ html.dark .lang-option:hover { background-color: #333; }
   background: none !important;
 }
 
+---
 
-/* ======================
+/* =========================================================
    ✅ PROFILE TAB — 증명사진 느낌 About 카드
-====================== */
+   (이 섹션이 기존 프로필 관련 '찌꺼기'를 대체합니다)
+========================================================= */
 .profile-tab { position: relative; z-index: 1; }
 
 .profile-card {
@@ -734,6 +543,7 @@ html.dark .lang-option:hover { background-color: #333; }
   object-fit: cover; /* 증명사진 꽉 채우기 */
   image-rendering: -webkit-optimize-contrast;
 }
+
 .info-col { min-width: 0; }
 .profile-name {
   margin: 2px 0 6px;
@@ -787,10 +597,12 @@ html.dark .lang-option:hover { background-color: #333; }
   .avatar-frame { max-width: 76px; }
 }
 
+---
 
-/* ======================
+/* =========================================================
    ✅ SEARCH TAB — 상단 검색바 + 테이블
-====================== */
+   (기존 search-tab 마진/포지션 보정 규칙 제거됨)
+========================================================= */
 .search-tab { position: relative; z-index: 1; }
 
 /* 상단 고정 검색바 */
@@ -813,11 +625,13 @@ html.dark .lang-option:hover { background-color: #333; }
   border-color: var(--highlight-color, #00adb5);
   box-shadow: 0 0 0 3px rgba(0,173,181,0.15);
 }
+
 .search-icon {
   color: #a7a7a7;
   font-size: .95rem;
   text-align: center;
 }
+
 .search-input {
   width: 100%;
   border: none;
@@ -828,6 +642,7 @@ html.dark .lang-option:hover { background-color: #333; }
   line-height: 1.1;
 }
 .search-input::placeholder { color: #8f8f8f; }
+
 /* 제출 버튼 */
 .search-form .submit-btn {
   border: 1px solid rgba(255,255,255,0.25);
@@ -845,16 +660,19 @@ html.dark .lang-option:hover { background-color: #333; }
   box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
   transform: translateY(-1px);
 }
+
 /* 테이블 템플릿 여백 */
 #sidebar-table-template, #sidebar-table {
   margin-top: 8px;
 }
+
 /* 모바일: 검색바 여백/크기 조정 */
 @media (max-width: 670px){
   .search-form { grid-template-columns: 24px 1fr auto; padding: 8px 10px; gap: 8px; }
   .search-form .submit-btn { padding: 7px 10px; border-radius: 8px; font-size: .85rem; }
 }
 
+---
 
 /* ======================
    🔹 인증 버튼 (로그인, 가입 등)
@@ -934,6 +752,7 @@ html.dark .lang-option:hover { background-color: #333; }
   box-shadow: 0 0 12px rgba(255, 230, 100, 0.8);
 }
 
+---
 
 /* ======================
    🔹 로그인 폼
@@ -968,17 +787,241 @@ html.dark .lang-option:hover { background-color: #333; }
 }
 #login-form button:hover { background-color: #4c16b9; }
 
+---
 
-/* ======================
-   🔹 사이드바 언어/테마 영역 (데스크톱/패널 내부)
-====================== */
+/* ==================================
+   🔹 라이트 모드 & 언어 선택 (공통 및 데스크톱 사이드바)
+================================== */
+.light-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  border-top: none;
+  margin-top: 0;
+  margin-right: 5px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.light-switch .switch-label {
+  width: 36px;
+  height: 20px;
+  background-color: #888;
+  border-radius: 999px;
+  position: relative;
+  transition: background-color 0.3s ease;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+}
+.light-switch .switch-handle {
+  position: absolute;
+  top: 2.5px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  background: linear-gradient(to bottom, #fff, #ccc);
+  border-radius: 50%;
+  transition: left 0.3s ease, background 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.light-switch[aria-checked="true"] .switch-handle {
+  left: calc(100% - 2px - 15px);
+  background: linear-gradient(to bottom, #eee, #bbb);
+}
+.light-switch[aria-checked="true"] .switch-label {
+  background-color: #50504b;
+}
+
+/* ✅ 새 라이트/다크모드 토글 버튼 스타일 복원 */
+.theme-toggle-btn {
+  /* 배경색 및 둥근 모양 복원 */
+  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
+  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
+  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* 둥근 모양 복원 */
+  transition: all 0.2s ease;
+  font-size: 18px;
+  line-height: 1;
+}
+/* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
+html:not(.dark) .theme-toggle-btn {
+  background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
+  border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
+  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
+}
+/* 🚫 테마 토글 버튼 포커스(클릭/탭) 테두리 제거 */
+.theme-toggle-btn:focus {
+  outline: none;
+}
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+.theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--accent, #6cf);
+  outline-offset: 2px;
+}
+
+/* 언어 선택 드롭다운 */
+.language-dropdown {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  /* 드롭다운 메뉴를 위한 새로운 스태킹 컨텍스트 생성 */
+  z-index: 99991; /* vscode-sidebar보다 높게 설정 */
+}
+.lang-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+.lang-btn .fi {
+  width: 1.5rem;
+  height: 1.2rem;
+}
+/* 🚫 언어 선택 버튼 포커스(클릭/탭) 테두리 제거 */
+.sidebar-lang-theme .lang-btn:focus {
+  outline: none;
+}
+/* 접근성 강화를 위해 focus-visible은 유지하는 것을 권장하지만, 요청에 따라 focus는 제거 */
+.sidebar-lang-theme .lang-btn:focus-visible {
+  outline: 2px solid var(--accent, #6cf);
+  outline-offset: 2px;
+}
+
+
+/* 언어 메뉴 (구/신규 스타일 통합) */
+.lang-menu {
+  display: none;
+  position: absolute;
+  top: calc(90% + 5px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100000;
+  max-width: 120px;
+  padding: 5px 0;
+  list-style: none;
+
+  /* 새 스타일 오버라이드/추가 */
+  inset: auto auto auto auto;
+  margin: 6px 0 0 0;
+  min-width: 160px;
+  background: var(--panel-1, #181a1f); /* Dark Mode */
+  border: 1px solid var(--ink-3, rgba(255,255,255,0.25)); /* Dark Mode */
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+  z-index: 2147483646;
+}
+.lang-menu.show { display: block; }
+.lang-menu[aria-hidden="false"] { display: block; }
+.lang-menu li { white-space: nowrap; }
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lang-option:hover { background-color: #f5f5f5; }
+.lang-option.active-lang {
+  font-weight: bold;
+  color: var(--highlight-color, #00adb5);
+}
+
+/* 다크 모드 스타일 */
+html.dark .lang-menu {
+  background: #222;
+  border-color: #444;
+  box-shadow: 2px 2px 6px rgba(255, 255, 255, 0.05);
+  background: var(--panel-1, #181a1f);
+  border: 1px solid var(--ink-3, rgba(255,255,255,0.25));
+  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+}
+html.dark .lang-option { color: #eee; }
+html.dark .lang-option:hover { background-color: #333; }
+.lang-menu a.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--ink-1, #fff); /* Dark Mode */
+  text-decoration: none;
+  font-size: 14px;
+}
+.lang-menu a.lang-option:hover,
+.lang-menu a.lang-option:focus {
+  background: var(--panel-2, #22262e); /* Dark Mode */
+  outline: none;
+}
+.lang-menu a.lang-option.active-lang {
+  font-weight: 700;
+}
+
+/* 💡 라이트 모드일 때 언어 메뉴의 스타일 재정의 (html:not(.dark) 사용) */
+html:not(.dark) .lang-menu {
+  background: var(--panel-1, #fff); 
+  border: 1px solid var(--ink-3, rgba(0,0,0,0.15));
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15); 
+}
+html:not(.dark) .lang-menu a.lang-option {
+  color: var(--ink-1, #181a1f); 
+}
+html:not(.dark) .lang-menu a.lang-option:hover,
+html:not(.dark) .lang-menu a.lang-option:focus {
+  background: var(--panel-2, #f0f0f0); 
+}
+
+/* 모바일↓ */
+@media (max-width:670px){
+  .lang-menu{ font-size:13px; }
+}
+
+/* === 메뉴 열릴 때 최상위 고정 (transform/blur 간섭 방지) === */
+.language-dropdown.open .lang-menu,
+.language-dropdown[aria-expanded="true"] .lang-menu{
+  position: fixed;              /* 다크모드에서 transform/blur 스택 피하기 */
+  top: var(--header-h, 30px);
+  right: 12px;
+  left: auto;
+  z-index: calc(var(--z-header) + 10);
+}
+
+/* 포털 배치용 클래스(시각적 디버깅 금지): .lang-menu--portal 로 body에 옮겨짐 */
+.lang-menu.lang-menu--portal {
+  position: fixed;
+  z-index: 2147483646;
+}
+
+/* 접근성: 키보드 이동 시 포커스 링 */
+.lang-menu a.lang-option:focus-visible {
+  outline: 2px solid var(--accent, #6cf);
+  outline-offset: -2px;
+}
+
+/* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 (다크 모드 기준) ====== */
 .sidebar-lang-theme {
   margin-top: 12px;
   padding: 10px 8px;
   display: flex;
   flex-direction: column; /* 데스크톱 기본: 세로 배열 */
   align-items: center;
-  /* 다크모드/언어버튼 사이의 여백을 10px에서 5px로 줄임 */
+  /* ✅ 수정: 다크모드/언어버튼 사이의 여백을 10px에서 5px로 줄임 */
   gap: 5px; 
 }
 .sidebar-lang-theme .lang-btn {
@@ -993,20 +1036,13 @@ html.dark .lang-option:hover { background-color: #333; }
   border-radius: 10px;
   padding: 6px 10px;
 }
-/* 🚫 언어 선택 버튼 포커스(클릭/탭) 테두리 제거 */
-.sidebar-lang-theme .lang-btn:focus {
-  outline: none;
-}
-/* 접근성 강화를 위해 focus-visible은 유지 */
-.sidebar-lang-theme .lang-btn:focus-visible {
-  outline: 2px solid var(--accent, #6cf);
-  outline-offset: 2px;
-}
 
 
-/* ======================
+---
+
+/* ==================================
    🔹 반응형 (모바일: 768px 이하)
-====================== */
+================================== */
 @media (max-width: 768px) {
   /* 데스크톱 전용 메뉴 숨김 */
   .desktop-menu { display: none; }
@@ -1035,7 +1071,7 @@ html.dark .lang-option:hover { background-color: #333; }
     z-index: var(--z-head-inner);
     overflow: visible !important;
   }
-  
+
   /* 사이드바 줄 */
   .side-panel.main-panel-only {
     order: 2;
@@ -1048,24 +1084,24 @@ html.dark .lang-option:hover { background-color: #333; }
   }
   .sidebar-wrapper { width: 100%; }
 
-  /* VSCode 사이드바 (가로 스크롤 가능한 하단 탭 바) */
+  /* 🚀 최종 수정: 모바일 하단 가로 탭 바 구현 */
+  /* 1. 사이드바(Tabs Container) 자체: 가로 스크롤 속성 유지 */
   .vscode-sidebar {
-    /* ✅ 가로 스크롤 가능하게 설정 */
-    overflow-x: auto; 
-    -ms-overflow-style: none; /* IE, Edge */
-    scrollbar-width: none; /* Firefox */
-    
     width: 100% !important;
-    height: 60px !important;
+    height: 60px; /* 50px에서 60px로 변경 */
     flex-direction: row;
     justify-content: space-between;
     padding: 0; /* padding: 0 10px 대신 0 */
-    position: fixed !important; /* static 대신 fixed */
+    position: fixed !important; /* static에서 fixed로 변경 */
     bottom: 0; left: 0;
+    z-index: 100; /* Z-index 변경 */
     gap: 6px;
-    z-index: 100; /* Z-index 조정 */
     border-top: 1px solid var(--vscode-sideBar-border, #444); 
     background: var(--vscode-sideBar-background, #333); 
+    display: flex;
+    overflow-x: auto; /* ✅ 가로 스크롤 가능하게 설정 */
+    -ms-overflow-style: none; /* IE, Edge */
+    scrollbar-width: none; /* Firefox */
   }
   /* ✅ 스크롤 바 숨기기 (Webkit 기반 브라우저용) */
   .vscode-sidebar::-webkit-scrollbar { display: none; }
@@ -1076,15 +1112,24 @@ html.dark .lang-option:hover { background-color: #333; }
   /* 3. ✅ 모든 탭 버튼에 고정 너비 적용 (스크롤을 유도) */
   .vscode-sidebar .toggle-extension,
   .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
-    flex-grow: 0; 
-    flex-shrink: 0; 
     width: 70px; /* ✅ 각 탭 버튼의 고정 너비 설정 */
     height: 100%;
+    flex-grow: 0; 
+    flex-shrink: 0; 
     display: flex !important; 
     justify-content: center;
     align-items: center;
     padding: 0;
     border-radius: 0;
+  }
+
+  /* 아이콘: 1칸씩 균등 분배 (기존 속성이지만 하단바에서는 고정 너비가 우선) */
+  .vscode-sidebar .sidebar-icon {
+    width: auto !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
   }
 
   /* 모바일 상단바에서 활성화 바(underline) 제거 */
@@ -1097,10 +1142,10 @@ html.dark .lang-option:hover { background-color: #333; }
   /* 확장 패널 (모바일 오버레이) */
   .sidebar-extension-panel {
     position: absolute !important;
-    top: 50px !important; /* 60px에서 50px로 조정 */
+    top: 50px !important;
     left: 0 !important; right: 0 !important;
     width: 100% !important;
-    height: calc(100vh - 50px) !important; /* 60px에서 50px로 조정 */
+    height: calc(100vh - 50px) !important;
     min-width: 0 !important;
     max-width: none !important;
     border-right: none !important;
@@ -1135,7 +1180,7 @@ html.dark .lang-option:hover { background-color: #333; }
   .auth-buttons { gap: 8px; flex-direction: column; width: 100%; }
   .auth-btn.write-post, .auth-btn.logout { margin-left: 0 !important; }
   .auth-btn.logout { margin-right: 0 !important; }
-
+  
   /* 4. ✅ 언어/테마 영역에도 고정 너비 적용 (스크롤을 유도) */
   .sidebar-lang-theme {
     flex-direction: row;
