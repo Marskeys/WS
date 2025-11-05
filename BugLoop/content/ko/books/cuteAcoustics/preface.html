@@ -112,18 +112,20 @@
       flex: 1; 
       display: flex;
       justify-content: center;
-      align-items: center;
+      /* ✨ 수정: 페이지를 뷰어 상단에 붙여 하단에 여유를 줍니다. */
+      align-items: flex-start; 
       overflow: hidden !important; 
+      padding-top: 20px; /* 상단 여백 추가 */
     }
 
     .page {
       width: 80%;
       max-width: 800px;
       
-      /* ✨ 수정: 높이 조정으로 하단 잘림 방지 */
+      /* ✨ 수정: 높이 조정 및 하단 잘림 방지 (퍼센트 기반) */
       height: 90%; 
       max-height: calc(100vh - 100px); 
-      margin-bottom: 20px; 
+      margin-bottom: 50px; /* 하단 여백 대폭 증가 */
       
       background: white;
       border-radius: 16px;
@@ -168,7 +170,7 @@
         flex: 1;
         overflow-y: auto;
         white-space: pre-wrap;
-        /* ✨ 수정: 페이지 인덱스가 있는 하단 영역 침범 방지 */
+        /* 페이지 인덱스가 있는 하단 영역 침범 방지 */
         padding-bottom: 20px; 
     }
     
@@ -237,11 +239,17 @@
     @media (max-width: 768px) {
       .app-header { padding: 0 10px; }
       .header-title { font-size: 16px; }
+      
+      .viewer {
+        padding-top: 10px; /* 모바일 상단 여백 줄임 */
+      }
+      
       .page {
         width: 95%;
         padding: 20px;
         /* 모바일에서는 높이를 조금 더 여유롭게 조정 */
-        height: calc(100vh - 80px); 
+        height: 85%; 
+        margin-bottom: 20px; 
       }
       .header-btn { padding: 6px 8px; }
       
@@ -385,7 +393,11 @@
           content = `<p>${pageData.content}</p>`;
       }
 
-      pageText.innerHTML = content;
+      // 페이지가 렌더링될 때 항상 맨 위로 스크롤
+      const pageTextEl = document.getElementById('pageText');
+      pageTextEl.innerHTML = content;
+      pageTextEl.scrollTop = 0; 
+
       pageIndex.innerText = `${currentPage + 1} / ${pages.length}`;
     }
 
@@ -441,15 +453,15 @@
     let touchEndX = 0;
     
     document.body.addEventListener("touchstart", (e) => {
-      // 터치 시작 시 세로 스크롤 방지
-      e.preventDefault(); 
+      // e.preventDefault(); 제거: 일부 기기에서 터치 작동 방해 가능성 있음. 
+      // touch-action: pan-x; 로 대체
       touchStartX = e.changedTouches[0].screenX;
-    }, { passive: false });
+    }, { passive: true });
     
     document.body.addEventListener("touchmove", (e) => {
-      // 터치 이동 중 세로 스크롤 방지
-      e.preventDefault(); 
-    }, { passive: false });
+      // 터치 이동 중 세로 스크롤 방지 -> touch-action: pan-x; 로 대체
+      // 수평 이동(페이지 넘김)만 허용
+    }, { passive: true });
 
     document.body.addEventListener("touchend", (e) => {
       touchEndX = e.changedTouches[0].screenX;
@@ -467,7 +479,7 @@
           renderPage();
         }
       }
-    });
+    }, { passive: true });
   </script>
 
 </body>
