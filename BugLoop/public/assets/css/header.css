@@ -13,6 +13,7 @@
   --panel-2: #22262e; /* 다크 모드 호버 패널 배경색 */
   --accent: #6cf; /* 접근성 포커스 색상 */
   --settings-idle: rgba(255, 255, 255, 0.626); /* 설정 아이콘 기본 색상 */
+  --header-h: 60px; /* 모바일 하단 탭바 높이 및 상단 헤더 높이(임시값) */
 }
 html.dark{
   /* 다크에서 한 단계 더 높게 */
@@ -163,7 +164,6 @@ html:not(.dark) {
 
 /* ======================================================================
    ✅ PATCH: 설정 아이콘 시각 상태 제어 (is-active로만 흰색)
-   - 중복된 :not(.is-active) 셀렉터를 단일 그룹으로 병합
    ====================================================================== */
 .sidebar-icon[data-tab="settings"] {
   color: var(--settings-idle);
@@ -201,7 +201,7 @@ html:not(.dark) {
 }
 
 /* ======================
-   🔹 사이드 패널 레이아웃 & 확장 패널
+   🔹 사이드 패널 레이아웃 & 확장 패널 (데스크톱 기본값)
 ====================== */
 .side-panel.main-panel-only {
   position: fixed;
@@ -964,7 +964,7 @@ html:not(.dark) .lang-menu a.lang-option:focus {
 .language-dropdown.open .lang-menu,
 .language-dropdown[aria-expanded="true"] .lang-menu{
   position: fixed;
-  top: var(--header-h, 30px);
+  top: var(--header-h); /* 상단 헤더 높이에 맞춤 */
   right: 12px;
   left: auto;
   z-index: calc(var(--z-header) + 10);
@@ -998,7 +998,7 @@ html:not(.dark) .lang-menu a.lang-option:focus {
   /* 헤더 상단바 (메뉴 줄) */
   .header-top {
     order: 1;
-    position: relative;
+    position: relative; /* 모바일 하단 탭바 고정을 위해 position: fixed는 .vscode-sidebar에만 남김 */
     width: 100%;
     height: auto;
     padding: 0;
@@ -1008,25 +1008,32 @@ html:not(.dark) .lang-menu a.lang-option:focus {
     overflow: visible !important;
   }
 
-  /* 사이드바 줄 */
+  /* ❌ [수정됨]: 모바일 하단 탭 바를 가릴 수 있는 레이아웃 규칙 제거 */
   .side-panel.main-panel-only {
-    order: 2;
-    position: relative;
-    left: 0; right: 0;
-    width: 100%;
-    height: auto;
+    /* 원래의 fixed/top/left 설정만 유지 (하단 고정 탭바가 레이아웃 흐름을 방해하지 않도록) */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0; /* 폭을 0으로 설정하여 레이아웃에 영향 최소화 */
+    height: 0; /* 높이를 0으로 설정하여 레이아웃에 영향 최소화 */
+    pointer-events: none;
+    z-index: 30;
+  }
+  .side-panel.main-panel-only.open { 
     pointer-events: auto;
-    z-index: 1;
+    width: 100%;
+    height: 100%; /* 확장 패널이 열렸을 때만 영역을 차지 */
   }
   .sidebar-wrapper { width: 100%; }
-
+  
   /* 확장 패널 (모바일 오버레이) */
   .sidebar-extension-panel {
     position: absolute !important;
-    top: 60px !important; /* 모바일 하단 탭바 높이 60px 고려하여 수정 */
+    top: var(--header-h) !important; /* 상단 헤더 높이(임시 60px) 아래에서 시작 */
     left: 0 !important; right: 0 !important;
     width: 100% !important;
-    height: calc(100vh - 60px) !important; /* 모바일 하단 탭바 높이 60px 고려하여 수정 */
+    /* 100vh에서 상단 헤더 높이(60px)와 하단 탭바 높이(60px)를 모두 뺌 */
+    height: calc(100vh - var(--header-h) - var(--header-h)) !important;
     min-width: 0 !important;
     max-width: none !important;
     border-right: none !important;
@@ -1071,19 +1078,20 @@ html:not(.dark) .lang-menu a.lang-option:focus {
   /* ---------------------------------------------------- */
   /* 🚀 모바일 하단 가로 탭 바 구현 (768px 이하) */
   /* ---------------------------------------------------- */
+  /* ✅ 수정: 하단 고정을 위해 position: fixed를 이곳에 적용 */
   .vscode-sidebar {
     width: 100% !important;
-    height: 60px !important; /* 높이 60px로 조정 */
+    height: var(--header-h) !important; /* 높이 변수 사용 (기본 60px) */
     flex-direction: row;
     justify-content: space-between;
-    padding: 0; /* padding 제거 */
-    position: fixed !important; /* 하단 고정 */
-    bottom: 0;
+    padding: 0;
+    position: fixed !important; 
+    bottom: 0; /* 하단 고정 */
     left: 0;
     z-index: 100;
     border-top: 1px solid var(--vscode-sideBar-border, #444);
     background: var(--vscode-sideBar-background, #333);
-    gap: 0; /* 탭 버튼 간격 제거 */
+    gap: 0;
     overflow-x: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -1093,7 +1101,7 @@ html:not(.dark) .lang-menu a.lang-option:focus {
   /* 탭 버튼 공통 스타일 */
   .vscode-sidebar .sidebar-icon {
     width: auto !important;
-    flex: 0 0 70px !important; /* 고정 너비 70px, 커지거나 줄어들지 않음 */
+    flex: 0 0 70px !important; /* 고정 너비 70px */
     min-width: 0 !important;
     padding: 0 !important;
     height: 100% !important;
