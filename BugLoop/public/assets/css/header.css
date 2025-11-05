@@ -924,8 +924,6 @@ html.dark .lang-option:hover { background-color: #333; }
   .sidebar-extension-panel.open {
     /* 50px은 .vscode-sidebar의 너비에 해당하여, 패널이 사이드바 옆으로 밀려나게 함 */
     margin-left: 50px;
-    /* transition 속성을 유지하여 부드럽게 열리도록 보장 */
-    transition: transform 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
   }
 }
 
