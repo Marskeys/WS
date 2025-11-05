@@ -255,7 +255,7 @@ html.dark{
   -ms-overflow-style: none;
 }
 .sidebar-extension-panel::-webkit-scrollbar { display: none; }
-.panel.open {
+.sidebar-extension-panel.open {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
