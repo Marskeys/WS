@@ -255,7 +255,7 @@ html.dark{
   -ms-overflow-style: none;
 }
 .sidebar-extension-panel::-webkit-scrollbar { display: none; }
-.sidebar-extension-panel.open {
+.panel.open {
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
@@ -267,10 +267,6 @@ html.dark{
   position: relative;
   z-index: 1;
 }
-
-/* 패널 컨텐츠 상단 여백 (빈 선택자 제거) */
-/* .sidebar-extension-panel .tab-content { } */
-
 
 /* ======================
    🔹 확장 패널 내부 공통
@@ -922,6 +918,16 @@ html.dark .lang-option:hover { background-color: #333; }
     opacity: 1; /* !important 제거 */
     pointer-events: auto; /* !important 제거 */
   }
+
+  /* 데스크톱(769px 이상)에서만 확장 패널이 열릴 때 왼쪽 마진 50px 적용 */
+  @media (min-width: 769px) {
+  .sidebar-extension-panel.open {
+    /* 50px은 .vscode-sidebar의 너비에 해당하여, 패널이 사이드바 옆으로 밀려나게 함 */
+    margin-left: 50px;
+    /* transition 속성을 유지하여 부드럽게 열리도록 보장 */
+    transition: transform 0.3s ease, opacity 0.3s ease, margin-left 0.3s ease;
+  }
+}
 
   /* 기타 모바일 헤더 내부 */
   .top-controls {
