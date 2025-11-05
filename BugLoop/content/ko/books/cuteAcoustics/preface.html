@@ -92,7 +92,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden; /* 목차 숨김을 위해 필수 */
+      /* ✨ 수정: overflow: hidden을 !important로 강제하여 목차가 완전히 숨겨지도록 함 */
+      overflow: hidden !important; 
     }
 
     .page {
@@ -164,7 +165,7 @@
         background: rgba(85, 85, 85, 0.8);
     }
 
-    /* ✨ 수정: 페이지 중앙(400px)에서 약간 더 안쪽으로 배치 */
+    /* 페이지 중앙(400px)에서 약간 더 안쪽으로 배치 */
     #prevBtn { 
         left: calc(50% - 450px); 
     }
@@ -208,7 +209,7 @@
         padding: 6px 8px;
       }
       
-      /* ✨ 수정: 모바일에서는 좌우 버튼을 다시 가장자리로 이동 */
+      /* 모바일에서는 좌우 버튼을 다시 가장자리로 이동 */
       #prevBtn { left: 10px; }
       #nextBtn { right: 10px; }
     }
@@ -341,7 +342,6 @@
     let touchStartX = 0;
     let touchEndX = 0;
     
-    // 이 터치 이벤트는 body 전체에 적용되어 모바일에서 슬라이드 넘김을 처리합니다.
     document.body.addEventListener("touchstart", (e) => {
       touchStartX = e.changedTouches[0].screenX;
     });
