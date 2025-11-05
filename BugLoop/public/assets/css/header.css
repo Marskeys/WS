@@ -152,6 +152,7 @@ html.dark{
    - 닫힘 상태에서는 hover/active/focus/aria-*에 영향받지 않고 회색 고정
    - 열림(is-active)일 때만 흰색
    ====================================================================== */
+
 .sidebar-icon[data-tab="settings"] {
   --settings-idle: rgba(255, 255, 255, 0.626);
   color: var(--settings-idle);
@@ -173,19 +174,6 @@ html.dark{
   color: var(--settings-idle) !important;
   background: none !important;
 }
-/* VSCode 컨테이너 안에서도 동일하게 무력화(우선순위 보강) */
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active),
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active).active,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):hover,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active):focus-visible,
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-current="page"],
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-selected="true"],
-.vscode-sidebar .sidebar-icon[data-tab="settings"]:not(.is-active)[aria-expanded="true"] {
-  color: var(--settings-idle) !important;
-  background: none !important;
-}
-
 
 /* ======================
    🔹 사이드 패널 레이아웃
@@ -251,19 +239,6 @@ html.dark{
   opacity: 1;
   pointer-events: auto;
 }
-
-/* 패널 상단 배경 이미지 */
-
-.sidebar-extension-panel > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* 패널 컨텐츠 상단 여백 (히어로와 겹침 보정) */
-.sidebar-extension-panel .tab-content {
-
-}
-
 
 /* ======================
    🔹 확장 패널 내부 공통
@@ -731,46 +706,6 @@ background: linear-gradient(90deg, #6dca03 0%, #4CAF50 100%) !important;
 /* ==================================
    🔹 라이트 모드 & 언어 선택
 ================================== */
-.light-switch {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 20px;
-  cursor: pointer;
-  border-top: none;
-  margin-top: 0;
-  margin-right: 5px;
-  padding: 0;
-  flex-shrink: 0;
-}
-.light-switch .switch-label {
-  width: 36px;
-  height: 20px;
-  background-color: #888;
-  border-radius: 999px;
-  position: relative;
-  transition: background-color 0.3s ease;
-  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-}
-.light-switch .switch-handle {
-  position: absolute;
-  top: 2.5px;
-  left: 2px;
-  width: 15px;
-  height: 15px;
-  background: linear-gradient(to bottom, #fff, #ccc);
-  border-radius: 50%;
-  transition: left 0.3s ease, background 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-.light-switch[aria-checked="true"] .switch-handle {
-  left: calc(100% - 2px - 15px);
-  background: linear-gradient(to bottom, #eee, #bbb);
-}
-.light-switch[aria-checked="true"] .switch-label {
-  background-color: #50504b;
-}
 
 .language-dropdown {
   position: relative;
@@ -1008,7 +943,6 @@ html.dark .lang-option:hover { background-color: #333; }
   height: auto;           /* 비율 유지 */
 }
 
-
 /* ====== 기존 서브메뉴 간격/정렬 ====== */
 .header-menu .submenu li a,
 .header-menu .submenu li span {
@@ -1031,7 +965,6 @@ html.dark .lang-option:hover { background-color: #333; }
   align-items: center;
   box-shadow: 0 0 12px rgba(0, 114, 255, 0.4);
 }
-
 
 /* YouTube 로고 수직 중앙 정렬 */
 .header-menu .main-menu-container {
