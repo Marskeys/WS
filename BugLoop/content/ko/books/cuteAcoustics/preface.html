@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>귀여운 음향학 서문</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <style>
+    /* ... (기존 CSS 스타일 유지) ... */
     body {
       margin: 0;
       font-family: "Noto Serif KR", serif;
@@ -117,7 +119,18 @@
         font-weight: bold;
         transition: background 0.3s, opacity 0.3s;
         z-index: 10;
+        /* 아이콘 버튼의 텍스트가 없어졌으므로 패딩 조정 가능 */
+        /* padding: 10px; */ 
     }
+    /* 아이콘에만 적용되는 스타일 */
+    .top-btn i {
+        margin-right: 5px; /* 아이콘과 텍스트 사이 간격 */
+    }
+    /* 텍스트가 없는 버튼을 위해 padding 조정 */
+    #homeBtn, #darkModeToggle, #tocToggle {
+        padding: 10px; /* 아이콘만 있을 때 더 정사각형에 가깝게 */
+    }
+
 
     .top-btn:hover {
         background: #0055e6;
@@ -135,7 +148,7 @@
     #homeBtn { left: 30px; }
 
     /* 다크모드/목차 버튼 위치 */
-    #darkModeToggle { right: 130px; } /* 목차 버튼과의 간격 조정 */
+    #darkModeToggle { right: 85px; } /* 버튼 크기가 작아졌으므로 간격 재조정 */
     #tocToggle { right: 30px; } /* 기존 위치 유지 */
 
     .toc {
@@ -183,13 +196,13 @@
       }
       
       .top-btn {
-        padding: 8px 10px;
-        font-size: 14px;
+        padding: 8px; /* 아이콘 버튼에 맞게 조정 */
+        font-size: 16px; /* 아이콘이므로 폰트 크기 조정 */
         top: 15px;
       }
       
       #homeBtn { left: 15px; }
-      #darkModeToggle { right: 100px; }
+      #darkModeToggle { right: 70px; } /* 버튼 크기에 맞게 조정 */
       #tocToggle { right: 15px; }
     }
   </style>
@@ -200,9 +213,11 @@
     <button id="prevBtn" class="nav-btn">〈</button>
     <button id="nextBtn" class="nav-btn">〉</button>
     
-    <button id="homeBtn" class="top-btn">🏠 홈</button>
-    <button id="darkModeToggle" class="top-btn">🌙 다크 모드</button>
-    <button id="tocToggle" class="top-btn">📖 목차</button>
+    <button id="homeBtn" class="top-btn" title="홈으로 이동"><i class="fas fa-home"></i></button>
+    
+    <button id="darkModeToggle" class="top-btn" title="테마 전환"><i class="fas fa-moon"></i></button>
+    
+    <button id="tocToggle" class="top-btn" title="목차 보기"><i class="fas fa-list"></i></button>
 
     <div class="page" id="page">
       <div class="page-text" id="pageText"></div>
@@ -236,18 +251,24 @@
     const tocEl = document.getElementById("toc");
     const bodyEl = document.body;
     const darkModeToggle = document.getElementById("darkModeToggle");
+    const darkModeIcon = darkModeToggle.querySelector('i'); // 아이콘 요소 선택
+    
     // 로컬 저장소에서 설정 불러오기
     const initialDarkMode = localStorage.getItem('darkMode') === 'true';
 
-    // 다크 모드 상태를 설정하고 버튼 텍스트를 업데이트하는 함수
+    // 다크 모드 상태를 설정하고 버튼 아이콘을 업데이트하는 함수
     function setDarkMode(isDark) {
         if (isDark) {
             bodyEl.classList.add("dark");
-            darkModeToggle.innerText = "☀️ 라이트 모드";
+            // 달 아이콘 -> 해 아이콘으로 변경
+            darkModeIcon.classList.remove("fa-moon");
+            darkModeIcon.classList.add("fa-sun");
             localStorage.setItem('darkMode', 'true');
         } else {
             bodyEl.classList.remove("dark");
-            darkModeToggle.innerText = "🌙 다크 모드";
+            // 해 아이콘 -> 달 아이콘으로 변경
+            darkModeIcon.classList.remove("fa-sun");
+            darkModeIcon.classList.add("fa-moon");
             localStorage.setItem('darkMode', 'false');
         }
     }
