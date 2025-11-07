@@ -1270,13 +1270,14 @@ app.get('/:section/:topic', handlePanelRoute);
 app.get('/:lang/books/:book/content/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
   
-  // viewPath는 이제 정확하게 content/ko/books/cuteAcoustics/content/preface.ejs가 됩니다.
-  const viewPath = `content/${lang}/books/${book}/content/${chapter}.ejs`;
+  // ⭐️ 핵심 수정: .ejs 확장자를 제거합니다. 
+  // View Engine 설정에 따라 Express가 자동으로 추가합니다.
+  const viewPath = `content/${lang}/books/${book}/content/${chapter}`; 
 
-  res.render(viewPath, { lang, locale: req.locale }, (err, html) => {
+  res.render(viewPath, { lang, locale: req.locale || {} }, (err, html) => {
     if (err) {
-      console.error("EJS render error:", err);
-      // EJS 파일을 찾지 못하면 404를 반환
+      // err.code가 'ENOENT' (파일 없음)일 경우입니다.
+      console.error(`EJS 렌더링 실패 (경로: ${viewPath}.ejs)`, err); // 로그에 .ejs를 추가하여 실제 찾는 파일을 표시
       return res.status(404).send("해당 챕터 또는 페이지를 찾을 수 없습니다.");
     }
     res.send(html);
