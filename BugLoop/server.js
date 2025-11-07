@@ -1245,10 +1245,6 @@ app.get('/_slugtest', (req, res) => {
 });
 
 
-// ✅ 패널 라우팅 (기존 3단계용)
-app.get('/:lang/:section/:topic', handlePanelRoute);
-app.get('/:section/:topic', handlePanelRoute);
-
 // ✅ 2025년 11월 7일 
 app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
@@ -1284,6 +1280,10 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
   // ✅ HTML 파일을 그대로 응답 (렌더링 X)
   res.sendFile(filePath);
 });
+
+// ✅ 패널 라우팅 (기존 3단계용)
+app.get('/:lang/:section/:topic', handlePanelRoute);
+app.get('/:section/:topic', handlePanelRoute);
 
 // DB 연결 확인
 db.query('SELECT NOW()')
