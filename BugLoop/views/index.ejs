@@ -431,7 +431,7 @@
 
           if (ch.url) {
             // ✅ JavaScript 코드 수정: 'cuteAcoustics/content/' 경로 명확히 지정
-            html += `<a href="/${lang}/books/cuteAcoustics/content/${ch.url}" class="toc-link active">${ch.title}</a>`;
+            html += `<a href="/${lang}/books/cuteAcoustics/contents/${ch.url}" class="toc-link active">${ch.title}</a>`;
           } else {
             html += `<span class="toc-link disabled">${ch.title}</span>`;
           }
@@ -442,7 +442,7 @@
               html += `<li>`;
               if (sub.url) {
                 // ✅ JavaScript 코드 수정: 'cuteAcoustics/content/' 경로 명확히 지정
-                html += `<a href="/${lang}/books/cuteAcoustics/content/${sub.url}" class="toc-link active">${sub.title}</a>`;
+                html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
                 html += `<span class="toc-link disabled">${sub.title}</span>`;
               }

@@ -1272,7 +1272,7 @@ app.get('/:lang/books/:book/content/:chapter', (req, res) => {
   
   // ⭐️ 핵심 수정: .ejs 확장자를 제거합니다. 
   // View Engine 설정에 따라 Express가 자동으로 추가합니다.
-  const viewPath = `content/${lang}/books/${book}/content/${chapter}`; 
+  const viewPath = `content/${lang}/books/${book}/contents/${chapter}`; 
 
   res.render(viewPath, { lang, locale: req.locale || {} }, (err, html) => {
     if (err) {
