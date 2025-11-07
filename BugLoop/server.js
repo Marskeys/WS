@@ -1267,7 +1267,7 @@ app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
 // ✅ 2025년 11월 7일 
-app.get('/:lang/books/:book/content/:chapter', (req, res) => {
+app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
   
   // ⭐️ 핵심 수정: .ejs 확장자를 제거합니다. 
