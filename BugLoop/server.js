@@ -94,8 +94,6 @@ ${postXml}
   }
 });
 
-// slugMap은 제공된 파일에 있으므로 그대로 사용
-const { map: slugMap } = require('./slugMap');
 
 app.use((req, res, next) => {
   // www → non-www 리다이렉트
