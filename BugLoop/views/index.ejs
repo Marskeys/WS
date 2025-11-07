@@ -117,7 +117,7 @@
     }
 
     html.dark .book-card { box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-    html.dark .book-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.7); }
+    html.dark .book-card:hover { box-shadow: 4px 12px rgba(0,0,0,0.7); }
 
     .book-cover {
       width: 100%;
@@ -319,7 +319,7 @@
           <li>
             <% if (ch.url) { %>
               <a 
-                href="/<%= lang %>/books/<%= ch.book %>/content/<%= ch.url %>" 
+                href="/<%= lang %>/books/cuteAcoustics/content/<%= ch.url %>" 
                 class="toc-link active"
               >
                 <%= ch.title %>
@@ -334,7 +334,7 @@
                   <li>
                     <% if (sub.url) { %>
                       <a 
-                        href="/<%= lang %>/books/<%= sub.book %>/content/<%= sub.url %>" 
+                        href="/<%= lang %>/books/cuteAcoustics/content/<%= sub.url %>" 
                         class="toc-link active"
                       >
                         <%= sub.title %>
@@ -421,41 +421,43 @@
     }
 
     const renderTocPage = (pageIndex) => {
-  const sections = paginatedToc[pageIndex - 1];
-  if (!sections) return '';
-  let html = '<ul>';
-  sections.forEach(section => {
-    html += `<li><h5>${section.section}</h5><ul>`;
-    section.chapters.forEach(ch => {
-      html += `<li>`;
-
-      if (ch.url) {
-        html += `<a href="/${lang}/books/cuteAcoustics/${ch.url}" class="toc-link active">${ch.title}</a>`;
-      } else {
-        html += `<span class="toc-link disabled">${ch.title}</span>`;
-      }
-
-      if (ch.sub) {
-        html += '<ul>';
-        ch.sub.forEach(sub => {
+      const sections = paginatedToc[pageIndex - 1];
+      if (!sections) return '';
+      let html = '<ul>';
+      sections.forEach(section => {
+        html += `<li><h5>${section.section}</h5><ul>`;
+        section.chapters.forEach(ch => {
           html += `<li>`;
-          if (sub.url) {
-            html += `<a href="/${lang}/books/cuteAcoustics/${sub.url}" class="toc-link active">${sub.title}</a>`;
+
+          if (ch.url) {
+            // ✅ JavaScript 코드 수정: 'cuteAcoustics/content/' 경로 명확히 지정
+            html += `<a href="/${lang}/books/cuteAcoustics/content/${ch.url}" class="toc-link active">${ch.title}</a>`;
           } else {
-            html += `<span class="toc-link disabled">${sub.title}</span>`;
+            html += `<span class="toc-link disabled">${ch.title}</span>`;
           }
+
+          if (ch.sub) {
+            html += '<ul>';
+            ch.sub.forEach(sub => {
+              html += `<li>`;
+              if (sub.url) {
+                // ✅ JavaScript 코드 수정: 'cuteAcoustics/content/' 경로 명확히 지정
+                html += `<a href="/${lang}/books/cuteAcoustics/content/${sub.url}" class="toc-link active">${sub.title}</a>`;
+              } else {
+                html += `<span class="toc-link disabled">${sub.title}</span>`;
+              }
+              html += `</li>`;
+            });
+            html += '</ul>';
+          }
+
           html += `</li>`;
         });
-        html += '</ul>';
-      }
-
-      html += `</li>`;
-    });
-    html += `</ul></li>`;
-  });
-  html += '</ul>';
-  return html;
-};
+        html += `</ul></li>`;
+      });
+      html += '</ul>';
+      return html;
+    };
 
 
     window.changePage = (event, bookId, pageNumber) => {
