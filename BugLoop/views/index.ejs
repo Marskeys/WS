@@ -421,36 +421,42 @@
     }
 
     const renderTocPage = (pageIndex) => {
-      const sections = paginatedToc[pageIndex - 1];
-      if (!sections) return '';
-      let html = '<ul>';
-      sections.forEach(section => {
-        html += `<li><h5>${section.section}</h5><ul>`;
-        section.chapters.forEach(ch => {
+  const sections = paginatedToc[pageIndex - 1];
+  if (!sections) return '';
+  let html = '<ul>';
+  sections.forEach(section => {
+    html += `<li><h5>${section.section}</h5><ul>`;
+    section.chapters.forEach(ch => {
+      html += `<li>`;
+
+      if (ch.url) {
+        html += `<a href="/${lang}/books/cuteAcoustics/${ch.url}" class="toc-link active">${ch.title}</a>`;
+      } else {
+        html += `<span class="toc-link disabled">${ch.title}</span>`;
+      }
+
+      if (ch.sub) {
+        html += '<ul>';
+        ch.sub.forEach(sub => {
           html += `<li>`;
-          if (ch.url)
-            html += `<a href="/<%= lang %>/books/cuteAcoustics/${ch.url}" class="toc-link active">${ch.title}</a>`;
-          else
-            html += `<span class="toc-link disabled">${ch.title}</span>`;
-          if (ch.sub) {
-            html += '<ul>';
-            ch.sub.forEach(sub => {
-              html += `<li>`;
-              if (sub.url)
-                html += `<a href="/<%= lang %>/books/cuteAcoustics/${sub.url}" class="toc-link active">${sub.title}</a>`;
-              else
-                html += `<span class="toc-link disabled">${sub.title}</span>`;
-              html += `</li>`;
-            });
-            html += '</ul>';
+          if (sub.url) {
+            html += `<a href="/${lang}/books/cuteAcoustics/${sub.url}" class="toc-link active">${sub.title}</a>`;
+          } else {
+            html += `<span class="toc-link disabled">${sub.title}</span>`;
           }
           html += `</li>`;
         });
-        html += `</ul></li>`;
-      });
-      html += '</ul>';
-      return html;
-    };
+        html += '</ul>';
+      }
+
+      html += `</li>`;
+    });
+    html += `</ul></li>`;
+  });
+  html += '</ul>';
+  return html;
+};
+
 
     window.changePage = (event, bookId, pageNumber) => {
       event.stopPropagation();
