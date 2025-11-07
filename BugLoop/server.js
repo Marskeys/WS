@@ -1272,7 +1272,14 @@ app.get('/:section/:topic', handlePanelRoute);
 // ✅ 2025년 11월 7일 
 app.get('/:lang/books/:book/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
-  res.render(`content/${lang}/books/${book}/${chapter}.ejs`);
+  const viewPath = `content/${lang}/books/${book}/${chapter}.ejs`;
+  res.render(viewPath, {}, (err, html) => {
+    if (err) {
+      console.error("EJS render error:", err);
+      return res.status(404).send("해당 챕터를 찾을 수 없습니다.");
+    }
+    res.send(html);
+  });
 });
 
 // DB 연결 확인
