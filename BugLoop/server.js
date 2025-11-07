@@ -1269,7 +1269,8 @@ app.get('/:section/:topic', handlePanelRoute);
 // ✅ 2025년 11월 7일 
 app.get('/:lang/books/:book/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
-  const viewPath = `content/${lang}/books/${book}/${chapter}.ejs`;
+  const viewPath = `content/${lang}/books/${book}/content/${chapter}.ejs`;
+
   res.render(viewPath, {}, (err, html) => {
     if (err) {
       console.error("EJS render error:", err);
