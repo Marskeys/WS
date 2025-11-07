@@ -114,6 +114,8 @@ app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb' }));
