@@ -310,37 +310,49 @@
         </div>
 
         <div class="paginated-toc" data-book-id="cute-acoustics-toc">
-          <ul>
-            <% paginatedToc[0].forEach(section => { %>
-              <li>
-                <h5><%= section.section %></h5>
-                <ul>
-                  <% section.chapters.forEach(ch => { %>
-                    <li>
-                      <% if (ch.url) { %>
-                        <a href="/<%= lang %>/books/cuteAcoustics/<%= ch.url %>" class="toc-link active"><%= ch.title %></a>
-                      <% } else { %>
-                        <span class="toc-link disabled"><%= ch.title %></span>
-                      <% } %>
-                      <% if (ch.sub) { %>
-                        <ul>
-                          <% ch.sub.forEach(sub => { %>
-                            <li>
-                              <% if (sub.url) { %>
-                                <a href="/<%= lang %>/books/cuteAcoustics/<%= sub.url %>" class="toc-link active"><%= sub.title %></a>
-                              <% } else { %>
-                                <span class="toc-link disabled"><%= sub.title %></span>
-                              <% } %>
-                            </li>
-                          <% }) %>
-                        </ul>
-                      <% } %>
-                    </li>
-                  <% }) %>
-                </ul>
-              </li>
-            <% }) %>
-          </ul>
+      <ul>
+  <% paginatedToc[0].forEach(section => { %>
+    <li>
+      <h5><%= section.section %></h5>
+      <ul>
+        <% section.chapters.forEach(ch => { %>
+          <li>
+            <% if (ch.url) { %>
+              <a 
+                href="/<%= lang %>/books/<%= ch.book %>/<%= ch.url %>" 
+                class="toc-link active"
+              >
+                <%= ch.title %>
+              </a>
+            <% } else { %>
+              <span class="toc-link disabled"><%= ch.title %></span>
+            <% } %>
+
+            <% if (ch.sub) { %>
+              <ul>
+                <% ch.sub.forEach(sub => { %>
+                  <li>
+                    <% if (sub.url) { %>
+                      <a 
+                        href="/<%= lang %>/books/<%= sub.book %>/<%= sub.url %>" 
+                        class="toc-link active"
+                      >
+                        <%= sub.title %>
+                      </a>
+                    <% } else { %>
+                      <span class="toc-link disabled"><%= sub.title %></span>
+                    <% } %>
+                  </li>
+                <% }) %>
+              </ul>
+            <% } %>
+          </li>
+        <% }) %>
+      </ul>
+    </li>
+  <% }) %>
+</ul>
+
         </div>
         <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
           총 <%= totalSections %>개 섹션

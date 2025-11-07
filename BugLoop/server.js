@@ -1269,6 +1269,10 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
+app.get('/:lang/books/:book/:chapter', (req, res) => {
+  const { lang, book, chapter } = req.params;
+  res.render(`content/${lang}/books/${book}/${chapter}`);
+});
 
 // DB 연결 확인
 db.query('SELECT NOW()')
