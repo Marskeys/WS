@@ -1244,19 +1244,6 @@ app.get('/_slugtest', (req, res) => {
   res.type('text').send(out);
 });
 
-// ✅ 언어 + 폴더 + 폴더 + 페이지 구조만 잡음
-app.get('/:lang/:section/:subsection/:page', (req, res) => {
-  const { lang, section, subsection, page } = req.params;
-  const filePath = path.join(__dirname, 'content', lang, section, subsection, `${page}.html`);
-
-  if (!fs.existsSync(filePath)) {
-    // 404 페이지도 HTML 정적파일로 보여주고 싶으면 sendFile로
-    const notFoundPath = path.join(__dirname, 'views', '404.html');
-    if (fs.existsSync(notFoundPath)) {
-      return res.sendFile(notFoundPath);
-    }
-    return res.status(404).send('404 Not Found');
-  }
 
   // ✅ HTML 파일을 그대로 응답 (렌더링 X)
   res.sendFile(filePath);
@@ -1284,6 +1271,20 @@ app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
   });
 });
 
+// ✅ 언어 + 폴더 + 폴더 + 페이지 구조만 잡음
+app.get('/:lang/:section/:subsection/:page', (req, res) => {
+  const { lang, section, subsection, page } = req.params;
+  const filePath = path.join(__dirname, 'content', lang, section, subsection, `${page}.html`);
+
+  if (!fs.existsSync(filePath)) {
+    // 404 페이지도 HTML 정적파일로 보여주고 싶으면 sendFile로
+    const notFoundPath = path.join(__dirname, 'views', '404.html');
+    if (fs.existsSync(notFoundPath)) {
+      return res.sendFile(notFoundPath);
+    }
+    return res.status(404).send('404 Not Found');
+  }
+  
 // DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
