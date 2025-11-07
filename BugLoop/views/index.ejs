@@ -319,7 +319,7 @@
           <li>
             <% if (ch.url) { %>
               <a 
-                href="/<%= lang %>/books/cuteAcoustics/content/<%= ch.url %>" 
+                href="/<%= lang %>/books/cuteAcoustics/contents/<%= ch.url %>" 
                 class="toc-link active"
               >
                 <%= ch.title %>
@@ -334,7 +334,7 @@
                   <li>
                     <% if (sub.url) { %>
                       <a 
-                        href="/<%= lang %>/books/cuteAcoustics/content/<%= sub.url %>" 
+                        href="/<%= lang %>/books/cuteAcoustics/contents/<%= sub.url %>" 
                         class="toc-link active"
                       >
                         <%= sub.title %>
@@ -430,7 +430,7 @@
           html += `<li>`;
 
           if (ch.url) {
-            // ✅ JavaScript 코드 수정: 'cuteAcoustics/content/' 경로 명확히 지정
+            // ✅ JavaScript 코드는 이미 /contents/로 되어 있어 수정할 필요 없습니다.
             html += `<a href="/${lang}/books/cuteAcoustics/contents/${ch.url}" class="toc-link active">${ch.title}</a>`;
           } else {
             html += `<span class="toc-link disabled">${ch.title}</span>`;
@@ -441,7 +441,7 @@
             ch.sub.forEach(sub => {
               html += `<li>`;
               if (sub.url) {
-                // ✅ JavaScript 코드 수정: 'cuteAcoustics/content/' 경로 명확히 지정
+                // ✅ JavaScript 코드는 이미 /contents/로 되어 있어 수정할 필요 없습니다.
                 html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
                 html += `<span class="toc-link disabled">${sub.title}</span>`;
