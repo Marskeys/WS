@@ -10,7 +10,11 @@
     </button>
 
     <!-- 다크/라이트 모드 -->
-    <button id="darkModeToggle" class="header-btn" title="<%= locale.ui.darkModeToggle %>">
+    <button id="darkModeToggle" class="header-btn"
+      title="<%= locale.ui.darkModeToggle %>"
+      data-dark="<%= locale.ui.darkModeLabel %>"
+      data-light="<%= locale.ui.darkModeLabelLight %>">
+
       <i class="fas fa-moon"></i>
       <span id="darkModeLabel"><%= locale.ui.darkModeLabel %></span>
     </button>
