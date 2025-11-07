@@ -1250,9 +1250,11 @@ app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
   const viewPath = `content/${lang}/books/${book}/contents/${chapter}`;
 
+  console.log("📌 View Path Check:", viewPath);
+
   res.render(viewPath, { lang, locale: res.locals.locale }, (err, html) => {
     if (err) {
-      console.error(`EJS 렌더링 실패 (경로: ${viewPath}.ejs)`, err);
+      console.error("❌ EJS Render Error:", err);
       return res.status(404).send("해당 챕터 또는 페이지를 찾을 수 없습니다.");
     }
     res.send(html);
