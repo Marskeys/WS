@@ -1269,9 +1269,10 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
+// ✅ 2025년 11월 7일 
 app.get('/:lang/books/:book/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
-  res.render(`content/${lang}/books/${book}/${chapter}`);
+  res.render(`content/${lang}/books/${book}/${chapter}.ejs`);
 });
 
 // DB 연결 확인
