@@ -1267,14 +1267,17 @@ app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
 // ✅ 2025년 11월 7일 
-app.get('/:lang/books/:book/:chapter', (req, res) => {
+app.get('/:lang/books/:book/content/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
+  
+  // viewPath는 이제 정확하게 content/ko/books/cuteAcoustics/content/preface.ejs가 됩니다.
   const viewPath = `content/${lang}/books/${book}/content/${chapter}.ejs`;
 
-  res.render(viewPath, {}, (err, html) => {
+  res.render(viewPath, { lang, locale: req.locale }, (err, html) => {
     if (err) {
       console.error("EJS render error:", err);
-      return res.status(404).send("해당 챕터를 찾을 수 없습니다.");
+      // EJS 파일을 찾지 못하면 404를 반환
+      return res.status(404).send("해당 챕터 또는 페이지를 찾을 수 없습니다.");
     }
     res.send(html);
   });
