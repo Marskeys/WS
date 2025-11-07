@@ -1245,10 +1245,6 @@ app.get('/_slugtest', (req, res) => {
 });
 
 
-  // ✅ HTML 파일을 그대로 응답 (렌더링 X)
-  res.sendFile(filePath);
-});
-
 // ✅ 패널 라우팅 (기존 3단계용)
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
@@ -1284,7 +1280,11 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
     }
     return res.status(404).send('404 Not Found');
   }
-  
+
+  // ✅ HTML 파일을 그대로 응답 (렌더링 X)
+  res.sendFile(filePath);
+});
+
 // DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
