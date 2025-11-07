@@ -21,27 +21,45 @@
       "placeholder": "사이트 개발자의 일기"
     },
     "ui": {
-      "tocButton": "📑 목차"
+      "home": "홈",
+      "tocButton": "목차",
+      "darkModeLabel": "다크 모드",
+      "darkModeLabelLight": "라이트 모드",
+      "darkModeToggle": "테마 전환"
     },
     "profile": {
       "profile-title": "작가진",
       "profile-job1": "정보통신기술 담당",
       "profile-name1": "한동선",
       "profile-bio1": "현재 한양사이버대학교에서 컴퓨터공학과 해킹보안학을 전공하고 있는 만학도입니다. 글을 통해 진실되고 깊이 있는 소통을 즐깁니다.",
-      "profile-tags1": ["#웹개발", "#사이버대", "#전자책러버", "#웹디자인"],
+      "profile-tags1": [
+        "#웹개발",
+        "#사이버대",
+        "#전자책러버",
+        "#웹디자인"
+      ],
       "profile-job2": "음악 및 음향학 담당",
       "profile-name2": "두동선",
       "profile-bio2": "한양대학교 작곡과 학사 취득 후 프랑스 르망대학교에서 공학 기초과정 중 음향학을 2년간 수학하였습니다. 목적에 얽매이지 않은 자유로운 음악과 그 음악을 가능케 하는 도구(가상악기) 개발에 관심이 있습니다.",
-      "profile-tags2": ["#전자음악", "#음향학"],
+      "profile-tags2": [
+        "#전자음악",
+        "#음향학"
+      ],
       "profile-job3": "두뇌 게임 및 건강 담당",
       "profile-name3": "세동선",
       "profile-bio3": "중증 시각장애인으로 르망대학교에서 물리학을, 르망보자르에서 사운드 디자인을 전공했으나 학교 분위기에 적응하지 못해 모두 중퇴하였습니다. 신체적·정신적 건강과 지속 가능한 행복에 대해 늘 고민하며, 관련 앱과 도구를 개발합니다.",
-      "profile-tags3": ["#범맥락막위축", "#사운드디자인", "#물리학", "#시각장애인", "#건강테크"]
+      "profile-tags3": [
+        "#범맥락막위축",
+        "#사운드디자인",
+        "#물리학",
+        "#시각장애인",
+        "#건강테크"
+      ]
     },
     "editor": {
       "editor-title": "BugLoop 편집기",
       "preview-label": "실시간 미리보기",
-      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다。</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 한동선의 블로그</p>\n</footer>"
+      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다。</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 한동선의 블로그</p>\n</footer>"
     },
     "header": {
       "mainMenu": "주 메뉴",
@@ -63,153 +81,456 @@
       "body": "책이라는 것은 영화의 자막과도 같다.<br><br>책을 제대로 읽기 위해서는 경험(기억) 혹은 경험에 대한 욕구(상상력), 둘 중 하나는 반드시 필요하다. 글자라는 것은 무심한 시선으로 스윽 보자면 그저 이리저리 그어진 선에 불과하다. 그런데 선의 얽힘 사이에서 만들어지는 의미가 진정 실감되기 위해서는 그것과 독자 사이의 관계가 먼저 형성되어 있어야 하는데, 이 역할을 하는 것이 바로 한 개인의 내면이라는 스크린 위에 쏘아진 — 자기 자신만 유일하게 온전한 형태로 볼 수 있는 장면, 즉 기억과 상상력인 것이다.<br><br>전통적인 의미에서의 책은 하나의 방향을 향해 활자를 늘어 놓은 형태로 존재한다. 그러나 전자책은 다르다. 전자(Electron)는 전기적인 기운을 내뿜는 알맹이를 지칭하는데, 이 기운에 조그마한 변화만 생겨도 그 전기적 요동은 빛의 속도로 전파가 된다. 이 특성을 이용하면 책의 맨 첫 장에서 마지막 장까지 단숨에 이동할 수 있으며, 활자 사이에 오디오나 비디오와 같은 다른 차원의 매체를 인용할 수도 있다. 이는 모두 글에 대한 경험을 풍부하게 하는 긍정적인 역할을 한다.<br><br>전자책은 단순히 복제와 출판이 용이한 책이 아니다. 그 이상이다! 그 가치를 탐구하는 여정에 대한 기록이 바로 이 블로그이다.",
       "chips": []
     },
-   "books": {
-  "cute_acoustics": {
-    "title": "귀여운 음향학",
-    "author": "두동선",
-    "toc": [
-      {
-        "section": "서문",
-        "chapters": [
+    "books": {
+      "cute_acoustics": {
+        "title": "귀여운 음향학",
+        "author": "두동선",
+        "toc": [
           {
-            "id": "preface",
-            "title": "귀여운 음향학 서문",
-            "url": "preface"
-          },
-          {
-            "id": "afterword",
-            "title": "덧붙이는 말",
-            "url": "afterword"
-          }
-        ]
-      },
-      {
-        "section": "1. 우주의 법칙",
-        "chapters": [
-          { "id": "1-1", "title": "관성: 변하지 않으려는 성질", "url": "/<%= lang %>/books/cuteAcoustics/1-1" },
-          { "id": "1-1-1", "title": "변화와 힘", "url": "/<%= lang %>/books/cuteAcoustics/1-1-1" },
-          { "id": "1-2", "title": "힘은 에너지를 전달하는 문", "url": "/<%= lang %>/books/cuteAcoustics/1-2" },
-          { "id": "1-2-1", "title": "두 종류의 에너지", "url": "/<%= lang %>/books/cuteAcoustics/1-2-1" },
-          { "id": "1-2-2", "title": "에너지 보존의 법칙", "url": "/<%= lang %>/books/cuteAcoustics/1-2-2" },
-          { "id": "1-2-3", "title": "요약", "url": "/<%= lang %>/books/cuteAcoustics/1-2-3" },
-          { "id": "1-3", "title": "장(Fields)과 입자 (심화)", "url": "/<%= lang %>/books/cuteAcoustics/1-3" },
-          { "id": "1-3-1", "title": "원자의 구조", "url": "/<%= lang %>/books/cuteAcoustics/1-3-1" },
-          { "id": "1-3-2", "title": "장이란?", "url": "/<%= lang %>/books/cuteAcoustics/1-3-2" },
-          { "id": "1-3-3", "title": "전자가 궁금하다!", "url": "/<%= lang %>/books/cuteAcoustics/1-3-3" },
-          { "id": "1-3-4", "title": "기본 입자 더 들어가기", "url": "/<%= lang %>/books/cuteAcoustics/1-3-4" },
-          { "id": "1-3-5", "title": "인간도 확률적 존재이다?", "url": "/<%= lang %>/books/cuteAcoustics/1-3-5" }
-        ]
-      },
-      {
-        "section": "2. 진동과 파동",
-        "chapters": [
-          { "id": "2-1", "title": "진동: 소리를 발생시키는 특별한 움직임", "url": "/<%= lang %>/books/cuteAcoustics/2-1" },
-          { "id": "2-2", "title": "진동의 준비물: 관성과 복원력", "url": "/<%= lang %>/books/cuteAcoustics/2-2" },
-          { "id": "2-3", "title": "유체역학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/2-3" },
-          { "id": "2-4", "title": "음원과 매질", "url": "/<%= lang %>/books/cuteAcoustics/2-4" },
-          { "id": "2-5", "title": "공기의 무작위 열운동과 확산", "url": "/<%= lang %>/books/cuteAcoustics/2-5" },
-          { "id": "2-6", "title": "공기의 탄성", "url": "/<%= lang %>/books/cuteAcoustics/2-6" },
-          { "id": "2-7", "title": "공기의 진동 원리: 압축과 희박", "url": "/<%= lang %>/books/cuteAcoustics/2-7" }
-        ]
-      },
-      {
-        "section": "3. 기초 수학",
-        "chapters": [
-          { "id": "3-1", "title": "모델이란?", "url": "/<%= lang %>/books/cuteAcoustics/3-1" },
-          { "id": "3-2", "title": "물리량: 복잡한 현상을 모델링하기 위한 첫 단계", "url": "/<%= lang %>/books/cuteAcoustics/3-2" },
-          { "id": "3-3", "title": "운동량과 힘의 모델링", "url": "/<%= lang %>/books/cuteAcoustics/3-3" },
-          { "id": "3-3-1", "title": "관성의 수학적 표현: 운동량", "url": "/<%= lang %>/books/cuteAcoustics/3-3-1" },
-          { "id": "3-3-2", "title": "F = ma: 힘이라는 추상적 개념을 모델링하다", "url": "/<%= lang %>/books/cuteAcoustics/3-3-2" },
-          { "id": "3-4", "title": "후크의 법칙: 진동체의 수학적 표현", "url": "/<%= lang %>/books/cuteAcoustics/3-4" },
-          {
-            "id": "3-5",
-            "title": "삼각함수",
-            "url": "/<%= lang %>/books/cuteAcoustics/3-5",
-            "sub": [
-              { "id": "3-5-1", "title": "함수란?", "url": "/<%= lang %>/books/cuteAcoustics/3-5-1" },
-              { "id": "3-5-2", "title": "비례와 비율", "url": "/<%= lang %>/books/cuteAcoustics/3-5-2" },
-              { "id": "3-5-3", "title": "비율의 미학 0: 비율의 신비한 힘", "url": "/<%= lang %>/books/cuteAcoustics/3-5-3" },
-              { "id": "3-5-4", "title": "비율의 미학 1: 직각삼각형의 비밀", "url": "/<%= lang %>/books/cuteAcoustics/3-5-4" },
-              { "id": "3-5-5", "title": "비율의 미학 2: 우주의 낭만과 삼각함수", "url": "/<%= lang %>/books/cuteAcoustics/3-5-5" },
-              { "id": "3-5-6", "title": "비율의 미학 3: 라디안과 무차원의 각도", "url": "/<%= lang %>/books/cuteAcoustics/3-5-6" },
-              { "id": "3-5-7", "title": "비율의 미학 4: 미분", "url": "/<%= lang %>/books/cuteAcoustics/3-5-7" }
+            "section": "서문",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "귀여운 음향학 서문",
+                "url": "preface"
+              },
+              {
+                "id": "afterword",
+                "title": "덧붙이는 말",
+                "url": ""
+              }
             ]
           },
-          { "id": "3-6", "title": "도함수: 찰나의 변화를 나타내는 함수", "url": "/<%= lang %>/books/cuteAcoustics/3-6" },
-          { "id": "3-7", "title": "삼각함수의 도함수", "url": "/<%= lang %>/books/cuteAcoustics/3-7" },
-          { "id": "3-8", "title": "후크의 법칙을 풀다: 단순조화진동", "url": "/<%= lang %>/books/cuteAcoustics/3-8" }
-        ]
-      },
-      {
-        "section": "4. 소리의 성질",
-        "chapters": [
-          { "id": "4-1", "title": "주기성과 주파수", "url": "/<%= lang %>/books/cuteAcoustics/4-1" },
-          { "id": "4-2", "title": "고유주파수", "url": "/<%= lang %>/books/cuteAcoustics/4-2" },
-          { "id": "4-3", "title": "공진", "url": "/<%= lang %>/books/cuteAcoustics/4-3" },
-          { "id": "4-4", "title": "파동방정식", "url": "/<%= lang %>/books/cuteAcoustics/4-4" },
-          { "id": "4-5", "title": "모드와 배음", "url": "/<%= lang %>/books/cuteAcoustics/4-5" },
-          { "id": "4-6", "title": "음악음향학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/4-6" },
-          { "id": "4-7", "title": "조율법", "url": "/<%= lang %>/books/cuteAcoustics/4-7" }
-        ]
-      },
-      {
-        "section": "5. 공간",
-        "chapters": [
-          { "id": "5-1", "title": "건축의 구조", "url": "/<%= lang %>/books/cuteAcoustics/5-1" },
-          { "id": "5-2", "title": "음향적 특성들", "url": "/<%= lang %>/books/cuteAcoustics/5-2" },
-          { "id": "5-2-1", "title": "반사", "url": "/<%= lang %>/books/cuteAcoustics/5-2-1" },
-          { "id": "5-2-2", "title": "흡음", "url": "/<%= lang %>/books/cuteAcoustics/5-2-2" },
-          { "id": "5-2-3", "title": "굴절", "url": "/<%= lang %>/books/cuteAcoustics/5-2-3" },
-          { "id": "5-2-4", "title": "회절", "url": "/<%= lang %>/books/cuteAcoustics/5-2-4" },
-          { "id": "5-2-5", "title": "간섭", "url": "/<%= lang %>/books/cuteAcoustics/5-2-5" },
-          { "id": "5-3", "title": "건축음향학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/5-3" }
-        ]
-      },
-      {
-        "section": "6. 오디오 신호",
-        "chapters": [
-          { "id": "6-1", "title": "자유 진동과 강제 진동", "url": "/<%= lang %>/books/cuteAcoustics/6-1" },
-          { "id": "6-2", "title": "전자기학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/6-2" },
-          { "id": "6-2-1", "title": "맥스웰 방정식", "url": "/<%= lang %>/books/cuteAcoustics/6-2-1" },
-          { "id": "6-3", "title": "신호란?", "url": "/<%= lang %>/books/cuteAcoustics/6-3" },
-          { "id": "6-4", "title": "디지털-아날로그 변환", "url": "/<%= lang %>/books/cuteAcoustics/6-4" },
-          { "id": "6-5", "title": "녹음의 원리", "url": "/<%= lang %>/books/cuteAcoustics/6-5" },
-          { "id": "6-5-1", "title": "마이크", "url": "/<%= lang %>/books/cuteAcoustics/6-5-1" },
-          { "id": "6-5-2", "title": "스피커", "url": "/<%= lang %>/books/cuteAcoustics/6-5-2" },
-          { "id": "6-6", "title": "오디오 신호", "url": "/<%= lang %>/books/cuteAcoustics/6-6" },
-          { "id": "6-6-1", "title": "분석", "url": "/<%= lang %>/books/cuteAcoustics/6-6-1" },
-          { "id": "6-6-2", "title": "합성", "url": "/<%= lang %>/books/cuteAcoustics/6-6-2" },
-          { "id": "6-6-3", "title": "처리", "url": "/<%= lang %>/books/cuteAcoustics/6-6-3" },
-          { "id": "6-6-4", "title": "저장", "url": "/<%= lang %>/books/cuteAcoustics/6-6-4" },
-          { "id": "6-7", "title": "전자음향학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/6-7" }
-        ]
-      },
-      {
-        "section": "7. 한발 더 남았다: 심화 수학",
-        "chapters": [
-          { "id": "7-1", "title": "푸리에 분석", "url": "/<%= lang %>/books/cuteAcoustics/7-1" },
-          { "id": "7-2", "title": "푸리에 합성", "url": "/<%= lang %>/books/cuteAcoustics/7-2" }
-        ]
-      },
-      {
-        "section": "8. 음성과 소통",
-        "chapters": [
-          { "id": "8-1", "title": "귀", "url": "/<%= lang %>/books/cuteAcoustics/8-1" },
-          { "id": "8-1-1", "title": "귀의 구조", "url": "/<%= lang %>/books/cuteAcoustics/8-1-1" },
-          { "id": "8-1-2", "title": "귀와 뇌의 연결", "url": "/<%= lang %>/books/cuteAcoustics/8-1-2" },
-          { "id": "8-1-3", "title": "이명", "url": "/<%= lang %>/books/cuteAcoustics/8-1-3" },
-          { "id": "8-1-4", "title": "보청기", "url": "/<%= lang %>/books/cuteAcoustics/8-1-4" },
-          { "id": "8-1-5", "title": "심리음향학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/8-1-5" },
-          { "id": "8-2", "title": "말", "url": "/<%= lang %>/books/cuteAcoustics/8-2" },
-          { "id": "8-2-1", "title": "얼굴의 음향학적 구조", "url": "/<%= lang %>/books/cuteAcoustics/8-2-1" },
-          { "id": "8-2-2", "title": "발성", "url": "/<%= lang %>/books/cuteAcoustics/8-2-2" },
-          { "id": "8-3", "title": "음성음향학 맛보기", "url": "/<%= lang %>/books/cuteAcoustics/8-3" }
+          {
+            "section": "1. 우주의 법칙",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "관성: 변하지 않으려는 성질",
+                "url": ""
+              },
+              {
+                "id": "1-1-1",
+                "title": "변화와 힘",
+                "url": ""
+              },
+              {
+                "id": "1-2",
+                "title": "힘은 에너지를 전달하는 문",
+                "url": ""
+              },
+              {
+                "id": "1-2-1",
+                "title": "두 종류의 에너지",
+                "url": ""
+              },
+              {
+                "id": "1-2-2",
+                "title": "에너지 보존의 법칙",
+                "url": ""
+              },
+              {
+                "id": "1-2-3",
+                "title": "요약",
+                "url": ""
+              },
+              {
+                "id": "1-3",
+                "title": "장(Fields)과 입자 (심화)",
+                "url": ""
+              },
+              {
+                "id": "1-3-1",
+                "title": "원자의 구조",
+                "url": ""
+              },
+              {
+                "id": "1-3-2",
+                "title": "장이란?",
+                "url": ""
+              },
+              {
+                "id": "1-3-3",
+                "title": "전자가 궁금하다!",
+                "url": ""
+              },
+              {
+                "id": "1-3-4",
+                "title": "기본 입자 더 들어가기",
+                "url": ""
+              },
+              {
+                "id": "1-3-5",
+                "title": "인간도 확률적 존재이다?",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "2. 진동과 파동",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "진동: 소리를 발생시키는 특별한 움직임",
+                "url": ""
+              },
+              {
+                "id": "2-2",
+                "title": "진동의 준비물: 관성과 복원력",
+                "url": ""
+              },
+              {
+                "id": "2-3",
+                "title": "유체역학 맛보기",
+                "url": ""
+              },
+              {
+                "id": "2-4",
+                "title": "음원과 매질",
+                "url": ""
+              },
+              {
+                "id": "2-5",
+                "title": "공기의 무작위 열운동과 확산",
+                "url": ""
+              },
+              {
+                "id": "2-6",
+                "title": "공기의 탄성",
+                "url": ""
+              },
+              {
+                "id": "2-7",
+                "title": "공기의 진동 원리: 압축과 희박",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "3. 기초 수학",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "모델이란?",
+                "url": ""
+              },
+              {
+                "id": "3-2",
+                "title": "물리량: 복잡한 현상을 모델링하기 위한 첫 단계",
+                "url": ""
+              },
+              {
+                "id": "3-3",
+                "title": "운동량과 힘의 모델링",
+                "url": ""
+              },
+              {
+                "id": "3-3-1",
+                "title": "관성의 수학적 표현: 운동량",
+                "url": ""
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: 힘이라는 추상적 개념을 모델링하다",
+                "url": ""
+              },
+              {
+                "id": "3-4",
+                "title": "후크의 법칙: 진동체의 수학적 표현",
+                "url": ""
+              },
+              {
+                "id": "3-5",
+                "title": "삼각함수",
+                "url": "",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "함수란?",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "비례와 비율",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "비율의 미학 0: 비율의 신비한 힘",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "비율의 미학 1: 직각삼각형의 비밀",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "비율의 미학 2: 우주의 낭만과 삼각함수",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "비율의 미학 3: 라디안과 무차원의 각도",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "비율의 미학 4: 미분",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "도함수: 찰나의 변화를 나타내는 함수",
+                "url": ""
+              },
+              {
+                "id": "3-7",
+                "title": "삼각함수의 도함수",
+                "url": ""
+              },
+              {
+                "id": "3-8",
+                "title": "후크의 법칙을 풀다: 단순조화진동",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "4. 소리의 성질",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "주기성과 주파수",
+                "url": ""
+              },
+              {
+                "id": "4-2",
+                "title": "고유주파수",
+                "url": ""
+              },
+              {
+                "id": "4-3",
+                "title": "공진",
+                "url": ""
+              },
+              {
+                "id": "4-4",
+                "title": "파동방정식",
+                "url": ""
+              },
+              {
+                "id": "4-5",
+                "title": "모드와 배음",
+                "url": ""
+              },
+              {
+                "id": "4-6",
+                "title": "음악음향학 맛보기",
+                "url": ""
+              },
+              {
+                "id": "4-7",
+                "title": "조율법",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "5. 공간",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "건축의 구조",
+                "url": ""
+              },
+              {
+                "id": "5-2",
+                "title": "음향적 특성들",
+                "url": ""
+              },
+              {
+                "id": "5-2-1",
+                "title": "반사",
+                "url": ""
+              },
+              {
+                "id": "5-2-2",
+                "title": "흡음",
+                "url": ""
+              },
+              {
+                "id": "5-2-3",
+                "title": "굴절",
+                "url": ""
+              },
+              {
+                "id": "5-2-4",
+                "title": "회절",
+                "url": ""
+              },
+              {
+                "id": "5-2-5",
+                "title": "간섭",
+                "url": ""
+              },
+              {
+                "id": "5-3",
+                "title": "건축음향학 맛보기",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "6. 오디오 신호",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "자유 진동과 강제 진동",
+                "url": ""
+              },
+              {
+                "id": "6-2",
+                "title": "전자기학 맛보기",
+                "url": ""
+              },
+              {
+                "id": "6-2-1",
+                "title": "맥스웰 방정식",
+                "url": ""
+              },
+              {
+                "id": "6-3",
+                "title": "신호란?",
+                "url": ""
+              },
+              {
+                "id": "6-4",
+                "title": "디지털-아날로그 변환",
+                "url": ""
+              },
+              {
+                "id": "6-5",
+                "title": "녹음의 원리",
+                "url": ""
+              },
+              {
+                "id": "6-5-1",
+                "title": "마이크",
+                "url": ""
+              },
+              {
+                "id": "6-5-2",
+                "title": "스피커",
+                "url": ""
+              },
+              {
+                "id": "6-6",
+                "title": "오디오 신호",
+                "url": ""
+              },
+              {
+                "id": "6-6-1",
+                "title": "분석",
+                "url": ""
+              },
+              {
+                "id": "6-6-2",
+                "title": "합성",
+                "url": ""
+              },
+              {
+                "id": "6-6-3",
+                "title": "처리",
+                "url": ""
+              },
+              {
+                "id": "6-6-4",
+                "title": "저장",
+                "url": ""
+              },
+              {
+                "id": "6-7",
+                "title": "전자음향학 맛보기",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "7. 한발 더 남았다: 심화 수학",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "푸리에 분석",
+                "url": ""
+              },
+              {
+                "id": "7-2",
+                "title": "푸리에 합성",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "8. 음성과 소통",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "귀",
+                "url": ""
+              },
+              {
+                "id": "8-1-1",
+                "title": "귀의 구조",
+                "url": ""
+              },
+              {
+                "id": "8-1-2",
+                "title": "귀와 뇌의 연결",
+                "url": ""
+              },
+              {
+                "id": "8-1-3",
+                "title": "이명",
+                "url": ""
+              },
+              {
+                "id": "8-1-4",
+                "title": "보청기",
+                "url": ""
+              },
+              {
+                "id": "8-1-5",
+                "title": "심리음향학 맛보기",
+                "url": ""
+              },
+              {
+                "id": "8-2",
+                "title": "말",
+                "url": ""
+              },
+              {
+                "id": "8-2-1",
+                "title": "얼굴의 음향학적 구조",
+                "url": ""
+              },
+              {
+                "id": "8-2-2",
+                "title": "발성",
+                "url": ""
+              },
+              {
+                "id": "8-3",
+                "title": "음성음향학 맛보기",
+                "url": ""
+              }
+            ]
+          }
         ]
       }
-    ]
-  }
-}
-
+    }
   },
   "en": {
     "meta": {
@@ -233,27 +554,45 @@
       "placeholder": "Developer’s personal journal"
     },
     "ui": {
-      "tocButton": "📑 Table of Contents"
+      "home": "Home",
+      "tocButton": "Table of Contents",
+      "darkModeLabel": "Dark Mode",
+      "darkModeLabelLight": "Light Mode",
+      "darkModeToggle": "Toggle Theme"
     },
     "profile": {
       "profile-title": "Authors",
       "profile-job1": "Information and Communications Technology (ICT)",
       "profile-name1": "Dongsun Han",
       "profile-bio1": "A lifelong learner majoring in Computer Science and Hacking & Information Security at Hanyang Cyber University. He finds joy in honest, reflective communication through writing.",
-      "profile-tags1": ["#WebDevelopment", "#CyberUniversity", "#DigitalBookLover", "#WebDesign"],
+      "profile-tags1": [
+        "#WebDevelopment",
+        "#CyberUniversity",
+        "#DigitalBookLover",
+        "#WebDesign"
+      ],
       "profile-job2": "Music and Acoustics",
       "profile-name2": "Dudongsun",
       "profile-bio2": "After earning a B.A. in Composition from Hanyang University, he studied Acoustics for two years at Le Mans University in France. Passionate about creating music that isn’t bound by purpose, and the tools—virtual instruments—that make such freedom possible.",
-      "profile-tags2": ["#ElectronicMusic", "#Acoustics"],
+      "profile-tags2": [
+        "#ElectronicMusic",
+        "#Acoustics"
+      ],
       "profile-job3": "Cognitive Games and Health",
       "profile-name3": "Sedongsun",
       "profile-bio3": "A visually impaired developer who once studied Physics at Le Mans University and Sound Design at Le Mans Beaux-Arts before leaving due to misalignment with the academic atmosphere. Now he dedicates himself to exploring digital wellness, inner stability, and sustainable happiness through technology.",
-      "profile-tags3": ["#Choroideremia", "#SoundDesign", "#Physics", "#VisualImpairment", "#HealthTech"]
+      "profile-tags3": [
+        "#Choroideremia",
+        "#SoundDesign",
+        "#Physics",
+        "#VisualImpairment",
+        "#HealthTech"
+      ]
     },
     "editor": {
       "editor-title": "BugLoop Editor",
       "preview-label": "Live Preview",
-      "example-html": "<header>\n  <h1>My First Web Page</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a simple HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Love</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dongsun Han’s Blog</p>\n</footer>"
+      "example-html": "<header>\n  <h1>My First Web Page</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a simple HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Love</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dongsun Han’s Blog</p>\n</footer>"
     },
     "header": {
       "mainMenu": "Main Menu",
@@ -285,11 +624,13 @@
             "chapters": [
               {
                 "id": "preface",
-                "title": "Preface to Cute Acoustics"
+                "title": "Preface to Cute Acoustics",
+                "url": "preface"
               },
               {
                 "id": "afterword",
-                "title": "Afterword"
+                "title": "Afterword",
+                "url": ""
               }
             ]
           },
@@ -298,51 +639,63 @@
             "chapters": [
               {
                 "id": "1-1",
-                "title": "Inertia: The Property of Resisting Change"
+                "title": "Inertia: The Property of Resisting Change",
+                "url": ""
               },
               {
                 "id": "1-1-1",
-                "title": "Change and Force"
+                "title": "Change and Force",
+                "url": ""
               },
               {
                 "id": "1-2",
-                "title": "Force is the Door that Transmits Energy"
+                "title": "Force is the Door that Transmits Energy",
+                "url": ""
               },
               {
                 "id": "1-2-1",
-                "title": "Two Types of Energy"
+                "title": "Two Types of Energy",
+                "url": ""
               },
               {
                 "id": "1-2-2",
-                "title": "Law of Conservation of Energy"
+                "title": "Law of Conservation of Energy",
+                "url": ""
               },
               {
                 "id": "1-2-3",
-                "title": "Summary"
+                "title": "Summary",
+                "url": ""
               },
               {
                 "id": "1-3",
-                "title": "Fields and Particles (Advanced)"
+                "title": "Fields and Particles (Advanced)",
+                "url": ""
               },
               {
                 "id": "1-3-1",
-                "title": "Structure of the Atom"
+                "title": "Structure of the Atom",
+                "url": ""
               },
               {
                 "id": "1-3-2",
-                "title": "What is a Field?"
+                "title": "What is a Field?",
+                "url": ""
               },
               {
                 "id": "1-3-3",
-                "title": "Curious about Electrons!"
+                "title": "Curious about Electrons!",
+                "url": ""
               },
               {
                 "id": "1-3-4",
-                "title": "Diving Deeper into Elementary Particles"
+                "title": "Diving Deeper into Elementary Particles",
+                "url": ""
               },
               {
                 "id": "1-3-5",
-                "title": "Are Humans also Probabilistic Beings?"
+                "title": "Are Humans also Probabilistic Beings?",
+                "url": ""
               }
             ]
           },
@@ -351,31 +704,38 @@
             "chapters": [
               {
                 "id": "2-1",
-                "title": "Vibration: The Special Movement that Creates Sound"
+                "title": "Vibration: The Special Movement that Creates Sound",
+                "url": ""
               },
               {
                 "id": "2-2",
-                "title": "Prerequisites for Vibration: Inertia and Restoring Force"
+                "title": "Prerequisites for Vibration: Inertia and Restoring Force",
+                "url": ""
               },
               {
                 "id": "2-3",
-                "title": "A Taste of Fluid Dynamics"
+                "title": "A Taste of Fluid Dynamics",
+                "url": ""
               },
               {
                 "id": "2-4",
-                "title": "Sound Source and Medium"
+                "title": "Sound Source and Medium",
+                "url": ""
               },
               {
                 "id": "2-5",
-                "title": "Random Thermal Motion and Diffusion of Air"
+                "title": "Random Thermal Motion and Diffusion of Air",
+                "url": ""
               },
               {
                 "id": "2-6",
-                "title": "Elasticity of Air"
+                "title": "Elasticity of Air",
+                "url": ""
               },
               {
                 "id": "2-7",
-                "title": "Principle of Air Vibration: Compression and Rarefaction"
+                "title": "Principle of Air Vibration: Compression and Rarefaction",
+                "url": ""
               }
             ]
           },
@@ -384,73 +744,90 @@
             "chapters": [
               {
                 "id": "3-1",
-                "title": "What is a Model?"
+                "title": "What is a Model?",
+                "url": ""
               },
               {
                 "id": "3-2",
-                "title": "Physical Quantities: The First Step to Modeling Complex Phenomena"
+                "title": "Physical Quantities: The First Step to Modeling Complex Phenomena",
+                "url": ""
               },
               {
                 "id": "3-3",
-                "title": "Modeling Momentum and Force"
+                "title": "Modeling Momentum and Force",
+                "url": ""
               },
               {
                 "id": "3-3-1",
-                "title": "Mathematical Expression of Inertia: Momentum"
+                "title": "Mathematical Expression of Inertia: Momentum",
+                "url": ""
               },
               {
                 "id": "3-3-2",
-                "title": "F = ma: Modeling the Abstract Concept of Force"
+                "title": "F = ma: Modeling the Abstract Concept of Force",
+                "url": ""
               },
               {
                 "id": "3-4",
-                "title": "Hooke's Law: Mathematical Expression of a Vibrating Body"
+                "title": "Hooke's Law: Mathematical Expression of a Vibrating Body",
+                "url": ""
               },
               {
                 "id": "3-5",
                 "title": "Trigonometric Functions",
+                "url": "",
                 "sub": [
                   {
                     "id": "3-5-1",
-                    "title": "What is a Function?"
+                    "title": "What is a Function?",
+                    "url": ""
                   },
                   {
                     "id": "3-5-2",
-                    "title": "Proportion and Ratio"
+                    "title": "Proportion and Ratio",
+                    "url": ""
                   },
                   {
                     "id": "3-5-3",
-                    "title": "The Aesthetics of Ratio 0: The Mysterious Power of Ratio"
+                    "title": "The Aesthetics of Ratio 0: The Mysterious Power of Ratio",
+                    "url": ""
                   },
                   {
                     "id": "3-5-4",
-                    "title": "The Aesthetics of Ratio 1: The Secret of the Right Triangle"
+                    "title": "The Aesthetics of Ratio 1: The Secret of the Right Triangle",
+                    "url": ""
                   },
                   {
                     "id": "3-5-5",
-                    "title": "The Aesthetics of Ratio 2: The Romance of the Universe and Trigonometric Functions"
+                    "title": "The Aesthetics of Ratio 2: The Romance of the Universe and Trigonometric Functions",
+                    "url": ""
                   },
                   {
                     "id": "3-5-6",
-                    "title": "The Aesthetics of Ratio 3: Radian and Dimensionless Angle"
+                    "title": "The Aesthetics of Ratio 3: Radian and Dimensionless Angle",
+                    "url": ""
                   },
                   {
                     "id": "3-5-7",
-                    "title": "The Aesthetics of Ratio 4: Differentiation"
+                    "title": "The Aesthetics of Ratio 4: Differentiation",
+                    "url": ""
                   }
                 ]
               },
               {
                 "id": "3-6",
-                "title": "Derivative: A Function Representing Instantaneous Change"
+                "title": "Derivative: A Function Representing Instantaneous Change",
+                "url": ""
               },
               {
                 "id": "3-7",
-                "title": "Derivatives of Trigonometric Functions"
+                "title": "Derivatives of Trigonometric Functions",
+                "url": ""
               },
               {
                 "id": "3-8",
-                "title": "Solving Hooke's Law: Simple Harmonic Motion"
+                "title": "Solving Hooke's Law: Simple Harmonic Motion",
+                "url": ""
               }
             ]
           },
@@ -459,31 +836,38 @@
             "chapters": [
               {
                 "id": "4-1",
-                "title": "Periodicity and Frequency"
+                "title": "Periodicity and Frequency",
+                "url": ""
               },
               {
                 "id": "4-2",
-                "title": "Natural Frequency"
+                "title": "Natural Frequency",
+                "url": ""
               },
               {
                 "id": "4-3",
-                "title": "Resonance"
+                "title": "Resonance",
+                "url": ""
               },
               {
                 "id": "4-4",
-                "title": "Wave Equation"
+                "title": "Wave Equation",
+                "url": ""
               },
               {
                 "id": "4-5",
-                "title": "Modes and Harmonics"
+                "title": "Modes and Harmonics",
+                "url": ""
               },
               {
                 "id": "4-6",
-                "title": "A Taste of Musical Acoustics"
+                "title": "A Taste of Musical Acoustics",
+                "url": ""
               },
               {
                 "id": "4-7",
-                "title": "Tuning Systems"
+                "title": "Tuning Systems",
+                "url": ""
               }
             ]
           },
@@ -492,35 +876,43 @@
             "chapters": [
               {
                 "id": "5-1",
-                "title": "Structure of Architecture"
+                "title": "Structure of Architecture",
+                "url": ""
               },
               {
                 "id": "5-2",
-                "title": "Acoustic Characteristics"
+                "title": "Acoustic Characteristics",
+                "url": ""
               },
               {
                 "id": "5-2-1",
-                "title": "Reflection"
+                "title": "Reflection",
+                "url": ""
               },
               {
                 "id": "5-2-2",
-                "title": "Absorption"
+                "title": "Absorption",
+                "url": ""
               },
               {
                 "id": "5-2-3",
-                "title": "Refraction"
+                "title": "Refraction",
+                "url": ""
               },
               {
                 "id": "5-2-4",
-                "title": "Diffraction"
+                "title": "Diffraction",
+                "url": ""
               },
               {
                 "id": "5-2-5",
-                "title": "Interference"
+                "title": "Interference",
+                "url": ""
               },
               {
                 "id": "5-3",
-                "title": "A Taste of Architectural Acoustics"
+                "title": "A Taste of Architectural Acoustics",
+                "url": ""
               }
             ]
           },
@@ -529,59 +921,73 @@
             "chapters": [
               {
                 "id": "6-1",
-                "title": "Free Vibration and Forced Vibration"
+                "title": "Free Vibration and Forced Vibration",
+                "url": ""
               },
               {
                 "id": "6-2",
-                "title": "A Taste of Electromagnetism"
+                "title": "A Taste of Electromagnetism",
+                "url": ""
               },
               {
                 "id": "6-2-1",
-                "title": "Maxwell's Equations"
+                "title": "Maxwell's Equations",
+                "url": ""
               },
               {
                 "id": "6-3",
-                "title": "What is a Signal?"
+                "title": "What is a Signal?",
+                "url": ""
               },
               {
                 "id": "6-4",
-                "title": "Digital-to-Analog Conversion"
+                "title": "Digital-to-Analog Conversion",
+                "url": ""
               },
               {
                 "id": "6-5",
-                "title": "Principles of Recording"
+                "title": "Principles of Recording",
+                "url": ""
               },
               {
                 "id": "6-5-1",
-                "title": "Microphone"
+                "title": "Microphone",
+                "url": ""
               },
               {
                 "id": "6-5-2",
-                "title": "Speaker"
+                "title": "Speaker",
+                "url": ""
               },
               {
                 "id": "6-6",
-                "title": "Audio Signal"
+                "title": "Audio Signal",
+                "url": ""
               },
               {
                 "id": "6-6-1",
-                "title": "Analysis"
+                "title": "Analysis",
+                "url": ""
               },
               {
                 "id": "6-6-2",
-                "title": "Synthesis"
+                "title": "Synthesis",
+                "url": ""
               },
               {
                 "id": "6-6-3",
-                "title": "Processing"
+                "title": "Processing",
+                "url": ""
               },
               {
                 "id": "6-6-4",
-                "title": "Storage"
+                "title": "Storage",
+                "url": ""
               },
               {
                 "id": "6-7",
-                "title": "A Taste of Electroacoustics"
+                "title": "A Taste of Electroacoustics",
+                "url": ""
               }
             ]
           },
@@ -590,11 +996,13 @@
             "chapters": [
               {
                 "id": "7-1",
-                "title": "Fourier Analysis"
+                "title": "Fourier Analysis",
+                "url": ""
               },
               {
                 "id": "7-2",
-                "title": "Fourier Synthesis"
+                "title": "Fourier Synthesis",
+                "url": ""
               }
             ]
           },
@@ -603,43 +1011,53 @@
             "chapters": [
               {
                 "id": "8-1",
-                "title": "The Ear"
+                "title": "The Ear",
+                "url": ""
               },
               {
                 "id": "8-1-1",
-                "title": "Structure of the Ear"
+                "title": "Structure of the Ear",
+                "url": ""
               },
               {
                 "id": "8-1-2",
-                "title": "Connection Between the Ear and Brain"
+                "title": "Connection Between the Ear and Brain",
+                "url": ""
               },
               {
                 "id": "8-1-3",
-                "title": "Tinnitus"
+                "title": "Tinnitus",
+                "url": ""
               },
               {
                 "id": "8-1-4",
-                "title": "Hearing Aids"
+                "title": "Hearing Aids",
+                "url": ""
               },
               {
                 "id": "8-1-5",
-                "title": "A Taste of Psychoacoustics"
+                "title": "A Taste of Psychoacoustics",
+                "url": ""
               },
               {
                 "id": "8-2",
-                "title": "Speech"
+                "title": "Speech",
+                "url": ""
               },
               {
                 "id": "8-2-1",
-                "title": "Acoustic Structure of the Face"
+                "title": "Acoustic Structure of the Face",
+                "url": ""
               },
               {
                 "id": "8-2-2",
-                "title": "Vocalization"
+                "title": "Vocalization",
+                "url": ""
               },
               {
                 "id": "8-3",
-                "title": "A Taste of Speech Acoustics"
+                "title": "A Taste of Speech Acoustics",
+                "url": ""
               }
             ]
           }
@@ -669,27 +1087,45 @@
       "placeholder": "Carnet personnel du développeur"
     },
     "ui": {
-      "tocButton": "📑 Table des matières"
+      "home": "Accueil",
+      "tocButton": "Table des matières",
+      "darkModeLabel": "Mode Sombre",
+      "darkModeLabelLight": "Mode Clair",
+      "darkModeToggle": "Changer de thème"
     },
     "profile": {
       "profile-title": "Auteurs",
       "profile-job1": "Technologies de l'information et de la communication (TIC)",
       "profile-name1": "Dongsun Han",
       "profile-bio1": "Étudiant adulte à l’Université Cyber Hanyang, spécialisé en informatique et en sécurité/hacking. Il recherche dans l’écriture une forme de communication sincère et réfléchie.",
-      "profile-tags1": ["#DévWeb", "#UniversitéEnLigne", "#LivresNumériques", "#DesignWeb"],
+      "profile-tags1": [
+        "#DévWeb",
+        "#UniversitéEnLigne",
+        "#LivresNumériques",
+        "#DesignWeb"
+      ],
       "profile-job2": "Musique et acoustique",
       "profile-name2": "Dudongsun",
       "profile-bio2": "Après avoir obtenu une licence en composition (Université Hanyang), il a étudié pendant deux ans l’acoustique à l’Université du Mans. Passionné par la musique affranchie de toute finalité et par les instruments virtuels qui la rendent possible.",
-      "profile-tags2": ["#MusiqueÉlectronique", "#Acoustique"],
+      "profile-tags2": [
+        "#MusiqueÉlectronique",
+        "#Acoustique"
+      ],
       "profile-job3": "Jeux cognitifs et bien-être",
       "profile-name3": "Sedongsun",
       "profile-bio3": "Déficient visuel, il a étudié la physique et le design sonore au Mans avant de se consacrer à la création d’outils numériques dédiés à la santé intérieure et au bonheur durable.",
-      "profile-tags3": ["#Choroïdérémie", "#SoundDesign", "#Physique", "#DéficienceVisuelle", "#HealthTech"]
+      "profile-tags3": [
+        "#Choroïdérémie",
+        "#SoundDesign",
+        "#Physique",
+        "#DéficienceVisuelle",
+        "#HealthTech"
+      ]
     },
     "editor": {
       "editor-title": "Éditeur BugLoop",
       "preview-label": "Aperçu en direct",
-      "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un simple exemple en HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j’aime</h2>\n    <ul>\n      <li>Les chats</li>\n      <li>Coder</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dongsun Han</p>\n</footer>"
+      "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un simple exemple en HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j’aime</h2>\n    <ul>\n      <li>Les chats</li>\n      <li>Coder</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dongsun Han</p>\n</footer>"
     },
     "header": {
       "mainMenu": "Menu principal",
@@ -721,11 +1157,13 @@
             "chapters": [
               {
                 "id": "preface",
-                "title": "Préface à l'Acoustique Mignonne"
+                "title": "Préface à l'Acoustique Mignonne",
+                "url": "preface"
               },
               {
                 "id": "afterword",
-                "title": "Postface"
+                "title": "Postface",
+                "url": ""
               }
             ]
           },
@@ -734,51 +1172,63 @@
             "chapters": [
               {
                 "id": "1-1",
-                "title": "Inertie : La Propriété de Résister au Changement"
+                "title": "Inertie : La Propriété de Résister au Changement",
+                "url": ""
               },
               {
                 "id": "1-1-1",
-                "title": "Changement et Force"
+                "title": "Changement et Force",
+                "url": ""
               },
               {
                 "id": "1-2",
-                "title": "La Force est la Porte qui Transmet l'Énergie"
+                "title": "La Force est la Porte qui Transmet l'Énergie",
+                "url": ""
               },
               {
                 "id": "1-2-1",
-                "title": "Deux Types d'Énergie"
+                "title": "Deux Types d'Énergie",
+                "url": ""
               },
               {
                 "id": "1-2-2",
-                "title": "Loi de Conservation de l'Énergie"
+                "title": "Loi de Conservation de l'Énergie",
+                "url": ""
               },
               {
                 "id": "1-2-3",
-                "title": "Résumé"
+                "title": "Résumé",
+                "url": ""
               },
               {
                 "id": "1-3",
-                "title": "Champs et Particules (Avancé)"
+                "title": "Champs et Particules (Avancé)",
+                "url": ""
               },
               {
                 "id": "1-3-1",
-                "title": "Structure de l'Atome"
+                "title": "Structure de l'Atome",
+                "url": ""
               },
               {
                 "id": "1-3-2",
-                "title": "Qu'est-ce qu'un Champ ?"
+                "title": "Qu'est-ce qu'un Champ ?",
+                "url": ""
               },
               {
                 "id": "1-3-3",
-                "title": "Les Électrons m'Intriguent !"
+                "title": "Les Électrons m'Intriguent !",
+                "url": ""
               },
               {
                 "id": "1-3-4",
-                "title": "Approfondissement des Particules Élémentaires"
+                "title": "Approfondissement des Particules Élémentaires",
+                "url": ""
               },
               {
                 "id": "1-3-5",
-                "title": "Les Humains sont-ils aussi des Êtres Probabilistes ?"
+                "title": "Les Humains sont-ils aussi des Êtres Probabilistes ?",
+                "url": ""
               }
             ]
           },
@@ -787,31 +1237,38 @@
             "chapters": [
               {
                 "id": "2-1",
-                "title": "Vibration : Le Mouvement Spécial qui Crée le Son"
+                "title": "Vibration : Le Mouvement Spécial qui Crée le Son",
+                "url": ""
               },
               {
                 "id": "2-2",
-                "title": "Prérequis de la Vibration : Inertie et Force de Rappel"
+                "title": "Prérequis de la Vibration : Inertie et Force de Rappel",
+                "url": ""
               },
               {
                 "id": "2-3",
-                "title": "Un Aperçu de la Dynamique des Fluides"
+                "title": "Un Aperçu de la Dynamique des Fluides",
+                "url": ""
               },
               {
                 "id": "2-4",
-                "title": "Source Sonore et Milieu"
+                "title": "Source Sonore et Milieu",
+                "url": ""
               },
               {
                 "id": "2-5",
-                "title": "Mouvement Thermique Aléatoire et Diffusion de l'Air"
+                "title": "Mouvement Thermique Aléatoire et Diffusion de l'Air",
+                "url": ""
               },
               {
                 "id": "2-6",
-                "title": "Élasticité de l'Air"
+                "title": "Élasticité de l'Air",
+                "url": ""
               },
               {
                 "id": "2-7",
-                "title": "Principe de la Vibration de l'Air : Compression et Raréfaction"
+                "title": "Principe de la Vibration de l'Air : Compression et Raréfaction",
+                "url": ""
               }
             ]
           },
@@ -820,73 +1277,90 @@
             "chapters": [
               {
                 "id": "3-1",
-                "title": "Qu'est-ce qu'un Modèle ?"
+                "title": "Qu'est-ce qu'un Modèle ?",
+                "url": ""
               },
               {
                 "id": "3-2",
-                "title": "Grandeurs Physiques : Le Premier Pas vers la Modélisation de Phénomènes Complexes"
+                "title": "Grandeurs Physiques : Le Premier Pas vers la Modélisation de Phénomènes Complexes",
+                "url": ""
               },
               {
                 "id": "3-3",
-                "title": "Modélisation de l'Impulsion et de la Force"
+                "title": "Modélisation de l'Impulsion et de la Force",
+                "url": ""
               },
               {
                 "id": "3-3-1",
-                "title": "Expression Mathématique de l'Inertie : L'Impulsion"
+                "title": "Expression Mathématique de l'Inertie : L'Impulsion",
+                "url": ""
               },
               {
                 "id": "3-3-2",
-                "title": "F = ma : Modéliser le Concept Abstrait de Force"
+                "title": "F = ma : Modéliser le Concept Abstrait de Force",
+                "url": ""
               },
               {
                 "id": "3-4",
-                "title": "Loi de Hooke : Expression Mathématique d'un Corps Vibrant"
+                "title": "Loi de Hooke : Expression Mathématique d'un Corps Vibrant",
+                "url": ""
               },
               {
                 "id": "3-5",
                 "title": "Fonctions Trigonométriques",
+                "url": "",
                 "sub": [
                   {
                     "id": "3-5-1",
-                    "title": "Qu'est-ce qu'une Fonction ?"
+                    "title": "Qu'est-ce qu'une Fonction ?",
+                    "url": ""
                   },
                   {
                     "id": "3-5-2",
-                    "title": "Proportion et Taux"
+                    "title": "Proportion et Taux",
+                    "url": ""
                   },
                   {
                     "id": "3-5-3",
-                    "title": "L'Esthétique du Taux 0 : Le Pouvoir Mystérieux du Taux"
+                    "title": "L'Esthétique du Taux 0 : Le Pouvoir Mystérieux du Taux",
+                    "url": ""
                   },
                   {
                     "id": "3-5-4",
-                    "title": "L'Esthétique du Taux 1 : Le Secret du Triangle Rectangle"
+                    "title": "L'Esthétique du Taux 1 : Le Secret du Triangle Rectangle",
+                    "url": ""
                   },
                   {
                     "id": "3-5-5",
-                    "title": "L'Esthétique du Taux 2 : La Romance de l'Univers et les Fonctions Trigonométriques"
+                    "title": "L'Esthétique du Taux 2 : La Romance de l'Univers et les Fonctions Trigonométriques",
+                    "url": ""
                   },
                   {
                     "id": "3-5-6",
-                    "title": "L'Esthétique du Taux 3 : Radian et Angle Sans Dimension"
+                    "title": "L'Esthétique du Taux 3 : Radian et Angle Sans Dimension",
+                    "url": ""
                   },
                   {
                     "id": "3-5-7",
-                    "title": "L'Esthétique du Taux 4 : La Différentiation"
+                    "title": "L'Esthétique du Taux 4 : La Différentiation",
+                    "url": ""
                   }
                 ]
               },
               {
                 "id": "3-6",
-                "title": "Dérivée : Une Fonction Représentant le Changement Instantané"
+                "title": "Dérivée : Une Fonction Représentant le Changement Instantané",
+                "url": ""
               },
               {
                 "id": "3-7",
-                "title": "Dérivées des Fonctions Trigonométriques"
+                "title": "Dérivées des Fonctions Trigonométriques",
+                "url": ""
               },
               {
                 "id": "3-8",
-                "title": "Résoudre la Loi de Hooke : Mouvement Harmonique Simple"
+                "title": "Résoudre la Loi de Hooke : Mouvement Harmonique Simple",
+                "url": ""
               }
             ]
           },
@@ -895,31 +1369,38 @@
             "chapters": [
               {
                 "id": "4-1",
-                "title": "Périodicité et Fréquence"
+                "title": "Périodicité et Fréquence",
+                "url": ""
               },
               {
                 "id": "4-2",
-                "title": "Fréquence Propre"
+                "title": "Fréquence Propre",
+                "url": ""
               },
               {
                 "id": "4-3",
-                "title": "Résonance"
+                "title": "Résonance",
+                "url": ""
               },
               {
                 "id": "4-4",
-                "title": "Équation d'Onde"
+                "title": "Équation d'Onde",
+                "url": ""
               },
               {
                 "id": "4-5",
-                "title": "Modes et Harmoniques"
+                "title": "Modes et Harmoniques",
+                "url": ""
               },
               {
                 "id": "4-6",
-                "title": "Un Aperçu de l'Acoustique Musicale"
+                "title": "Un Aperçu de l'Acoustique Musicale",
+                "url": ""
               },
               {
                 "id": "4-7",
-                "title": "Systèmes d'Accord"
+                "title": "Systèmes d'Accord",
+                "url": ""
               }
             ]
           },
@@ -928,35 +1409,43 @@
             "chapters": [
               {
                 "id": "5-1",
-                "title": "Structure de l'Architecture"
+                "title": "Structure de l'Architecture",
+                "url": ""
               },
               {
                 "id": "5-2",
-                "title": "Caractéristiques Acoustiques"
+                "title": "Caractéristiques Acoustiques",
+                "url": ""
               },
               {
                 "id": "5-2-1",
-                "title": "Réflexion"
+                "title": "Réflexion",
+                "url": ""
               },
               {
                 "id": "5-2-2",
-                "title": "Absorption"
+                "title": "Absorption",
+                "url": ""
               },
               {
                 "id": "5-2-3",
-                "title": "Réfraction"
+                "title": "Réfraction",
+                "url": ""
               },
               {
                 "id": "5-2-4",
-                "title": "Diffraction"
+                "title": "Diffraction",
+                "url": ""
               },
               {
                 "id": "5-2-5",
-                "title": "Interférence"
+                "title": "Interférence",
+                "url": ""
               },
               {
                 "id": "5-3",
-                "title": "Un Aperçu de l'Acoustique Architecturale"
+                "title": "Un Aperçu de l'Acoustique Architecturale",
+                "url": ""
               }
             ]
           },
@@ -965,59 +1454,73 @@
             "chapters": [
               {
                 "id": "6-1",
-                "title": "Vibration Libre et Vibration Forcée"
+                "title": "Vibration Libre et Vibration Forcée",
+                "url": ""
               },
               {
                 "id": "6-2",
-                "title": "Un Aperçu de l'Électromagnétisme"
+                "title": "Un Aperçu de l'Électromagnétisme",
+                "url": ""
               },
               {
                 "id": "6-2-1",
-                "title": "Équations de Maxwell"
+                "title": "Équations de Maxwell",
+                "url": ""
               },
               {
                 "id": "6-3",
-                "title": "Qu'est-ce qu'un Signal ?"
+                "title": "Qu'est-ce qu'un Signal ?",
+                "url": ""
               },
               {
                 "id": "6-4",
-                "title": "Conversion Numérique-Analogique"
+                "title": "Conversion Numérique-Analogique",
+                "url": ""
               },
               {
                 "id": "6-5",
-                "title": "Principes de l'Enregistrement"
+                "title": "Principes de l'Enregistrement",
+                "url": ""
               },
               {
                 "id": "6-5-1",
-                "title": "Microphone"
+                "title": "Microphone",
+                "url": ""
               },
               {
                 "id": "6-5-2",
-                "title": "Haut-parleur"
+                "title": "Haut-parleur",
+                "url": ""
               },
               {
                 "id": "6-6",
-                "title": "Signal Audio"
+                "title": "Signal Audio",
+                "url": ""
               },
               {
                 "id": "6-6-1",
-                "title": "Analyse"
+                "title": "Analyse",
+                "url": ""
               },
               {
                 "id": "6-6-2",
-                "title": "Synthèse"
+                "title": "Synthèse",
+                "url": ""
               },
               {
                 "id": "6-6-3",
-                "title": "Traitement"
+                "title": "Traitement",
+                "url": ""
               },
               {
                 "id": "6-6-4",
-                "title": "Stockage"
+                "title": "Stockage",
+                "url": ""
               },
               {
                 "id": "6-7",
-                "title": "Un Aperçu de l'Électroacoustique"
+                "title": "Un Aperçu de l'Électroacoustique",
+                "url": ""
               }
             ]
           },
@@ -1026,11 +1529,13 @@
             "chapters": [
               {
                 "id": "7-1",
-                "title": "Analyse de Fourier"
+                "title": "Analyse de Fourier",
+                "url": ""
               },
               {
                 "id": "7-2",
-                "title": "Synthèse de Fourier"
+                "title": "Synthèse de Fourier",
+                "url": ""
               }
             ]
           },
@@ -1039,43 +1544,53 @@
             "chapters": [
               {
                 "id": "8-1",
-                "title": "L'Oreille"
+                "title": "L'Oreille",
+                "url": ""
               },
               {
                 "id": "8-1-1",
-                "title": "Structure de l'Oreille"
+                "title": "Structure de l'Oreille",
+                "url": ""
               },
               {
                 "id": "8-1-2",
-                "title": "Connexion entre l'Oreille et le Cerveau"
+                "title": "Connexion entre l'Oreille et le Cerveau",
+                "url": ""
               },
               {
                 "id": "8-1-3",
-                "title": "Acouphènes"
+                "title": "Acouphènes",
+                "url": ""
               },
               {
                 "id": "8-1-4",
-                "title": "Aides Auditives"
+                "title": "Aides Auditives",
+                "url": ""
               },
               {
                 "id": "8-1-5",
-                "title": "Un Aperçu de la Psychoacoustique"
+                "title": "Un Aperçu de la Psychoacoustique",
+                "url": ""
               },
               {
                 "id": "8-2",
-                "title": "La Parole"
+                "title": "La Parole",
+                "url": ""
               },
               {
                 "id": "8-2-1",
-                "title": "Structure Acoustique du Visage"
+                "title": "Structure Acoustique du Visage",
+                "url": ""
               },
               {
                 "id": "8-2-2",
-                "title": "Vocalisation"
+                "title": "Vocalisation",
+                "url": ""
               },
               {
                 "id": "8-3",
-                "title": "Un Aperçu de l'Acoustique de la Parole"
+                "title": "Un Aperçu de l'Acoustique de la Parole",
+                "url": ""
               }
             ]
           }
@@ -1105,27 +1620,45 @@
       "placeholder": "开发者的个人笔记"
     },
     "ui": {
-      "tocButton": "📑 目录"
+      "home": "主页",
+      "tocButton": "目录",
+      "darkModeLabel": "深色模式",
+      "darkModeLabelLight": "浅色模式",
+      "darkModeToggle": "切换主题"
     },
     "profile": {
       "profile-title": "作者群",
       "profile-job1": "信息与通信技术 (ICT)",
       "profile-name1": "韩东善",
       "profile-bio1": "现就读于汉阳网络大学，主修计算机科学与黑客安全。热爱通过文字进行真诚而深刻的交流。",
-      "profile-tags1": ["#网页开发", "#网络大学", "#电子书爱好者", "#网页设计"],
+      "profile-tags1": [
+        "#网页开发",
+        "#网络大学",
+        "#电子书爱好者",
+        "#网页设计"
+      ],
       "profile-job2": "音乐与声学",
       "profile-name2": "杜东善",
       "profile-bio2": "毕业于汉阳大学作曲系，后在法国勒芒大学工程科学专业学习声学两年。热衷于创作不受目的束缚的自由音乐，以及实现这种自由的虚拟乐器。",
-      "profile-tags2": ["#电子音乐", "#声学"],
+      "profile-tags2": [
+        "#电子音乐",
+        "#声学"
+      ],
       "profile-job3": "认知游戏与健康",
       "profile-name3": "世东善",
       "profile-bio3": "重度视障者，曾在勒芒大学学习物理学，在勒芒美术学院学习声音设计，后因环境不合而退学。如今专注于开发与身心平衡和持久幸福相关的数字工具。",
-      "profile-tags3": ["#脉络膜萎缩", "#声音设计", "#物理学", "#视障", "#健康科技"]
+      "profile-tags3": [
+        "#脉络膜萎缩",
+        "#声音设计",
+        "#物理学",
+        "#视障",
+        "#健康科技"
+      ]
     },
     "editor": {
       "editor-title": "BugLoop 编辑器",
       "preview-label": "实时预览",
-      "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个简单的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的事物</h2>\n    <ul>\n      <li>猫</li>\n      <li>编程</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 韩东善的博客</p>\n</footer>"
+      "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个简单的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的事物</h2>\n    <ul>\n      <li>猫</li>\n      <li>编程</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 韩东善的博客</p>\n</footer>"
     },
     "header": {
       "mainMenu": "主菜单",
@@ -1157,11 +1690,13 @@
             "chapters": [
               {
                 "id": "preface",
-                "title": "可爱的声学 序言"
+                "title": "可爱的声学 序言",
+                "url": "preface"
               },
               {
                 "id": "afterword",
-                "title": "附言"
+                "title": "附言",
+                "url": ""
               }
             ]
           },
@@ -1170,51 +1705,63 @@
             "chapters": [
               {
                 "id": "1-1",
-                "title": "惯性：拒绝变化的性质"
+                "title": "惯性：拒绝变化的性质",
+                "url": ""
               },
               {
                 "id": "1-1-1",
-                "title": "变化与力"
+                "title": "变化与力",
+                "url": ""
               },
               {
                 "id": "1-2",
-                "title": "力是传递能量的门"
+                "title": "力是传递能量的门",
+                "url": ""
               },
               {
                 "id": "1-2-1",
-                "title": "两种能量"
+                "title": "两种能量",
+                "url": ""
               },
               {
                 "id": "1-2-2",
-                "title": "能量守恒定律"
+                "title": "能量守恒定律",
+                "url": ""
               },
               {
                 "id": "1-2-3",
-                "title": "摘要"
+                "title": "摘要",
+                "url": ""
               },
               {
                 "id": "1-3",
-                "title": "场和粒子 (进阶)"
+                "title": "场和粒子 (进阶)",
+                "url": ""
               },
               {
                 "id": "1-3-1",
-                "title": "原子的结构"
+                "title": "原子的结构",
+                "url": ""
               },
               {
                 "id": "1-3-2",
-                "title": "什么是场？"
+                "title": "什么是场？",
+                "url": ""
               },
               {
                 "id": "1-3-3",
-                "title": "好奇电子！"
+                "title": "好奇电子！",
+                "url": ""
               },
               {
                 "id": "1-3-4",
-                "title": "深入探讨基本粒子"
+                "title": "深入探讨基本粒子",
+                "url": ""
               },
               {
                 "id": "1-3-5",
-                "title": "人类也是概率性存在吗？"
+                "title": "人类也是概率性存在吗？",
+                "url": ""
               }
             ]
           },
@@ -1223,31 +1770,38 @@
             "chapters": [
               {
                 "id": "2-1",
-                "title": "振动：产生声音的特殊运动"
+                "title": "振动：产生声音的特殊运动",
+                "url": ""
               },
               {
                 "id": "2-2",
-                "title": "振动的准备：惯性与恢复力"
+                "title": "振动的准备：惯性与恢复力",
+                "url": ""
               },
               {
                 "id": "2-3",
-                "title": "流体力学尝鲜"
+                "title": "流体力学尝鲜",
+                "url": ""
               },
               {
                 "id": "2-4",
-                "title": "音源与介质"
+                "title": "音源与介质",
+                "url": ""
               },
               {
                 "id": "2-5",
-                "title": "空气的随机热运动与扩散"
+                "title": "空气的随机热运动与扩散",
+                "url": ""
               },
               {
                 "id": "2-6",
-                "title": "空气的弹性"
+                "title": "空气的弹性",
+                "url": ""
               },
               {
                 "id": "2-7",
-                "title": "空气振动原理：压缩与稀薄"
+                "title": "空气振动原理：压缩与稀薄",
+                "url": ""
               }
             ]
           },
@@ -1256,73 +1810,90 @@
             "chapters": [
               {
                 "id": "3-1",
-                "title": "什么是模型？"
+                "title": "什么是模型？",
+                "url": ""
               },
               {
                 "id": "3-2",
-                "title": "物理量：建模复杂现象的第一步"
+                "title": "物理量：建模复杂现象的第一步",
+                "url": ""
               },
               {
                 "id": "3-3",
-                "title": "动量与力的建模"
+                "title": "动量与力的建模",
+                "url": ""
               },
               {
                 "id": "3-3-1",
-                "title": "惯性的数学表示：动量"
+                "title": "惯性的数学表示：动量",
+                "url": ""
               },
               {
                 "id": "3-3-2",
-                "title": "F = ma：对力这一抽象概念的建模"
+                "title": "F = ma：对力这一抽象概念的建模",
+                "url": ""
               },
               {
                 "id": "3-4",
-                "title": "胡克定律：振动物体的数学表示"
+                "title": "胡克定律：振动物体的数学表示",
+                "url": ""
               },
               {
                 "id": "3-5",
                 "title": "三角函数",
+                "url": "",
                 "sub": [
                   {
                     "id": "3-5-1",
-                    "title": "什么是函数？"
+                    "title": "什么是函数？",
+                    "url": ""
                   },
                   {
                     "id": "3-5-2",
-                    "title": "比例与比率"
+                    "title": "比例与比率",
+                    "url": ""
                   },
                   {
                     "id": "3-5-3",
-                    "title": "比率的美学 0：比率的神秘力量"
+                    "title": "比率的美学 0：比率的神秘力量",
+                    "url": ""
                   },
                   {
                     "id": "3-5-4",
-                    "title": "比率的美学 1：直角三角形的秘密"
+                    "title": "比率的美学 1：直角三角形的秘密",
+                    "url": ""
                   },
                   {
                     "id": "3-5-5",
-                    "title": "比率的美学 2：宇宙的浪漫与三角函数"
+                    "title": "比率的美学 2：宇宙的浪漫与三角函数",
+                    "url": ""
                   },
                   {
                     "id": "3-5-6",
-                    "title": "比率的美学 3：弧度与无量纲角"
+                    "title": "比率的美学 3：弧度与无量纲角",
+                    "url": ""
                   },
                   {
                     "id": "3-5-7",
-                    "title": "比率的美学 4：微分"
+                    "title": "比率的美学 4：微分",
+                    "url": ""
                   }
                 ]
               },
               {
                 "id": "3-6",
-                "title": "导数：表示瞬间变化的函数"
+                "title": "导数：表示瞬间变化的函数",
+                "url": ""
               },
               {
                 "id": "3-7",
-                "title": "三角函数的导数"
+                "title": "三角函数的导数",
+                "url": ""
               },
               {
                 "id": "3-8",
-                "title": "解读胡克定律：简谐振动"
+                "title": "解读胡克定律：简谐振动",
+                "url": ""
               }
             ]
           },
@@ -1331,31 +1902,38 @@
             "chapters": [
               {
                 "id": "4-1",
-                "title": "周期性与频率"
+                "title": "周期性与频率",
+                "url": ""
               },
               {
                 "id": "4-2",
-                "title": "固有频率"
+                "title": "固有频率",
+                "url": ""
               },
               {
                 "id": "4-3",
-                "title": "共振"
+                "title": "共振",
+                "url": ""
               },
               {
                 "id": "4-4",
-                "title": "波动方程"
+                "title": "波动方程",
+                "url": ""
               },
               {
                 "id": "4-5",
-                "title": "模式与泛音"
+                "title": "模式与泛音",
+                "url": ""
               },
               {
                 "id": "4-6",
-                "title": "音乐声学尝鲜"
+                "title": "音乐声学尝鲜",
+                "url": ""
               },
               {
                 "id": "4-7",
-                "title": "调律法"
+                "title": "调律法",
+                "url": ""
               }
             ]
           },
@@ -1364,35 +1942,43 @@
             "chapters": [
               {
                 "id": "5-1",
-                "title": "建筑的结构"
+                "title": "建筑的结构",
+                "url": ""
               },
               {
                 "id": "5-2",
-                "title": "声学特性"
+                "title": "声学特性",
+                "url": ""
               },
               {
                 "id": "5-2-1",
-                "title": "反射"
+                "title": "反射",
+                "url": ""
               },
               {
                 "id": "5-2-2",
-                "title": "吸收"
+                "title": "吸收",
+                "url": ""
               },
               {
                 "id": "5-2-3",
-                "title": "折射"
+                "title": "折射",
+                "url": ""
               },
               {
                 "id": "5-2-4",
-                "title": "衍射"
+                "title": "衍射",
+                "url": ""
               },
               {
                 "id": "5-2-5",
-                "title": "干涉"
+                "title": "干涉",
+                "url": ""
               },
               {
                 "id": "5-3",
-                "title": "建筑声学尝鲜"
+                "title": "建筑声学尝鲜",
+                "url": ""
               }
             ]
           },
@@ -1401,59 +1987,73 @@
             "chapters": [
               {
                 "id": "6-1",
-                "title": "自由振动与受迫振动"
+                "title": "自由振动与受迫振动",
+                "url": ""
               },
               {
                 "id": "6-2",
-                "title": "电磁学尝鲜"
+                "title": "电磁学尝鲜",
+                "url": ""
               },
               {
                 "id": "6-2-1",
-                "title": "麦克斯韦方程"
+                "title": "麦克斯韦方程",
+                "url": ""
               },
               {
                 "id": "6-3",
-                "title": "什么是信号？"
+                "title": "什么是信号？",
+                "url": ""
               },
               {
                 "id": "6-4",
-                "title": "数字-模拟转换"
+                "title": "数字-模拟转换",
+                "url": ""
               },
               {
                 "id": "6-5",
-                "title": "录音的原理"
+                "title": "录音的原理",
+                "url": ""
               },
               {
                 "id": "6-5-1",
-                "title": "麦克风"
+                "title": "麦克风",
+                "url": ""
               },
               {
                 "id": "6-5-2",
-                "title": "扬声器"
+                "title": "扬声器",
+                "url": ""
               },
               {
                 "id": "6-6",
-                "title": "音频信号"
+                "title": "音频信号",
+                "url": ""
               },
               {
                 "id": "6-6-1",
-                "title": "分析"
+                "title": "分析",
+                "url": ""
               },
               {
                 "id": "6-6-2",
-                "title": "合成"
+                "title": "合成",
+                "url": ""
               },
               {
                 "id": "6-6-3",
-                "title": "处理"
+                "title": "处理",
+                "url": ""
               },
               {
                 "id": "6-6-4",
-                "title": "存储"
+                "title": "存储",
+                "url": ""
               },
               {
                 "id": "6-7",
-                "title": "电子声学尝鲜"
+                "title": "电子声学尝鲜",
+                "url": ""
               }
             ]
           },
@@ -1462,11 +2062,13 @@
             "chapters": [
               {
                 "id": "7-1",
-                "title": "傅里叶分析"
+                "title": "傅里叶分析",
+                "url": ""
               },
               {
                 "id": "7-2",
-                "title": "傅里叶合成"
+                "title": "傅里叶合成",
+                "url": ""
               }
             ]
           },
@@ -1475,43 +2077,53 @@
             "chapters": [
               {
                 "id": "8-1",
-                "title": "耳朵"
+                "title": "耳朵",
+                "url": ""
               },
               {
                 "id": "8-1-1",
-                "title": "耳朵的结构"
+                "title": "耳朵的结构",
+                "url": ""
               },
               {
                 "id": "8-1-2",
-                "title": "耳朵与大脑的连接"
+                "title": "耳朵与大脑的连接",
+                "url": ""
               },
               {
                 "id": "8-1-3",
-                "title": "耳鸣"
+                "title": "耳鸣",
+                "url": ""
               },
               {
                 "id": "8-1-4",
-                "title": "助听器"
+                "title": "助听器",
+                "url": ""
               },
               {
                 "id": "8-1-5",
-                "title": "心理声学尝鲜"
+                "title": "心理声学尝鲜",
+                "url": ""
               },
               {
                 "id": "8-2",
-                "title": "语音"
+                "title": "语音",
+                "url": ""
               },
               {
                 "id": "8-2-1",
-                "title": "面部的声学结构"
+                "title": "面部的声学结构",
+                "url": ""
               },
               {
                 "id": "8-2-2",
-                "title": "发声"
+                "title": "发声",
+                "url": ""
               },
               {
                 "id": "8-3",
-                "title": "语音声学尝鲜"
+                "title": "语音声学尝鲜",
+                "url": ""
               }
             ]
           }
@@ -1541,27 +2153,45 @@
       "placeholder": "開発者の個人ノート"
     },
     "ui": {
-      "tocButton": "📑 目次"
+      "home": "ホーム",
+      "tocButton": "目次",
+      "darkModeLabel": "ダークモード",
+      "darkModeLabelLight": "ライトモード",
+      "darkModeToggle": "テーマ切替"
     },
     "profile": {
       "profile-title": "著者",
       "profile-job1": "情報通信技術（ICT）担当",
       "profile-name1": "ハン・ドンソン",
       "profile-bio1": "現在、漢陽サイバー大学でコンピュータ工学とハッキング／情報セキュリティを専攻中。文章を通じて誠実で深い対話を楽しんでいる。",
-      "profile-tags1": ["#Web開発", "#サイバー大学", "#デジタルブック愛好家", "#Webデザイン"],
+      "profile-tags1": [
+        "#Web開発",
+        "#サイバー大学",
+        "#デジタルブック愛好家",
+        "#Webデザイン"
+      ],
       "profile-job2": "音楽・音響学担当",
       "profile-name2": "ドゥドンソン",
       "profile-bio2": "漢陽大学で作曲を学んだ後、フランス・ルマン大学で音響学を2年間専攻。目的に縛られない自由な音楽と、それを支える仮想楽器の開発に情熱を注いでいる。",
-      "profile-tags2": ["#電子音楽", "#音響学"],
+      "profile-tags2": [
+        "#電子音楽",
+        "#音響学"
+      ],
       "profile-job3": "脳トレ・健康担当",
       "profile-name3": "セドンソン",
       "profile-bio3": "重度の視覚障害を持ち、ルマン大学で物理学、ルマン美術学院でサウンドデザインを学んだ経験を持つ。現在は心身の健康と持続的な幸福をテーマにデジタルツールを開発している。",
-      "profile-tags3": ["#コロイデレミア", "#サウンドデザイン", "#物理学", "#視覚障害", "#ヘルステック"]
+      "profile-tags3": [
+        "#コロイデレミア",
+        "#サウンドデザイン",
+        "#物理学",
+        "#視覚障害",
+        "#ヘルステック"
+      ]
     },
     "editor": {
       "editor-title": "BugLoop エディター",
       "preview-label": "リアルタイムプレビュー",
-      "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>連絡先</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これは基本的な HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 ハン・ドンソンのブログ</p>\n</footer>"
+      "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>連絡先</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これは基本的な HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 ハン・ドンソンのブログ</p>\n</footer>"
     },
     "header": {
       "mainMenu": "メインメニュー",
@@ -1593,11 +2223,13 @@
             "chapters": [
               {
                 "id": "preface",
-                "title": "可愛い音響学 序文"
+                "title": "可愛い音響学 序文",
+                "url": "preface"
               },
               {
                 "id": "afterword",
-                "title": "追記"
+                "title": "追記",
+                "url": ""
               }
             ]
           },
@@ -1606,51 +2238,63 @@
             "chapters": [
               {
                 "id": "1-1",
-                "title": "慣性：変わろうとしない性質"
+                "title": "慣性：変わろうとしない性質",
+                "url": ""
               },
               {
                 "id": "1-1-1",
-                "title": "変化と力"
+                "title": "変化と力",
+                "url": ""
               },
               {
                 "id": "1-2",
-                "title": "力はエネルギーを伝達する扉"
+                "title": "力はエネルギーを伝達する扉",
+                "url": ""
               },
               {
                 "id": "1-2-1",
-                "title": "2種類のエネルギー"
+                "title": "2種類のエネルギー",
+                "url": ""
               },
               {
                 "id": "1-2-2",
-                "title": "エネルギー保存の法則"
+                "title": "エネルギー保存の法則",
+                "url": ""
               },
               {
                 "id": "1-2-3",
-                "title": "要約"
+                "title": "要約",
+                "url": ""
               },
               {
                 "id": "1-3",
-                "title": "場（フィールド）と粒子（発展）"
+                "title": "場（フィールド）と粒子（発展）",
+                "url": ""
               },
               {
                 "id": "1-3-1",
-                "title": "原子構造"
+                "title": "原子構造",
+                "url": ""
               },
               {
                 "id": "1-3-2",
-                "title": "場とは何か？"
+                "title": "場とは何か？",
+                "url": ""
               },
               {
                 "id": "1-3-3",
-                "title": "電子について知りたい！"
+                "title": "電子について知りたい！",
+                "url": ""
               },
               {
                 "id": "1-3-4",
-                "title": "基本粒子への更なる探求"
+                "title": "基本粒子への更なる探求",
+                "url": ""
               },
               {
                 "id": "1-3-5",
-                "title": "人間も確率的な存在なのか？"
+                "title": "人間も確率的な存在なのか？",
+                "url": ""
               }
             ]
           },
@@ -1659,31 +2303,38 @@
             "chapters": [
               {
                 "id": "2-1",
-                "title": "振動：音を発生させる特別な動き"
+                "title": "振動：音を発生させる特別な動き",
+                "url": ""
               },
               {
                 "id": "2-2",
-                "title": "振動の必需品：慣性と復元力"
+                "title": "振動の必需品：慣性と復元力",
+                "url": ""
               },
               {
                 "id": "2-3",
-                "title": "流体力学の入門"
+                "title": "流体力学の入門",
+                "url": ""
               },
               {
                 "id": "2-4",
-                "title": "音源と媒質"
+                "title": "音源と媒質",
+                "url": ""
               },
               {
                 "id": "2-5",
-                "title": "空気のランダムな熱運動と拡散"
+                "title": "空気のランダムな熱運動と拡散",
+                "url": ""
               },
               {
                 "id": "2-6",
-                "title": "空気の弾性"
+                "title": "空気の弾性",
+                "url": ""
               },
               {
                 "id": "2-7",
-                "title": "空気の振動原理：圧縮と希薄"
+                "title": "空気の振動原理：圧縮と希薄",
+                "url": ""
               }
             ]
           },
@@ -1692,73 +2343,90 @@
             "chapters": [
               {
                 "id": "3-1",
-                "title": "モデルとは？"
+                "title": "モデルとは？",
+                "url": ""
               },
               {
                 "id": "3-2",
-                "title": "物理量：複雑な現象をモデル化するための第一歩"
+                "title": "物理量：複雑な現象をモデル化するための第一歩",
+                "url": ""
               },
               {
                 "id": "3-3",
-                "title": "運動量と力のモデル化"
+                "title": "運動量と力のモデル化",
+                "url": ""
               },
               {
                 "id": "3-3-1",
-                "title": "慣性の数学的表現：運動量"
+                "title": "慣性の数学的表現：運動量",
+                "url": ""
               },
               {
                 "id": "3-3-2",
-                "title": "F = ma：力という抽象概念をモデル化する"
+                "title": "F = ma：力という抽象概念をモデル化する",
+                "url": ""
               },
               {
                 "id": "3-4",
-                "title": "フックの法則：振動体の数学的表現"
+                "title": "フックの法則：振動体の数学的表現",
+                "url": ""
               },
               {
                 "id": "3-5",
                 "title": "三角関数",
+                "url": "",
                 "sub": [
                   {
                     "id": "3-5-1",
-                    "title": "関数とは？"
+                    "title": "関数とは？",
+                    "url": ""
                   },
                   {
                     "id": "3-5-2",
-                    "title": "比例と比率"
+                    "title": "比例と比率",
+                    "url": ""
                   },
                   {
                     "id": "3-5-3",
-                    "title": "比率の美学 0：比率の神秘的な力"
+                    "title": "比率の美学 0：比率の神秘的な力",
+                    "url": ""
                   },
                   {
                     "id": "3-5-4",
-                    "title": "比率の美学 1：直角三角形の秘密"
+                    "title": "比率の美学 1：直角三角形の秘密",
+                    "url": ""
                   },
                   {
                     "id": "3-5-5",
-                    "title": "比率の美学 2：宇宙のロマンと三角関数"
+                    "title": "比率の美学 2：宇宙のロマンと三角関数",
+                    "url": ""
                   },
                   {
                     "id": "3-5-6",
-                    "title": "比率の美学 3：ラジアンと無次元の角度"
+                    "title": "比率の美学 3：ラジアンと無次元の角度",
+                    "url": ""
                   },
                   {
                     "id": "3-5-7",
-                    "title": "比率の美学 4：微分"
+                    "title": "比率の美学 4：微分",
+                    "url": ""
                   }
                 ]
               },
               {
                 "id": "3-6",
-                "title": "導関数：刹那の変化を表す関数"
+                "title": "導関数：刹那の変化を表す関数",
+                "url": ""
               },
               {
                 "id": "3-7",
-                "title": "三角関数の導関数"
+                "title": "三角関数の導関数",
+                "url": ""
               },
               {
                 "id": "3-8",
-                "title": "フックの法則を解く：単振動"
+                "title": "フックの法則を解く：単振動",
+                "url": ""
               }
             ]
           },
@@ -1767,31 +2435,38 @@
             "chapters": [
               {
                 "id": "4-1",
-                "title": "周期性と周波数"
+                "title": "周期性と周波数",
+                "url": ""
               },
               {
                 "id": "4-2",
-                "title": "固有周波数"
+                "title": "固有周波数",
+                "url": ""
               },
               {
                 "id": "4-3",
-                "title": "共振"
+                "title": "共振",
+                "url": ""
               },
               {
                 "id": "4-4",
-                "title": "波動方程式"
+                "title": "波動方程式",
+                "url": ""
               },
               {
                 "id": "4-5",
-                "title": "モードと倍音"
+                "title": "モードと倍音",
+                "url": ""
               },
               {
                 "id": "4-6",
-                "title": "音楽音響学の入門"
+                "title": "音楽音響学の入門",
+                "url": ""
               },
               {
                 "id": "4-7",
-                "title": "調律法"
+                "title": "調律法",
+                "url": ""
               }
             ]
           },
@@ -1800,35 +2475,43 @@
             "chapters": [
               {
                 "id": "5-1",
-                "title": "建築の構造"
+                "title": "建築の構造",
+                "url": ""
               },
               {
                 "id": "5-2",
-                "title": "音響的特性"
+                "title": "音響的特性",
+                "url": ""
               },
               {
                 "id": "5-2-1",
-                "title": "反射"
+                "title": "反射",
+                "url": ""
               },
               {
                 "id": "5-2-2",
-                "title": "吸音"
+                "title": "吸音",
+                "url": ""
               },
               {
                 "id": "5-2-3",
-                "title": "屈折"
+                "title": "屈折",
+                "url": ""
               },
               {
                 "id": "5-2-4",
-                "title": "回折"
+                "title": "回折",
+                "url": ""
               },
               {
                 "id": "5-2-5",
-                "title": "干渉"
+                "title": "干渉",
+                "url": ""
               },
               {
                 "id": "5-3",
-                "title": "建築音響学の入門"
+                "title": "建築音響学の入門",
+                "url": ""
               }
             ]
           },
@@ -1837,59 +2520,73 @@
             "chapters": [
               {
                 "id": "6-1",
-                "title": "自由振動と強制振動"
+                "title": "自由振動と強制振動",
+                "url": ""
               },
               {
                 "id": "6-2",
-                "title": "電磁気学の入門"
+                "title": "電磁気学の入門",
+                "url": ""
               },
               {
                 "id": "6-2-1",
-                "title": "マクスウェルの方程式"
+                "title": "マクスウェルの方程式",
+                "url": ""
               },
               {
                 "id": "6-3",
-                "title": "信号とは？"
+                "title": "信号とは？",
+                "url": ""
               },
               {
                 "id": "6-4",
-                "title": "デジタル-アナログ変換"
+                "title": "デジタル-アナログ変換",
+                "url": ""
               },
               {
                 "id": "6-5",
-                "title": "録音の原理"
+                "title": "録音の原理",
+                "url": ""
               },
               {
                 "id": "6-5-1",
-                "title": "マイク"
+                "title": "マイク",
+                "url": ""
               },
               {
                 "id": "6-5-2",
-                "title": "スピーカー"
+                "title": "スピーカー",
+                "url": ""
               },
               {
                 "id": "6-6",
-                "title": "オーディオ信号"
+                "title": "オーディオ信号",
+                "url": ""
               },
               {
                 "id": "6-6-1",
-                "title": "分析"
+                "title": "分析",
+                "url": ""
               },
               {
                 "id": "6-6-2",
-                "title": "合成"
+                "title": "合成",
+                "url": ""
               },
               {
                 "id": "6-6-3",
-                "title": "処理"
+                "title": "処理",
+                "url": ""
               },
               {
                 "id": "6-6-4",
-                "title": "保存"
+                "title": "保存",
+                "url": ""
               },
               {
                 "id": "6-7",
-                "title": "電気音響学の入門"
+                "title": "電気音響学の入門",
+                "url": ""
               }
             ]
           },
@@ -1898,11 +2595,13 @@
             "chapters": [
               {
                 "id": "7-1",
-                "title": "フーリエ解析"
+                "title": "フーリエ解析",
+                "url": ""
               },
               {
                 "id": "7-2",
-                "title": "フーリエ合成"
+                "title": "フーリエ合成",
+                "url": ""
               }
             ]
           },
@@ -1911,43 +2610,53 @@
             "chapters": [
               {
                 "id": "8-1",
-                "title": "耳"
+                "title": "耳",
+                "url": ""
               },
               {
                 "id": "8-1-1",
-                "title": "耳の構造"
+                "title": "耳の構造",
+                "url": ""
               },
               {
                 "id": "8-1-2",
-                "title": "耳と脳の連携"
+                "title": "耳と脳の連携",
+                "url": ""
               },
               {
                 "id": "8-1-3",
-                "title": "耳鳴り"
+                "title": "耳鳴り",
+                "url": ""
               },
               {
                 "id": "8-1-4",
-                "title": "補聴器"
+                "title": "補聴器",
+                "url": ""
               },
               {
                 "id": "8-1-5",
-                "title": "心理音響学の入門"
+                "title": "心理音響学の入門",
+                "url": ""
               },
               {
                 "id": "8-2",
-                "title": "言葉"
+                "title": "言葉",
+                "url": ""
               },
               {
                 "id": "8-2-1",
-                "title": "顔の音響的構造"
+                "title": "顔の音響的構造",
+                "url": ""
               },
               {
                 "id": "8-2-2",
-                "title": "発声"
+                "title": "発声",
+                "url": ""
               },
               {
                 "id": "8-3",
-                "title": "音声音響学の入門"
+                "title": "音声音響学の入門",
+                "url": ""
               }
             ]
           }
@@ -1977,27 +2686,45 @@
       "placeholder": "Diario personal del desarrollador"
     },
     "ui": {
-      "tocButton": "📑 Tabla de contenido"
+      "home": "Inicio",
+      "tocButton": "Tabla de contenido",
+      "darkModeLabel": "Modo Oscuro",
+      "darkModeLabelLight": "Modo Claro",
+      "darkModeToggle": "Cambiar Tema"
     },
     "profile": {
       "profile-title": "Autores",
       "profile-job1": "Tecnologías de la Información y Comunicación (TIC)",
       "profile-name1": "Dongsun Han",
       "profile-bio1": "Estudiante de edad avanzada en la Universidad Cibernética de Hanyang, especializado en Ingeniería Informática y Seguridad Informática. Disfruta de la comunicación sincera y profunda a través de la escritura.",
-      "profile-tags1": ["#DesarrolloWeb", "#UniversidadCibernética", "#AmantedelLibroDigital", "#DiseñoWeb"],
+      "profile-tags1": [
+        "#DesarrolloWeb",
+        "#UniversidadCibernética",
+        "#AmantedelLibroDigital",
+        "#DiseñoWeb"
+      ],
       "profile-job2": "Música y Acústica",
       "profile-name2": "Dudongsun",
       "profile-bio2": "Licenciado en Composición por la Universidad de Hanyang, estudió Acústica durante dos años en el programa de fundamentos de ingeniería de la Universidad de Le Mans, Francia. Le interesa la música libre de propósitos y el desarrollo de las herramientas (instrumentos virtuales) que la hacen posible.",
-      "profile-tags2": ["#MúsicaElectrónica", "#Acústica"],
+      "profile-tags2": [
+        "#MúsicaElectrónica",
+        "#Acústica"
+      ],
       "profile-job3": "Juegos Cognitivos y Salud",
       "profile-name3": "Sedongsun",
       "profile-bio3": "Una persona con discapacidad visual grave que estudió Física en la Universidad de Le Mans y Diseño de Sonido en Le Mans Beaux-Arts, pero abandonó ambos por falta de adaptación. Reflexiona constantemente sobre la salud física y mental y la felicidad sostenible, y desarrolla aplicaciones y herramientas relacionadas.",
-      "profile-tags3": ["#Coroideremia", "#DiseñodeSonido", "#Física", "#DiscapacidadVisual", "#TecnologíaSaludable"]
+      "profile-tags3": [
+        "#Coroideremia",
+        "#DiseñodeSonido",
+        "#Física",
+        "#DiscapacidadVisual",
+        "#TecnologíaSaludable"
+      ]
     },
     "editor": {
       "editor-title": "Editor BugLoop",
       "preview-label": "Vista previa en tiempo real",
-      "example-html": "<header>\n  <h1>Mi Primera Página Web</h1>\n  <nav>\n    <ul>\n      <li>Inicio</li>\n      <li>Acerca de</li>\n      <li>Contacto</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>¡Bienvenido!</h2>\n    <p>Este es un ejemplo básico de HTML.</p>\n  </section>\n\n  <section>\n    <h2>Cosas que me encantan</h2>\n    <ul>\n      <li>Gatos</li>\n      <li>Programación</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dongsun Han</p>\n</footer>"
+      "example-html": "<header>\n  <h1>Mi Primera Página Web</h1>\n  <nav>\n    <ul>\n      <li>Inicio</li>\n      <li>Acerca de</li>\n      <li>Contacto</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>¡Bienvenido!</h2>\n    <p>Este es un ejemplo básico de HTML.</p>\n  </section>\n\n  <section>\n    <h2>Cosas que me encantan</h2>\n    <ul>\n      <li>Gatos</li>\n      <li>Programación</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dongsun Han</p>\n</footer>"
     },
     "header": {
       "mainMenu": "Menú principal",
@@ -2029,11 +2756,13 @@
             "chapters": [
               {
                 "id": "preface",
-                "title": "Prefacio de Acústica Linda"
+                "title": "Prefacio de Acústica Linda",
+                "url": "preface"
               },
               {
                 "id": "afterword",
-                "title": "Palabras Adicionales"
+                "title": "Palabras Adicionales",
+                "url": ""
               }
             ]
           },
@@ -2042,51 +2771,63 @@
             "chapters": [
               {
                 "id": "1-1",
-                "title": "Inercia: La Propiedad de Resistir al Cambio"
+                "title": "Inercia: La Propiedad de Resistir al Cambio",
+                "url": ""
               },
               {
                 "id": "1-1-1",
-                "title": "Cambio y Fuerza"
+                "title": "Cambio y Fuerza",
+                "url": ""
               },
               {
                 "id": "1-2",
-                "title": "La Fuerza es la Puerta que Transmite Energía"
+                "title": "La Fuerza es la Puerta que Transmite Energía",
+                "url": ""
               },
               {
                 "id": "1-2-1",
-                "title": "Dos Tipos de Energía"
+                "title": "Dos Tipos de Energía",
+                "url": ""
               },
               {
                 "id": "1-2-2",
-                "title": "Ley de Conservación de la Energía"
+                "title": "Ley de Conservación de la Energía",
+                "url": ""
               },
               {
                 "id": "1-2-3",
-                "title": "Resumen"
+                "title": "Resumen",
+                "url": ""
               },
               {
                 "id": "1-3",
-                "title": "Campos y Partículas (Avanzado)"
+                "title": "Campos y Partículas (Avanzado)",
+                "url": ""
               },
               {
                 "id": "1-3-1",
-                "title": "Estructura del Átomo"
+                "title": "Estructura del Átomo",
+                "url": ""
               },
               {
                 "id": "1-3-2",
-                "title": "¿Qué es un Campo?"
+                "title": "¿Qué es un Campo?",
+                "url": ""
               },
               {
                 "id": "1-3-3",
-                "title": "¡Curioso sobre los Electrones!"
+                "title": "¡Curioso sobre los Electrones!",
+                "url": ""
               },
               {
                 "id": "1-3-4",
-                "title": "Profundizando en las Partículas Elementales"
+                "title": "Profundizando en las Partículas Elementales",
+                "url": ""
               },
               {
                 "id": "1-3-5",
-                "title": "¿Son los Humanos Seres Probabilísticos también?"
+                "title": "¿Son los Humanos Seres Probabilísticos también?",
+                "url": ""
               }
             ]
           },
@@ -2095,31 +2836,38 @@
             "chapters": [
               {
                 "id": "2-1",
-                "title": "Vibración: El Movimiento Especial que Crea el Sonido"
+                "title": "Vibración: El Movimiento Especial que Crea el Sonido",
+                "url": ""
               },
               {
                 "id": "2-2",
-                "title": "Requisitos para la Vibración: Inercia y Fuerza Restauradora"
+                "title": "Requisitos para la Vibración: Inercia y Fuerza Restauradora",
+                "url": ""
               },
               {
                 "id": "2-3",
-                "title": "Una Introducción a la Dinámica de Fluidos"
+                "title": "Una Introducción a la Dinámica de Fluidos",
+                "url": ""
               },
               {
                 "id": "2-4",
-                "title": "Fuente Sonora y Medio"
+                "title": "Fuente Sonora y Medio",
+                "url": ""
               },
               {
                 "id": "2-5",
-                "title": "Movimiento Térmico Aleatorio y Difusión del Aire"
+                "title": "Movimiento Térmico Aleatorio y Difusión del Aire",
+                "url": ""
               },
               {
                 "id": "2-6",
-                "title": "Elasticidad del Aire"
+                "title": "Elasticidad del Aire",
+                "url": ""
               },
               {
                 "id": "2-7",
-                "title": "Principio de Vibración del Aire: Compresión y Rarefacción"
+                "title": "Principio de Vibración del Aire: Compresión y Rarefacción",
+                "url": ""
               }
             ]
           },
@@ -2128,73 +2876,90 @@
             "chapters": [
               {
                 "id": "3-1",
-                "title": "¿Qué es un Modelo?"
+                "title": "¿Qué es un Modelo?",
+                "url": ""
               },
               {
                 "id": "3-2",
-                "title": "Magnitudes Físicas: El Primer Paso para Modelar Fenómenos Complejos"
+                "title": "Magnitudes Físicas: El Primer Paso para Modelar Fenómenos Complejos",
+                "url": ""
               },
               {
                 "id": "3-3",
-                "title": "Modelado de Momento y Fuerza"
+                "title": "Modelado de Momento y Fuerza",
+                "url": ""
               },
               {
                 "id": "3-3-1",
-                "title": "Expresión Matemática de la Inercia: Momento"
+                "title": "Expresión Matemática de la Inercia: Momento",
+                "url": ""
               },
               {
                 "id": "3-3-2",
-                "title": "F = ma: Modelando el Concepto Abstracto de Fuerza"
+                "title": "F = ma: Modelando el Concepto Abstracto de Fuerza",
+                "url": ""
               },
               {
                 "id": "3-4",
-                "title": "Ley de Hooke: Expresión Matemática de un Cuerpo Vibrante"
+                "title": "Ley de Hooke: Expresión Matemática de un Cuerpo Vibrante",
+                "url": ""
               },
               {
                 "id": "3-5",
                 "title": "Funciones Trigonométricas",
+                "url": "",
                 "sub": [
                   {
                     "id": "3-5-1",
-                    "title": "¿Qué es una Función?"
+                    "title": "¿Qué es una Función?",
+                    "url": ""
                   },
                   {
                     "id": "3-5-2",
-                    "title": "Proporción y Razón"
+                    "title": "Proporción y Razón",
+                    "url": ""
                   },
                   {
                     "id": "3-5-3",
-                    "title": "La Estética de la Razón 0: El Poder Misterioso de la Razón"
+                    "title": "La Estética de la Razón 0: El Poder Misterioso de la Razón",
+                    "url": ""
                   },
                   {
                     "id": "3-5-4",
-                    "title": "La Estética de la Razón 1: El Secreto del Triángulo Rectángulo"
+                    "title": "La Estética de la Razón 1: El Secreto del Triángulo Rectángulo",
+                    "url": ""
                   },
                   {
                     "id": "3-5-5",
-                    "title": "La Estética de la Razón 2: El Romance del Universo y las Funciones Trigonométricas"
+                    "title": "La Estética de la Razón 2: El Romance del Universo y las Funciones Trigonométricas",
+                    "url": ""
                   },
                   {
                     "id": "3-5-6",
-                    "title": "La Estética de la Razón 3: Radián y Ángulo Adimensional"
+                    "title": "La Estética de la Razón 3: Radián y Ángulo Adimensional",
+                    "url": ""
                   },
                   {
                     "id": "3-5-7",
-                    "title": "La Estética de la Razón 4: Diferenciación"
+                    "title": "La Estética de la Razón 4: Diferenciación",
+                    "url": ""
                   }
                 ]
               },
               {
                 "id": "3-6",
-                "title": "Derivada: Una Función que Representa el Cambio Instantáneo"
+                "title": "Derivada: Una Función que Representa el Cambio Instantáneo",
+                "url": ""
               },
               {
                 "id": "3-7",
-                "title": "Derivadas de las Funciones Trigonométricas"
+                "title": "Derivadas de las Funciones Trigonométricas",
+                "url": ""
               },
               {
                 "id": "3-8",
-                "title": "Resolviendo la Ley de Hooke: Movimiento Armónico Simple"
+                "title": "Resolviendo la Ley de Hooke: Movimiento Armónico Simple",
+                "url": ""
               }
             ]
           },
@@ -2203,31 +2968,38 @@
             "chapters": [
               {
                 "id": "4-1",
-                "title": "Periodicidad y Frecuencia"
+                "title": "Periodicidad y Frecuencia",
+                "url": ""
               },
               {
                 "id": "4-2",
-                "title": "Frecuencia Natural"
+                "title": "Frecuencia Natural",
+                "url": ""
               },
               {
                 "id": "4-3",
-                "title": "Resonancia"
+                "title": "Resonancia",
+                "url": ""
               },
               {
                 "id": "4-4",
-                "title": "Ecuación de Onda"
+                "title": "Ecuación de Onda",
+                "url": ""
               },
               {
                 "id": "4-5",
-                "title": "Modos y Armónicos"
+                "title": "Modos y Armónicos",
+                "url": ""
               },
               {
                 "id": "4-6",
-                "title": "Una Introducción a la Acústica Musical"
+                "title": "Una Introducción a la Acústica Musical",
+                "url": ""
               },
               {
                 "id": "4-7",
-                "title": "Sistemas de Afinación"
+                "title": "Sistemas de Afinación",
+                "url": ""
               }
             ]
           },
@@ -2236,35 +3008,43 @@
             "chapters": [
               {
                 "id": "5-1",
-                "title": "Estructura de la Arquitectura"
+                "title": "Estructura de la Arquitectura",
+                "url": ""
               },
               {
                 "id": "5-2",
-                "title": "Características Acústicas"
+                "title": "Características Acústicas",
+                "url": ""
               },
               {
                 "id": "5-2-1",
-                "title": "Reflexión"
+                "title": "Reflexión",
+                "url": ""
               },
               {
                 "id": "5-2-2",
-                "title": "Absorción"
+                "title": "Absorción",
+                "url": ""
               },
               {
                 "id": "5-2-3",
-                "title": "Refracción"
+                "title": "Refracción",
+                "url": ""
               },
               {
                 "id": "5-2-4",
-                "title": "Difracción"
+                "title": "Difracción",
+                "url": ""
               },
               {
                 "id": "5-2-5",
-                "title": "Interferencia"
+                "title": "Interferencia",
+                "url": ""
               },
               {
                 "id": "5-3",
-                "title": "Una Introducción a la Acústica Arquitectónica"
+                "title": "Una Introducción a la Acústica Arquitectónica",
+                "url": ""
               }
             ]
           },
@@ -2273,59 +3053,73 @@
             "chapters": [
               {
                 "id": "6-1",
-                "title": "Vibración Libre y Vibración Forzada"
+                "title": "Vibración Libre y Vibración Forzada",
+                "url": ""
               },
               {
                 "id": "6-2",
-                "title": "Una Introducción al Electromagnetismo"
+                "title": "Una Introducción al Electromagnetismo",
+                "url": ""
               },
               {
                 "id": "6-2-1",
-                "title": "Ecuaciones de Maxwell"
+                "title": "Ecuaciones de Maxwell",
+                "url": ""
               },
               {
                 "id": "6-3",
-                "title": "¿Qué es una Señal?"
+                "title": "¿Qué es una Señal?",
+                "url": ""
               },
               {
                 "id": "6-4",
-                "title": "Conversión Digital-Analógica"
+                "title": "Conversión Digital-Analógica",
+                "url": ""
               },
               {
                 "id": "6-5",
-                "title": "Principios de la Grabación"
+                "title": "Principios de la Grabación",
+                "url": ""
               },
               {
                 "id": "6-5-1",
-                "title": "Micrófono"
+                "title": "Micrófono",
+                "url": ""
               },
               {
                 "id": "6-5-2",
-                "title": "Altavoz"
+                "title": "Altavoz",
+                "url": ""
               },
               {
                 "id": "6-6",
-                "title": "Señal de Audio"
+                "title": "Señal de Audio",
+                "url": ""
               },
               {
                 "id": "6-6-1",
-                "title": "Análisis"
+                "title": "Análisis",
+                "url": ""
               },
               {
                 "id": "6-6-2",
-                "title": "Síntesis"
+                "title": "Síntesis",
+                "url": ""
               },
               {
                 "id": "6-6-3",
-                "title": "Procesamiento"
+                "title": "Procesamiento",
+                "url": ""
               },
               {
                 "id": "6-6-4",
-                "title": "Almacenamiento"
+                "title": "Almacenamiento",
+                "url": ""
               },
               {
                 "id": "6-7",
-                "title": "Una Introducción a la Electroacústica"
+                "title": "Una Introducción a la Electroacústica",
+                "url": ""
               }
             ]
           },
@@ -2334,11 +3128,13 @@
             "chapters": [
               {
                 "id": "7-1",
-                "title": "Análisis de Fourier"
+                "title": "Análisis de Fourier",
+                "url": ""
               },
               {
                 "id": "7-2",
-                "title": "Síntesis de Fourier"
+                "title": "Síntesis de Fourier",
+                "url": ""
               }
             ]
           },
@@ -2347,43 +3143,53 @@
             "chapters": [
               {
                 "id": "8-1",
-                "title": "El Oído"
+                "title": "El Oído",
+                "url": ""
               },
               {
                 "id": "8-1-1",
-                "title": "Estructura del Oído"
+                "title": "Estructura del Oído",
+                "url": ""
               },
               {
                 "id": "8-1-2",
-                "title": "Conexión entre el Oído y el Cerebro"
+                "title": "Conexión entre el Oído y el Cerebro",
+                "url": ""
               },
               {
                 "id": "8-1-3",
-                "title": "Tinnitus"
+                "title": "Tinnitus",
+                "url": ""
               },
               {
                 "id": "8-1-4",
-                "title": "Audífonos"
+                "title": "Audífonos",
+                "url": ""
               },
               {
                 "id": "8-1-5",
-                "title": "Una Introducción a la Psicoacústica"
+                "title": "Una Introducción a la Psicoacústica",
+                "url": ""
               },
               {
                 "id": "8-2",
-                "title": "El Habla"
+                "title": "El Habla",
+                "url": ""
               },
               {
                 "id": "8-2-1",
-                "title": "Estructura Acústica del Rostro"
+                "title": "Estructura Acústica del Rostro",
+                "url": ""
               },
               {
                 "id": "8-2-2",
-                "title": "Vocalización"
+                "title": "Vocalización",
+                "url": ""
               },
               {
                 "id": "8-3",
-                "title": "Una Introducción a la Acústica del Habla"
+                "title": "Una Introducción a la Acústica del Habla",
+                "url": ""
               }
             ]
           }

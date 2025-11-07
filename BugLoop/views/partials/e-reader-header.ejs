@@ -2,17 +2,24 @@
   <div class="header-title"></div>
 
   <div class="header-controls">
-    <button id="homeBtn" class="header-btn" title="홈으로 이동">
-      <i class="fas fa-home"></i> 홈
+
+    <!-- 홈 -->
+    <button id="homeBtn" class="header-btn" title="<%= locale.ui.home %>">
+      <i class="fas fa-home"></i>
+      <span><%= locale.ui.home %></span>
     </button>
 
-    <button id="darkModeToggle" class="header-btn" title="테마 전환">
+    <!-- 다크/라이트 모드 -->
+    <button id="darkModeToggle" class="header-btn" title="<%= locale.ui.darkModeToggle %>">
       <i class="fas fa-moon"></i>
-      <span id="darkModeLabel">다크 모드</span>
+      <span id="darkModeLabel"><%= locale.ui.darkModeLabel %></span>
     </button>
 
-    <button id="tocToggle" class="header-btn" title="목차 보기">
-      <i class="fas fa-list"></i> 목차
+    <!-- 목차 -->
+    <button id="tocToggle" class="header-btn" title="<%= locale.ui.tocButton %>">
+      <i class="fas fa-list"></i>
+      <span><%= locale.ui.tocButton %></span>
     </button>
+
   </div>
 </header>
