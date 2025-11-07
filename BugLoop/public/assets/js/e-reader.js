@@ -221,6 +221,9 @@ document.body.addEventListener("touchend", (e) => {
   }
 }, { passive: true });
 
+// 페이지 제목을 헤더로 보내기
+const headerTitleEl = document.querySelector('.header-title');
+headerTitleEl.innerText = book.chapterTitle;
 
 // ===============================
 // 초기화
