@@ -468,6 +468,9 @@ async function loadMorePosts() {
   try {
     const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
     const data = await res.json();
+    
+    // 🌟 API Response Data 확인용 로그
+    console.log("API Response Data:", data); 
   
     if (!data.posts || data.posts.length === 0) {
       document.getElementById("load-more-btn").style.display = "none";
@@ -475,7 +478,7 @@ async function loadMorePosts() {
       return;
     }
   
-    // === 수정된 부분 시작 ===
+    // === 수정된 부분 시작: post.created_fmt와 post.preview 사용 ===
     offset += data.posts.length;
   
     const container = document.getElementById("posts-container");
@@ -489,12 +492,8 @@ async function loadMorePosts() {
       const el = document.createElement("div");
       el.className = "recent-post-item"; // ✅ 클래스 통일
       
-      // 날짜 형식을 'yyyy.MM.dd'에 가깝게 맞추기 위해 간단한 처리를 추가했습니다.
-      const formattedDate = new Date(post.created_at).toLocaleDateString('ko-KR', { 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit' 
-      }).replace(/\. /g, '.').slice(0, -1); // 2025. 11. 08. -> 2025.11.08
+      // 💡 post.created_fmt (서버에서 형식화된 날짜) 사용
+      const formattedDate = post.created_fmt; 
   
       el.innerHTML = `
         <a href="/${lang}/post/${post.id}" class="recent-post-title">
@@ -509,16 +508,17 @@ async function loadMorePosts() {
         </div>
   
         <div class="recent-post-preview">
-          ${post.content.replace(/<[^>]+>/g, '').slice(0, 120)}...
-        </div>
+          ${post.preview}... 
+          </div>
       `;
       container.appendChild(el);
+      console.log("Adding post:", post.title); // 디버깅용 로그 추가
     });
     // === 수정된 부분 끝 ===
   
     loading = false;
   } catch (error) {
-      console.error("Error loading more posts:", error);
+      console.error("Error loading more posts or processing JSON (DOM/Parsing Error):", error);
       loading = false;
   }
 }
