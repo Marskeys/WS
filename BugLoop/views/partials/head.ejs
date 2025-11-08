@@ -48,7 +48,6 @@
 
 <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128" />
 
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR&display=swap" rel="stylesheet" />
@@ -60,7 +59,6 @@
 <link rel="stylesheet" as="style" crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 
-<!-- CSS -->
 <link rel="stylesheet" href="/assets/css/header.css" />
 <link rel="stylesheet" href="/assets/css/style.css" />
 <link rel="stylesheet" href="/assets/css/table.css" />
@@ -71,21 +69,39 @@
 <script async custom-element="amp-auto-ads"
         src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
 
-<!-- Preload key images -->
 <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
 <link rel="preload" href="/assets/images/room.webp" as="image" type="image/webp" />
 
-<!-- Apply theme early (avoid FOUC) -->
 <script>
   (function () {
     try {
-      var saved = localStorage.getItem('theme-mode');
-      var isDark = !saved || saved === 'dark';
-      document.documentElement.classList.toggle('dark', isDark);
-    } catch (e) {}
+      // 💥 테마 키 수정: 'theme-mode' -> 'bugloop.theme' (header.js와 통일)
+      const THEME_KEY = 'bugloop.theme';
+      const htmlEl = document.documentElement;
+      const saved = localStorage.getItem(THEME_KEY);
+      let theme;
+
+      // 1. 저장된 값이 있다면, 무조건 그 값을 사용합니다. (시스템 설정 무시)
+      if (saved) {
+        theme = saved;
+      } else {
+        // 2. 저장된 값이 없다면, 시스템 설정을 확인합니다.
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        theme = prefersDark ? 'dark' : 'light';
+      }
+      
+      // 3. <html>에 클래스 즉시 적용
+      if (theme === 'dark') {
+        htmlEl.classList.add('dark');
+      } else {
+        htmlEl.classList.remove('dark');
+      }
+      
+    } catch (e) {
+      console.warn("Theme initialization failed:", e);
+    }
   })();
 </script>
 
-<!-- Ads / libs -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
