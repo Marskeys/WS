@@ -23,6 +23,8 @@
       --accent:#cfcfd0;
       --primary:#217ee8;
       --primary-ink:#ffffff;
+      /* CSS 변수 추가 (버튼 디자인을 위해) */
+      --primary-rgb: 33, 126, 232; /* --primary의 RGB 값 */
     }
 
     html.dark{
@@ -35,6 +37,7 @@
       --accent:#faffca;
       --primary:#217ee8;
       --primary-ink:#608b42;
+      --primary-rgb: 33, 126, 232; 
     }
 
     html, body { height: 100%; }
@@ -315,26 +318,39 @@
         /* 버튼 스타일 통일 및 중앙 정렬 */
         display: block; 
         width: 200px; 
-        margin: 32px auto 60px; /* 중앙 정렬 및 푸터 위 여백 확보 */
+        margin: 24px auto 60px; /* 🌟 여백 수정 (32px -> 24px) */
         padding: 12px 20px;
         border-radius: 25px; 
         background: var(--primary); 
-        border: none; 
+        border: 2px solid var(--primary); /* 🌟 다크모드 대비 border 추가 */
         color: var(--primary-ink); 
         font-weight: 700;
         cursor: pointer;
         font-size: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s;
         letter-spacing: 0.5px;
     }
 
     #load-more-btn:hover {
         opacity: 0.9;
         transform: translateY(-1px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 🌟 다크 모드 버튼 스타일 추가 */
+    html.dark #load-more-btn {
+        background: var(--panel); /* 다크 모드에서는 배경을 패널 색상으로 */
+        color: var(--primary); /* 텍스트 색상을 강조색으로 */
+        border: 2px solid var(--primary); /* 경계를 강조색으로 */
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
     }
     
+    html.dark #load-more-btn:hover {
+        background: var(--panel-2); /* 호버 시 미묘한 배경 변화 */
+        box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+    }
+
     /* ---------------------------------------------------- */
     /* ✅ 🆕 푸터 스타일 */
     /* ---------------------------------------------------- */
