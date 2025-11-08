@@ -454,19 +454,17 @@
 
   <%- include('partials/scripts') %>
 
-  <script>
+<script>
+const lang = "<%= lang %>";
 
-    const lang = "<%= lang %>"; 
-    
-let currentPage = 1;
+let offset = 5;   // 처음에 posts.slice(0,5) 로 5개 보여줬으니까 offset도 5부터 시작
 let loading = false;
 
 async function loadMorePosts() {
   if (loading) return;
   loading = true;
-  currentPage++;
 
-  const res = await fetch(`/api/recent-posts?page=${currentPage}`);
+  const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
   const data = await res.json();
 
   if (!data.posts || data.posts.length === 0) {
@@ -487,18 +485,25 @@ async function loadMorePosts() {
       <div class="recent-post-meta">
         <span>${post.author}</span>
         <span>·</span>
-        <span>${post.created_at.slice(0,10).replace(/-/g,'.')}</span>
+        <span>${post.created_fmt}</span>
       </div>
       <div class="recent-post-preview">
-        ${post.content.replace(/<[^>]+>/g, '').slice(0, 120)}...
+        ${post.preview}...
       </div>
     `;
     container.appendChild(el);
   });
 
+  offset = data.nextOffset; // ✅ 서버가 다음 offset 알려줌
+
+  if (!data.hasMore) {
+    document.getElementById("load-more-btn").style.display = "none";
+  }
+
   loading = false;
 }
 </script>
+
 
 
   <script>
