@@ -320,20 +320,24 @@
     }
 
     #load-more-btn {
-        /* 버튼 스타일 통일 및 중앙 정렬 (라이트 모드) */
+        /* 버튼 스타일 통일 및 중앙 정렬 */
         display: block; 
         width: 200px; 
         margin: 24px auto 60px; /* 여백 유지 */
         padding: 12px 20px;
         border-radius: 25px; 
-        background: var(--primary); 
-        border: 2px solid var(--primary); 
-        color: var(--primary-ink); /* 보통 흰색 */
+        
+        /* 🌟🌟🌟 라이트 모드: 밝은 초록 그라데이션 적용 🌟🌟🌟 */
+        background: linear-gradient(135deg, #A8E063, #56AB2F); 
+        
+        border: none; /* 그라데이션 사용 시 테두리 제거 */
+        color: #ffffff; /* 흰색 텍스트 */
+        
         font-weight: 700;
         cursor: pointer;
         font-size: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s, color 0.3s; /* 색상 전환도 부드럽게 */
+        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s, color 0.3s; 
         letter-spacing: 0.5px;
     }
 
@@ -343,19 +347,19 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* 🌟 다크 모드 버튼 스타일 (세련되게 변경) */
+    /* 🌟🌟🌟 다크 모드 버튼 스타일 수정: 투명 배경/하얀 테두리/하얀 글씨 🌟🌟🌟 */
     html.dark #load-more-btn {
-        background: transparent; /* 배경 투명 */
-        color: var(--primary); /* 텍스트는 primary 색상 */
-        border: 2px solid var(--primary); /* 테두리도 primary 색상 */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* 다크 모드에 어울리는 그림자 */
+        background: transparent; 
+        color: #ffffff; /* 하얀 글씨 */
+        border: 2px solid #ffffff; /* 하얀 테두리 */
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.15); 
     }
     
     html.dark #load-more-btn:hover {
-        background: var(--primary); /* 호버 시 배경이 primary 색상으로 채워짐 */
-        color: var(--primary-ink); /* 텍스트는 primary-ink (흰색 계열)로 변경 */
-        box-shadow: 0 6px 12px rgba(var(--primary-rgb), 0.4); /* primary 색상의 그림자 */
-        transform: translateY(-2px); /* 호버 시 조금 더 강조되는 효과 */
+        background: #ffffff; /* 호버 시 흰색 배경으로 채움 */
+        color: var(--bg); /* 텍스트는 다크 모드 배경색과 유사하게 반전 */
+        box-shadow: 0 6px 12px rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px); 
     }
 
     /* ---------------------------------------------------- */
