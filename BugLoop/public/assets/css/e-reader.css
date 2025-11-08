@@ -6,16 +6,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
 
 /* =========================================================
-   Global Styles
+   Global Vars
    ========================================================= */
 :root{
-  --font-sans: "Pretendard Variable", "Pretendard",
-               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-               "Noto Sans KR", "Noto Sans", sans-serif;
+  --font-sans: "Pretendard Variable","Pretendard",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans KR","Noto Sans",sans-serif;
   --tracking-body: -0.003em;
-  --lh-body:        1.55;
-  --lh-heading:     1.25;
+  --lh-body: 1.55;
+  --lh-heading: 1.25;
+
+  /* page geometry helpers for nav buttons */
+  --page-max: 800px;
+  --page-w: min(80vw, var(--page-max));
+  --page-side-gap: calc((100vw - var(--page-w)) / 2);
+
+  /* mobile footer height */
+  --mobile-footer-h: 52px;
 }
+
+:lang(ko), .lang-ko { letter-spacing: -0.0020em; }
 
 body {
   margin: 0;
@@ -23,8 +31,9 @@ body {
   letter-spacing: var(--tracking-body);
   line-height: var(--lh-body);
   background: #f5f5f5;
+  color: #111;
   overflow: hidden;
-  transition: background 0.3s, color 0.3s;
+  transition: background .3s, color .3s;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -32,25 +41,20 @@ body {
   overscroll-behavior-y: contain;
 }
 
-:lang(ko), .lang-ko { letter-spacing: -0.0020em; }
-
-body.dark {
-  background: #121212;
-  color: #f5f5f5;
-}
+body.dark { background:#121212; color:#f5f5f5; }
 
 /* =========================================================
-   Header
+   Header (desktop / tablet)
    ========================================================= */
 .app-header {
   width: 100%;
-  height: 46px; /* 얇게 */
+  height: 44px;
   background: #000;
-  color: white;
+  color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 16px;
+  justify-content: space-between;
+  padding: 0 14px;
   box-sizing: border-box;
   position: relative;
   z-index: 50;
@@ -59,33 +63,37 @@ body.dark {
 .header-title {
   font-size: 17px;
   font-weight: 600;
-  margin-left: 10px;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-controls {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
 }
 
 .header-btn {
   background: none;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 4px;
-  padding: 6px 8px; /* 얇게 */
+  color: #fff;
+  border: 1px solid #fff;   /* ★ 하얀 테두리 */
+  border-radius: 0;         /* ★ 각진 버튼 */
+  padding: 6px 10px;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  display: flex;
+  font-size: 14px;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: background 0.2s, border-color 0.2s;
+  gap: 6px;
+  transition: 0.2s;
 }
-
-.header-btn:hover {
-  background: #222;
-  border-color: #666;
+.header-btn:hover{
+  background:#222;
+  border-color:#fff;
 }
+.header-btn i{ font-size:16px; }
 
 /* =========================================================
    Viewer & Page
@@ -102,15 +110,16 @@ body.dark {
 }
 
 .page {
+  position: relative;
   width: 80%;
-  max-width: 800px;
+  max-width: var(--page-max);
   height: 90%;
-  max-height: calc(100vh - 110px);
-  margin-bottom: 50px;
-  background: white;
+  max-height: calc(100vh - 100px);
+  margin-bottom: 32px;
+  background: #fff;
   border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  padding: 36px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
   overflow: hidden;
   line-height: 1.8;
   font-size: 16px;
@@ -118,112 +127,157 @@ body.dark {
   flex-direction: column;
 }
 
-/* Mobile Subtitle / Heading */
+body.dark .page {
+  background:#333; color:#f5f5f5;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+}
+
 h1 {
   font-size: 28px;
-  margin-bottom: 20px;
+  margin: 0 0 20px 0;
   text-align: center;
 }
 
 h2.sub-chapter-title {
   font-size: 28px;
   font-weight: 600;
+  color: #333;
   text-align: center;
-  margin-top: 40px;
-  margin-bottom: 20px;
+  margin: 40px 0 20px;
+}
+body.dark h2.sub-chapter-title{ color:#eee; }
+
+.page-text {
+  flex: 1;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  padding-bottom: 16px;
 }
 
-body.dark .page { background: #333; color: #f5f5f5; }
-body.dark h2.sub-chapter-title { color: #eee; }
+.page-text p{ margin:0 0 1.2em 0; }
 
-.page-text { flex: 1; overflow-y: auto; padding-bottom: 20px; }
-.page-text p { margin-bottom: 1.2em; }
-
-.page-index { text-align: center; color: #888; padding-top: 10px; }
+.page-index {
+  text-align: center;
+  font-weight: 500;
+  color: #888;
+  padding-top: 8px;
+}
 
 /* =========================================================
-   Navigation Buttons
+   Prev / Next Navigation Buttons
    ========================================================= */
 .nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(51,51,51,0.8);
-  color: white;
+  background: rgba(51,51,51,.82);
+  color: #fff;
   border: none;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   font-size: 18px;
   cursor: pointer;
-  opacity: 0.7;
+  opacity: .8;
+  transition: opacity .2s, background .2s;
+  z-index: 10;
 }
 
+#prevBtn{ left: calc(var(--page-side-gap) + 8px); }
+#nextBtn{ right: calc(var(--page-side-gap) + 8px); }
+
+body.dark .nav-btn{ background: rgba(85,85,85,.82); }
+
 /* =========================================================
-   Table of Contents
+   TOC
    ========================================================= */
 .toc {
   position: absolute;
   top: 0;
-  right: -300px;
-  width: 300px;
+  right: -320px;
+  width: 320px;
   height: 100%;
   background: #222;
-  color: white;
-  transition: right 0.3s ease;
+  color: #fff;
+  transition: right .28s ease;
   overflow-y: auto;
   padding: 20px;
   box-sizing: border-box;
   z-index: 20;
+  box-shadow: -8px 0 18px rgba(0,0,0,.22);
 }
-
-.toc.open { right: 0; }
+.toc.open{ right:0; }
 
 /* =========================================================
    Responsive (Mobile)
    ========================================================= */
-@media (max-width: 768px) {
+@media (max-width: 768px){
 
-  /* 제목을 위에 */
-  .app-header {
-    height: auto;
-    padding: 10px 0;
+  .app-header{
+    height: 40px;
     justify-content: center;
+    padding: 0 10px;
   }
-
-  .header-title {
+  .header-title{
+    width: 100%;
     text-align: center;
-    width: 100%;
-    margin: 0;
-    font-size: 16px;
   }
 
-  /* 버튼바를 아래에 두고 오른쪽 정렬 */
-  .header-controls {
+  .header-controls{
     position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    padding: 6px 12px; /* 얇게 */
+    bottom: 0; left: 0; width: 100%;
+    height: var(--mobile-footer-h);
     background: #000;
     border-top: 1px solid #333;
     display: flex;
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
     z-index: 999;
   }
 
-  .header-btn {
-    padding: 8px 12px; /* 얇게 */
-    border-radius: 6px;
-    border: none;
-    background: #111;
+  .header-btn{
+    border: 1px solid #fff; /* 모바일에서도 유지 */
+    border-radius: 0;
+    background: none;
+    padding: 8px 10px;
     font-size: 14px;
+    gap: 6px;
   }
 
-  .header-btn:active { background-color: #222; }
+  .viewer{
+    padding-top: 10px;
+    padding-bottom: calc(var(--mobile-footer-h) + 10px);
+  }
 
-  /* 콘텐츠 영역은 버튼 높이만큼 여백 확보 */
-  .viewer { padding-bottom: 70px; }
-  .page { width: 94%; padding: 22px; }
+  .page{
+    width: 95%;
+    padding: 20px;
+    height: calc(100% - 16px);
+    margin-bottom: 12px;
+  }
+
+  :root{
+    --page-w: 95vw;
+    --page-side-gap: calc((100vw - var(--page-w)) / 2);
+  }
+
+  #prevBtn{ left: calc(var(--page-side-gap) + 6px); }
+  #nextBtn{ right: calc(var(--page-side-gap) + 6px); }
+
+  .toc{
+    right: -88vw;
+    width: 88vw;
+    box-shadow: -6px 0 14px rgba(0,0,0,.28);
+  }
+  .toc.open{ right:0; }
 }
+
+/* Very small phones */
+@media (max-width: 360px){
+  .header-btn{ padding: 7px 8px; font-size: 13px; }
+  :root{ --mobile-footer-h: 48px; }
+}
+
+#tocToggle { margin-right: 30px; }
