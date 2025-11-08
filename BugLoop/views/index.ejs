@@ -408,9 +408,7 @@
     
     <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
 
-  </div>
-
-  <div class="recent-posts">
+     <div class="recent-posts">
   <% posts.slice(0, 5).forEach(post => { %>
     <div class="recent-post-item">
 
@@ -436,6 +434,10 @@
     </div>
   <% }) %>
 </div>
+
+  </div>
+
+ 
 
   <%- include('partials/scripts') %>
 
