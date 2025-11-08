@@ -36,7 +36,7 @@
       --ink-2:#b7b7b7;
       --accent:#faffca;
       --primary:#217ee8;
-      --primary-ink:#608b42;
+      --primary-ink:#608b42; /* 다크 모드에서 버튼 텍스트가 흰색으로 보일 때 사용될 색상 (예: #ffffff) */
       --primary-rgb: 33, 126, 232; 
     }
 
@@ -320,20 +320,20 @@
     }
 
     #load-more-btn {
-        /* 버튼 스타일 통일 및 중앙 정렬 */
+        /* 버튼 스타일 통일 및 중앙 정렬 (라이트 모드) */
         display: block; 
         width: 200px; 
-        margin: 24px auto 60px; /* 여백 수정 */
+        margin: 24px auto 60px; /* 여백 유지 */
         padding: 12px 20px;
         border-radius: 25px; 
         background: var(--primary); 
         border: 2px solid var(--primary); 
-        color: var(--primary-ink); 
+        color: var(--primary-ink); /* 보통 흰색 */
         font-weight: 700;
         cursor: pointer;
         font-size: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s;
+        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s, color 0.3s; /* 색상 전환도 부드럽게 */
         letter-spacing: 0.5px;
     }
 
@@ -343,17 +343,19 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* 🌟 다크 모드 버튼 스타일 수정: 하얀 배경/파란 테두리로 세련되게 변경 */
+    /* 🌟 다크 모드 버튼 스타일 (세련되게 변경) */
     html.dark #load-more-btn {
-        background: #ffffff; /* 흰색 배경 */
-        color: var(--primary); /* 텍스트 색상을 강조색(파란색)으로 */
-        border: 2px solid var(--primary); /* 경계를 강조색(파란색)으로 */
-        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.15); /* 밝은 그림자 유지 */
+        background: transparent; /* 배경 투명 */
+        color: var(--primary); /* 텍스트는 primary 색상 */
+        border: 2px solid var(--primary); /* 테두리도 primary 색상 */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4); /* 다크 모드에 어울리는 그림자 */
     }
     
     html.dark #load-more-btn:hover {
-        background: var(--panel-2); /* 호버 시 미묘한 배경 변화 (다크 패널 2) */
-        box-shadow: 0 6px 12px rgba(255, 255, 255, 0.25);
+        background: var(--primary); /* 호버 시 배경이 primary 색상으로 채워짐 */
+        color: var(--primary-ink); /* 텍스트는 primary-ink (흰색 계열)로 변경 */
+        box-shadow: 0 6px 12px rgba(var(--primary-rgb), 0.4); /* primary 색상의 그림자 */
+        transform: translateY(-2px); /* 호버 시 조금 더 강조되는 효과 */
     }
 
     /* ---------------------------------------------------- */
@@ -455,7 +457,7 @@
                         <%= sub.title %>
                       </a>
                     <% } else { %>
-                      <span class="toc-link disabled"><%= sub.title %></span>
+                      <span class="toc-link disabled">${sub.title}</span>
                     <% } %>
                   </li>
                 <% }) %>
