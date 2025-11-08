@@ -86,13 +86,14 @@ book.sections.forEach((section, index) => {
 
 
 // ===============================
-// DOM 요소 참조
+// DOM 요소 참조 (수정됨)
 // ===============================
 let currentPage = 0;
 const pageIndex = document.getElementById("pageIndex");
 const tocEl = document.getElementById("toc");
 const tocList = document.getElementById("tocList");
 const bodyEl = document.body;
+const root = document.documentElement; // ❗ <html> 태그 참조 추가
 
 const darkModeToggle = document.getElementById("darkModeToggle");
 const darkModeIcon = darkModeToggle.querySelector('i');
@@ -100,7 +101,7 @@ const darkModeLabel = document.getElementById("darkModeLabel");
 
 
 // ===============================
-// Dark Mode (다국어 대응 버전)
+// Dark Mode (다국어 대응 버전) (수정됨)
 // ===============================
 // ❗ index.ejs (darkmode.js)와 키를 통일하여 상태를 공유합니다.
 const STORAGE_KEY = 'bugloop.theme'; 
@@ -110,14 +111,15 @@ function setDarkMode(isDark) {
   const darkText = darkModeToggle.dataset.dark;   // ex: "다크 모드" / "Dark Mode"
   const lightText = darkModeToggle.dataset.light; // ex: "라이트 모드" / "Light Mode"
 
+  // ❗ <body> 대신 <html> 태그에 클래스를 적용합니다. (FOUC 방지 스크립트와 통일)
   if (isDark) {
-    bodyEl.classList.add("dark");
+    root.classList.add("dark"); // ❗ bodyEl -> root로 변경
     darkModeIcon.classList.replace("fa-moon", "fa-sun");
     darkModeLabel.innerText = lightText;
     // ❗ 키와 값을 'bugloop.theme' / 'dark'로 변경
     localStorage.setItem(STORAGE_KEY, 'dark');
   } else {
-    bodyEl.classList.remove("dark");
+    root.classList.remove("dark"); // ❗ bodyEl -> root로 변경
     darkModeIcon.classList.replace("fa-sun", "fa-moon");
     darkModeLabel.innerText = darkText;
     // ❗ 키와 값을 'bugloop.theme' / 'light'로 변경
@@ -191,7 +193,7 @@ function goTo(i) {
 
 
 // ===============================
-// 버튼 이벤트
+// 버튼 이벤트 (수정됨)
 // ===============================
 document.getElementById("nextBtn").onclick = () => {
   if (currentPage < pages.length - 1) {
@@ -215,8 +217,8 @@ document.getElementById("homeBtn").onclick = () => {
   window.location.href = "/";
 };
 
-// 다크 모드 토글은 수정된 setDarkMode 함수를 사용합니다.
-darkModeToggle.onclick = () => setDarkMode(!bodyEl.classList.contains("dark"));
+// ❗ root (<html>)의 클래스 상태를 확인하도록 수정
+darkModeToggle.onclick = () => setDarkMode(!root.classList.contains("dark"));
 
 
 // ===============================
