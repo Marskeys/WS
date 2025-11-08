@@ -270,27 +270,7 @@
     <%- include('partials/panel') %>
   </div>
 
-  <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
-
-<div class="recent-posts">
-  <% posts.slice(0, 5).forEach(post => { %>
-    <div class="recent-post-item">
-      <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-        <%= post.title %>
-      </a>
-      <div class="recent-post-meta">
-        <span><%= post.author %></span>
-        <span>·</span>
-        <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
-      </div>
-      <div class="recent-post-preview">
-        <%= post.content.replace(/<[^>]+>/g, '').slice(0, 120) %>...
-      </div>
-    </div>
-  <% }) %>
-</div>
-
-
+  
   <div class="app-shell">
    <h1 class="section-title"><%= locale.index.ongoing %></h1>
 
