@@ -375,7 +375,7 @@ const handleWriteRoute = async (req, res) => {
     return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
   }
 
-  const safeLang = req.params.lang || 'ko';
+  if (!supportedLangs.includes(safeLang)) safeLang = 'ko';
   res.locals.lang = safeLang;
   try {
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
@@ -406,7 +406,7 @@ const handleWriteRoute = async (req, res) => {
 const handleEditRoute = async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id;
-  const safeLang = req.params.lang || 'ko';
+  if (!supportedLangs.includes(safeLang)) safeLang = 'ko';
   res.locals.lang = safeLang;
 
   try {
@@ -467,7 +467,7 @@ const handleEditRoute = async (req, res) => {
 const handlePostViewRoute = async (req, res) => {
   try {
     const postId = req.params.id;
-    const safeLang = req.params.lang;
+    if (!supportedLangs.includes(safeLang)) safeLang = 'ko';
     res.locals.lang = safeLang;
 
     if (!req.session.viewedPosts) {
@@ -578,7 +578,7 @@ const handleMainPage = async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang || 'ko';
+  if (!supportedLangs.includes(safeLang)) safeLang = 'ko';
   res.locals.lang = safeLang;
 
   try {
@@ -703,7 +703,7 @@ const handleSearchRoute = async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = req.params.lang;
+  if (!supportedLangs.includes(safeLang)) safeLang = 'ko';
   res.locals.lang = safeLang;
 
   const page = parseInt(req.query.page) || 1;
