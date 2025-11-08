@@ -6,7 +6,7 @@
 :root {
   /* 패널 높이 (기본값 및 현재값) */
   --header-h: 30px;            /* 헤더 높이 */
-  --panel-h-default: 100px; /* 🌟 초기값 수정: 150px -> 100px */
+  --panel-h-default: 150px; /* 🌟 데스크탑 초기값 수정: 100px -> 150px (증가) */
   --panel-h: var(--panel-h-default);
 
   /* 레이아웃 폭 */
@@ -18,7 +18,8 @@
 /* 모바일 기본 높이 설정 (max-width: 768px) */
 @media (max-width: 768px) {
   :root {
-    --panel-h-default: 220px;
+    /* 🌟 모바일 초기 높이: 220px 대신 JS에서 50%를 기준으로 계산합니다. */
+    --panel-h-default: 50vh; 
     --panel-h: var(--panel-h-default);
     /* 모바일에서는 ide와 panel 폭을 0으로 설정 */
     --ide-w: 0px;
@@ -226,7 +227,7 @@ body.resizing #panel-resizer {
        aria-label="패널 높이 조절"
        aria-valuemin="50"   
        aria-valuemax="800"
-       aria-valuenow="100"
+       aria-valuenow="150"
        tabindex="0"
        title="드래그하거나 ↑/↓ 키로 높이 조절">
   </div>
@@ -249,12 +250,17 @@ window.initPanelResizer = function() {
 
   // 상수 정의
   const MIN_HEIGHT = 50; // 🌟 최소 높이: 50px
-  const MAX_RATIO = 0.7; // 🌟 최대 높이: 화면 높이의 70%
+  const MAX_RATIO = 0.75; // 🌟 최대 높이: 화면 높이의 75%
+  const MOBILE_DEFAULT_RATIO = 0.5; // 🌟 모바일 초기 높이: 50%
+  const DESKTOP_DEFAULT_HEIGHT = 150; // 🌟 데스크탑 초기 높이: 150px
+  
   const STEP = 16, BIG = 64; // 키보드 조절 단위
   const VAR = '--panel-h';    // CSS 변수명
   const KEY = 'miniPanelH_session'; // sessionStorage 키
   
   // 헬퍼 함수
+  const isMobileView = () => window.innerWidth <= 768;
+  
   const getHeaderHeight = () => {
       const headerH = getComputedStyle(root).getPropertyValue('--header-h').trim() || '30px';
       return parseInt(headerH, 10) || 30;
@@ -262,7 +268,7 @@ window.initPanelResizer = function() {
   
   const getMaxHeight = () => {
       const headerH = getHeaderHeight();
-      // 화면 높이의 70%에서 헤더 높이를 뺀 값
+      // 화면 높이의 75%에서 헤더 높이를 뺀 값
       return Math.floor(window.innerHeight * MAX_RATIO) - headerH; 
   };
 
@@ -271,8 +277,14 @@ window.initPanelResizer = function() {
   };
 
   const getDefaultPx = () => {
-    const v = getComputedStyle(root).getPropertyValue('--panel-h-default').trim() || '100px';
-    return parseInt(v, 10) || 100;
+    const headerH = getHeaderHeight();
+    if (isMobileView()) {
+        // 모바일: 화면 높이의 50%
+        return Math.floor(window.innerHeight * MOBILE_DEFAULT_RATIO) - headerH;
+    } else {
+        // 데스크탑: 150px
+        return DESKTOP_DEFAULT_HEIGHT;
+    }
   };
 
   const clamp = v => {
@@ -301,15 +313,19 @@ window.initPanelResizer = function() {
     // 🌟 aria-valuemax 초기값 설정 (정확한 계산을 위해 DOMContentLoaded 시점 활용)
     resizer.setAttribute('aria-valuemax', String(getMaxHeight()));
     resizer.setAttribute('aria-valuemin', String(getMinHeight()));
+    
+    // CSS 변수 `--panel-h-default`를 JS에서 계산한 값으로 업데이트 (CSS 미디어 쿼리 오버라이드)
+    const initialDefaultH = getDefaultPx();
+    root.style.setProperty('--panel-h-default', initialDefaultH + 'px');
       
     if (isHomePath(location.pathname)) {
       sessionStorage.removeItem(KEY);
       root.style.removeProperty(VAR);
-      resizer.setAttribute('aria-valuenow', String(getDefaultPx()));
+      resizer.setAttribute('aria-valuenow', String(initialDefaultH));
     } else {
       const saved = sessionStorage.getItem(KEY);
       if (saved) setH(saved, false);
-      else root.style.setProperty(VAR, getDefaultPx() + 'px'); // 초기값 설정 보장
+      else setH(initialDefaultH, false); // 초기값 설정 보장
     }
   })();
   
@@ -330,17 +346,6 @@ window.initPanelResizer = function() {
   const onPointerMove = (e) => {
     if (!dragging || (pid != null && e.pointerId != null && e.pointerId !== pid)) return;
     
-    // Y축 이동량 계산 (패널이 위에서 아래로 열리므로, 마우스 Y축이 증가하면 패널 높이도 증가해야 함)
-    // 그러나 리사이저는 패널의 '맨 아래'에 있고, drag는 아래로 당기는 것 (높이 증가)
-    // e.clientY는 뷰포트 상단에서부터의 거리입니다.
-    
-    // 리사이저의 시작 위치(top)에서 드래그 시작 Y좌표(startY)를 뺀 후 현재 Y좌표(e.clientY)를 더하면
-    // 패널 높이의 변화량과 일치합니다.
-    const rect = document.getElementById('mini-lecture').getBoundingClientRect();
-    const currentPanelY = rect.top + rect.height; // 패널의 현재 하단 Y 좌표
-    
-    // 새로운 높이는 현재 높이 + (드래그한 거리)
-    // drag distance = e.clientY - startY
     const h = startH + (e.clientY - startY);
     setH(h);
   };
@@ -369,10 +374,24 @@ window.initPanelResizer = function() {
     }
   };
   
-  // 🌟 화면 리사이즈 시 MaxHeight 재계산
-  window.addEventListener('resize', () => {
-      setH(parseInt(getComputedStyle(root).getPropertyValue(VAR), 10), true);
-  });
+  // 🌟 화면 리사이즈 시 MaxHeight 재계산 및 현재 높이 재조정
+  const handleResize = () => {
+      // 리사이즈 시 데스크탑/모바일 전환을 감지하여 기본 높이 및 제한 재조정
+      const currentH = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10);
+      const newDefaultH = getDefaultPx();
+      
+      // 저장된 값이 없으면 새로운 기본값을 사용
+      const saved = sessionStorage.getItem(KEY);
+      if (!saved) {
+          setH(newDefaultH, false);
+      } else {
+          // 저장된 값이 있으면, Max/Min 제한에 맞춰 현재 높이를 재조정
+          setH(currentH, true); 
+      }
+      root.style.setProperty('--panel-h-default', newDefaultH + 'px');
+  };
+
+  window.addEventListener('resize', handleResize);
 
 
   /* 이벤트 리스너 등록 */
@@ -390,7 +409,7 @@ window.initPanelResizer = function() {
     document.removeEventListener('pointerup', endDrag);
     document.removeEventListener('pointercancel', endDrag);
     resizer.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('resize', () => setH(parseInt(getComputedStyle(root).getPropertyValue(VAR), 10), true));
+    window.removeEventListener('resize', handleResize);
   };
 };
 
