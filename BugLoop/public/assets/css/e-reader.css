@@ -6,42 +6,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
 
 /* =========================================================
-   Global Styles
+   Global Vars
    ========================================================= */
 :root{
-  --font-sans: "Pretendard Variable", "Pretendard",
-               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-               "Noto Sans KR", "Noto Sans", sans-serif;
+  --font-sans: "Pretendard Variable","Pretendard",-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans KR","Noto Sans",sans-serif;
+  --tracking-body: -0.003em;
+  --lh-body: 1.55;
+  --lh-heading: 1.25;
+
+  /* page geometry helpers for nav buttons */
+  --page-max: 800px;
+  --page-w: min(80vw, var(--page-max));
+  --page-side-gap: calc((100vw - var(--page-w)) / 2);
+
+  /* mobile footer height */
+  --mobile-footer-h: 52px;
 }
+
+:lang(ko), .lang-ko { letter-spacing: -0.0020em; }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
+  letter-spacing: var(--tracking-body);
+  line-height: var(--lh-body);
   background: #f5f5f5;
-  transition: background 0.3s, color 0.3s;
+  color: #111;
+  overflow: hidden;
+  transition: background .3s, color .3s;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
+  touch-action: pan-x;
+  overscroll-behavior-y: contain;
 }
 
-body.dark {
-  background: #121212;
-  color: #f5f5f5;
-}
+body.dark { background:#121212; color:#f5f5f5; }
 
 /* =========================================================
-   Header
+   Header (desktop / tablet)
    ========================================================= */
 .app-header {
   width: 100%;
-  height: 46px;
+  height: 44px;               /* 더 얇게 */
   background: #000;
-  color: white;
+  color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 16px;
+  justify-content: space-between;  /* 좌:제목, 우:버튼 */
+  padding: 0 14px;                 /* 더 얇게 */
+  box-sizing: border-box;
   position: relative;
   z-index: 50;
 }
@@ -49,108 +63,130 @@ body.dark {
 .header-title {
   font-size: 17px;
   font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-controls {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;                 /* 아이콘/라벨 붙는 문제 방지 */
 }
 
 .header-btn {
   background: none;
-  color: white;
+  color: #fff;
   border: 1px solid #444;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 13px;
-  display: flex;
+  border-radius: 6px;
+  padding: 6px 10px;         /* 더 얇게 */
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background .2s, border-color .2s, opacity .2s;
+  display: inline-flex;
   align-items: center;
-  transition: background 0.2s;
+  gap: 6px;                  /* 아이콘과 텍스트 간격 보장 */
 }
-
-.header-btn:hover { background: #222; }
+.header-btn i{ font-size:16px; }
+.header-btn:hover{ background:#222; border-color:#666; }
 
 /* =========================================================
    Viewer & Page
    ========================================================= */
 .viewer {
+  position: relative;
+  width: 100%;
   flex: 1;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  overflow: hidden !important;
   padding-top: 16px;
 }
 
 .page {
+  position: relative;                 /* 내부 기준점 */
   width: 80%;
-  max-width: 800px;
-  height: calc(100vh - 130px);
-  background: white;
+  max-width: var(--page-max);
+  height: 90%;
+  max-height: calc(100vh - 100px);
+  margin-bottom: 32px;
+  background: #fff;
   border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  padding: 36px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+  overflow: hidden;
+  line-height: 1.8;
+  font-size: 16px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 body.dark .page {
-  background: #333;
-  color: #f5f5f5;
+  background:#333; color:#f5f5f5;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
 }
 
-/* =========================================================
-   Page Text
-   ========================================================= */
+h1 {
+  font-size: 28px;
+  margin: 0 0 20px 0;
+  text-align: center;       /* 첫 페이지 제목만 중앙 */
+}
+
+h2.sub-chapter-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin: 40px 0 20px 0;
+}
+body.dark h2.sub-chapter-title{ color:#eee; }
+
 .page-text {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 20px;
+  white-space: pre-wrap;
+  padding-bottom: 16px;
 }
-
-.page-text p { margin-bottom: 1.2em; }
+.page-text p{ margin:0 0 1.2em 0; }
 
 .page-index {
   text-align: center;
+  font-weight: 500;
   color: #888;
   padding-top: 8px;
 }
 
 /* =========================================================
-   Page Navigation Buttons (Prev / Next)
+   Prev / Next Nav Buttons
+   - 페이지 양 옆에 정확히 붙도록 CSS 변수로 계산
    ========================================================= */
 .nav-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(51,51,51,0.75);
-  color: white;
+  background: rgba(51,51,51,.82);
+  color: #fff;
   border: none;
   border-radius: 50%;
-  width: 42px;
-  height: 42px;
+  width: 40px; height: 40px;
   font-size: 18px;
   cursor: pointer;
-  z-index: 30;
-  transition: background 0.3s;
+  opacity: .8;
+  transition: opacity .2s, background .2s, transform .2s;
+  z-index: 10;
+  backdrop-filter: blur(2px);
 }
+.nav-btn:hover{ opacity:1; }
 
-.nav-btn:hover { background: rgba(30,30,30,0.9); }
+body.dark .nav-btn{ background: rgba(85,85,85,.82); }
 
-/* 위치: 항상 페이지 양 옆에 자연스럽게 */
-#prevBtn { left: 5vw; }
-#nextBtn { right: 5vw; }
-
-/* 화면 넓을 때는 페이지 기준으로 더 정확히 */
-@media (min-width: 1100px) {
-  #prevBtn { left: calc(50% - 460px); }
-  #nextBtn { right: calc(50% - 460px); }
-}
-
-/* 모바일에서는 화면 좌/우 측으로 */
-@media (max-width: 768px) {
-  #prevBtn { left: 12px; }
-  #nextBtn { right: 12px; }
-}
+/* 화면 기준으로 page의 안쪽 8px 지점에 위치 */
+#prevBtn{ left: calc(var(--page-side-gap) + 8px); }
+#nextBtn{ right: calc(var(--page-side-gap) + 8px); }
 
 /* =========================================================
    Table of Contents
@@ -158,67 +194,103 @@ body.dark .page {
 .toc {
   position: absolute;
   top: 0;
-  right: -300px;
-  width: 300px;
+  right: -320px;     /* 살짝도 안 보이게 */
+  width: 320px;
   height: 100%;
   background: #222;
-  color: white;
-  transition: right 0.3s ease;
+  color: #fff;
+  transition: right .28s ease;
   overflow-y: auto;
   padding: 20px;
-  z-index: 999;
+  box-sizing: border-box;
+  z-index: 20;
+  box-shadow: -8px 0 18px rgba(0,0,0,.22);
 }
-.toc.open { right: 0; }
+.toc.open{ right:0; }
+.toc li{ cursor:pointer; }
 
 /* =========================================================
-   Mobile Adjustments
+   Responsive (Mobile ≤ 768px)
+   요구사항:
+   - 제목은 상단 중앙
+   - 홈/다크/목차 버튼은 '푸터'처럼 하단에 고정 + 오른쪽 정렬
+   - 헤더/푸터 얇게
    ========================================================= */
-@media (max-width: 768px) {
+@media (max-width: 768px){
 
-  /* Title stays at the top, centered */
-  .app-header {
-    height: auto;
-    padding: 10px 0;
-    justify-content: center;
+  /* 헤더: 타이틀만 얇게 상단 */
+  .app-header{
+    height: 40px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;   /* 타이틀 중앙 */
   }
-
-  .header-title {
+  .header-title{
     width: 100%;
     text-align: center;
-    margin: 0;
     font-size: 16px;
+    font-weight: 600;
+    margin: 0;
   }
 
-  /* Buttons move to bottom-right bar */
-  .header-controls {
+  /* 하단 고정 푸터 컨트롤 (오른쪽 정렬) */
+  .header-controls{
     position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    padding: 6px 12px;
+    bottom: 0; left: 0; width: 100%;
+    height: var(--mobile-footer-h);
     background: #000;
     border-top: 1px solid #333;
     display: flex;
-    justify-content: flex-end;
-    gap: 6px;
+    justify-content: flex-end;   /* ★ 오른쪽 정렬 */
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;              /* 얇게 */
     z-index: 999;
   }
 
-  .header-btn {
-    padding: 8px 12px;
-    border-radius: 6px;
+  .header-btn{
     border: none;
     background: #111;
+    border-radius: 10px;
+    padding: 8px 10px;           /* 얇게 */
+    font-size: 14px;
+    gap: 6px;                    /* 아이콘/텍스트 간격 고정 */
+  }
+  .header-btn:active{ background:#222; }
+
+  /* 콘텐츠가 하단바와 겹치지 않도록 여백 */
+  .viewer{
+    padding-top: 10px;
+    padding-bottom: calc(var(--mobile-footer-h) + 10px);
   }
 
-  .header-btn:active { background: #222; }
-
-  /* Give room so page doesn't hide behind bottom bar */
-  .viewer { padding-bottom: 70px; }
-
-  .page {
-    width: 94%;
-    padding: 22px;
-    height: calc(100vh - 160px);
+  .page{
+    width: 95%;
+    padding: 20px;
+    height: calc(100% - 16px);
+    margin-bottom: 12px;
   }
+
+  /* 양옆 내비 버튼도 페이지 안쪽에 붙도록 재계산 */
+  :root{
+    --page-w: 95vw;
+    --page-side-gap: calc((100vw - var(--page-w)) / 2);
+  }
+  #prevBtn{ left: calc(var(--page-side-gap) + 6px); }
+  #nextBtn{ right: calc(var(--page-side-gap) + 6px); }
+
+  /* 모바일 TOC 폭/애니메이션 보정 */
+  .toc{
+    right: -85vw;
+    width: 85vw;
+    box-shadow: -6px 0 14px rgba(0,0,0,.28);
+  }
+  .toc.open{ right:0; }
+}
+
+/* 아주 작은 기기 보정 */
+@media (max-width: 360px){
+  .header-btn{ padding: 7px 8px; font-size: 13px; }
+  :root{ --mobile-footer-h: 48px; }
 }
