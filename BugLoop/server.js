@@ -214,7 +214,8 @@ function generatePagination(current, total) {
 }
 
 async function getSidebarData(req) {
-  const safeLang = (req.params && req.params.lang) ? req.params.lang : 'ko';
+  let safeLang = (req.params && req.params.lang) ? req.params.lang : 'ko';
+  if (!supportedLangs.includes(safeLang)) safeLang = 'ko';  // ✅ 추가
   const categoryQueryParam = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
