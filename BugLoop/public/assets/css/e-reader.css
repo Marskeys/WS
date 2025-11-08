@@ -59,8 +59,8 @@ body.dark {
 .header-title {
   font-size: 18px;
   font-weight: 600;
-  margin-left: 10px;
   letter-spacing: -0.01em;
+  margin-left: 10px;
 }
 
 .header-controls {
@@ -216,26 +216,35 @@ body.dark .nav-btn { background: rgba(85,85,85,0.8); }
    Responsive (Mobile)
    ========================================================= */
 @media (max-width: 768px) {
-  /* 기존 패딩 축소 */
-  .app-header { 
-    padding: 8px 10px;
+
+  .app-header {
     height: auto;
-    flex-direction: column;        /* 제목을 아래로 */
-    align-items: flex-start;       /* 왼쪽 정렬 */
-    gap: 6px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;   /* 줄 두 개로 */
+    align-items: stretch;
+    gap: 4px;
   }
 
+  /* 버튼 줄 (맨 위, 오른쪽 정렬) */
   .header-controls {
-    order: 1;                     /* 버튼이 위 */
+    order: 1;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;   /* ← 오른쪽 정렬 */
+    gap: 8px;
   }
 
+  /* 제목 줄 (아래, 가운데 정렬) */
   .header-title {
-    order: 2;                     /* 제목이 아래 */
-    margin-left: 0;
-    font-size: 15px;
-    text-align: left;
+    order: 2;
     width: 100%;
-    opacity: 0.9;
+    text-align: center;         /* ← 가운데 정렬 */
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    padding-top: 2px;
+    opacity: 0.95;
   }
 
   .viewer { padding-top: 10px; }
