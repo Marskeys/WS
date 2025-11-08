@@ -407,10 +407,10 @@
     </div>
     
     <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
+
 <div class="recent-posts">
   <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
 
-  <!-- ✅ 여기에 ID 추가 (append될 그릇) -->
   <div id="posts-container">
 
     <% posts.slice(0, 5).forEach(post => { %>
@@ -436,8 +436,22 @@
       </div>
     <% }) %>
 
-  </div> <!-- ✅ 여기까지 새로 감싸줌 -->
-</div>
+  </div> </div>
+<button id="load-more-btn" onclick="loadMorePosts()" style="
+  margin-top: 24px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.95rem;
+">
+  <%= locale.index.loadMore || "더보기" %>
+</button>
+
+
+  </div>
 
  
 
@@ -467,14 +481,41 @@ async function loadMorePosts() {
   const container = document.getElementById("posts-container");
 
   data.posts.forEach(post => {
+    // 💡 loadMorePosts 함수 내에서 새로운 게시물 엘리먼트를 생성할 때 
+    // 기존 recent-post-item과 동일한 HTML 구조를 사용해야 합니다.
     const el = document.createElement("div");
-    el.className = "post-item";
+    el.className = "recent-post-item"; // 클래스 이름 통일
+
+    // 기존 EJS 템플릿의 HTML 구조를 JavaScript 문자열로 변환
+    const pinnedBadge = post.is_pinned ? `<span class="badge-pinned">상단고정</span>` : '';
+    
+    // Date 포매팅을 JavaScript로 처리해야 함 (서버에서 포매팅된 문자열이 오지 않는다면)
+    // 예시: new Date(post.created_at).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\./g, '.').slice(0, -1)
+    // 여기서는 간단하게 YYYY.MM.DD 형식으로 가정하고 포매팅 코드는 생략하거나, 서버에서 포매팅된 created_at_formatted 필드를 받는 것이 좋습니다.
+    // 일단은 YYYY.MM.DD 형식이 나온다고 가정하고 단순화하겠습니다.
+    const formattedDate = new Date(post.created_at).toISOString().substring(0, 10).replace(/-/g, '.'); // 간단한 YYYY.MM.DD 포맷
+
+    // 내용을 태그 없이 120자까지 자르는 로직을 JavaScript로 구현 (post.content는 HTML 태그가 포함된 문자열이라고 가정)
+    const contentWithoutTags = post.content.replace(/<[^>]+>/g, '');
+    const preview = contentWithoutTags.slice(0, 120) + '...';
+
     el.innerHTML = `
-      <a href="/${lang}/post/${post.id}">
-        <h3>${post.title}</h3>
-        <p>${post.excerpt}</p>
+      <a href="/${lang}/post/${post.id}" class="recent-post-title">
+        ${pinnedBadge}
+        ${post.title}
       </a>
+
+      <div class="recent-post-meta">
+        <span>${post.author}</span>
+        <span>·</span>
+        <span>${formattedDate}</span>
+      </div>
+
+      <div class="recent-post-preview">
+        ${preview}
+      </div>
     `;
+
     container.appendChild(el);
   });
 
