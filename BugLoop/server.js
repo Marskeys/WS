@@ -1286,6 +1286,73 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
+// ✅ 2025년 11월 8일 최근 게시물 무한 로드 구현, 최근 글 더보기 API (offset 기반)
+app.get('/api/recent-posts', async (req, res) => {
+  const safeLang = (req.query.lang || res.locals.lang || 'ko').toLowerCase();
+  const limit = Math.min(parseInt(req.query.limit) || 5, 20); // 기본 5, 최대 20
+  const offset = parseInt(req.query.offset) || 0;
+
+  try {
+    const [rows] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
+          p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req
+        ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko
+        ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
+    `, [safeLang, limit, offset]);
+
+    // 비공개 가리기
+    const userId = req.session.user?.id;
+    const isAdmin = req.session.user?.is_admin === 1;
+    const visible = rows.map(post => {
+      const contentText = String(post.content || '')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return (post.is_private && post.user_id !== userId && !isAdmin)
+        ? {
+            id: post.id,
+            title: '(비공개 글)',
+            author: post.author,
+            created_at: post.created_at,
+            created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
+            is_pinned: !!post.is_pinned,
+            preview: '이 글은 비공개로 설정되어 있습니다.'
+          }
+        : {
+            id: post.id,
+            title: post.title,
+            author: post.author,
+            created_at: post.created_at,
+            created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
+            is_pinned: !!post.is_pinned,
+            preview: contentText.slice(0, 120)
+          };
+    });
+
+    // 다음 페이지가 있는지 간단 플래그
+    const [[{ count }]] = await db.query(`SELECT COUNT(*) AS count FROM posts`);
+    const hasMore = offset + limit < count;
+
+    res.json({
+      posts: visible,
+      nextOffset: offset + limit,
+      hasMore
+    });
+  } catch (err) {
+    console.error('최근 글 API 오류:', err);
+    res.status(500).json({ error: 'failed' });
+  }
+});
+
+
 // DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
