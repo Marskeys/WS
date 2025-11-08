@@ -1190,9 +1190,15 @@ app.get('/api/search', async (req, res) => {
 
 
 // =======================================================
-// ✅ 💡 수정 위치: /api/recent-posts를 일반 라우트보다 위에 배치했습니다.
+// ✅ 💡 /api/recent-posts 라우트: 캐싱 및 라우트 우선순위 수정 완료
 // =======================================================
 app.get('/api/recent-posts', async (req, res) => {
+  // 🌟 캐싱 방지 헤더 추가: 브라우저가 304 대신 200 응답을 받도록 합니다.
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); 
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.set('ETag', false); 
+  
   const safeLang = (req.query.lang || res.locals.lang || 'ko').toLowerCase();
   const limit = Math.min(parseInt(req.query.limit) || 5, 20); // 기본 5, 최대 20
   const offset = parseInt(req.query.offset) || 0;
@@ -1253,12 +1259,13 @@ app.get('/api/recent-posts', async (req, res) => {
     });
   } catch (err) {
     console.error('최근 글 API 오류:', err);
-    res.status(500).json({ error: 'failed' });
+    // API 에러 시 JSON으로 응답
+    res.status(500).json({ error: 'failed to load posts' });
   }
 });
 
 
-// 기타 라우트
+// 기타 라우트 (API 라우트 뒤에 배치)
 app.get('/:lang/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect(`/${req.params.lang}/`);
@@ -1352,7 +1359,7 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
   res.sendFile(filePath);
 });
 
-// ✅ 패널 라우팅 (기존 3단계용)
+// ✅ 패널 라우팅 (가장 일반적인 라우트이므로 가장 마지막에 배치)
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
 
