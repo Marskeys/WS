@@ -214,7 +214,8 @@ document.getElementById("tocToggle").onclick = () => {
 };
 
 document.getElementById("homeBtn").onclick = () => {
-  window.location.href = "/";
+  const lang = document.documentElement.getAttribute("data-lang") || "ko";
+  window.location.href = `/${lang}/`;
 };
 
 // ❗ root (<html>)의 클래스 상태를 확인하도록 수정
