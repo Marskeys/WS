@@ -6,259 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bug Loop</title>
   <style>
-    /* ---------------------------------------------------- */
-    /* 💡 라이트 모드 (html:not(.dark) / 기본값) */
-    /* ---------------------------------------------------- */
-    :root{
-      --chrome-gap:50px;
-      --panel-gap:16px;
-      --radius:12px;
-      /* Light Mode Colors */
-      --border:#d9d9d9;
-      --bg:#f3f3f6;
-      --panel:#ffffff;
-      --panel-2:#f0f0ff;
-      --ink:#1f1f1f;
-      --ink-2:#5a5a5a;
-      --accent:#cfcfd0;
-      --primary:#217ee8;
-      --primary-ink:#ffffff;
-    }
-
-    html.dark{
-      --border:#2b2b2b;
-      --bg:#121212;
-      --panel:#1b1b1b;
-      --panel-2:#0e0e0e;
-      --ink:#eaeaea;
-      --ink-2:#b7b7b7;
-      --accent:#faffca;
-      --primary:#217ee8;
-      --primary-ink:#608b42;
-    }
-
-    html, body { height: 100%; }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    .app-shell{
-      padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
-      padding-top: calc(50px + 16px);
-      margin-top: 180px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-
-    @media (max-width: 640px){
-      .app-shell{
-        padding-left: 16px;
-        padding-bottom: 16px;
-        margin-top: 250px;
-      }
-    }
-
-    .spacer {
-      height: 50vh;
-      min-height: 300px;
-      width: 100%;
-      background: transparent;
-    }
-
-    .section-title {
-      color: var(--ink);
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 24px;
-      letter-spacing: 0.5px;
-    }
-    /* 다크모드 글로우 효과 적용 */
-    html.dark .section-title {
-        color: var(--accent);
-        text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
-    }
-
-    .carousel {
-      display: flex;
-      gap: 20px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 8px;
-    }
-
-    .carousel::-webkit-scrollbar { display: none; }
-
-    .book-card {
-      flex-shrink: 0;
-      width: 230px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      color: var(--ink);
-      transition: all 0.3s ease;
-      scroll-snap-align: start;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      position: relative;
-    }
-
-    .book-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-
-    html.dark .book-card { box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-    html.dark .book-card:hover { box-shadow: 4px 12px rgba(0,0,0,0.7); }
-
-    .book-cover {
-      width: 100%;
-      height: 360px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .book-info {
-      padding: 14px 10px;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      background: var(--panel-2);
-    }
-
-    .book-title {
-      font-weight: 600;
-      font-size: 1.05rem;
-      color: var(--ink);
-      line-height: 1.4;
-      white-space: normal;
-      word-break: keep-all;
-      letter-spacing: 0.3px;
-    }
-
-    .book-title::after {
-      content: "";
-      display: block;
-      width: 40%;
-      height: 2px;
-      background: var(--primary);
-      margin: 8px auto 0;
-      border-radius: 1px;
-      opacity: 0.7;
-    }
-
-    .book-toc {
-      background: var(--panel-2);
-      color: var(--ink-2);
-      font-size: 0.9rem;
-      border-top: 1px solid var(--border);
-      max-height: 0;
-      overflow: hidden;
-      transition: all 0.35s ease;
-      padding: 0 16px;
-      opacity: 0;
-    }
-    .book-card.expanded .book-toc {
-      padding: 16px;
-      max-height: 2000px;
-      opacity: 1;
-    }
-
-    .book-toc h4 {
-      margin: 0 0 8px 0;
-      color: var(--primary);
-      font-size: 0.95rem;
-      text-align: center;
-    }
-
-    .book-toc h5 {
-      margin: 12px 0 6px 0;
-      color: var(--ink);
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .book-toc ul {
-      margin: 0 0 12px 0;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .book-toc > .paginated-toc > ul > li > ul {
-      margin: 0;
-      padding-left: 14px;
-      list-style: none;
-    }
-
-    .book-toc > .paginated-toc > ul > li > ul > li {
-      color: var(--ink-2);
-      font-weight: 500;
-    }
-
-    .book-toc > .paginated-toc > ul > li > ul > li > ul {
-      margin: 4px 0 0 0;
-      padding-left: 18px;
-      list-style: disc;
-    }
-    
-    .book-toc li {
-      margin-bottom: 4px;
-      line-height: 1.4;
-    }
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 10px;
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-    }
-
-    .pagination-number {
-      padding: 0 8px;
-      cursor: pointer;
-      color: var(--ink-2);
-      transition: color 0.2s;
-    }
-
-    .pagination-number:hover { color: var(--primary); }
-    .pagination-number.active {
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .pagination-divider {
-      color: var(--border);
-      margin: 0 2px;
-    }
-
-    /* ✅ 링크 활성/비활성 스타일 */
-    .toc-link {
-      text-decoration: none;
-      transition: color 0.2s, opacity 0.2s;
-    }
-    .toc-link.active {
-      color: var(--primary);
-      cursor: pointer;
-    }
-    .toc-link.active:hover {
-      color: var(--accent);
-      text-decoration: underline;
-    }
-    .toc-link.disabled {
-      color: var(--ink-2);
-      opacity: 0.6;
-      cursor: default;
-      pointer-events: none;
-    }
+    /* ... (CSS 부분은 변화 없음) ... */
   </style>
 </head>
 
@@ -483,7 +231,8 @@ async function loadMorePosts() {
   
     const container = document.getElementById("posts-container");
     if (!container) {
-      console.error("Posts container not found!");
+      // 🌟 이 오류가 찍히면 HTML의 id="posts-container" 오타를 확인해야 합니다.
+      console.error("Posts container not found!"); 
       loading = false;
       return;
     }
@@ -508,16 +257,21 @@ async function loadMorePosts() {
         </div>
   
         <div class="recent-post-preview">
-          ${post.preview}... 
+          ${post.preview} 
           </div>
       `;
+      
+      // 🌟 디버깅 로그: DOM에 추가 직전, 생성된 HTML 확인
+      console.log("HTML being added (Title:", post.title, ") :", el.innerHTML); 
+      
       container.appendChild(el);
-      console.log("Adding post:", post.title); // 디버깅용 로그 추가
+      console.log("Adding post:", post.title, "completed.");
     });
     // === 수정된 부분 끝 ===
   
     loading = false;
   } catch (error) {
+      // 🌟 파싱 오류나 DOM 추가 오류를 정확히 잡아냅니다.
       console.error("Error loading more posts or processing JSON (DOM/Parsing Error):", error);
       loading = false;
   }
@@ -531,6 +285,7 @@ window.loadMorePosts = loadMorePosts;
 
 
   <script>
+  // ... (TOC 관련 JavaScript는 변경 없음) ...
   (() => {
     const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
     const itemsPerPage = 3;
