@@ -472,38 +472,29 @@ async function loadMorePosts() {
     return;
   }
 
-  const container = document.querySelector(".recent-posts");
+  // === 여기 중요 ===
+  offset += data.posts.length;
+
+  const container = document.getElementById("posts-container");
 
   data.posts.forEach(post => {
     const el = document.createElement("div");
-    el.className = "recent-post-item";
+    el.className = "post-item";
     el.innerHTML = `
-      <a href="/${lang}/post/${post.id}" class="recent-post-title">
-        ${post.is_pinned ? '<span class="badge-pinned">상단고정</span>' : ''}
-        ${post.title}
+      <a href="/${lang}/post/${post.id}">
+        <h3>${post.title}</h3>
+        <p>${post.excerpt}</p>
       </a>
-      <div class="recent-post-meta">
-        <span>${post.author}</span>
-        <span>·</span>
-        <span>${post.created_fmt}</span>
-      </div>
-      <div class="recent-post-preview">
-        ${post.preview}...
-      </div>
     `;
     container.appendChild(el);
   });
 
-  offset = data.nextOffset; // ✅ 서버가 다음 offset 알려줌
-
-  if (!data.hasMore) {
-    document.getElementById("load-more-btn").style.display = "none";
-  }
-
   loading = false;
 }
 
+
 window.loadMorePosts = loadMorePosts;
+
 </script>
 
 
