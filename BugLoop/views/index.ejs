@@ -355,7 +355,7 @@
         <% }) %>
       </ul>
     </li>
-  <% }) %>
+  <% end PaginatedToc[0] %>
 </ul>
 
         </div>
@@ -473,6 +473,7 @@ async function loadMorePosts() {
     console.log("API Response Data:", data); 
   
     if (!data.posts || data.posts.length === 0) {
+      // 🚨 ID 오류가 없으면 이 로직으로 버튼이 사라집니다.
       document.getElementById("load-more-btn").style.display = "none";
       loading = false; // 로딩 해제
       return;
@@ -483,6 +484,7 @@ async function loadMorePosts() {
   
     const container = document.getElementById("posts-container");
     if (!container) {
+      // 🌟 이 오류가 뜨면 HTML의 id="posts-container" 오타/누락을 확인해야 합니다.
       console.error("Posts container not found!");
       loading = false;
       return;
