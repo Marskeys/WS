@@ -407,7 +407,8 @@
     </div>
     
     <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
-<div class="recent-posts">
+
+<div class="recent-posts" **id="posts-container"**>
   <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
 
   <% posts.slice(0, 5).forEach(post => { %>
@@ -464,32 +465,62 @@ async function loadMorePosts() {
   if (loading) return;
   loading = true;
 
-  const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
-  const data = await res.json();
-
-  if (!data.posts || data.posts.length === 0) {
-    document.getElementById("load-more-btn").style.display = "none";
-    return;
+  try {
+    const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
+    const data = await res.json();
+  
+    if (!data.posts || data.posts.length === 0) {
+      document.getElementById("load-more-btn").style.display = "none";
+      loading = false; // 로딩 해제
+      return;
+    }
+  
+    // === 수정된 부분 시작 ===
+    offset += data.posts.length;
+  
+    const container = document.getElementById("posts-container");
+    if (!container) {
+      console.error("Posts container not found!");
+      loading = false;
+      return;
+    }
+  
+    data.posts.forEach(post => {
+      const el = document.createElement("div");
+      el.className = "recent-post-item"; // ✅ 클래스 통일
+      
+      // 날짜 형식을 'yyyy.MM.dd'에 가깝게 맞추기 위해 간단한 처리를 추가했습니다.
+      const formattedDate = new Date(post.created_at).toLocaleDateString('ko-KR', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit' 
+      }).replace(/\. /g, '.').slice(0, -1); // 2025. 11. 08. -> 2025.11.08
+  
+      el.innerHTML = `
+        <a href="/${lang}/post/${post.id}" class="recent-post-title">
+          ${post.is_pinned ? '<span class="badge-pinned">상단고정</span>' : ''}
+          ${post.title}
+        </a>
+  
+        <div class="recent-post-meta">
+          <span>${post.author}</span>
+          <span>·</span>
+          <span>${formattedDate}</span>
+        </div>
+  
+        <div class="recent-post-preview">
+          ${post.content.replace(/<[^>]+>/g, '').slice(0, 120)}...
+        </div>
+      `;
+      container.appendChild(el);
+    });
+    // === 수정된 부분 끝 ===
+  
+    loading = false;
+  } catch (error) {
+      console.error("Error loading more posts:", error);
+      loading = false;
   }
-
-  // === 여기 중요 ===
-  offset += data.posts.length;
-
-  const container = document.getElementById("posts-container");
-
-  data.posts.forEach(post => {
-    const el = document.createElement("div");
-    el.className = "post-item";
-    el.innerHTML = `
-      <a href="/${lang}/post/${post.id}">
-        <h3>${post.title}</h3>
-        <p>${post.excerpt}</p>
-      </a>
-    `;
-    container.appendChild(el);
-  });
-
-  loading = false;
 }
 
 
