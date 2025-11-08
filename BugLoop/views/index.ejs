@@ -410,45 +410,34 @@
 <div class="recent-posts">
   <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
 
-  <% posts.slice(0, 5).forEach(post => { %>
-    <div class="recent-post-item">
+  <!-- ✅ 여기에 ID 추가 (append될 그릇) -->
+  <div id="posts-container">
 
-      <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-        <% if (post.is_pinned) { %>
-          <span class="badge-pinned">상단고정</span>
-        <% } %>
-        <%= post.title %>
-      </a>
+    <% posts.slice(0, 5).forEach(post => { %>
+      <div class="recent-post-item">
 
-      <div class="recent-post-meta">
-        <span><%= post.author %></span>
-        <span>·</span>
-        <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
+        <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
+          <% if (post.is_pinned) { %>
+            <span class="badge-pinned">상단고정</span>
+          <% } %>
+          <%= post.title %>
+        </a>
+
+        <div class="recent-post-meta">
+          <span><%= post.author %></span>
+          <span>·</span>
+          <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
+        </div>
+
+        <div class="recent-post-preview">
+          <%= post.content.replace(/<[^>]+>/g, '').slice(0, 120) %>...
+        </div>
+
       </div>
+    <% }) %>
 
-      <div class="recent-post-preview">
-        <%= post.content.replace(/<[^>]+>/g, '').slice(0, 120) %>...
-      </div>
-
-    </div>
-  <% }) %>
+  </div> <!-- ✅ 여기까지 새로 감싸줌 -->
 </div>
-
-<button id="load-more-btn" onclick="loadMorePosts()" style="
-  margin-top: 24px;
-  padding: 10px 18px;
-  border-radius: 8px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  cursor: pointer;
-  font-size: 0.95rem;
-">
-  <%= locale.index.loadMore || "더보기" %>
-</button>
-
-
-  </div>
 
  
 
