@@ -102,7 +102,9 @@ const darkModeLabel = document.getElementById("darkModeLabel");
 // ===============================
 // Dark Mode (다국어 대응 버전)
 // ===============================
-const initialDarkMode = localStorage.getItem('darkMode') === 'true';
+// ❗ index.ejs (darkmode.js)와 키를 통일하여 상태를 공유합니다.
+const STORAGE_KEY = 'bugloop.theme'; 
+// const initialDarkMode = localStorage.getItem('darkMode') === 'true'; // 기존 코드 제거
 
 function setDarkMode(isDark) {
   const darkText = darkModeToggle.dataset.dark;   // ex: "다크 모드" / "Dark Mode"
@@ -112,16 +114,34 @@ function setDarkMode(isDark) {
     bodyEl.classList.add("dark");
     darkModeIcon.classList.replace("fa-moon", "fa-sun");
     darkModeLabel.innerText = lightText;
-    localStorage.setItem('darkMode', 'true');
+    // ❗ 키와 값을 'bugloop.theme' / 'dark'로 변경
+    localStorage.setItem(STORAGE_KEY, 'dark');
   } else {
     bodyEl.classList.remove("dark");
     darkModeIcon.classList.replace("fa-sun", "fa-moon");
     darkModeLabel.innerText = darkText;
-    localStorage.setItem('darkMode', 'false');
+    // ❗ 키와 값을 'bugloop.theme' / 'light'로 변경
+    localStorage.setItem(STORAGE_KEY, 'light');
   }
 }
 
-setDarkMode(initialDarkMode);
+// ❗ Local Storage에서 저장된 테마를 로드하는 함수를 추가합니다.
+function loadTheme() {
+  const savedTheme = localStorage.getItem(STORAGE_KEY);
+  
+  if (savedTheme) {
+    // 1. 저장된 테마 상태를 불러와 적용
+    setDarkMode(savedTheme === 'dark');
+  } else {
+    // 2. 저장된 테마가 없으면 시스템 기본 설정을 확인 (index.ejs와 동일 로직)
+    // 💡 이 로직은 첫 방문 시 사용되며, index.ejs에서 설정한 값이 있다면 savedTheme에서 처리됩니다.
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setDarkMode(prefersDark);
+  }
+}
+
+// ❗ 페이지 로드 시 테마를 즉시 적용합니다. (기존 setDarkMode(initialDarkMode) 대체)
+loadTheme(); 
 
 
 // ===============================
@@ -195,6 +215,7 @@ document.getElementById("homeBtn").onclick = () => {
   window.location.href = "/";
 };
 
+// 다크 모드 토글은 수정된 setDarkMode 함수를 사용합니다.
 darkModeToggle.onclick = () => setDarkMode(!bodyEl.classList.contains("dark"));
 
 
