@@ -216,8 +216,27 @@ body.dark .nav-btn { background: rgba(85,85,85,0.8); }
    Responsive (Mobile)
    ========================================================= */
 @media (max-width: 768px) {
-  .app-header { padding: 0 10px; }
-  .header-title { font-size: 16px; }
+  /* 기존 패딩 축소 */
+  .app-header { 
+    padding: 8px 10px;
+    height: auto;
+    flex-direction: column;        /* 제목을 아래로 */
+    align-items: flex-start;       /* 왼쪽 정렬 */
+    gap: 6px;
+  }
+
+  .header-controls {
+    order: 1;                     /* 버튼이 위 */
+  }
+
+  .header-title {
+    order: 2;                     /* 제목이 아래 */
+    margin-left: 0;
+    font-size: 15px;
+    text-align: left;
+    width: 100%;
+    opacity: 0.9;
+  }
 
   .viewer { padding-top: 10px; }
 
