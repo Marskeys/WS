@@ -111,3 +111,53 @@
   transition: background-color 0.2s ease;
   z-index: 10;
 }
+
+.recent-posts {
+  max-width: 720px;
+  margin: 40px auto 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px; /* 항목 간 간격 넓게 → 고급스러움 */
+}
+
+.recent-post-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recent-post-title {
+  font-size: 1.45rem;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  line-height: 1.35;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+/* 제목 hover 시 잉크 농도 살짝 진해지는 느낌 */
+.recent-post-title:hover {
+  color: var(--accent);
+}
+
+html.dark .recent-post-title:hover {
+  color: var(--accent);
+  text-shadow: 0 0 6px rgba(255,255,255,0.25);
+}
+
+.recent-post-meta {
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.recent-post-preview {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.75;
+  opacity: 0.85;
+  max-width: 60ch; /* 한줄 길이 제한 → 읽기 쉬움 */
+}
