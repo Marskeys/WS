@@ -9,6 +9,7 @@ const db = require('./config/db'); // DB 연결 설정 파일
 const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
 const app = express();
 const PORT = process.env.PORT || 3002;
+app.locals.format = format; // ✅ 2025년 11월 8일 추가
 const allLocales = require('./locales/all.json');
 
 // === Helper: merge locale with safe defaults ===
