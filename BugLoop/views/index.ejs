@@ -272,32 +272,7 @@
 
   <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
 
-<div class="recent-posts">
-  <% posts.slice(0, 5).forEach(post => { %>
-    <div class="recent-post-item">
 
-      <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-
-        <% if (post.is_pinned) { %>
-          <span class="badge-pinned">상단고정</span>
-        <% } %>
-
-        <%= post.title %>
-      </a>
-
-      <div class="recent-post-meta">
-        <span><%= post.author %></span>
-        <span>·</span>
-        <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
-      </div>
-
-      <div class="recent-post-preview">
-        <%= post.content.replace(/<[^>]+>/g, '').slice(0, 120) %>...
-      </div>
-
-    </div>
-  <% }) %>
-</div>
 
 
   <div class="app-shell">
@@ -434,6 +409,33 @@
     <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
     <div class="spacer"></div>
   </div>
+
+  <div class="recent-posts">
+  <% posts.slice(0, 5).forEach(post => { %>
+    <div class="recent-post-item">
+
+      <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
+
+        <% if (post.is_pinned) { %>
+          <span class="badge-pinned">상단고정</span>
+        <% } %>
+
+        <%= post.title %>
+      </a>
+
+      <div class="recent-post-meta">
+        <span><%= post.author %></span>
+        <span>·</span>
+        <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
+      </div>
+
+      <div class="recent-post-preview">
+        <%= post.content.replace(/<[^>]+>/g, '').slice(0, 120) %>...
+      </div>
+
+    </div>
+  <% }) %>
+</div>
 
   <%- include('partials/scripts') %>
 
