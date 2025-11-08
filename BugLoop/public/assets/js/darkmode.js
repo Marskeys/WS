@@ -1,5 +1,6 @@
 // ✅ 테마 상태를 Local Storage에 저장할 키
-const STORAGE_KEY = 'theme-mode';
+// ❗ head.ejs의 FOUC 방지 스크립트와 동일한 키('bugloop.theme')로 통일합니다.
+const STORAGE_KEY = 'bugloop.theme';
 
 // ✅ HTML 문서가 완전히 로드된 후 실행
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Local Storage에서 저장된 테마 불러오기
     function loadTheme() {
+        // ❗ 이제 'bugloop.theme' 키를 사용합니다.
         const savedTheme = localStorage.getItem(STORAGE_KEY);
 
         // ✅ 저장된 값이 없거나 'dark'이면 → 다크 모드 적용
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isCurrentlyDark) {
             root.classList.remove('dark');
             root.classList.add('light');
+            // ❗ 'bugloop.theme' 키에 'light' 저장
             localStorage.setItem(STORAGE_KEY, 'light');
             if (themeToggle) {
                 themeToggle.setAttribute('aria-checked', 'false');
@@ -49,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             root.classList.add('dark');
             root.classList.remove('light');
+            // ❗ 'bugloop.theme' 키에 'dark' 저장
             localStorage.setItem(STORAGE_KEY, 'dark');
             if (themeToggle) {
                 themeToggle.setAttribute('aria-checked', 'true');
