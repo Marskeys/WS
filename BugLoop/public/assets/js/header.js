@@ -2,6 +2,7 @@
  * header.js (patched, FINAL, Consolidated)
  * - 기존의 모든 JavaScript 로직을 통합하고 정리했습니다.
  * - 기능 변화는 없으며, DOMContentLoaded 이벤트 리스너를 통합했습니다.
+ * - [핵심 수정] 섹션 7의 initTheme 로직을 수정하여 localStorage의 테마 상태를 최우선으로 적용합니다.
  */
 (function() {
   // 전역 변수 충돌을 피하기 위해 모든 로직을 즉시 실행 함수(IIFE) 안에 배치
@@ -788,10 +789,20 @@
       themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
     };
 
+    // 💡 [수정됨]: localStorage 저장값을 최우선으로 적용하여 새로고침 시 상태가 유지되도록 보장합니다.
     const initTheme = () => {
       const saved = localStorage.getItem(THEME_KEY);
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const initialTheme = (saved === 'dark' || (!saved && prefersDark)) ? 'dark' : 'light';
+      let initialTheme;
+
+      if (saved) {
+        // 저장된 값이 있다면, 무조건 그 값('dark' 또는 'light')을 사용합니다.
+        initialTheme = saved;
+      } else {
+        // 저장된 값이 없다면, 시스템 설정을 확인합니다.
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        initialTheme = prefersDark ? 'dark' : 'light';
+      }
+
       updateTheme(initialTheme);
     };
 
