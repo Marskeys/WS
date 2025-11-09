@@ -1484,30 +1484,54 @@
     if (localStorage.getItem(KEY) !== '1') show();
   })();
 
-  // ***********************************************
-  // 6. 패널 로딩(AJAX) - #mini-lecture 전용 로직
-  // ***********************************************
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-panel-link]').forEach(link => {
-      link.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const url = link.getAttribute('href');
-        try {
-          const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
-          const html = await res.text();
-          const panel = document.querySelector('#mini-lecture');
-          if (panel) {
-            panel.innerHTML = html;
-            panel.scrollTo(0, 0);
-            if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
-            if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
-          }
-        } catch (err) {
-          console.error('패널 로드 오류:', err);
+// ***********************************************
+// 6. 패널 로딩(AJAX) - #mini-lecture 전용 로직 (수정됨)
+// ***********************************************
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-panel-link]').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const url = link.getAttribute('href');
+
+      try {
+        const res = await fetch(url + '?partial=1', { 
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const html = await res.text();
+
+        const panel = document.querySelector('#mini-lecture');
+        if (!panel) return;
+
+        // ★ 핵심: 패널 전체가 아니라 .panel-body 내부만 교체
+        const panelBody = panel.querySelector('.panel-body');
+        if (panelBody) {
+          panelBody.innerHTML = html;
         }
-      });
+
+        // 화면 상단으로 스크롤
+        panel.scrollTo(0, 0);
+
+        // ★ 제목 업데이트
+        const titleText = link.getAttribute('data-panel-title') 
+                       || link.textContent.trim() 
+                       || 'Info';
+        const titleEl = document.getElementById('panel-title-connector');
+        if (titleEl) {
+          titleEl.textContent = titleText;
+        }
+
+        // 리사이저, 스크롤트랩 다시 바인딩
+        if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
+        if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
+
+      } catch (err) {
+        console.error('패널 로드 오류:', err);
+      }
     });
   });
+});
+
 
   // ***********************************************
   // 7. 언어 드롭다운(사이드바) + 테마 토글 로직

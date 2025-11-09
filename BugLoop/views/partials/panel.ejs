@@ -126,16 +126,17 @@ body.resizing { user-select: none; overflow: hidden; }
 </style>
 
 <div id="mini-lecture" role="region" aria-label="미니 강의 패널">
-  <div class="panel-card">
-    <span class="connector" id="panel-title-connector">Welcome</span>
-     
+ <div class="panel-card">
+  <span class="connector" id="panel-title-connector">Welcome</span>
+  <div class="panel-body">
     <% if (panelData && panelData.html) { %>
-      <div class="panel-body"><%- panelData.html %></div>
+      <%- panelData.html %>
     <% } else { %>
-      <h3 style="margin:0 0 0 0"><%= panelData.title %></h3>
-      <p style="margin:0;opacity:.9"><%- panelData.body %></p>
+      <h3><%= panelData.title %></h3>
+      <p><%- panelData.body %></p>
     <% } %>
   </div>
+</div>
 
   <div id="panel-resizer"
        role="separator"
