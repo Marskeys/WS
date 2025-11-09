@@ -25,6 +25,12 @@
       --primary-ink:#ffffff;
       /* CSS 변수 추가 (버튼 디자인을 위해) */
       --primary-rgb: 33, 126, 232; 
+
+      /* 🆕 섹션 제목 배경 색상 변수 */
+      --section-title-bg-light: #ffffff; /* 라이트 모드: 완전 새하얀 바탕 */
+      --section-title-bg-dark: #1b1b1b;  /* 다크 모드: panel 색상과 유사하게 설정 */
+      --section-title-border-light: #e0e0e0; /* 라이트 모드: 연한 경계선 */
+      --section-title-border-dark: #2b2b2b;  /* 다크 모드: border 색상과 유사하게 설정 */
     }
 
     html.dark{
@@ -76,15 +82,59 @@
       background: transparent;
     }
 
+    /* ---------------------------------------------------- */
+    /* 📌 새로운 섹션 제목 컨테이너 스타일 */
+    /* ---------------------------------------------------- */
+
+    /* 💡 제목을 감싸는 컨테이너: 화면 수평 꽉 채우기 및 배경 설정 */
+    .section-title-wrapper {
+        width: 100vw;
+        /* app-shell의 왼쪽 padding을 상쇄시키고, viewport 왼쪽 끝에 맞춤 */
+        margin-left: calc(-1 * (var(--chrome-gap) + 16px)); 
+        background: var(--section-title-bg-light); 
+        border-top: 1px solid var(--section-title-border-light);
+        border-bottom: 1px solid var(--section-title-border-light);
+        margin-bottom: 16px; /* 아래 요소와의 간격 (carousel 위에 적용) */
+        padding: 8px 0; /* 위아래 마진(여백) 조절 - 너무 넓지 않게 */
+    }
+
+    /* 💡 다크 모드 배경 색상 적용 */
+    html.dark .section-title-wrapper {
+        background: var(--section-title-bg-dark); 
+        border-top: 1px solid var(--section-title-border-dark);
+        border-bottom: 1px solid var(--section-title-border-dark);
+    }
+    
+    /* 💡 모바일 뷰 (640px 이하) 대응 */
+    @media (max-width: 640px){
+        .section-title-wrapper {
+            /* app-shell의 모바일 padding-left (16px)을 상쇄 */
+            margin-left: -16px; 
+        }
+    }
+
+    /* 📌 실제 제목 텍스트 스타일 */
     .section-title {
+      /* 제목 자체는 배경 컨테이너 안에서 다시 기존 콘텐츠 영역에 맞춰져야 함 */
+      margin-left: calc(var(--chrome-gap) + 16px); /* app-shell의 기존 padding-left 복원 */
+      
       color: var(--ink);
       font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 5px;
-      margin-left: 3px;
+      margin-bottom: 0; /* 배경 컨테이너가 마진을 관리하므로 0으로 설정 */
+      margin-top: 0;
       letter-spacing: 0.5px;
     }
-    /* 다크모드 글로우 효과 적용 */
+    
+    /* 💡 모바일 뷰 (640px 이하) 대응 */
+    @media (max-width: 640px){
+        .section-title {
+            margin-left: 16px; /* app-shell의 모바일 padding-left (16px)로 복원 */
+        }
+    }
+
+
+    /* 다크모드 글로우 효과 적용 (기존 유지) */
     html.dark .section-title {
         color: var(--accent);
         text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
@@ -390,9 +440,9 @@
         }
         
         /* '최근 게시물' 섹션 제목도 왼쪽 정렬되도록 조정 */
-        .recent-posts > .section-title {
-             max-width: 800px; 
-             margin-left: 3px; 
+        /* 이 부분은 .section-title-wrapper가 적용되면서 조정이 필요 */
+        .recent-posts-wrapper .section-title {
+             margin-left: calc(var(--chrome-gap) + 16px); 
              margin-right: auto;
         }
 
@@ -419,7 +469,10 @@
 
 
   <div class="app-shell">
-   <h1 class="section-title"><%= locale.index.ongoing %></h1>
+   
+    <div class="section-title-wrapper">
+        <h1 class="section-title"><%= locale.index.ongoing %></h1>
+    </div>
 
     <div class="carousel">
 
@@ -551,9 +604,11 @@
     
     <a href="/<%= lang %>/articles/ebook/epub">전자책은 어떻게 만들어지고, 어떻게 읽힐까?</a>
 
-<div class="recent-posts" id="posts-container">
-  <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
+    <div class="recent-posts-wrapper section-title-wrapper" style="margin-bottom: 0; margin-top: 30px;">
+        <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
+    </div>
 
+    <div class="recent-posts" id="posts-container">
   <% posts.slice(0, 5).forEach(post => { %>
     <div class="recent-post-item">
 
