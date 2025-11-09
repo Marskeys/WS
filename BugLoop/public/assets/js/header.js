@@ -1485,14 +1485,17 @@
   })();
 
 // ***********************************************
-// 6. 패널 로딩(AJAX) - #mini-lecture 전용 로직 (수정됨)
+// 6. 패널 로딩(AJAX) - #mini-lecture 전용 로직 (최종 해결판)
 // ***********************************************
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-panel-link]').forEach(link => {
     link.addEventListener('click', async (e) => {
       e.preventDefault();
-
+      
       const url = link.getAttribute('href');
+      const clickedLabel = link.getAttribute('data-panel-title') 
+                        || link.textContent.trim()
+                        || 'Info';
 
       try {
         const res = await fetch(url + '?partial=1', { 
@@ -1503,25 +1506,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const panel = document.querySelector('#mini-lecture');
         if (!panel) return;
 
-        // ★ 핵심: 패널 전체가 아니라 .panel-body 내부만 교체
-        const panelBody = panel.querySelector('.panel-body');
-        if (panelBody) {
-          panelBody.innerHTML = html;
-        }
+        // ★ 패널 전체 교체 (기존과 동일)
+        panel.innerHTML = html;
 
-        // 화면 상단으로 스크롤
-        panel.scrollTo(0, 0);
-
-        // ★ 제목 업데이트
-        const titleText = link.getAttribute('data-panel-title') 
-                       || link.textContent.trim() 
-                       || 'Info';
+        // ★ 중요한 부분: "삽입 후" 다시 요소를 찾아서 제목 반영
         const titleEl = document.getElementById('panel-title-connector');
         if (titleEl) {
-          titleEl.textContent = titleText;
+          titleEl.textContent = clickedLabel; 
         }
 
-        // 리사이저, 스크롤트랩 다시 바인딩
+        panel.scrollTo(0, 0);
+
         if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
         if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
 
@@ -1531,6 +1526,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
 
 
   // ***********************************************
