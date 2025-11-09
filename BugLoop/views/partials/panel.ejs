@@ -528,7 +528,6 @@ window.initPanelResizer(); // 최초 실행
 
 /* ========================================= */
 /* 3. 🌐 패널 로딩 (AJAX) 및 제목 업데이트 로직 */
-/* (내용 변경 없음) */
 /* ========================================= */
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-panel-link]').forEach(link => {
@@ -538,6 +537,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const url = link.getAttribute('href');
       // 1. 클릭된 메뉴의 텍스트를 저장합니다. (제목 업데이트용)
       const menuText = link.textContent.trim(); 
+      
+      // 🌟🌟🌟 [수정된 부분: 패널 높이 유지 로직] 🌟🌟🌟
+      const savedHeight = sessionStorage.getItem('miniPanelH_session');
+      if (savedHeight) {
+          // sessionStorage에 저장된 높이를 CSS 변수에 강제로 적용하여,
+          // 이후 initPanelResizer() 호출 시 이 값을 사용하도록 합니다.
+          document.documentElement.style.setProperty('--panel-h', savedHeight);
+      }
+      // 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟
       
       try {
         const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
