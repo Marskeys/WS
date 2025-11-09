@@ -27,10 +27,10 @@
       --primary-rgb: 33, 126, 232; 
 
       /* 🆕 섹션 제목 배경 색상 변수 */
-      --section-title-bg-light: #ffffff; /* 라이트 모드: 완전 새하얀 바탕 */
-      --section-title-bg-dark: #1b1b1b;  /* 다크 모드: panel 색상과 유사하게 설정 */
-      --section-title-border-light: #e0e0e0; /* 라이트 모드: 연한 경계선 */
-      --section-title-border-dark: #2b2b2b;  /* 다크 모드: border 색상과 유사하게 설정 */
+      --section-title-bg-light: #ffffff; 
+      --section-title-bg-dark: #1b1b1b; 
+      --section-title-border-light: #e0e0e0; 
+      --section-title-border-dark: #2b2b2b;  
     }
 
     html.dark{
@@ -42,11 +42,15 @@
       --ink-2:#b7b7b7;
       --accent:#faffca;
       --primary:#217ee8;
-      --primary-ink:#608b42; /* 다크 모드에서 버튼 텍스트가 흰색으로 보일 때 사용될 색상 (예: #ffffff) */
+      --primary-ink:#608b42; 
       --primary-rgb: 33, 126, 232; 
     }
 
-    html, body { height: 100%; }
+    html, body { 
+        height: 100%; 
+        /* 모바일에서 100vh 문제 방지 및 부드러운 스크롤 */
+        overscroll-behavior-y: contain; 
+    }
 
     body {
       background: var(--bg);
@@ -69,6 +73,7 @@
 
     @media (max-width: 640px){
       .app-shell{
+        /* 모바일에서 상단 여백이 넉넉하도록 유지 */
         padding-left: 16px;
         padding-bottom: 16px;
         margin-top: 250px;
@@ -83,58 +88,48 @@
     }
 
     /* ---------------------------------------------------- */
-    /* 📌 새로운 섹션 제목 컨테이너 스타일 */
+    /* 📌 새로운 섹션 제목 컨테이너 스타일 (기존 유지) */
     /* ---------------------------------------------------- */
 
-    /* 💡 제목을 감싸는 컨테이너: 화면 수평 꽉 채우기 및 배경 설정 */
     .section-title-wrapper {
         width: 100vw;
-        /* app-shell의 왼쪽 padding을 상쇄시키고, viewport 왼쪽 끝에 맞춤 */
         margin-left: calc(-1 * (var(--chrome-gap) + 16px)); 
         background: var(--section-title-bg-light); 
         border-top: 1px solid var(--section-title-border-light);
         border-bottom: 1px solid var(--section-title-border-light);
-        margin-bottom: 16px; /* 아래 요소와의 간격 (carousel 위에 적용) */
-        padding: 8px 0; /* 위아래 마진(여백) 조절 - 너무 넓지 않게 */
+        margin-bottom: 16px; 
+        padding: 8px 0; 
     }
 
-    /* 💡 다크 모드 배경 색상 적용 */
     html.dark .section-title-wrapper {
         background: var(--section-title-bg-dark); 
         border-top: 1px solid var(--section-title-border-dark);
         border-bottom: 1px solid var(--section-title-border-dark);
     }
     
-    /* 💡 모바일 뷰 (640px 이하) 대응 */
     @media (max-width: 640px){
         .section-title-wrapper {
-            /* app-shell의 모바일 padding-left (16px)을 상쇄 */
             margin-left: -16px; 
         }
     }
 
-    /* 📌 실제 제목 텍스트 스타일 */
     .section-title {
-      /* 제목 자체는 배경 컨테이너 안에서 다시 기존 콘텐츠 영역에 맞춰져야 함 */
-      margin-left: calc(var(--chrome-gap) + 16px); /* app-shell의 기존 padding-left 복원 */
-      
+      margin-left: calc(var(--chrome-gap) + 16px); 
       color: var(--ink);
       font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 0; /* 배경 컨테이너가 마진을 관리하므로 0으로 설정 */
+      margin-bottom: 0; 
       margin-top: 0;
       letter-spacing: 0.5px;
     }
     
-    /* 💡 모바일 뷰 (640px 이하) 대응 */
     @media (max-width: 640px){
         .section-title {
-            margin-left: 16px; /* app-shell의 모바일 padding-left (16px)로 복원 */
+            margin-left: 16px; 
         }
     }
 
 
-    /* 다크모드 글로우 효과 적용 (기존 유지) */
     html.dark .section-title {
         color: var(--accent);
         text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
@@ -322,7 +317,8 @@
     .recent-posts {
         display: flex;
         flex-direction: column;
-        gap: 12px; /* 게시물 간 간격 추가 */
+        /* ⭐ 게시물 간 간격 유지 */
+        gap: 12px; 
         margin-top: 16px;
         padding: 8px 0;
     }
@@ -353,10 +349,9 @@
         display: block;
         margin-bottom: 6px;
     }
-    /* 📌 이모티콘 스타일을 위해 폰트 크기 조정 */
     .badge-pinned {
         margin-right: 5px; 
-        font-size: 0.9em; /* 핀 이모티콘이 너무 크지 않도록 조정 */
+        font-size: 0.9em; 
     }
 
     .recent-post-meta {
@@ -375,15 +370,15 @@
         /* 버튼 스타일 통일 및 중앙 정렬 */
         display: block; 
         width: 200px; 
-        margin: 24px auto 60px; /* 여백 유지 */
+        /* ⭐⭐ 여백 수정: 게시물 아래 여백을 줄이고, 버튼 아래 여백도 줄여서 푸터가 올라오게 함 ⭐⭐ */
+        margin: 16px auto 30px; 
         padding: 12px 20px;
         border-radius: 25px; 
         
-        /* 🌟🌟🌟 라이트 모드: 밝은 초록 그라데이션 적용 🌟🌟🌟 */
         background: linear-gradient(135deg, #A8E063, #56AB2F); 
         
-        border: none; /* 그라데이션 사용 시 테두리 제거 */
-        color: #ffffff; /* 흰색 텍스트 */
+        border: none; 
+        color: #ffffff; 
         
         font-weight: 700;
         cursor: pointer;
@@ -399,26 +394,26 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* 🌟🌟🌟 다크 모드 버튼 스타일 수정: 투명 배경/하얀 테두리/하얀 글씨 🌟🌟🌟 */
     html.dark #load-more-btn {
         background: transparent; 
-        color: #ffffff; /* 하얀 글씨 */
-        border: 2px solid #ffffff; /* 하얀 테두리 */
+        color: #ffffff; 
+        border: 2px solid #ffffff; 
         box-shadow: 0 4px 6px rgba(255, 255, 255, 0.15); 
     }
     
     html.dark #load-more-btn:hover {
-        background: #ffffff; /* 호버 시 흰색 배경으로 채움 */
-        color: var(--bg); /* 텍스트는 다크 모드 배경색과 유사하게 반전 */
+        background: #ffffff; 
+        color: var(--bg); 
         box-shadow: 0 6px 12px rgba(255, 255, 255, 0.3);
         transform: translateY(-2px); 
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ 🆕 푸터 스타일 */
+    /* ✅ 🆕 푸터 스타일 (모바일 보이도록 수정) */
     /* ---------------------------------------------------- */
     .app-footer {
         width: 100%;
+        /* ⭐⭐ margin-top: auto; 유지 (app-shell이 flex: 1을 차지하므로 푸터가 자연스럽게 밀려남) */
         margin-top: auto; 
         padding: 20px 16px;
         text-align: center;
@@ -426,6 +421,9 @@
         font-size: 0.85rem;
         border-top: 1px solid var(--border);
         background: var(--panel-2);
+        /* ⭐⭐ 모바일에서 footer가 완전히 보이도록 z-index 설정 ⭐⭐ */
+        z-index: 10; 
+        flex-shrink: 0; /* 푸터가 줄어들지 않도록 보장 */
     }
     
     /* ---------------------------------------------------- */
@@ -433,20 +431,17 @@
     /* ---------------------------------------------------- */
     @media (min-width: 641px) {
         .recent-posts {
-            max-width: 800px; /* 원하는 너비로 설정하세요 */
+            max-width: 800px; 
             margin-left: 0; 
             margin-right: auto;
             padding-left: 0; 
         }
         
-        /* '최근 게시물' 섹션 제목도 왼쪽 정렬되도록 조정 */
-        /* 이 부분은 .section-title-wrapper가 적용되면서 조정이 필요 */
         .recent-posts-wrapper .section-title {
              margin-left: calc(var(--chrome-gap) + 16px); 
              margin-right: auto;
         }
 
-        /* '더보기' 버튼도 해당 영역 너비 내에서 가운데 정렬되도록 조정 */
         #load-more-btn {
             margin-left: auto;
             margin-right: auto;
@@ -464,10 +459,6 @@
   </div>
 
  
-
-
-
-
   <div class="app-shell">
    
     <div class="section-title-wrapper">
@@ -647,7 +638,7 @@
 <script>
 const lang = "<%= lang %>";
 
-let offset = 5;   // 처음에 posts.slice(0,5) 로 5개 보여줬으니까 offset도 5부터 시작
+let offset = 5;   
 let loading = false;
 
 async function loadMorePosts() {
@@ -658,21 +649,18 @@ async function loadMorePosts() {
     const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
     const data = await res.json();
     
-    // 🌟 API Response Data 확인용 로그
-    console.log("API Response Data:", data); 
+    // console.log("API Response Data:", data); 
   
     if (!data.posts || data.posts.length === 0) {
       document.getElementById("load-more-btn").style.display = "none";
-      loading = false; // 로딩 해제
+      loading = false; 
       return;
     }
   
-    // === 수정된 부분 시작: post.created_fmt와 post.preview 사용 ===
     offset += data.posts.length;
   
     const container = document.getElementById("posts-container");
     if (!container) {
-      // 🌟 ID 오류가 뜨면 HTML의 id="posts-container" 오타/누락을 확인해야 합니다.
       console.error("Posts container not found! (EJS ID 확인 요망)");
       loading = false;
       return;
@@ -680,9 +668,8 @@ async function loadMorePosts() {
   
     data.posts.forEach(post => {
       const el = document.createElement("div");
-      el.className = "recent-post-item"; // ✅ 클래스 통일
+      el.className = "recent-post-item"; 
       
-      // 💡 post.created_fmt (서버에서 형식화된 날짜) 사용
       const formattedDate = post.created_fmt; 
   
       el.innerHTML = `
@@ -702,13 +689,8 @@ async function loadMorePosts() {
           </div>
       `;
       
-      // 🌟 디버깅 로그: DOM에 추가 직전, 생성된 HTML 확인
-      console.log("HTML being added (Title:", post.title, ") :", el.innerHTML); 
-      
       container.appendChild(el);
-      console.log("Adding post:", post.title, "completed.");
     });
-    // === 수정된 부분 끝 ===
   
     loading = false;
   } catch (error) {
@@ -726,7 +708,6 @@ window.loadMorePosts = loadMorePosts;
 
   <script>
   (() => {
-    // EJS 컴파일 오류를 일으키는 불필요한 주석 잔여물 제거
     const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
     const itemsPerPage = 3;
     const totalPages = Math.ceil(tocData.length / itemsPerPage);
@@ -748,10 +729,8 @@ window.loadMorePosts = loadMorePosts;
           html += `<li>`;
 
           if (ch.url) {
-            // ✅ JavaScript 코드는 이미 /contents/로 되어 있어 수정할 필요 없습니다.
             html += `<a href="/${lang}/books/cuteAcoustics/contents/${ch.url}" class="toc-link active">${ch.title}</a>`;
           } else {
-            // ❌ EJS 컴파일 오류가 났던 565번째 줄을 순수 JS로 변경
             html += `<span class="toc-link disabled">${ch.title}</span>`;
           }
 
@@ -760,7 +739,6 @@ window.loadMorePosts = loadMorePosts;
             ch.sub.forEach(sub => {
               html += `<li>`;
               if (sub.url) {
-                // ✅ JavaScript 코드는 이미 /contents/로 되어 있어 수정할 필요 없습니다.
                 html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
                 html += `<span class="toc-link disabled">${sub.title}</span>`;
