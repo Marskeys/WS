@@ -7,7 +7,7 @@
   <title>Bug Loop</title>
   <style>
     /* ---------------------------------------------------- */
-    /* 💡 라이트 모드 (html:not(.dark) / 기본값) */
+    /* 💡 CSS 변수 설정 (기존 유지) */
     /* ---------------------------------------------------- */
     :root{
       --chrome-gap:50px;
@@ -23,10 +23,8 @@
       --accent:#cfcfd0;
       --primary:#217ee8;
       --primary-ink:#ffffff;
-      /* CSS 변수 추가 (버튼 디자인을 위해) */
       --primary-rgb: 33, 126, 232; 
 
-      /* 🆕 섹션 제목 배경 색상 변수 */
       --section-title-bg-light: #ffffff; 
       --section-title-bg-dark: #1b1b1b;  
       --section-title-border-light: #e0e0e0; 
@@ -46,15 +44,14 @@
       --primary-rgb: 33, 126, 232; 
     }
 
-    /* ⭐⭐ [수정] Safari Dynamic Toolbar 문제 해결 ⭐⭐ */
-    /* height: 100vh 대신 100% 사용 및 min-height 100vh 유지 */
+    /* ⭐⭐ [수정] height: 100%로 설정하여 Safari 툴바 문제 대응 ⭐⭐ */
     html { height: 100%; } 
 
     body {
       background: var(--bg);
       color: var(--ink);
-      min-height: 100vh; /* 전체 높이는 100vh를 기준으로 최소한 확보 */
-      height: 100%; /* Safari 동적 툴바 대응을 위해 추가 */
+      min-height: 100vh; 
+      height: 100%; /* Safari 동적 툴바 대응 */
       display: flex;
       flex-direction: column;
       transition: background 0.3s, color 0.3s;
@@ -68,17 +65,15 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      /* ⭐ [추가/수정] 푸터가 가려지지 않도록 하단 마진/패딩 여유 확보 */
       margin-bottom: 20px; 
     }
 
     @media (max-width: 640px){
       .app-shell{
         padding-left: 16px;
-        padding-bottom: 16px;
+        /* ⭐⭐ [수정] 하단 패딩을 더 늘려서 푸터/툴바 공간 확보 (70px) ⭐⭐ */
+        padding-bottom: 70px; 
         margin-top: 250px;
-        /* 모바일에서 하단 패딩을 충분히 확보하여 푸터가 주소창 위에 올라오도록 함 */
-        padding-bottom: 50px; 
         margin-bottom: 0;
       }
     }
@@ -91,7 +86,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* 📌 새로운 섹션 제목 컨테이너 스타일 */
+    /* 📌 섹션 제목, 캐러셀, 북카드 스타일 (기존 유지) */
     /* ---------------------------------------------------- */
 
     .section-title-wrapper {
@@ -118,7 +113,6 @@
 
     .section-title {
       margin-left: calc(var(--chrome-gap) + 16px); 
-      
       color: var(--ink);
       font-size: 1.2rem;
       font-weight: 700;
@@ -372,8 +366,8 @@
     #load-more-btn {
         display: block; 
         width: 200px; 
-        /* ⭐⭐ [수정] 버튼 상하 여백 축소 ⭐⭐ */
-        margin: 16px auto 30px; 
+        /* ⭐⭐ [수정] 버튼 상하 여백 대폭 축소 (16px auto 30px -> 16px auto 16px) ⭐⭐ */
+        margin: 16px auto 16px; 
         padding: 12px 20px;
         border-radius: 25px; 
         
@@ -422,7 +416,6 @@
         font-size: 0.85rem;
         border-top: 1px solid var(--border);
         background: var(--panel-2);
-        /* ⭐⭐ Safari Dynamic Toolbar 문제 해결을 위해 z-index와 flex-shrink 유지 ⭐⭐ */
         z-index: 10; 
         flex-shrink: 0; 
     }
