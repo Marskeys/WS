@@ -1508,7 +1508,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ★ 패널 전체 교체 (기존과 동일)
         panel.innerHTML = html;
-
+        window.rebindThemeToggle(); 
         // ★ 중요한 부분: "삽입 후" 다시 요소를 찾아서 제목 반영
         const titleEl = document.getElementById('panel-title-connector');
         if (titleEl) {
@@ -1854,3 +1854,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   })();
 })();
+
+// === 재바인딩 전용 함수 ===
+window.rebindThemeToggle = function() {
+  const themeToggleBtn = document.getElementById('theme-toggle-sidebar');
+  if (!themeToggleBtn) return;
+
+  const htmlEl = document.documentElement;
+  const THEME_KEY = 'bugloop.theme';
+
+  const updateTheme = (theme) => {
+    const isDark = theme === 'dark';
+    htmlEl.classList.toggle('dark', isDark);
+    localStorage.setItem(THEME_KEY, theme);
+    themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+  };
+
+  const toggleTheme = () => {
+    const next = htmlEl.classList.contains('dark') ? 'light' : 'dark';
+    updateTheme(next);
+  };
+
+  themeToggleBtn.onclick = toggleTheme;
+};
+
