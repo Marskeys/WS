@@ -555,16 +555,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (panel) {
           
-          // 🌟🌟🌟 [수정된 부분 2: 로드된 HTML에서 <style> 태그 제거] 🌟🌟🌟
-          // 로드된 HTML 내부의 충돌 CSS를 제거하여 높이 충돌을 방지합니다.
+          // 1. 임시 div에 로드된 HTML을 삽입
           const tempDiv = document.createElement('div');
           tempDiv.innerHTML = html;
+          
+          // 2. <style> 태그 제거
           tempDiv.querySelectorAll('style').forEach(style => style.remove());
           
-          // 2. 패널 콘텐츠를 삽입합니다. (이때는 스타일이 제거된 내용이 들어갑니다)
+          // 🌟🌟🌟 [수정된 부분 2: 인라인 스타일 제거 로직 추가] 🌟🌟🌟
+          // 로드된 HTML의 루트 요소(#mini-lecture)에서 height 인라인 스타일을 강제 제거합니다.
+          const loadedPanel = tempDiv.querySelector('#mini-lecture');
+          if (loadedPanel) {
+              loadedPanel.style.removeProperty('height');
+              loadedPanel.style.removeProperty('min-height');
+              console.log('로드된 패널의 인라인 높이 스타일 제거 완료');
+          }
+          // 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟
+
+          // 3. 패널 콘텐츠를 삽입합니다.
           panel.innerHTML = tempDiv.innerHTML; 
           
-          // 3. 삽입 후, 저장해둔 메뉴 이름으로 제목을 **다시** 업데이트합니다.
+          // 4. 삽입 후, 저장해둔 메뉴 이름으로 제목을 **다시** 업데이트합니다.
           const titleConnector = document.getElementById('panel-title-connector');
           if (titleConnector) {
              titleConnector.textContent = menuText;
