@@ -6,7 +6,7 @@
 :root {
   /* 패널 높이 (기본값 및 현재값) */
   --header-h: 30px;            /* 헤더 높이 */
-  --panel-h-default: 150px; /* 🌟 데스크탑 초기값 수정: 100px -> 150px (증가) */
+  --panel-h-default: 150px; /* 🌟 데스크탑 초기값: 150px */
   --panel-h: var(--panel-h-default);
 
   /* 레이아웃 폭 */
@@ -18,8 +18,8 @@
 /* 모바일 기본 높이 설정 (max-width: 768px) */
 @media (max-width: 768px) {
   :root {
-    /* 🌟 모바일 초기 높이: 220px 대신 JS에서 50%를 기준으로 계산합니다. */
-    --panel-h-default: 50vh; 
+    /* 🌟 모바일 초기 높이: JS에서 계산된 220px로 고정됩니다. */
+    --panel-h-default: 220px; 
     --panel-h: var(--panel-h-default);
     /* 모바일에서는 ide와 panel 폭을 0으로 설정 */
     --ide-w: 0px;
@@ -249,10 +249,11 @@ window.initPanelResizer = function() {
   }
 
   // 상수 정의
-  const MIN_HEIGHT = 30; // 🌟 최소 높이: 50px
+  const MIN_HEIGHT = 30; // 🌟 최소 높이
   const MAX_RATIO = 0.75; // 🌟 최대 높이: 화면 높이의 75%
-  const MOBILE_DEFAULT_RATIO = 0.24; // 🌟 모바일 초기 높이: 20%
-  const DESKTOP_DEFAULT_HEIGHT = 30; // 🌟 데스크탑 초기 높이: 150px
+  // const MOBILE_DEFAULT_RATIO = 0.24; // ⛔️ 비율 상수 제거
+  const MOBILE_DEFAULT_HEIGHT = 220; // 🌟 모바일 초기 높이: 220px로 고정
+  const DESKTOP_DEFAULT_HEIGHT = 150; // 🌟 데스크탑 초기 높이: 150px
   
   const STEP = 16, BIG = 64; // 키보드 조절 단위
   const VAR = '--panel-h';    // CSS 변수명
@@ -277,12 +278,12 @@ window.initPanelResizer = function() {
   };
 
   const getDefaultPx = () => {
-    const headerH = getHeaderHeight();
+    // const headerH = getHeaderHeight(); // 픽셀 고정값을 사용하므로 헤더 높이 제외 계산 불필요
     if (isMobileView()) {
-        // 모바일: 화면 높이의 50%
-        return Math.floor(window.innerHeight * MOBILE_DEFAULT_RATIO) - headerH;
+        // 🌟 모바일: 220px 고정
+        return MOBILE_DEFAULT_HEIGHT;
     } else {
-        // 데스크탑: 150px
+        // 🌟 데스크탑: 150px 고정
         return DESKTOP_DEFAULT_HEIGHT;
     }
   };
@@ -314,7 +315,7 @@ window.initPanelResizer = function() {
     resizer.setAttribute('aria-valuemax', String(getMaxHeight()));
     resizer.setAttribute('aria-valuemin', String(getMinHeight()));
     
-    // CSS 변수 `--panel-h-default`를 JS에서 계산한 값으로 업데이트 (CSS 미디어 쿼리 오버라이드)
+    // CSS 변수 `--panel-h-default`를 JS에서 계산한 값으로 업데이트 
     const initialDefaultH = getDefaultPx();
     root.style.setProperty('--panel-h-default', initialDefaultH + 'px');
       
