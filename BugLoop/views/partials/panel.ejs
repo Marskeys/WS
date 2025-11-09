@@ -4,50 +4,36 @@
 /* ========================================= */
 
 :root {
-  /* 패널 높이 (기본값 및 현재값) */
-  --header-h: 30px;            /* 헤더 높이 */
-  --panel-h-default: 150px; /* 🌟 데스크탑 초기값: 150px */
+  --header-h: 30px;
+  --panel-h-default: 150px;
   --panel-h: var(--panel-h-default);
-
-  /* 레이아웃 폭 */
-  --ide-w: 50px;               /* VSCode 사이드바(IDE) 폭 */
-  /* --panel-w 변수는 이제 사용되지 않으며, 화면 폭의 50%로 고정됩니다. */
-  --gut: 2.5vw;                /* 양옆 여백 비율 */
+  --ide-w: 50px;
+  --gut: 2.5vw;
 }
 
-/* 모바일 기본 높이 설정 (max-width: 768px) */
 @media (max-width: 768px) {
   :root {
-    /* 🌟 모바일 초기 높이: JS에서 계산된 220px로 고정됩니다. */
-    --panel-h-default: 220px; 
+    --panel-h-default: 220px;
     --panel-h: var(--panel-h-default);
-    /* 모바일에서는 ide와 panel 폭을 0으로 설정 */
     --ide-w: 0px;
   }
 }
 
 /* ========================================= */
-/* 2. 🗄️ #mini-lecture 컨테이너 (Fixed) */
+/* 2. 🗄️ #mini-lecture 컨테이너 */
 /* ========================================= */
 
 #mini-lecture {
   position: fixed;
   top: var(--header-h, 0);
   z-index: 40;
-  
-  /* 기본 위치 (닫힌 상태) */
   left: calc(var(--ide-w) + var(--gut));
   right: var(--gut);
-  
   height: var(--panel-h);
   min-height: 20px;
-  
-  /* 내용(1fr) + 리사이저(20px) */
   display: grid;
-  grid-template-rows: minmax(0, 1fr) 20px; 
+  grid-template-rows: minmax(0, 1fr) 20px;
   overflow: hidden;
-
-  /* 그림자 효과 */
   box-shadow:
     0 60px 140px -30px rgba(0,0,0,.70),
     0 30px 70px -20px rgba(0,0,0,.60),
@@ -56,39 +42,21 @@
     0 0 0 1px rgba(0,0,0,.28);
 }
 
-/* 2-1. 패널 열림 상태 (body.panel-open) - 일반 여백 */
-/* (데스크탑에서 이 규칙은 2-2에 의해 덮어쓰입니다.) */
 body.panel-open #mini-lecture {
-  /* 원래의 전체 폭 유지 규칙 (데스크탑에서는 2-2가 우선) */
   left: calc(var(--ide-w) + var(--gut));
   right: var(--gut);
 }
 
-/* 2-2. 데스크탑 (min-width: 769px) - 화면 절반 크기로 오른쪽 배치 */
 @media (min-width: 769px) {
   body.panel-open #mini-lecture {
-    /* ✨ 왼쪽 위치: 화면 폭의 50% 지점 */
-    left: 50vw; 
-    /* ✨ 오른쪽 위치: 오른쪽 여백(2.5vw) */
-    right: var(--gut); 
-    /* 폭은 50vw - 2.5vw 가 됩니다. (50% - 여백) */
-    width: auto; /* left/right로 폭 지정 */
+    left: 50vw;
+    right: var(--gut);
+    width: auto;
   }
-  
-  /* IDE가 열려있을 때(var(--ide-w)가 0이 아닐 때) 약간의 조정을 원한다면:
-  body.panel-open #mini-lecture {
-      left: calc(50vw + (var(--ide-w) / 2)); // IDE 폭의 절반을 오른쪽으로 밀어줌 (선택 사항)
-      right: var(--gut);
-      width: auto;
-  }
-  */
 }
 
-/* 2-3. 모바일 (max-width: 768px) - 고정 마진/패딩 사용 */
 @media (max-width: 768px) {
-  body, body.panel-open {
-    padding-left: 0 !important;
-  }
+  body, body.panel-open { padding-left: 0 !important; }
   #mini-lecture {
     top: 77px;
     left: 15px !important;
@@ -99,15 +67,10 @@ body.panel-open #mini-lecture {
   }
 }
 
-/* 2-4. 드래그 중 본문 스크롤 및 선택 방지 */
-body.resizing { 
-  user-select: none; 
-  overflow: hidden;
-}
+body.resizing { user-select: none; overflow: hidden; }
 
 /* ========================================= */
-/* 3. 📝 패널 내용 요소 */
-/* (내용 변경 없음) */
+/* 3. 📝 패널 내부 UI */
 /* ========================================= */
 
 #mini-lecture .panel-card {
@@ -115,15 +78,13 @@ body.resizing {
   color: #ffffff;
   border: 1px solid #333;
   border-bottom: 0;
-  box-shadow: 0 10px 30px rgba(0,0,0,.4);
   padding: 16px;
-  overflow: auto; /* 자체 스크롤 */
+  overflow: auto;
   min-height: 0;
-  overscroll-behavior: contain; /* 스크롤 체이닝 방지 */
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
-/* 3-2. 제목 커넥터 (.connector) */
 #mini-lecture .connector {
   display: inline-block;
   margin-bottom: 8px;
@@ -137,87 +98,30 @@ body.resizing {
   font-weight: 700;
 }
 
-/* 3-3. 칩 스타일 (.chip) */
-.chip {
-  display: inline-block;
-  margin-top: 8px;
-  margin-right: 6px;
-  background: #1a1a1a;
-  color: #ddd;
-  border: 1px solid #333;
-  padding: 6px 10px;
-  font-size: 12px;
-}
-
 /* ========================================= */
-/* 4. 🎚️ 리사이저 (#panel-resizer) */
-/* (내용 변경 없음) */
+/* 4. 🎚️ 리사이저 */
 /* ========================================= */
 
 #panel-resizer {
-  grid-row: 2; /* 그리드 2번째 행 */
+  grid-row: 2;
   height: 18px;
-  border: 0;
   cursor: ns-resize;
   background: #313131;
   transition: background .15s ease, box-shadow .15s ease;
   position: relative;
-  
-  /* 터치 및 사용자 선택 방지 */
   touch-action: none;
   user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
-/* 4-1. 포인터(터치) 크기 확대 */
-@media (pointer: coarse) {
-  #panel-resizer { 
-    height: 18px;
-  }
-}
-
-/* 4-2. 리사이저 핸들 (::before) */
 #panel-resizer::before {
   content: "";
   position: absolute;
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
-  width: 70px; height: 4px; border-radius: 999px;
+  width: 70px; height: 4px;
+  border-radius: 999px;
   background: linear-gradient(90deg, #777, #aaa, #777);
   opacity: .9;
-}
-
-/* 4-3. 도트 패턴 (::after) */
-#panel-resizer::after {
-  content: "";
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  width: 70px; height: 20px;
-  pointer-events: none;
-  color: #666;
-  opacity: .55;
-  background: radial-gradient(currentColor 1px, transparent 2px) 0 50%/10px 8px repeat-x;
-}
-
-/* 4-4. 호버/포커스/드래그 상태 스타일 */
-#panel-resizer:hover,
-#panel-resizer:focus-visible,
-body.resizing #panel-resizer {
-  background: #181818;
-  box-shadow: inset 0 0 0 1px #444, 0 0 0 2px rgba(255,255,255,.05);
-}
-
-#panel-resizer:hover::before,
-#panel-resizer:focus-visible::before {
-  transform: translate(-50%, -50%) scaleX(1.08);
-}
-
-/* 4-5. 작은 모바일 높이 재확인 */
-@media (max-width: 640px) {
-  #mini-lecture { height: var(--panel-h); min-height: 20px; }
 }
 </style>
 
@@ -236,350 +140,60 @@ body.resizing #panel-resizer {
   <div id="panel-resizer"
        role="separator"
        aria-orientation="horizontal"
-       aria-label="패널 높이 조절"
-       aria-valuemin="50"   
+       aria-valuemin="50"
        aria-valuemax="800"
        aria-valuenow="150"
-       tabindex="0"
-       title="드래그하거나 ↑/↓ 키로 높이 조절">
+       tabindex="0">
   </div>
 </div>
 
 <script>
-/* ========================================= */
-/* 1. 📏 패널 리사이저 (높이 조절) 로직 */
-/* (내용 변경 없음) */
-/* ========================================= */
+/* ✅ 높이 조절 기능 */
 window.initPanelResizer = function() {
   const root = document.documentElement;
   const resizer = document.getElementById('panel-resizer');
   if (!resizer) return;
+  if (resizer.__bound_cleanup) { resizer.__bound_cleanup(); delete resizer.__bound_cleanup; }
 
-  // 기존 리스너 제거 (재호출 시 중복 바인딩 방지)
-  if (resizer.__bound_cleanup) {
-    resizer.__bound_cleanup();
-    delete resizer.__bound_cleanup;
-  }
+  const VAR = '--panel-h';
+  const KEY = 'miniPanelH_session';
+  const MIN_HEIGHT = 35;
+  const MAX_RATIO = 0.85;
 
-  // 상수 정의
-  const MIN_HEIGHT = 35; // 🌟 최소 높이
-  const MAX_RATIO = 0.85; // 🌟 최대 높이: 화면 높이의 75%
-  // const MOBILE_DEFAULT_RATIO = 0.24; // ⛔️ 비율 상수 제거
-  const MOBILE_DEFAULT_HEIGHT = 130; // 🌟 모바일 초기 높이: 220px로 고정
-  const DESKTOP_DEFAULT_HEIGHT = 130; // 🌟 데스크탑 초기 높이: 150px
-  
-  const STEP = 16, BIG = 64; // 키보드 조절 단위
-  const VAR = '--panel-h';    // CSS 변수명
-  const KEY = 'miniPanelH_session'; // sessionStorage 키
-  
-  // 헬퍼 함수
-  const isMobileView = () => window.innerWidth <= 768;
-  
-  const getHeaderHeight = () => {
-      const headerH = getComputedStyle(root).getPropertyValue('--header-h').trim() || '30px';
-      return parseInt(headerH, 10) || 30;
-  };
-  
-  const getMaxHeight = () => {
-      const headerH = getHeaderHeight();
-      // 화면 높이의 75%에서 헤더 높이를 뺀 값
-      return Math.floor(window.innerHeight * MAX_RATIO) - headerH; 
-  };
-
-  const getMinHeight = () => {
-      return MIN_HEIGHT;
-  };
-
-  const getDefaultPx = () => {
-    // const headerH = getHeaderHeight(); // 픽셀 고정값을 사용하므로 헤더 높이 제외 계산 불필요
-    if (isMobileView()) {
-        // 🌟 모바일: 220px 고정
-        return MOBILE_DEFAULT_HEIGHT;
-    } else {
-        // 🌟 데스크탑: 150px 고정
-        return DESKTOP_DEFAULT_HEIGHT;
-    }
-  };
-
-  const clamp = v => {
-      const min = getMinHeight();
-      const max = getMaxHeight();
-      return Math.max(min, Math.min(max, v | 0));
-  };
-  
-  /** 높이를 설정하고 필요 시 세션에 저장 */
+  const clamp = h => Math.max(MIN_HEIGHT, Math.min(h, Math.floor(window.innerHeight * MAX_RATIO)));
   const setH = (h, save = false) => {
-    const n = clamp(parseInt(h, 10));
-    root.style.setProperty(VAR, n + 'px');
-    resizer.setAttribute('aria-valuenow', String(n));
-    // aria-valuemin, aria-valuemax 동적 업데이트 (접근성)
-    resizer.setAttribute('aria-valuemin', String(getMinHeight()));
-    resizer.setAttribute('aria-valuemax', String(getMaxHeight()));
-    
-    if (save) sessionStorage.setItem(KEY, n + 'px');
-    window.dispatchEvent(new CustomEvent('mini-panel-resized', { detail: { height: n }}));
-  };
-  
-  const isHomePath = (p) => p === '/' || /^\/(ko|en|fr|zh|ja|es)\/?$/.test(p);
-
-  // 초기화 (세션/홈 경로 처리)
-  (function init() {
-    // 🌟 aria-valuemax 초기값 설정 (정확한 계산을 위해 DOMContentLoaded 시점 활용)
-    resizer.setAttribute('aria-valuemax', String(getMaxHeight()));
-    resizer.setAttribute('aria-valuemin', String(getMinHeight()));
-    
-    // CSS 변수 `--panel-h-default`를 JS에서 계산한 값으로 업데이트 
-    const initialDefaultH = getDefaultPx();
-    root.style.setProperty('--panel-h-default', initialDefaultH + 'px');
-      
-    if (isHomePath(location.pathname)) {
-      sessionStorage.removeItem(KEY);
-      root.style.removeProperty(VAR);
-      resizer.setAttribute('aria-valuenow', String(initialDefaultH));
-    } else {
-      const saved = sessionStorage.getItem(KEY);
-      if (saved) setH(saved, false);
-      else setH(initialDefaultH, false); // 초기값 설정 보장
-    }
-  })();
-  
-  // 드래그 상태 변수
-  let startY = 0, startH = 0, dragging = false, pid = null;
-
-  /* 이벤트 핸들러 */
-  const onPointerDown = (e) => {
-    e.preventDefault();
-    dragging = true;
-    pid = e.pointerId;
-    resizer.setPointerCapture?.(pid); 
-    document.body.classList.add('resizing');
-    startY = e.clientY;
-    startH = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
+    const v = clamp(h);
+    root.style.setProperty(VAR, v + 'px');
+    if (save) sessionStorage.setItem(KEY, v + 'px');
   };
 
-  const onPointerMove = (e) => {
-    if (!dragging || (pid != null && e.pointerId != null && e.pointerId !== pid)) return;
-    
-    const h = startH + (e.clientY - startY);
-    setH(h);
-  };
+  // 초기 높이 복구
+  const saved = sessionStorage.getItem(KEY);
+  if (saved) setH(parseInt(saved), false);
 
-  const endDrag = () => {
-    if (!dragging) return;
-    
-    // 📢📢📢 디버깅 로그 추가: 높이 저장 시도 확인
-    console.log('--- endDrag 실행: 높이 저장 시도 ---'); 
-    
-    dragging = false;
-    try { resizer.releasePointerCapture?.(pid); } catch (e) {}
-    pid = null;
-    document.body.classList.remove('resizing');
-    const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
-    setH(cur, true); // 최종 높이 저장
-    
-    // 📢📢📢 디버깅 로그 추가: 저장 결과 확인
-    console.log('최종 저장된 높이:', sessionStorage.getItem(KEY)); 
-  };
-  
-  const onKeyDown = (e) => {
-    let delta = 0;
-    if      (e.key === 'ArrowUp')   delta = -STEP;
-    else if (e.key === 'ArrowDown') delta =  STEP;
-    else if (e.key === 'PageUp')    delta = -BIG;
-    else if (e.key === 'PageDown')  delta =  BIG;
+  let startY, startH, drag = false;
+  const down = e => { drag = true; startY = e.clientY; startH = parseInt(getComputedStyle(root).getPropertyValue(VAR)) || 150; };
+  const move = e => { if(drag) setH(startH + (e.clientY - startY)); };
+  const up = () => { if(drag){ drag = false; setH(parseInt(getComputedStyle(root).getPropertyValue(VAR)), true); } };
 
-    if (delta !== 0) {
-      e.preventDefault();
-      const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
-      setH(cur + delta, true);
-    }
-  };
-  
-  // 🌟 화면 리사이즈 시 MaxHeight 재계산 및 현재 높이 재조정
-  const handleResize = () => {
-      // 리사이즈 시 데스크탑/모바일 전환을 감지하여 기본 높이 및 제한 재조정
-      const currentH = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10);
-      const newDefaultH = getDefaultPx();
-      
-      // 저장된 값이 없으면 새로운 기본값을 사용
-      const saved = sessionStorage.getItem(KEY);
-      if (!saved) {
-          setH(newDefaultH, false);
-      } else {
-          // 저장된 값이 있으면, Max/Min 제한에 맞춰 현재 높이를 재조정
-          setH(currentH, true); 
-      }
-      root.style.setProperty('--panel-h-default', newDefaultH + 'px');
-  };
+  resizer.addEventListener('pointerdown', down);
+  document.addEventListener('pointermove', move);
+  document.addEventListener('pointerup', up);
 
-  window.addEventListener('resize', handleResize);
-
-
-  /* 이벤트 리스너 등록 */
-  resizer.addEventListener('pointerdown', onPointerDown);
-  // document에 move/up/cancel을 걸어 패널 밖으로 나가도 드래그 유지
-  document.addEventListener('pointermove', onPointerMove); 
-  document.addEventListener('pointerup', endDrag);
-  document.addEventListener('pointercancel', endDrag);
-  resizer.addEventListener('keydown', onKeyDown); 
-
-  // 정리 함수 저장
   resizer.__bound_cleanup = () => {
-    resizer.removeEventListener('pointerdown', onPointerDown);
-    document.removeEventListener('pointermove', onPointerMove);
-    document.removeEventListener('pointerup', endDrag);
-    document.removeEventListener('pointercancel', endDrag);
-    resizer.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('resize', handleResize);
+    resizer.removeEventListener('pointerdown', down);
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', up);
   };
 };
+window.initPanelResizer();
 
-window.initPanelResizer(); // 최초 실행
-
-/* ========================================= */
-/* 2. 🖱️ 패널 스크롤 캡처 (스크롤 체이닝 방지) 로직 */
-/* (내용 변경 없음) */
-/* ========================================= */
-(function() {
-  window.bindPanelScrollTrap = bind; // 전역에 함수 노출
-
-  let scroller, panel;
-  let touchY = 0;
-  
-  function ref() {
-    panel = document.getElementById('mini-lecture');
-    scroller = panel?.querySelector('.panel-card') || null;
-  }
-  
-  // 휠 이벤트
-  function onPanelWheel(e) {
-    if (document.body.classList.contains('resizing') || !scroller) return;
-    e.preventDefault();
-    e.stopPropagation(); // 상위 요소 스크롤 차단
-    scroller.scrollTop += e.deltaY;
-    scroller.scrollLeft += e.deltaX || 0;
-  }
-  
-  // 터치 시작
-  function onPanelTouchStart(e) {
-    if (document.body.classList.contains('resizing') || !scroller) return;
-    touchY = e.touches[0].clientY;
-  }
-  
-  // 터치 이동
-  function onPanelTouchMove(e) {
-    if (document.body.classList.contains('resizing') || !scroller) return;
-    const y = e.touches[0].clientY;
-    const delta = touchY - y;
-    touchY = y;
-    e.preventDefault();
-    e.stopPropagation(); // 상위 요소 스크롤 차단
-    scroller.scrollTop += delta;
-  }
-  
-  /** 이벤트 리스너 바인딩 */
-  function bind() {
-    ref();
-    if (!panel || !scroller) return;
-  
-    // 휠/터치 이벤트 리스너 등록 (capture:true로 이벤트 캡처링)
-    panel.addEventListener('wheel', onPanelWheel, { passive: false, capture: true });
-    panel.addEventListener('touchstart', onPanelTouchStart, { passive: true, capture: true });
-    panel.addEventListener('touchmove', onPanelTouchMove, { passive: false, capture: true });
-  
-    // 내용 교체 감지 → 재바인딩
-    const mo = new MutationObserver(() => {
-      const cur = panel.querySelector('.panel-card');
-      if (cur !== scroller) { unbind(); bind(); }
-    });
-    mo.observe(panel, { childList: true, subtree: true });
-  
-    // 리사이즈/라우팅 발생 시 재바인딩
-    const reb = () => { unbind(); bind(); };
-    window.addEventListener('mini-panel-resized', reb);
-    window.addEventListener('resize', reb);
-    
-    // history API 덮어쓰기 (라우팅 감지)
-    const _ps = history.pushState, _rs = history.replaceState;
-    history.pushState = function() { const r = _ps.apply(this, arguments); setTimeout(reb, 0); return r; };
-    history.replaceState = function() { const r = _rs.apply(this, arguments); setTimeout(reb, 0); return r; };
-    window.addEventListener('popstate', () => setTimeout(reb, 0));
-  
-    // 정리 함수
-    panel.__trap_cleanup = () => {
-      try {
-        panel.removeEventListener('wheel', onPanelWheel, { capture: true });
-        panel.removeEventListener('touchstart', onPanelTouchStart, { capture: true });
-        panel.removeEventListener('touchmove', onPanelTouchMove, { capture: true });
-        mo.disconnect();
-        window.removeEventListener('mini-panel-resized', reb);
-        window.removeEventListener('resize', reb);
-      } catch (e) {}
-    };
-  }
-  
-  /** 이벤트 리스너 언바인딩 */
-  function unbind() {
-    if (panel?.__trap_cleanup) panel.__trap_cleanup();
-    panel = scroller = null;
-  }
-  
-  // DOM 로드 완료 시 실행
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bind, { once: true });
-  } else {
-    bind();
-  }
-})();
-
-
-/* ========================================= */
-/* 3. 🌐 패널 로딩 (AJAX) 및 제목 업데이트 로직 */
-/* ========================================= */
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-panel-link]').forEach(link => {
-    link.addEventListener('click', async (e) => {
-      e.preventDefault();
-      
-      const url = link.getAttribute('href');
-      // 1. 클릭된 메뉴의 텍스트를 저장합니다. (제목 업데이트용)
-      const menuText = link.textContent.trim(); 
-      
-      // 🌟🌟🌟 [수정된 부분: 패널 높이 유지 로직] 🌟🌟🌟
-      const savedHeight = sessionStorage.getItem('miniPanelH_session');
-      if (savedHeight) {
-          // sessionStorage에 저장된 높이를 CSS 변수에 강제로 적용합니다.
-          document.documentElement.style.setProperty('--panel-h', savedHeight);
-          console.log('클릭 시 높이 복원:', savedHeight); // 📢📢📢 로그 추가: 복원 시도 확인
-      } else {
-           console.log('클릭 시 저장된 높이 없음. 기본값으로 로드됩니다.'); // 📢📢📢 로그 추가: 저장 안 됨 확인
-      }
-      // 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟
-      
-      try {
-        const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
-        const html = await res.text();
-        const panel = document.querySelector('#mini-lecture');
-
-        if (panel) {
-          // 2. 패널 콘텐츠를 삽입합니다. (EJS 템플릿의 내용이 로드됨)
-          panel.innerHTML = html; 
-          
-          // 3. 삽입 후, 저장해둔 메뉴 이름으로 제목을 **다시** 업데이트합니다.
-          const titleConnector = document.getElementById('panel-title-connector');
-          if (titleConnector) {
-             titleConnector.textContent = menuText;
-          }
-
-          panel.scrollTo(0, 0);
-          // 리사이저와 스크롤 트랩 재초기화
-          if (typeof window.initPanelResizer === 'function') window.initPanelResizer();
-          if (typeof window.bindPanelScrollTrap === 'function') window.bindPanelScrollTrap();
-        }
-      } catch (err) {
-        console.error('패널 로드 오류:', err);
-      }
-    });
-  });
-});
+/* ✅ 스크롤 트랩 */
+window.bindPanelScrollTrap = function() {
+  const panel = document.getElementById('mini-lecture');
+  const card = panel?.querySelector('.panel-card');
+  if (!card) return;
+  panel.addEventListener('wheel', e => { e.preventDefault(); card.scrollTop += e.deltaY; }, { passive:false });
+};
+window.bindPanelScrollTrap();
 </script>
