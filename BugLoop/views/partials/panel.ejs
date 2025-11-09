@@ -248,7 +248,6 @@ body.resizing #panel-resizer {
 <script>
 /* ========================================= */
 /* 1. 📏 패널 리사이저 (높이 조절) 로직 */
-/* (내용 변경 없음) */
 /* ========================================= */
 window.initPanelResizer = function() {
   const root = document.documentElement;
@@ -264,9 +263,8 @@ window.initPanelResizer = function() {
   // 상수 정의
   const MIN_HEIGHT = 35; // 🌟 최소 높이
   const MAX_RATIO = 0.85; // 🌟 최대 높이: 화면 높이의 75%
-  // const MOBILE_DEFAULT_RATIO = 0.24; // ⛔️ 비율 상수 제거
-  const MOBILE_DEFAULT_HEIGHT = 130; // 🌟 모바일 초기 높이: 220px로 고정
-  const DESKTOP_DEFAULT_HEIGHT = 130; // 🌟 데스크탑 초기 높이: 150px
+  const MOBILE_DEFAULT_HEIGHT = 130; // 🌟 모바일 초기 높이
+  const DESKTOP_DEFAULT_HEIGHT = 130; // 🌟 데스크탑 초기 높이
   
   const STEP = 16, BIG = 64; // 키보드 조절 단위
   const VAR = '--panel-h';    // CSS 변수명
@@ -291,12 +289,9 @@ window.initPanelResizer = function() {
   };
 
   const getDefaultPx = () => {
-    // const headerH = getHeaderHeight(); // 픽셀 고정값을 사용하므로 헤더 높이 제외 계산 불필요
     if (isMobileView()) {
-        // 🌟 모바일: 220px 고정
         return MOBILE_DEFAULT_HEIGHT;
     } else {
-        // 🌟 데스크탑: 150px 고정
         return DESKTOP_DEFAULT_HEIGHT;
     }
   };
@@ -367,7 +362,6 @@ window.initPanelResizer = function() {
   const endDrag = () => {
     if (!dragging) return;
     
-    // 📢📢📢 디버깅 로그 추가: 높이 저장 시도 확인
     console.log('--- endDrag 실행: 높이 저장 시도 ---'); 
     
     dragging = false;
@@ -377,7 +371,6 @@ window.initPanelResizer = function() {
     const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
     setH(cur, true); // 최종 높이 저장
     
-    // 📢📢📢 디버깅 로그 추가: 저장 결과 확인
     console.log('최종 저장된 높이:', sessionStorage.getItem(KEY)); 
   };
   
@@ -438,7 +431,6 @@ window.initPanelResizer(); // 최초 실행
 
 /* ========================================= */
 /* 2. 🖱️ 패널 스크롤 캡처 (스크롤 체이닝 방지) 로직 */
-/* (내용 변경 없음) */
 /* ========================================= */
 (function() {
   window.bindPanelScrollTrap = bind; // 전역에 함수 노출
@@ -545,25 +537,32 @@ document.addEventListener('DOMContentLoaded', () => {
       // 1. 클릭된 메뉴의 텍스트를 저장합니다. (제목 업데이트용)
       const menuText = link.textContent.trim(); 
       
-      // 🌟🌟🌟 [수정된 부분: 패널 높이 유지 로직] 🌟🌟🌟
+      // 🌟🌟🌟 [수정된 부분 1: 패널 높이 유지 로직] 🌟🌟🌟
       const savedHeight = sessionStorage.getItem('miniPanelH_session');
       if (savedHeight) {
           // sessionStorage에 저장된 높이를 CSS 변수에 강제로 적용합니다.
           document.documentElement.style.setProperty('--panel-h', savedHeight);
-          console.log('클릭 시 높이 복원:', savedHeight); // 📢📢📢 로그 추가: 복원 시도 확인
+          console.log('클릭 시 높이 복원:', savedHeight); 
       } else {
-           console.log('클릭 시 저장된 높이 없음. 기본값으로 로드됩니다.'); // 📢📢📢 로그 추가: 저장 안 됨 확인
+           console.log('클릭 시 저장된 높이 없음. 기본값으로 로드됩니다.'); 
       }
       // 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟
       
       try {
         const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
-        const html = await res.text();
+        let html = await res.text();
         const panel = document.querySelector('#mini-lecture');
 
         if (panel) {
-          // 2. 패널 콘텐츠를 삽입합니다. (EJS 템플릿의 내용이 로드됨)
-          panel.innerHTML = html; 
+          
+          // 🌟🌟🌟 [수정된 부분 2: 로드된 HTML에서 <style> 태그 제거] 🌟🌟🌟
+          // 로드된 HTML 내부의 충돌 CSS를 제거하여 높이 충돌을 방지합니다.
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          tempDiv.querySelectorAll('style').forEach(style => style.remove());
+          
+          // 2. 패널 콘텐츠를 삽입합니다. (이때는 스타일이 제거된 내용이 들어갑니다)
+          panel.innerHTML = tempDiv.innerHTML; 
           
           // 3. 삽입 후, 저장해둔 메뉴 이름으로 제목을 **다시** 업데이트합니다.
           const titleConnector = document.getElementById('panel-title-connector');
