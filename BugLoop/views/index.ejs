@@ -377,6 +377,31 @@
         border-top: 1px solid var(--border);
         background: var(--panel-2);
     }
+    
+    /* ---------------------------------------------------- */
+    /* ✅ 데스크탑 전용: 게시글 섹션 왼쪽 정렬 (641px 이상) */
+    /* ---------------------------------------------------- */
+    @media (min-width: 641px) {
+        .recent-posts {
+            max-width: 800px; /* 원하는 너비로 설정하세요 */
+            margin-left: 0; 
+            margin-right: auto;
+            padding-left: 0; 
+        }
+        
+        /* '최근 게시물' 섹션 제목도 왼쪽 정렬되도록 조정 */
+        .recent-posts > .section-title {
+             max-width: 800px; 
+             margin-left: 3px; 
+             margin-right: auto;
+        }
+
+        /* '더보기' 버튼도 해당 영역 너비 내에서 가운데 정렬되도록 조정 */
+        #load-more-btn {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
   </style>
 </head>
 
