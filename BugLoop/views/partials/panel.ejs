@@ -366,12 +366,19 @@ window.initPanelResizer = function() {
 
   const endDrag = () => {
     if (!dragging) return;
+    
+    // 📢📢📢 디버깅 로그 추가: 높이 저장 시도 확인
+    console.log('--- endDrag 실행: 높이 저장 시도 ---'); 
+    
     dragging = false;
     try { resizer.releasePointerCapture?.(pid); } catch (e) {}
     pid = null;
     document.body.classList.remove('resizing');
     const cur = parseInt(getComputedStyle(root).getPropertyValue(VAR), 10) || getDefaultPx();
     setH(cur, true); // 최종 높이 저장
+    
+    // 📢📢📢 디버깅 로그 추가: 저장 결과 확인
+    console.log('최종 저장된 높이:', sessionStorage.getItem(KEY)); 
   };
   
   const onKeyDown = (e) => {
@@ -541,9 +548,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // 🌟🌟🌟 [수정된 부분: 패널 높이 유지 로직] 🌟🌟🌟
       const savedHeight = sessionStorage.getItem('miniPanelH_session');
       if (savedHeight) {
-          // sessionStorage에 저장된 높이를 CSS 변수에 강제로 적용하여,
-          // 이후 initPanelResizer() 호출 시 이 값을 사용하도록 합니다.
+          // sessionStorage에 저장된 높이를 CSS 변수에 강제로 적용합니다.
           document.documentElement.style.setProperty('--panel-h', savedHeight);
+          console.log('클릭 시 높이 복원:', savedHeight); // 📢📢📢 로그 추가: 복원 시도 확인
+      } else {
+           console.log('클릭 시 저장된 높이 없음. 기본값으로 로드됩니다.'); // 📢📢📢 로그 추가: 저장 안 됨 확인
       }
       // 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟 🌟🌟🌟
       
