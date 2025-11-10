@@ -5,25 +5,23 @@
     <div class="top-controls">
       <div class="left-controls">
         <%
-          // 1. 현재 경로에서 언어 코드를 제거합니다.
-          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
+          // 1. 현재 경로에서 언어 코드를 제거하고, 뒤에 붙는 슬래시도 함께 제거합니다.
+          const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)\/?/, '');
 
-          // 2. 로고를 숨기지 않고 표시할 경로를 정의합니다.
+          // 2. 로고 표시 조건 (변경 없음)
           const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                            pathWithoutLang.startsWith('/post') ||
                            pathWithoutLang.startsWith('/edit');
           
-          // 3. 홈페이지(메인 페이지) 여부를 확인합니다. (수정된 부분)
-          //    - 언어 코드를 제거한 값이 빈 문자열일 때 (예: /ko/ -> '')
-          //    - 또는 currentPath 자체가 루트 경로일 때 (예: /)
-          const isHomePage = pathWithoutLang === '' || currentPath === '/';
+          // 3. ✨ 메뉴 표시 조건: 'post'가 포함되어 있지 않을 때만 메뉴를 표시합니다.
+          const shouldShowMenu = !pathWithoutLang.includes('post');
         %>
-        <% if (showLogo || isHomePage) { %>
+        <% if (showLogo || shouldShowMenu) { %>
           <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
         <% } %>
       </div>
 
-    <% if (isHomePage) { %>
+    <% if (shouldShowMenu) { %>
     <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
       <ul class="main-menu-container">
         <a href="https://www.youtube.com/@ebook.bugloop"
