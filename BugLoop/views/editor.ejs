@@ -613,7 +613,7 @@
         }
       }
 
-     function insertImage() {
+    function insertImage() {
   const fileInput = document.getElementById('imageUploader');
   fileInput.click();
 
@@ -630,13 +630,41 @@
     });
 
     const data = await res.json();
-    if (data.success) {
-      format('insertImage', data.url);
-    } else {
+    if (!data.success || !data.url) {
       showCustomMessage("이미지 업로드 실패");
+      return;
     }
+
+    // ✅ 핵심: 현재 언어 에디터 안에 있는 bl-content에 이미지 추가
+    const blContent = currentActiveEditor.querySelector('.bl-content');
+    if (!blContent) {
+      showCustomMessage("에디터 구조 오류: .bl-content를 찾을 수 없습니다.");
+      return;
+    }
+
+    // caret 위치 보존 후 삽입
+    restoreSelection();
+
+    const img = document.createElement('img');
+    img.src = data.url;
+    img.style.maxWidth = "100%";
+    img.style.display = "block";
+    img.style.margin = "1.2rem 0";
+
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(img);
+      range.collapse(false);
+    } else {
+      blContent.appendChild(img);
+    }
+
+    saveSelection();
   };
 }
+
 
 
       function saveContent() {
