@@ -15,7 +15,6 @@
       <div class="tabs <%= isSearch && searchKeyword ? 'searching' : '' %>">
         <div class="tab-spacer"></div>
 
-        <!-- ✅ 전체글 탭: 패널 링크 속성 + 활성 조건 보강 -->
         <a href="/<%= lang %>/?category=all"
            data-panel-link="category" data-category="all"
            class="tab <%= (!isSearch && (!selectedCategory || selectedCategory === 'all' || selectedCategory === locale.tabs.allPosts)) ? 'active' : '' %>">
@@ -28,7 +27,6 @@
           </div>
         <% } %>
 
-        <!-- ✅ 카테고리 탭: 원본키/번역명 모두 대응 + 패널 링크 속성 -->
         <% categories.forEach(category => { %>
           <a href="/<%= lang %>/?category=<%= category.original %>"
              data-panel-link="category" data-category="<%= category.original %>"
@@ -54,14 +52,22 @@
               const createdAt = new Date(post.created_at);
               const updatedAt = new Date(post.updated_at);
               const oneDay = 1000 * 60 * 60 * 24;
-              const isNew = (now - createdAt) < oneDay;
-              const isEdited = !isNew && (updatedAt > createdAt);
+              
+              // ✅ 로직 정의
+              const isNewPost = (now - createdAt) < oneDay;
+              const wasEdited = updatedAt > createdAt;
+              const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+              const showEditedLabel = !isNewPost && isRecentlyEdited;
+
+              // ✅ 다국어 라벨 텍스트 정의 (폴백 포함)
+              const newLabelText = locale.ui.newPost || 'NEW';
+              const editedLabelText = locale.ui.editedPost || 'UPDATED';
             %>
           
-            <% if (isNew) { %>
-              <span class="label-icon new-icon"></span>
-            <% } else if (isEdited) { %>
-              <span class="label-icon edited-icon"></span>
+            <% if (isNewPost) { %>
+              <span class="label-icon new-icon"><%= newLabelText %></span>
+            <% } else if (showEditedLabel) { %>
+              <span class="label-icon edited-icon"><%= editedLabelText %></span>
             <% } %>
   
             <% if (post.is_pinned) { %><span>📌</span><% } %>
