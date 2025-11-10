@@ -50,54 +50,59 @@
     "articleBody": "<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600) %>"
   }
   </script>
+  
   <style>
-    /* 페이지 하단 여백 추가 (body 태그에 적용) */
+    /* 1. 페이지 하단 여백 추가 (바닥에 붙는 문제 해결) */
     body {
-      padding-bottom: 50px; /* 원하는 여백 크기로 조절 */
+      padding-bottom: 80px; /* 플로팅 버튼이 가리지 않도록 충분한 여백 확보 */
     }
 
-    /* 기본 링크 스타일 초기화 및 버튼처럼 보이게 */
-    .back-home-link {
-      display: inline-flex; /* 아이콘과 텍스트를 중앙 정렬하기 위해 flexbox 사용 */
-      align-items: center; /* 수직 중앙 정렬 */
-      justify-content: center; /* 수평 중앙 정렬 (내용이 이모티콘 하나라 큰 의미는 없지만, 확장성 고려) */
-      padding: 10px 15px; /* 패딩 조정 */
-      margin-top: 10px;
-      border-radius: 8px;
-      font-weight: bold;
+    /* 2. 플로팅 홈 버튼 스타일 (FAB) */
+    .floating-home-btn {
+      position: fixed; /* 화면에 고정 */
+      bottom: 25px; /* 하단에서 띄우기 */
+      right: 25px; /* 오른쪽에서 띄우기 */
+      width: 55px;
+      height: 55px;
+      border-radius: 50%; /* 원형 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-      border: 2px solid;
-      font-size: 1.2rem; /* 아이콘 크기 키움 */
-      min-width: 50px; /* 버튼 최소 너비 설정 */
-      height: 50px; /* 버튼 높이 설정 (정사각형에 가깝게) */
+      font-size: 1.5rem; /* 아이콘 크기 */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* 부드러운 그림자 */
+      transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+      z-index: 1000; /* 다른 요소 위에 표시 */
+    }
+
+    .floating-home-btn:hover {
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 3px 5px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px); /* 살짝 떠오르는 효과 */
     }
 
     /* 🌙 다크 모드 스타일 (html.dark) */
-    html.dark .back-home-link {
-      color: #e0e0e0; /* 밝은 아이콘 */
-      background-color: #333333; /* 어두운 배경 */
-      border-color: #555555;
+    html.dark .floating-home-btn {
+      background-color: #555555; /* 다크 모드 버튼 배경 */
+      color: #ffffff; /* 밝은 아이콘 */
     }
 
-    html.dark .back-home-link:hover {
-      background-color: #444444; /* 호버 시 더 어두운 배경 */
-      border-color: #777777;
+    html.dark .floating-home-btn:hover {
+      background-color: #666666; /* 호버 시 색상 변경 */
     }
 
     /* ☀️ 라이트 모드 스타일 (기본) */
-    .back-home-link {
+    .floating-home-btn {
+      background-color: #f0f0f0; /* 라이트 모드 버튼 배경 */
       color: #333333; /* 어두운 아이콘 */
-      background-color: #f0f0f0; /* 밝은 배경 */
-      border-color: #cccccc;
+      border: 1px solid #cccccc; /* 깔끔한 테두리 */
     }
 
-    .back-home-link:hover {
-      background-color: #e0e0e0; /* 호버 시 더 밝은 배경 */
-      border-color: #999999;
+    .floating-home-btn:hover {
+      background-color: #e0e0e0; /* 호버 시 색상 변경 */
     }
   </style>
-  </head>
+  
+</head>
 
 <body class="no-fixed-footer">
   <amp-auto-ads type="adsense"
@@ -128,10 +133,7 @@
       </div>
     <% } %>
 
-    <div class="extra" style="margin-top: 2rem; text-align: center;">
-      <a href="/<%= lang %>/" class="back-home-link" title="홈으로 돌아가기">🏠</a>
     </div>
-  </div>
 
   <div class="floating-toc" id="floatingToc"></div>
 <div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
@@ -140,6 +142,7 @@
 
 </div>
 
+<a href="/<%= lang %>/" class="floating-home-btn" title="홈으로 돌아가기">🏠</a>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const postContent = document.querySelector('.post-content');
