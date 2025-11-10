@@ -120,9 +120,9 @@
     <h1 class="post-title"><%= post.title %></h1>
 
     <div class="post-meta">
-      <span>카테고리: <%= post.categories.join(', ') %></span><br>
-      <span>작성자: <%= post.author %></span><br>
-      <span>작성일: <%= new Date(post.created_at).toLocaleString() %></span>
+      <span><%= locale.ui.category %>: <%= post.categories.join(', ') %></span><br>
+      <span><%= locale.ui.author %>: <%= post.author %></span><br>
+      <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
 
     <div class="post-content">
@@ -131,9 +131,9 @@
 
     <% if (user && post.user_id == user.id) { %>
       <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
-        <a href="/<%= lang %>/edit/<%= post.id %>" class="edit-btn">✏️ 수정하기</a>
+        <a href="/<%= lang %>/edit/<%= post.id %>" class="edit-btn">✏️ <%= locale.ui.editButton %></a>
         <form action="/<%= lang %>/delete/<%= post.id %>" method="POST" style="display: inline;">
-          <button type="submit" onclick="return confirm('정말 삭제하시겠어요?');">🗑 삭제하기</button>
+          <button type="submit" onclick="return confirm('<%= locale.ui.deleteConfirm %>');">🗑 <%= locale.ui.deleteButton %></button>
         </form>
       </div>
     <% } %>
@@ -173,7 +173,7 @@
         return;
       }
 
-      // 📌 변경 사항: locale에서 목차 버튼 텍스트 가져옴 (이전에는 하드코딩된 '목차')
+      // 📌 locale에서 목차 버튼 텍스트 가져옴
       let tocHtml = '<strong><%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">';
       let h1Count = 0;
       let h2Count = 0;
