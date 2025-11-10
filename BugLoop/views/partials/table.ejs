@@ -66,9 +66,7 @@
           
             <% if (isNewPost) { %>
               <span class="label-icon new-icon"><%= newLabelText %></span>
-            <% } else if (showEditedLabel) { %>
-              <span class="label-icon edited-icon"><%= editedLabelText %></span>
-            <% } %>
+        
   
             <% if (post.is_pinned) { %><span>📌</span><% } %>
             <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
