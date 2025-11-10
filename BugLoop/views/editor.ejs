@@ -613,11 +613,31 @@
         }
       }
 
-      function insertImage() {
-          showCustomInput("이미지 URL을 입력하세요:", (url) => {
-            if (url) format('insertImage', url);
-          });
-      }
+     function insertImage() {
+  const fileInput = document.getElementById('imageUploader');
+  fileInput.click();
+
+  fileInput.onchange = async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch('/upload/image', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      format('insertImage', data.url);
+    } else {
+      showCustomMessage("이미지 업로드 실패");
+    }
+  };
+}
+
 
       function saveContent() {
           showCustomMessage("임시 저장 완료!");
@@ -1097,5 +1117,7 @@ ${currentContent}
   </script>
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
+<input type="file" id="imageUploader" accept="image/*" style="display:none;">
+
 </body>
 </html>

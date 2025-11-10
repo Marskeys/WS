@@ -11,6 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 app.locals.format = format; // ✅ 2025년 11월 8일 추가
 const allLocales = require('./locales/all.json');
+const multer = require('multer');
 
 // === Helper: merge locale with safe defaults ===
 function mergeLocaleWithDefaults(lang) {
@@ -1357,6 +1358,31 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
 
   // ✅ HTML 파일을 그대로 응답 (렌더링 X)
   res.sendFile(filePath);
+});
+
+// 업로드 위치 + 파일명 설정
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'public', 'uploads'));
+  },
+  filename: function (req, file, cb) {
+    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, unique + ext);
+  }
+});
+const upload = multer({ storage });
+
+// public/uploads 정적 경로로 서빙
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+
+// 업로드 라우트 추가
+app.post('/upload/image', upload.single('image'), (req, res) => {
+  if (!req.file) return res.json({ success: false });
+  return res.json({
+    success: true,
+    url: `/uploads/${req.file.filename}`
+  });
 });
 
 // ✅ 패널 라우팅 (가장 일반적인 라우트이므로 가장 마지막에 배치)
