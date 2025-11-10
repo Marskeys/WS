@@ -13,8 +13,10 @@
                            pathWithoutLang.startsWith('/post') ||
                            pathWithoutLang.startsWith('/edit');
           
-          // 3. 홈페이지(메인 페이지) 여부를 확인합니다. (경로가 빈 문자열일 때)
-          const isHomePage = pathWithoutLang === '';
+          // 3. 홈페이지(메인 페이지) 여부를 확인합니다. (수정된 부분)
+          //    - 언어 코드를 제거한 값이 빈 문자열일 때 (예: /ko/ -> '')
+          //    - 또는 currentPath 자체가 루트 경로일 때 (예: /)
+          const isHomePage = pathWithoutLang === '' || currentPath === '/';
         %>
         <% if (showLogo || isHomePage) { %>
           <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
