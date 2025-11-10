@@ -5,75 +5,81 @@
     <div class="top-controls">
       <div class="left-controls">
         <%
+          // 1. 현재 경로에서 언어 코드를 제거합니다.
           const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)/, '');
+
+          // 2. 로고를 숨기지 않고 표시할 경로를 정의합니다.
           const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                            pathWithoutLang.startsWith('/post') ||
                            pathWithoutLang.startsWith('/edit');
+          
+          // 3. 홈페이지(메인 페이지) 여부를 확인합니다. (경로가 빈 문자열일 때)
+          const isHomePage = pathWithoutLang === '';
         %>
-        <% if (showLogo) { %>
+        <% if (showLogo || isHomePage) { %>
           <a href="/<%= lang %>/" class="logo-link" data-panel-link aria-label="BugLoop 홈"></a>
         <% } %>
       </div>
 
+    <% if (isHomePage) { %>
     <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
-  <ul class="main-menu-container">
-    <a href="https://www.youtube.com/@ebook.bugloop"
-       target="_blank"
-       aria-label="<%= h.youtubeLink || 'YouTube' %>">
-      <img src="/assets/images/youtube.png"
-           alt="YouTube"
-           style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
-    </a>
+      <ul class="main-menu-container">
+        <a href="https://www.youtube.com/@ebook.bugloop"
+           target="_blank"
+           aria-label="<%= h.youtubeLink || 'YouTube' %>">
+          <img src="/assets/images/youtube.png"
+               alt="YouTube"
+               style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
+        </a>
 
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.review %></span>
-      <ul class="submenu">
-        <li><a href="/<%= lang %>/review/book" data-panel-link><%= h.palma2pro %></a></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+        <li class="menu-item-wrapper">
+          <span class="menu-label"><%= h.review %></span>
+          <ul class="submenu">
+            <li><a href="/<%= lang %>/review/book" data-panel-link><%= h.palma2pro %></a></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+          </ul>
+        </li>
+
+        <li class="menu-item-wrapper">
+          <span class="menu-label"><%= h.audiobook %></span>
+          <ul class="submenu">
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.cuteacoustics %></span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.producer %></span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.unfinished %></span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.warmth %></span></li>
+          </ul>
+        </li>
+
+        <li class="menu-item-wrapper">
+          <span class="menu-label"><%= h.music %></span>
+          <ul class="submenu">
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (4)</span></li>
+          </ul>
+        </li>
+
+        <li class="menu-item-wrapper">
+          <span class="menu-label"><%= h.game %></span>
+          <ul class="submenu">
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
+            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+          </ul>
+        </li>
+
+        <li class="menu-item-wrapper special-label">
+          <span class="menu-label">
+            <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
+            <%= h.futureService %>
+          </span>
+        </li>
       </ul>
-    </li>
-
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.audiobook %></span>
-      <ul class="submenu">
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.cuteacoustics %></span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.producer %></span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.unfinished %></span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.warmth %></span></li>
-      </ul>
-    </li>
-
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.music %></span>
-      <ul class="submenu">
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (4)</span></li>
-      </ul>
-    </li>
-
-    <li class="menu-item-wrapper">
-      <span class="menu-label"><%= h.game %></span>
-      <ul class="submenu">
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-        <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-      </ul>
-    </li>
-
-    <li class="menu-item-wrapper special-label">
-      <span class="menu-label">
-        <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
-        <%= h.futureService %>
-      </span>
-    </li>
-  </ul>
-</nav>
-
-      <div class="right-controls" id="right-controls" hidden></div>
+    </nav>
+    <% } %> <div class="right-controls" id="right-controls" hidden></div>
     </div>
   </div>
 
