@@ -226,39 +226,6 @@
   color: #ede7e7;
 }
 
-/* ============================
-   🏷️ 새 글/수정됨 라벨 스타일 추가
-============================ */
-.label-icon {
-    display: inline-block;
-    padding: 2px 6px;
-    margin-right: 6px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: white;
-    line-height: 1;
-    vertical-align: middle;
-}
-
-/* ☀️ Light Mode Styles (기본) */
-.new-icon {
-    background-color: #ff4757; /* 밝은 빨강 */
-}
-
-.edited-icon {
-    background-color: #2e86de; /* 파랑 */
-}
-
-/* 🌙 Dark Mode Styles (HTML body에 dark 클래스가 붙는 경우에 대응) */
-html.dark .new-icon {
-    background-color: #e84118; /* 더 어두운 빨강 */
-}
-
-html.dark .edited-icon {
-    background-color: #1e3799; /* 더 어두운 파랑 */
-}
-
 @media (max-width: 640px) {
   .board-table {
       display: none;
