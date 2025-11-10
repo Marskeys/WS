@@ -613,58 +613,101 @@
         }
       }
 
-    function insertImage() {
+// 💡 수정된 insertImage 함수 (가장 중요한 부분)
+function insertImage() {
   const fileInput = document.getElementById('imageUploader');
+  // onchange 리스너가 아직 등록되지 않았으면 등록합니다.
+  if (!fileInput.dataset.listenerAttached) {
+    fileInput.onchange = async () => {
+      const file = fileInput.files[0];
+      
+      // 파일 선택 취소 또는 파일이 없는 경우, input 초기화 후 종료
+      if (!file) {
+        fileInput.value = ''; 
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      showCustomMessage("이미지 업로드 중..."); // 업로드 알림 표시
+
+      try {
+        const res = await fetch('/upload/image', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        
+        if (!data.success || !data.url) {
+          showCustomMessage("이미지 업로드 실패: " + (data.error || "서버 오류"));
+          return;
+        }
+
+        // 이미지 삽입 로직
+        const blContent = currentActiveEditor.querySelector('.bl-content');
+        if (!blContent) {
+          showCustomMessage("에디터 구조 오류: .bl-content를 찾을 수 없습니다.");
+          return;
+        }
+
+        restoreSelection(); // 저장된 커서 위치 복원
+
+        const img = document.createElement('img');
+        img.src = data.url;
+        img.alt = file.name; // 접근성 개선
+        img.style.maxWidth = "100%";
+        img.style.display = "block";
+        img.style.margin = "1.2rem 0";
+
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0);
+          range.deleteContents();
+          range.insertNode(img);
+          
+          // 이미지 뒤에 새로운 <p> 태그를 생성하고 커서를 그 안으로 이동
+          const p = document.createElement('p');
+          p.innerHTML = '<br>';
+          
+          // 이미지가 마지막 요소가 아니면 다음 요소 앞에 삽입
+          if (img.nextSibling) {
+              img.parentNode.insertBefore(p, img.nextSibling);
+          } else {
+              img.parentNode.appendChild(p);
+          }
+          
+          // 새로 삽입된 <p> 태그 안으로 커서 이동
+          range.setStart(p.firstChild || p, 0); 
+          range.setEnd(p.firstChild || p, 0);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          
+        } else {
+          // 커서 위치를 찾지 못하면 bl-content 맨 아래에 추가
+          blContent.appendChild(img);
+          blContent.appendChild(document.createElement('p')).innerHTML = '<br>';
+        }
+
+        saveSelection();
+        showCustomMessage("이미지 업로드 및 삽입 완료");
+
+      } catch (err) {
+        console.error("이미지 업로드 오류:", err);
+        showCustomMessage("이미지 업로드 중 네트워크 오류가 발생했습니다.");
+      } finally {
+        // [가장 중요] 파일 입력 값 초기화: 연속 업로드 가능하도록 함
+        fileInput.value = ''; 
+      }
+    };
+    // 리스너가 등록되었음을 표시
+    fileInput.dataset.listenerAttached = 'true';
+  }
+  
+  // onchange 리스너는 이미 등록되었으므로, click만 호출하여 파일 선택 창을 엽니다.
   fileInput.click();
-
-  fileInput.onchange = async () => {
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    const res = await fetch('/upload/image', {
-      method: 'POST',
-      body: formData
-    });
-
-    const data = await res.json();
-    if (!data.success || !data.url) {
-      showCustomMessage("이미지 업로드 실패");
-      return;
-    }
-
-    // ✅ 핵심: 현재 언어 에디터 안에 있는 bl-content에 이미지 추가
-    const blContent = currentActiveEditor.querySelector('.bl-content');
-    if (!blContent) {
-      showCustomMessage("에디터 구조 오류: .bl-content를 찾을 수 없습니다.");
-      return;
-    }
-
-    // caret 위치 보존 후 삽입
-    restoreSelection();
-
-    const img = document.createElement('img');
-    img.src = data.url;
-    img.style.maxWidth = "100%";
-    img.style.display = "block";
-    img.style.margin = "1.2rem 0";
-
-    const sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-      const range = sel.getRangeAt(0);
-      range.deleteContents();
-      range.insertNode(img);
-      range.collapse(false);
-    } else {
-      blContent.appendChild(img);
-    }
-
-    saveSelection();
-  };
 }
-
 
 
       function saveContent() {
@@ -874,35 +917,35 @@
       };
 
       function activateEditor(langCode) {
-  // 1) 모든 언어 블록 숨김 (인라인 스타일로 강제)
-  document.querySelectorAll('.lang-meta-block').forEach(block => {
-    block.style.display = 'none';
-  });
+        // 1) 모든 언어 블록 숨김 (인라인 스타일로 강제)
+        document.querySelectorAll('.lang-meta-block').forEach(block => {
+          block.style.display = 'none';
+        });
 
-  // 2) 선택한 언어 블록만 표시
-  const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
-  if (!activeLangBlock) {
-    console.warn('활성화할 언어 블록을 찾지 못했습니다:', langCode);
-    return;
-  }
-  activeLangBlock.style.display = '';
+        // 2) 선택한 언어 블록만 표시
+        const activeLangBlock = document.querySelector(`.lang-meta-block[data-lang="${langCode}"]`);
+        if (!activeLangBlock) {
+          console.warn('활성화할 언어 블록을 찾지 못했습니다:', langCode);
+          return;
+        }
+        activeLangBlock.style.display = '';
 
-  // 3) 해당 언어의 에디터/툴바만 활성화
-  const editorDiv = activeLangBlock.querySelector(`#editor_${langCode}`);
-  const htmlEditorDiv = activeLangBlock.querySelector(`#htmlEditor_${langCode}`);
-  const toolbarDiv = activeLangBlock.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
+        // 3) 해당 언어의 에디터/툴바만 활성화
+        const editorDiv = activeLangBlock.querySelector(`#editor_${langCode}`);
+        const htmlEditorDiv = activeLangBlock.querySelector(`#htmlEditor_${langCode}`);
+        const toolbarDiv = activeLangBlock.querySelector(`.toolbar[data-lang-toolbar="${langCode}"]`);
 
-  currentActiveEditor = editorDiv || null;
-  currentActiveHtmlEditor = htmlEditorDiv || null;
-  currentActiveToolbar = toolbarDiv || null;
+        currentActiveEditor = editorDiv || null;
+        currentActiveHtmlEditor = htmlEditorDiv || null;
+        currentActiveToolbar = toolbarDiv || null;
 
-  if (editorDiv) {
-    editorDiv.style.display = 'block';
-    if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
-    editorDiv.focus();
-    detectStyle();
-  }
-}
+        if (editorDiv) {
+          editorDiv.style.display = 'block';
+          if (htmlEditorDiv) htmlEditorDiv.style.display = 'none';
+          editorDiv.focus();
+          detectStyle();
+        }
+      }
 
 
       window.addEventListener('DOMContentLoaded', () => {
@@ -938,12 +981,12 @@
               });
 
               // [추가] 언어 변경 시 해당 블록만 보이도록 호출
-const langSelectorEl = document.getElementById('langSelector');
-if (langSelectorEl) {
-  langSelectorEl.addEventListener('change', (e) => {
-    activateEditor(e.target.value);
-  });
-}
+              const langSelectorEl = document.getElementById('langSelector');
+              if (langSelectorEl) {
+                langSelectorEl.addEventListener('change', (e) => {
+                  activateEditor(e.target.value);
+                });
+              }
           });
 
           document.querySelectorAll('.toolbar').forEach(toolbar => {
