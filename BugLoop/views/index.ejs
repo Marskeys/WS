@@ -144,36 +144,33 @@
 
     .carousel::-webkit-scrollbar { display: none; }
 
-    /* ✅ [수정] 북카드: 테두리 제거, 그림자 강조 */
+    /* ✅ [수정] 북카드: 그림자 및 호버 효과 제거 */
     .book-card {
       flex-shrink: 0;
       width: 230px;
       background: var(--panel);
-      /* border: 1px solid var(--border); <- 테두리 제거 */
       border-radius: var(--radius);
       overflow: hidden;
       color: var(--ink);
       transition: all 0.3s ease;
       scroll-snap-align: start;
       cursor: pointer;
-      /* 그림자 조정 */
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+      /* box-shadow 제거 */
       position: relative;
     }
 
     .book-card:hover {
-      transform: translateY(-4px);
-      /* 호버 시 그림자 강조 */
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      /* transform: translateY(-4px); 제거 */
+      background: var(--panel-2); /* 호버 시 배경색 변화는 유지 */
+      /* box-shadow 제거 */
     }
 
     html.dark .book-card { 
-      /* 다크모드 그림자 조정 */
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 0 5px rgba(255, 255, 255, 0.05); 
+      /* box-shadow 제거 */
     }
     html.dark .book-card:hover { 
-      /* 다크모드 호버 시 그림자 강조 */
-      box-shadow: 0 8px 16px rgba(0,0,0,0.6), 0 0 10px rgba(255, 255, 255, 0.1); 
+      /* box-shadow 제거 */
+      background: var(--panel-2); /* 호버 시 배경색 변화는 유지 */
     }
 
     .book-cover {
@@ -186,7 +183,6 @@
     .book-info {
       padding: 14px 10px;
       text-align: center;
-      /* border-top: 1px solid var(--border); <- 테두리 유지 */
       border-top: 1px solid var(--border);
       background: var(--panel-2);
     }
@@ -327,36 +323,33 @@
         flex-direction: column;
         gap: 12px; 
         margin-top: 16px;
-        /* padding: 8px 0; <- 패딩 제거 */
         padding: 0; 
     }
 
-    /* ✅ [수정] 최근 게시물 아이템: 테두리 제거, 그림자 및 호버 효과 개선 */
+    /* ✅ [수정] 최근 게시물 아이템: 그림자 및 호버 효과 제거 */
     .recent-post-item {
         background: var(--panel);
-        /* border: 1px solid var(--border); <- 테두리 제거 */
         border-radius: 8px;
         padding: 15px 20px;
-        transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+        transition: background 0.2s, border-color 0.2s; /* box-shadow, transform 제거 */
         cursor: pointer;
-        /* 세련된 그림자 추가 */
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+        /* box-shadow 제거 */
+        border: 1px solid transparent; /* 호버 시 부드러운 전환을 위해 투명 테두리 추가 */
     }
 
     .recent-post-item:hover {
         background: var(--panel-2);
-        /* border-color: var(--primary); <- 테두리 색상 변경 제거 */
-        /* 살짝 올라오는 듯한 깊이감 */
-        box-shadow: 0 3px 8px rgba(var(--primary-rgb), 0.15), 0 0 1px rgba(var(--primary-rgb), 0.1);
-        transform: translateY(-2px); 
+        border-color: var(--primary); /* 호버 시 테두리 색상 변화는 유지 */
+        /* box-shadow, transform 제거 */
     }
     html.dark .recent-post-item {
-      box-shadow: 0 1px 3px rgba(255, 255, 255, 0.05);
+        /* box-shadow 제거 */
+        border: 1px solid transparent;
     }
     html.dark .recent-post-item:hover {
-        /* 다크모드 호버 시 그림자 */
-        box-shadow: 0 3px 8px rgba(255, 255, 255, 0.1), 0 0 1px rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
+        /* box-shadow, transform 제거 */
+        background: var(--panel-2);
+        border-color: var(--primary);
     }
 
     .recent-post-title {
@@ -387,7 +380,6 @@
     #load-more-btn {
         display: block; 
         width: 200px; 
-        /* ⭐⭐ [수정] 버튼 상하 여백 대폭 축소 (16px auto 30px -> 16px auto 16px) ⭐⭐ */
         margin: 16px auto 16px; 
         padding: 12px 20px;
         border-radius: 25px; 
