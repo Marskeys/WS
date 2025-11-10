@@ -51,22 +51,31 @@
   }
   </script>
   <style>
+    /* 페이지 하단 여백 추가 (body 태그에 적용) */
+    body {
+      padding-bottom: 50px; /* 원하는 여백 크기로 조절 */
+    }
+
     /* 기본 링크 스타일 초기화 및 버튼처럼 보이게 */
     .back-home-link {
-      display: inline-block;
-      padding: 10px 20px;
+      display: inline-flex; /* 아이콘과 텍스트를 중앙 정렬하기 위해 flexbox 사용 */
+      align-items: center; /* 수직 중앙 정렬 */
+      justify-content: center; /* 수평 중앙 정렬 (내용이 이모티콘 하나라 큰 의미는 없지만, 확장성 고려) */
+      padding: 10px 15px; /* 패딩 조정 */
       margin-top: 10px;
       border-radius: 8px;
       font-weight: bold;
       text-decoration: none;
       transition: background-color 0.3s, color 0.3s, border-color 0.3s;
       border: 2px solid;
-      font-size: 1rem;
+      font-size: 1.2rem; /* 아이콘 크기 키움 */
+      min-width: 50px; /* 버튼 최소 너비 설정 */
+      height: 50px; /* 버튼 높이 설정 (정사각형에 가깝게) */
     }
 
     /* 🌙 다크 모드 스타일 (html.dark) */
     html.dark .back-home-link {
-      color: #e0e0e0; /* 밝은 텍스트 */
+      color: #e0e0e0; /* 밝은 아이콘 */
       background-color: #333333; /* 어두운 배경 */
       border-color: #555555;
     }
@@ -78,7 +87,7 @@
 
     /* ☀️ 라이트 모드 스타일 (기본) */
     .back-home-link {
-      color: #333333; /* 어두운 텍스트 */
+      color: #333333; /* 어두운 아이콘 */
       background-color: #f0f0f0; /* 밝은 배경 */
       border-color: #cccccc;
     }
@@ -120,7 +129,7 @@
     <% } %>
 
     <div class="extra" style="margin-top: 2rem; text-align: center;">
-      <a href="/<%= lang %>/" class="back-home-link">← 홈으로 돌아가기</a>
+      <a href="/<%= lang %>/" class="back-home-link" title="홈으로 돌아가기">🏠</a>
     </div>
   </div>
 
