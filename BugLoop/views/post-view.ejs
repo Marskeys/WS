@@ -21,6 +21,41 @@
 <% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
   <meta name="robots" content="noindex">
 <% } %>
+
+  <!-- ===================== ✅ SEO 추가 영역 시작 ===================== -->
+  <meta name="description" content="<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,150) %>">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="<%= post.title %> | Bug Loop">
+  <meta property="og:description" content="<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,150) %>">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="<%= canonicalUrl %>">
+  <meta property="og:image" content="https://bugloop.dev/assets/images/BugLoop.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= post.title %> | Bug Loop">
+  <meta name="twitter:description" content="<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,150) %>">
+  <meta name="twitter:image" content="https://bugloop.dev/assets/images/BugLoop.png">
+
+  <!-- JSON-LD 구조화 데이터 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "<%= post.title %>",
+    "author": {
+      "@type": "Person",
+      "name": "<%= post.author %>"
+    },
+    "datePublished": "<%= new Date(post.created_at).toISOString() %>",
+    "mainEntityOfPage": "<%= canonicalUrl %>",
+    "image": "https://bugloop.dev/assets/images/BugLoop.png",
+    "articleBody": "<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600) %>"
+  }
+  </script>
+  <!-- ===================== ✅ SEO 추가 영역 끝 ===================== -->
+
 </head>
 
 <body class="no-fixed-footer">
@@ -30,7 +65,9 @@
   <%- include('partials/header') %>
 
   <div class="postview-container">
-    <div class="post-title"><%= post.title %></div>
+
+    <!-- ✅ div → h1 로 변경 (검색엔진이 제목 인식 가능) -->
+    <h1 class="post-title"><%= post.title %></h1>
 
     <div class="post-meta">
       <span>카테고리: <%= post.categories.join(', ') %></span><br>
@@ -308,7 +345,6 @@
     adPositions.forEach((pos) => {
       const p = paragraphs[pos];
   
-      // 래퍼 + ins 생성
       const wrap = document.createElement('div');
       wrap.className = 'in-article-ad';
   
@@ -323,7 +359,6 @@
       wrap.appendChild(ins);
       p.insertAdjacentElement('afterend', wrap);
   
-      // ⬅️ innerHTML에 넣지 말고 직접 push 호출
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
     });
   });
