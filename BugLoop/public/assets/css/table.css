@@ -426,4 +426,50 @@
   margin-left: 6px;
   font-size: .9em;
   opacity: .95;
-}"
+}
+/* ============================
+   🏷️ 새 글/수정됨 라벨 스타일 (크기 축소 적용)
+============================ */
+@keyframes wiggle-float {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-1px) rotate(-2deg); }
+  60% { transform: translateY(0) rotate(1deg); }
+  80% { transform: translateY(1px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.label-icon {
+  display: inline-block;
+  padding: 3px 6px; 
+  margin-right: 6px; 
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white !important; 
+  line-height: 1.2;
+  vertical-align: middle;
+  text-transform: uppercase;
+  background-image: none;
+  width: auto;
+  height: auto;
+  flex-shrink: 0;
+  animation: wiggle-float 0.9s ease-in-out infinite; 
+}
+
+/* ☀️ Light Mode Styles */
+.new-icon {
+    background-color: #ff4757; /* 빨강 */
+}
+
+.edited-icon {
+    background-color: #2e86de; /* 파랑 */
+}
+
+/* 🌙 Dark Mode Styles */
+html.dark .new-icon {
+    background-color: #e84118; 
+}
+
+html.dark .edited-icon {
+    background-color: #1e3799;
+}
