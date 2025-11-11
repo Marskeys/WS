@@ -255,7 +255,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ 목차 스타일: JS로 height 제어 및 초기 padding 제거 */
+    /* ✅ 목차 스타일: JS로 height 제어 및 CSS padding 고정 */
     /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
@@ -265,18 +265,33 @@
       
       height: 0; 
       overflow: hidden; 
-      /* JS에서 패딩을 설정하기 위해 기본 패딩은 0 */
-      padding: 0; 
+      /* 🎯 패딩을 CSS에 고정하여 콘텐츠 높이 계산 오류를 줄임 */
+      padding: 16px; 
+      
+      /* 닫힐 때 패딩을 0으로 트랜지션하기 위해 padding-top/bottom을 따로 설정 */
+      padding-top: 16px;
+      padding-bottom: 16px;
+      padding-left: 16px;
+      padding-right: 16px;
+      
       /* GPU 가속 유도 */
       will-change: height, opacity, transform; 
       /* height, padding 트랜지션을 사용하여 부드럽게 열리게 함 */
-      transition: height 0.5s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out; 
+      transition: height 0.5s ease-out, opacity 0.5s ease-out, padding-top 0.5s ease-out, padding-bottom 0.5s ease-out; 
       opacity: 0;
     }
-
-    /* .book-card.expanded .book-toc는 JS에서 높이와 패딩을 설정 */
+    
+    /* 기본 닫힌 상태 (JS가 height를 0으로 설정) */
+    .book-toc[style*="height: 0px"] {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        opacity: 0;
+    }
+    
+    /* 열린 상태 (JS가 height를 콘텐츠 높이로 설정) */
     .book-card.expanded .book-toc {
       opacity: 1;
+      /* height는 JS에서 설정됨 */
     }
     /* ---------------------------------------------------- */
 
@@ -931,7 +946,6 @@ window.loadMorePosts = loadMorePosts;
       const tocContainer = card.querySelector('[data-book-id="cute-acoustics-toc"]');
       const paginationContainer = card.querySelector('[data-book-id="cute-acoustics-pagination"]');
       const tocElement = card.querySelector('.book-toc');
-      const contentPadding = '16px';
       
       if (tocContainer && paginationContainer) {
         tocContainer.innerHTML = renderTocPage(pageNumber);
@@ -940,16 +954,15 @@ window.loadMorePosts = loadMorePosts;
           if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
         });
 
-        // 💡 페이지 변경 후 목차 높이 재계산 및 적용
+        // 💡 페이지 변경 후 목차 높이 재계산 및 적용 (핵심)
         if (card.classList.contains('expanded') && tocElement) {
-            // 1. 패딩을 적용하고 높이를 auto로 설정하여 콘텐츠 높이를 측정합니다.
+            // 1. 높이를 auto로 설정하여 실제 콘텐츠 높이를 측정 (padding 16px이 이미 적용된 상태)
             tocElement.style.height = 'auto';
-            tocElement.style.padding = contentPadding; 
             
             // 2. 정확한 scrollHeight를 가져옵니다.
             const contentHeight = tocElement.scrollHeight; 
             
-            // 3. 측정된 높이를 다시 적용합니다.
+            // 3. 측정된 높이로 다시 설정합니다.
             tocElement.style.height = `${contentHeight}px`;
         }
       }
@@ -963,8 +976,6 @@ window.loadMorePosts = loadMorePosts;
         const isCurrentlyExpanded = card.classList.contains('expanded');
         const tocElement = card.querySelector('.book-toc');
         const transitionDuration = 500; // CSS transition time in ms
-        const contentPadding = '16px'; // 상하좌우 16px
-        const horizontalPadding = '0 16px'; // 수평 패딩만
 
         // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
         document.querySelectorAll('.book-card').forEach(c => {
@@ -972,9 +983,10 @@ window.loadMorePosts = loadMorePosts;
            if (c !== card) {
              c.classList.remove('expanded'); 
              if (otherToc) {
-                // 다른 카드는 높이와 패딩을 모두 0으로 초기화
+                // 닫힐 때 높이를 0으로, 패딩을 0으로 설정
                 otherToc.style.height = '0px'; 
-                otherToc.style.padding = '0';
+                otherToc.style.paddingTop = '0';
+                otherToc.style.paddingBottom = '0';
              }
            }
         });
@@ -982,12 +994,13 @@ window.loadMorePosts = loadMorePosts;
         // 2. 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded', !isCurrentlyExpanded);
 
-        // 3. 목차 높이 조절 (버벅임 해결 및 여백 제거 핵심)
+        // 3. 목차 높이 조절 (잘림/여백 제거 핵심)
         if (!isCurrentlyExpanded && tocElement) {
             // 펼쳐질 때
-            // a. 높이를 auto, 패딩을 적용하여 실제 콘텐츠 높이를 측정 (scrollHeight 측정 환경 준비)
+            // a. 높이를 auto로 설정하고 패딩을 적용하여 실제 콘텐츠 높이를 측정
             tocElement.style.height = 'auto';
-            tocElement.style.padding = contentPadding; 
+            tocElement.style.paddingTop = '16px';
+            tocElement.style.paddingBottom = '16px';
             
             // b. 콘텐츠 높이 측정
             const contentHeight = tocElement.scrollHeight; 
@@ -998,21 +1011,21 @@ window.loadMorePosts = loadMorePosts;
                 // d. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
                 tocElement.style.height = `${contentHeight}px`;
             });
-            // padding은 이미 '16px'로 설정되어 펼쳐진 상태를 유지
 
         } else if (isCurrentlyExpanded && tocElement) {
             // 닫힐 때
-            // a. 현재 높이를 명시적으로 설정하고, 수직 패딩을 제거하기 위한 패딩 설정
+            // a. 현재 높이를 명시적으로 설정하여 트랜지션 준비
             tocElement.style.height = `${tocElement.scrollHeight}px`;
-            tocElement.style.padding = horizontalPadding; // 수직 패딩 0, 수평 패딩 16px
 
-            // b. 다음 프레임에서 높이를 0으로 트랜지션 시작
+            // b. 다음 프레임에서 높이와 패딩을 0으로 트랜지션 시작
             requestAnimationFrame(() => {
                 tocElement.style.height = '0px';
+                tocElement.style.paddingTop = '0';
+                tocElement.style.paddingBottom = '0';
 
-                // c. 트랜지션 끝난 후 (0.5초) 모든 패딩을 0으로 설정하여 최종 정리
+                // c. 트랜지션 끝난 후 (0.5초) 높이 auto 재설정 (선택적)
                 setTimeout(() => {
-                    tocElement.style.padding = '0';
+                    // height는 0px로 유지되도록 둡니다.
                 }, transitionDuration); 
             });
         }
