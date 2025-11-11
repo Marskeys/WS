@@ -44,13 +44,14 @@
       --primary-rgb: 33, 126, 232; 
     }
 
+    /* ⭐⭐ [수정] height: 100%로 설정하여 Safari 툴바 문제 대응 ⭐⭐ */
     html { height: 100%; } 
 
     body {
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh; 
-      height: 100%;
+      height: 100%; /* Safari 동적 툴바 대응 */
       display: flex;
       flex-direction: column;
       transition: background 0.3s, color 0.3s;
@@ -70,6 +71,7 @@
     @media (max-width: 640px){
       .app-shell{
         padding-left: 16px;
+        /* ⭐⭐ [수정] 하단 패딩을 더 늘려서 푸터/툴바 공간 확보 (70px) ⭐⭐ */
         padding-bottom: 70px; 
         margin-top: 250px;
         margin-bottom: 0;
@@ -82,6 +84,10 @@
       width: 100%;
       background: transparent;
     }
+
+    /* ---------------------------------------------------- */
+    /* 📌 섹션 제목, 캐러셀, 북카드 스타일 (기존 유지) */
+    /* ---------------------------------------------------- */
 
     .section-title-wrapper {
         width: 100vw;
@@ -121,8 +127,10 @@
         }
     }
 
+
     html.dark .section-title {
         color: var(--accent);
+        text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
     }
 
     .carousel {
@@ -136,6 +144,7 @@
 
     .carousel::-webkit-scrollbar { display: none; }
 
+    /* ✅ [수정] 북카드: 그림자 및 호버 효과 제거 */
     .book-card {
       flex-shrink: 0;
       width: 230px;
@@ -146,11 +155,22 @@
       transition: all 0.3s ease;
       scroll-snap-align: start;
       cursor: pointer;
+      /* box-shadow 제거 */
       position: relative;
     }
 
     .book-card:hover {
-      background: var(--panel-2);
+      /* transform: translateY(-4px); 제거 */
+      background: var(--panel-2); /* 호버 시 배경색 변화는 유지 */
+      /* box-shadow 제거 */
+    }
+
+    html.dark .book-card { 
+      /* box-shadow 제거 */
+    }
+    html.dark .book-card:hover { 
+      /* box-shadow 제거 */
+      background: var(--panel-2); /* 호버 시 배경색 변화는 유지 */
     }
 
     .book-cover {
@@ -225,6 +245,23 @@
       list-style: none;
     }
 
+    .book-toc > .paginated-toc > ul > li > ul {
+      margin: 0;
+      padding-left: 14px;
+      list-style: none;
+    }
+
+    .book-toc > .paginated-toc > ul > li > ul > li {
+      color: var(--ink-2);
+      font-weight: 500;
+    }
+
+    .book-toc > .paginated-toc > ul > li > ul > li > ul {
+      margin: 4px 0 0 0;
+      padding-left: 18px;
+      list-style: disc;
+    }
+    
     .book-toc li {
       margin-bottom: 4px;
       line-height: 1.4;
@@ -257,12 +294,18 @@
       margin: 0 2px;
     }
 
+    /* ✅ 링크 활성/비활성 스타일 */
     .toc-link {
       text-decoration: none;
       transition: color 0.2s, opacity 0.2s;
     }
     .toc-link.active {
       color: var(--primary);
+      cursor: pointer;
+    }
+    .toc-link.active:hover {
+      color: var(--accent);
+      text-decoration: underline;
     }
     .toc-link.disabled {
       color: var(--ink-2);
@@ -271,26 +314,200 @@
       pointer-events: none;
     }
 
+    /* ---------------------------------------------------- */
+    /* ✅ 디자인 개선: 최근 게시물 레이아웃 및 버튼 스타일 */
+    /* ---------------------------------------------------- */
+
     .recent-posts {
         display: flex;
         flex-direction: column;
         gap: 12px; 
+        /* ⬇️ 수정: 상단 여백을 16px에서 12px로 줄임 */
         margin-top: 12px; 
         padding: 0; 
     }
 
+    /* ✅ [수정] 최근 게시물 아이템: 그림자 및 호버 효과 제거 */
     .recent-post-item {
         background: var(--panel);
         border-radius: 8px;
         padding: 15px 20px;
-        transition: background 0.2s, border-color 0.2s;
+        transition: background 0.2s, border-color 0.2s; /* box-shadow, transform 제거 */
         cursor: pointer;
-        border: 1px solid transparent;
+        /* box-shadow 제거 */
+        border: 1px solid transparent; /* 호버 시 부드러운 전환을 위해 투명 테두리 추가 */
     }
 
     .recent-post-item:hover {
         background: var(--panel-2);
+        border-color: var(--primary); /* 호버 시 테두리 색상 변화는 유지 */
+        /* box-shadow, transform 제거 */
+    }
+    html.dark .recent-post-item {
+        /* box-shadow 제거 */
+        border: 1px solid transparent;
+    }
+    html.dark .recent-post-item:hover {
+        /* box-shadow 제거 */
+        background: var(--panel-2);
         border-color: var(--primary);
+    }
+
+    .recent-post-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+        display: block;
+        margin-bottom: 6px;
+        /* ✅ 라벨과의 정렬을 위한 Flexbox 설정 */
+        display: flex;
+        align-items: center;
+    }
+    
+    /* ---------------------------------------------------- */
+    /* 🏷️ 새 글/수정됨 라벨 스타일 추가 */
+    /* ---------------------------------------------------- */
+    @keyframes wiggle-float {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-2deg); }
+      60% { transform: translateY(0) rotate(1deg); }
+      80% { transform: translateY(1px) rotate(-1deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .label-icon {
+      display: inline-block;
+      padding: 3px 6px; 
+      margin-right: 8px; /* 제목과의 간격 */
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: white !important; 
+      line-height: 1.2;
+      vertical-align: middle;
+      text-transform: uppercase;
+      background-image: none;
+      width: auto;
+      height: auto;
+      flex-shrink: 0;
+      animation: wiggle-float 0.9s ease-in-out infinite; 
+    }
+
+    /* ☀️ Light Mode Styles */
+    .new-icon {
+        background-color: #ff4757; /* 빨강 */
+    }
+
+    .edited-icon {
+        background-color: #2e86de; /* 파랑 */
+    }
+
+    /* 🌙 Dark Mode Styles */
+    html.dark .new-icon {
+        background-color: #e84118; 
+    }
+
+    html.dark .edited-icon {
+        background-color: #1e3799;
+    }
+    /* ---------------------------------------------------- */
+
+
+    .badge-pinned {
+        margin-right: 5px; 
+        font-size: 0.9em; 
+    }
+
+    .recent-post-meta {
+        font-size: 0.85rem;
+        color: var(--ink-2);
+    }
+
+    .recent-post-preview {
+        font-size: 0.9rem;
+        color: var(--ink-2);
+        margin-top: 8px;
+        line-height: 1.5;
+    }
+
+    #load-more-btn {
+        display: block; 
+        width: 200px; 
+        /* ⬇️ 수정: 상단 마진을 16px에서 0으로 줄임 */
+        margin: 0 auto 16px; 
+        padding: 12px 20px;
+        border-radius: 25px; 
+        
+        background: linear-gradient(135deg, #A8E063, #56AB2F); 
+        
+        border: none; 
+        color: #ffffff; 
+        
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s, color 0.3s; 
+        letter-spacing: 0.5px;
+    }
+
+    #load-more-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    html.dark #load-more-btn {
+        background: transparent; 
+        color: #ffffff; 
+        border: 2px solid #ffffff; 
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.15); 
+    }
+    
+    html.dark #load-more-btn:hover {
+        background: #ffffff; 
+        color: var(--bg); 
+        box-shadow: 0 6px 12px rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px); 
+    }
+
+    /* ---------------------------------------------------- */
+    /* ✅ 🆕 푸터 스타일 (Safari 가림 문제 해결) */
+    /* ---------------------------------------------------- */
+    .app-footer {
+        width: 100%;
+        margin-top: auto; 
+        padding: 20px 16px;
+        text-align: center;
+        color: var(--ink-2);
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border);
+        background: var(--panel-2);
+        z-index: 10; 
+        flex-shrink: 0; 
+    }
+    
+    /* ---------------------------------------------------- */
+    /* ✅ 데스크탑 전용: 게시글 섹션 왼쪽 정렬 (641px 이상) */
+    /* ---------------------------------------------------- */
+    @media (min-width: 641px) {
+        .recent-posts {
+            max-width: 800px; 
+            margin-left: 0; 
+            margin-right: auto;
+            padding-left: 0; 
+        }
+        
+        .recent-posts-wrapper .section-title {
+             margin-left: calc(var(--chrome-gap) + 16px); 
+             margin-right: auto;
+        }
+
+        #load-more-btn {
+            margin-left: auto;
+            margin-right: auto;
+        }
     }
   </style>
 </head>
@@ -457,6 +674,7 @@
         const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
         const showEditedLabel = !isNewPost && isRecentlyEdited;
 
+        // 다국어 라벨 텍스트 정의 (locale.ui에 키가 있다고 가정)
         const newLabelText = locale.ui.newPost || 'NEW';
         const editedLabelText = locale.ui.editedPost || 'UPDATED';
       %>
@@ -533,6 +751,7 @@ async function loadMorePosts() {
       const el = document.createElement("div");
       el.className = "recent-post-item"; 
       
+      // ✅ AJAX 로드 시 날짜 비교 로직 추가
       const now = new Date();
       const createdAt = new Date(post.created_at);
       const updatedAt = new Date(post.updated_at);
@@ -542,6 +761,7 @@ async function loadMorePosts() {
       const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
       const showEditedLabel = !isNewPost && isRecentlyEdited;
 
+      // ✅ 다국어 라벨 텍스트 및 HTML 생성
       const newLabelText = "<%= locale.ui.newPost || 'NEW' %>";
       const editedLabelText = "<%= locale.ui.editedPost || 'UPDATED' %>";
       
@@ -568,8 +788,8 @@ async function loadMorePosts() {
         </div>
   
         <div class="recent-post-preview">
-          ${post.preview}
-        </div>
+          ${post.preview} 
+          </div>
       `;
       
       container.appendChild(el);
@@ -582,97 +802,104 @@ async function loadMorePosts() {
   }
 }
 
+
 window.loadMorePosts = loadMorePosts;
 
 </script>
 
 
 
-<script>
-(() => {
-  const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
-  const itemsPerPage = 3;
-  const totalPages = Math.ceil(tocData.length / itemsPerPage);
-  const paginatedToc = [];
+  <script>
+  (() => {
+    // EJS 컴파일 오류를 일으키는 불필요한 주석 잔여물 제거
+    const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
+    const itemsPerPage = 3;
+    const totalPages = Math.ceil(tocData.length / itemsPerPage);
+    const paginatedToc = [];
 
-  for (let i = 0; i < totalPages; i++) {
-    const start = i * itemsPerPage;
-    const end = start + itemsPerPage;
-    paginatedToc.push(tocData.slice(start, end));
-  }
-
-  const renderTocPage = (pageIndex) => {
-    const sections = paginatedToc[pageIndex - 1];
-    if (!sections) return '';
-    let html = '<ul>';
-    sections.forEach(section => {
-      html += `<li><h5>${section.section}</h5><ul>`;
-      section.chapters.forEach(ch => {
-        html += `<li>`;
-
-        if (ch.url) {
-          html += `<a href="/${lang}/books/cuteAcoustics/contents/${ch.url}" class="toc-link active">${ch.title}</a>`;
-        } else {
-          html += `<span class="toc-link disabled">${ch.title}</span>`;
-        }
-
-        if (ch.sub) {
-          html += '<ul>';
-          ch.sub.forEach(sub => {
-            html += `<li>`;
-            if (sub.url) {
-              html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
-            } else {
-              html += `<span class="toc-link disabled">${sub.title}</span>`;
-            }
-            html += `</li>`;
-          });
-          html += '</ul>';
-        }
-
-        html += `</li>`;
-      });
-      html += `</ul></li>`;
-    });
-    html += '</ul>';
-    return html;
-  };
-
-
-  window.changePage = (event, bookId, pageNumber) => {
-    event.stopPropagation();
-    
-    if (bookId !== 'cute-acoustics') return;
-    const tocContainer = document.querySelector('[data-book-id="cute-acoustics-toc"]');
-    const paginationContainer = document.querySelector('[data-book-id="cute-acoustics-pagination"]');
-    if (tocContainer && paginationContainer) {
-      tocContainer.innerHTML = renderTocPage(pageNumber);
-      paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
-        btn.classList.remove('active');
-        if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
-      });
+    for (let i = 0; i < totalPages; i++) {
+      const start = i * itemsPerPage;
+      const end = start + itemsPerPage;
+      paginatedToc.push(tocData.slice(start, end));
     }
-  };
 
-  document.querySelectorAll('.book-card').forEach(card => {
-    card.addEventListener('click', (event) => {
+    const renderTocPage = (pageIndex) => {
+      const sections = paginatedToc[pageIndex - 1];
+      if (!sections) return '';
+      let html = '<ul>';
+      sections.forEach(section => {
+        html += `<li><h5>${section.section}</h5><ul>`;
+        section.chapters.forEach(ch => {
+          html += `<li>`;
 
-      if (event.target.tagName === 'A' || event.target.closest('.pagination-number')) {
-          return;
-      }
+          if (ch.url) {
+            html += `<a href="/${lang}/books/cuteAcoustics/contents/${ch.url}" class="toc-link active">${ch.title}</a>`;
+          } else {
+            html += `<span class="toc-link disabled">${ch.title}</span>`;
+          }
 
-      const isCurrentlyExpanded = card.classList.contains('expanded');
+          if (ch.sub) {
+            html += '<ul>';
+            ch.sub.forEach(sub => {
+              html += `<li>`;
+              if (sub.url) {
+                html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
+              } else {
+                html += `<span class="toc-link disabled">${sub.title}</span>`;
+              }
+              html += `</li>`;
+            });
+            html += '</ul>';
+          }
 
-      document.querySelectorAll('.book-card').forEach(c => {
-         c.classList.remove('expanded'); 
+          html += `</li>`;
+        });
+        html += `</ul></li>`;
       });
+      html += '</ul>';
+      return html;
+    };
+
+
+    window.changePage = (event, bookId, pageNumber) => {
+      // ✅ [수정 완료] 이벤트 전파 중단: 페이지네이션 클릭 시 북카드 클릭 이벤트가 같이 발생하는 것을 막습니다.
+      event.stopPropagation();
       
-      if (!isCurrentlyExpanded) {
-          card.classList.add('expanded');
+      if (bookId !== 'cute-acoustics') return;
+      const tocContainer = document.querySelector('[data-book-id="cute-acoustics-toc"]');
+      const paginationContainer = document.querySelector('[data-book-id="cute-acoustics-pagination"]');
+      if (tocContainer && paginationContainer) {
+        tocContainer.innerHTML = renderTocPage(pageNumber);
+        paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
+          btn.classList.remove('active');
+          if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
+        });
       }
+    };
+
+    // 💡 북카드 토글 로직 수정 (클릭한 것만 펼치고 나머지는 닫는 로직)
+    document.querySelectorAll('.book-card').forEach(card => {
+      card.addEventListener('click', (event) => {
+        
+        // 🚨 중요: 북카드 내부의 링크나 페이지네이션 요소를 클릭했을 때는 북카드가 토글되지 않도록 합니다.
+        if (event.target.tagName === 'A' || event.target.closest('.pagination-number')) {
+            return;
+        }
+
+        const isCurrentlyExpanded = card.classList.contains('expanded');
+
+        // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
+        document.querySelectorAll('.book-card').forEach(c => {
+           c.classList.remove('expanded'); 
+        });
+        
+        // **2. 현재 클릭된 카드가 닫혀있었다면 다시 펼침**
+        if (!isCurrentlyExpanded) {
+            card.classList.add('expanded');
+        }
+      });
     });
-  });
-})();
-</script>
+  })();
+  </script>
 </body>
 </html>
