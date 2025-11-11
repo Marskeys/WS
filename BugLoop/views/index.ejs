@@ -265,27 +265,26 @@
       
       height: 0; 
       overflow: hidden; 
-      /* 🎯 패딩을 CSS에 고정하여 콘텐츠 높이 계산 오류를 줄임 */
+      /* 🎯 패딩을 CSS에 고정하고 height 트랜지션을 분리 */
       padding: 16px; 
       
-      /* 닫힐 때 패딩을 0으로 트랜지션하기 위해 padding-top/bottom을 따로 설정 */
-      padding-top: 16px;
-      padding-bottom: 16px;
-      padding-left: 16px;
-      padding-right: 16px;
+      /* 초기에는 패딩을 0으로 시작 */
+      padding-top: 0;
+      padding-bottom: 0;
       
       /* GPU 가속 유도 */
       will-change: height, opacity, transform; 
-      /* height, padding 트랜지션을 사용하여 부드럽게 열리게 함 */
-      transition: height 0.5s ease-out, opacity 0.5s ease-out, padding-top 0.5s ease-out, padding-bottom 0.5s ease-out; 
+      /* height와 opacity에만 트랜지션 적용 */
+      transition: height 0.5s ease-out, opacity 0.5s ease-out; 
       opacity: 0;
     }
     
-    /* 기본 닫힌 상태 (JS가 height를 0으로 설정) */
-    .book-toc[style*="height: 0px"] {
+    /* 닫힌 상태를 위한 클래스 (JS에서 적용) */
+    .book-toc.closed {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
         opacity: 0;
+        height: 0px !important;
     }
     
     /* 열린 상태 (JS가 height를 콘텐츠 높이로 설정) */
@@ -956,7 +955,7 @@ window.loadMorePosts = loadMorePosts;
 
         // 💡 페이지 변경 후 목차 높이 재계산 및 적용 (핵심)
         if (card.classList.contains('expanded') && tocElement) {
-            // 1. 높이를 auto로 설정하여 실제 콘텐츠 높이를 측정 (padding 16px이 이미 적용된 상태)
+            // 1. 높이를 auto로 설정하여 패딩 포함 실제 콘텐츠 높이를 측정합니다.
             tocElement.style.height = 'auto';
             
             // 2. 정확한 scrollHeight를 가져옵니다.
@@ -969,13 +968,14 @@ window.loadMorePosts = loadMorePosts;
     };
     
     // ----------------------------------------------------
-    // 북카드 토글 로직 (여백 문제 해결 및 스크롤 중앙 정렬 포함)
+    // 북카드 토글 로직 (잘림/여백/스크롤 해결)
     // ----------------------------------------------------
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
         const isCurrentlyExpanded = card.classList.contains('expanded');
         const tocElement = card.querySelector('.book-toc');
         const transitionDuration = 500; // CSS transition time in ms
+        const contentPadding = '16px'; // CSS에 정의된 padding-left/right와 JS가 제어할 padding-top/bottom
 
         // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
         document.querySelectorAll('.book-card').forEach(c => {
@@ -987,6 +987,8 @@ window.loadMorePosts = loadMorePosts;
                 otherToc.style.height = '0px'; 
                 otherToc.style.paddingTop = '0';
                 otherToc.style.paddingBottom = '0';
+                // 닫힌 상태를 명시
+                otherToc.classList.add('closed');
              }
            }
         });
@@ -997,18 +999,21 @@ window.loadMorePosts = loadMorePosts;
         // 3. 목차 높이 조절 (잘림/여백 제거 핵심)
         if (!isCurrentlyExpanded && tocElement) {
             // 펼쳐질 때
-            // a. 높이를 auto로 설정하고 패딩을 적용하여 실제 콘텐츠 높이를 측정
-            tocElement.style.height = 'auto';
-            tocElement.style.paddingTop = '16px';
-            tocElement.style.paddingBottom = '16px';
+            // a. 닫힌 상태 클래스 제거 및 패딩 설정
+            tocElement.classList.remove('closed');
+            tocElement.style.paddingTop = contentPadding;
+            tocElement.style.paddingBottom = contentPadding;
             
-            // b. 콘텐츠 높이 측정
+            // b. 높이를 auto로 설정하여 패딩 포함 실제 콘텐츠 높이를 측정
+            tocElement.style.height = 'auto';
+            
+            // c. 콘텐츠 높이 측정
             const contentHeight = tocElement.scrollHeight; 
             
-            // c. 높이를 0으로 설정 후 transition 시작
+            // d. 높이를 0으로 설정 후 transition 시작
             tocElement.style.height = '0px';
             requestAnimationFrame(() => {
-                // d. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
+                // e. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
                 tocElement.style.height = `${contentHeight}px`;
             });
 
@@ -1016,6 +1021,8 @@ window.loadMorePosts = loadMorePosts;
             // 닫힐 때
             // a. 현재 높이를 명시적으로 설정하여 트랜지션 준비
             tocElement.style.height = `${tocElement.scrollHeight}px`;
+            tocElement.style.paddingTop = contentPadding;
+            tocElement.style.paddingBottom = contentPadding;
 
             // b. 다음 프레임에서 높이와 패딩을 0으로 트랜지션 시작
             requestAnimationFrame(() => {
@@ -1023,9 +1030,9 @@ window.loadMorePosts = loadMorePosts;
                 tocElement.style.paddingTop = '0';
                 tocElement.style.paddingBottom = '0';
 
-                // c. 트랜지션 끝난 후 (0.5초) 높이 auto 재설정 (선택적)
+                // c. 트랜지션 끝난 후 닫힌 상태 클래스 추가
                 setTimeout(() => {
-                    // height는 0px로 유지되도록 둡니다.
+                    tocElement.classList.add('closed');
                 }, transitionDuration); 
             });
         }
