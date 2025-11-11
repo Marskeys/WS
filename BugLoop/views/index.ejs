@@ -144,13 +144,12 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     /* ---------------------------------------------------- */
-    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
+    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 (수정) */
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
       width: 180px; /* 기본 북카드 폭 축소 (180px) */
       background: var(--panel);
-      /* 전체 카드 테두리를 담당하기 위해 overflow: hidden 제거 */
       border-radius: var(--radius);
       color: var(--ink);
       transition: all 0.3s ease, width 0.4s ease, height 0.4s ease; 
@@ -158,51 +157,47 @@
       cursor: pointer;
       position: relative;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
-      /* 카드가 커질 때 다른 요소 위로 뜨도록 설정 */
       z-index: 1; 
-      /* 활성화 테두리를 적용하기 위해 border 추가 */
-      border: 2px solid transparent;
-      padding: 0; /* 내부 패딩 제거 */
+      border: 2px solid transparent; /* 활성화 테두리를 위한 기본 투명 테두리 */
+      padding: 0; 
     }
 
     .book-card:hover {
       background: var(--panel-2); 
     }
 
-    /* ⭐ 클릭 시 카드 전체가 커지고 활성화 효과 적용 */
+    /* ⭐ 클릭 시 카드 전체가 커지고 활성화 효과 적용 (수정) */
     .book-card.expanded {
         width: 300px; /* 클릭 시 폭 확장 */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         transform: translateY(-8px); /* 약간 위로 더 떠오르는 효과 */
         background: var(--panel);
         
-        /* 🎯 활성화 테두리 및 그림자 (라이트 모드) */
+        /* 🎯 활성화 테두리 및 그림자 (라이트 모드) - 깔끔하고 밝게 */
         border-color: var(--primary); 
-        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.5), 
-                    0 0 0 4px rgba(var(--primary-rgb), 0.2); /* 은은한 외곽선 */
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3), 
+                    0 0 0 3px rgba(var(--primary-rgb), 0.1); 
         
-        z-index: 10; /* 가장 위로 올라오도록 */
+        z-index: 10; 
     }
-    
+
     html.dark .book-card.expanded {
-        /* 🎯 활성화 테두리 및 그림자 (다크 모드) */
-        border-color: var(--primary);
-        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.8),
-                    0 0 0 4px rgba(var(--primary-rgb), 0.4);
+        /* 🎯 활성화 테두리 및 그림자 (다크 모드) - 밝고 깔끔하게 */
+        border-color: #55aaff; /* 조금 더 밝은 톤 */
+        box-shadow: 0 5px 15px rgba(33, 126, 232, 0.9), 
+                    0 0 0 3px rgba(33, 126, 232, 0.5); 
     }
 
 
     /* 카드 내부 컨텐츠 래퍼: 테두리 둥글게 처리 */
     .book-content-wrapper {
         border-radius: var(--radius);
-        overflow: hidden; /* 내부 컨텐츠는 오버플로우 숨김 */
+        overflow: hidden; 
     }
 
 
     .book-cover-wrapper {
         overflow: hidden;
         border-radius: var(--radius) var(--radius) 0 0;
-        /* 활성화 테두리 효과를 card.expanded로 이동했으므로, 여기서는 제거 */
     }
 
 
@@ -258,17 +253,16 @@
       font-size: 0.9rem;
       border-top: 1px solid var(--border);
       
-      /* ⭐ 목차 펼침 기능 복구: max-height와 overflow: hidden 사용 */
       max-height: 0;
       overflow: hidden; 
-      transition: all 0.5s ease-out; /* 조금 더 부드러운 펼침 */
+      transition: all 0.5s ease-out; 
       padding: 0 16px;
       opacity: 0;
     }
 
     .book-card.expanded .book-toc {
       padding: 16px;
-      max-height: 2000px; /* 충분히 큰 값으로 설정하여 내용 전체가 보이게 함 */
+      max-height: 2000px; 
       opacity: 1;
     }
     /* ---------------------------------------------------- */
@@ -930,7 +924,7 @@ window.loadMorePosts = loadMorePosts;
       }
     };
     
-    // 💡 북카드 토글 로직 수정
+    // 💡 북카드 토글 로직 수정 (스크롤 중앙 정렬 개선)
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
         // 현재 클릭된 카드의 expanded 상태를 확인
@@ -941,7 +935,6 @@ window.loadMorePosts = loadMorePosts;
            // 현재 카드와 다른 카드만 닫음
            if (c !== card) {
              c.classList.remove('expanded'); 
-             // cover-wrapper에 active를 넣지 않기로 했으므로, 커버 래퍼 관련 로직 삭제 
            }
         });
         
@@ -955,11 +948,13 @@ window.loadMorePosts = loadMorePosts;
         if (!isCurrentlyExpanded) {
             const carousel = card.closest('.carousel');
             if (carousel) {
-                // 펼쳐진 카드가 화면 중앙에 오도록 스크롤
+                // ✅ 모바일 스크롤 중앙 정렬 로직 (수정)
                 const cardLeft = card.offsetLeft;
-                const cardWidth = card.offsetWidth;
+                const cardWidth = card.offsetWidth; 
                 const carouselWidth = carousel.clientWidth;
-                const scrollTarget = cardLeft - (carouselWidth / 2) + (cardWidth / 2);
+
+                // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
+                const scrollTarget = cardLeft + (cardWidth / 2) - (carouselWidth / 2);
 
                 carousel.scrollTo({
                     left: scrollTarget,
