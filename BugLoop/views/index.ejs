@@ -862,7 +862,9 @@ window.loadMorePosts = loadMorePosts;
 
 
     window.changePage = (event, bookId, pageNumber) => {
+      // ✅ [수정 완료] 이벤트 전파 중단: 페이지네이션 클릭 시 북카드 클릭 이벤트가 같이 발생하는 것을 막습니다.
       event.stopPropagation();
+      
       if (bookId !== 'cute-acoustics') return;
       const tocContainer = document.querySelector('[data-book-id="cute-acoustics-toc"]');
       const paginationContainer = document.querySelector('[data-book-id="cute-acoustics-pagination"]');
@@ -874,11 +876,16 @@ window.loadMorePosts = loadMorePosts;
         });
       }
     };
-    
-    // 💡 북카드 토글 로직 수정
+
+    // 💡 북카드 토글 로직 수정 (클릭한 것만 펼치고 나머지는 닫는 로직)
     document.querySelectorAll('.book-card').forEach(card => {
-      card.addEventListener('click', () => {
-        // 현재 클릭된 카드의 expanded 상태를 확인
+      card.addEventListener('click', (event) => {
+        
+        // 🚨 중요: 북카드 내부의 링크나 페이지네이션 요소를 클릭했을 때는 북카드가 토글되지 않도록 합니다.
+        if (event.target.tagName === 'A' || event.target.closest('.pagination-number')) {
+            return;
+        }
+
         const isCurrentlyExpanded = card.classList.contains('expanded');
 
         // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
@@ -886,12 +893,10 @@ window.loadMorePosts = loadMorePosts;
            c.classList.remove('expanded'); 
         });
         
-        // **2. 현재 클릭된 카드가 닫혀있었다면 (즉, isCurrentlyExpanded가 false였다면) 다시 펼침**
+        // **2. 현재 클릭된 카드가 닫혀있었다면 다시 펼침**
         if (!isCurrentlyExpanded) {
             card.classList.add('expanded');
         }
-        // 만약 클릭된 카드가 이미 열려있었다면 (isCurrentlyExpanded가 true였다면),
-        // 1단계에서 닫혔고, 2단계에서 다시 열지 않으므로, 클릭으로 닫는 동작이 됩니다.
       });
     });
   })();
