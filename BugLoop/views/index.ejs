@@ -137,7 +137,6 @@
       gap: 16px; 
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      /* 북카드가 위로 확장될 공간을 확보하기 위해 충분한 padding-top 추가 */
       padding: 10px 0 8px 0; 
     }
 
@@ -148,7 +147,7 @@
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
-      width: 180px; /* 기본 북카드 폭 축소 (180px) */
+      width: 180px; 
       background: var(--panel);
       border-radius: var(--radius);
       color: var(--ink);
@@ -156,9 +155,9 @@
       scroll-snap-align: start;
       cursor: pointer;
       position: relative;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
       z-index: 1; 
-      border: 2px solid transparent; /* 활성화 테두리를 위한 기본 투명 테두리 */
+      border: 2px solid transparent; 
       padding: 0; 
     }
 
@@ -168,8 +167,8 @@
 
     /* ⭐ 클릭 시 카드 전체가 커지고 활성화 효과 적용 (수정) */
     .book-card.expanded {
-        width: 300px; /* 클릭 시 폭 확장 */
-        transform: translateY(-8px); /* 약간 위로 더 떠오르는 효과 */
+        width: 300px; 
+        transform: translateY(-8px); 
         background: var(--panel);
         
         /* 🎯 활성화 테두리 및 그림자 (라이트 모드) - 깔끔하고 밝게 */
@@ -182,7 +181,7 @@
 
     html.dark .book-card.expanded {
         /* 🎯 활성화 테두리 및 그림자 (다크 모드) - 밝고 깔끔하게 */
-        border-color: #55aaff; /* 조금 더 밝은 톤 */
+        border-color: #55aaff; 
         box-shadow: 0 5px 15px rgba(33, 126, 232, 0.9), 
                     0 0 0 3px rgba(33, 126, 232, 0.5); 
     }
@@ -198,20 +197,24 @@
     .book-cover-wrapper {
         overflow: hidden;
         border-radius: var(--radius) var(--radius) 0 0;
+        /* 틈새 제거를 위해 래퍼 배경색을 동일하게 설정 */
+        background: var(--panel-2); 
     }
 
 
     .book-cover {
       width: 100%;
-      height: 290px; /* 커버 높이 축소 (280px) */
+      height: 290px; 
       object-fit: cover;
       display: block;
       transition: all 0.3s ease; 
+      /* 🎯 틈새 제거를 위해 살짝 확대하는 트릭 */
+      transform: scale(1.01); 
     }
     
     @media (max-width: 640px){
       .book-cover {
-        height: 220px; /* 모바일 커버 높이 */
+        height: 220px; 
       }
     }
 
@@ -364,10 +367,10 @@
         gap: 12px; 
       }
       .book-card {
-        width: 140px; /* 모바일 기본 폭 */
+        width: 140px; 
       }
       .book-card.expanded {
-        width: 250px; /* 모바일 확장 폭 */
+        width: 250px; 
       }
       .book-info {
         padding: 10px 6px; 
@@ -893,7 +896,6 @@ window.loadMorePosts = loadMorePosts;
               if (sub.url) {
                 html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
-                // EJS 템플릿 리터럴 대신 일반 문자열로 변경
                 html += `<span class="toc-link disabled">${sub.title}</span>`; 
               }
               html += `</li>`;
