@@ -255,7 +255,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ 목차 스타일: JavaScript로 height 제어 (버벅임 해결) */
+    /* ✅ 목차 스타일: JS로 height 제어 (버벅임 해결) 및 초기 padding 제거 */
     /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
@@ -263,22 +263,20 @@
       font-size: 0.9rem;
       border-top: 1px solid var(--border);
       
-      /* 초기 높이를 0으로 설정 */
       height: 0; 
       overflow: hidden; 
+      /* JS에서 패딩을 설정하기 위해 기본 패딩은 0 */
+      padding: 0; 
       /* GPU 가속 유도 */
       will-change: height, opacity, transform; 
       /* height 트랜지션을 사용하여 부드럽게 열리게 함 */
-      transition: height 0.5s ease-out, opacity 0.5s ease-out; 
-      padding: 0 16px;
+      transition: height 0.5s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out; 
       opacity: 0;
     }
 
-    /* .book-card.expanded .book-toc는 JS에서 높이를 계산하여 인라인 스타일로 설정 */
+    /* .book-card.expanded .book-toc는 JS에서 높이와 패딩을 설정 */
     .book-card.expanded .book-toc {
-      padding: 16px;
       opacity: 1;
-      /* height는 JS에서 설정되지만, 기본적으로 padding이 적용되어야 함 */
     }
     /* ---------------------------------------------------- */
 
@@ -601,7 +599,7 @@
               저자: <%= locale.books.cute_acoustics.author %>
             </div>
           </div>
-          <div class="book-toc" style="padding: 0 16px;"> 
+          <div class="book-toc"> 
             <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
             
             <div class="pagination" data-book-id="cute-acoustics-pagination">
@@ -671,7 +669,7 @@
           <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
         </div>
         <div class="book-info"><div class="book-title">미완성 고통</div></div>
-        <div class="book-toc" style="padding: 0 16px;">
+        <div class="book-toc">
           <h4>목차</h4>
           <ul>
             <li>1장. 불완전함의 철학</li>
@@ -688,7 +686,7 @@
           <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
         </div>
         <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
-        <div class="book-toc" style="padding: 0 16px;">
+        <div class="book-toc">
           <h4>목차</h4>
           <ul>
             <li>1장. 반주의 구조 이해</li>
@@ -705,7 +703,7 @@
           <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
         </div>
         <div class="book-info"><div class="book-title">계산의 온기</div></div>
-        <div class="book-toc" style="padding: 0 16px;">
+        <div class="book-toc">
           <h4>목차</h4>
           <ul>
             <li>1장. 기계와 인간의 경계</li>
@@ -932,6 +930,7 @@ window.loadMorePosts = loadMorePosts;
       const card = document.querySelector(`[data-book-id="${bookId}"]`);
       const tocContainer = card.querySelector('[data-book-id="cute-acoustics-toc"]');
       const paginationContainer = card.querySelector('[data-book-id="cute-acoustics-pagination"]');
+      const tocElement = card.querySelector('.book-toc');
       
       if (tocContainer && paginationContainer) {
         tocContainer.innerHTML = renderTocPage(pageNumber);
@@ -941,14 +940,13 @@ window.loadMorePosts = loadMorePosts;
         });
 
         // 💡 페이지 변경 후 목차 높이 재계산 및 적용 (버벅임 해결 로직의 일부)
-        if (card.classList.contains('expanded')) {
-            const tocElement = card.querySelector('.book-toc');
-            if (tocElement) {
-                // 임시로 높이를 auto로 설정하여 실제 높이를 얻은 후 다시 transition을 위해 설정
-                tocElement.style.height = 'auto';
-                const contentHeight = tocElement.scrollHeight + 32; // 16px padding top/bottom 합산 (2 * 16px)
-                tocElement.style.height = `${contentHeight}px`;
-            }
+        // 페이지가 바뀌면 내용의 높이가 바뀔 수 있으므로 재계산 필요
+        if (card.classList.contains('expanded') && tocElement) {
+            tocElement.style.height = 'auto';
+            tocElement.style.padding = '16px'; // JS에서 padding을 미리 설정
+            
+            const contentHeight = tocElement.scrollHeight; 
+            tocElement.style.height = `${contentHeight}px`;
         }
       }
     };
@@ -960,6 +958,7 @@ window.loadMorePosts = loadMorePosts;
       card.addEventListener('click', () => {
         const isCurrentlyExpanded = card.classList.contains('expanded');
         const tocElement = card.querySelector('.book-toc');
+        const transitionDuration = 500; // CSS transition time in ms
 
         // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
         document.querySelectorAll('.book-card').forEach(c => {
@@ -967,7 +966,8 @@ window.loadMorePosts = loadMorePosts;
            if (c !== card) {
              c.classList.remove('expanded'); 
              if (otherToc) {
-                otherToc.style.height = '0px'; // 닫힐 때는 명시적으로 0으로 설정
+                otherToc.style.height = '0px'; 
+                otherToc.style.padding = '0'; // 닫힐 때 패딩도 0으로
              }
            }
         });
@@ -975,31 +975,40 @@ window.loadMorePosts = loadMorePosts;
         // 2. 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded', !isCurrentlyExpanded);
 
-        // 3. 목차 높이 조절 (버벅임 해결 핵심)
+        // 3. 목차 높이 조절 (버벅임 해결 및 여백 제거 핵심)
         if (!isCurrentlyExpanded && tocElement) {
             // 펼쳐질 때
-            // a. 임시로 높이를 auto로 설정하고 padding을 없애서 실제 콘텐츠 높이를 측정
+            // a. 임시로 높이를 auto로 설정하고 padding을 적용하여 실제 콘텐츠 높이를 측정
             tocElement.style.height = 'auto';
             tocElement.style.padding = '16px'; 
             
-            // b. 콘텐츠 높이 측정 (transition 적용을 위해)
+            // b. 콘텐츠 높이 측정
             const contentHeight = tocElement.scrollHeight; 
             
-            // c. 높이를 다시 0으로 설정 후 transition 시작 (브라우저가 리페인트 하지 않도록 미세한 지연)
+            // c. 높이를 0으로 설정 후 transition 시작
             tocElement.style.height = '0px';
             requestAnimationFrame(() => {
                 // d. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
                 tocElement.style.height = `${contentHeight}px`;
+                // padding은 이미 '16px'로 설정된 상태에서 높이가 트랜지션됨
             });
 
         } else if (isCurrentlyExpanded && tocElement) {
             // 닫힐 때
-            // 닫힐 때도 부드럽게 닫히도록 현재 높이를 0으로 트랜지션
-            tocElement.style.height = '0px';
-            // 트랜지션 끝난 후 (0.5초) padding 제거
-            setTimeout(() => {
-                tocElement.style.padding = '0 16px';
-            }, 500); 
+            // a. 현재 높이를 명시적으로 설정하여 트랜지션 준비
+            tocElement.style.height = `${tocElement.scrollHeight}px`;
+            tocElement.style.padding = '16px';
+
+            // b. 다음 프레임에서 높이를 0으로 트랜지션 시작
+            requestAnimationFrame(() => {
+                tocElement.style.height = '0px';
+                tocElement.style.padding = '0 16px'; // 높이가 닫히는 동안 수평 패딩만 유지
+
+                // c. 트랜지션 끝난 후 (0.5초) 모든 패딩 제거 및 최종 정리
+                setTimeout(() => {
+                    tocElement.style.padding = '0';
+                }, transitionDuration); 
+            });
         }
 
         // 4. 캐러셀 스크롤 이동 (중앙 정렬)
@@ -1017,7 +1026,7 @@ window.loadMorePosts = loadMorePosts;
                     expandedCardWidth = 300; 
                 }
 
-                // 목표 스크롤 위치
+                // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
                 const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
                 
                 carousel.scrollTo({
