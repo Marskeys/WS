@@ -138,56 +138,58 @@
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       padding-bottom: 8px;
+      align-items: flex-start; /* ⭐ [추가] 카드 확장 시 레이아웃 무너짐 방지 */
     }
 
     .carousel::-webkit-scrollbar { display: none; }
 
     /* ---------------------------------------------------- */
-    /* ✅ [수정] 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
+    /* ✅ [수정] 북카드: 기본 크기 축소 및 성능 최적화 */
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
       width: 180px; /* 기본 북카드 폭 축소 (180px) */
       background: var(--panel);
       border-radius: var(--radius);
-      overflow: hidden;
+      /* overflow: hidden; -> 토글 시 목차가 잘릴 수 있으므로 제거 */
       color: var(--ink);
-      /* transition에 width, height 추가하여 부드럽게 커지도록 */
-      transition: all 0.3s ease, width 0.4s ease, height 0.4s ease; 
+      /* ⭐ [성능 개선] transform만 transition에 남겨 GPU 가속 유도 */
+      transition: all 0.3s ease, transform 0.4s ease; 
       scroll-snap-align: start;
       cursor: pointer;
       position: relative;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+      z-index: 1; /* 기본 z-index */
     }
 
     .book-card:hover {
       background: var(--panel-2); 
     }
 
-    /* ⭐ [수정] 클릭 시 카드 전체가 커지게 */
+    /* ⭐ [성능 개선/요구사항 반영] 클릭 시 카드 전체가 커지게 (Scale 사용) */
     .book-card.expanded {
-        width: 300px; /* 클릭 시 폭 확장 */
-        /* height는 목차 내용에 따라 유동적으로 늘어나므로 지정하지 않음 */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        transform: translateY(-5px); /* 약간 위로 떠오르는 효과 */
-        background: var(--panel);
+        transform: scale(1.3); /* 💥 Scale을 사용하여 성능 최적화 및 카드 전체 확대 */
+        /* width: 300px; 제거 */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); /* 확장 시 그림자 강조 */
+        z-index: 10; /* 가장 위로 올림 */
     }
     
     html.dark .book-card.expanded {
-        box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        box-shadow: 0 15px 30px rgba(255, 255, 255, 0.15);
     }
-
+    
+    /* ⭐ [수정] 표지 잘림 방지 및 비주얼 개선 */
     .book-cover-wrapper {
         overflow: hidden;
-        border-radius: var(--radius) var(--radius) 0 0;
+        /* 아래쪽은 border-radius 제거 */
+        border-radius: var(--radius) var(--radius) 0 0; 
     }
 
     .book-cover {
       width: 100%;
-      height: 280px; /* 커버 높이 축소 (280px) */
+      height: 280px; 
       object-fit: cover;
       display: block;
-      /* 이전 커버 확대 효과 제거 */
       transition: all 0.3s ease; 
     }
     
@@ -196,7 +198,16 @@
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--panel-2);
+      /* 아래쪽만 border-radius 적용 */
+      border-radius: 0 0 var(--radius) var(--radius); 
+      transition: all 0.3s ease;
     }
+
+    /* ⭐ [수정] 확장 시 book-info의 border-radius 제거 (목차와 이어지도록) */
+    .book-card.expanded .book-info {
+        border-radius: 0;
+    }
+
 
     .book-title {
       font-weight: 600;
@@ -220,7 +231,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ [수정] 목차 스타일: 패널이 아래로 펼쳐지도록 재구성 */
+    /* ✅ 목차 스타일: max-height와 overflow: hidden 유지 */
     /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
@@ -228,20 +239,18 @@
       font-size: 0.9rem;
       border-top: 1px solid var(--border);
       
-      /* ⭐ [수정] 목차 펼침 기능 복구: max-height와 overflow: hidden 사용 */
       max-height: 0;
       overflow: hidden; 
-      transition: all 0.5s ease-out; /* 조금 더 부드러운 펼침 */
+      /* ⭐ [성능 개선] 목차 펼침 속도 조정 및 transition 속성 최적화 */
+      transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out, opacity 0.3s ease-in; 
       padding: 0 16px;
       opacity: 0;
-      
-      /* position: absolute; 제거 (북카드와 함께 크기가 늘어나도록) */
-      z-index: 1; /* 다른 카드 위로 올라올 수 있도록 z-index 유지 */
+      border-radius: 0 0 var(--radius) var(--radius);
     }
 
     .book-card.expanded .book-toc {
       padding: 16px;
-      max-height: 2000px; /* 충분히 큰 값으로 설정하여 내용 전체가 보이게 함 */
+      max-height: 2000px; 
       opacity: 1;
     }
     /* ---------------------------------------------------- */
@@ -346,7 +355,7 @@
         width: 140px; /* 모바일 기본 폭 */
       }
       .book-card.expanded {
-        width: 250px; /* 모바일 확장 폭 */
+        transform: scale(1.35); /* 모바일 확장 Scale 조정 */
       }
       .book-cover {
         height: 200px; /* 모바일 커버 높이 */
@@ -899,32 +908,28 @@ window.loadMorePosts = loadMorePosts;
     // 💡 북카드 토글 로직 유지
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        // 현재 클릭된 카드의 expanded 상태를 확인
         const isCurrentlyExpanded = card.classList.contains('expanded');
 
-        // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
+        // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
         document.querySelectorAll('.book-card').forEach(c => {
-           // 현재 카드와 다른 카드만 닫음
            if (c !== card) {
              c.classList.remove('expanded'); 
            }
         });
         
-        // **2. 현재 클릭된 카드의 expanded 상태 토글**
-        // - 닫혀있었다면 펼치고
-        // - 열려있었다면 닫음
+        // 2. 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded', !isCurrentlyExpanded);
 
         // 캐러셀 스크롤 이동 (선택적: 펼쳐진 카드가 잘 보이도록)
-        // 펼쳐졌을 때만 스크롤
         if (!isCurrentlyExpanded) {
             const carousel = card.closest('.carousel');
             if (carousel) {
                 // 펼쳐진 카드가 화면 중앙에 오도록 스크롤
+                // transform: scale이 적용되기 때문에 offsetLeft/offsetWidth가 정확하지 않음.
+                // 넉넉하게 중앙으로 이동
                 const cardLeft = card.offsetLeft;
-                const cardWidth = card.offsetWidth;
                 const carouselWidth = carousel.clientWidth;
-                const scrollTarget = cardLeft - (carouselWidth / 2) + (cardWidth / 2);
+                const scrollTarget = cardLeft - (carouselWidth / 2) + (card.offsetWidth * 1.3 / 2); // 대략적인 확장 후 중앙 위치
 
                 carousel.scrollTo({
                     left: scrollTarget,
