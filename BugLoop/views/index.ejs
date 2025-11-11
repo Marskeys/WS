@@ -143,7 +143,7 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     /* ---------------------------------------------------- */
-    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 (최종 수정) */
+    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
@@ -202,9 +202,7 @@
         transition: border-radius 0.4s ease;
     }
     
-    /* 📌 [요청 반영] 펼쳐질 때 이미지 래퍼의 하단 모서리를 0으로 만들어 목차와 깔끔하게 연결 */
-    /* 참고: book-info의 border-top이 이미 목차와 커버를 구분하고 있어 사실상 틈새는 transform으로 잡힘 */
-    /* 이 부분을 명시적으로 0으로 설정하여 시각적 일관성 확보 */
+    /* 펼쳐진 상태일 때 이미지 래퍼의 하단 모서리를 0으로 만들어 목차와 깔끔하게 연결 */
     .book-card.expanded .book-cover-wrapper {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
@@ -231,7 +229,6 @@
     .book-info {
       padding: 12px 8px; 
       text-align: center;
-      /* 목차와 연결될 때 이 border는 커버와 목차 사이의 경계선 역할을 합니다. */
       border-top: 1px solid var(--border); 
       background: var(--panel-2);
     }
@@ -258,7 +255,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ 목차 스타일: 패널이 아래로 펼쳐지도록 재구성 */
+    /* ✅ 목차 스타일: 버벅임 개선을 위해 will-change 추가 */
     /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
@@ -268,6 +265,8 @@
       
       max-height: 0;
       overflow: hidden; 
+      /* GPU 가속 유도 */
+      will-change: max-height, opacity; 
       transition: all 0.5s ease-out; 
       padding: 0 16px;
       opacity: 0;
@@ -275,7 +274,7 @@
 
     .book-card.expanded .book-toc {
       padding: 16px;
-      max-height: 2000px; 
+      max-height: 2000px; /* 충분히 큰 값 유지 */
       opacity: 1;
     }
     /* ---------------------------------------------------- */
@@ -908,14 +907,14 @@ window.loadMorePosts = loadMorePosts;
               } else {
                 html += `<span class="toc-link disabled">${sub.title}</span>`; 
               }
-              html += `</li>`;
+              html += '</li>';
             });
             html += '</ul>';
           }
 
-          html += `</li>`;
+          html += '</li>';
         });
-        html += `</ul></li>`;
+        html += '</ul></li>';
       });
       html += '</ul>';
       return html;
@@ -936,36 +935,31 @@ window.loadMorePosts = loadMorePosts;
       }
     };
     
-    // 💡 북카드 토글 로직 (스크롤 중앙 정렬 포함)
+    // 💡 북카드 토글 로직 (스크롤 중앙 정렬 개선)
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        // 현재 클릭된 카드의 expanded 상태를 확인
         const isCurrentlyExpanded = card.classList.contains('expanded');
 
-        // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
+        // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
         document.querySelectorAll('.book-card').forEach(c => {
-           // 현재 카드와 다른 카드만 닫음
            if (c !== card) {
              c.classList.remove('expanded'); 
            }
         });
         
-        // **2. 현재 클릭된 카드의 expanded 상태 토글**
-        // - 닫혀있었다면 펼치고
-        // - 열려있었다면 닫음
+        // 2. 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded', !isCurrentlyExpanded);
 
-        // 캐러셀 스크롤 이동 (선택적: 펼쳐진 카드가 잘 보이도록)
-        // 펼쳐졌을 때만 스크롤
+        // 3. 캐러셀 스크롤 이동 (데스크톱/모바일 모두 중앙 정렬 시도)
         if (!isCurrentlyExpanded) {
             const carousel = card.closest('.carousel');
             if (carousel) {
-                // ✅ 모바일 스크롤 중앙 정렬 로직
                 const cardLeft = card.offsetLeft;
                 const cardWidth = card.offsetWidth; 
                 const carouselWidth = carousel.clientWidth;
 
                 // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
+                // 이는 데스크톱이든 모바일이든 스크롤 가능한 영역의 중앙에 오게 하는 일반적인 방법입니다.
                 const scrollTarget = cardLeft + (cardWidth / 2) - (carouselWidth / 2);
 
                 carousel.scrollTo({
