@@ -143,7 +143,7 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     /* ---------------------------------------------------- */
-    /* ✅ [수정] 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
+    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
@@ -164,7 +164,7 @@
       background: var(--panel-2); 
     }
 
-    /* ⭐ [수정] 클릭 시 카드 전체가 커지게 */
+    /* ⭐ 클릭 시 카드 전체가 커지게 */
     .book-card.expanded {
         width: 300px; /* 클릭 시 폭 확장 */
         /* height는 목차 내용에 따라 유동적으로 늘어나므로 지정하지 않음 */
@@ -180,6 +180,23 @@
     .book-cover-wrapper {
         overflow: hidden;
         border-radius: var(--radius) var(--radius) 0 0;
+        /* 활성화 표시를 위한 스타일 추가 */
+        border: 4px solid transparent; 
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    /* 🎯 북커버 활성화 표시 스타일 */
+    .book-cover-wrapper.active {
+      /* 라이트 모드 */
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5); /* 은은한 네온 효과 */
+    }
+    
+    html.dark .book-cover-wrapper.active {
+      /* 다크 모드: 더 밝게 빛나도록 */
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.8), 
+                  0 0 25px rgba(var(--primary-rgb), 0.4);
     }
 
     .book-cover {
@@ -220,7 +237,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ [수정] 목차 스타일: 패널이 아래로 펼쳐지도록 재구성 */
+    /* ✅ 목차 스타일: 패널이 아래로 펼쳐지도록 재구성 */
     /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
@@ -228,7 +245,7 @@
       font-size: 0.9rem;
       border-top: 1px solid var(--border);
       
-      /* ⭐ [수정] 목차 펼침 기능 복구: max-height와 overflow: hidden 사용 */
+      /* ⭐ 목차 펼침 기능 복구: max-height와 overflow: hidden 사용 */
       max-height: 0;
       overflow: hidden; 
       transition: all 0.5s ease-out; /* 조금 더 부드러운 펼침 */
@@ -336,7 +353,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* 📱 [수정] 모바일 최적화 (640px 이하) - 북카드 크기 */
+    /* 📱 모바일 최적화 (640px 이하) - 북카드 크기 */
     /* ---------------------------------------------------- */
     @media (max-width: 640px){
       .carousel {
@@ -487,6 +504,7 @@
     html.dark #load-more-btn:hover {
         background: #ffffff; 
         color: var(--bg); 
+        border-color: var(--bg);
         box-shadow: 0 6px 12px rgba(255, 255, 255, 0.3);
         transform: translateY(-2px); 
     }
@@ -896,17 +914,19 @@ window.loadMorePosts = loadMorePosts;
       }
     };
     
-    // 💡 북카드 토글 로직 유지
+    // 💡 북카드 토글 로직 수정 (활성화 표시 추가)
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
         // 현재 클릭된 카드의 expanded 상태를 확인
         const isCurrentlyExpanded = card.classList.contains('expanded');
+        const coverWrapper = card.querySelector('.book-cover-wrapper');
 
         // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
         document.querySelectorAll('.book-card').forEach(c => {
            // 현재 카드와 다른 카드만 닫음
            if (c !== card) {
              c.classList.remove('expanded'); 
+             c.querySelector('.book-cover-wrapper').classList.remove('active'); // 다른 카드의 active 제거
            }
         });
         
@@ -914,6 +934,12 @@ window.loadMorePosts = loadMorePosts;
         // - 닫혀있었다면 펼치고
         // - 열려있었다면 닫음
         card.classList.toggle('expanded', !isCurrentlyExpanded);
+
+        // **3. 북커버 활성화 표시 토글**
+        // expanded 상태에 따라 active 클래스 추가/제거
+        if (coverWrapper) {
+            coverWrapper.classList.toggle('active', !isCurrentlyExpanded);
+        }
 
         // 캐러셀 스크롤 이동 (선택적: 펼쳐진 카드가 잘 보이도록)
         // 펼쳐졌을 때만 스크롤
