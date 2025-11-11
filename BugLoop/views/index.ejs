@@ -143,7 +143,7 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     /* ---------------------------------------------------- */
-    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
+    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 (최종 수정) */
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
@@ -266,7 +266,7 @@
       max-height: 0;
       overflow: hidden; 
       /* GPU 가속 유도 */
-      will-change: max-height, opacity; 
+      will-change: max-height, opacity, transform; 
       transition: all 0.5s ease-out; 
       padding: 0 16px;
       opacity: 0;
@@ -651,7 +651,7 @@
             <% }) %>
           </ul>
         </li>
-      <% }) %>
+      <% %>
     </ul>
 
             </div>
@@ -950,18 +950,27 @@ window.loadMorePosts = loadMorePosts;
         // 2. 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded', !isCurrentlyExpanded);
 
-        // 3. 캐러셀 스크롤 이동 (데스크톱/모바일 모두 중앙 정렬 시도)
+        // 3. 캐러셀 스크롤 이동 (데스크톱/모바일 중앙 정렬)
         if (!isCurrentlyExpanded) {
             const carousel = card.closest('.carousel');
             if (carousel) {
                 const cardLeft = card.offsetLeft;
-                const cardWidth = card.offsetWidth; 
                 const carouselWidth = carousel.clientWidth;
+                
+                let expandedCardWidth;
+                
+                // 윈도우 폭에 따른 확장 폭 예측
+                if (window.innerWidth <= 640) {
+                    expandedCardWidth = 250; // 모바일 확장 폭 (CSS에서 정의된 값)
+                } else {
+                    expandedCardWidth = 300; // 데스크톱 확장 폭 (CSS에서 정의된 값)
+                }
 
-                // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
-                // 이는 데스크톱이든 모바일이든 스크롤 가능한 영역의 중앙에 오게 하는 일반적인 방법입니다.
-                const scrollTarget = cardLeft + (cardWidth / 2) - (carouselWidth / 2);
-
+                // 목표 스크롤 위치: 카드의 시작 위치 + (확장될 카드 폭 / 2) - (뷰포트 폭 / 2)
+                // 이 계산은 카드가 이미 확장된 크기라고 가정하고 중앙을 맞춥니다.
+                const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
+                
+                // 스크롤 이동
                 carousel.scrollTo({
                     left: scrollTarget,
                     behavior: 'smooth'
