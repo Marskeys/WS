@@ -136,7 +136,7 @@
     .carousel {
       display: flex;
       margin-top:12px;
-      gap: 20px;
+      gap: 16px; /* ⭐ [수정] 카드 간격 줄임 */
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       padding-bottom: 8px;
@@ -144,10 +144,10 @@
 
     .carousel::-webkit-scrollbar { display: none; }
 
-    /* ✅ [수정] 북카드: 그림자 및 호버 효과 제거 */
+    /* ✅ [수정] 북카드 크기 축소 */
     .book-card {
       flex-shrink: 0;
-      width: 230px;
+      width: 180px; /* ⭐ [수정] 기본 북카드 폭 축소 (230px -> 180px) */
       background: var(--panel);
       border-radius: var(--radius);
       overflow: hidden;
@@ -155,33 +155,52 @@
       transition: all 0.3s ease;
       scroll-snap-align: start;
       cursor: pointer;
-      /* box-shadow 제거 */
       position: relative;
     }
 
     .book-card:hover {
-      /* transform: translateY(-4px); 제거 */
-      background: var(--panel-2); /* 호버 시 배경색 변화는 유지 */
-      /* box-shadow 제거 */
+      background: var(--panel-2); 
     }
 
-    html.dark .book-card { 
-      /* box-shadow 제거 */
-    }
     html.dark .book-card:hover { 
-      /* box-shadow 제거 */
-      background: var(--panel-2); /* 호버 시 배경색 변화는 유지 */
+      background: var(--panel-2); 
+    }
+
+    /* ---------------------------------------------------- */
+    /* ✅ 🆕 북카드 확장 시 스타일 (책표지만 커지게) */
+    /* ---------------------------------------------------- */
+    .book-card.expanded {
+      /* 펼쳐질 때 북카드 전체의 크기 변화는 없음 (목차만 보임) */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    }
+    
+    .book-cover-wrapper {
+        overflow: hidden;
+        border-radius: var(--radius) var(--radius) 0 0;
     }
 
     .book-cover {
       width: 100%;
-      height: 360px;
+      height: 280px; /* ⭐ [수정] 커버 높이 축소 (360px -> 280px) */
       object-fit: cover;
       display: block;
+      /* 북커버에만 트랜지션 적용 */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
     }
+    
+    /* ⭐ [수정] 클릭 시 해당 책표지만 커지게 */
+    .book-card.expanded .book-cover {
+        transform: scale(1.1); 
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+    html.dark .book-card.expanded .book-cover {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    /* ---------------------------------------------------- */
+
 
     .book-info {
-      padding: 14px 10px;
+      padding: 12px 8px; /* ⭐ [수정] 패딩 축소 */
       text-align: center;
       border-top: 1px solid var(--border);
       background: var(--panel-2);
@@ -189,7 +208,7 @@
 
     .book-title {
       font-weight: 600;
-      font-size: 1.05rem;
+      font-size: 1rem; /* ⭐ [수정] 폰트 크기 축소 (1.05rem -> 1rem) */
       color: var(--ink);
       line-height: 1.4;
       white-space: normal;
@@ -203,27 +222,49 @@
       width: 40%;
       height: 2px;
       background: var(--primary);
-      margin: 8px auto 0;
+      margin: 6px auto 0; /* ⭐ [수정] 마진 축소 */
       border-radius: 1px;
       opacity: 0.7;
     }
 
+    /* ---------------------------------------------------- */
+    /* ✅ [수정] 목차 스타일: 패널이 펼쳐지지 않고 내용만 보이게 */
+    /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
       color: var(--ink-2);
       font-size: 0.9rem;
       border-top: 1px solid var(--border);
-      max-height: 0;
+      /* max-height 제거 */
+      height: auto; /* 높이는 자동으로 */
       overflow: hidden;
-      transition: all 0.35s ease;
+      /* 목차 내용이 서서히 나타나도록 트랜지션 추가 */
+      transition: all 0.35s ease; 
       padding: 0 16px;
       opacity: 0;
+      /* 펼쳐지지 않은 상태에서는 보이지 않도록 */
+      visibility: hidden; 
+      position: absolute; /* 목차 패널이 펼쳐지지 않도록 Absolute로 배치 */
+      top: 100%; /* 북카드 아래에 배치 */
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
+    
+    html.dark .book-toc {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    }
+
     .book-card.expanded .book-toc {
       padding: 16px;
-      max-height: 2000px;
+      /* max-height: 2000px; 제거 */
       opacity: 1;
+      visibility: visible;
     }
+    /* ---------------------------------------------------- */
+
 
     .book-toc h4 {
       margin: 0 0 8px 0;
@@ -315,7 +356,28 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ 디자인 개선: 최근 게시물 레이아웃 및 버튼 스타일 */
+    /* 📱 [수정] 모바일 최적화 (640px 이하) - 북카드 더 작게 */
+    /* ---------------------------------------------------- */
+    @media (max-width: 640px){
+      .carousel {
+        gap: 12px; /* 모바일 카드 간격 더 줄임 */
+      }
+      .book-card {
+        width: 140px; /* ⭐ [수정] 모바일 북카드 폭 축소 (180px -> 140px) */
+      }
+      .book-cover {
+        height: 200px; /* ⭐ [수정] 모바일 커버 높이 축소 (280px -> 200px) */
+      }
+      .book-info {
+        padding: 10px 6px; /* 모바일 패딩 축소 */
+      }
+      .book-title {
+        font-size: 0.9rem; /* 모바일 폰트 크기 축소 */
+      }
+    }
+    
+    /* ---------------------------------------------------- */
+    /* ⬇️ 이하 기존 CSS는 유지 (최근 게시물, 푸터 등) ⬇️ */
     /* ---------------------------------------------------- */
 
     .recent-posts {
@@ -544,7 +606,9 @@
     %>
 
     <div class="book-card" data-index="0" data-book-id="cute-acoustics">
-      <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+      <div class="book-cover-wrapper">
+        <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+      </div>
       <div class="book-info">
         <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
         <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
@@ -615,7 +679,9 @@
     </div>
 
     <div class="book-card" data-index="1">
-      <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+      <div class="book-cover-wrapper">
+        <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+      </div>
       <div class="book-info"><div class="book-title">미완성 고통</div></div>
       <div class="book-toc">
         <h4>목차</h4>
@@ -628,7 +694,9 @@
     </div>
 
     <div class="book-card" data-index="2">
-      <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+      <div class="book-cover-wrapper">
+        <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+      </div>
       <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
       <div class="book-toc">
         <h4>목차</h4>
@@ -641,7 +709,9 @@
     </div>
 
     <div class="book-card" data-index="3">
-      <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
+      <div class="book-cover-wrapper">
+        <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
+      </div>
       <div class="book-info"><div class="book-title">계산의 온기</div></div>
       <div class="book-toc">
         <h4>목차</h4>
@@ -875,7 +945,7 @@ window.loadMorePosts = loadMorePosts;
       }
     };
     
-    // 💡 북카드 토글 로직 수정
+    // 💡 북카드 토글 로직 수정 (요청에 따라 다른 카드는 영향 받지 않도록)
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
         // 현재 클릭된 카드의 expanded 상태를 확인
@@ -883,15 +953,17 @@ window.loadMorePosts = loadMorePosts;
 
         // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
         document.querySelectorAll('.book-card').forEach(c => {
-           c.classList.remove('expanded'); 
+           // 다른 카드만 닫고, 현재 카드는 건드리지 않음
+           if (c !== card) {
+             c.classList.remove('expanded'); 
+           }
         });
         
-        // **2. 현재 클릭된 카드가 닫혀있었다면 (즉, isCurrentlyExpanded가 false였다면) 다시 펼침**
-        if (!isCurrentlyExpanded) {
-            card.classList.add('expanded');
-        }
-        // 만약 클릭된 카드가 이미 열려있었다면 (isCurrentlyExpanded가 true였다면),
-        // 1단계에서 닫혔고, 2단계에서 다시 열지 않으므로, 클릭으로 닫는 동작이 됩니다.
+        // **2. 현재 클릭된 카드의 expanded 상태 토글**
+        // - 닫혀있었다면 펼치고
+        // - 열려있었다면 닫음
+        card.classList.toggle('expanded', !isCurrentlyExpanded);
+
       });
     });
   })();
