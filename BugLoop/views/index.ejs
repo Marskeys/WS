@@ -651,7 +651,7 @@
             <% }) %>
           </ul>
         </li>
-      <% %>
+      <% }) %>
     </ul>
 
             </div>
@@ -905,7 +905,9 @@ window.loadMorePosts = loadMorePosts;
               if (sub.url) {
                 html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
-                html += `<span class="toc-link disabled">${sub.title}</span>`; 
+                // 🚨 여기서 발생했던 구문 오류를 수정합니다.
+                // 이전: html += `<span class="toc-link disabled">${sub.title}</span>`; 
+                html += '<span class="toc-link disabled">' + sub.title + '</span>'; 
               }
               html += '</li>';
             });
@@ -961,13 +963,14 @@ window.loadMorePosts = loadMorePosts;
                 
                 // 윈도우 폭에 따른 확장 폭 예측
                 if (window.innerWidth <= 640) {
-                    expandedCardWidth = 250; // 모바일 확장 폭 (CSS에서 정의된 값)
+                    // 모바일 확장 폭: 250px
+                    expandedCardWidth = 250; 
                 } else {
-                    expandedCardWidth = 300; // 데스크톱 확장 폭 (CSS에서 정의된 값)
+                    // 데스크톱 확장 폭: 300px
+                    expandedCardWidth = 300; 
                 }
 
                 // 목표 스크롤 위치: 카드의 시작 위치 + (확장될 카드 폭 / 2) - (뷰포트 폭 / 2)
-                // 이 계산은 카드가 이미 확장된 크기라고 가정하고 중앙을 맞춥니다.
                 const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
                 
                 // 스크롤 이동
