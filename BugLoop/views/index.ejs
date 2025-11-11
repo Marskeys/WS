@@ -874,11 +874,24 @@ window.loadMorePosts = loadMorePosts;
         });
       }
     };
-
+    
+    // 💡 북카드 토글 로직 수정
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
-        document.querySelectorAll('.book-card').forEach(c => { if (c !== card) c.classList.remove('expanded'); });
-        card.classList.toggle('expanded');
+        // 현재 클릭된 카드의 expanded 상태를 확인
+        const isCurrentlyExpanded = card.classList.contains('expanded');
+
+        // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
+        document.querySelectorAll('.book-card').forEach(c => {
+           c.classList.remove('expanded'); 
+        });
+        
+        // **2. 현재 클릭된 카드가 닫혀있었다면 (즉, isCurrentlyExpanded가 false였다면) 다시 펼침**
+        if (!isCurrentlyExpanded) {
+            card.classList.add('expanded');
+        }
+        // 만약 클릭된 카드가 이미 열려있었다면 (isCurrentlyExpanded가 true였다면),
+        // 1단계에서 닫혔고, 2단계에서 다시 열지 않으므로, 클릭으로 닫는 동작이 됩니다.
       });
     });
   })();
