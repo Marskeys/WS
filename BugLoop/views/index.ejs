@@ -137,7 +137,8 @@
       gap: 16px; 
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      padding-bottom: 8px;
+      /* 북카드가 위로 확장될 공간을 확보하기 위해 충분한 padding-top 추가 */
+      padding: 10px 0 8px 0; 
     }
 
     .carousel::-webkit-scrollbar { display: none; }
@@ -149,65 +150,77 @@
       flex-shrink: 0;
       width: 180px; /* 기본 북카드 폭 축소 (180px) */
       background: var(--panel);
+      /* 전체 카드 테두리를 담당하기 위해 overflow: hidden 제거 */
       border-radius: var(--radius);
-      overflow: hidden;
       color: var(--ink);
-      /* transition에 width, height 추가하여 부드럽게 커지도록 */
       transition: all 0.3s ease, width 0.4s ease, height 0.4s ease; 
       scroll-snap-align: start;
       cursor: pointer;
       position: relative;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
+      /* 카드가 커질 때 다른 요소 위로 뜨도록 설정 */
+      z-index: 1; 
+      /* 활성화 테두리를 적용하기 위해 border 추가 */
+      border: 2px solid transparent;
+      padding: 0; /* 내부 패딩 제거 */
     }
 
     .book-card:hover {
       background: var(--panel-2); 
     }
 
-    /* ⭐ 클릭 시 카드 전체가 커지게 */
+    /* ⭐ 클릭 시 카드 전체가 커지고 활성화 효과 적용 */
     .book-card.expanded {
         width: 300px; /* 클릭 시 폭 확장 */
-        /* height는 목차 내용에 따라 유동적으로 늘어나므로 지정하지 않음 */
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        transform: translateY(-5px); /* 약간 위로 떠오르는 효과 */
+        transform: translateY(-8px); /* 약간 위로 더 떠오르는 효과 */
         background: var(--panel);
+        
+        /* 🎯 활성화 테두리 및 그림자 (라이트 모드) */
+        border-color: var(--primary); 
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.5), 
+                    0 0 0 4px rgba(var(--primary-rgb), 0.2); /* 은은한 외곽선 */
+        
+        z-index: 10; /* 가장 위로 올라오도록 */
     }
     
     html.dark .book-card.expanded {
-        box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        /* 🎯 활성화 테두리 및 그림자 (다크 모드) */
+        border-color: var(--primary);
+        box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.8),
+                    0 0 0 4px rgba(var(--primary-rgb), 0.4);
     }
+
+
+    /* 카드 내부 컨텐츠 래퍼: 테두리 둥글게 처리 */
+    .book-content-wrapper {
+        border-radius: var(--radius);
+        overflow: hidden; /* 내부 컨텐츠는 오버플로우 숨김 */
+    }
+
 
     .book-cover-wrapper {
         overflow: hidden;
         border-radius: var(--radius) var(--radius) 0 0;
-        /* 활성화 표시를 위한 스타일 추가 */
-        border: 4px solid transparent; 
-        transition: border-color 0.3s, box-shadow 0.3s;
+        /* 활성화 테두리 효과를 card.expanded로 이동했으므로, 여기서는 제거 */
     }
 
-    /* 🎯 북커버 활성화 표시 스타일 */
-    .book-cover-wrapper.active {
-      /* 라이트 모드 */
-      border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5); /* 은은한 네온 효과 */
-    }
-    
-    html.dark .book-cover-wrapper.active {
-      /* 다크 모드: 더 밝게 빛나도록 */
-      border-color: var(--primary);
-      box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.8), 
-                  0 0 25px rgba(var(--primary-rgb), 0.4);
-    }
 
     .book-cover {
       width: 100%;
       height: 290px; /* 커버 높이 축소 (280px) */
       object-fit: cover;
       display: block;
-      /* 이전 커버 확대 효과 제거 */
       transition: all 0.3s ease; 
     }
     
+    @media (max-width: 640px){
+      .book-cover {
+        height: 220px; /* 모바일 커버 높이 */
+      }
+    }
+
+
     .book-info {
       padding: 12px 8px; 
       text-align: center;
@@ -251,9 +264,6 @@
       transition: all 0.5s ease-out; /* 조금 더 부드러운 펼침 */
       padding: 0 16px;
       opacity: 0;
-      
-      /* position: absolute; 제거 (북카드와 함께 크기가 늘어나도록) */
-      z-index: 1; /* 다른 카드 위로 올라올 수 있도록 z-index 유지 */
     }
 
     .book-card.expanded .book-toc {
@@ -364,9 +374,6 @@
       }
       .book-card.expanded {
         width: 250px; /* 모바일 확장 폭 */
-      }
-      .book-cover {
-        height: 220px; /* 모바일 커버 높이 */
       }
       .book-info {
         padding: 10px 6px; 
@@ -575,120 +582,128 @@
     %>
 
     <div class="book-card" data-index="0" data-book-id="cute-acoustics">
-      <div class="book-cover-wrapper">
-        <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
-      </div>
-      <div class="book-info">
-        <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
-        <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-          저자: <%= locale.books.cute_acoustics.author %>
-        </div>
-      </div>
-      <div class="book-toc">
-        <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
-        
-        <div class="pagination" data-book-id="cute-acoustics-pagination">
-          <% for(let i = 1; i <= totalPages; i++) { %>
-            <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
-              <%= i %>
-            </span>
-            <% if (i < totalPages) { %><span class="pagination-divider">|</span><% } %>
-          <% } %>
-        </div>
+        <div class="book-content-wrapper"> 
+          <div class="book-cover-wrapper">
+            <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+          </div>
+          <div class="book-info">
+            <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              저자: <%= locale.books.cute_acoustics.author %>
+            </div>
+          </div>
+          <div class="book-toc">
+            <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
+            
+            <div class="pagination" data-book-id="cute-acoustics-pagination">
+              <% for(let i = 1; i <= totalPages; i++) { %>
+                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
+                  <%= i %>
+                </span>
+                <% if (i < totalPages) { %><span class="pagination-divider">|</span><% } %>
+              <% } %>
+            </div>
 
-        <div class="paginated-toc" data-book-id="cute-acoustics-toc">
-      <ul>
-  <% paginatedToc[0].forEach(section => { %>
-    <li>
-      <h5><%= section.section %></h5>
-      <ul>
-        <% section.chapters.forEach(ch => { %>
-          <li>
-            <% if (ch.url) { %>
-              <a 
-                href="/<%= lang %>/books/cuteAcoustics/contents/<%= ch.url %>" 
-                class="toc-link active"
-              >
-                <%= ch.title %>
-              </a>
-            <% } else { %>
-              <span class="toc-link disabled"><%= ch.title %></span>
-            <% } %>
+            <div class="paginated-toc" data-book-id="cute-acoustics-toc">
+          <ul>
+      <% paginatedToc[0].forEach(section => { %>
+        <li>
+          <h5><%= section.section %></h5>
+          <ul>
+            <% section.chapters.forEach(ch => { %>
+              <li>
+                <% if (ch.url) { %>
+                  <a 
+                    href="/<%= lang %>/books/cuteAcoustics/contents/<%= ch.url %>" 
+                    class="toc-link active"
+                  >
+                    <%= ch.title %>
+                  </a>
+                <% } else { %>
+                  <span class="toc-link disabled"><%= ch.title %></span>
+                <% } %>
 
-            <% if (ch.sub) { %>
-              <ul>
-                <% ch.sub.forEach(sub => { %>
-                  <li>
-                    <% if (sub.url) { %>
-                      <a 
-                        href="/<%= lang %>/books/cuteAcoustics/contents/<%= sub.url %>" 
-                        class="toc-link active"
-                      >
-                        <%= sub.title %>
-                      </a>
-                    <% } else { %>
-                      <span class="toc-link disabled">${sub.title}</span>
-                    <% } %>
-                  </li>
-                <% }) %>
-              </ul>
-            <% } %>
-          </li>
-        <% }) %>
-      </ul>
-    </li>
-  <% }) %>
-</ul>
+                <% if (ch.sub) { %>
+                  <ul>
+                    <% ch.sub.forEach(sub => { %>
+                      <li>
+                        <% if (sub.url) { %>
+                          <a 
+                            href="/<%= lang %>/books/cuteAcoustics/contents/<%= sub.url %>" 
+                            class="toc-link active"
+                          >
+                            <%= sub.title %>
+                          </a>
+                        <% } else { %>
+                          <span class="toc-link disabled">${sub.title}</span>
+                        <% } %>
+                      </li>
+                    <% }) %>
+                  </ul>
+                <% } %>
+              </li>
+            <% }) %>
+          </ul>
+        </li>
+      <% }) %>
+    </ul>
 
+            </div>
+            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+              총 <%= totalSections %>개 섹션
+            </div>
+          </div>
         </div>
-        <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-          총 <%= totalSections %>개 섹션
-        </div>
-      </div>
     </div>
 
     <div class="book-card" data-index="1">
-      <div class="book-cover-wrapper">
-        <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
-      </div>
-      <div class="book-info"><div class="book-title">미완성 고통</div></div>
-      <div class="book-toc">
-        <h4>목차</h4>
-        <ul>
-          <li>1장. 불완전함의 철학</li>
-          <li>2장. 창작과 결핍</li>
-          <li>3장. 완성이라는 환상</li>
-        </ul>
+      <div class="book-content-wrapper">
+        <div class="book-cover-wrapper">
+          <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+        </div>
+        <div class="book-info"><div class="book-title">미완성 고통</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 불완전함의 철학</li>
+            <li>2장. 창작과 결핍</li>
+            <li>3장. 완성이라는 환상</li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <div class="book-card" data-index="2">
-      <div class="book-cover-wrapper">
-        <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
-      </div>
-      <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
-      <div class="book-toc">
-        <h4>목차</h4>
-        <ul>
-          <li>1장. 반주의 구조 이해</li>
-          <li>2장. 코드 보이싱의 예술</li>
-          <li>3장. 리듬의 설계와 다이내믹</li>
-        </ul>
+      <div class="book-content-wrapper">
+        <div class="book-cover-wrapper">
+          <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+        </div>
+        <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 반주의 구조 이해</li>
+            <li>2장. 코드 보이싱의 예술</li>
+            <li>3장. 리듬의 설계와 다이내믹</li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <div class="book-card" data-index="3">
-      <div class="book-cover-wrapper">
-        <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
-      </div>
-      <div class="book-info"><div class="book-title">계산의 온기</div></div>
-      <div class="book-toc">
-        <h4>목차</h4>
-        <ul>
-          <li>1장. 기계와 인간의 경계</li>
-          <li>2장. 연산의 감정</li>
-          <li>3장. 알고리즘의 온도</li>
-        </ul>
+      <div class="book-content-wrapper">
+        <div class="book-cover-wrapper">
+          <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
+        </div>
+        <div class="book-info"><div class="book-title">계산의 온기</div></div>
+        <div class="book-toc">
+          <h4>목차</h4>
+          <ul>
+            <li>1장. 기계와 인간의 경계</li>
+            <li>2장. 연산의 감정</li>
+            <li>3장. 알고리즘의 온도</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -884,7 +899,8 @@ window.loadMorePosts = loadMorePosts;
               if (sub.url) {
                 html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
-                html += `<span class="toc-link disabled">${sub.title}</span>`;
+                // EJS 템플릿 리터럴 대신 일반 문자열로 변경
+                html += `<span class="toc-link disabled">${sub.title}</span>`; 
               }
               html += `</li>`;
             });
@@ -914,19 +930,18 @@ window.loadMorePosts = loadMorePosts;
       }
     };
     
-    // 💡 북카드 토글 로직 수정 (활성화 표시 추가)
+    // 💡 북카드 토글 로직 수정
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
         // 현재 클릭된 카드의 expanded 상태를 확인
         const isCurrentlyExpanded = card.classList.contains('expanded');
-        const coverWrapper = card.querySelector('.book-cover-wrapper');
 
         // **1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)**
         document.querySelectorAll('.book-card').forEach(c => {
            // 현재 카드와 다른 카드만 닫음
            if (c !== card) {
              c.classList.remove('expanded'); 
-             c.querySelector('.book-cover-wrapper').classList.remove('active'); // 다른 카드의 active 제거
+             // cover-wrapper에 active를 넣지 않기로 했으므로, 커버 래퍼 관련 로직 삭제 
            }
         });
         
@@ -934,12 +949,6 @@ window.loadMorePosts = loadMorePosts;
         // - 닫혀있었다면 펼치고
         // - 열려있었다면 닫음
         card.classList.toggle('expanded', !isCurrentlyExpanded);
-
-        // **3. 북커버 활성화 표시 토글**
-        // expanded 상태에 따라 active 클래스 추가/제거
-        if (coverWrapper) {
-            coverWrapper.classList.toggle('active', !isCurrentlyExpanded);
-        }
 
         // 캐러셀 스크롤 이동 (선택적: 펼쳐진 카드가 잘 보이도록)
         // 펼쳐졌을 때만 스크롤
