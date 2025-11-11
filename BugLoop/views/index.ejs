@@ -143,7 +143,7 @@
     .carousel::-webkit-scrollbar { display: none; }
 
     /* ---------------------------------------------------- */
-    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 (최종 수정) */
+    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
     /* ---------------------------------------------------- */
     .book-card {
       flex-shrink: 0;
@@ -255,7 +255,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* ✅ 목차 스타일: 버벅임 개선을 위해 will-change 추가 */
+    /* ✅ 목차 스타일: JavaScript로 height 제어 (버벅임 해결) */
     /* ---------------------------------------------------- */
     .book-toc {
       background: var(--panel-2);
@@ -263,19 +263,22 @@
       font-size: 0.9rem;
       border-top: 1px solid var(--border);
       
-      max-height: 0;
+      /* 초기 높이를 0으로 설정 */
+      height: 0; 
       overflow: hidden; 
       /* GPU 가속 유도 */
-      will-change: max-height, opacity, transform; 
-      transition: all 0.5s ease-out; 
+      will-change: height, opacity, transform; 
+      /* height 트랜지션을 사용하여 부드럽게 열리게 함 */
+      transition: height 0.5s ease-out, opacity 0.5s ease-out; 
       padding: 0 16px;
       opacity: 0;
     }
 
+    /* .book-card.expanded .book-toc는 JS에서 높이를 계산하여 인라인 스타일로 설정 */
     .book-card.expanded .book-toc {
       padding: 16px;
-      max-height: 2000px; /* 충분히 큰 값 유지 */
       opacity: 1;
+      /* height는 JS에서 설정되지만, 기본적으로 padding이 적용되어야 함 */
     }
     /* ---------------------------------------------------- */
 
@@ -598,7 +601,7 @@
               저자: <%= locale.books.cute_acoustics.author %>
             </div>
           </div>
-          <div class="book-toc">
+          <div class="book-toc" style="padding: 0 16px;"> 
             <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
             
             <div class="pagination" data-book-id="cute-acoustics-pagination">
@@ -641,7 +644,7 @@
                             <%= sub.title %>
                           </a>
                         <% } else { %>
-                          <span class="toc-link disabled">${sub.title}</span>
+                          <span class="toc-link disabled"><%= sub.title %></span>
                         <% } %>
                       </li>
                     <% }) %>
@@ -668,7 +671,7 @@
           <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
         </div>
         <div class="book-info"><div class="book-title">미완성 고통</div></div>
-        <div class="book-toc">
+        <div class="book-toc" style="padding: 0 16px;">
           <h4>목차</h4>
           <ul>
             <li>1장. 불완전함의 철학</li>
@@ -685,7 +688,7 @@
           <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
         </div>
         <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
-        <div class="book-toc">
+        <div class="book-toc" style="padding: 0 16px;">
           <h4>목차</h4>
           <ul>
             <li>1장. 반주의 구조 이해</li>
@@ -702,7 +705,7 @@
           <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
         </div>
         <div class="book-info"><div class="book-title">계산의 온기</div></div>
-        <div class="book-toc">
+        <div class="book-toc" style="padding: 0 16px;">
           <h4>목차</h4>
           <ul>
             <li>1장. 기계와 인간의 경계</li>
@@ -871,7 +874,9 @@ window.loadMorePosts = loadMorePosts;
 
   <script>
   (() => {
-    // EJS 컴파일 오류를 일으키는 불필요한 주석 잔여물 제거
+    // ----------------------------------------------------
+    // 목차 렌더링 로직 (기존 유지)
+    // ----------------------------------------------------
     const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
     const itemsPerPage = 3;
     const totalPages = Math.ceil(tocData.length / itemsPerPage);
@@ -905,8 +910,6 @@ window.loadMorePosts = loadMorePosts;
               if (sub.url) {
                 html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
               } else {
-                // 🚨 여기서 발생했던 구문 오류를 수정합니다.
-                // 이전: html += `<span class="toc-link disabled">${sub.title}</span>`; 
                 html += '<span class="toc-link disabled">' + sub.title + '</span>'; 
               }
               html += '</li>';
@@ -926,33 +929,80 @@ window.loadMorePosts = loadMorePosts;
     window.changePage = (event, bookId, pageNumber) => {
       event.stopPropagation();
       if (bookId !== 'cute-acoustics') return;
-      const tocContainer = document.querySelector('[data-book-id="cute-acoustics-toc"]');
-      const paginationContainer = document.querySelector('[data-book-id="cute-acoustics-pagination"]');
+      const card = document.querySelector(`[data-book-id="${bookId}"]`);
+      const tocContainer = card.querySelector('[data-book-id="cute-acoustics-toc"]');
+      const paginationContainer = card.querySelector('[data-book-id="cute-acoustics-pagination"]');
+      
       if (tocContainer && paginationContainer) {
         tocContainer.innerHTML = renderTocPage(pageNumber);
         paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
           btn.classList.remove('active');
           if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
         });
+
+        // 💡 페이지 변경 후 목차 높이 재계산 및 적용 (버벅임 해결 로직의 일부)
+        if (card.classList.contains('expanded')) {
+            const tocElement = card.querySelector('.book-toc');
+            if (tocElement) {
+                // 임시로 높이를 auto로 설정하여 실제 높이를 얻은 후 다시 transition을 위해 설정
+                tocElement.style.height = 'auto';
+                const contentHeight = tocElement.scrollHeight + 32; // 16px padding top/bottom 합산 (2 * 16px)
+                tocElement.style.height = `${contentHeight}px`;
+            }
+        }
       }
     };
     
-    // 💡 북카드 토글 로직 (스크롤 중앙 정렬 개선)
+    // ----------------------------------------------------
+    // 북카드 토글 로직 (버벅임 해결 및 스크롤 중앙 정렬 포함)
+    // ----------------------------------------------------
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
         const isCurrentlyExpanded = card.classList.contains('expanded');
+        const tocElement = card.querySelector('.book-toc');
 
         // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
         document.querySelectorAll('.book-card').forEach(c => {
+           const otherToc = c.querySelector('.book-toc');
            if (c !== card) {
              c.classList.remove('expanded'); 
+             if (otherToc) {
+                otherToc.style.height = '0px'; // 닫힐 때는 명시적으로 0으로 설정
+             }
            }
         });
         
         // 2. 현재 클릭된 카드의 expanded 상태 토글
         card.classList.toggle('expanded', !isCurrentlyExpanded);
 
-        // 3. 캐러셀 스크롤 이동 (데스크톱/모바일 중앙 정렬)
+        // 3. 목차 높이 조절 (버벅임 해결 핵심)
+        if (!isCurrentlyExpanded && tocElement) {
+            // 펼쳐질 때
+            // a. 임시로 높이를 auto로 설정하고 padding을 없애서 실제 콘텐츠 높이를 측정
+            tocElement.style.height = 'auto';
+            tocElement.style.padding = '16px'; 
+            
+            // b. 콘텐츠 높이 측정 (transition 적용을 위해)
+            const contentHeight = tocElement.scrollHeight; 
+            
+            // c. 높이를 다시 0으로 설정 후 transition 시작 (브라우저가 리페인트 하지 않도록 미세한 지연)
+            tocElement.style.height = '0px';
+            requestAnimationFrame(() => {
+                // d. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
+                tocElement.style.height = `${contentHeight}px`;
+            });
+
+        } else if (isCurrentlyExpanded && tocElement) {
+            // 닫힐 때
+            // 닫힐 때도 부드럽게 닫히도록 현재 높이를 0으로 트랜지션
+            tocElement.style.height = '0px';
+            // 트랜지션 끝난 후 (0.5초) padding 제거
+            setTimeout(() => {
+                tocElement.style.padding = '0 16px';
+            }, 500); 
+        }
+
+        // 4. 캐러셀 스크롤 이동 (중앙 정렬)
         if (!isCurrentlyExpanded) {
             const carousel = card.closest('.carousel');
             if (carousel) {
@@ -961,19 +1011,15 @@ window.loadMorePosts = loadMorePosts;
                 
                 let expandedCardWidth;
                 
-                // 윈도우 폭에 따른 확장 폭 예측
                 if (window.innerWidth <= 640) {
-                    // 모바일 확장 폭: 250px
                     expandedCardWidth = 250; 
                 } else {
-                    // 데스크톱 확장 폭: 300px
                     expandedCardWidth = 300; 
                 }
 
-                // 목표 스크롤 위치: 카드의 시작 위치 + (확장될 카드 폭 / 2) - (뷰포트 폭 / 2)
+                // 목표 스크롤 위치
                 const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
                 
-                // 스크롤 이동
                 carousel.scrollTo({
                     left: scrollTarget,
                     behavior: 'smooth'
