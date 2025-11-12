@@ -785,9 +785,15 @@
           
           // 3. 텍스트 정리: 연속된 공백(줄바꿈 포함)을 하나의 공백으로 치환하고, 앞뒤 공백 제거
           plainText = plainText.replace(/\s+/g, ' ').trim();
+
+          // 4. HTML 엔티티 코드를 일반 문자로 변환
+          const decodedText = plainText
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&amp;/g, '&');
       
-          // 4. 추출된 텍스트에서 120자만 슬라이스
-          const previewText = plainText.slice(0, 120);
+          // 5. 추출된 텍스트에서 120자만 슬라이스
+          const previewText = decodedText.slice(0, 120);
         %>
         <%= previewText %>...
       </div>
@@ -876,12 +882,22 @@ async function loadMorePosts() {
         
         // 3. 텍스트 정리: 연속된 공백을 하나의 공백으로 치환하고 앞뒤 공백 제거
         plainText = plainText.replace(/\s+/g, ' ').trim();
+
+        // 4. HTML 엔티티 코드를 일반 문자로 변환
+        const decodedText = plainText
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
     
-        // 4. 추출된 텍스트에서 120자만 슬라이스
-        previewText = plainText.slice(0, 120);
+        // 5. 추출된 텍스트에서 120자만 슬라이스
+        previewText = decodedText.slice(0, 120);
       } else if (post.preview) {
         // post.content가 없고 post.preview가 있다면 그걸 사용 (서버에서 이미 정제했을 경우 대비)
-        previewText = post.preview.slice(0, 120); // 120자만 슬라이스
+        let decodedPreview = post.preview
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&');
+        previewText = decodedPreview.slice(0, 120);
       }
       // ----------------------------------------
   
