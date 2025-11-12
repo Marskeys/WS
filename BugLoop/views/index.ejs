@@ -774,8 +774,16 @@
       </div>
 
       <div class="recent-post-preview">
-        <% // HTML 태그(style 포함)를 모두 제거하고 텍스트만 120자까지 표시. %>
-        <%= post.content.replace(/<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '').slice(0, 120) %>...
+        <% 
+          // 📌 수정된 부분: HTML 태그 및 HTML 엔티티 제거 로직 강화
+          // 1. 모든 HTML 태그를 제거
+          let cleanContent = post.content.replace(/<[^>]+>/gi, '');
+          // 2. HTML 엔티티 (예: &lt;, &gt;, &#10;)를 제거
+          cleanContent = cleanContent.replace(/&[a-z0-9]+;|&#[0-9]+;/gi, '');
+          // 3. 남은 공백을 정리 (줄바꿈, 탭, 여러 공백을 단일 공백으로)
+          cleanContent = cleanContent.replace(/\s+/g, ' ').trim();
+        %>
+        <%= cleanContent.slice(0, 120) %>...
       </div>
 
     </div>
