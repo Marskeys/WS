@@ -774,8 +774,22 @@
       </div>
 
       <div class="recent-post-preview">
-        <% // HTML 태그(style 포함)를 모두 제거하고 텍스트만 120자까지 표시. %>
-        <%= post.content.replace(/<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '').slice(0, 120) %>...
+        <% 
+          // 📌 수정된 로직: 목차, 스타일 태그 제거 및 텍스트 정제
+          // 1. 불필요한 HTML 덩어리 제거: 목차 영역 (div.auto-toc)과 스타일 영역 (style)
+          let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
+          cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+          
+          // 2. 모든 남은 HTML 태그 제거 (태그 사이의 텍스트만 남김)
+          let plainText = cleanContent.replace(/<[^>]+>/gi, '');
+          
+          // 3. 텍스트 정리: 연속된 공백(줄바꿈 포함)을 하나의 공백으로 치환하고, 앞뒤 공백 제거
+          plainText = plainText.replace(/\s+/g, ' ').trim();
+      
+          // 4. 추출된 텍스트에서 120자만 슬라이스
+          const previewText = plainText.slice(0, 120);
+        %>
+        <%= previewText %>...
       </div>
 
     </div>
@@ -849,6 +863,27 @@ async function loadMorePosts() {
       }
       
       const formattedDate = post.created_fmt; 
+      
+      // 📌 핵심 수정: 미리보기 텍스트 정제 (post.content가 있는 경우 처리)
+      let previewText = '';
+      if (post.content) {
+        // 1. 불필요한 HTML 덩어리 제거: 목차 영역과 스타일 영역
+        let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
+        cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+        
+        // 2. 모든 남은 HTML 태그 제거
+        let plainText = cleanContent.replace(/<[^>]+>/gi, '');
+        
+        // 3. 텍스트 정리: 연속된 공백을 하나의 공백으로 치환하고 앞뒤 공백 제거
+        plainText = plainText.replace(/\s+/g, ' ').trim();
+    
+        // 4. 추출된 텍스트에서 120자만 슬라이스
+        previewText = plainText.slice(0, 120);
+      } else if (post.preview) {
+        // post.content가 없고 post.preview가 있다면 그걸 사용 (서버에서 이미 정제했을 경우 대비)
+        previewText = post.preview.slice(0, 120); // 120자만 슬라이스
+      }
+      // ----------------------------------------
   
       el.innerHTML = `
         <a href="/${lang}/post/${post.id}" class="recent-post-title">
@@ -864,8 +899,8 @@ async function loadMorePosts() {
         </div>
   
         <div class="recent-post-preview">
-          ${post.preview} 
-          </div>
+          ${previewText}... 
+        </div>
       `;
       
       container.appendChild(el);
