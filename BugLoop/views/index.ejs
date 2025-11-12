@@ -774,7 +774,8 @@
       </div>
 
       <div class="recent-post-preview">
-        <%= post.content.replace(/<[^>]+>/g, '').slice(0, 120) %>...
+        <% // 이 부분이 수정되었습니다: <style> 태그와 나머지 HTML 태그를 모두 제거 %>
+        <%= post.content.replace(/<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '').slice(0, 120) %>...
       </div>
 
     </div>
@@ -1053,7 +1054,7 @@ window.loadMorePosts = loadMorePosts;
                 }
 
                 // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
-                const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
+                const scrollTarget = cardLeft + (expandedCardCardWidth / 2) - (carouselWidth / 2);
                 
                 carousel.scrollTo({
                     left: scrollTarget,
