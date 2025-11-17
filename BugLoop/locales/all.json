@@ -71,8 +71,9 @@
     "header": {
       "mainMenu": "주 메뉴",
       "youtubeLink": "YouTube 바로가기",
-      "review": "리뷰",
-      "palma2pro": "북스 팔마 2 프로",
+      "recentVideos": "최근 업로드된 영상",
+      "palma2pro": "북스 팔마 2 프로 리뷰",
+      "choroideremia": "범맥락막위축증",
       "coming": "콘텐츠 대기 중",
       "audiobook": "오디오북",
       "cuteacoustics": "귀여운 음향학",
@@ -616,8 +617,9 @@
     "header": {
       "mainMenu": "Main Menu",
       "youtubeLink": "Go to YouTube",
-      "review": "Reviews",
-      "palma2pro": "Boox Palma 2 Pro",
+      "recentVideos": "Recent Videos",
+      "palma2pro": "Boox Palma 2 Pro Review",
+      "choroideremia": "Choroideremia",
       "coming": "Content Coming Soon",
       "audiobook": "Audiobooks",
       "cuteacoustics": "Cute Acoustics",
@@ -1161,8 +1163,9 @@
     "header": {
       "mainMenu": "Menu principal",
       "youtubeLink": "Aller sur YouTube",
-      "review": "Critiques",
-      "palma2pro": "Boox Palma 2 Pro",
+      "recentVideos": "Vidéos Récentes",
+      "palma2pro": "Critique Boox Palma 2 Pro",
+      "choroideremia": "Choroïdérémie",
       "coming": "Contenu en attente",
       "audiobook": "Livres audio",
       "cuteacoustics": "Acoustique Mignonne",
@@ -1706,8 +1709,9 @@
     "header": {
       "mainMenu": "主菜单",
       "youtubeLink": "转到 YouTube",
-      "review": "评论",
-      "palma2pro": "Boox Palma 2 Pro",
+      "recentVideos": "最新视频",
+      "palma2pro": "Boox Palma 2 Pro 评论",
+      "choroideremia": "脉络膜萎缩",
       "coming": "内容待定",
       "audiobook": "有声书",
       "cuteacoustics": "可爱的声学",
@@ -2251,8 +2255,9 @@
     "header": {
       "mainMenu": "メインメニュー",
       "youtubeLink": "YouTubeへ移動",
-      "review": "レビュー",
-      "palma2pro": "Boox Palma 2 Pro",
+      "recentVideos": "最新動画",
+      "palma2pro": "Boox Palma 2 Pro レビュー",
+      "choroideremia": "コロイデレミア",
       "coming": "コンテンツ準備中",
       "audiobook": "オーディオブック",
       "cuteacoustics": "可愛い音響学",
@@ -2796,8 +2801,9 @@
     "header": {
       "mainMenu": "Menú principal",
       "youtubeLink": "Ir a YouTube",
-      "review": "Reseñas",
-      "palma2pro": "Boox Palma 2 Pro",
+      "recentVideos": "Vídeos Recientes",
+      "palma2pro": "Reseña Boox Palma 2 Pro",
+      "choroideremia": "Coroideremia",
       "coming": "Contenido en espera",
       "audiobook": "Audiolibros",
       "cuteacoustics": "Acústica Linda",
@@ -3261,6 +3267,1644 @@
               {
                 "id": "8-3",
                 "title": "Una Introducción a la Acústica del Habla",
+                "url": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "de": {
+    "meta": {
+      "title": "Bug Loop | Blog eines Digitalbuchautors",
+      "description": "Ein Blog, der die einzigartigen Überlegungen eines Menschen festhält, der das Medium des Schreibens zutiefst liebt."
+    },
+    "tableHeaders": {
+      "number": "Nr.",
+      "title": "Titel",
+      "author": "Autor",
+      "category": "Kategorie",
+      "date": "Datum",
+      "views": "Aufrufe"
+    },
+    "tabs": {
+      "allPosts": "Alle Beiträge",
+      "searchResults": "Suchergebnisse"
+    },
+    "search": {
+      "resultsFor": "Suchergebnisse für '%s'",
+      "placeholder": "Persönliches Tagebuch des Entwicklers"
+    },
+    "ui": {
+      "home": "Startseite",
+      "backToHome": "Zurück zur Startseite",
+      "tocButton": "Inhaltsverzeichnis",
+      "darkModeLabel": "Dunkelmodus",
+      "darkModeLabelLight": "Lichtmodus",
+      "darkModeToggle": "Thema wechseln",
+      "category": "Kategorie",
+      "author": "Autor",
+      "date": "Datum",
+      "editButton": "Bearbeiten",
+      "deleteButton": "Löschen",
+      "deleteConfirm": "Sind Sie sicher, dass Sie diesen Beitrag löschen möchten?"
+    },
+    "profile": {
+      "profile-title": "Autoren",
+      "profile-job1": "Informations- und Kommunikationstechnologie (IKT)",
+      "profile-name1": "Dongsun Han",
+      "profile-bio1": "Ein lebenslanger Student, der an der Hanyang Cyber University Informatik und Hacking & Informationssicherheit studiert. Er genießt ehrliche, reflektierte Kommunikation durch Schreiben.",
+      "profile-tags1": [
+        "#WebEntwicklung",
+        "#CyberUniversität",
+        "#DigitalBuchLiebhaber",
+        "#WebDesign"
+      ],
+      "profile-job2": "Musik und Akustik",
+      "profile-name2": "Dudongsun",
+      "profile-bio2": "Nach einem B.A. in Komposition an der Hanyang University studierte er zwei Jahre lang Akustik an der Universität Le Mans in Frankreich. Er interessiert sich leidenschaftlich für Musik, die nicht zweckgebunden ist, und für die Werkzeuge – virtuelle Instrumente –, die diese Freiheit ermöglichen.",
+      "profile-tags2": [
+        "#ElektronischeMusik",
+        "#Akustik"
+      ],
+      "profile-job3": "Kognitive Spiele und Gesundheit",
+      "profile-name3": "Sedongsun",
+      "profile-bio3": "Ein stark sehbehinderter Entwickler, der einst Physik an der Universität Le Mans und Sound Design an der Le Mans Beaux-Arts studierte, aber aufgrund mangelnder Anpassung die Studiengänge abbrach. Jetzt widmet er sich der Erforschung von digitalem Wohlbefinden, innerer Stabilität und nachhaltigem Glück durch Technologie.",
+      "profile-tags3": [
+        "#Choroideremie",
+        "#SoundDesign",
+        "#Physik",
+        "#Sehbehinderung",
+        "#HealthTech"
+      ]
+    },
+    "editor": {
+      "editor-title": "BugLoop Editor",
+      "preview-label": "Live-Vorschau",
+      "example-html": "<header>\n  <h1>Meine Erste Webseite</h1>\n  <nav>\n    <ul>\n      <li>Startseite</li>\n      <li>Über uns</li>\n      <li>Kontakt</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Willkommen!</h2>\n    <p>Dies ist ein einfaches HTML-Beispiel.</p>\n  </section>\n\n  <section>\n    <h2>Dinge, die ich liebe</h2>\n    <ul>\n      <li>Katzen</li>\n      <li>Codieren</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dongsun Hans Blog</p>\n</footer>"
+    },
+    "header": {
+      "mainMenu": "Hauptmenü",
+      "youtubeLink": "Zu YouTube",
+      "recentVideos": "Neueste Videos",
+      "palma2pro": "Boox Palma 2 Pro Testbericht",
+      "choroideremia": "Choroideremie",
+      "coming": "Inhalt in Vorbereitung",
+      "audiobook": "Hörbücher",
+      "cuteacoustics": "Süße Akustik",
+      "producer": "Der Pianist Produzent: Mysteriöse Begleittechniken",
+      "unfinished": "Unvollendetes Leiden",
+      "warmth": "Wärme der Berechnung",
+      "music": "Musikinhalte",
+      "game": "Kognitive Spiele",
+      "futureService": "Wir entwickeln einen beispiellosen Dienst, der 2027 veröffentlicht wird. Bleiben Sie dran!"
+    },
+    "index": {
+      "ongoing": "Laufende Serie",
+      "recentPosts": "Neueste Beiträge",
+      "loadMore": "Mehr laden"
+    },
+    "panel": {
+      "title": "Bug Loop — Der Digitalbuchautor",
+      "body": "Ein Buch ist wie Untertitel zu einem Film.<br><br>Um ein Buch wirklich zu lesen, muss man entweder Erfahrung (Erinnerung) oder den Wunsch danach (Vorstellungskraft) besitzen. Buchstaben sind, oberflächlich betrachtet, nur hier und da gezogene Linien. Aber damit die Bedeutung, die zwischen diesen Linien gewoben ist, wirklich spürbar wird, muss sich zuerst eine Beziehung zwischen dem Text und dem Leser bilden. Diese Brücke ist die innere Leinwand des Geistes – auf der Szenen projiziert werden, die nur man selbst in ihrer vollständigen Form sehen kann: Erinnerung und Vorstellungskraft.<br><br>Ein E-Book ist nicht nur ein Buch, das leicht zu kopieren oder zu veröffentlichen ist. Es ist etwas viel Größeres – ein lebendiges Medium aus Licht und Sprache. Dieser Blog ist eine Aufzeichnung meiner Reise, um diesen Wert zu erforschen.",
+      "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "Süße Akustik",
+        "author": "Dudongsun",
+        "toc": [
+          {
+            "section": "Vorwort",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "Vorwort zur Süßen Akustik",
+                "url": "preface"
+              },
+              {
+                "id": "afterword",
+                "title": "Nachwort",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "1. Gesetze des Universums",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "Trägheit: Die Eigenschaft, Veränderungen zu widerstehen",
+                "url": ""
+              },
+              {
+                "id": "1-1-1",
+                "title": "Veränderung und Kraft",
+                "url": ""
+              },
+              {
+                "id": "1-2",
+                "title": "Kraft ist die Tür, die Energie überträgt",
+                "url": ""
+              },
+              {
+                "id": "1-2-1",
+                "title": "Zwei Arten von Energie",
+                "url": ""
+              },
+              {
+                "id": "1-2-2",
+                "title": "Gesetz der Energieerhaltung",
+                "url": ""
+              },
+              {
+                "id": "1-2-3",
+                "title": "Zusammenfassung",
+                "url": ""
+              },
+              {
+                "id": "1-3",
+                "title": "Felder und Partikel (Fortgeschritten)",
+                "url": ""
+              },
+              {
+                "id": "1-3-1",
+                "title": "Struktur des Atoms",
+                "url": ""
+              },
+              {
+                "id": "1-3-2",
+                "title": "Was ist ein Feld?",
+                "url": ""
+              },
+              {
+                "id": "1-3-3",
+                "title": "Neugierig auf Elektronen!",
+                "url": ""
+              },
+              {
+                "id": "1-3-4",
+                "title": "Tieferes Eintauchen in Elementarteilchen",
+                "url": ""
+              },
+              {
+                "id": "1-3-5",
+                "title": "Sind Menschen auch probabilistische Wesen?",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "2. Schwingung und Welle",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "Schwingung: Die besondere Bewegung, die Klang erzeugt",
+                "url": ""
+              },
+              {
+                "id": "2-2",
+                "title": "Voraussetzungen für die Schwingung: Trägheit und Rückstellkraft",
+                "url": ""
+              },
+              {
+                "id": "2-3",
+                "title": "Ein Vorgeschmack auf Fluiddynamik",
+                "url": ""
+              },
+              {
+                "id": "2-4",
+                "title": "Schallquelle und Medium",
+                "url": ""
+              },
+              {
+                "id": "2-5",
+                "title": "Zufällige thermische Bewegung und Diffusion der Luft",
+                "url": ""
+              },
+              {
+                "id": "2-6",
+                "title": "Elastizität der Luft",
+                "url": ""
+              },
+              {
+                "id": "2-7",
+                "title": "Prinzip der Luftschwingung: Kompression und Rarefizierung",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "3. Grundlegende Mathematik",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "Was ist ein Modell?",
+                "url": ""
+              },
+              {
+                "id": "3-2",
+                "title": "Physikalische Größen: Der erste Schritt zur Modellierung komplexer Phänomene",
+                "url": ""
+              },
+              {
+                "id": "3-3",
+                "title": "Modellierung von Impuls und Kraft",
+                "url": ""
+              },
+              {
+                "id": "3-3-1",
+                "title": "Mathematischer Ausdruck der Trägheit: Impuls",
+                "url": ""
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: Modellierung des abstrakten Konzepts der Kraft",
+                "url": ""
+              },
+              {
+                "id": "3-4",
+                "title": "Hookesches Gesetz: Mathematischer Ausdruck eines schwingenden Körpers",
+                "url": ""
+              },
+              {
+                "id": "3-5",
+                "title": "Trigonometrische Funktionen",
+                "url": "",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "Was ist eine Funktion?",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "Proportion und Verhältnis",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "Die Ästhetik des Verhältnisses 0: Die mysteriöse Kraft des Verhältnisses",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "Die Ästhetik des Verhältnisses 1: Das Geheimnis des rechtwinkligen Dreiecks",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "Die Ästhetik des Verhältnisses 2: Die Romantik des Universums und trigonometrische Funktionen",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "Die Ästhetik des Verhältnisses 3: Radian und dimensionsloser Winkel",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "Die Ästhetik des Verhältnisses 4: Differenzierung",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "Ableitung: Eine Funktion, die sofortige Veränderung darstellt",
+                "url": ""
+              },
+              {
+                "id": "3-7",
+                "title": "Ableitungen von trigonometrischen Funktionen",
+                "url": ""
+              },
+              {
+                "id": "3-8",
+                "title": "Lösung des Hookeschen Gesetzes: Einfache harmonische Bewegung",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "4. Eigenschaften des Schalls",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "Periodizität und Frequenz",
+                "url": ""
+              },
+              {
+                "id": "4-2",
+                "title": "Eigenfrequenz",
+                "url": ""
+              },
+              {
+                "id": "4-3",
+                "title": "Resonanz",
+                "url": ""
+              },
+              {
+                "id": "4-4",
+                "title": "Wellengleichung",
+                "url": ""
+              },
+              {
+                "id": "4-5",
+                "title": "Moden und Obertöne",
+                "url": ""
+              },
+              {
+                "id": "4-6",
+                "title": "Ein Vorgeschmack auf musikalische Akustik",
+                "url": ""
+              },
+              {
+                "id": "4-7",
+                "title": "Stimmungssysteme",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "5. Raum",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "Struktur der Architektur",
+                "url": ""
+              },
+              {
+                "id": "5-2",
+                "title": "Akustische Eigenschaften",
+                "url": ""
+              },
+              {
+                "id": "5-2-1",
+                "title": "Reflexion",
+                "url": ""
+              },
+              {
+                "id": "5-2-2",
+                "title": "Absorption",
+                "url": ""
+              },
+              {
+                "id": "5-2-3",
+                "title": "Brechung",
+                "url": ""
+              },
+              {
+                "id": "5-2-4",
+                "title": "Beugung",
+                "url": ""
+              },
+              {
+                "id": "5-2-5",
+                "title": "Interferenz",
+                "url": ""
+              },
+              {
+                "id": "5-3",
+                "title": "Ein Vorgeschmack auf Bauakustik",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "6. Audiosignal",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "Freie Schwingung und erzwungene Schwingung",
+                "url": ""
+              },
+              {
+                "id": "6-2",
+                "title": "Ein Vorgeschmack auf Elektromagnetismus",
+                "url": ""
+              },
+              {
+                "id": "6-2-1",
+                "title": "Maxwell-Gleichungen",
+                "url": ""
+              },
+              {
+                "id": "6-3",
+                "title": "Was ist ein Signal?",
+                "url": ""
+              },
+              {
+                "id": "6-4",
+                "title": "Digital-Analog-Wandlung",
+                "url": ""
+              },
+              {
+                "id": "6-5",
+                "title": "Prinzipien der Aufnahme",
+                "url": ""
+              },
+              {
+                "id": "6-5-1",
+                "title": "Mikrofon",
+                "url": ""
+              },
+              {
+                "id": "6-5-2",
+                "title": "Lautsprecher",
+                "url": ""
+              },
+              {
+                "id": "6-6",
+                "title": "Audiosignal",
+                "url": ""
+              },
+              {
+                "id": "6-6-1",
+                "title": "Analyse",
+                "url": ""
+              },
+              {
+                "id": "6-6-2",
+                "title": "Synthese",
+                "url": ""
+              },
+              {
+                "id": "6-6-3",
+                "title": "Verarbeitung",
+                "url": ""
+              },
+              {
+                "id": "6-6-4",
+                "title": "Speicherung",
+                "url": ""
+              },
+              {
+                "id": "6-7",
+                "title": "Ein Vorgeschmack auf Elektroakustik",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "7. Ein Schritt weiter: Höhere Mathematik",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "Fourier-Analyse",
+                "url": ""
+              },
+              {
+                "id": "7-2",
+                "title": "Fourier-Synthese",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "8. Stimme und Kommunikation",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "Das Ohr",
+                "url": ""
+              },
+              {
+                "id": "8-1-1",
+                "title": "Struktur des Ohrs",
+                "url": ""
+              },
+              {
+                "id": "8-1-2",
+                "title": "Verbindung zwischen Ohr und Gehirn",
+                "url": ""
+              },
+              {
+                "id": "8-1-3",
+                "title": "Tinnitus",
+                "url": ""
+              },
+              {
+                "id": "8-1-4",
+                "title": "Hörgeräte",
+                "url": ""
+              },
+              {
+                "id": "8-1-5",
+                "title": "Ein Vorgeschmack auf Psychoakustik",
+                "url": ""
+              },
+              {
+                "id": "8-2",
+                "title": "Sprache",
+                "url": ""
+              },
+              {
+                "id": "8-2-1",
+                "title": "Akustische Struktur des Gesichts",
+                "url": ""
+              },
+              {
+                "id": "8-2-2",
+                "title": "Vokalisation",
+                "url": ""
+              },
+              {
+                "id": "8-3",
+                "title": "Ein Vorgeschmack auf Sprachakustik",
+                "url": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "ru": {
+    "meta": {
+      "title": "Bug Loop | Блог писателя цифровых книг",
+      "description": "Блог, отражающий уникальные размышления человека, глубоко любящего среду письма."
+    },
+    "tableHeaders": {
+      "number": "№",
+      "title": "Заголовок",
+      "author": "Автор",
+      "category": "Категория",
+      "date": "Дата",
+      "views": "Просмотры"
+    },
+    "tabs": {
+      "allPosts": "Все записи",
+      "searchResults": "Результаты поиска"
+    },
+    "search": {
+      "resultsFor": "Результаты поиска по запросу '%s'",
+      "placeholder": "Личный дневник разработчика"
+    },
+    "ui": {
+      "home": "Главная",
+      "backToHome": "На главную",
+      "tocButton": "Оглавление",
+      "darkModeLabel": "Темный режим",
+      "darkModeLabelLight": "Светлый режим",
+      "darkModeToggle": "Сменить тему",
+      "category": "Категория",
+      "author": "Автор",
+      "date": "Дата",
+      "editButton": "Редактировать",
+      "deleteButton": "Удалить",
+      "deleteConfirm": "Вы уверены, что хотите удалить эту запись?"
+    },
+    "profile": {
+      "profile-title": "Авторы",
+      "profile-job1": "Информационно-коммуникационные технологии (ИКТ)",
+      "profile-name1": "Донсун Хан",
+      "profile-bio1": "Пожизненный ученик, обучающийся в Киберуниверситете Ханьянг по специальностям Компьютерные науки и Безопасность/Хакинг. Находит радость в честном, осмысленном общении через письмо.",
+      "profile-tags1": [
+        "#ВебРазработка",
+        "#КиберУниверситет",
+        "#ЛюбительЦифровыхКниг",
+        "#ВебДизайн"
+      ],
+      "profile-job2": "Музыка и Акустика",
+      "profile-name2": "Дудунсун",
+      "profile-bio2": "После получения степени бакалавра композиции в Университете Ханьянг, он два года изучал акустику в Университете Ле-Ман во Франции. Увлечен созданием музыки, не связанной целью, и виртуальными инструментами, которые делают эту свободу возможной.",
+      "profile-tags2": [
+        "#ЭлектроннаяМузыка",
+        "#Акустика"
+      ],
+      "profile-job3": "Когнитивные Игры и Здоровье",
+      "profile-name3": "Седунсун",
+      "profile-bio3": "Разработчик с тяжелым нарушением зрения, который изучал Физику в Университете Ле-Ман и Звуковой Дизайн в Le Mans Beaux-Arts, но оставил оба направления из-за несоответствия академической атмосфере. Теперь он посвящает себя исследованию цифрового благополучия, внутренней стабильности и устойчивого счастья через технологии.",
+      "profile-tags3": [
+        "#Хороидеремия",
+        "#ЗвуковойДизайн",
+        "#Физика",
+        "#НарушениеЗрения",
+        "#HealthTech"
+      ]
+    },
+    "editor": {
+      "editor-title": "Редактор BugLoop",
+      "preview-label": "Предварительный просмотр в реальном времени",
+      "example-html": "<header>\n  <h1>Моя Первая Веб-Страница</h1>\n  <nav>\n    <ul>\n      <li>Главная</li>\n      <li>О нас</li>\n      <li>Контакты</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Добро пожаловать!</h2>\n    <p>Это простой пример HTML.</p>\n  </section>\n\n  <section>\n    <h2>То, что я люблю</h2>\n    <ul>\n      <li>Кошки</li>\n      <li>Программирование</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Блог Донсун Хана</p>\n</footer>"
+    },
+    "header": {
+      "mainMenu": "Главное меню",
+      "youtubeLink": "Перейти на YouTube",
+      "recentVideos": "Недавние Видео",
+      "palma2pro": "Обзор Boox Palma 2 Pro",
+      "choroideremia": "Хороидеремия",
+      "coming": "Контент скоро",
+      "audiobook": "Аудиокниги",
+      "cuteacoustics": "Милая Акустика",
+      "producer": "Пианист-Продюсер: Загадочные Методы Аккомпанемента",
+      "unfinished": "Незавершенное Страдание",
+      "warmth": "Тепло Расчета",
+      "music": "Музыкальный Контент",
+      "game": "Когнитивные Игры",
+      "futureService": "Мы разрабатываем беспрецедентный сервис, который будет выпущен в 2027 году. Следите за обновлениями!"
+    },
+    "index": {
+      "ongoing": "Текущая Серия",
+      "recentPosts": "Недавние Посты",
+      "loadMore": "Загрузить больше"
+    },
+    "panel": {
+      "title": "Bug Loop — Писатель цифровых книг",
+      "body": "Книга — это как субтитры к фильму.<br><br>Чтобы по-настоящему читать книгу, нужно обладать либо опытом (памятью), либо стремлением к нему (воображением). Буквы, когда на них смотрят без намерения, всего лишь линии, начертанные тут и там. Но для того, чтобы смысл, сотканный между этими линиями, действительно ощутился, сначала должна сформироваться связь между текстом и читателем. Этим мостом является внутренний экран разума — на который проецируются сцены, которые только сам человек может полностью воспринять: память и воображение.<br><br>Электронная книга — это не просто книга, которую легко копировать или публиковать. Это нечто гораздо большее – живая среда света и языка. Этот блог – это запись моего путешествия по изучению того, что это значит.",
+      "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "Милая Акустика",
+        "author": "Дудунсун",
+        "toc": [
+          {
+            "section": "Предисловие",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "Предисловие к Милой Акустике",
+                "url": "preface"
+              },
+              {
+                "id": "afterword",
+                "title": "Послесловие",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "1. Законы Вселенной",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "Инерция: Свойство сопротивляться изменению",
+                "url": ""
+              },
+              {
+                "id": "1-1-1",
+                "title": "Изменение и Сила",
+                "url": ""
+              },
+              {
+                "id": "1-2",
+                "title": "Сила — это Дверь, Передающая Энергию",
+                "url": ""
+              },
+              {
+                "id": "1-2-1",
+                "title": "Два Типа Энергии",
+                "url": ""
+              },
+              {
+                "id": "1-2-2",
+                "title": "Закон Сохранения Энергии",
+                "url": ""
+              },
+              {
+                "id": "1-2-3",
+                "title": "Резюме",
+                "url": ""
+              },
+              {
+                "id": "1-3",
+                "title": "Поля и Частицы (Продвинутое)",
+                "url": ""
+              },
+              {
+                "id": "1-3-1",
+                "title": "Структура Атома",
+                "url": ""
+              },
+              {
+                "id": "1-3-2",
+                "title": "Что такое Поле?",
+                "url": ""
+              },
+              {
+                "id": "1-3-3",
+                "title": "Интересно об Электронах!",
+                "url": ""
+              },
+              {
+                "id": "1-3-4",
+                "title": "Более Глубокое Погружение в Элементарные Частицы",
+                "url": ""
+              },
+              {
+                "id": "1-3-5",
+                "title": "Люди тоже Вероятностные Существа?",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "2. Вибрация и Волна",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "Вибрация: Особенное Движение, Создающее Звук",
+                "url": ""
+              },
+              {
+                "id": "2-2",
+                "title": "Необходимые Условия для Вибрации: Инерция и Восстанавливающая Сила",
+                "url": ""
+              },
+              {
+                "id": "2-3",
+                "title": "Введение в Гидродинамику",
+                "url": ""
+              },
+              {
+                "id": "2-4",
+                "title": "Источник Звука и Среда",
+                "url": ""
+              },
+              {
+                "id": "2-5",
+                "title": "Случайное Тепловое Движение и Диффузия Воздуха",
+                "url": ""
+              },
+              {
+                "id": "2-6",
+                "title": "Эластичность Воздуха",
+                "url": ""
+              },
+              {
+                "id": "2-7",
+                "title": "Принцип Вибрации Воздуха: Сжатие и Разрежение",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "3. Базовая Математика",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "Что такое Модель?",
+                "url": ""
+              },
+              {
+                "id": "3-2",
+                "title": "Физические Величины: Первый Шаг к Моделированию Сложных Явлений",
+                "url": ""
+              },
+              {
+                "id": "3-3",
+                "title": "Моделирование Импульса и Силы",
+                "url": ""
+              },
+              {
+                "id": "3-3-1",
+                "title": "Математическое Выражение Инерции: Импульс",
+                "url": ""
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: Моделирование Абстрактного Понятия Силы",
+                "url": ""
+              },
+              {
+                "id": "3-4",
+                "title": "Закон Гука: Математическое Выражение Вибрирующего Тела",
+                "url": ""
+              },
+              {
+                "id": "3-5",
+                "title": "Тригонометрические Функции",
+                "url": "",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "Что такое Функция?",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "Пропорция и Отношение",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "Эстетика Отношения 0: Таинственная Сила Отношения",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "Эстетика Отношения 1: Секрет Прямоугольного Треугольника",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "Эстетика Отношения 2: Романтика Вселенной и Тригонометрические Функции",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "Эстетика Отношения 3: Радиан и Безразмерный Угол",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "Эстетика Отношения 4: Дифференцирование",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "Производная: Функция, Представляющая Мгновенное Изменение",
+                "url": ""
+              },
+              {
+                "id": "3-7",
+                "title": "Производные Тригонометрических Функций",
+                "url": ""
+              },
+              {
+                "id": "3-8",
+                "title": "Решение Закона Гука: Простое Гармоническое Движение",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "4. Свойства Звука",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "Периодичность и Частота",
+                "url": ""
+              },
+              {
+                "id": "4-2",
+                "title": "Собственная Частота",
+                "url": ""
+              },
+              {
+                "id": "4-3",
+                "title": "Резонанс",
+                "url": ""
+              },
+              {
+                "id": "4-4",
+                "title": "Волновое Уравнение",
+                "url": ""
+              },
+              {
+                "id": "4-5",
+                "title": "Моды и Гармоники",
+                "url": ""
+              },
+              {
+                "id": "4-6",
+                "title": "Введение в Музыкальную Акустику",
+                "url": ""
+              },
+              {
+                "id": "4-7",
+                "title": "Системы Настройки",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "5. Пространство",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "Структура Архитектуры",
+                "url": ""
+              },
+              {
+                "id": "5-2",
+                "title": "Акустические Характеристики",
+                "url": ""
+              },
+              {
+                "id": "5-2-1",
+                "title": "Отражение",
+                "url": ""
+              },
+              {
+                "id": "5-2-2",
+                "title": "Поглощение",
+                "url": ""
+              },
+              {
+                "id": "5-2-3",
+                "title": "Преломление",
+                "url": ""
+              },
+              {
+                "id": "5-2-4",
+                "title": "Дифракция",
+                "url": ""
+              },
+              {
+                "id": "5-2-5",
+                "title": "Интерференция",
+                "url": ""
+              },
+              {
+                "id": "5-3",
+                "title": "Введение в Архитектурную Акустику",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "6. Аудиосигнал",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "Свободная Вибрация и Вынужденная Вибрация",
+                "url": ""
+              },
+              {
+                "id": "6-2",
+                "title": "Введение в Электромагнетизм",
+                "url": ""
+              },
+              {
+                "id": "6-2-1",
+                "title": "Уравнения Максвелла",
+                "url": ""
+              },
+              {
+                "id": "6-3",
+                "title": "Что такое Сигнал?",
+                "url": ""
+              },
+              {
+                "id": "6-4",
+                "title": "Цифро-Аналоговое Преобразование",
+                "url": ""
+              },
+              {
+                "id": "6-5",
+                "title": "Принципы Записи",
+                "url": ""
+              },
+              {
+                "id": "6-5-1",
+                "title": "Микрофон",
+                "url": ""
+              },
+              {
+                "id": "6-5-2",
+                "title": "Громкоговоритель",
+                "url": ""
+              },
+              {
+                "id": "6-6",
+                "title": "Аудиосигнал",
+                "url": ""
+              },
+              {
+                "id": "6-6-1",
+                "title": "Анализ",
+                "url": ""
+              },
+              {
+                "id": "6-6-2",
+                "title": "Синтез",
+                "url": ""
+              },
+              {
+                "id": "6-6-3",
+                "title": "Обработка",
+                "url": ""
+              },
+              {
+                "id": "6-6-4",
+                "title": "Хранение",
+                "url": ""
+              },
+              {
+                "id": "6-7",
+                "title": "Введение в Электроакустику",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "7. Шаг Вперед: Продвинутая Математика",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "Анализ Фурье",
+                "url": ""
+              },
+              {
+                "id": "7-2",
+                "title": "Синтез Фурье",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "8. Голос и Коммуникация",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "Ухо",
+                "url": ""
+              },
+              {
+                "id": "8-1-1",
+                "title": "Структура Уха",
+                "url": ""
+              },
+              {
+                "id": "8-1-2",
+                "title": "Связь Между Ухом и Мозгом",
+                "url": ""
+              },
+              {
+                "id": "8-1-3",
+                "title": "Тиннитус",
+                "url": ""
+              },
+              {
+                "id": "8-1-4",
+                "title": "Слуховые Аппараты",
+                "url": ""
+              },
+              {
+                "id": "8-1-5",
+                "title": "Введение в Психоакустику",
+                "url": ""
+              },
+              {
+                "id": "8-2",
+                "title": "Речь",
+                "url": ""
+              },
+              {
+                "id": "8-2-1",
+                "title": "Акустическая Структура Лица",
+                "url": ""
+              },
+              {
+                "id": "8-2-2",
+                "title": "Вокализация",
+                "url": ""
+              },
+              {
+                "id": "8-3",
+                "title": "Введение в Речевую Акустику",
+                "url": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "ar": {
+    "meta": {
+      "title": "Bug Loop | مدونة كاتب الكتب الرقمية",
+      "description": "مدونة تلتقط تأملات فريدة لإنسان يحب وسيلة الكتابة بعمق."
+    },
+    "tableHeaders": {
+      "number": "رقم",
+      "title": "العنوان",
+      "author": "المؤلف",
+      "category": "الفئة",
+      "date": "التاريخ",
+      "views": "المشاهدات"
+    },
+    "tabs": {
+      "allPosts": "جميع المقالات",
+      "searchResults": "نتائج البحث"
+    },
+    "search": {
+      "resultsFor": "نتائج البحث عن '%s'",
+      "placeholder": "مذكرات المطور الشخصية"
+    },
+    "ui": {
+      "home": "الرئيسية",
+      "backToHome": "العودة للرئيسية",
+      "tocButton": "جدول المحتويات",
+      "darkModeLabel": "الوضع الداكن",
+      "darkModeLabelLight": "الوضع الفاتح",
+      "darkModeToggle": "تبديل المظهر",
+      "category": "الفئة",
+      "author": "المؤلف",
+      "date": "التاريخ",
+      "editButton": "تعديل",
+      "deleteButton": "حذف",
+      "deleteConfirm": "هل أنت متأكد من حذف هذا المنشور؟"
+    },
+    "profile": {
+      "profile-title": "المؤلفون",
+      "profile-job1": "تكنولوجيا المعلومات والاتصالات (ICT)",
+      "profile-name1": "دونغسون هان",
+      "profile-bio1": "متعلم مدى الحياة، يدرس علوم الحاسوب والأمن والاختراق في جامعة هانيانغ الإلكترونية. يستمتع بالتواصل الصادق والمتعمق من خلال الكتابة.",
+      "profile-tags1": [
+        "#تطويرالويب",
+        "#الجامعةالإلكترونية",
+        "#محب_الكتب_الرقمية",
+        "#تصميمالويب"
+      ],
+      "profile-job2": "الموسيقى والصوتيات",
+      "profile-name2": "دودونغسون",
+      "profile-bio2": "بعد حصوله على بكالوريوس في التأليف من جامعة هانيانغ، درس الصوتيات لمدة عامين في جامعة لو مان بفرنسا. شغوف بصنع موسيقى متحررة من الغرض، وبالأدوات - الآلات الافتراضية - التي تجعل هذه الحرية ممكنة.",
+      "profile-tags2": [
+        "#الموسيقىالإلكترونية",
+        "#الصوتيات"
+      ],
+      "profile-job3": "الألعاب المعرفية والصحة",
+      "profile-name3": "سيدونغسون",
+      "profile-bio3": "مطوّر يعاني من ضعف بصري شديد، درس الفيزياء في جامعة لو مان والتصميم الصوتي في Le Mans Beaux-Arts قبل أن يترك الدراسة بسبب عدم التكيف. يكرس نفسه الآن لاستكشاف الرفاهية الرقمية، والاستقرار الداخلي، والسعادة المستدامة من خلال التكنولوجيا.",
+      "profile-tags3": [
+        "#ضمور_المشيمية",
+        "#تصميم_صوتي",
+        "#الفيزياء",
+        "#ضعف_بصري",
+        "#تكنولوجيا_الصحة"
+      ]
+    },
+    "editor": {
+      "editor-title": "محرر BugLoop",
+      "preview-label": "معاينة مباشرة",
+      "example-html": "<header>\n  <h1>صفحتي الويب الأولى</h1>\n  <nav>\n    <ul>\n      <li>الرئيسية</li>\n      <li>حول</li>\n      <li>اتصال</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>مرحباً!</h2>\n    <p>هذا مثال بسيط لـ HTML.</p>\n  </section>\n\n  <section>\n    <h2>أشياء أحبها</h2>\n    <ul>\n      <li>القطط</li>\n      <li>البرمجة</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 مدونة دونغسون هان</p>\n</footer>"
+    },
+    "header": {
+      "mainMenu": "القائمة الرئيسية",
+      "youtubeLink": "اذهب إلى يوتيوب",
+      "recentVideos": "مقاطع فيديو حديثة",
+      "palma2pro": "مراجعة Boox Palma 2 Pro",
+      "choroideremia": "ضمور المشيمية",
+      "coming": "المحتوى قريباً",
+      "audiobook": "كتب صوتية",
+      "cuteacoustics": "صوتيات لطيفة",
+      "producer": "المنتج العازف: طرق المرافقة الغامضة",
+      "unfinished": "معاناة غير مكتملة",
+      "warmth": "دفء الحساب",
+      "music": "محتوى موسيقي",
+      "game": "ألعاب معرفية",
+      "futureService": "نحن نعمل على تطوير خدمة غير مسبوقة ستُطلق في عام 2027. ترقبوا!"
+    },
+    "index": {
+      "ongoing": "سلسلة مستمرة",
+      "recentPosts": "أحدث المقالات",
+      "loadMore": "تحميل المزيد"
+    },
+    "panel": {
+      "title": "Bug Loop — كاتب الكتب الرقمية",
+      "body": "الكتاب أشبه بالترجمة المصاحبة للفيلم.<br><br>لكي تقرأ كتابًا حقًا، يجب أن تحمل إحدى صفتين: التجربة (الذاكرة) أو الرغبة في خوضها (الخيال). الحروف، عند النظر إليها بلامبالاة، ليست سوى خطوط مرسومة هنا وهناك. ولكن لكي يصبح المعنى المنسوج بين تلك الخطوط محسوسًا حقًا، يجب أن تتشكل أولاً علاقة بين النص والقارئ. هذه الجسر هو الشاشة الداخلية للفرد - حيث تُعرض المشاهد التي لا يمكن لأحد أن يدركها بالكامل سوى الذات: الذاكرة والخيال.<br><br>الكتاب الإلكتروني ليس مجرد كتاب سهل النسخ أو النشر. إنه شيء أعظم بكثير - وسيط حي من الضوء واللغة. هذه المدونة هي سجل لرحلتي لاستكشاف هذه القيمة.",
+      "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "صوتيات لطيفة",
+        "author": "دودونغسون",
+        "toc": [
+          {
+            "section": "مقدمة",
+            "chapters": [
+              {
+                "id": "preface",
+                "title": "مقدمة الصوتيات اللطيفة",
+                "url": "preface"
+              },
+              {
+                "id": "afterword",
+                "title": "كلمة أخيرة",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "1. قوانين الكون",
+            "chapters": [
+              {
+                "id": "1-1",
+                "title": "القصور الذاتي: خاصية مقاومة التغيير",
+                "url": ""
+              },
+              {
+                "id": "1-1-1",
+                "title": "التغيير والقوة",
+                "url": ""
+              },
+              {
+                "id": "1-2",
+                "title": "القوة هي الباب الذي ينقل الطاقة",
+                "url": ""
+              },
+              {
+                "id": "1-2-1",
+                "title": "نوعان من الطاقة",
+                "url": ""
+              },
+              {
+                "id": "1-2-2",
+                "title": "قانون حفظ الطاقة",
+                "url": ""
+              },
+              {
+                "id": "1-2-3",
+                "title": "ملخص",
+                "url": ""
+              },
+              {
+                "id": "1-3",
+                "title": "المجالات والجسيمات (متقدم)",
+                "url": ""
+              },
+              {
+                "id": "1-3-1",
+                "title": "تركيب الذرة",
+                "url": ""
+              },
+              {
+                "id": "1-3-2",
+                "title": "ما هو المجال؟",
+                "url": ""
+              },
+              {
+                "id": "1-3-3",
+                "title": "فضول حول الإلكترونات!",
+                "url": ""
+              },
+              {
+                "id": "1-3-4",
+                "title": "التعمق في الجسيمات الأولية",
+                "url": ""
+              },
+              {
+                "id": "1-3-5",
+                "title": "هل البشر أيضًا كائنات احتمالية؟",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "2. الاهتزاز والموجة",
+            "chapters": [
+              {
+                "id": "2-1",
+                "title": "الاهتزاز: الحركة الخاصة التي تخلق الصوت",
+                "url": ""
+              },
+              {
+                "id": "2-2",
+                "title": "متطلبات الاهتزاز: القصور الذاتي وقوة الاستعادة",
+                "url": ""
+              },
+              {
+                "id": "2-3",
+                "title": "مقدمة في ديناميكا الموائع",
+                "url": ""
+              },
+              {
+                "id": "2-4",
+                "title": "مصدر الصوت والوسط",
+                "url": ""
+              },
+              {
+                "id": "2-5",
+                "title": "الحركة الحرارية العشوائية وانتشار الهواء",
+                "url": ""
+              },
+              {
+                "id": "2-6",
+                "title": "مرونة الهواء",
+                "url": ""
+              },
+              {
+                "id": "2-7",
+                "title": "مبدأ اهتزاز الهواء: الانضغاط والتخلخل",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "3. الرياضيات الأساسية",
+            "chapters": [
+              {
+                "id": "3-1",
+                "title": "ما هو النموذج؟",
+                "url": ""
+              },
+              {
+                "id": "3-2",
+                "title": "الكميات الفيزيائية: الخطوة الأولى لنمذجة الظواهر المعقدة",
+                "url": ""
+              },
+              {
+                "id": "3-3",
+                "title": "نمذجة الزخم والقوة",
+                "url": ""
+              },
+              {
+                "id": "3-3-1",
+                "title": "التعبير الرياضي للقصور الذاتي: الزخم",
+                "url": ""
+              },
+              {
+                "id": "3-3-2",
+                "title": "F = ma: نمذجة المفهوم المجرد للقوة",
+                "url": ""
+              },
+              {
+                "id": "3-4",
+                "title": "قانون هوك: التعبير الرياضي للجسم المهتز",
+                "url": ""
+              },
+              {
+                "id": "3-5",
+                "title": "الدوال المثلثية",
+                "url": "",
+                "sub": [
+                  {
+                    "id": "3-5-1",
+                    "title": "ما هي الدالة؟",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-2",
+                    "title": "التناسب والنسبة",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-3",
+                    "title": "جماليات النسبة 0: القوة الغامضة للنسبة",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-4",
+                    "title": "جماليات النسبة 1: سر المثلث القائم الزاوية",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-5",
+                    "title": "جماليات النسبة 2: رومانسية الكون والدوال المثلثية",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-6",
+                    "title": "جماليات النسبة 3: الراديان والزاوية الخالية من الأبعاد",
+                    "url": ""
+                  },
+                  {
+                    "id": "3-5-7",
+                    "title": "جماليات النسبة 4: التفاضل",
+                    "url": ""
+                  }
+                ]
+              },
+              {
+                "id": "3-6",
+                "title": "المشتقة: دالة تمثل التغيير اللحظي",
+                "url": ""
+              },
+              {
+                "id": "3-7",
+                "title": "مشتقات الدوال المثلثية",
+                "url": ""
+              },
+              {
+                "id": "3-8",
+                "title": "حل قانون هوك: الحركة التوافقية البسيطة",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "4. خصائص الصوت",
+            "chapters": [
+              {
+                "id": "4-1",
+                "title": "الدورية والتردد",
+                "url": ""
+              },
+              {
+                "id": "4-2",
+                "title": "التردد الطبيعي",
+                "url": ""
+              },
+              {
+                "id": "4-3",
+                "title": "الرنين",
+                "url": ""
+              },
+              {
+                "id": "4-4",
+                "title": "معادلة الموجة",
+                "url": ""
+              },
+              {
+                "id": "4-5",
+                "title": "الأنماط والتوافقيات",
+                "url": ""
+              },
+              {
+                "id": "4-6",
+                "title": "مقدمة في الصوتيات الموسيقية",
+                "url": ""
+              },
+              {
+                "id": "4-7",
+                "title": "أنظمة الضبط",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "5. الفضاء",
+            "chapters": [
+              {
+                "id": "5-1",
+                "title": "هيكل العمارة",
+                "url": ""
+              },
+              {
+                "id": "5-2",
+                "title": "الخصائص الصوتية",
+                "url": ""
+              },
+              {
+                "id": "5-2-1",
+                "title": "الانعكاس",
+                "url": ""
+              },
+              {
+                "id": "5-2-2",
+                "title": "الامتصاص",
+                "url": ""
+              },
+              {
+                "id": "5-2-3",
+                "title": "الانكسار",
+                "url": ""
+              },
+              {
+                "id": "5-2-4",
+                "title": "الحيود",
+                "url": ""
+              },
+              {
+                "id": "5-2-5",
+                "title": "التداخل",
+                "url": ""
+              },
+              {
+                "id": "5-3",
+                "title": "مقدمة في الصوتيات المعمارية",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "6. إشارة الصوت",
+            "chapters": [
+              {
+                "id": "6-1",
+                "title": "الاهتزاز الحر والاهتزاز القسري",
+                "url": ""
+              },
+              {
+                "id": "6-2",
+                "title": "مقدمة في الكهرومغناطيسية",
+                "url": ""
+              },
+              {
+                "id": "6-2-1",
+                "title": "معادلات ماكسويل",
+                "url": ""
+              },
+              {
+                "id": "6-3",
+                "title": "ما هي الإشارة؟",
+                "url": ""
+              },
+              {
+                "id": "6-4",
+                "title": "التحويل من الرقمي إلى التناظري",
+                "url": ""
+              },
+              {
+                "id": "6-5",
+                "title": "مبادئ التسجيل",
+                "url": ""
+              },
+              {
+                "id": "6-5-1",
+                "title": "الميكروفون",
+                "url": ""
+              },
+              {
+                "id": "6-5-2",
+                "title": "مكبر الصوت",
+                "url": ""
+              },
+              {
+                "id": "6-6",
+                "title": "إشارة الصوت",
+                "url": ""
+              },
+              {
+                "id": "6-6-1",
+                "title": "تحليل",
+                "url": ""
+              },
+              {
+                "id": "6-6-2",
+                "title": "توليف",
+                "url": ""
+              },
+              {
+                "id": "6-6-3",
+                "title": "معالجة",
+                "url": ""
+              },
+              {
+                "id": "6-6-4",
+                "title": "تخزين",
+                "url": ""
+              },
+              {
+                "id": "6-7",
+                "title": "مقدمة في الصوتيات الكهربائية",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "7. خطوة إضافية: الرياضيات المتقدمة",
+            "chapters": [
+              {
+                "id": "7-1",
+                "title": "تحليل فورييه",
+                "url": ""
+              },
+              {
+                "id": "7-2",
+                "title": "تركيب فورييه",
+                "url": ""
+              }
+            ]
+          },
+          {
+            "section": "8. الصوت والتواصل",
+            "chapters": [
+              {
+                "id": "8-1",
+                "title": "الأذن",
+                "url": ""
+              },
+              {
+                "id": "8-1-1",
+                "title": "تركيب الأذن",
+                "url": ""
+              },
+              {
+                "id": "8-1-2",
+                "title": "الربط بين الأذن والدماغ",
+                "url": ""
+              },
+              {
+                "id": "8-1-3",
+                "title": "طنين الأذن",
+                "url": ""
+              },
+              {
+                "id": "8-1-4",
+                "title": "المعينات السمعية",
+                "url": ""
+              },
+              {
+                "id": "8-1-5",
+                "title": "مقدمة في الصوتيات النفسية",
+                "url": ""
+              },
+              {
+                "id": "8-2",
+                "title": "الكلام",
+                "url": ""
+              },
+              {
+                "id": "8-2-1",
+                "title": "التركيب الصوتي للوجه",
+                "url": ""
+              },
+              {
+                "id": "8-2-2",
+                "title": "النطق",
+                "url": ""
+              },
+              {
+                "id": "8-3",
+                "title": "مقدمة في صوتيات الكلام",
                 "url": ""
               }
             ]
