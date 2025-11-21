@@ -51,6 +51,16 @@
     </div>
   </div>
 
+  <!-- ✅ e-reader용 설정 주입 -->
+  <script>
+    // 현재 책 / 챕터 정보
+    window.BUGLOOP_BOOK_ID = 'cute_acoustics';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+
+    // locale.books 전체를 그대로 JS로 넘김 (지금 너가 보여준 구조 그대로)
+    window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
+  </script>
+
   <script src="/assets/js/e-reader.js"></script>
 
 </body>
