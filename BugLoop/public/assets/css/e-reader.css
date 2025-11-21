@@ -79,8 +79,8 @@ html.dark { background:#121212; color:#f5f5f5; }
 .header-btn {
   background: none;
   color: #fff;
-  border: 1px solid #fff;   /* ★ 하얀 테두리 */
-  border-radius: 0;         /* ★ 각진 버튼 */
+  border: 1px solid #fff;
+  border-radius: 0;
   padding: 6px 10px;
   cursor: pointer;
   font-size: 14px;
@@ -164,7 +164,7 @@ html.dark h2.sub-chapter-title{ color:#eee; }
 }
 
 /* =========================================================
-   Prev / Next Navigation Buttons
+   Prev / Next Buttons
    ========================================================= */
 .nav-btn {
   position: absolute;
@@ -189,7 +189,7 @@ html.dark h2.sub-chapter-title{ color:#eee; }
 html.dark .nav-btn{ background: rgba(85,85,85,.82); }
 
 /* =========================================================
-   TOC
+   TOC (Basic Container)
    ========================================================= */
 .toc {
   position: absolute;
@@ -207,6 +207,85 @@ html.dark .nav-btn{ background: rgba(85,85,85,.82); }
   box-shadow: -8px 0 18px rgba(0,0,0,.22);
 }
 .toc.open{ right:0; }
+
+/* =========================================================
+   📌 NEW: Accordion TOC Styling
+   ========================================================= */
+
+.toc h3 {
+  font-size: 20px;
+  margin-bottom: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* UL 기본 제거 */
+#tocList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 큰 제목(Section) */
+.toc-section {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 12px 0 6px;
+  cursor: pointer;
+  padding: 10px 4px;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+  position: relative;
+}
+
+/* 오른쪽 화살표 */
+.toc-section::after {
+  content: "›";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  font-size: 13px;
+  opacity: .75;
+  transition: .2s;
+}
+
+/* 접힌 상태 */
+.toc-section.collapsed::after {
+  transform: translateY(-50%) rotate(0deg);
+}
+
+/* 챕터들 묶음 */
+.toc-chapter-group {
+  padding-left: 8px;
+  margin-bottom: 4px;
+  display: none;
+}
+
+/* 펼쳐졌을 때 */
+.toc-chapter-group.open {
+  display: block;
+}
+
+/* 소제목 */
+.toc-chapter {
+  font-size: 15px;
+  margin: 4px 0;
+  padding: 6px 2px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: .15s;
+}
+
+.toc-chapter:hover {
+  border-left: 2px solid #fff;
+  background: rgba(255,255,255,0.08);
+}
+
+.toc-chapter.current-chapter {
+  border-left: 2px solid #4db1ff;
+  background: rgba(255,255,255,0.12);
+  font-weight: 600;
+}
 
 /* =========================================================
    Responsive (Mobile)
@@ -238,12 +317,11 @@ html.dark .nav-btn{ background: rgba(85,85,85,.82); }
   }
 
   .header-btn{
-    border: 1px solid #fff; /* 모바일에서도 유지 */
+    border: 1px solid #fff;
     border-radius: 0;
     background: none;
     padding: 8px 10px;
     font-size: 14px;
-    gap: 6px;
   }
 
   .viewer{
