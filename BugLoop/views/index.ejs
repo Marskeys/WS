@@ -589,145 +589,227 @@
     <div class="carousel">
 
     <% 
-      const tocData = locale.books.cute_acoustics.toc;
-      const itemsPerPage = 3; 
-      const totalSections = tocData.length;
-      const totalPages = Math.ceil(totalSections / itemsPerPage);
-      const paginatedToc = [];
+      // 💡 목차 페이지네이션 설정을 위한 범용 함수
+      const ITEMS_PER_PAGE = 3;
+      
+      const getPaginatedToc = (tocData) => {
+        if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
+        const totalSections = tocData.length;
+        const totalPages = Math.ceil(totalSections / ITEMS_PER_PAGE);
+        const paginatedToc = [];
 
-      for (let i = 0; i < totalPages; i++) {
-        const start = i * itemsPerPage;
-        const end = start + itemsPerPage;
-        paginatedToc.push(tocData.slice(start, end));
-      }
+        for (let i = 0; i < totalPages; i++) {
+          const start = i * ITEMS_PER_PAGE;
+          const end = start + ITEMS_PER_PAGE;
+          paginatedToc.push(tocData.slice(start, end));
+        }
+        return { paginatedToc, totalPages, totalSections };
+      };
+      
+      // 💡 목차 HTML 렌더링 함수 (JS와 EJS에서 모두 사용할 수 있도록 인라인으로 정의)
+      const renderTocHtml = (sections, bookKey) => {
+        if (!sections || sections.length === 0) return '';
+        let html = '<ul>';
+        sections.forEach(section => {
+          html += `<li><h5>${section.section}</h5><ul>`;
+          section.chapters.forEach(ch => {
+            html += `<li>`;
+            
+            // 링크 URL은 bookKey를 사용하여 동적으로 생성
+            const urlPath = `/books/${bookKey}/contents/${ch.id}`; 
+
+            if (ch.url) {
+              html += `<a 
+                href="/${lang}${urlPath}" 
+                class="toc-link active"
+              >
+                ${ch.title}
+              </a>`;
+            } else {
+              html += `<span class="toc-link disabled">${ch.title}</span>`;
+            }
+
+            if (ch.sub) {
+              html += '<ul>';
+              ch.sub.forEach(sub => {
+                html += `<li>`;
+                const subUrlPath = `/books/${bookKey}/contents/${sub.id}`;
+                
+                if (sub.url) {
+                  html += `<a 
+                    href="/${lang}${subUrlPath}" 
+                    class="toc-link active"
+                  >
+                    ${sub.title}
+                  </a>`;
+                } else {
+                  html += `<span class="toc-link disabled">${sub.title}</span>`;
+                }
+                html += '</li>';
+              });
+              html += '</ul>';
+            }
+
+            html += '</li>';
+          });
+          html += '</ul></li>';
+        });
+        html += '</ul>';
+        return html;
+      };
+
+      // 📚 1. 귀여운 음향학 (cute_acoustics)
+      const cuteAcoustics = locale.books.cute_acoustics;
+      const caData = getPaginatedToc(cuteAcoustics.toc);
     %>
 
-    <div class="book-card" data-index="0" data-book-id="cute-acoustics">
+    <div class="book-card" data-index="0" data-book-key="cute_acoustics">
         <div class="book-content-wrapper"> 
           <div class="book-cover-wrapper">
-            <img class="book-cover" src="/assets/images/book1.gif" alt="<%= locale.books.cute_acoustics.title %>">
+            <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>">
           </div>
           <div class="book-info">
-            <div class="book-title"><%= locale.books.cute_acoustics.title %></div>
+            <div class="book-title"><%= cuteAcoustics.title %></div>
             <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              저자: <%= locale.books.cute_acoustics.author %>
+              저자: <%= cuteAcoustics.author %>
             </div>
           </div>
           <div class="book-toc"> 
-            <h4><%= locale.books.cute_acoustics.title %> 목차</h4>
+            <h4><%= cuteAcoustics.title %> 목차</h4>
             
-            <div class="pagination" data-book-id="cute-acoustics-pagination">
-              <% for(let i = 1; i <= totalPages; i++) { %>
-                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute-acoustics', <%= i %>)">
+            <div class="pagination" data-book-id="cute_acoustics-pagination">
+              <% for(let i = 1; i <= caData.totalPages; i++) { %>
+                <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute_acoustics', <%= i %>)">
                   <%= i %>
                 </span>
-                <% if (i < totalPages) { %><span class="pagination-divider">|</span><% } %>
+                <% if (i < caData.totalPages) { %><span class="pagination-divider">|</span><% } %>
               <% } %>
             </div>
 
-            <div class="paginated-toc" data-book-id="cute-acoustics-toc">
-          <ul>
-      <% paginatedToc[0].forEach(section => { %>
-        <li>
-          <h5><%= section.section %></h5>
-          <ul>
-            <% section.chapters.forEach(ch => { %>
-              <li>
-                <% if (ch.url) { %>
-                  <a 
-                    href="/<%= lang %>/books/cuteAcoustics/contents/<%= ch.url %>" 
-                    class="toc-link active"
-                  >
-                    <%= ch.title %>
-                  </a>
-                <% } else { %>
-                  <span class="toc-link disabled"><%= ch.title %></span>
-                <% } %>
-
-                <% if (ch.sub) { %>
-                  <ul>
-                    <% ch.sub.forEach(sub => { %>
-                      <li>
-                        <% if (sub.url) { %>
-                          <a 
-                            href="/<%= lang %>/books/cuteAcoustics/contents/<%= sub.url %>" 
-                            class="toc-link active"
-                          >
-                            <%= sub.title %>
-                          </a>
-                        <% } else { %>
-                          <span class="toc-link disabled"><%= sub.title %></span>
-                        <% } %>
-                      </li>
-                    <% }) %>
-                  </ul>
-                <% } %>
-              </li>
-            <% }) %>
-          </ul>
-        </li>
-      <% }) %>
-    </ul>
-
+            <div class="paginated-toc" data-book-id="cute_acoustics-toc">
+              <%- renderTocHtml(caData.paginatedToc[0], 'cuteAcoustics') %>
             </div>
             <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-              총 <%= totalSections %>개 섹션
+              총 <%= caData.totalSections %>개 섹션
             </div>
           </div>
         </div>
     </div>
-
-    <div class="book-card" data-index="1">
+    
+    <% 
+      // 📚 2. 미완성 고통 (unfinished_pain)
+      const unfinishedPain = locale.books.unfinished_pain;
+      const upData = getPaginatedToc(unfinishedPain.toc);
+    %>
+    <div class="book-card" data-index="1" data-book-key="unfinished_pain">
       <div class="book-content-wrapper">
         <div class="book-cover-wrapper">
-          <img class="book-cover" src="/assets/images/book2.gif" alt="미완성 고통">
+          <img class="book-cover" src="/assets/images/book2.gif" alt="<%= unfinishedPain.title %>">
         </div>
-        <div class="book-info"><div class="book-title">미완성 고통</div></div>
+        <div class="book-info">
+            <div class="book-title"><%= unfinishedPain.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              저자: <%= unfinishedPain.author %>
+            </div>
+        </div>
         <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 불완전함의 철학</li>
-            <li>2장. 창작과 결핍</li>
-            <li>3장. 완성이라는 환상</li>
-          </ul>
+          <h4><%= unfinishedPain.title %> 목차</h4>
+          
+          <div class="pagination" data-book-id="unfinished_pain-pagination">
+            <% for(let i = 1; i <= upData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'unfinished_pain', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < upData.totalPages) { %><span class="pagination-divider">|</span><% } %>
+            <% } %>
+          </div>
+
+          <div class="paginated-toc" data-book-id="unfinished_pain-toc">
+            <%- renderTocHtml(upData.paginatedToc[0], 'unfinishedPain') %>
+          </div>
+          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+            총 <%= upData.totalSections %>개 섹션
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <% 
+      // 📚 3. 피아노 치는 프로듀서: 신비한 반주법 (pianist_producer)
+      const pianistProducer = locale.books.pianist_producer;
+      const ppData = getPaginatedToc(pianistProducer.toc);
+    %>
+    <div class="book-card" data-index="2" data-book-key="pianist_producer">
+      <div class="book-content-wrapper">
+        <div class="book-cover-wrapper">
+          <img class="book-cover" src="/assets/images/book3.gif" alt="<%= pianistProducer.title %>">
+        </div>
+        <div class="book-info">
+            <div class="book-title"><%= pianistProducer.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              저자: <%= pianistProducer.author %>
+            </div>
+        </div>
+        <div class="book-toc">
+          <h4><%= pianistProducer.title %> 목차</h4>
+          
+          <div class="pagination" data-book-id="pianist_producer-pagination">
+            <% for(let i = 1; i <= ppData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'pianist_producer', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < ppData.totalPages) { %><span class="pagination-divider">|</span><% } %>
+            <% } %>
+          </div>
+
+          <div class="paginated-toc" data-book-id="pianist_producer-toc">
+            <%- renderTocHtml(ppData.paginatedToc[0], 'pianistProducer') %>
+          </div>
+          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+            총 <%= ppData.totalSections %>개 섹션
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="book-card" data-index="2">
+    <% 
+      // 📚 4. 계산의 온기 (warmth_of_calc)
+      const warmthOfCalc = locale.books.warmth_of_calc;
+      const wcData = getPaginatedToc(warmthOfCalc.toc);
+    %>
+    <div class="book-card" data-index="3" data-book-key="warmth_of_calc">
       <div class="book-content-wrapper">
         <div class="book-cover-wrapper">
-          <img class="book-cover" src="/assets/images/book3.gif" alt="피아노 치는 프로듀서: 신비한 반주법">
+          <img class="book-cover" src="/assets/images/book4.gif" alt="<%= warmthOfCalc.title %>">
         </div>
-        <div class="book-info"><div class="book-title">피아노 치는 프로듀서: 신비한 반주법</div></div>
+        <div class="book-info">
+            <div class="book-title"><%= warmthOfCalc.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              저자: <%= warmthOfCalc.author %>
+            </div>
+        </div>
         <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 반주의 구조 이해</li>
-            <li>2장. 코드 보이싱의 예술</li>
-            <li>3장. 리듬의 설계와 다이내믹</li>
-          </ul>
+          <h4><%= warmthOfCalc.title %> 목차</h4>
+          
+          <div class="pagination" data-book-id="warmth_of_calc-pagination">
+            <% for(let i = 1; i <= wcData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'warmth_of_calc', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < wcData.totalPages) { %><span class="pagination-divider">|</span><% } %>
+            <% } %>
+          </div>
+
+          <div class="paginated-toc" data-book-id="warmth_of_calc-toc">
+            <%- renderTocHtml(wcData.paginatedToc[0], 'warmthOfCalc') %>
+          </div>
+          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+            총 <%= wcData.totalSections %>개 섹션
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="book-card" data-index="3">
-      <div class="book-content-wrapper">
-        <div class="book-cover-wrapper">
-          <img class="book-cover" src="/assets/images/book4.gif" alt="계산의 온기">
-        </div>
-        <div class="book-info"><div class="book-title">계산의 온기</div></div>
-        <div class="book-toc">
-          <h4>목차</h4>
-          <ul>
-            <li>1장. 기계와 인간의 경계</li>
-            <li>2장. 연산의 감정</li>
-            <li>3장. 알고리즘의 온도</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
+    
     </div>
     
 
@@ -816,6 +898,7 @@
 
 <script>
 const lang = "<%= lang %>";
+const booksData = <%- JSON.stringify(locale.books) %>; // 모든 책 데이터를 JS로 가져옴
 
 let offset = 5;   
 let loading = false;
@@ -939,30 +1022,51 @@ window.loadMorePosts = loadMorePosts;
   <script>
   (() => {
     // ----------------------------------------------------
-    // 목차 렌더링 로직 (기존 유지)
+    // 전역 변수 설정: booksData를 사용하도록 수정
     // ----------------------------------------------------
-    const tocData = <%- JSON.stringify(locale.books.cute_acoustics.toc) %>;
+    const booksData = <%- JSON.stringify(locale.books) %>; // 모든 책 데이터를 JS로 가져옴
     const itemsPerPage = 3;
-    const totalPages = Math.ceil(tocData.length / itemsPerPage);
-    const paginatedToc = [];
+    
+    // ----------------------------------------------------
+    // 목차 렌더링 로직 (범용적으로 수정)
+    // ----------------------------------------------------
+    const getPaginatedToc = (tocData) => {
+      if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
+      const totalSections = tocData.length;
+      const totalPages = Math.ceil(totalSections / itemsPerPage);
+      const paginatedToc = [];
 
-    for (let i = 0; i < totalPages; i++) {
-      const start = i * itemsPerPage;
-      const end = start + itemsPerPage;
-      paginatedToc.push(tocData.slice(start, end));
-    }
+      for (let i = 0; i < totalPages; i++) {
+        const start = i * itemsPerPage;
+        const end = start + itemsPerPage;
+        paginatedToc.push(tocData.slice(start, end));
+      }
+      return { paginatedToc, totalPages, totalSections };
+    };
 
-    const renderTocPage = (pageIndex) => {
-      const sections = paginatedToc[pageIndex - 1];
-      if (!sections) return '';
+    const renderTocHtml = (sections, bookKey) => {
+      if (!sections || sections.length === 0) return '';
       let html = '<ul>';
+      
+      // bookKey를 사용하여 URL 경로 생성 (JS 함수이므로 EJS 변수와는 다른 bookKey를 사용해야 함)
+      // 예: cute_acoustics -> cuteAcoustics
+      const snakeToCamel = (s) => s.replace(/(_\w)/g, k => k[1].toUpperCase());
+      const camelCaseKey = snakeToCamel(bookKey);
+
       sections.forEach(section => {
         html += `<li><h5>${section.section}</h5><ul>`;
         section.chapters.forEach(ch => {
           html += `<li>`;
+          
+          const urlPath = `/books/${camelCaseKey}/contents/${ch.id}`; 
 
           if (ch.url) {
-            html += `<a href="/${lang}/books/cuteAcoustics/contents/${ch.url}" class="toc-link active">${ch.title}</a>`;
+            html += `<a 
+              href="/${lang}${urlPath}" 
+              class="toc-link active"
+            >
+              ${ch.title}
+            </a>`;
           } else {
             html += `<span class="toc-link disabled">${ch.title}</span>`;
           }
@@ -971,10 +1075,17 @@ window.loadMorePosts = loadMorePosts;
             html += '<ul>';
             ch.sub.forEach(sub => {
               html += `<li>`;
+              const subUrlPath = `/books/${camelCaseKey}/contents/${sub.id}`;
+              
               if (sub.url) {
-                html += `<a href="/${lang}/books/cuteAcoustics/contents/${sub.url}" class="toc-link active">${sub.title}</a>`;
+                html += `<a 
+                  href="/${lang}${subUrlPath}" 
+                  class="toc-link active"
+                >
+                  ${sub.title}
+                </a>`;
               } else {
-                html += '<span class="toc-link disabled">' + sub.title + '</span>'; 
+                html += `<span class="toc-link disabled">${sub.title}</span>`; 
               }
               html += '</li>';
             });
@@ -990,16 +1101,25 @@ window.loadMorePosts = loadMorePosts;
     };
 
 
-    window.changePage = (event, bookId, pageNumber) => {
+    window.changePage = (event, bookKey, pageNumber) => {
       event.stopPropagation();
-      if (bookId !== 'cute-acoustics') return;
-      const card = document.querySelector(`[data-book-id="${bookId}"]`);
-      const tocContainer = card.querySelector('[data-book-id="cute-acoustics-toc"]');
-      const paginationContainer = card.querySelector('[data-book-id="cute-acoustics-pagination"]');
+      
+      const bookData = booksData[bookKey];
+      if (!bookData) return;
+      
+      const card = document.querySelector(`[data-book-key="${bookKey}"]`);
+      const tocContainer = card.querySelector(`[data-book-id="${bookKey}-toc"]`);
+      const paginationContainer = card.querySelector(`[data-book-id="${bookKey}-pagination"]`);
       const tocElement = card.querySelector('.book-toc');
       
       if (tocContainer && paginationContainer) {
-        tocContainer.innerHTML = renderTocPage(pageNumber);
+        const { paginatedToc } = getPaginatedToc(bookData.toc);
+        const sections = paginatedToc[pageNumber - 1];
+
+        // 렌더링
+        tocContainer.innerHTML = renderTocHtml(sections, bookKey);
+        
+        // 페이지네이션 버튼 활성화 상태 업데이트
         paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
           btn.classList.remove('active');
           if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
