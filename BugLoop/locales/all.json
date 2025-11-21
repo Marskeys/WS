@@ -66,7 +66,7 @@
     "editor": {
       "editor-title": "BugLoop 편집기",
       "preview-label": "실시간 미리보기",
-      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다。</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 한동선의 블로그</p>\n</footer>"
+      "example-html": "<header>\n  <h1>나의 첫 번째 웹페이지</h1>\n  <nav>\n    <ul>\n      <li>홈</li>\n      <li>소개</li>\n      <li>연락처</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>환영합니다!</h2>\n    <p>이것은 아주 기초적인 HTML 예시입니다。</p>\n  </section>\n\n  <section>\n    <h2>내가 좋아하는 것들</h2>\n    <ul>\n      <li>고양이</li>\n      <li>코딩</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 한동선의 블로그</p>\n</footer>"
     },
     "header": {
       "mainMenu": "주 메뉴",
@@ -95,7 +95,6 @@
       "body": "책이라는 것은 영화의 자막과도 같다.<br><br>책을 제대로 읽기 위해서는 경험(기억) 혹은 경험에 대한 욕구(상상력), 둘 중 하나는 반드시 필요하다. 글자라는 것은 무심한 시선으로 스윽 보자면 그저 이리저리 그어진 선에 불과하다. 그런데 선의 얽힘 사이에서 만들어지는 의미가 진정 실감되기 위해서는 그것과 독자 사이의 관계가 먼저 형성되어 있어야 하는데, 이 역할을 하는 것이 바로 한 개인의 내면이라는 스크린 위에 쏘아진 — 자기 자신만 유일하게 온전한 형태로 볼 수 있는 장면, 즉 기억과 상상력인 것이다.<br><br>전통적인 의미에서의 책은 하나의 방향을 향해 활자를 늘어 놓은 형태로 존재한다. 그러나 전자책은 다르다. 전자(Electron)는 전기적인 기운을 내뿜는 알맹이를 지칭하는데, 이 기운에 조그마한 변화만 생겨도 그 전기적 요동은 빛의 속도로 전파가 된다. 이 특성을 이용하면 책의 맨 첫 장에서 마지막 장까지 단숨에 이동할 수 있으며, 활자 사이에 오디오나 비디오와 같은 다른 차원의 매체를 인용할 수도 있다. 이는 모두 글에 대한 경험을 풍부하게 하는 긍정적인 역할을 한다.<br><br>전자책은 단순히 복제와 출판이 용이한 책이 아니다. 그 이상이다! 그 가치를 탐구하는 여정에 대한 기록이 바로 이 블로그이다。",
       "chips": []
     },
-
     "books": {
       "cute_acoustics": {
         "title": "귀여운 음향학",
@@ -218,7 +217,6 @@
           }
         ]
       },
-
       "unfinished_pain": {
         "title": "미완성 고통",
         "author": "Bug Loop 개발진",
@@ -291,7 +289,6 @@
           }
         ]
       },
-
       "pianist_producer": {
         "title": "피아노 치는 프로듀서: 신비한 반주법",
         "author": "Bug Loop 개발진",
@@ -364,7 +361,6 @@
           }
         ]
       },
-
       "warmth_of_calc": {
         "title": "계산의 온기",
         "author": "Bug Loop 개발진",
@@ -396,10 +392,7 @@
         ]
       }
     }
-  }
-}
-
-{
+  },
   "en": {
     "meta": {
       "title": "Bug Loop | Blog of an Ebook-Focused Developer",
@@ -467,7 +460,7 @@
     "editor": {
       "editor-title": "BugLoop Editor",
       "preview-label": "Live Preview",
-      "example-html": "<header>\n  <h1>My First Webpage</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a very simple HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Like</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dong-sun Han’s Blog</p>\n</footer>"
+      "example-html": "<header>\n  <h1>My First Webpage</h1>\n  <nav>\n    <ul>\n      <li>Home</li>\n      <li>About</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Welcome!</h2>\n    <p>This is a very simple HTML example.</p>\n  </section>\n\n  <section>\n    <h2>Things I Like</h2>\n    <ul>\n      <li>Cats</li>\n      <li>Coding</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dong-sun Han’s Blog</p>\n</footer>"
     },
     "header": {
       "mainMenu": "Main Menu",
@@ -496,7 +489,6 @@
       "body": "A book is like the subtitles of a film.<br><br>To truly read a book, one needs either experience (memory) or a desire for experience (imagination). If you glance at text with an indifferent gaze, it is nothing more than lines drawn here and there. For the meaning created between these lines to feel real, a connection must first exist between the content and the reader, and this connection is formed by the scenes projected onto the inner screen of a person — memories and imagination that only the individual can fully perceive.<br><br>In the traditional sense, a book exists as printed characters arranged in a single direction. But ebooks are different. An 'electron' is a particle that emits electrical energy, and with even the slightest change, its electrical fluctuations propagate at the speed of light. Using this property, a reader can jump from the first page to the last in an instant, or embed audio and video between lines of text, enriching the entire reading experience.<br><br>An ebook is not simply a book that is easy to duplicate and publish. It is more than that! This blog records the journey of exploring that value.",
       "chips": []
     },
-
     "books": {
       "cute_acoustics": {
         "title": "Cute Acoustics",
@@ -619,7 +611,6 @@
           }
         ]
       },
-
       "unfinished_pain": {
         "title": "Unfinished Pain",
         "author": "Bug Loop Team",
@@ -692,7 +683,6 @@
           }
         ]
       },
-
       "pianist_producer": {
         "title": "The Pianist Producer: Mysterious Accompaniment Techniques",
         "author": "Bug Loop Team",
@@ -765,7 +755,6 @@
           }
         ]
       },
-
       "warmth_of_calc": {
         "title": "Warmth of Calculation",
         "author": "Bug Loop Team",
@@ -797,10 +786,7 @@
         ]
       }
     }
-  }
-}
-
-{
+  },
   "fr": {
     "meta": {
       "title": "Bug Loop | Blog d’un développeur spécialisé dans les livres numériques",
@@ -836,7 +822,6 @@
       "deleteButton": "Supprimer",
       "deleteConfirm": "Voulez-vous vraiment supprimer cet élément ?"
     },
-
     "profile": {
       "profile-title": "Équipe",
       "profile-job1": "Technologie de l’information et des communications",
@@ -848,7 +833,6 @@
         "#PassionLivresNumériques",
         "#DesignWeb"
       ],
-
       "profile-job2": "Musique & Acoustique",
       "profile-name2": "Du Dong-sun",
       "profile-bio2": "Titulaire d’une licence en composition de l’Université Hanyang. Il a étudié l’ingénierie et l’acoustique pendant deux ans à l’Université du Mans en France. Il s’intéresse à une musique libre et aux outils qui la rendent possible, notamment les instruments virtuels.",
@@ -856,7 +840,6 @@
         "#MusiqueÉlectronique",
         "#Acoustique"
       ],
-
       "profile-job3": "Jeux cognitifs & Bien-être",
       "profile-name3": "Se Dong-sun",
       "profile-bio3": "Créateur malvoyant ayant étudié la physique au Mans et le design sonore à l’École d’Art du Mans, mais ayant quitté les études à cause de difficultés d’adaptation. Il explore constamment la santé physique et mentale, ainsi que le développement d’outils pour un bonheur durable.",
@@ -868,13 +851,11 @@
         "#TechBienÊtre"
       ]
     },
-
     "editor": {
       "editor-title": "Éditeur BugLoop",
       "preview-label": "Aperçu en direct",
-      "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un simple exemple HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j’aime</h2>\n    <ul>\n      <li>Les chats</li>\n      <li>Le codage</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dong-sun Han</p>\n</footer>"
+      "example-html": "<header>\n  <h1>Ma première page Web</h1>\n  <nav>\n    <ul>\n      <li>Accueil</li>\n      <li>À propos</li>\n      <li>Contact</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>Bienvenue !</h2>\n    <p>Ceci est un simple exemple HTML.</p>\n  </section>\n\n  <section>\n    <h2>Ce que j’aime</h2>\n    <ul>\n      <li>Les chats</li>\n      <li>Le codage</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dong-sun Han</p>\n</footer>"
     },
-
     "header": {
       "mainMenu": "Menu principal",
       "youtubeLink": "Accéder à YouTube",
@@ -892,19 +873,16 @@
       "game": "Jeux cognitifs",
       "futureService": "Nous développons un service révolutionnaire qui sortira en 2027. Restez à l’écoute !"
     },
-
     "index": {
       "ongoing": "Séries en cours",
       "recentPosts": "Articles récents",
       "loadMore": "Voir plus"
     },
-
     "panel": {
       "title": "Bug Loop — Développeur spécialisé dans les ebooks",
       "body": "Un livre, c’est comme les sous-titres d’un film.<br><br>Pour vraiment lire un livre, il faut soit de l’expérience (mémoire), soit un désir d’expérience (imagination). À première vue, le texte n’est rien de plus qu’un ensemble de lignes. Pour que le sens entre ces lignes prenne vie, il faut d’abord une connexion entre le texte et le lecteur — une scène projetée sur l’écran intérieur d’un individu, faite de souvenirs et d’imagination.<br><br>Traditionnellement, un livre est un ensemble de caractères imprimés organisés en une seule direction. Mais un livre numérique diffère. L’« électron », particule porteuse d’énergie électrique, diffuse le moindre changement à la vitesse de la lumière. Grâce à cette propriété, on peut passer instantanément de la première à la dernière page, ou intégrer de l’audio et de la vidéo au milieu du texte pour enrichir l’expérience.<br><br>Un livre numérique n’est pas simplement un livre facile à copier ou à publier. C’est bien plus que cela. Ce blog est le récit d’un voyage explorant sa véritable valeur.",
       "chips": []
     },
-
     "books": {
       "cute_acoustics": {
         "title": "Acoustique mignonne",
@@ -1027,7 +1005,6 @@
           }
         ]
       },
-
       "unfinished_pain": {
         "title": "Douleur inachevée",
         "author": "Équipe Bug Loop",
@@ -1100,7 +1077,6 @@
           }
         ]
       },
-
       "pianist_producer": {
         "title": "Le Producteur Pianiste : techniques mystérieuses d’accompagnement",
         "author": "Équipe Bug Loop",
@@ -1173,7 +1149,6 @@
           }
         ]
       },
-
       "warmth_of_calc": {
         "title": "La Chaleur du Calcul",
         "author": "Équipe Bug Loop",
@@ -1205,1259 +1180,1187 @@
         ]
       }
     }
-  }
-}
-
-"zh": {
-  "meta": {
-    "title": "Bug Loop | 专注电子书的开发者博客",
-    "description": "一个热爱写作媒介的人，记录着他独特而细腻的思考。"
   },
-  "tableHeaders": {
-    "number": "编号",
-    "title": "标题",
-    "author": "作者",
-    "category": "分类",
-    "date": "日期",
-    "views": "浏览数"
-  },
-  "tabs": {
-    "allPosts": "全部文章",
-    "searchResults": "搜索结果"
-  },
-  "search": {
-    "resultsFor": "搜索“%s” 的结果",
-    "placeholder": "一位网站开发者的日记"
-  },
-  "ui": {
-    "home": "首页",
-    "backToHome": "返回首页",
-    "tocButton": "目录",
-    "darkModeLabel": "深色模式",
-    "darkModeLabelLight": "浅色模式",
-    "darkModeToggle": "切换主题",
-    "category": "分类",
-    "author": "作者",
-    "date": "日期",
-    "editButton": "编辑",
-    "deleteButton": "删除",
-    "deleteConfirm": "确定要删除吗？"
-  },
-
-  "profile": {
-    "profile-title": "团队",
-    "profile-job1": "信息与通信技术",
-    "profile-name1": "韩 东善",
-    "profile-bio1": "汉阳网络大学计算机工程与网络安全专业的成人学生，喜欢以写作为媒介进行真诚而深度的交流。",
-    "profile-tags1": [
-      "#Web开发",
-      "#网络大学",
-      "#电子书爱好者",
-      "#网页设计"
-    ],
-
-    "profile-job2": "音乐与声学",
-    "profile-name2": "杜 东善",
-    "profile-bio2": "汉阳大学作曲学士，曾在法国勒芒大学学习工程基础与声学两年。对自由色彩浓厚的音乐，以及使这种音乐成为可能的工具（虚拟乐器）极感兴趣。",
-    "profile-tags2": [
-      "#电子音乐",
-      "#声学"
-    ],
-
-    "profile-job3": "脑力游戏与身心健康",
-    "profile-name3": "世 东善",
-    "profile-bio3": "一位法律上的视障创作者，曾在勒芒大学学习物理，也曾就读勒芒美院的声音设计，但因适应困难而退学。他持续探索身心健康，并开发与可持续幸福相关的应用与工具。",
-    "profile-tags3": [
-      "#脉络膜萎缩（CHM）",
-      "#声音设计",
-      "#物理",
-      "#视障",
-      "#健康科技"
-    ]
-  },
-
-  "editor": {
-    "editor-title": "BugLoop 编辑器",
-    "preview-label": "实时预览",
-    "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个非常简单的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的事物</h2>\n    <ul>\n      <li>猫</li>\n      <li>编程</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dong-sun Han 的博客</p>\n</footer>"
-  },
-
-  "header": {
-    "mainMenu": "主菜单",
-    "youtubeLink": "前往 YouTube",
-    "review": "评测",
-    "recentVideos": "最新上传视频",
-    "palma2pro": "Books Palma 2 Pro",
-    "choroideremia": "脉络膜萎缩（CHM）",
-    "coming": "即将推出",
-    "audiobook": "有声书",
-    "cuteacoustics": "可爱声学",
-    "producer": "钢琴制作人",
-    "unfinished": "未完成的痛楚",
-    "warmth": "计算的温度",
-    "music": "音乐内容",
-    "game": "脑部游戏",
-    "futureService": "我们正在开发一项将于 2027 年推出的突破性服务，敬请期待！"
-  },
-
-  "index": {
-    "ongoing": "连载系列",
-    "recentPosts": "最新文章",
-    "loadMore": "加载更多"
-  },
-
-  "panel": {
-    "title": "Bug Loop — 专注电子书的开发者",
-    "body": "一本书就像电影的字幕。<br><br>真正阅读一本书，需要经验（记忆）或体验的渴望（想象力）。若只是无心地扫过文字，它不过是几条线条罢了。要让文字之间诞生的意义变得真实，读者与内容之间必须先有连接，而这种连接，是由读者内心屏幕上浮现的画面构成的——那些只有自己才能完整感知的记忆与想象。<br><br>传统意义上的书，是以一个方向排列的印刷文字。但电子书不同。“电子”代表着能发出电能的粒子，哪怕微小的变化，也会以光速扩散。借助这种特性，读者可以瞬间从第一页跳到最后一页，也可以在文字间嵌入音频与视频，让阅读体验变得更丰富。<br><br>电子书并不是“便于复制发行的书”而已，它远不止于此！这个博客记录了探索电子书价值的旅程。",
-    "chips": []
-  },
-
-  "books": {
-
-    "cute_acoustics": {
-      "title": "可爱声学",
-      "author": "杜 东善",
-      "toc": [
-        {
-          "section": "序言",
-          "chapters": [
-            { "id": "acoustics_intro_1", "title": "想成为声音大师吗？", "url": "" },
-            { "id": "acoustics_intro_2", "title": "声学也需要想象力", "url": "" }
-          ]
-        },
-        {
-          "section": "宇宙的法则",
-          "chapters": [
-            { "id": "acoustics_law_1", "title": "惯性：抵抗改变的本质", "url": "" },
-            { "id": "acoustics_law_2", "title": "力：传递能量的入口", "url": "" },
-            { "id": "acoustics_law_3", "title": "能量的两种形式", "url": "" },
-            { "id": "acoustics_law_4", "title": "能量守恒", "url": "" },
-            { "id": "acoustics_law_5", "title": "小结", "url": "" },
-            { "id": "acoustics_law_6", "title": "进阶：场与粒子", "url": "" }
-          ]
-        },
-        {
-          "section": "振动与波",
-          "chapters": [
-            { "id": "acoustics_vib_1", "title": "声从何来：一种特殊的运动", "url": "" },
-            { "id": "acoustics_vib_2", "title": "振动的材料：惯性与回复力", "url": "" },
-            { "id": "acoustics_vib_3", "title": "流体力学的味道", "url": "" },
-            { "id": "acoustics_vib_4", "title": "声源与介质", "url": "" },
-            { "id": "acoustics_vib_5", "title": "空气的热运动与扩散", "url": "" },
-            { "id": "acoustics_vib_6", "title": "空气的弹性", "url": "" },
-            { "id": "acoustics_vib_7", "title": "空气如何振动：压缩与稀疏", "url": "" }
-          ]
-        },
-
-        {
-          "section": "基础数学",
-          "chapters": [
-            { "id": "acoustics_math_1", "title": "什么是模型？", "url": "" },
-            { "id": "acoustics_math_2", "title": "物理量：理解世界的第一步", "url": "" },
-            { "id": "acoustics_math_3", "title": "动量与力的建模", "url": "" },
-            { "id": "acoustics_math_3_1", "title": "惯性的数学表达：动量", "url": "" },
-            { "id": "acoustics_math_3_2", "title": "F = ma：建模“力”的概念", "url": "" },
-            { "id": "acoustics_math_4", "title": "胡克定律：振动系统的数学形式", "url": "" },
-            { "id": "acoustics_math_5", "title": "三角函数", "url": "" },
-            { "id": "acoustics_math_5_1", "title": "什么是函数？", "url": "" },
-            { "id": "acoustics_math_5_2", "title": "比与比例", "url": "" },
-            { "id": "acoustics_math_5_3", "title": "比例的美学 0：比例的力量", "url": "" },
-            { "id": "acoustics_math_5_4", "title": "比例的美学 1：直角三角形的秘密", "url": "" },
-            { "id": "acoustics_math_5_5", "title": "比例的美学 2：宇宙与三角的浪漫", "url": "" },
-            { "id": "acoustics_math_5_6", "title": "比例的美学 3：弧度与无量纲角", "url": "" },
-            { "id": "acoustics_math_5_7", "title": "比例的美学 4：微分", "url": "" },
-            { "id": "acoustics_math_6", "title": "导数：描述瞬间变化的函数", "url": "" },
-            { "id": "acoustics_math_7", "title": "三角函数的导数", "url": "" },
-            { "id": "acoustics_math_8", "title": "求解胡克定律", "url": "" },
-            { "id": "acoustics_math_9", "title": "周期性与频率", "url": "" }
-          ]
-        },
-
-        {
-          "section": "声音的特性",
-          "chapters": [
-            { "id": "acoustics_sound_1", "title": "固有频率", "url": "" },
-            { "id": "acoustics_sound_2", "title": "共振", "url": "" },
-            { "id": "acoustics_sound_3", "title": "波动方程", "url": "" },
-            { "id": "acoustics_sound_4", "title": "模态与泛音", "url": "" },
-            { "id": "acoustics_sound_5", "title": "音乐声学的初见", "url": "" },
-            { "id": "acoustics_sound_6", "title": "调音", "url": "" }
-          ]
-        },
-
-        {
-          "section": "空间与建筑",
-          "chapters": [
-            { "id": "acoustics_arch_1", "title": "理解建筑", "url": "" },
-            { "id": "acoustics_arch_2", "title": "空间的声学特性", "url": "" },
-            { "id": "acoustics_arch_2_1", "title": "反射", "url": "" },
-            { "id": "acoustics_arch_2_2", "title": "吸收", "url": "" },
-            { "id": "acoustics_arch_2_3", "title": "折射", "url": "" },
-            { "id": "acoustics_arch_2_4", "title": "衍射", "url": "" },
-            { "id": "acoustics_arch_2_5", "title": "干涉", "url": "" },
-            { "id": "acoustics_arch_3", "title": "建筑声学的初见", "url": "" }
-          ]
-        },
-
-        {
-          "section": "音频信号",
-          "chapters": [
-            { "id": "acoustics_audio_1", "title": "自由振动与受迫振动", "url": "" },
-            { "id": "acoustics_audio_2", "title": "电磁学的味道", "url": "" },
-            { "id": "acoustics_audio_3", "title": "什么是信号？", "url": "" },
-            { "id": "acoustics_audio_4", "title": "数字与模拟", "url": "" },
-            { "id": "acoustics_audio_5", "title": "录音原理", "url": "" },
-            { "id": "acoustics_audio_6", "title": "麦克风", "url": "" },
-            { "id": "acoustics_audio_7", "title": "扬声器", "url": "" },
-            { "id": "acoustics_audio_8", "title": "音频信号", "url": "" },
-            { "id": "acoustics_audio_9", "title": "电声学的初见", "url": "" }
-          ]
-        },
-
-        {
-          "section": "进阶数学",
-          "chapters": [
-            { "id": "acoustics_adv_math_1", "title": "傅里叶分析", "url": "" },
-            { "id": "acoustics_adv_math_2", "title": "傅里叶合成", "url": "" }
-          ]
-        },
-
-        {
-          "section": "声音与交流",
-          "chapters": [
-            { "id": "acoustics_voice_1", "title": "人类发声结构", "url": "" },
-            { "id": "acoustics_voice_2", "title": "语音声学的初见", "url": "" },
-            { "id": "acoustics_voice_3", "title": "耳朵的结构", "url": "" },
-            { "id": "acoustics_voice_4", "title": "耳鸣", "url": "" },
-            { "id": "acoustics_voice_5", "title": "助听器", "url": "" },
-            { "id": "acoustics_voice_6", "title": "心理声学的初见", "url": "" }
-          ]
-        },
-
-        {
-          "section": "结束",
-          "chapters": [
-            { "id": "acoustics_end", "title": "结语", "url": "" }
-          ]
-        }
+  "zh": {
+    "meta": {
+      "title": "Bug Loop | 专注电子书的开发者博客",
+      "description": "一个热爱写作媒介的人，记录着他独特而细腻的思考。"
+    },
+    "tableHeaders": {
+      "number": "编号",
+      "title": "标题",
+      "author": "作者",
+      "category": "分类",
+      "date": "日期",
+      "views": "浏览数"
+    },
+    "tabs": {
+      "allPosts": "全部文章",
+      "searchResults": "搜索结果"
+    },
+    "search": {
+      "resultsFor": "搜索“%s” 的结果",
+      "placeholder": "一位网站开发者的日记"
+    },
+    "ui": {
+      "home": "首页",
+      "backToHome": "返回首页",
+      "tocButton": "目录",
+      "darkModeLabel": "深色模式",
+      "darkModeLabelLight": "浅色模式",
+      "darkModeToggle": "切换主题",
+      "category": "分类",
+      "author": "作者",
+      "date": "日期",
+      "editButton": "编辑",
+      "deleteButton": "删除",
+      "deleteConfirm": "确定要删除吗？"
+    },
+    "profile": {
+      "profile-title": "团队",
+      "profile-job1": "信息与通信技术",
+      "profile-name1": "韩 东善",
+      "profile-bio1": "汉阳网络大学计算机工程与网络安全专业的成人学生，喜欢以写作为媒介进行真诚而深度的交流。",
+      "profile-tags1": [
+        "#Web开发",
+        "#网络大学",
+        "#电子书爱好者",
+        "#网页设计"
+      ],
+      "profile-job2": "音乐与声学",
+      "profile-name2": "杜 东善",
+      "profile-bio2": "汉阳大学作曲学士，曾在法国勒芒大学学习工程基础与声学两年。对自由色彩浓厚的音乐，以及使这种音乐成为可能的工具（虚拟乐器）极感兴趣。",
+      "profile-tags2": [
+        "#电子音乐",
+        "#声学"
+      ],
+      "profile-job3": "脑力游戏与身心健康",
+      "profile-name3": "世 东善",
+      "profile-bio3": "一位法律上的视障创作者，曾在勒芒大学学习物理，也曾就读勒芒美院的声音设计，但因适应困难而退学。他持续探索身心健康，并开发与可持续幸福相关的应用与工具。",
+      "profile-tags3": [
+        "#脉络膜萎缩（CHM）",
+        "#声音设计",
+        "#物理",
+        "#视障",
+        "#健康科技"
+      ]
+    },
+    "editor": {
+      "editor-title": "BugLoop 编辑器",
+      "preview-label": "实时预览",
+      "example-html": "<header>\n  <h1>我的第一个网页</h1>\n  <nav>\n    <ul>\n      <li>首页</li>\n      <li>关于</li>\n      <li>联系</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>欢迎！</h2>\n    <p>这是一个非常简单的 HTML 示例。</p>\n  </section>\n\n  <section>\n    <h2>我喜欢的事物</h2>\n    <ul>\n      <li>猫</li>\n      <li>编程</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dong-sun Han 的博客</p>\n</footer>"
+    },
+    "header": {
+      "mainMenu": "主菜单",
+      "youtubeLink": "前往 YouTube",
+      "review": "评测",
+      "recentVideos": "最新上传视频",
+      "palma2pro": "Books Palma 2 Pro",
+      "choroideremia": "脉络膜萎缩（CHM）",
+      "coming": "即将推出",
+      "audiobook": "有声书",
+      "cuteacoustics": "可爱声学",
+      "producer": "钢琴制作人",
+      "unfinished": "未完成的痛楚",
+      "warmth": "计算的温度",
+      "music": "音乐内容",
+      "game": "脑部游戏",
+      "futureService": "我们正在开发一项将于 2027 年推出的突破性服务，敬请期待！"
+    },
+    "index": {
+      "ongoing": "连载系列",
+      "recentPosts": "最新文章",
+      "loadMore": "加载更多"
+    },
+    "panel": {
+      "title": "Bug Loop — 专注电子书的开发者",
+      "body": "一本书就像电影的字幕。<br><br>真正阅读一本书，需要经验（记忆）或体验的渴望（想象力）。若只是无心地扫过文字，它不过是几条线条罢了。要让文字之间诞生的意义变得真实，读者与内容之间必须先有连接，而这种连接，是由读者内心屏幕上浮现的画面构成的——那些只有自己才能完整感知的记忆与想象。<br><br>传统意义上的书，是以一个方向排列的印刷文字。但电子书不同。“电子”代表着能发出电能的粒子，哪怕微小的变化，也会以光速扩散。借助这种特性，读者可以瞬间从第一页跳到最后一页，也可以在文字间嵌入音频与视频，让阅读体验变得更丰富。<br><br>电子书并不是“便于复制发行的书”而已，它远不止于此！这个博客记录了探索电子书价值的旅程。",
+      "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "可爱声学",
+        "author": "杜 东善",
+        "toc": [
+          {
+            "section": "序言",
+            "chapters": [
+              { "id": "acoustics_intro_1", "title": "想成为声音大师吗？", "url": "" },
+              { "id": "acoustics_intro_2", "title": "声学也需要想象力", "url": "" }
+            ]
+          },
+          {
+            "section": "宇宙的法则",
+            "chapters": [
+              { "id": "acoustics_law_1", "title": "惯性：抵抗改变的本质", "url": "" },
+              { "id": "acoustics_law_2", "title": "力：传递能量的入口", "url": "" },
+              { "id": "acoustics_law_3", "title": "能量的两种形式", "url": "" },
+              { "id": "acoustics_law_4", "title": "能量守恒", "url": "" },
+              { "id": "acoustics_law_5", "title": "小结", "url": "" },
+              { "id": "acoustics_law_6", "title": "进阶：场与粒子", "url": "" }
+            ]
+          },
+          {
+            "section": "振动与波",
+            "chapters": [
+              { "id": "acoustics_vib_1", "title": "声从何来：一种特殊的运动", "url": "" },
+              { "id": "acoustics_vib_2", "title": "振动的材料：惯性与回复力", "url": "" },
+              { "id": "acoustics_vib_3", "title": "流体力学的味道", "url": "" },
+              { "id": "acoustics_vib_4", "title": "声源与介质", "url": "" },
+              { "id": "acoustics_vib_5", "title": "空气的热运动与扩散", "url": "" },
+              { "id": "acoustics_vib_6", "title": "空气的弹性", "url": "" },
+              { "id": "acoustics_vib_7", "title": "空气如何振动：压缩与稀疏", "url": "" }
+            ]
+          },
+          {
+            "section": "基础数学",
+            "chapters": [
+              { "id": "acoustics_math_1", "title": "什么是模型？", "url": "" },
+              { "id": "acoustics_math_2", "title": "物理量：理解世界的第一步", "url": "" },
+              { "id": "acoustics_math_3", "title": "动量与力的建模", "url": "" },
+              { "id": "acoustics_math_3_1", "title": "惯性的数学表达：动量", "url": "" },
+              { "id": "acoustics_math_3_2", "title": "F = ma：建模“力”的概念", "url": "" },
+              { "id": "acoustics_math_4", "title": "胡克定律：振动系统的数学形式", "url": "" },
+              { "id": "acoustics_math_5", "title": "三角函数", "url": "" },
+              { "id": "acoustics_math_5_1", "title": "什么是函数？", "url": "" },
+              { "id": "acoustics_math_5_2", "title": "比与比例", "url": "" },
+              { "id": "acoustics_math_5_3", "title": "比例的美学 0：比例的力量", "url": "" },
+              { "id": "acoustics_math_5_4", "title": "比例的美学 1：直角三角形的秘密", "url": "" },
+              { "id": "acoustics_math_5_5", "title": "比例的美学 2：宇宙与三角的浪漫", "url": "" },
+              { "id": "acoustics_math_5_6", "title": "比例的美学 3：弧度与无量纲角", "url": "" },
+              { "id": "acoustics_math_5_7", "title": "比例的美学 4：微分", "url": "" },
+              { "id": "acoustics_math_6", "title": "导数：描述瞬间变化的函数", "url": "" },
+              { "id": "acoustics_math_7", "title": "三角函数的导数", "url": "" },
+              { "id": "acoustics_math_8", "title": "求解胡克定律", "url": "" },
+              { "id": "acoustics_math_9", "title": "周期性与频率", "url": "" }
+            ]
+          },
+          {
+            "section": "声音的特性",
+            "chapters": [
+              { "id": "acoustics_sound_1", "title": "固有频率", "url": "" },
+              { "id": "acoustics_sound_2", "title": "共振", "url": "" },
+              { "id": "acoustics_sound_3", "title": "波动方程", "url": "" },
+              { "id": "acoustics_sound_4", "title": "模态与泛音", "url": "" },
+              { "id": "acoustics_sound_5", "title": "音乐声学的初见", "url": "" },
+              { "id": "acoustics_sound_6", "title": "调音", "url": "" }
+            ]
+          },
+          {
+            "section": "空间与建筑",
+            "chapters": [
+              { "id": "acoustics_arch_1", "title": "理解建筑", "url": "" },
+              { "id": "acoustics_arch_2", "title": "空间的声学特性", "url": "" },
+              { "id": "acoustics_arch_2_1", "title": "反射", "url": "" },
+              { "id": "acoustics_arch_2_2", "title": "吸收", "url": "" },
+              { "id": "acoustics_arch_2_3", "title": "折射", "url": "" },
+              { "id": "acoustics_arch_2_4", "title": "衍射", "url": "" },
+              { "id": "acoustics_arch_2_5", "title": "干涉", "url": "" },
+              { "id": "acoustics_arch_3", "title": "建筑声学的初见", "url": "" }
+            ]
+          },
+          {
+            "section": "音频信号",
+            "chapters": [
+              { "id": "acoustics_audio_1", "title": "自由振动与受迫振动", "url": "" },
+              { "id": "acoustics_audio_2", "title": "电磁学的味道", "url": "" },
+              { "id": "acoustics_audio_3", "title": "什么是信号？", "url": "" },
+              { "id": "acoustics_audio_4", "title": "数字与模拟", "url": "" },
+              { "id": "acoustics_audio_5", "title": "录音原理", "url": "" },
+              { "id": "acoustics_audio_6", "title": "麦克风", "url": "" },
+              { "id": "acoustics_audio_7", "title": "扬声器", "url": "" },
+              { "id": "acoustics_audio_8", "title": "音频信号", "url": "" },
+              { "id": "acoustics_audio_9", "title": "电声学的初见", "url": "" }
+            ]
+          },
+          {
+            "section": "进阶数学",
+            "chapters": [
+              { "id": "acoustics_adv_math_1", "title": "傅里叶分析", "url": "" },
+              { "id": "acoustics_adv_math_2", "title": "傅里叶合成", "url": "" }
+            ]
+          },
+          {
+            "section": "声音与交流",
+            "chapters": [
+              { "id": "acoustics_voice_1", "title": "人类发声结构", "url": "" },
+              { "id": "acoustics_voice_2", "title": "语音声学的初见", "url": "" },
+              { "id": "acoustics_voice_3", "title": "耳朵的结构", "url": "" },
+              { "id": "acoustics_voice_4", "title": "耳鸣", "url": "" },
+              { "id": "acoustics_voice_5", "title": "助听器", "url": "" },
+              { "id": "acoustics_voice_6", "title": "心理声学的初见", "url": "" }
+            ]
+          },
+          {
+            "section": "结束",
+            "chapters": [
+              { "id": "acoustics_end", "title": "结语", "url": "" }
+            ]
+          }
+        ]
+      },
+      "unfinished_pain": {
+        "title": "未完成的痛楚",
+        "author": "Bug Loop 团队",
+        "toc": [
+          {
+            "section": "序言",
+            "chapters": [
+              { "id": "pain_intro", "title": "序言", "url": "" }
+            ]
+          },
+          {
+            "section": "你靠近我是因为你需要我",
+            "chapters": [
+              { "id": "pain_1", "title": "你靠近我是因为你需要我", "url": "" }
+            ]
+          },
+          {
+            "section": "这张不是我选择的脸",
+            "chapters": [
+              { "id": "pain_2", "title": "这张不是我选择的脸", "url": "" }
+            ]
+          },
+          {
+            "section": "印象如何形成",
+            "chapters": [
+              { "id": "pain_3", "title": "印象如何形成", "url": "" }
+            ]
+          },
+          {
+            "section": "我的行为究竟有多少是我自己选择的？",
+            "chapters": [
+              { "id": "pain_4", "title": "我的行为究竟有多少是我自己选择的？", "url": "" }
+            ]
+          },
+          {
+            "section": "挺直胸膛的两种方式",
+            "chapters": [
+              { "id": "pain_5", "title": "挺直胸膛的两种方式", "url": "" }
+            ]
+          },
+          {
+            "section": "播下种子后就放下：不执着的德行",
+            "chapters": [
+              { "id": "pain_6", "title": "播下种子后就放下：不执着的德行", "url": "" }
+            ]
+          },
+          {
+            "section": "砍倒一棵正在健康成长的树",
+            "chapters": [
+              { "id": "pain_7", "title": "砍倒一棵正在健康成长的树", "url": "" }
+            ]
+          },
+          {
+            "section": "激起反应",
+            "chapters": [
+              { "id": "pain_8", "title": "激起反应", "url": "" }
+            ]
+          },
+          {
+            "section": "沉溺在虚假记忆与误解的大海中",
+            "chapters": [
+              { "id": "pain_9", "title": "沉溺在虚假记忆与误解的大海中", "url": "" }
+            ]
+          },
+          {
+            "section": "只看一部分时，任何画面都显得可怜：继续向前",
+            "chapters": [
+              { "id": "pain_10", "title": "只看一部分时，任何画面都显得可怜：继续向前", "url": "" }
+            ]
+          }
+        ]
+      },
+      "pianist_producer": {
+        "title": "钢琴制作人：神秘的伴奏技巧",
+        "author": "Bug Loop 团队",
+        "toc": [
+          {
+            "section": "序言",
+            "chapters": [
+              { "id": "producer_intro", "title": "序言", "url": "" }
+            ]
+          },
+          {
+            "section": "宣告音乐的开始：节拍",
+            "chapters": [
+              { "id": "producer_1", "title": "宣告音乐的开始：节拍", "url": "" }
+            ]
+          },
+          {
+            "section": "微光般的静谧：Pad 垫底音色",
+            "chapters": [
+              { "id": "producer_2", "title": "微光般的静谧：Pad 垫底音色", "url": "" }
+            ]
+          },
+          {
+            "section": "稳定的根基：Bass 低音",
+            "chapters": [
+              { "id": "producer_3", "title": "稳定的根基：Bass 低音", "url": "" }
+            ]
+          },
+          {
+            "section": "平衡音色与和声：琶音",
+            "chapters": [
+              { "id": "producer_4", "title": "平衡音色与和声：琶音", "url": "" }
+            ]
+          },
+          {
+            "section": "让你起舞的力量：节奏与律动",
+            "chapters": [
+              { "id": "producer_5", "title": "让你起舞的力量：节奏与律动", "url": "" }
+            ]
+          },
+          {
+            "section": "通往下一幕的渐变：频谱滤波",
+            "chapters": [
+              { "id": "producer_6", "title": "通往下一幕的渐变：频谱滤波", "url": "" }
+            ]
+          },
+          {
+            "section": "主角登场：主旋律与 Lead",
+            "chapters": [
+              { "id": "producer_7", "title": "主角登场：主旋律与 Lead", "url": "" }
+            ]
+          },
+          {
+            "section": "主角的支撑者：副旋律与对位",
+            "chapters": [
+              { "id": "producer_8", "title": "主角的支撑者：副旋律与对位", "url": "" }
+            ]
+          },
+          {
+            "section": "笔触的厚度：合唱与和声",
+            "chapters": [
+              { "id": "producer_9", "title": "笔触的厚度：合唱与和声", "url": "" }
+            ]
+          },
+          {
+            "section": "驱散乏味感：音效",
+            "chapters": [
+              { "id": "producer_10", "title": "驱散乏味感：音效", "url": "" }
+            ]
+          }
+        ]
+      },
+      "warmth_of_calc": {
+        "title": "计算的温度",
+        "author": "Bug Loop 团队",
+        "toc": [
+          {
+            "section": "引言：AI 真的能成为我的朋友吗？",
+            "chapters": [
+              { "id": "warmth_intro", "title": "引言：AI 真的能成为我的朋友吗？", "url": "" }
+            ]
+          },
+          {
+            "section": "温暖的数据",
+            "chapters": [
+              { "id": "warmth_1", "title": "温暖的数据", "url": "" }
+            ]
+          },
+          {
+            "section": "温暖的网络",
+            "chapters": [
+              { "id": "warmth_2", "title": "温暖的网络", "url": "" }
+            ]
+          },
+          {
+            "section": "温暖的计算",
+            "chapters": [
+              { "id": "warmth_3", "title": "温暖的计算", "url": "" }
+            ]
+          }
+        ]
       }
-    },
-
-    "unfinished_pain": {
-      "title": "未完成的痛楚",
-      "author": "Bug Loop 团队",
-      "toc": [
-        {
-          "section": "序言",
-          "chapters": [
-            { "id": "pain_intro", "title": "序言", "url": "" }
-          ]
-        },
-        {
-          "section": "你靠近我是因为你需要我",
-          "chapters": [
-            { "id": "pain_1", "title": "你靠近我是因为你需要我", "url": "" }
-          ]
-        },
-        {
-          "section": "这张不是我选择的脸",
-          "chapters": [
-            { "id": "pain_2", "title": "这张不是我选择的脸", "url": "" }
-          ]
-        },
-        {
-          "section": "印象如何形成",
-          "chapters": [
-            { "id": "pain_3", "title": "印象如何形成", "url": "" }
-          ]
-        },
-        {
-          "section": "我的行为究竟有多少是我自己选择的？",
-          "chapters": [
-            { "id": "pain_4", "title": "我的行为究竟有多少是我自己选择的？", "url": "" }
-          ]
-        },
-        {
-          "section": "挺直胸膛的两种方式",
-          "chapters": [
-            { "id": "pain_5", "title": "挺直胸膛的两种方式", "url": "" }
-          ]
-        },
-        {
-          "section": "播下种子后就放下：不执着的德行",
-          "chapters": [
-            { "id": "pain_6", "title": "播下种子后就放下：不执着的德行", "url": "" }
-          ]
-        },
-        {
-          "section": "砍倒一棵正在健康成长的树",
-          "chapters": [
-            { "id": "pain_7", "title": "砍倒一棵正在健康成长的树", "url": "" }
-          ]
-        },
-        {
-          "section": "激起反应",
-          "chapters": [
-            { "id": "pain_8", "title": "激起反应", "url": "" }
-          ]
-        },
-        {
-          "section": "沉溺在虚假记忆与误解的大海中",
-          "chapters": [
-            { "id": "pain_9", "title": "沉溺在虚假记忆与误解的大海中", "url": "" }
-          ]
-        },
-        {
-          "section": "只看一部分时，任何画面都显得可怜：继续向前",
-          "chapters": [
-            { "id": "pain_10", "title": "只看一部分时，任何画面都显得可怜：继续向前", "url": "" }
-          ]
-        }
-      ]
-    },
-
-    "pianist_producer": {
-      "title": "钢琴制作人：神秘的伴奏技巧",
-      "author": "Bug Loop 团队",
-      "toc": [
-        {
-          "section": "序言",
-          "chapters": [
-            { "id": "producer_intro", "title": "序言", "url": "" }
-          ]
-        },
-        {
-          "section": "宣告音乐的开始：节拍",
-          "chapters": [
-            { "id": "producer_1", "title": "宣告音乐的开始：节拍", "url": "" }
-          ]
-        },
-        {
-          "section": "微光般的静谧：Pad 垫底音色",
-          "chapters": [
-            { "id": "producer_2", "title": "微光般的静谧：Pad 垫底音色", "url": "" }
-          ]
-        },
-        {
-          "section": "稳定的根基：Bass 低音",
-          "chapters": [
-            { "id": "producer_3", "title": "稳定的根基：Bass 低音", "url": "" }
-          ]
-        },
-        {
-          "section": "平衡音色与和声：琶音",
-          "chapters": [
-            { "id": "producer_4", "title": "平衡音色与和声：琶音", "url": "" }
-          ]
-        },
-        {
-          "section": "让你起舞的力量：节奏与律动",
-          "chapters": [
-            { "id": "producer_5", "title": "让你起舞的力量：节奏与律动", "url": "" }
-          ]
-        },
-        {
-          "section": "通往下一幕的渐变：频谱滤波",
-          "chapters": [
-            { "id": "producer_6", "title": "通往下一幕的渐变：频谱滤波", "url": "" }
-          ]
-        },
-        {
-          "section": "主角登场：主旋律与 Lead",
-          "chapters": [
-            { "id": "producer_7", "title": "主角登场：主旋律与 Lead", "url": "" }
-          ]
-        },
-        {
-          "section": "主角的支撑者：副旋律与对位",
-          "chapters": [
-            { "id": "producer_8", "title": "主角的支撑者：副旋律与对位", "url": "" }
-          ]
-        },
-        {
-          "section": "笔触的厚度：合唱与和声",
-          "chapters": [
-            { "id": "producer_9", "title": "笔触的厚度：合唱与和声", "url": "" }
-          ]
-        },
-        {
-          "section": "驱散乏味感：音效",
-          "chapters": [
-            { "id": "producer_10", "title": "驱散乏味感：音效", "url": "" }
-          ]
-        }
-      ]
-    },
-
-    "warmth_of_calc": {
-      "title": "计算的温度",
-      "author": "Bug Loop 团队",
-      "toc": [
-        {
-          "section": "引言：AI 真的能成为我的朋友吗？",
-          "chapters": [
-            { "id": "warmth_intro", "title": "引言：AI 真的能成为我的朋友吗？", "url": "" }
-          ]
-        },
-        {
-          "section": "温暖的数据",
-          "chapters": [
-            { "id": "warmth_1", "title": "温暖的数据", "url": "" }
-          ]
-        },
-        {
-          "section": "温暖的网络",
-          "chapters": [
-            { "id": "warmth_2", "title": "温暖的网络", "url": "" }
-          ]
-        },
-        {
-          "section": "温暖的计算",
-          "chapters": [
-            { "id": "warmth_3", "title": "温暖的计算", "url": "" }
-          ]
-        }
-      ]
     }
-  }
-}
-
-"ja": {
-  "meta": {
-    "title": "Bug Loop | 電子書籍に情熱を注ぐ開発者のブログ",
-    "description": "文章という媒体を愛する人の、独特で繊細な思索が詰まったブログ。"
   },
-
-  "tableHeaders": {
-    "number": "番号",
-    "title": "タイトル",
-    "author": "著者",
-    "category": "カテゴリー",
-    "date": "日付",
-    "views": "閲覧数"
-  },
-
-  "tabs": {
-    "allPosts": "すべての記事",
-    "searchResults": "検索結果"
-  },
-
-  "search": {
-    "resultsFor": "「%s」の検索結果",
-    "placeholder": "サイト開発者の日記"
-  },
-
-  "ui": {
-    "home": "ホーム",
-    "backToHome": "ホームへ戻る",
-    "tocButton": "目次",
-    "darkModeLabel": "ダークモード",
-    "darkModeLabelLight": "ライトモード",
-    "darkModeToggle": "テーマを切り替える",
-    "category": "カテゴリー",
-    "author": "著者",
-    "date": "日付",
-    "editButton": "編集",
-    "deleteButton": "削除",
-    "deleteConfirm": "本当に削除しますか？"
-  },
-
-  "profile": {
-    "profile-title": "チーム",
-
-    "profile-job1": "情報通信技術",
-    "profile-name1": "ハン・ドンソン",
-    "profile-bio1": "漢陽サイバー大学でコンピュータ工学およびサイバーセキュリティを専攻する社会人学生。文章を通した誠実で深いコミュニケーションを好む。",
-    "profile-tags1": [
-      "#Web開発",
-      "#サイバー大学",
-      "#電子書籍好き",
-      "#Webデザイン"
-    ],
-
-    "profile-job2": "音楽＆音響学",
-    "profile-name2": "ドゥ・ドンソン",
-    "profile-bio2": "漢陽大学で作曲の学士号を取得し、フランス・ルマン大学で基礎工学と音響学を2年間学ぶ。自由で創造的な音楽、そしてその音楽を可能にする（仮想楽器）に強い関心を持つ。",
-    "profile-tags2": [
-      "#電子音楽",
-      "#音響学"
-    ],
-
-    "profile-job3": "脳ゲーム & ウェルネス",
-    "profile-name3": "セ・ドンソン",
-    "profile-bio3": "法律上の視覚障害クリエイター。ルマン大学で物理学を学び、ルマン美術大学でサウンドデザインも専攻したが、適応困難のため中退。心身の健康を探究しながら、持続可能な幸福のためのアプリやツールを開発している。",
-    "profile-tags3": [
-      "#コロイデレミア",
-      "#サウンドデザイン",
-      "#物理学",
-      "#視覚障害",
-      "#ヘルステック"
-    ]
-  },
-
-  "editor": {
-    "editor-title": "BugLoop エディター",
-    "preview-label": "ライブプレビュー",
-    "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>お問い合わせ</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これはとてもシンプルな HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dong-sun Han’s Blog</p>\n</footer>"
-  },
-
-  "header": {
-    "mainMenu": "メインメニュー",
-    "youtubeLink": "YouTubeへ",
-    "review": "レビュー",
-    "recentVideos": "最近の動画",
-    "palma2pro": "Books Palma 2 Pro",
-    "choroideremia": "コロイデレミア",
-    "coming": "近日公開",
-    "audiobook": "オーディオブック",
-    "cuteacoustics": "キュートアコースティックス",
-    "producer": "ピアニスト・プロデューサー",
-    "unfinished": "未完の痛み",
-    "warmth": "計算のあたたかみ",
-    "music": "音楽コンテンツ",
-    "game": "脳ゲーム",
-    "futureService": "2027年公開予定の画期的なサービスを開発中です。お楽しみに！"
-  },
-
-  "index": {
-    "ongoing": "連載中シリーズ",
-    "recentPosts": "最新記事",
-    "loadMore": "さらに表示"
-  },
-
-  "panel": {
-    "title": "Bug Loop — 電子書籍に焦点を当てた開発者",
-    "body": "本は映画の字幕のようなものだ。<br><br>本を本当に“読む”には、経験（記憶）か、体験を望む心（想像力）が必要だ。何となく文字を眺めるだけでは、それはただの線にすぎない。文字と文字のあいだに生まれる意味を実感するためには、まず読者と内容のあいだに結びつきが必要で、その結びつきは、心のスクリーンに映し出される情景――記憶と想像によってつくられる。<br><br>紙の本は、ひとつの方向に並んだ文字として存在する。しかし電子書籍は違う。「電子」とは電気的エネルギーを持つ粒子であり、ごくわずかな変化も光速で伝わる。この特性によって、読者は一瞬で最初のページから最後のページへ飛んだり、テキストのあいだに音声や映像を埋め込んだりでき、読書体験そのものが豊かになる。<br><br>電子書籍は、単に“複製しやすい本”ではない。それ以上の価値がある！ このブログはその価値を探求する旅を記録している。",
-    "chips": []
-  },
-
-  "books": {
-
-    "cute_acoustics": {
-      "title": "キュートアコースティックス",
-      "author": "ドゥ・ドンソン",
-      "toc": [
-        {
-          "section": "序章",
-          "chapters": [
-            { "id": "acoustics_intro_1", "title": "音の達人になりたい？", "url": "" },
-            { "id": "acoustics_intro_2", "title": "音響学にも想像力が必要", "url": "" }
-          ]
-        },
-        {
-          "section": "宇宙の法則",
-          "chapters": [
-            { "id": "acoustics_law_1", "title": "慣性：変化に抗う性質", "url": "" },
-            { "id": "acoustics_law_2", "title": "力：エネルギー伝達の入口", "url": "" },
-            { "id": "acoustics_law_3", "title": "2種類のエネルギー", "url": "" },
-            { "id": "acoustics_law_4", "title": "エネルギー保存", "url": "" },
-            { "id": "acoustics_law_5", "title": "まとめ", "url": "" },
-            { "id": "acoustics_law_6", "title": "応用：場と粒子", "url": "" }
-          ]
-        },
-
-        {
-          "section": "振動と波",
-          "chapters": [
-            { "id": "acoustics_vib_1", "title": "音を生む特別な運動：振動", "url": "" },
-            { "id": "acoustics_vib_2", "title": "振動の材料：慣性と復元力", "url": "" },
-            { "id": "acoustics_vib_3", "title": "流体力学の味見", "url": "" },
-            { "id": "acoustics_vib_4", "title": "音源と媒質", "url": "" },
-            { "id": "acoustics_vib_5", "title": "空気の熱運動と拡散", "url": "" },
-            { "id": "acoustics_vib_6", "title": "空気の弾性", "url": "" },
-            { "id": "acoustics_vib_7", "title": "空気が振動する仕組み：圧縮と希薄", "url": "" }
-          ]
-        },
-
-        {
-          "section": "基礎数学",
-          "chapters": [
-            { "id": "acoustics_math_1", "title": "モデルとは何か", "url": "" },
-            { "id": "acoustics_math_2", "title": "物理量：世界を理解する第一歩", "url": "" },
-            { "id": "acoustics_math_3", "title": "運動量と力のモデル化", "url": "" },
-            { "id": "acoustics_math_3_1", "title": "慣性の数学的表現：運動量", "url": "" },
-            { "id": "acoustics_math_3_2", "title": "F = ma：力の概念をモデル化する", "url": "" },
-            { "id": "acoustics_math_4", "title": "フックの法則：振動系の数学表現", "url": "" },
-            { "id": "acoustics_math_5", "title": "三角関数", "url": "" },
-            { "id": "acoustics_math_5_1", "title": "関数とは", "url": "" },
-            { "id": "acoustics_math_5_2", "title": "比と比例", "url": "" },
-            { "id": "acoustics_math_5_3", "title": "比例美学0：比例の力", "url": "" },
-            { "id": "acoustics_math_5_4", "title": "比例美学1：直角三角形の秘密", "url": "" },
-            { "id": "acoustics_math_5_5", "title": "比例美学2：宇宙と三角関数のロマン", "url": "" },
-            { "id": "acoustics_math_5_6", "title": "比例美学3：ラジアンと無次元角", "url": "" },
-            { "id": "acoustics_math_5_7", "title": "比例美学4：微分", "url": "" },
-            { "id": "acoustics_math_6", "title": "導関数：瞬間変化を記述する関数", "url": "" },
-            { "id": "acoustics_math_7", "title": "三角関数の微分", "url": "" },
-            { "id": "acoustics_math_8", "title": "フックの法則を解く", "url": "" },
-            { "id": "acoustics_math_9", "title": "周期性と周波数", "url": "" }
-          ]
-        },
-
-        {
-          "section": "音の性質",
-          "chapters": [
-            { "id": "acoustics_sound_1", "title": "固有振動数", "url": "" },
-            { "id": "acoustics_sound_2", "title": "共鳴", "url": "" },
-            { "id": "acoustics_sound_3", "title": "波動方程式", "url": "" },
-            { "id": "acoustics_sound_4", "title": "モードと倍音", "url": "" },
-            { "id": "acoustics_sound_5", "title": "音楽音響学の入口", "url": "" },
-            { "id": "acoustics_sound_6", "title": "調律", "url": "" }
-          ]
-        },
-
-        {
-          "section": "空間 & 建築",
-          "chapters": [
-            { "id": "acoustics_arch_1", "title": "建築を理解する", "url": "" },
-            { "id": "acoustics_arch_2", "title": "空間の音響特性", "url": "" },
-            { "id": "acoustics_arch_2_1", "title": "反射", "url": "" },
-            { "id": "acoustics_arch_2_2", "title": "吸収", "url": "" },
-            { "id": "acoustics_arch_2_3", "title": "屈折", "url": "" },
-            { "id": "acoustics_arch_2_4", "title": "回折", "url": "" },
-            { "id": "acoustics_arch_2_5", "title": "干渉", "url": "" },
-            { "id": "acoustics_arch_3", "title": "建築音響学の入口", "url": "" }
-          ]
-        },
-
-        {
-          "section": "オーディオ信号",
-          "chapters": [
-            { "id": "acoustics_audio_1", "title": "自由振動と強制振動", "url": "" },
-            { "id": "acoustics_audio_2", "title": "電磁気学の味見", "url": "" },
-            { "id": "acoustics_audio_3", "title": "信号とは何か", "url": "" },
-            { "id": "acoustics_audio_4", "title": "デジタル vs アナログ", "url": "" },
-            { "id": "acoustics_audio_5", "title": "録音の原理", "url": "" },
-            { "id": "acoustics_audio_6", "title": "マイクロフォン", "url": "" },
-            { "id": "acoustics_audio_7", "title": "スピーカー", "url": "" },
-            { "id": "acoustics_audio_8", "title": "オーディオ信号", "url": "" },
-            { "id": "acoustics_audio_9", "title": "電気音響学の入口", "url": "" }
-          ]
-        },
-
-        {
-          "section": "応用数学",
-          "chapters": [
-            { "id": "acoustics_adv_math_1", "title": "フーリエ解析", "url": "" },
-            { "id": "acoustics_adv_math_2", "title": "フーリエ合成", "url": "" }
-          ]
-        },
-
-        {
-          "section": "声とコミュニケーション",
-          "chapters": [
-            { "id": "acoustics_voice_1", "title": "人間の発声構造", "url": "" },
-            { "id": "acoustics_voice_2", "title": "音声音響学の入口", "url": "" },
-            { "id": "acoustics_voice_3", "title": "耳の構造", "url": "" },
-            { "id": "acoustics_voice_4", "title": "耳鳴り", "url": "" },
-            { "id": "acoustics_voice_5", "title": "補聴器", "url": "" },
-            { "id": "acoustics_voice_6", "title": "心理音響学の入口", "url": "" }
-          ]
-        },
-
-        {
-          "section": "終章",
-          "chapters": [
-            { "id": "acoustics_end", "title": "終わりに", "url": "" }
-          ]
-        }
+  "ja": {
+    "meta": {
+      "title": "Bug Loop | 電子書籍に情熱を注ぐ開発者のブログ",
+      "description": "文章という媒体を愛する人の、独特で繊細な思索が詰まったブログ。"
+    },
+    "tableHeaders": {
+      "number": "番号",
+      "title": "タイトル",
+      "author": "著者",
+      "category": "カテゴリー",
+      "date": "日付",
+      "views": "閲覧数"
+    },
+    "tabs": {
+      "allPosts": "すべての記事",
+      "searchResults": "検索結果"
+    },
+    "search": {
+      "resultsFor": "「%s」の検索結果",
+      "placeholder": "サイト開発者の日記"
+    },
+    "ui": {
+      "home": "ホーム",
+      "backToHome": "ホームへ戻る",
+      "tocButton": "目次",
+      "darkModeLabel": "ダークモード",
+      "darkModeLabelLight": "ライトモード",
+      "darkModeToggle": "テーマを切り替える",
+      "category": "カテゴリー",
+      "author": "著者",
+      "date": "日付",
+      "editButton": "編集",
+      "deleteButton": "削除",
+      "deleteConfirm": "本当に削除しますか？"
+    },
+    "profile": {
+      "profile-title": "チーム",
+      "profile-job1": "情報通信技術",
+      "profile-name1": "ハン・ドンソン",
+      "profile-bio1": "漢陽サイバー大学でコンピュータ工学およびサイバーセキュリティを専攻する社会人学生。文章を通した誠実で深いコミュニケーションを好む。",
+      "profile-tags1": [
+        "#Web開発",
+        "#サイバー大学",
+        "#電子書籍好き",
+        "#Webデザイン"
+      ],
+      "profile-job2": "音楽＆音響学",
+      "profile-name2": "ドゥ・ドンソン",
+      "profile-bio2": "漢陽大学で作曲の学士号を取得し、フランス・ルマン大学で基礎工学と音響学を2年間学ぶ。自由で創造的な音楽、そしてその音楽を可能にする（仮想楽器）に強い関心を持つ。",
+      "profile-tags2": [
+        "#電子音楽",
+        "#音響学"
+      ],
+      "profile-job3": "脳ゲーム & ウェルネス",
+      "profile-name3": "セ・ドンソン",
+      "profile-bio3": "法律上の視覚障害クリエイター。ルマン大学で物理学を学び、ルマン美術大学でサウンドデザインも専攻したが、適応困難のため中退。心身の健康を探究しながら、持続可能な幸福のためのアプリやツールを開発している。",
+      "profile-tags3": [
+        "#コロイデレミア",
+        "#サウンドデザイン",
+        "#物理学",
+        "#視覚障害",
+        "#ヘルステック"
       ]
     },
-
-    "unfinished_pain": {
-      "title": "未完の痛み",
-      "author": "Bug Loop チーム",
-      "toc": [
-        {
-          "section": "序文",
-          "chapters": [
-            { "id": "pain_intro", "title": "序文", "url": "" }
-          ]
-        },
-        {
-          "section": "あなたが私に近づくのは、私を必要としているから",
-          "chapters": [
-            { "id": "pain_1", "title": "あなたが私に近づくのは、私を必要としているから", "url": "" }
-          ]
-        },
-        {
-          "section": "私が選んだわけではないこの顔",
-          "chapters": [
-            { "id": "pain_2", "title": "私が選んだわけではないこの顔", "url": "" }
-          ]
-        },
-        {
-          "section": "印象はどのように形成されるのか",
-          "chapters": [
-            { "id": "pain_3", "title": "印象はどのように形成されるのか", "url": "" }
-          ]
-        },
-        {
-          "section": "私の行動はどこまで“私の選択”なのか",
-          "chapters": [
-            { "id": "pain_4", "title": "私の行動はどこまで“私の選択”なのか", "url": "" }
-          ]
-        },
-        {
-          "section": "胸を張る二つの方法",
-          "chapters": [
-            { "id": "pain_5", "title": "胸を張る二つの方法", "url": "" }
-          ]
-        },
-        {
-          "section": "種をまいたら忘れる：執着しないという徳",
-          "chapters": [
-            { "id": "pain_6", "title": "種をまいたら忘れる：執着しないという徳", "url": "" }
-          ]
-        },
-        {
-          "section": "健康に育っていた木を切り倒す",
-          "chapters": [
-            { "id": "pain_7", "title": "健康に育っていた木を切り倒す", "url": "" }
-          ]
-        },
-        {
-          "section": "反応を引き出すということ",
-          "chapters": [
-            { "id": "pain_8", "title": "反応を引き出すということ", "url": "" }
-          ]
-        },
-        {
-          "section": "偽りの記憶と誤解の海に溺れる",
-          "chapters": [
-            { "id": "pain_9", "title": "偽りの記憶と誤解の海に溺れる", "url": "" }
-          ]
-        },
-        {
-          "section": "一部分だけを見ればどんな姿も哀れに映る：前へ進むために",
-          "chapters": [
-            { "id": "pain_10", "title": "一部分だけを見ればどんな姿も哀れに映る：前へ進むために", "url": "" }
-          ]
-        }
-      ]
+    "editor": {
+      "editor-title": "BugLoop エディター",
+      "preview-label": "ライブプレビュー",
+      "example-html": "<header>\n  <h1>私の最初のウェブページ</h1>\n  <nav>\n    <ul>\n      <li>ホーム</li>\n      <li>紹介</li>\n      <li>お問い合わせ</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>ようこそ！</h2>\n    <p>これはとてもシンプルな HTML の例です。</p>\n  </section>\n\n  <section>\n    <h2>好きなもの</h2>\n    <ul>\n      <li>猫</li>\n      <li>コーディング</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Dong-sun Han’s Blog</p>\n</footer>"
     },
-
-    "pianist_producer": {
-      "title": "ピアニスト・プロデューサー：神秘的な伴奏技法",
-      "author": "Bug Loop チーム",
-      "toc": [
-        {
-          "section": "序文",
-          "chapters": [
-            { "id": "producer_intro", "title": "序文", "url": "" }
-          ]
-        },
-        {
-          "section": "音楽の始まりを告げる：ビート",
-          "chapters": [
-            { "id": "producer_1", "title": "音楽の始まりを告げる：ビート", "url": "" }
-          ]
-        },
-        {
-          "section": "揺らめく静けさ：パッド（Pad）",
-          "chapters": [
-            { "id": "producer_2", "title": "揺らめく静けさ：パッド（Pad）", "url": "" }
-          ]
-        },
-        {
-          "section": "揺るぎない土台：ベース（Bass）",
-          "chapters": [
-            { "id": "producer_3", "title": "揺るぎない土台：ベース（Bass）", "url": "" }
-          ]
-        },
-        {
-          "section": "音色とハーモニーの調和：アルペジオ",
-          "chapters": [
-            { "id": "producer_4", "title": "音色とハーモニーの調和：アルペジオ", "url": "" }
-          ]
-        },
-        {
-          "section": "体を動かす力：リズムとグルーヴ",
-          "chapters": [
-            { "id": "producer_5", "title": "体を動かす力：リズムとグルーヴ", "url": "" }
-          ]
-        },
-        {
-          "section": "次の場面へ向かうフェード：スペクトル・フィルタリング",
-          "chapters": [
-            { "id": "producer_6", "title": "次の場面へ向かうフェード：スペクトル・フィルタリング", "url": "" }
-          ]
-        },
-        {
-          "section": "主役の登場：リードとメロディ",
-          "chapters": [
-            { "id": "producer_7", "title": "主役の登場：リードとメロディ", "url": "" }
-          ]
-        },
-        {
-          "section": "主役を支える者：サブメロディと対位法",
-          "chapters": [
-            { "id": "producer_8", "title": "主役を支える者：サブメロディと対位法", "url": "" }
-          ]
-        },
-        {
-          "section": "筆触の厚み：コーラスとハーモナイズ",
-          "chapters": [
-            { "id": "producer_9", "title": "筆触の厚み：コーラスとハーモナイズ", "url": "" }
-          ]
-        },
-        {
-          "section": "退屈を吹き飛ばす：サウンドエフェクト",
-          "chapters": [
-            { "id": "producer_10", "title": "退屈を吹き飛ばす：サウンドエフェクト", "url": "" }
-          ]
-        }
-      ]
+    "header": {
+      "mainMenu": "メインメニュー",
+      "youtubeLink": "YouTubeへ",
+      "review": "レビュー",
+      "recentVideos": "最近の動画",
+      "palma2pro": "Books Palma 2 Pro",
+      "choroideremia": "コロイデレミア",
+      "coming": "近日公開",
+      "audiobook": "オーディオブック",
+      "cuteacoustics": "キュートアコースティックス",
+      "producer": "ピアニスト・プロデューサー",
+      "unfinished": "未完の痛み",
+      "warmth": "計算のあたたかみ",
+      "music": "音楽コンテンツ",
+      "game": "脳ゲーム",
+      "futureService": "2027年公開予定の画期的なサービスを開発中です。お楽しみに！"
     },
-
-    "warmth_of_calc": {
-      "title": "計算のあたたかみ",
-      "author": "Bug Loop チーム",
-      "toc": [
-        {
-          "section": "序章：AIは本当に“友達”になれるのか？",
-          "chapters": [
-            { "id": "warmth_intro", "title": "序章：AIは本当に“友達”になれるのか？", "url": "" }
-          ]
-        },
-        {
-          "section": "あたたかいデータ",
-          "chapters": [
-            { "id": "warmth_1", "title": "あたたかいデータ", "url": "" }
-          ]
-        },
-        {
-          "section": "あたたかいネットワーク",
-          "chapters": [
-            { "id": "warmth_2", "title": "あたたかいネットワーク", "url": "" }
-          ]
-        },
-        {
-          "section": "あたたかい計算",
-          "chapters": [
-            { "id": "warmth_3", "title": "あたたかい計算", "url": "" }
-          ]
-        }
-      ]
+    "index": {
+      "ongoing": "連載中シリーズ",
+      "recentPosts": "最新記事",
+      "loadMore": "さらに表示"
+    },
+    "panel": {
+      "title": "Bug Loop — 電子書籍に焦点を当てた開発者",
+      "body": "本は映画の字幕のようなものだ。<br><br>本を本当に“読む”には、経験（記憶）か、体験を望む心（想像力）が必要だ。何となく文字を眺めるだけでは、それはただの線にすぎない。文字と文字のあいだに生まれる意味を実感するためには、まず読者と内容のあいだに結びつきが必要で、その結びつきは、心のスクリーンに映し出される情景――記憶と想像によってつくられる。<br><br>紙の本は、ひとつの方向に並んだ文字として存在する。しかし電子書籍は違う。「電子」とは電気的エネルギーを持つ粒子であり、ごくわずかな変化も光速で伝わる。この特性によって、読者は一瞬で最初のページから最後のページへ飛んだり、テキストのあいだに音声や映像を埋め込んだりでき、読書体験そのものが豊かになる。<br><br>電子書籍は、単に“複製しやすい本”ではない。それ以上の価値がある！ このブログはその価値を探求する旅を記録している。",
+      "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "キュートアコースティックス",
+        "author": "ドゥ・ドンソン",
+        "toc": [
+          {
+            "section": "序章",
+            "chapters": [
+              { "id": "acoustics_intro_1", "title": "音の達人になりたい？", "url": "" },
+              { "id": "acoustics_intro_2", "title": "音響学にも想像力が必要", "url": "" }
+            ]
+          },
+          {
+            "section": "宇宙の法則",
+            "chapters": [
+              { "id": "acoustics_law_1", "title": "慣性：変化に抗う性質", "url": "" },
+              { "id": "acoustics_law_2", "title": "力：エネルギー伝達の入口", "url": "" },
+              { "id": "acoustics_law_3", "title": "2種類のエネルギー", "url": "" },
+              { "id": "acoustics_law_4", "title": "エネルギー保存", "url": "" },
+              { "id": "acoustics_law_5", "title": "まとめ", "url": "" },
+              { "id": "acoustics_law_6", "title": "応用：場と粒子", "url": "" }
+            ]
+          },
+          {
+            "section": "振動と波",
+            "chapters": [
+              { "id": "acoustics_vib_1", "title": "音を生む特別な運動：振動", "url": "" },
+              { "id": "acoustics_vib_2", "title": "振動の材料：慣性と復元力", "url": "" },
+              { "id": "acoustics_vib_3", "title": "流体力学の味見", "url": "" },
+              { "id": "acoustics_vib_4", "title": "音源と媒質", "url": "" },
+              { "id": "acoustics_vib_5", "title": "空気の熱運動と拡散", "url": "" },
+              { "id": "acoustics_vib_6", "title": "空気の弾性", "url": "" },
+              { "id": "acoustics_vib_7", "title": "空気が振動する仕組み：圧縮と希薄", "url": "" }
+            ]
+          },
+          {
+            "section": "基礎数学",
+            "chapters": [
+              { "id": "acoustics_math_1", "title": "モデルとは何か", "url": "" },
+              { "id": "acoustics_math_2", "title": "物理量：世界を理解する第一歩", "url": "" },
+              { "id": "acoustics_math_3", "title": "運動量と力のモデル化", "url": "" },
+              { "id": "acoustics_math_3_1", "title": "慣性の数学的表現：運動量", "url": "" },
+              { "id": "acoustics_math_3_2", "title": "F = ma：力の概念をモデル化する", "url": "" },
+              { "id": "acoustics_math_4", "title": "フックの法則：振動系の数学表現", "url": "" },
+              { "id": "acoustics_math_5", "title": "三角関数", "url": "" },
+              { "id": "acoustics_math_5_1", "title": "関数とは", "url": "" },
+              { "id": "acoustics_math_5_2", "title": "比と比例", "url": "" },
+              { "id": "acoustics_math_5_3", "title": "比例美学0：比例の力", "url": "" },
+              { "id": "acoustics_math_5_4", "title": "比例美学1：直角三角形の秘密", "url": "" },
+              { "id": "acoustics_math_5_5", "title": "比例美学2：宇宙と三角関数のロマン", "url": "" },
+              { "id": "acoustics_math_5_6", "title": "比例美学3：ラジアンと無次元角", "url": "" },
+              { "id": "acoustics_math_5_7", "title": "比例美学4：微分", "url": "" },
+              { "id": "acoustics_math_6", "title": "導関数：瞬間変化を記述する関数", "url": "" },
+              { "id": "acoustics_math_7", "title": "三角関数の微分", "url": "" },
+              { "id": "acoustics_math_8", "title": "フックの法則を解く", "url": "" },
+              { "id": "acoustics_math_9", "title": "周期性と周波数", "url": "" }
+            ]
+          },
+          {
+            "section": "音の性質",
+            "chapters": [
+              { "id": "acoustics_sound_1", "title": "固有振動数", "url": "" },
+              { "id": "acoustics_sound_2", "title": "共鳴", "url": "" },
+              { "id": "acoustics_sound_3", "title": "波動方程式", "url": "" },
+              { "id": "acoustics_sound_4", "title": "モードと倍音", "url": "" },
+              { "id": "acoustics_sound_5", "title": "音楽音響学の入口", "url": "" },
+              { "id": "acoustics_sound_6", "title": "調律", "url": "" }
+            ]
+          },
+          {
+            "section": "空間 & 建築",
+            "chapters": [
+              { "id": "acoustics_arch_1", "title": "建築を理解する", "url": "" },
+              { "id": "acoustics_arch_2", "title": "空間の音響特性", "url": "" },
+              { "id": "acoustics_arch_2_1", "title": "反射", "url": "" },
+              { "id": "acoustics_arch_2_2", "title": "吸収", "url": "" },
+              { "id": "acoustics_arch_2_3", "title": "屈折", "url": "" },
+              { "id": "acoustics_arch_2_4", "title": "回折", "url": "" },
+              { "id": "acoustics_arch_2_5", "title": "干渉", "url": "" },
+              { "id": "acoustics_arch_3", "title": "建築音響学の入口", "url": "" }
+            ]
+          },
+          {
+            "section": "オーディオ信号",
+            "chapters": [
+              { "id": "acoustics_audio_1", "title": "自由振動と強制振動", "url": "" },
+              { "id": "acoustics_audio_2", "title": "電磁気学の味見", "url": "" },
+              { "id": "acoustics_audio_3", "title": "信号とは何か", "url": "" },
+              { "id": "acoustics_audio_4", "title": "デジタル vs アナログ", "url": "" },
+              { "id": "acoustics_audio_5", "title": "録音の原理", "url": "" },
+              { "id": "acoustics_audio_6", "title": "マイクロフォン", "url": "" },
+              { "id": "acoustics_audio_7", "title": "スピーカー", "url": "" },
+              { "id": "acoustics_audio_8", "title": "オーディオ信号", "url": "" },
+              { "id": "acoustics_audio_9", "title": "電気音響学の入口", "url": "" }
+            ]
+          },
+          {
+            "section": "応用数学",
+            "chapters": [
+              { "id": "acoustics_adv_math_1", "title": "フーリエ解析", "url": "" },
+              { "id": "acoustics_adv_math_2", "title": "フーリエ合成", "url": "" }
+            ]
+          },
+          {
+            "section": "声とコミュニケーション",
+            "chapters": [
+              { "id": "acoustics_voice_1", "title": "人間の発声構造", "url": "" },
+              { "id": "acoustics_voice_2", "title": "音声音響学の入口", "url": "" },
+              { "id": "acoustics_voice_3", "title": "耳の構造", "url": "" },
+              { "id": "acoustics_voice_4", "title": "耳鳴り", "url": "" },
+              { "id": "acoustics_voice_5", "title": "補聴器", "url": "" },
+              { "id": "acoustics_voice_6", "title": "心理音響学の入口", "url": "" }
+            ]
+          },
+          {
+            "section": "終章",
+            "chapters": [
+              { "id": "acoustics_end", "title": "終わりに", "url": "" }
+            ]
+          }
+        ]
+      },
+      "unfinished_pain": {
+        "title": "未完の痛み",
+        "author": "Bug Loop チーム",
+        "toc": [
+          {
+            "section": "序文",
+            "chapters": [
+              { "id": "pain_intro", "title": "序文", "url": "" }
+            ]
+          },
+          {
+            "section": "あなたが私に近づくのは、私を必要としているから",
+            "chapters": [
+              { "id": "pain_1", "title": "あなたが私に近づくのは、私を必要としているから", "url": "" }
+            ]
+          },
+          {
+            "section": "私が選んだわけではないこの顔",
+            "chapters": [
+              { "id": "pain_2", "title": "私が選んだわけではないこの顔", "url": "" }
+            ]
+          },
+          {
+            "section": "印象はどのように形成されるのか",
+            "chapters": [
+              { "id": "pain_3", "title": "印象はどのように形成されるのか", "url": "" }
+            ]
+          },
+          {
+            "section": "私の行動はどこまで“私の選択”なのか",
+            "chapters": [
+              { "id": "pain_4", "title": "私の行動はどこまで“私の選択”なのか", "url": "" }
+            ]
+          },
+          {
+            "section": "胸を張る二つの方法",
+            "chapters": [
+              { "id": "pain_5", "title": "胸を張る二つの方法", "url": "" }
+            ]
+          },
+          {
+            "section": "種をまいたら忘れる：執着しないという徳",
+            "chapters": [
+              { "id": "pain_6", "title": "種をまいたら忘れる：執着しないという徳", "url": "" }
+            ]
+          },
+          {
+            "section": "健康に育っていた木を切り倒す",
+            "chapters": [
+              { "id": "pain_7", "title": "健康に育っていた木を切り倒す", "url": "" }
+            ]
+          },
+          {
+            "section": "反応を引き出すということ",
+            "chapters": [
+              { "id": "pain_8", "title": "反応を引き出すということ", "url": "" }
+            ]
+          },
+          {
+            "section": "偽りの記憶と誤解の海に溺れる",
+            "chapters": [
+              { "id": "pain_9", "title": "偽りの記憶と誤解の海に溺れる", "url": "" }
+            ]
+          },
+          {
+            "section": "一部分だけを見ればどんな姿も哀れに映る：前へ進むために",
+            "chapters": [
+              { "id": "pain_10", "title": "一部分だけを見ればどんな姿も哀れに映る：前へ進むために", "url": "" }
+            ]
+          }
+        ]
+      },
+      "pianist_producer": {
+        "title": "ピアニスト・プロデューサー：神秘的な伴奏技法",
+        "author": "Bug Loop チーム",
+        "toc": [
+          {
+            "section": "序文",
+            "chapters": [
+              { "id": "producer_intro", "title": "序文", "url": "" }
+            ]
+          },
+          {
+            "section": "音楽の始まりを告げる：ビート",
+            "chapters": [
+              { "id": "producer_1", "title": "音楽の始まりを告げる：ビート", "url": "" }
+            ]
+          },
+          {
+            "section": "揺らめく静けさ：パッド（Pad）",
+            "chapters": [
+              { "id": "producer_2", "title": "揺らめく静けさ：パッド（Pad）", "url": "" }
+            ]
+          },
+          {
+            "section": "揺るぎない土台：ベース（Bass）",
+            "chapters": [
+              { "id": "producer_3", "title": "揺るぎない土台：ベース（Bass）", "url": "" }
+            ]
+          },
+          {
+            "section": "音色とハーモニーの調和：アルペジオ",
+            "chapters": [
+              { "id": "producer_4", "title": "音色とハーモニーの調和：アルペジオ", "url": "" }
+            ]
+          },
+          {
+            "section": "体を動かす力：リズムとグルーヴ",
+            "chapters": [
+              { "id": "producer_5", "title": "体を動かす力：リズムとグルーヴ", "url": "" }
+            ]
+          },
+          {
+            "section": "次の場面へ向かうフェード：スペクトル・フィルタリング",
+            "chapters": [
+              { "id": "producer_6", "title": "次の場面へ向かうフェード：スペクトル・フィルタリング", "url": "" }
+            ]
+          },
+          {
+            "section": "主役の登場：リードとメロディ",
+            "chapters": [
+              { "id": "producer_7", "title": "主役の登場：リードとメロディ", "url": "" }
+            ]
+          },
+          {
+            "section": "主役を支える者：サブメロディと対位法",
+            "chapters": [
+              { "id": "producer_8", "title": "主役を支える者：サブメロディと対位法", "url": "" }
+            ]
+          },
+          {
+            "section": "筆触の厚み：コーラスとハーモナイズ",
+            "chapters": [
+              { "id": "producer_9", "title": "筆触の厚み：コーラスとハーモナイズ", "url": "" }
+            ]
+          },
+          {
+            "section": "退屈を吹き飛ばす：サウンドエフェクト",
+            "chapters": [
+              { "id": "producer_10", "title": "退屈を吹き飛ばす：サウンドエフェクト", "url": "" }
+            ]
+          }
+        ]
+      },
+      "warmth_of_calc": {
+        "title": "計算のあたたかみ",
+        "author": "Bug Loop チーム",
+        "toc": [
+          {
+            "section": "序章：AIは本当に“友達”になれるのか？",
+            "chapters": [
+              { "id": "warmth_intro", "title": "序章：AIは本当に“友達”になれるのか？", "url": "" }
+            ]
+          },
+          {
+            "section": "あたたかいデータ",
+            "chapters": [
+              { "id": "warmth_1", "title": "あたたかいデータ", "url": "" }
+            ]
+          },
+          {
+            "section": "あたたかいネットワーク",
+            "chapters": [
+              { "id": "warmth_2", "title": "あたたかいネットワーク", "url": "" }
+            ]
+          },
+          {
+            "section": "あたたかい計算",
+            "chapters": [
+              { "id": "warmth_3", "title": "あたたかい計算", "url": "" }
+            ]
+          }
+        ]
+      }
     }
-  }
-}
-
-"es": {
-  "meta": {
-    "title": "Bug Loop | Blog de un desarrollador dedicado a los libros electrónicos",
-    "description": "Un blog lleno de pensamientos delicados y únicos de alguien que ama profundamente la escritura."
   },
-
-  "tableHeaders": {
-    "number": "N.º",
-    "title": "Título",
-    "author": "Autor",
-    "category": "Categoría",
-    "date": "Fecha",
-    "views": "Vistas"
-  },
-
-  "tabs": {
-    "allPosts": "Todas las entradas",
-    "searchResults": "Resultados de búsqueda"
-  },
-
-  "search": {
-    "resultsFor": "Resultados para '%s'",
-    "placeholder": "Diario del desarrollador del sitio"
-  },
-
-  "ui": {
-    "home": "Inicio",
-    "backToHome": "Volver al inicio",
-    "tocButton": "Índice",
-    "darkModeLabel": "Modo oscuro",
-    "darkModeLabelLight": "Modo claro",
-    "darkModeToggle": "Cambiar tema",
-    "category": "Categoría",
-    "author": "Autor",
-    "date": "Fecha",
-    "editButton": "Editar",
-    "deleteButton": "Eliminar",
-    "deleteConfirm": "¿Seguro que deseas eliminar esto?"
-  },
-
-  "profile": {
-    "profile-title": "Equipo",
-
-    "profile-job1": "Tecnologías de la Información y Comunicación",
-    "profile-name1": "Han Dong-sun",
-    "profile-bio1": "Estudiante adulto de la Universidad Cibernética de Hanyang, donde estudia ingeniería informática y ciberseguridad. Le gusta comunicarse con sinceridad y profundidad a través de la escritura.",
-    "profile-tags1": [
-      "#DesarrolloWeb",
-      "#UniversidadCibernética",
-      "#AmanteDeLosEbooks",
-      "#DiseñoWeb"
-    ],
-
-    "profile-job2": "Música y Acústica",
-    "profile-name2": "Du Dong-sun",
-    "profile-bio2": "Graduado en composición por la Universidad de Hanyang y exestudiante de ingeniería básica y acústica en la Universidad de Le Mans (Francia). Le apasiona la música libre y expresiva, y las herramientas que permiten crearla, como los instrumentos virtuales.",
-    "profile-tags2": [
-      "#MúsicaElectrónica",
-      "#Acústica"
-    ],
-
-    "profile-job3": "Juegos mentales & Bienestar",
-    "profile-name3": "Se Dong-sun",
-    "profile-bio3": "Creador con discapacidad visual reconocida legalmente. Estudió física en la Universidad de Le Mans y también diseño sonoro en la Escuela de Arte de Le Mans, pero abandonó por dificultades de adaptación. Investiga el bienestar mental y físico, y desarrolla aplicaciones y herramientas orientadas a una felicidad sostenible.",
-    "profile-tags3": [
-      "#Coroideremia",
-      "#DiseñoSonoro",
-      "#Física",
-      "#DiscapacidadVisual",
-      "#HealthTech"
-    ]
-  },
-
-  "editor": {
-    "editor-title": "Editor BugLoop",
-    "preview-label": "Vista previa en vivo",
-    "example-html": "<header>\n  <h1>Mi primera página web</h1>\n  <nav>\n    <ul>\n      <li>Inicio</li>\n      <li>Sobre mí</li>\n      <li>Contacto</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>¡Bienvenido!</h2>\n    <p>Este es un ejemplo básico de HTML.</p>\n  </section>\n\n  <section>\n    <h2>Mis gustos</h2>\n    <ul>\n      <li>Gatos</li>\n      <li>Programar</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dong-sun Han</p>\n</footer>"
-  },
-
-  "header": {
-    "mainMenu": "Menú principal",
-    "youtubeLink": "Ir a YouTube",
-    "review": "Opiniones",
-    "recentVideos": "Videos recientes",
-    "palma2pro": "Books Palma 2 Pro",
-    "choroideremia": "Coroideremia",
-    "coming": "Próximamente",
-    "audiobook": "Audiolibro",
-    "cuteacoustics": "Cute Acoustics",
-    "producer": "Pianista/Productor",
-    "unfinished": "Dolor inacabado",
-    "warmth": "El calor del cálculo",
-    "music": "Contenido musical",
-    "game": "Juegos mentales",
-    "futureService": "Estamos desarrollando un servicio revolucionario que verá la luz en 2027. ¡Espéralo!"
-  },
-
-  "index": {
-    "ongoing": "Series en curso",
-    "recentPosts": "Entradas recientes",
-    "loadMore": "Cargar más"
-  },
-
-  "panel": {
-    "title": "Bug Loop — Un desarrollador centrado en los libros electrónicos",
-    "body": "Un libro es como los subtítulos de una película.<br><br>Para “leer” realmente un libro, se necesita experiencia (memoria) o un deseo de experimentar (imaginación). Si solo miras las palabras sin sentir nada, siguen siendo solo líneas. Para comprender el significado que surge entre las palabras, primero debe existir un vínculo entre lector y contenido, un vínculo que nace de las imágenes que aparecen en la pantalla del corazón: recuerdos e imaginación.<br><br>Un libro físico existe como texto lineal. Pero un libro electrónico es distinto. “Electrónico” significa partículas con energía eléctrica que pueden cambiar de estado a la velocidad de la luz. Gracias a ello, el lector puede saltar instantáneamente del principio al final, incrustar audio o video entre el texto y enriquecer así la experiencia.<br><br>El libro electrónico no es simplemente “un libro fácil de copiar”. Es mucho más. Este blog es un registro de la exploración de ese valor.",
-    "chips": []
-  },
-
-  "books": {
-
-    "cute_acoustics": {
-      "title": "Cute Acoustics",
-      "author": "Du Dong-sun",
-      "toc": [
-        {
-          "section": "Prólogo",
-          "chapters": [
-            { "id": "acoustics_intro_1", "title": "¿Quieres ser maestro del sonido?", "url": "" },
-            { "id": "acoustics_intro_2", "title": "La acústica también requiere imaginación", "url": "" }
-          ]
-        },
-        {
-          "section": "Las leyes del universo",
-          "chapters": [
-            { "id": "acoustics_law_1", "title": "Inercia: resistencia al cambio", "url": "" },
-            { "id": "acoustics_law_2", "title": "Fuerza: la entrada de la energía", "url": "" },
-            { "id": "acoustics_law_3", "title": "Dos tipos de energía", "url": "" },
-            { "id": "acoustics_law_4", "title": "Conservación de la energía", "url": "" },
-            { "id": "acoustics_law_5", "title": "Resumen", "url": "" },
-            { "id": "acoustics_law_6", "title": "Aplicación: campos y partículas", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Vibración y ondas",
-          "chapters": [
-            { "id": "acoustics_vib_1", "title": "El movimiento especial que genera sonido: vibración", "url": "" },
-            { "id": "acoustics_vib_2", "title": "Los ingredientes de la vibración: inercia y fuerza restauradora", "url": "" },
-            { "id": "acoustics_vib_3", "title": "Una muestra de la dinámica de fluidos", "url": "" },
-            { "id": "acoustics_vib_4", "title": "Fuente sonora y medio", "url": "" },
-            { "id": "acoustics_vib_5", "title": "Movimiento térmico y difusión del aire", "url": "" },
-            { "id": "acoustics_vib_6", "title": "La elasticidad del aire", "url": "" },
-            { "id": "acoustics_vib_7", "title": "Cómo vibra el aire: compresión y rarefacción", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Matemáticas básicas",
-          "chapters": [
-            { "id": "acoustics_math_1", "title": "¿Qué es un modelo?", "url": "" },
-            { "id": "acoustics_math_2", "title": "Magnitudes físicas: comprender el mundo", "url": "" },
-            { "id": "acoustics_math_3", "title": "Modelar momento y fuerza", "url": "" },
-            { "id": "acoustics_math_3_1", "title": "La expresión matemática de la inercia: el momento", "url": "" },
-            { "id": "acoustics_math_3_2", "title": "F = ma: modelando la fuerza", "url": "" },
-            { "id": "acoustics_math_4", "title": "La ley de Hooke: modelo matemático de vibración", "url": "" },
-            { "id": "acoustics_math_5", "title": "Funciones trigonométricas", "url": "" },
-            { "id": "acoustics_math_5_1", "title": "¿Qué es una función?", "url": "" },
-            { "id": "acoustics_math_5_2", "title": "Razones y proporción", "url": "" },
-            { "id": "acoustics_math_5_3", "title": "Estética de la proporción 0: el poder de la proporción", "url": "" },
-            { "id": "acoustics_math_5_4", "title": "Estética de la proporción 1: secretos del triángulo rectángulo", "url": "" },
-            { "id": "acoustics_math_5_5", "title": "Estética de la proporción 2: la belleza de las funciones trigonométricas", "url": "" },
-            { "id": "acoustics_math_5_6", "title": "Estética de la proporción 3: radianes y ángulos adimensionales", "url": "" },
-            { "id": "acoustics_math_5_7", "title": "Estética de la proporción 4: derivadas", "url": "" },
-            { "id": "acoustics_math_6", "title": "Derivadas: describiendo el cambio instantáneo", "url": "" },
-            { "id": "acoustics_math_7", "title": "Derivadas de funciones trigonométricas", "url": "" },
-            { "id": "acoustics_math_8", "title": "Resolver la ley de Hooke", "url": "" },
-            { "id": "acoustics_math_9", "title": "Periodicidad y frecuencia", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Naturaleza del sonido",
-          "chapters": [
-            { "id": "acoustics_sound_1", "title": "Frecuencia natural", "url": "" },
-            { "id": "acoustics_sound_2", "title": "Resonancia", "url": "" },
-            { "id": "acoustics_sound_3", "title": "Ecuación de ondas", "url": "" },
-            { "id": "acoustics_sound_4", "title": "Modos y armónicos", "url": "" },
-            { "id": "acoustics_sound_5", "title": "Introducción a la acústica musical", "url": "" },
-            { "id": "acoustics_sound_6", "title": "Afinación", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Espacio & Arquitectura",
-          "chapters": [
-            { "id": "acoustics_arch_1", "title": "Comprender la arquitectura", "url": "" },
-            { "id": "acoustics_arch_2", "title": "Propiedades acústicas del espacio", "url": "" },
-            { "id": "acoustics_arch_2_1", "title": "Reflexión", "url": "" },
-            { "id": "acoustics_arch_2_2", "title": "Absorción", "url": "" },
-            { "id": "acoustics_arch_2_3", "title": "Refracción", "url": "" },
-            { "id": "acoustics_arch_2_4", "title": "Difracción", "url": "" },
-            { "id": "acoustics_arch_2_5", "title": "Interferencia", "url": "" },
-            { "id": "acoustics_arch_3", "title": "Introducción a la acústica arquitectónica", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Señales de audio",
-          "chapters": [
-            { "id": "acoustics_audio_1", "title": "Vibración libre y forzada", "url": "" },
-            { "id": "acoustics_audio_2", "title": "Una muestra de electromagnetismo", "url": "" },
-            { "id": "acoustics_audio_3", "title": "¿Qué es una señal?", "url": "" },
-            { "id": "acoustics_audio_4", "title": "Digital vs Analógico", "url": "" },
-            { "id": "acoustics_audio_5", "title": "Principios de grabación", "url": "" },
-            { "id": "acoustics_audio_6", "title": "Micrófonos", "url": "" },
-            { "id": "acoustics_audio_7", "title": "Altavoces", "url": "" },
-            { "id": "acoustics_audio_8", "title": "Señales de audio", "url": "" },
-            { "id": "acoustics_audio_9", "title": "Introducción a la electroacústica", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Matemáticas avanzadas",
-          "chapters": [
-            { "id": "acoustics_adv_math_1", "title": "Análisis de Fourier", "url": "" },
-            { "id": "acoustics_adv_math_2", "title": "Síntesis de Fourier", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Voz & Comunicación",
-          "chapters": [
-            { "id": "acoustics_voice_1", "title": "Estructura de la producción vocal humana", "url": "" },
-            { "id": "acoustics_voice_2", "title": "Introducción a la acústica del habla", "url": "" },
-            { "id": "acoustics_voice_3", "title": "Estructura del oído", "url": "" },
-            { "id": "acoustics_voice_4", "title": "Tinnitus", "url": "" },
-            { "id": "acoustics_voice_5", "title": "Audífonos", "url": "" },
-            { "id": "acoustics_voice_6", "title": "Introducción a la psicoacústica", "url": "" }
-          ]
-        },
-
-        {
-          "section": "Epílogo",
-          "chapters": [
-            { "id": "acoustics_end", "title": "Epílogo", "url": "" }
-          ]
-        }
+  "es": {
+    "meta": {
+      "title": "Bug Loop | Blog de un desarrollador dedicado a los libros electrónicos",
+      "description": "Un blog lleno de pensamientos delicados y únicos de alguien que ama profundamente la escritura."
+    },
+    "tableHeaders": {
+      "number": "N.º",
+      "title": "Título",
+      "author": "Autor",
+      "category": "Categoría",
+      "date": "Fecha",
+      "views": "Vistas"
+    },
+    "tabs": {
+      "allPosts": "Todas las entradas",
+      "searchResults": "Resultados de búsqueda"
+    },
+    "search": {
+      "resultsFor": "Resultados para '%s'",
+      "placeholder": "Diario del desarrollador del sitio"
+    },
+    "ui": {
+      "home": "Inicio",
+      "backToHome": "Volver al inicio",
+      "tocButton": "Índice",
+      "darkModeLabel": "Modo oscuro",
+      "darkModeLabelLight": "Modo claro",
+      "darkModeToggle": "Cambiar tema",
+      "category": "Categoría",
+      "author": "Autor",
+      "date": "Fecha",
+      "editButton": "Editar",
+      "deleteButton": "Eliminar",
+      "deleteConfirm": "¿Seguro que deseas eliminar esto?"
+    },
+    "profile": {
+      "profile-title": "Equipo",
+      "profile-job1": "Tecnologías de la Información y Comunicación",
+      "profile-name1": "Han Dong-sun",
+      "profile-bio1": "Estudiante adulto de la Universidad Cibernética de Hanyang, donde estudia ingeniería informática y ciberseguridad. Le gusta comunicarse con sinceridad y profundidad a través de la escritura.",
+      "profile-tags1": [
+        "#DesarrolloWeb",
+        "#UniversidadCibernética",
+        "#AmanteDeLosEbooks",
+        "#DiseñoWeb"
+      ],
+      "profile-job2": "Música y Acústica",
+      "profile-name2": "Du Dong-sun",
+      "profile-bio2": "Graduado en composición por la Universidad de Hanyang y exestudiante de ingeniería básica y acústica en la Universidad de Le Mans (Francia). Le apasiona la música libre y expresiva, y las herramientas que permiten crearla, como los instrumentos virtuales.",
+      "profile-tags2": [
+        "#MúsicaElectrónica",
+        "#Acústica"
+      ],
+      "profile-job3": "Juegos mentales & Bienestar",
+      "profile-name3": "Se Dong-sun",
+      "profile-bio3": "Creador con discapacidad visual reconocida legalmente. Estudió física en la Universidad de Le Mans y también diseño sonoro en la Escuela de Arte de Le Mans, pero abandonó por dificultades de adaptación. Investiga el bienestar mental y físico, y desarrolla aplicaciones y herramientas orientadas a una felicidad sostenible.",
+      "profile-tags3": [
+        "#Coroideremia",
+        "#DiseñoSonoro",
+        "#Física",
+        "#DiscapacidadVisual",
+        "#HealthTech"
       ]
     },
-
-    "unfinished_pain": {
-      "title": "Dolor inacabado",
-      "author": "Equipo Bug Loop",
-      "toc": [
-        {
-          "section": "Prólogo",
-          "chapters": [
-            { "id": "pain_intro", "title": "Prólogo", "url": "" }
-          ]
-        },
-        {
-          "section": "Te acercas a mí porque me necesitas",
-          "chapters": [
-            { "id": "pain_1", "title": "Te acercas a mí porque me necesitas", "url": "" }
-          ]
-        },
-        {
-          "section": "Este rostro que no escogí",
-          "chapters": [
-            { "id": "pain_2", "title": "Este rostro que no escogí", "url": "" }
-          ]
-        },
-        {
-          "section": "Cómo se forma una impresión",
-          "chapters": [
-            { "id": "pain_3", "title": "Cómo se forma una impresión", "url": "" }
-          ]
-        },
-        {
-          "section": "¿Hasta qué punto mis acciones son 'mis decisiones'?",
-          "chapters": [
-            { "id": "pain_4", "title": "¿Hasta qué punto mis acciones son 'mis decisiones'?", "url": "" }
-          ]
-        },
-        {
-          "section": "Dos formas de mantener la frente en alto",
-          "chapters": [
-            { "id": "pain_5", "title": "Dos formas de mantener la frente en alto", "url": "" }
-          ]
-        },
-        {
-          "section": "Sembrar y olvidar: la virtud de no aferrarse",
-          "chapters": [
-            { "id": "pain_6", "title": "Sembrar y olvidar: la virtud de no aferrarse", "url": "" }
-          ]
-        },
-        {
-          "section": "Derribar un árbol que había crecido sano",
-          "chapters": [
-            { "id": "pain_7", "title": "Derribar un árbol que había crecido sano", "url": "" }
-          ]
-        },
-        {
-          "section": "Provocar una reacción",
-          "chapters": [
-            { "id": "pain_8", "title": "Provocar una reacción", "url": "" }
-          ]
-        },
-        {
-          "section": "Ahogarme en un mar de recuerdos falsos y malentendidos",
-          "chapters": [
-            { "id": "pain_9", "title": "Ahogarme en un mar de recuerdos falsos y malentendidos", "url": "" }
-          ]
-        },
-        {
-          "section": "Cualquier parte aislada parece triste: para seguir adelante",
-          "chapters": [
-            { "id": "pain_10", "title": "Cualquier parte aislada parece triste: para seguir adelante", "url": "" }
-          ]
-        }
-      ]
+    "editor": {
+      "editor-title": "Editor BugLoop",
+      "preview-label": "Vista previa en vivo",
+      "example-html": "<header>\n  <h1>Mi primera página web</h1>\n  <nav>\n    <ul>\n      <li>Inicio</li>\n      <li>Sobre mí</li>\n      <li>Contacto</li>\n    </ul>\n  </nav>\n</header>\n\n<main>\n  <section>\n    <h2>¡Bienvenido!</h2>\n    <p>Este es un ejemplo básico de HTML.</p>\n  </section>\n\n  <section>\n    <h2>Mis gustos</h2>\n    <ul>\n      <li>Gatos</li>\n      <li>Programar</li>\n    </ul>\n  </section>\n</main>\n\n<footer>\n  <p>© 2025 Blog de Dong-sun Han</p>\n</footer>"
     },
-
-    "pianist_producer": {
-      "title": "Pianista/Produtor: Técnicas de acompañamiento místicas",
-      "author": "Equipo Bug Loop",
-      "toc": [
-        {
-          "section": "Prólogo",
-          "chapters": [
-            { "id": "producer_intro", "title": "Prólogo", "url": "" }
-          ]
-        },
-        {
-          "section": "El inicio de la música: el beat",
-          "chapters": [
-            { "id": "producer_1", "title": "El inicio de la música: el beat", "url": "" }
-          ]
-        },
-        {
-          "section": "El silencio que ondula: Pads",
-          "chapters": [
-            { "id": "producer_2", "title": "El silencio que ondula: Pads", "url": "" }
-          ]
-        },
-        {
-          "section": "La base inquebrantable: el bajo",
-          "chapters": [
-            { "id": "producer_3", "title": "La base inquebrantable: el bajo", "url": "" }
-          ]
-        },
-        {
-          "section": "Color y armonía: el arpegio",
-          "chapters": [
-            { "id": "producer_4", "title": "Color y armonía: el arpegio", "url": "" }
-          ]
-        },
-        {
-          "section": "La fuerza que mueve el cuerpo: ritmo y groove",
-          "chapters": [
-            { "id": "producer_5", "title": "La fuerza que mueve el cuerpo: ritmo y groove", "url": "" }
-          ]
-        },
-        {
-          "section": "El desvanecimiento hacia la siguiente escena: filtrado espectral",
-          "chapters": [
-            { "id": "producer_6", "title": "El desvanecimiento hacia la siguiente escena: filtrado espectral", "url": "" }
-          ]
-        },
-        {
-          "section": "Entrada del protagonista: lead y melodía",
-          "chapters": [
-            { "id": "producer_7", "title": "Entrada del protagonista: lead y melodía", "url": "" }
-          ]
-        },
-        {
-          "section": "El que sostiene al protagonista: submelodía y contrapunto",
-          "chapters": [
-            { "id": "producer_8", "title": "El que sostiene al protagonista: submelodía y contrapunto", "url": "" }
-          ]
-        },
-        {
-          "section": "El grosor del trazo: coros y armonización",
-          "chapters": [
-            { "id": "producer_9", "title": "El grosor del trazo: coros y armonización", "url": "" }
-          ]
-        },
-        {
-          "section": "Lo que rompe la monotonía: efectos de sonido",
-          "chapters": [
-            { "id": "producer_10", "title": "Lo que rompe la monotonía: efectos de sonido", "url": "" }
-          ]
-        }
-      ]
+    "header": {
+      "mainMenu": "Menú principal",
+      "youtubeLink": "Ir a YouTube",
+      "review": "Opiniones",
+      "recentVideos": "Videos recientes",
+      "palma2pro": "Books Palma 2 Pro",
+      "choroideremia": "Coroideremia",
+      "coming": "Próximamente",
+      "audiobook": "Audiolibro",
+      "cuteacoustics": "Cute Acoustics",
+      "producer": "Pianista/Productor",
+      "unfinished": "Dolor inacabado",
+      "warmth": "El calor del cálculo",
+      "music": "Contenido musical",
+      "game": "Juegos mentales",
+      "futureService": "Estamos desarrollando un servicio revolucionario que verá la luz en 2027. ¡Espéralo!"
     },
-
-    "warmth_of_calc": {
-      "title": "El calor del cálculo",
-      "author": "Equipo Bug Loop",
-      "toc": [
-        {
-          "section": "Prólogo: ¿Puede la IA ser realmente un ‘amigo’?",
-          "chapters": [
-            { "id": "warmth_intro", "title": "Prólogo: ¿Puede la IA ser realmente un ‘amigo’?", "url": "" }
-          ]
-        },
-        {
-          "section": "Datos cálidos",
-          "chapters": [
-            { "id": "warmth_1", "title": "Datos cálidos", "url": "" }
-          ]
-        },
-        {
-          "section": "Redes cálidas",
-          "chapters": [
-            { "id": "warmth_2", "title": "Redes cálidas", "url": "" }
-          ]
-        },
-        {
-          "section": "Cálculo cálido",
-          "chapters": [
-            { "id": "warmth_3", "title": "Cálculo cálido", "url": "" }
-          ]
-        }
-      ]
+    "index": {
+      "ongoing": "Series en curso",
+      "recentPosts": "Entradas recientes",
+      "loadMore": "Cargar más"
+    },
+    "panel": {
+      "title": "Bug Loop — Un desarrollador centrado en los libros electrónicos",
+      "body": "Un libro es como los subtítulos de una película.<br><br>Para “leer” realmente un libro, se necesita experiencia (memoria) o un deseo de experimentar (imaginación). Si solo miras las palabras sin sentir nada, siguen siendo solo líneas. Para comprender el significado que surge entre las palabras, primero debe existir un vínculo entre lector y contenido, un vínculo que nace de las imágenes que aparecen en la pantalla del corazón: recuerdos e imaginación.<br><br>Un libro físico existe como texto lineal. Pero un libro electrónico es distinto. “Electrónico” significa partículas con energía eléctrica que pueden cambiar de estado a la velocidad de la luz. Gracias a ello, el lector puede saltar instantáneamente del principio al final, incrustar audio o video entre el texto y enriquecer así la experiencia.<br><br>El libro electrónico no es simplemente “un libro fácil de copiar”. Es mucho más. Este blog es un registro de la exploración de ese valor.",
+      "chips": []
+    },
+    "books": {
+      "cute_acoustics": {
+        "title": "Cute Acoustics",
+        "author": "Du Dong-sun",
+        "toc": [
+          {
+            "section": "Prólogo",
+            "chapters": [
+              { "id": "acoustics_intro_1", "title": "¿Quieres ser maestro del sonido?", "url": "" },
+              { "id": "acoustics_intro_2", "title": "La acústica también requiere imaginación", "url": "" }
+            ]
+          },
+          {
+            "section": "Las leyes del universo",
+            "chapters": [
+              { "id": "acoustics_law_1", "title": "Inercia: resistencia al cambio", "url": "" },
+              { "id": "acoustics_law_2", "title": "Fuerza: la entrada de la energía", "url": "" },
+              { "id": "acoustics_law_3", "title": "Dos tipos de energía", "url": "" },
+              { "id": "acoustics_law_4", "title": "Conservación de la energía", "url": "" },
+              { "id": "acoustics_law_5", "title": "Resumen", "url": "" },
+              { "id": "acoustics_law_6", "title": "Aplicación: campos y partículas", "url": "" }
+            ]
+          },
+          {
+            "section": "Vibración y ondas",
+            "chapters": [
+              { "id": "acoustics_vib_1", "title": "El movimiento especial que genera sonido: vibración", "url": "" },
+              { "id": "acoustics_vib_2", "title": "Los ingredientes de la vibración: inercia y fuerza restauradora", "url": "" },
+              { "id": "acoustics_vib_3", "title": "Una muestra de la dinámica de fluidos", "url": "" },
+              { "id": "acoustics_vib_4", "title": "Fuente sonora y medio", "url": "" },
+              { "id": "acoustics_vib_5", "title": "Movimiento térmico y difusión del aire", "url": "" },
+              { "id": "acoustics_vib_6", "title": "La elasticidad del aire", "url": "" },
+              { "id": "acoustics_vib_7", "title": "Cómo vibra el aire: compresión y rarefacción", "url": "" }
+            ]
+          },
+          {
+            "section": "Matemáticas básicas",
+            "chapters": [
+              { "id": "acoustics_math_1", "title": "¿Qué es un modelo?", "url": "" },
+              { "id": "acoustics_math_2", "title": "Magnitudes físicas: comprender el mundo", "url": "" },
+              { "id": "acoustics_math_3", "title": "Modelar momento y fuerza", "url": "" },
+              { "id": "acoustics_math_3_1", "title": "La expresión matemática de la inercia: el momento", "url": "" },
+              { "id": "acoustics_math_3_2", "title": "F = ma: modelando la fuerza", "url": "" },
+              { "id": "acoustics_math_4", "title": "La ley de Hooke: modelo matemático de vibración", "url": "" },
+              { "id": "acoustics_math_5", "title": "Funciones trigonométricas", "url": "" },
+              { "id": "acoustics_math_5_1", "title": "¿Qué es una función?", "url": "" },
+              { "id": "acoustics_math_5_2", "title": "Razones y proporción", "url": "" },
+              { "id": "acoustics_math_5_3", "title": "Estética de la proporción 0: el poder de la proporción", "url": "" },
+              { "id": "acoustics_math_5_4", "title": "Estética de la proporción 1: secretos del triángulo rectángulo", "url": "" },
+              { "id": "acoustics_math_5_5", "title": "Estética de la proporción 2: la belleza de las funciones trigonométricas", "url": "" },
+              { "id": "acoustics_math_5_6", "title": "Estética de la proporción 3: radianes y ángulos adimensionales", "url": "" },
+              { "id": "acoustics_math_5_7", "title": "Estética de la proporción 4: derivadas", "url": "" },
+              { "id": "acoustics_math_6", "title": "Derivadas: describiendo el cambio instantáneo", "url": "" },
+              { "id": "acoustics_math_7", "title": "Derivadas de funciones trigonométricas", "url": "" },
+              { "id": "acoustics_math_8", "title": "Resolver la ley de Hooke", "url": "" },
+              { "id": "acoustics_math_9", "title": "Periodicidad y frecuencia", "url": "" }
+            ]
+          },
+          {
+            "section": "Naturaleza del sonido",
+            "chapters": [
+              { "id": "acoustics_sound_1", "title": "Frecuencia natural", "url": "" },
+              { "id": "acoustics_sound_2", "title": "Resonancia", "url": "" },
+              { "id": "acoustics_sound_3", "title": "Ecuación de ondas", "url": "" },
+              { "id": "acoustics_sound_4", "title": "Modos y armónicos", "url": "" },
+              { "id": "acoustics_sound_5", "title": "Introducción a la acústica musical", "url": "" },
+              { "id": "acoustics_sound_6", "title": "Afinación", "url": "" }
+            ]
+          },
+          {
+            "section": "Espacio & Arquitectura",
+            "chapters": [
+              { "id": "acoustics_arch_1", "title": "Comprender la arquitectura", "url": "" },
+              { "id": "acoustics_arch_2", "title": "Propiedades acústicas del espacio", "url": "" },
+              { "id": "acoustics_arch_2_1", "title": "Reflexión", "url": "" },
+              { "id": "acoustics_arch_2_2", "title": "Absorción", "url": "" },
+              { "id": "acoustics_arch_2_3", "title": "Refracción", "url": "" },
+              { "id": "acoustics_arch_2_4", "title": "Difracción", "url": "" },
+              { "id": "acoustics_arch_2_5", "title": "Interferencia", "url": "" },
+              { "id": "acoustics_arch_3", "title": "Introducción a la acústica arquitectónica", "url": "" }
+            ]
+          },
+          {
+            "section": "Señales de audio",
+            "chapters": [
+              { "id": "acoustics_audio_1", "title": "Vibración libre y forzada", "url": "" },
+              { "id": "acoustics_audio_2", "title": "Una muestra de electromagnetismo", "url": "" },
+              { "id": "acoustics_audio_3", "title": "¿Qué es una señal?", "url": "" },
+              { "id": "acoustics_audio_4", "title": "Digital vs Analógico", "url": "" },
+              { "id": "acoustics_audio_5", "title": "Principios de grabación", "url": "" },
+              { "id": "acoustics_audio_6", "title": "Micrófonos", "url": "" },
+              { "id": "acoustics_audio_7", "title": "Altavoces", "url": "" },
+              { "id": "acoustics_audio_8", "title": "Señales de audio", "url": "" },
+              { "id": "acoustics_audio_9", "title": "Introducción a la electroacústica", "url": "" }
+            ]
+          },
+          {
+            "section": "Matemáticas avanzadas",
+            "chapters": [
+              { "id": "acoustics_adv_math_1", "title": "Análisis de Fourier", "url": "" },
+              { "id": "acoustics_adv_math_2", "title": "Síntesis de Fourier", "url": "" }
+            ]
+          },
+          {
+            "section": "Voz & Comunicación",
+            "chapters": [
+              { "id": "acoustics_voice_1", "title": "Estructura de la producción vocal humana", "url": "" },
+              { "id": "acoustics_voice_2", "title": "Introducción a la acústica del habla", "url": "" },
+              { "id": "acoustics_voice_3", "title": "Estructura del oído", "url": "" },
+              { "id": "acoustics_voice_4", "title": "Tinnitus", "url": "" },
+              { "id": "acoustics_voice_5", "title": "Audífonos", "url": "" },
+              { "id": "acoustics_voice_6", "title": "Introducción a la psicoacústica", "url": "" }
+            ]
+          },
+          {
+            "section": "Epílogo",
+            "chapters": [
+              { "id": "acoustics_end", "title": "Epílogo", "url": "" }
+            ]
+          }
+        ]
+      },
+      "unfinished_pain": {
+        "title": "Dolor inacabado",
+        "author": "Equipo Bug Loop",
+        "toc": [
+          {
+            "section": "Prólogo",
+            "chapters": [
+              { "id": "pain_intro", "title": "Prólogo", "url": "" }
+            ]
+          },
+          {
+            "section": "Te acercas a mí porque me necesitas",
+            "chapters": [
+              { "id": "pain_1", "title": "Te acercas a mí porque me necesitas", "url": "" }
+            ]
+          },
+          {
+            "section": "Este rostro que no escogí",
+            "chapters": [
+              { "id": "pain_2", "title": "Este rostro que no escogí", "url": "" }
+            ]
+          },
+          {
+            "section": "Cómo se forma una impresión",
+            "chapters": [
+              { "id": "pain_3", "title": "Cómo se forma una impresión", "url": "" }
+            ]
+          },
+          {
+            "section": "¿Hasta qué punto mis acciones son 'mis decisiones'?",
+            "chapters": [
+              { "id": "pain_4", "title": "¿Hasta qué punto mis acciones son 'mis decisiones'?", "url": "" }
+            ]
+          },
+          {
+            "section": "Dos formas de mantener la frente en alto",
+            "chapters": [
+              { "id": "pain_5", "title": "Dos formas de mantener la frente en alto", "url": "" }
+            ]
+          },
+          {
+            "section": "Sembrar y olvidar: la virtud de no aferrarse",
+            "chapters": [
+              { "id": "pain_6", "title": "Sembrar y olvidar: la virtud de no aferrarse", "url": "" }
+            ]
+          },
+          {
+            "section": "Derribar un árbol que había crecido sano",
+            "chapters": [
+              { "id": "pain_7", "title": "Derribar un árbol que había crecido sano", "url": "" }
+            ]
+          },
+          {
+            "section": "Provocar una reacción",
+            "chapters": [
+              { "id": "pain_8", "title": "Provocar una reacción", "url": "" }
+            ]
+          },
+          {
+            "section": "Ahogarme en un mar de recuerdos falsos y malentendidos",
+            "chapters": [
+              { "id": "pain_9", "title": "Ahogarme en un mar de recuerdos falsos y malentendidos", "url": "" }
+            ]
+          },
+          {
+            "section": "Cualquier parte aislada parece triste: para seguir adelante",
+            "chapters": [
+              { "id": "pain_10", "title": "Cualquier parte aislada parece triste: para seguir adelante", "url": "" }
+            ]
+          }
+        ]
+      },
+      "pianist_producer": {
+        "title": "Pianista/Produtor: Técnicas de acompañamiento místicas",
+        "author": "Equipo Bug Loop",
+        "toc": [
+          {
+            "section": "Prólogo",
+            "chapters": [
+              { "id": "producer_intro", "title": "Prólogo", "url": "" }
+            ]
+          },
+          {
+            "section": "El inicio de la música: el beat",
+            "chapters": [
+              { "id": "producer_1", "title": "El inicio de la música: el beat", "url": "" }
+            ]
+          },
+          {
+            "section": "El silencio que ondula: Pads",
+            "chapters": [
+              { "id": "producer_2", "title": "El silencio que ondula: Pads", "url": "" }
+            ]
+          },
+          {
+            "section": "La base inquebrantable: el bajo",
+            "chapters": [
+              { "id": "producer_3", "title": "La base inquebrantable: el bajo", "url": "" }
+            ]
+          },
+          {
+            "section": "Color y armonía: el arpegio",
+            "chapters": [
+              { "id": "producer_4", "title": "Color y armonía: el arpegio", "url": "" }
+            ]
+          },
+          {
+            "section": "La fuerza que mueve el cuerpo: ritmo y groove",
+            "chapters": [
+              { "id": "producer_5", "title": "La fuerza que mueve el cuerpo: ritmo y groove", "url": "" }
+            ]
+          },
+          {
+            "section": "El desvanecimiento hacia la siguiente escena: filtrado espectral",
+            "chapters": [
+              { "id": "producer_6", "title": "El desvanecimiento hacia la siguiente escena: filtrado espectral", "url": "" }
+            ]
+          },
+          {
+            "section": "Entrada del protagonista: lead y melodía",
+            "chapters": [
+              { "id": "producer_7", "title": "Entrada del protagonista: lead y melodía", "url": "" }
+            ]
+          },
+          {
+            "section": "El que sostiene al protagonista: submelodía y contrapunto",
+            "chapters": [
+              { "id": "producer_8", "title": "El que sostiene al protagonista: submelodía y contrapunto", "url": "" }
+            ]
+          },
+          {
+            "section": "El grosor del trazo: coros y armonización",
+            "chapters": [
+              { "id": "producer_9", "title": "El grosor del trazo: coros y armonización", "url": "" }
+            ]
+          },
+          {
+            "section": "Lo que rompe la monotonía: efectos de sonido",
+            "chapters": [
+              { "id": "producer_10", "title": "Lo que rompe la monotonía: efectos de sonido", "url": "" }
+            ]
+          }
+        ]
+      },
+      "warmth_of_calc": {
+        "title": "El calor del cálculo",
+        "author": "Equipo Bug Loop",
+        "toc": [
+          {
+            "section": "Prólogo: ¿Puede la IA ser realmente un ‘amigo’?",
+            "chapters": [
+              { "id": "warmth_intro", "title": "Prólogo: ¿Puede la IA ser realmente un ‘amigo’?", "url": "" }
+            ]
+          },
+          {
+            "section": "Datos cálidos",
+            "chapters": [
+              { "id": "warmth_1", "title": "Datos cálidos", "url": "" }
+            ]
+          },
+          {
+            "section": "Redes cálidas",
+            "chapters": [
+              { "id": "warmth_2", "title": "Redes cálidas", "url": "" }
+            ]
+          },
+          {
+            "section": "Cálculo cálido",
+            "chapters": [
+              { "id": "warmth_3", "title": "Cálculo cálido", "url": "" }
+            ]
+          }
+        ]
+      }
     }
   }
 }
