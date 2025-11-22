@@ -101,7 +101,7 @@ const darkModeLabel = document.getElementById("darkModeLabel");
 
 
 // ===============================
-// Dark Mode (다국어 대응 버전)
+// Dark Mode
 // ===============================
 const STORAGE_KEY = 'bugloop.theme';
 
@@ -161,14 +161,11 @@ function renderPage() {
 
 
 // ===============================
-// 목차 렌더링 (책 전체 TOC + 로컬 TOC)
+// 목차 렌더링
 // ===============================
-
-// 1) 현재 챕터 내부 h2 기반 TOC (fallback용 / 보조용)
 function renderLocalTOC() {
   tocList.innerHTML = '';
 
-  // 첫 페이지(챕터 제목)
   tocList.innerHTML += `<li onclick="goTo(0)" class="toc-chapter">${book.chapterTitle} (p.1)</li>`;
 
   book.sections.forEach(section => {
@@ -184,7 +181,6 @@ function renderLocalTOC() {
   });
 }
 
-// 2) locale.books 기반 책 전체 TOC
 function renderBookTOC() {
   tocList.innerHTML = '';
 
@@ -194,7 +190,6 @@ function renderBookTOC() {
   const lang = document.documentElement.getAttribute("data-lang") || "ko";
 
   if (!books || !bookId || !books[bookId]) {
-    // 책 정보가 없으면 로컬 TOC만 사용
     renderLocalTOC();
     return;
   }
@@ -202,7 +197,6 @@ function renderBookTOC() {
   const bookData = books[bookId];
   const basePath = `/${lang}/books/${bookId}/contents/`;
 
-  // 섹션/챕터 기반 전체 목차
   bookData.toc.forEach(section => {
     // 섹션 제목
     const sectionLi = document.createElement('li');
@@ -210,7 +204,11 @@ function renderBookTOC() {
     sectionLi.className = 'toc-section';
     tocList.appendChild(sectionLi);
 
-    // 섹션 안의 챕터들
+    // 섹션 내부 챕터 그룹 래퍼
+    const group = document.createElement('ul');
+    group.className = 'toc-chapter-group';
+    tocList.appendChild(group);
+
     section.chapters.forEach(ch => {
       const li = document.createElement('li');
       li.className = 'toc-chapter';
@@ -221,32 +219,19 @@ function renderBookTOC() {
       }
 
       li.addEventListener('click', () => {
-        // 현재 챕터를 다시 누르면 이 파일 안에서 첫 페이지로 이동
         if (ch.id === currentChapterId) {
           goTo(0);
         } else if (ch.url && ch.url.trim() !== '') {
-          // 다른 챕터로 이동
           window.location.href = basePath + ch.url.trim();
-        } else {
-          // TODO: url이 비어 있고, 같은 섹션 내 h2로만 존재하는 경우
-          // → 나중에 "섹션 내 h2 매핑" 로직 붙일 자리
-          console.warn('No URL defined for chapter id:', ch.id);
         }
       });
 
-      tocList.appendChild(li);
+      group.appendChild(li);
     });
   });
-
-  // 🔹 옵션: 현재 챕터의 내부 h2들을
-  // 'current-chapter' 아래에 추가로 붙이고 싶으면
-  // 여기에서 renderLocalTOC() 내용을 약간 변형해서
-  // current-chapter li 뒤에 append 해도 됨.
 }
 
-// 3) 통합 렌더 함수
 function renderTOC() {
-  // 책 전체 TOC가 가능하면 그걸 우선
   if (window.BUGLOOP_BOOKS && window.BUGLOOP_BOOK_ID) {
     renderBookTOC();
   } else {
@@ -291,7 +276,7 @@ darkModeToggle.onclick = () => setDarkMode(!root.classList.contains("dark"));
 
 
 // ===============================
-// 모바일 터치 슬라이드
+// 모바일 슬라이드
 // ===============================
 let touchStartX = 0;
 let touchEndX = 0;
@@ -313,7 +298,10 @@ document.body.addEventListener("touchend", (e) => {
   }
 }, { passive: true });
 
-// 페이지 제목을 헤더로 보내기
+
+// ===============================
+// 헤더 제목
+// ===============================
 const headerTitleEl = document.querySelector('.header-title');
 if (headerTitleEl) {
   headerTitleEl.innerText = book.chapterTitle;
@@ -325,3 +313,22 @@ if (headerTitleEl) {
 // ===============================
 renderTOC();
 renderPage();
+
+
+// ===============================
+// ⭐⭐⭐ TOC 아코디언 동작 추가 ⭐⭐⭐
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll(".toc-section");
+
+  sections.forEach(sec => {
+    sec.addEventListener("click", () => {
+      sec.classList.toggle("collapsed");
+
+      const group = sec.nextElementSibling;
+      if (group && group.classList.contains("toc-chapter-group")) {
+        group.classList.toggle("open");
+      }
+    });
+  });
+});
