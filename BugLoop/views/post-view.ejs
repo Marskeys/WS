@@ -105,6 +105,26 @@
     .back-home-btn span {
         margin-left: 8px;
     }
+
+      .tts-wrapper {
+    text-align: right;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+  .tts-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  html.dark .tts-btn {
+    background: #2c2c2c;
+    border-color: #555;
+    color: #ddd;
+  }
+
   </style>
   
 </head>
@@ -124,6 +144,10 @@
       <span><%= locale.ui.author %>: <%= post.author %></span><br>
       <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
     </div>
+
+    <div class="tts-wrapper">
+  <button id="ttsBtn" class="tts-btn">🔊 <%= locale.ui.listen || "Listen" %></button>
+</div>
 
     <div class="post-content">
       <%- post.content %>
@@ -415,6 +439,41 @@
     });
   });
   </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("ttsBtn");
+  if (!btn) return;
+
+  let isReading = false;
+  const synth = window.speechSynthesis;
+
+  btn.addEventListener("click", () => {
+    // 정지 → 중지
+    if (isReading) {
+      synth.cancel();
+      btn.innerText = "🔊 <%= locale.ui.listen || 'Listen' %>";
+      isReading = false;
+      return;
+    }
+
+    // 읽기 시작
+    const text = document.querySelector(".post-content").innerText;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = document.documentElement.lang; // ko, en, fr, zh, ja, es 자동 반영
+
+    synth.speak(utter);
+    btn.innerText = "⏹ <%= locale.ui.stop || 'Stop' %>";
+    isReading = true;
+
+    utter.onend = () => {
+      btn.innerText = "🔊 <%= locale.ui.listen || 'Listen' %>";
+      isReading = false;
+    };
+  });
+});
+</script>
+
 
 <%- include('partials/scripts') %>
 </body>
