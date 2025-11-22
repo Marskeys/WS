@@ -226,6 +226,10 @@ html.dark .nav-btn{ background: rgba(85,85,85,.82); }
   margin: 0;
 }
 
+/* 🔥 불렛 완전 제거 */
+#tocList li { list-style: none; }
+#tocList li::marker { content: ""; }
+
 /* 큰 제목(Section) */
 .toc-section {
   font-size: 17px;
@@ -233,6 +237,7 @@ html.dark .nav-btn{ background: rgba(85,85,85,.82); }
   margin: 12px 0 6px;
   cursor: pointer;
   padding: 10px 4px;
+  padding-left: 8px; /* ❤️ 제목 왼쪽 여백 추가 */
   border-bottom: 1px solid rgba(255,255,255,.15);
   position: relative;
 }
