@@ -465,14 +465,28 @@ const handleEditRoute = async (req, res) => {
 };
 
 function generateSummary(html) {
-  return String(html || '')
-    .replace(/<style[\s\S]*?<\/style>/gi, '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<[^>]+>/g, ' ')   // HTML 제거
-    .replace(/\s+/g, ' ')       // 중복 공백 정리
-    .trim()
-    .slice(0, 150);             // 길이 제한
+  let text = String(html || '');
+
+  // 1) 목차 div 제거
+  text = text.replace(/<div[^>]*class="toc"[^>]*>[\s\S]*?<\/div>/gi, '');
+
+  // 2) "📑 목차" 같은 텍스트도 제거
+  text = text.replace(/📑\s*목차[\s\S]*?(?=<|$)/gi, '');
+
+  // 3) style/script 제거
+  text = text.replace(/<style[\s\S]*?<\/style>/gi, '');
+  text = text.replace(/<script[\s\S]*?<\/script>/gi, '');
+
+  // 4) 모든 HTML 태그 제거
+  text = text.replace(/<[^>]+>/g, ' ');
+
+  // 5) 공백 정리
+  text = text.replace(/\s+/g, ' ').trim();
+
+  // 6) 길이 자르기
+  return text.slice(0, 150);
 }
+
 
 
 const handlePostViewRoute = async (req, res) => {
