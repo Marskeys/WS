@@ -464,12 +464,24 @@ const handleEditRoute = async (req, res) => {
   }
 };
 
+function generateSummary(html) {
+  return String(html || '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]+>/g, ' ')   // HTML 제거
+    .replace(/\s+/g, ' ')       // 중복 공백 정리
+    .trim()
+    .slice(0, 150);             // 길이 제한
+}
+
+
 const handlePostViewRoute = async (req, res) => {
   try {
     const postId = req.params.id;
     const safeLang = req.params.lang;
     res.locals.lang = safeLang;
 
+    // 조회수 처리
     if (!req.session.viewedPosts) {
       req.session.viewedPosts = [];
     }
@@ -482,15 +494,19 @@ const handlePostViewRoute = async (req, res) => {
     const post = basePostRows[0];
     const isAdmin = req.session.user?.is_admin === 1;
     const isAuthor = req.session.user?.id === post.user_id;
+
+    // 비공개 글 접근 제한
     if (post.is_private && !isAuthor && !isAdmin) {
       return res.status(403).render('403', { message: '비공개 글입니다.', user: req.session.user });
     }
 
+    // 조회수 증가
     if (!req.session.viewedPosts.includes(postId)) {
-      await db.query('UPDATE posts SET views = views + 1, updated_at = updated_at WHERE id = ?', [postId]);
+      await db.query('UPDATE posts SET views = views + 1 WHERE id = ?', [postId]);
       req.session.viewedPosts.push(postId);
     }
 
+    // 번역 가져오기
     let [translations] = await db.query(
       'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = ?',
       [postId, safeLang]
@@ -498,8 +514,9 @@ const handlePostViewRoute = async (req, res) => {
 
     let translation = translations[0];
 
+    // 해당 언어 번역 없으면 한국어 대체
     if (!translation && safeLang !== 'ko') {
-      console.warn(`게시글 ID ${postId}에 대한 언어 '${safeLang}' 번역이 없어 'ko'로 대체합니다.`);
+      console.warn(`게시글 ID ${postId}에 '${safeLang}' 번역 없음 → ko로 fallback`);
       [translations] = await db.query(
         'SELECT title, content FROM post_translations WHERE post_id = ? AND lang_code = "ko"',
         [postId]
@@ -507,27 +524,36 @@ const handlePostViewRoute = async (req, res) => {
       translation = translations[0];
     }
 
+    // 최종 fallback
     if (!translation) {
       translation = {
         title: post.title,
-        content: post.content,
+        content: post.content
       };
     }
 
+    // 카테고리 번역 처리
     const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
     const translatedCategories = [];
-    if (originalCategories.length > 0) {
-      // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
-      const categoryColumnForDisplay = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
-      const placeholders = originalCategories.map(() => '?').join(',');
 
+    if (originalCategories.length > 0) {
+      const categoryColumnForDisplay = (safeLang === 'ko') 
+        ? 'name' 
+        : `name_${safeLang}`;
+
+      const placeholders = originalCategories.map(() => '?').join(',');
       const [categoryNameRows] = await db.query(
-        `SELECT COALESCE(c.${categoryColumnForDisplay}, c.name) AS name FROM categories c WHERE c.name IN (${placeholders})`,
+        `SELECT COALESCE(${categoryColumnForDisplay}, name) AS name FROM categories WHERE name IN (${placeholders})`,
         originalCategories
       );
+
       translatedCategories.push(...categoryNameRows.map(row => row.name));
     }
 
+    // ⭐ summary 생성
+    const summary = generateSummary(translation.content);
+
+    // postView 객체 구성
     const postForView = {
       ...post,
       title: translation.title,
@@ -536,21 +562,25 @@ const handlePostViewRoute = async (req, res) => {
       originalCategories: originalCategories
     };
 
+    // canonical + alternate
     const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
-    // 📌 변경 사항: supportedLangs에 'es'가 포함되어 alternateLinks에 스페인어 링크가 추가됨
     const alternateLinks = supportedLangs.map(lang => ({
       lang,
       href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
     }));
 
-    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
+    // 사이드바 데이터
+    const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } =
+      await getSidebarData(req);
 
+    // ⭐ summary를 포함하여 렌더링
     res.render('post-view', {
       post: postForView,
       posts: postsForSidebar,
       user: req.session.user,
       canonicalUrl,
       alternateLinks,
+      summary,        // ⬅️⬅️ 여기 summary가 들어감
       lang: safeLang,
       isSearch: false,
       searchKeyword: '',
@@ -566,9 +596,13 @@ const handlePostViewRoute = async (req, res) => {
 
   } catch (err) {
     console.error('🌐 다국어 글 보기 오류:', err);
-    res.status(500).render('error', { message: '서버 오류로 글을 불러올 수 없습니다.', user: req.session.user });
+    res.status(500).render('error', { 
+      message: '서버 오류로 글을 불러올 수 없습니다.', 
+      user: req.session.user 
+    });
   }
 };
+
 
 const handleMainPage = async (req, res) => {
   const category = req.query.category || 'all';

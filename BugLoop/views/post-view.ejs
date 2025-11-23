@@ -3,7 +3,11 @@
 <head>
   <title><%= post.title %> | Bug Loop</title>
   <link rel="stylesheet" href="/assets/css/post-view.css" />
-  
+<meta name="description" content="<%= summary %>">
+<meta property="og:description" content="<%= summary %>">
+<meta name="twitter:description" content="<%= summary %>">
+
+
   <%- include('partials/head') %>
 
   <% if (canonicalUrl) { %>
