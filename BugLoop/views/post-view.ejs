@@ -57,6 +57,25 @@
       padding-bottom: 50px; /* 적당한 여백 유지 */
     }
 
+      /* 📌 포스트 내용 안의 링크 색을 확실하게 보이도록 강제 */
+  .post-content a,
+  .post-content a:visited {
+    color: #1a73e8 !important; /* 라이트 모드용 밝은 파란색 */
+    text-decoration: underline;
+  }
+
+  /* 🌙 다크모드에서 링크가 안 보이는 문제 해결 */
+  html.dark .post-content a,
+  html.dark .post-content a:visited {
+    color: #8ab4ff !important; /* 다크모드용 밝은 파란색 */
+    text-decoration: underline;
+  }
+
+  /* 링크 hover 효과 */
+  .post-content a:hover {
+    opacity: 0.85;
+  }
+  
     /* 2. 하단 버튼 스타일 */
     .back-home-btn {
       display: inline-flex;
