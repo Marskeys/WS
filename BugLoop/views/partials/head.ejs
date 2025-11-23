@@ -1,19 +1,27 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="naver-site-verification" content="ddddc68fd5651c62d2758ed86b326cc802344e3d" />
+
 <title>
   <%= (typeof metaTitle === 'string' && metaTitle.trim())
-    ? metaTitle.trim()
-    : (locale?.meta?.title || 'Bug Loop') %>
+        ? metaTitle.trim()
+        : (locale?.meta?.title || 'Bug Loop') %>
 </title>
 
 <%
-  // ===== Meta description (page override > locale default) =====
-  const rawDesc =
-    (typeof metaDescription === 'string' && metaDescription.trim())
+  // ⭐ 1) 페이지에서 metaDescription을 넘기면 그것을 최우선 사용
+  //     (post-view에서 summary 전달하면 이 값이 들어옴)
+  const pageDesc = (typeof metaDescription === 'string' && metaDescription.trim())
       ? metaDescription.trim()
-      : (locale?.meta?.description ||
-        "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!");
+      : '';
+
+  // ⭐ 2) 페이지 desc 없을 때만 locale 기본값 사용
+  const fallbackDesc =
+      locale?.meta?.description ||
+      "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!";
+
+  // ⭐ 3) 최종 DESC 선택
+  const rawDesc = pageDesc || fallbackDesc;
   const DESC = rawDesc.length > 160 ? (rawDesc.slice(0,157) + '…') : rawDesc;
 
   // ===== Canonical / OG helpers =====
@@ -22,13 +30,17 @@
   const canonicalUrl = (typeof canonical === 'string' && canonical.trim()) ? canonical.trim() : (SITE_ORIGIN + path);
   const ogImage = (typeof metaImage === 'string' && metaImage.trim()) ? metaImage.trim() : '/assets/logo.png';
   const OG_IMAGE_ABS = /^https?:\/\//.test(ogImage) ? ogImage : (SITE_ORIGIN + ogImage);
+
   const PAGE_TITLE =
     (typeof metaTitle === 'string' && metaTitle.trim())
       ? metaTitle.trim()
       : (locale?.meta?.title || 'Bug Loop');
 %>
 
+<!-- ⭐ Description (중복 없음, 단 1개!) -->
 <meta name="description" content="<%= DESC %>" />
+
+<!-- ⭐ OG / Twitter -->
 <meta property="og:title" content="<%= PAGE_TITLE %>" />
 <meta property="og:description" content="<%= DESC %>" />
 <meta property="og:type" content="website" />
@@ -75,27 +87,20 @@
 <script>
   (function () {
     try {
-      // 💥 테마 키 수정: 'theme-mode' -> 'bugloop.theme' (header.js와 통일)
       const THEME_KEY = 'bugloop.theme';
       const htmlEl = document.documentElement;
       const saved = localStorage.getItem(THEME_KEY);
       let theme;
 
-      // 1. 저장된 값이 있다면, 무조건 그 값을 사용합니다. (시스템 설정 무시)
       if (saved) {
         theme = saved;
       } else {
-        // 2. 저장된 값이 없다면, 시스템 설정을 확인합니다.
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         theme = prefersDark ? 'dark' : 'light';
       }
       
-      // 3. <html>에 클래스 즉시 적용
-      if (theme === 'dark') {
-        htmlEl.classList.add('dark');
-      } else {
-        htmlEl.classList.remove('dark');
-      }
+      if (theme === 'dark') htmlEl.classList.add('dark');
+      else htmlEl.classList.remove('dark');
       
     } catch (e) {
       console.warn("Theme initialization failed:", e);
