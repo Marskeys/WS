@@ -467,25 +467,30 @@ const handleEditRoute = async (req, res) => {
 function generateSummary(html) {
   let text = String(html || '');
 
-  // 1) 목차 div 제거
-  text = text.replace(/<div[^>]*class="toc"[^>]*>[\s\S]*?<\/div>/gi, '');
+  // (1) auto-toc 전체 제거
+  text = text.replace(/<div[^>]*class="auto-toc"[^>]*>[\s\S]*?<\/div>/gi, '');
 
-  // 2) "📑 목차" 같은 텍스트도 제거
-  text = text.replace(/📑\s*목차[\s\S]*?(?=<|$)/gi, '');
+  // (2) toc / 목차 텍스트 블록 제거
+  text = text.replace(/📑\s*목차[\s\S]*?(?=<h1|<p|$)/gi, '');
+  text = text.replace(/목차[\s\S]*?(?=<h1|<p|$)/gi, '');
 
-  // 3) style/script 제거
+  // (3) 번호만 있는 목차 패턴 제거 (예: "1.", "2.")
+  text = text.replace(/^\s*\d+\.\s*$/gm, '');
+
+  // (4) style/script 제거
   text = text.replace(/<style[\s\S]*?<\/style>/gi, '');
   text = text.replace(/<script[\s\S]*?<\/script>/gi, '');
 
-  // 4) 모든 HTML 태그 제거
+  // (5) 모든 HTML 태그 제거
   text = text.replace(/<[^>]+>/g, ' ');
 
-  // 5) 공백 정리
+  // (6) 공백 정리
   text = text.replace(/\s+/g, ' ').trim();
 
-  // 6) 길이 자르기
+  // (7) 길이 제한
   return text.slice(0, 150);
 }
+
 
 
 
