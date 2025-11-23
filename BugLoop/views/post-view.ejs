@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
-  <title><%= post.title %> | Bug Loop</title>
+  <!-- CSS는 여기 있어도 OK -->
   <link rel="stylesheet" href="/assets/css/post-view.css" />
-<meta name="description" content="<%= summary %>">
-<meta property="og:description" content="<%= summary %>">
-<meta name="twitter:description" content="<%= summary %>">
 
+  <!-- 공통 head -->
+  <%- include('partials/head', {
+        metaTitle: `${post.title} | Bug Loop`,
+        metaDescription: summary,
+        metaImage: "https://bugloop.dev/assets/images/BugLoop.png",
+        canonical: canonicalUrl,
+        currentPath: `/${lang}/post/${post.id}`
+  }) %>
 
-  <%- include('partials/head') %>
-
-  <% if (canonicalUrl) { %>
-    <link rel="canonical" href="<%= canonicalUrl %>">
-  <% } %>
-
+  <!-- alternateLinks 유지 -->
   <% if (alternateLinks && alternateLinks.length > 0) { %>
     <% alternateLinks.forEach(link => { %>
       <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
@@ -21,24 +21,13 @@
     <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/<%= lang %>/post/<%= post.id %>">
   <% } %>
 
+  <!-- 테스트 카테고리는 noindex -->
   <% const testKeywords = ['테스트', 'test', 'テスト', '测试']; %>
-<% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
-  <meta name="robots" content="noindex">
-<% } %>
+  <% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
+    <meta name="robots" content="noindex">
+  <% } %>
 
-  <meta name="description" content="<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,150) %>">
-
-  <meta property="og:title" content="<%= post.title %> | Bug Loop">
-  <meta property="og:description" content="<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,150) %>">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="<%= canonicalUrl %>">
-  <meta property="og:image" content="https://bugloop.dev/assets/images/BugLoop.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="<%= post.title %> | Bug Loop">
-  <meta name="twitter:description" content="<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,150) %>">
-  <meta name="twitter:image" content="https://bugloop.dev/assets/images/BugLoop.png">
-
+  <!-- JSON-LD는 유지 (SEO에 필요) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -54,103 +43,80 @@
     "articleBody": "<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600) %>"
   }
   </script>
-  
+
+  <!-- 페이지 전용 CSS/스타일 -->
   <style>
-    /* 1. 페이지 하단 여백 추가 (바닥에 붙는 문제 해결) */
-    body {
-      padding-bottom: 50px; /* 적당한 여백 유지 */
+    body { padding-bottom: 50px; }
+
+    .post-content a,
+    .post-content a:visited {
+      color: #1a73e8 !important;
+      text-decoration: underline;
+    }
+    html.dark .post-content a,
+    html.dark .post-content a:visited {
+      color: #8ab4ff !important;
+    }
+    .post-content a:hover {
+      opacity: 0.85;
     }
 
-      /* 📌 포스트 내용 안의 링크 색을 확실하게 보이도록 강제 */
-  .post-content a,
-  .post-content a:visited {
-    color: #1a73e8 !important; /* 라이트 모드용 밝은 파란색 */
-    text-decoration: underline;
-  }
-
-  /* 🌙 다크모드에서 링크가 안 보이는 문제 해결 */
-  html.dark .post-content a,
-  html.dark .post-content a:visited {
-    color: #8ab4ff !important; /* 다크모드용 밝은 파란색 */
-    text-decoration: underline;
-  }
-
-  /* 링크 hover 효과 */
-  .post-content a:hover {
-    opacity: 0.85;
-  }
-  
-    /* 2. 하단 버튼 스타일 */
     .back-home-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 100%; /* 너비를 꽉 채우도록 설정 */
-      max-width: 400px; /* 버튼의 최대 너비 제한 (너무 길어지는 것을 방지) */
+      width: 100%;
+      max-width: 400px;
       padding: 12px 20px;
       margin-top: 10px;
-      border-radius: 6px; /* 모서리를 약간만 둥글게 */
-      font-weight: 600; /* 조금 굵은 글씨 */
-      text-decoration: none;
-      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-      border: 1px solid; /* 얇은 테두리 */
+      border-radius: 6px;
+      font-weight: 600;
+      border: 1px solid;
       font-size: 1rem;
       letter-spacing: 0.5px;
     }
 
-    /* ☀️ 라이트 모드 스타일 (기본) */
     .back-home-btn {
-      color: #333333;
-      background-color: #f7f7f7;
+      color: #333;
+      background: #f7f7f7;
       border-color: #e0e0e0;
     }
-
     .back-home-btn:hover {
-      background-color: #e0e0e0;
-      color: #000000;
-      border-color: #cccccc;
+      background: #e0e0e0;
+      color: #000;
+      border-color: #ccc;
     }
 
-    /* 🌙 다크 모드 스타일 (html.dark) */
     html.dark .back-home-btn {
       color: #e0e0e0;
-      background-color: #2c2c2c;
-      border-color: #444444;
+      background: #2c2c2c;
+      border-color: #444;
     }
-
     html.dark .back-home-btn:hover {
-      background-color: #3a3a3a;
-      color: #ffffff;
-      border-color: #666666;
+      background: #3a3a3a;
+      color: #fff;
+      border-color: #666;
     }
 
-    /* 버튼 아이콘과 텍스트 사이 간격 */
-    .back-home-btn span {
-        margin-left: 8px;
+    .back-home-btn span { margin-left: 8px; }
+
+    .tts-wrapper { text-align: right; margin: 20px 0 10px; }
+    .tts-btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      background: var(--panel);
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      font-size: 0.9rem;
     }
-
-      .tts-wrapper {
-    text-align: right;
-    margin-bottom: 10px;
-    margin-top: 20px;
-  }
-  .tts-btn {
-    padding: 8px 14px;
-    border-radius: 6px;
-    background: var(--panel);
-    border: 1px solid var(--accent);
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-  html.dark .tts-btn {
-    background: #2c2c2c;
-    border-color: #555;
-    color: #ddd;
-  }
-
+    html.dark .tts-btn {
+      background: #2c2c2c;
+      border-color: #555;
+      color: #ddd;
+    }
   </style>
-  
 </head>
+
 
 <body class="no-fixed-footer">
   <amp-auto-ads type="adsense"
