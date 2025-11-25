@@ -46,6 +46,37 @@
 
   <!-- 페이지 전용 CSS/스타일 -->
   <style>
+
+    /* [추가할 코드 시작] 이미지와 동영상 크기 자동 조절 */
+    .post-content img,
+    .post-content video {
+      max-width: 100%;       /* 부모 영역(화면)을 넘지 않도록 설정 */
+      height: auto;          /* 비율 유지 */
+      display: block;        /* 글자 취급되지 않게 블록 처리 */
+      margin: 0 auto;        /* 가운데 정렬 */
+      border-radius: 8px;    /* 모서리를 살짝 둥글게 (선택사항) */
+    }
+
+    /* 이미지/동영상을 감싸는 div(.img-wrap) 스타일 */
+    .img-wrap {
+      width: 100%;
+      margin: 2rem 0;        /* 위아래 여백 */
+      text-align: center;    /* 내부 요소 가운데 정렬 */
+    }
+
+    /* 캡션 스타일 */
+    .img-caption {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+    }
+    
+    /* 다크모드일 때 캡션 색상 변경 */
+    html.dark .img-caption {
+      color: #aaa;
+    }
+    
     body { padding-bottom: 50px; }
 
     .post-content a,
