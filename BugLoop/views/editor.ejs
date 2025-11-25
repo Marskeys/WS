@@ -156,6 +156,9 @@
           </div>
           <button data-command="openHtmlPopup" data-tooltip="HTML 삽입"><i class="fas fa-code"></i></button> 
           <button data-command="insertImage" data-tooltip="이미지 삽입"><i class="fas fa-image"></i></button>
+          <button data-command="insertVideo" data-tooltip="동영상 삽입">
+  <i class="fas fa-video"></i>
+</button>
           <button data-command="removeFormat" data-tooltip="형식 제거">지우기</button>
         </div>
     
@@ -709,6 +712,91 @@ function insertImage() {
   fileInput.click();
 }
 
+// 💡 동영상 업로드 + 에디터 삽입 함수
+function insertVideo() {
+  const fileInput = document.getElementById('videoUploader');
+
+  if (!fileInput.dataset.listenerAttached) {
+    fileInput.onchange = async () => {
+      const file = fileInput.files[0];
+
+      if (!file) {
+        fileInput.value = '';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('video', file);
+
+      showCustomMessage("동영상 업로드 중...");
+
+      try {
+        const res = await fetch('/upload/video', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (!data.success || !data.url) {
+          showCustomMessage("동영상 업로드 실패: " + (data.error || "서버 오류"));
+          return;
+        }
+
+        restoreSelection();
+        const blContent = currentActiveEditor.querySelector('.bl-content');
+
+        const video = document.createElement('video');
+        video.src = data.url;
+        video.controls = true;
+        video.style.maxWidth = "100%";
+        video.style.display = "block";
+        video.style.margin = "1.4rem 0";
+
+        const sel = window.getSelection();
+        const range = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+
+        if (range) {
+          range.deleteContents();
+          range.insertNode(video);
+
+          const p = document.createElement('p');
+          p.innerHTML = '<br>';
+
+          if (video.nextSibling)
+            video.parentNode.insertBefore(p, video.nextSibling);
+          else
+            video.parentNode.appendChild(p);
+
+          const newRange = document.createRange();
+          newRange.setStart(p.firstChild, 0);
+          newRange.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+
+        } else {
+          blContent.appendChild(video);
+          blContent.appendChild(document.createElement('p')).innerHTML = '<br>';
+        }
+
+        saveSelection();
+        showCustomMessage("동영상 업로드 및 삽입 완료!");
+
+      } catch (err) {
+        console.error("동영상 업로드 오류:", err);
+        showCustomMessage("동영상 업로드 중 네트워크 오류 발생");
+      } finally {
+        fileInput.value = '';
+      }
+    };
+
+    fileInput.dataset.listenerAttached = 'true';
+  }
+
+  fileInput.click();
+}
+
+
 
       function saveContent() {
           showCustomMessage("임시 저장 완료!");
@@ -1032,6 +1120,9 @@ function insertImage() {
                         case 'insertImage':
                             insertImage();
                             break;
+                        case 'insertVideo':
+                            insertVideo();
+                            break;
                         case 'openHtmlPopup':
                             showCustomMessage("HTML 삽입 기능은 현재 구현되지 않았습니다.");
                             break;
@@ -1189,6 +1280,6 @@ ${currentContent}
 <%- include('partials/footer') %>
 <%- include('partials/scripts') %>
 <input type="file" id="imageUploader" accept="image/*" style="display:none;">
-
+<input type="file" id="videoUploader" accept="video/*" style="display:none;">
 </body>
 </html>

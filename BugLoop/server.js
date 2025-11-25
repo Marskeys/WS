@@ -1438,6 +1438,14 @@ app.post('/upload/image', upload.single('image'), (req, res) => {
   });
 });
 
+app.post('/upload/video', upload.single('video'), (req, res) => {
+  if (!req.file) {
+    return res.json({ success: false, error: 'No video file uploaded.' });
+  }
+  const videoUrl = '/uploads/' + req.file.filename; 
+  return res.json({ success: true, url: videoUrl });
+});
+
 // ✅ 패널 라우팅 (가장 일반적인 라우트이므로 가장 마지막에 배치)
 app.get('/:lang/:section/:topic', handlePanelRoute);
 app.get('/:section/:topic', handlePanelRoute);
