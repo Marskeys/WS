@@ -343,6 +343,35 @@ const handlePanelRoute = async (req, res, next) => {
       return next();
     }
 
+    const handlePanelRoute = async (req, res, next) => {
+  try {
+    const { lang, section, topic } = req.params;
+    res.locals.lang = lang;
+
+    // ⭐⭐⭐ 여기 추가 ⭐⭐⭐
+    // 패널 콘텐츠 파일이 실제로 존재하는지 확인
+    const filePathForCheck = path.join(
+      __dirname,
+      'content',
+      String(lang).toLowerCase(),
+      String(section).toLowerCase(),
+      `${String(topic).toLowerCase()}.html`
+    );
+
+    if (!fs.existsSync(filePathForCheck)) {
+      console.warn("⚠️ 패널 파일 없음:", filePathForCheck);
+      return res.status(404).render('404');  // 빈 페이지가 아니라 누락된 페이지임을 선언
+    }
+    // ⭐⭐⭐ 여기까지 추가 ⭐⭐⭐
+
+
+    if ((!lang && supportedLangs.includes(section) && topic === 'search') ||
+        (lang && section === 'search')) {
+      const qs = req._parsedUrl && req._parsedUrl.search ? req._parsedUrl.search : '';
+      const targetLang = lang || section;
+      return res.redirect(`/${targetLang}/search${qs || ''}`);
+    }
+    
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
 
     const panelData = buildPanel({ lang, section, topic });
