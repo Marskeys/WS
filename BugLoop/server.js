@@ -333,23 +333,20 @@ const handlePanelRoute = async (req, res, next) => {
     const { lang, section, topic } = req.params;
     res.locals.lang = lang;
 
-    if ((!lang && supportedLangs.includes(section) && topic === 'search') || (lang && section === 'search')) {
+    // 검색 전용 처리
+    if ((!lang && supportedLangs.includes(section) && topic === 'search') ||
+        (lang && section === 'search')) {
       const qs = req._parsedUrl && req._parsedUrl.search ? req._parsedUrl.search : '';
       const targetLang = lang || section;
       return res.redirect(`/${targetLang}/search${qs || ''}`);
     }
 
+    // write/edit/post/:id는 패널 라우팅 제외
     if (section === 'write' || section === 'edit' || (section === 'post' && /^\d+$/.test(topic))) {
       return next();
     }
 
-    const handlePanelRoute = async (req, res, next) => {
-  try {
-    const { lang, section, topic } = req.params;
-    res.locals.lang = lang;
-
-    // ⭐⭐⭐ 여기 추가 ⭐⭐⭐
-    // 패널 콘텐츠 파일이 실제로 존재하는지 확인
+    // ⭐⭐⭐ 추가: 패널 콘텐츠 파일 존재 여부 체크 ⭐⭐⭐
     const filePathForCheck = path.join(
       __dirname,
       'content',
@@ -360,21 +357,14 @@ const handlePanelRoute = async (req, res, next) => {
 
     if (!fs.existsSync(filePathForCheck)) {
       console.warn("⚠️ 패널 파일 없음:", filePathForCheck);
-      return res.status(404).render('404');  // 빈 페이지가 아니라 누락된 페이지임을 선언
+      return res.status(404).render('404');
     }
-    // ⭐⭐⭐ 여기까지 추가 ⭐⭐⭐
+    // ⭐⭐⭐ 추가 끝 ⭐⭐⭐
 
-
-    if ((!lang && supportedLangs.includes(section) && topic === 'search') ||
-        (lang && section === 'search')) {
-      const qs = req._parsedUrl && req._parsedUrl.search ? req._parsedUrl.search : '';
-      const targetLang = lang || section;
-      return res.redirect(`/${targetLang}/search${qs || ''}`);
-    }
-    
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
 
     const panelData = buildPanel({ lang, section, topic });
+
     res.locals.panelData = panelData;
     res.locals.posts = postsForSidebar;
     res.locals.categories = allCategories;
@@ -393,11 +383,13 @@ const handlePanelRoute = async (req, res, next) => {
       return res.render('partials/panel');
     }
     return res.render('index');
+
   } catch (err) {
     console.error('패널 라우트 오류:', err);
     return res.status(500).send('서버 오류');
   }
-}
+};
+
 
 const handleWriteRoute = async (req, res) => {
   if (!req.session.user || req.session.user.is_admin !== 1) {
