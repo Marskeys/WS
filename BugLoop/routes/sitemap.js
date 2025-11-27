@@ -23,7 +23,7 @@ async function generatePostSitemap(lang) {
     SELECT id, updated_at
     FROM posts
     WHERE is_private = 0
-    ORDERORDER BY updated_at DESC
+    ORDER BY updated_at DESC
   `);
 
   const xmlItems = posts.map(p => `
