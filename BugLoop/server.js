@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 3002;
 app.locals.format = format; // ✅ 2025년 11월 8일 추가
 const allLocales = require('./locales/all.json');
 const multer = require('multer');
+const sitemapRoutes = require('./routes/sitemap');
+const sitemapPagesRoutes = require('./routes/sitemap-pages');
 
 // === Helper: merge locale with safe defaults ===
 function mergeLocaleWithDefaults(lang) {
@@ -49,86 +51,6 @@ function mergeLocaleWithDefaults(lang) {
   };
   return merged;
 }
-
-app.get('/sitemap.xml', async (req, res) => {
-  try {
-    const today = format(new Date(), 'yyyy-MM-dd');
-
-    // hreflang을 자동으로 생성하는 함수
-    function makeHreflangTags(path) {
-      return supportedLangs
-        .map(lang =>
-          `<xhtml:link rel="alternate" hreflang="${lang}" href="https://bugloop.dev/${lang}${path}" />`
-        )
-        .join('\n    ');
-    }
-
-    // ❌ 제외 카테고리 (포스트 필터용)
-    const excludeCategories = ['테스트', 'test', '测试', 'テスト', 'noindex-category', '비공개'];
-    const excludeConditions = excludeCategories.map(() => `FIND_IN_SET(?, p.categories)`).join(' OR ');
-
-    // 🔥 POST 데이터 (비공개 및 제외카테고리 제거)
-    const [posts] = await db.query(`
-      SELECT p.id, p.updated_at
-      FROM posts p
-      WHERE p.is_private = 0
-        AND NOT (${excludeConditions})
-      ORDER BY p.updated_at DESC
-    `, excludeCategories);
-
-    // 🔥 POST URL 생성
-    const postXml = posts
-      .map(post =>
-        supportedLangs
-          .map(lang => `
-  <url>
-    <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
-    ${makeHreflangTags(`/post/${post.id}`)}
-    <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
-  </url>`)
-          .join('')
-      )
-      .join('');
-
-    // 🔥 STATIC URL (홈 + 회원가입)
-    const staticXml = supportedLangs
-      .map(lang => `
-  <url>
-    <loc>https://bugloop.dev/${lang}/</loc>
-    ${makeHreflangTags(`/`)}
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.00</priority>
-  </url>
-
-  <url>
-    <loc>https://bugloop.dev/${lang}/signup</loc>
-    ${makeHreflangTags(`/signup`)}
-    <lastmod>${today}</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>`)
-      .join('');
-
-    // 🔥 최종 XML
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
-${staticXml}
-${postXml}
-
-</urlset>`;
-
-    res.type('application/xml; charset=utf-8').send(xml.trim());
-  } catch (err) {
-    console.error('🚨 sitemap.xml 생성 오류:', err);
-    res.status(500).send('Sitemap 생성 실패');
-  }
-});
 
 
 
@@ -1482,6 +1404,9 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage });
+
+app.use('/', sitemapRoutes);
+app.use('/', sitemapPagesRoutes);
 
 // public/uploads 정적 경로로 서빙
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
