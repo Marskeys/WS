@@ -54,14 +54,12 @@ app.get('/sitemap.xml', async (req, res) => {
   try {
     const today = format(new Date(), 'yyyy-MM-dd');
 
-    // 🔥 제외할 카테고리 (noindex)
     const excludeCategories = ['테스트', 'test', '测试', 'テスト', 'noindex-category', '비공개'];
-
     const excludeConditions = excludeCategories
       .map(() => `FIND_IN_SET(?, p.categories)`)
       .join(' OR ');
 
-    // 🔥 최근 업데이트된 글 불러오기
+    // 🔥 POST 데이터
     const [posts] = await db.query(`
       SELECT p.id, p.updated_at, p.categories
       FROM posts p
@@ -70,33 +68,31 @@ app.get('/sitemap.xml', async (req, res) => {
       ORDER BY p.updated_at DESC
     `, excludeCategories);
 
-    // 🔥 각 포스트 URL 생성
+    // 🔥 Post URL 생성
     const postXml = posts
-      .map(post => {
-        return supportedLangs.map(lang => `
+      .map(post => supportedLangs.map(lang => `
   <url>
     <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
     <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
-  </url>`).join('');
-      })
-      .join('');
+  </url>`).join('')
+      ).join('');
 
-    // 🔥 카테고리 목록 불러오기
-    const [categoryRows] = await db.query(`SELECT name, updated_at FROM categories`);
+    // 🔥 CATEGORY
+    const [categoryRows] = await db.query(`SELECT name FROM categories`);
 
     const categoryXml = categoryRows.map(cat =>
       supportedLangs.map(lang => `
   <url>
     <loc>https://bugloop.dev/${lang}/?category=${encodeURIComponent(cat.name)}</loc>
-    <lastmod>${format(new Date(cat.updated_at || new Date()), 'yyyy-MM-dd')}</lastmod>
+    <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.50</priority>
   </url>`).join('')
     ).join('');
 
-    // 🔥 메인 페이지 & signup 페이지 lastmod = 오늘 날짜
+    // 🔥 STATIC URL
     const staticXml = supportedLangs.map(lang => `
   <url>
     <loc>https://bugloop.dev/${lang}/</loc>
@@ -111,7 +107,7 @@ app.get('/sitemap.xml', async (req, res) => {
     <priority>0.60</priority>
   </url>`).join('');
 
-    // 🔥 XML 최종 조합
+    // 🔥 최종 XML
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -124,6 +120,7 @@ ${postXml}
 </urlset>`;
 
     res.type('application/xml; charset=utf-8').send(xml.trim());
+
   } catch (err) {
     console.error('🚨 sitemap.xml 생성 오류:', err);
     res.status(500).send('Sitemap 생성 실패');
