@@ -54,58 +54,63 @@ app.get('/sitemap.xml', async (req, res) => {
   try {
     const today = format(new Date(), 'yyyy-MM-dd');
 
-    const excludeCategories = ['테스트', 'test', '测试', 'テスト', 'noindex-category', '비공개'];
-    const excludeConditions = excludeCategories
-      .map(() => `FIND_IN_SET(?, p.categories)`)
-      .join(' OR ');
+    // hreflang을 자동으로 생성하는 함수
+    function makeHreflangTags(path) {
+      return supportedLangs
+        .map(lang =>
+          `<xhtml:link rel="alternate" hreflang="${lang}" href="https://bugloop.dev/${lang}${path}" />`
+        )
+        .join('\n    ');
+    }
 
-    // 🔥 POST 데이터
+    // ❌ 제외 카테고리 (포스트 필터용)
+    const excludeCategories = ['테스트', 'test', '测试', 'テスト', 'noindex-category', '비공개'];
+    const excludeConditions = excludeCategories.map(() => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+
+    // 🔥 POST 데이터 (비공개 및 제외카테고리 제거)
     const [posts] = await db.query(`
-      SELECT p.id, p.updated_at, p.categories
+      SELECT p.id, p.updated_at
       FROM posts p
       WHERE p.is_private = 0
         AND NOT (${excludeConditions})
       ORDER BY p.updated_at DESC
     `, excludeCategories);
 
-    // 🔥 Post URL 생성
+    // 🔥 POST URL 생성
     const postXml = posts
-      .map(post => supportedLangs.map(lang => `
+      .map(post =>
+        supportedLangs
+          .map(lang => `
   <url>
     <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
+    ${makeHreflangTags(`/post/${post.id}`)}
     <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
-  </url>`).join('')
-      ).join('');
+  </url>`)
+          .join('')
+      )
+      .join('');
 
-    // 🔥 CATEGORY
-    const [categoryRows] = await db.query(`SELECT name FROM categories`);
-
-    const categoryXml = categoryRows.map(cat =>
-      supportedLangs.map(lang => `
-  <url>
-    <loc>https://bugloop.dev/${lang}/?category=${encodeURIComponent(cat.name)}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.50</priority>
-  </url>`).join('')
-    ).join('');
-
-    // 🔥 STATIC URL
-    const staticXml = supportedLangs.map(lang => `
+    // 🔥 STATIC URL (홈 + 회원가입)
+    const staticXml = supportedLangs
+      .map(lang => `
   <url>
     <loc>https://bugloop.dev/${lang}/</loc>
+    ${makeHreflangTags(`/`)}
     <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
   </url>
+
   <url>
     <loc>https://bugloop.dev/${lang}/signup</loc>
+    ${makeHreflangTags(`/signup`)}
     <lastmod>${today}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
-  </url>`).join('');
+  </url>`)
+      .join('');
 
     // 🔥 최종 XML
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -114,18 +119,17 @@ app.get('/sitemap.xml', async (req, res) => {
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 ${staticXml}
-${categoryXml}
 ${postXml}
 
 </urlset>`;
 
     res.type('application/xml; charset=utf-8').send(xml.trim());
-
   } catch (err) {
     console.error('🚨 sitemap.xml 생성 오류:', err);
     res.status(500).send('Sitemap 생성 실패');
   }
 });
+
 
 
 app.use((req, res, next) => {
