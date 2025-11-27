@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // DB 연결 경로는 네 프로젝트 구조에 맞게 수정해야 함
+const db = require('../config/db'); // 🔥 config 폴더에 있으므로 이게 정답!
 
-// 🔹 sitemap.xml (인덱스)
+// 🔹 sitemap.xml (메인 인덱스)
 router.get('/sitemap.xml', (req, res) => {
   res.type('application/xml');
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
@@ -17,14 +17,13 @@ router.get('/sitemap.xml', (req, res) => {
 </sitemapindex>`);
 });
 
-
 // 🔹 각 언어별 게시글 Sitemap 생성 함수
 async function generatePostSitemap(lang) {
   const [posts] = await db.query(`
     SELECT id, updated_at
     FROM posts
     WHERE is_private = 0
-    ORDER BY updated_at DESC
+    ORDERORDER BY updated_at DESC
   `);
 
   const xmlItems = posts.map(p => `
@@ -42,8 +41,7 @@ ${xmlItems}
 </urlset>`;
 }
 
-
-// 🔹 언어별 router 등록
+// 🔹 언어별 sitemap 라우트 등록
 const langs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
 
 langs.forEach(lang => {
