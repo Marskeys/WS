@@ -15,6 +15,9 @@ const multer = require('multer');
 const sitemapRoutes = require('./routes/sitemap');
 const sitemapPagesRoutes = require('./routes/sitemap-pages');
 
+app.use('/', sitemapRoutes);
+app.use('/', sitemapPagesRoutes);
+
 // === Helper: merge locale with safe defaults ===
 function mergeLocaleWithDefaults(lang) {
   const base = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
@@ -1404,9 +1407,6 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage });
-
-app.use('/', sitemapRoutes);
-app.use('/', sitemapPagesRoutes);
 
 // public/uploads 정적 경로로 서빙
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
