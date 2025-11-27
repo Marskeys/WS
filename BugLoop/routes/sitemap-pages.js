@@ -1,4 +1,7 @@
-app.get('/sitemap-pages.xml', (req, res) => {
+const express = require('express');
+const router = express.Router();
+
+router.get('/sitemap-pages.xml', (req, res) => {
   res.type('application/xml');
 
   const today = new Date().toISOString().slice(0, 10);
@@ -24,3 +27,5 @@ app.get('/sitemap-pages.xml', (req, res) => {
 ${staticXml}
 </urlset>`);
 });
+
+module.exports = router;

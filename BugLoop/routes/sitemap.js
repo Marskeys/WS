@@ -1,4 +1,9 @@
-app.get('/sitemap.xml', (req, res) => {
+const express = require('express');
+const router = express.Router();
+const db = require('../db'); // DB 연결 경로는 네 프로젝트 구조에 맞게 수정해야 함
+
+// 🔹 sitemap.xml (인덱스)
+router.get('/sitemap.xml', (req, res) => {
   res.type('application/xml');
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -12,6 +17,8 @@ app.get('/sitemap.xml', (req, res) => {
 </sitemapindex>`);
 });
 
+
+// 🔹 각 언어별 게시글 Sitemap 생성 함수
 async function generatePostSitemap(lang) {
   const [posts] = await db.query(`
     SELECT id, updated_at
@@ -36,10 +43,11 @@ ${xmlItems}
 }
 
 
+// 🔹 언어별 router 등록
 const langs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
 
 langs.forEach(lang => {
-  app.get(`/sitemap-posts-${lang}.xml`, async (req, res) => {
+  router.get(`/sitemap-posts-${lang}.xml`, async (req, res) => {
     try {
       const xml = await generatePostSitemap(lang);
       res.type('application/xml').send(xml);
@@ -50,3 +58,4 @@ langs.forEach(lang => {
   });
 });
 
+module.exports = router;
