@@ -52,41 +52,75 @@ function mergeLocaleWithDefaults(lang) {
 
 app.get('/sitemap.xml', async (req, res) => {
   try {
-    const testCategoryKeywords = ['테스트', 'test', 'テスト', '测试', 'noindex-category', '비공개'];
-    const excludeConditions = testCategoryKeywords.map(() => `FIND_IN_SET(?, p.categories)`).join(' OR ');
+    const today = format(new Date(), 'yyyy-MM-dd');
 
+    // 🔥 제외할 카테고리 (noindex)
+    const excludeCategories = ['테스트', 'test', '测试', 'テスト', 'noindex-category', '비공개'];
+
+    const excludeConditions = excludeCategories
+      .map(() => `FIND_IN_SET(?, p.categories)`)
+      .join(' OR ');
+
+    // 🔥 최근 업데이트된 글 불러오기
     const [posts] = await db.query(`
       SELECT p.id, p.updated_at, p.categories
       FROM posts p
       WHERE p.is_private = 0
         AND NOT (${excludeConditions})
       ORDER BY p.updated_at DESC
-    `, testCategoryKeywords);
+    `, excludeCategories);
 
-    let postUrls = [];
-    posts.forEach(post => {
-      // 📌 변경 사항: supportedLangs에 'es'가 포함되어 sitemap에 스페인어 URL이 추가됨
-      supportedLangs.forEach(lang => {
-        postUrls.push(`
+    // 🔥 각 포스트 URL 생성
+    const postXml = posts
+      .map(post => {
+        return supportedLangs.map(lang => `
   <url>
     <loc>https://bugloop.dev/${lang}/post/${post.id}</loc>
     <lastmod>${format(new Date(post.updated_at), 'yyyy-MM-dd')}</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.80</priority>
-  </url>`);
-      });
-    });
-    const postXml = postUrls.join('');
+  </url>`).join('');
+      })
+      .join('');
 
-    const staticXml = [
-      // 📌 변경 사항: supportedLangs에 'es'가 포함되어 정적 페이지에 스페인어 URL이 추가됨
-      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/</loc><priority>1.00</priority></url>`),
-      ...supportedLangs.map(lang => `<url><loc>https://bugloop.dev/${lang}/signup</loc><priority>0.80</priority></url>`)
-    ].join('');
+    // 🔥 카테고리 목록 불러오기
+    const [categoryRows] = await db.query(`SELECT name, updated_at FROM categories`);
 
+    const categoryXml = categoryRows.map(cat =>
+      supportedLangs.map(lang => `
+  <url>
+    <loc>https://bugloop.dev/${lang}/?category=${encodeURIComponent(cat.name)}</loc>
+    <lastmod>${format(new Date(cat.updated_at || new Date()), 'yyyy-MM-dd')}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.50</priority>
+  </url>`).join('')
+    ).join('');
+
+    // 🔥 메인 페이지 & signup 페이지 lastmod = 오늘 날짜
+    const staticXml = supportedLangs.map(lang => `
+  <url>
+    <loc>https://bugloop.dev/${lang}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://bugloop.dev/${lang}/signup</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>`).join('');
+
+    // 🔥 XML 최종 조합
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
 ${staticXml}
+${categoryXml}
 ${postXml}
+
 </urlset>`;
 
     res.type('application/xml; charset=utf-8').send(xml.trim());
@@ -95,6 +129,7 @@ ${postXml}
     res.status(500).send('Sitemap 생성 실패');
   }
 });
+
 
 app.use((req, res, next) => {
   // www → non-www 리다이렉트
