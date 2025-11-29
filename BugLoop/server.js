@@ -574,6 +574,31 @@ const handlePostViewRoute = async (req, res) => {
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } =
       await getSidebarData(req);
 
+      // ⭐ 같은 언어 + 같은 카테고리에서 랜덤 추천글 3개 가져오기
+const [recommendedRows] = await db.query(
+  `
+  SELECT 
+    p.id,
+    COALESCE(pt.title, p.title) AS title
+  FROM posts p
+  LEFT JOIN post_translations pt 
+    ON p.id = pt.post_id AND pt.lang_code = ?
+  WHERE p.id != ?
+    AND FIND_IN_SET(?, p.categories)
+    AND p.is_private = 0
+  ORDER BY RAND()
+  LIMIT 3
+  `,
+  [safeLang, postId, post.originalCategories[0] || null]
+);
+
+// ⭐ 번역 fallback 처리
+const recommended = recommendedRows.map(r => ({
+  id: r.id,
+  title: r.title
+}));
+
+
     // ⭐ summary를 포함하여 렌더링
     res.render('post-view', {
       post: postForView,
@@ -592,7 +617,8 @@ const handlePostViewRoute = async (req, res) => {
         current: parseInt(req.query.page) || 1,
         total: Math.ceil((await getPostCount(req)) / 10),
         range: paginationRange
-      }
+      },
+      recommended  
     });
 
   } catch (err) {
