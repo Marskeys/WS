@@ -574,7 +574,15 @@ const handlePostViewRoute = async (req, res) => {
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } =
       await getSidebarData(req);
 
-      // ⭐ 같은 언어 + 같은 카테고리에서 랜덤 추천글 3개 가져오기
+     // ⭐ 추천글용 카테고리 null-safe 처리
+const safeCategory = (
+  post.originalCategories &&
+  post.originalCategories.length > 0 &&
+  post.originalCategories[0]
+) ? post.originalCategories[0] : '';
+
+
+// ⭐ 같은 언어 + 같은 카테고리에서 랜덤 추천글 3개 가져오기
 const [recommendedRows] = await db.query(
   `
   SELECT 
@@ -582,15 +590,16 @@ const [recommendedRows] = await db.query(
     COALESCE(pt.title, p.title) AS title
   FROM posts p
   LEFT JOIN post_translations pt 
-    ON p.id = pt.post_id AND pt.lang_code = ?
+      ON p.id = pt.post_id AND pt.lang_code = ?
   WHERE p.id != ?
     AND FIND_IN_SET(?, p.categories)
     AND p.is_private = 0
   ORDER BY RAND()
   LIMIT 3
   `,
-  [safeLang, postId, post.originalCategories[0] || null]
+  [safeLang, postId, safeCategory]
 );
+
 
 // ⭐ 번역 fallback 처리
 const recommended = recommendedRows.map(r => ({
@@ -599,27 +608,32 @@ const recommended = recommendedRows.map(r => ({
 }));
 
 
-    // ⭐ summary를 포함하여 렌더링
-    res.render('post-view', {
-      post: postForView,
-      posts: postsForSidebar,
-      user: req.session.user,
-      canonicalUrl,
-      alternateLinks,
-      summary,        // ⬅️⬅️ 여기 summary가 들어감
-      lang: safeLang,
-      isSearch: false,
-      searchKeyword: '',
-      selectedCategory: translatedSelectedCategory,
-      locale: res.locals.locale,
-      categories: allCategories,
-      pagination: {
-        current: parseInt(req.query.page) || 1,
-        total: Math.ceil((await getPostCount(req)) / 10),
-        range: paginationRange
-      },
-      recommended  
-    });
+// ⭐ summary를 포함하여 렌더링
+res.render('post-view', {
+  post: postForView,
+  posts: postsForSidebar,
+  user: req.session.user,
+
+  canonicalUrl,
+  alternateLinks,
+  summary, // ⬅️ summary 전달됨
+
+  lang: safeLang,
+  isSearch: false,
+  searchKeyword: '',
+  selectedCategory: translatedSelectedCategory,
+  locale: res.locals.locale,
+  categories: allCategories,
+
+  pagination: {
+    current: parseInt(req.query.page) || 1,
+    total: Math.ceil((await getPostCount(req)) / 10),
+    range: paginationRange
+  },
+
+  recommended
+});
+
 
   } catch (err) {
     console.error('🌐 다국어 글 보기 오류:', err);
