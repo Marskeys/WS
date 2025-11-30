@@ -408,20 +408,3 @@ html.dark .toc-list a:hover {
 }
 
 
-@media (max-width: 768px) {
-  .bl-content a {
-    display: inline-block !important;
-    max-width: 160px !important; /* 조절 가능 */
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-
-  .bl-content a:hover,
-  .bl-content a:active,
-  .bl-content a:focus {
-    white-space: normal !important;
-    overflow: visible !important;
-    max-width: none !important;
-  }
-}
