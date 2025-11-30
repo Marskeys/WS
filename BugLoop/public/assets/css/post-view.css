@@ -407,29 +407,20 @@ html.dark .toc-list a:hover {
   color: var(--accent);
 }
 
-/* 한글은 절대 쪼개지지 않도록 강제 */
-.bl-content,
-.bl-content * {
-  word-break: keep-all !important;
-  overflow-wrap: normal !important;
-}
-
-/* URL만 줄바꿈 허용 */
+/* 링크가 너무 길면 잘라서 ... 처리 */
 .bl-content a {
-  word-break: break-all !important;
-  overflow-wrap: anywhere !important;
+  display: inline-block;
+  max-width: 200px; /* 원하는 길이로 조정 가능 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
 }
 
-/* 모바일에서도 강제로 덮어쓰기 */
-@media (max-width: 768px) {
-  .bl-content,
-  .bl-content * {
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-  }
-
-  .bl-content a {
-    word-break: break-all !important;
-    overflow-wrap: anywhere !important;
-  }
+/* 호버시 전체 URL 표시 */
+.bl-content a:hover {
+  white-space: normal;
+  overflow: visible;
+  max-width: none;
 }
+
