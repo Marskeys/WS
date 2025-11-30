@@ -407,8 +407,29 @@ html.dark .toc-list a:hover {
   color: var(--accent);
 }
 
+/* 한글은 절대 쪼개지지 않도록 강제 */
 .bl-content,
 .bl-content * {
   word-break: keep-all !important;
   overflow-wrap: normal !important;
+}
+
+/* URL만 줄바꿈 허용 */
+.bl-content a {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* 모바일에서도 강제로 덮어쓰기 */
+@media (max-width: 768px) {
+  .bl-content,
+  .bl-content * {
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+  }
+
+  .bl-content a {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+  }
 }
