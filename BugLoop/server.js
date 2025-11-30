@@ -637,12 +637,21 @@ res.render('post-view', {
 
 
   } catch (err) {
-    console.error('🌐 다국어 글 보기 오류:', err);
-    res.status(500).render('error', { 
+  console.error("🌐 다국어 글 보기 오류:", err);
+
+  // error.ejs가 존재하는지 먼저 확인
+  const errorView = path.join(__dirname, 'views', 'error.ejs');
+
+  if (fs.existsSync(errorView)) {
+    return res.status(500).render('error', { 
       message: '서버 오류로 글을 불러올 수 없습니다.', 
       user: req.session.user 
     });
   }
+
+  // fallback: error.ejs 없으면 안전하게 send()
+  return res.status(500).send(err.message);
+}
 };
 
 
