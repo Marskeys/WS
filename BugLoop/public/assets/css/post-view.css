@@ -412,7 +412,7 @@ html.dark .toc-list a:hover {
   /* 모바일에서만 긴 링크 ... 처리 */
   .bl-content a {
     display: inline-block;
-    max-width: 100px; /* 너가 원하는 길이로 조절 가능 */
+    max-width: 20px; /* 너가 원하는 길이로 조절 가능 */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
