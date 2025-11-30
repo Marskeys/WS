@@ -407,6 +407,8 @@ html.dark .toc-list a:hover {
   color: var(--accent);
 }
 
-.bl-content {
-  word-break: keep-all;
+.bl-content,
+.bl-content * {
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
 }
