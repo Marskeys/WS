@@ -406,3 +406,7 @@ html.dark .toc-list a:hover {
 .recommended-item:hover a {
   color: var(--accent);
 }
+
+a {
+  overflow-wrap: anywhere;
+}
