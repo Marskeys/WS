@@ -600,7 +600,7 @@ const handlePostViewRoute = async (req, res) => {
           AND FIND_IN_SET(?, p.categories)
           AND p.is_private = 0
         ORDER BY RAND()
-        LIMIT 3
+        LIMIT 5
         `,
         [safeLang, postId, safeCategory]
       );
