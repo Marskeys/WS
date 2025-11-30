@@ -573,13 +573,12 @@ const handlePostViewRoute = async (req, res) => {
     // 사이드바 데이터
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } =
       await getSidebarData(req);
-
-     // ⭐ 추천글용 카테고리 null-safe 처리
+// ⭐ 추천글용 카테고리 null-safe 처리
 const safeCategory = (
   post.originalCategories &&
   post.originalCategories.length > 0 &&
   post.originalCategories[0]
-) ? post.originalCategories[0] : '';
+) ? post.originalCategories[0] : null;
 
 
 // ⭐ 같은 언어 + 같은 카테고리에서 랜덤 추천글 3개 가져오기
@@ -592,7 +591,7 @@ const [recommendedRows] = await db.query(
   LEFT JOIN post_translations pt 
       ON p.id = pt.post_id AND pt.lang_code = ?
   WHERE p.id != ?
-    AND FIND_IN_SET(?, p.categories)
+    AND JSON_CONTAINS(p.categories, JSON_ARRAY(?))   -- ★ JSON 배열에서 카테고리 매칭
     AND p.is_private = 0
   ORDER BY RAND()
   LIMIT 3
@@ -631,8 +630,10 @@ res.render('post-view', {
     range: paginationRange
   },
 
+  // ⭐ 추천글 전달
   recommended
 });
+
 
 
   } catch (err) {
