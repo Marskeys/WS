@@ -515,7 +515,7 @@ const handlePostViewRoute = async (req, res) => {
 
     let translation = translations[0];
 
-    // 해당 언어 번역 없으면 한국어 대체
+    // 해당 언어 번역 없으면 한국어 fallback
     if (!translation && safeLang !== 'ko') {
       console.warn(`게시글 ID ${postId}에 '${safeLang}' 번역 없음 → ko로 fallback`);
       [translations] = await db.query(
@@ -551,10 +551,10 @@ const handlePostViewRoute = async (req, res) => {
       translatedCategories.push(...categoryNameRows.map(row => row.name));
     }
 
-    // ⭐ summary 생성
+    // summary 생성
     const summary = generateSummary(translation.content);
 
-    // postView 객체 구성
+    // postView 객체
     const postForView = {
       ...post,
       title: translation.title,
@@ -573,86 +573,86 @@ const handlePostViewRoute = async (req, res) => {
     // 사이드바 데이터
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } =
       await getSidebarData(req);
-// ⭐ 추천글용 카테고리 null-safe 처리
-const safeCategory = (
-  post.originalCategories &&
-  post.originalCategories.length > 0 &&
-  post.originalCategories[0]
-) ? post.originalCategories[0] : null;
 
+    // ⭐ 추천글용 safeCategory 처리
+    let safeCategory = null;
+    if (
+      postForView.originalCategories &&
+      postForView.originalCategories.length > 0 &&
+      postForView.originalCategories[0]
+    ) {
+      safeCategory = postForView.originalCategories[0];
+    }
 
-// ⭐ 같은 언어 + 같은 카테고리에서 랜덤 추천글 3개 가져오기
-const [recommendedRows] = await db.query(
-  `
-  SELECT 
-    p.id,
-    COALESCE(pt.title, p.title) AS title
-  FROM posts p
-  LEFT JOIN post_translations pt 
-      ON p.id = pt.post_id AND pt.lang_code = ?
-  WHERE p.id != ?
-    AND JSON_CONTAINS(p.categories, JSON_ARRAY(?))   -- ★ JSON 배열에서 카테고리 매칭
-    AND p.is_private = 0
-  ORDER BY RAND()
-  LIMIT 3
-  `,
-  [safeLang, postId, safeCategory]
-);
+    let recommended = [];
 
+    // ⭐ 카테고리가 있을 때만 추천글 쿼리 실행
+    if (safeCategory) {
+      const [recommendedRows] = await db.query(
+        `
+        SELECT 
+          p.id,
+          COALESCE(pt.title, p.title) AS title
+        FROM posts p
+        LEFT JOIN post_translations pt 
+            ON p.id = pt.post_id AND pt.lang_code = ?
+        WHERE p.id != ?
+          AND FIND_IN_SET(?, p.categories)
+          AND p.is_private = 0
+        ORDER BY RAND()
+        LIMIT 3
+        `,
+        [safeLang, postId, safeCategory]
+      );
 
-// ⭐ 번역 fallback 처리
-const recommended = recommendedRows.map(r => ({
-  id: r.id,
-  title: r.title
-}));
+      recommended = recommendedRows.map(r => ({
+        id: r.id,
+        title: r.title
+      }));
+    }
 
+    // ⭐ 렌더링
+    res.render('post-view', {
+      post: postForView,
+      posts: postsForSidebar,
+      user: req.session.user,
 
-// ⭐ summary를 포함하여 렌더링
-res.render('post-view', {
-  post: postForView,
-  posts: postsForSidebar,
-  user: req.session.user,
+      canonicalUrl,
+      alternateLinks,
+      summary,
 
-  canonicalUrl,
-  alternateLinks,
-  summary, // ⬅️ summary 전달됨
+      lang: safeLang,
+      isSearch: false,
+      searchKeyword: '',
+      selectedCategory: translatedSelectedCategory,
+      locale: res.locals.locale,
+      categories: allCategories,
 
-  lang: safeLang,
-  isSearch: false,
-  searchKeyword: '',
-  selectedCategory: translatedSelectedCategory,
-  locale: res.locals.locale,
-  categories: allCategories,
+      pagination: {
+        current: parseInt(req.query.page) || 1,
+        total: Math.ceil((await getPostCount(req)) / 10),
+        range: paginationRange
+      },
 
-  pagination: {
-    current: parseInt(req.query.page) || 1,
-    total: Math.ceil((await getPostCount(req)) / 10),
-    range: paginationRange
-  },
-
-  // ⭐ 추천글 전달
-  recommended
-});
-
-
+      recommended
+    });
 
   } catch (err) {
-  console.error("🌐 다국어 글 보기 오류:", err);
+    console.error("🌐 다국어 글 보기 오류:", err);
 
-  // error.ejs가 존재하는지 먼저 확인
-  const errorView = path.join(__dirname, 'views', 'error.ejs');
+    const errorView = path.join(__dirname, 'views', 'error.ejs');
 
-  if (fs.existsSync(errorView)) {
-    return res.status(500).render('error', { 
-      message: '서버 오류로 글을 불러올 수 없습니다.', 
-      user: req.session.user 
-    });
+    if (fs.existsSync(errorView)) {
+      return res.status(500).render('error', { 
+        message: '서버 오류로 글을 불러올 수 없습니다.', 
+        user: req.session.user 
+      });
+    }
+
+    return res.status(500).send(err.message);
   }
-
-  // fallback: error.ejs 없으면 안전하게 send()
-  return res.status(500).send(err.message);
-}
 };
+
 
 
 const handleMainPage = async (req, res) => {
