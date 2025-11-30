@@ -337,25 +337,25 @@ html.dark .toc-list a:hover {
   display: block;         /* 인라인 → 블록으로 바꿔야 margin이 적용됨 */
   margin-bottom: 0.8em;    /* "목차"랑 1번 목차 사이 간격 */
 }
-
-/* ⭐ 추천글 영역 전체 박스 */
+/* ⭐ 추천글 전체 박스 */
 .recommended-posts {
-  margin-top: 40px;
-  padding: 20px;
-  background: var(--card-bg, #1d1d1d);
-  border-radius: 12px;
-  box-shadow: var(--shadow-md);
+  margin-top: 50px;
+  padding: 24px 20px;
+  background: var(--panel);
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
-/* 제목 */
+/* ⭐ 제목 */
 .recommended-title {
-  margin: 0 0 12px;
-  font-size: 1.2rem;
+  margin: 0 0 16px;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--text-strong);
+  letter-spacing: -0.2px;
 }
 
-/* 리스트 레이아웃 */
+/* ⭐ 리스트 */
 .recommended-list {
   list-style: none;
   padding: 0;
@@ -363,21 +363,36 @@ html.dark .toc-list a:hover {
 }
 
 .recommended-item {
-  margin-bottom: 10px;
+  margin-bottom: 14px;
+  padding: 6px 4px;
+  border-left: 3px solid transparent;
+  transition: all 0.18s ease;
 }
 
 .recommended-item:last-child {
   margin-bottom: 0;
 }
 
-/* 링크 스타일 */
+/* ⭐ 링크 스타일 */
 .recommended-item a {
-  color: var(--accent);
+  color: var(--text-normal);
+  font-size: 0.97rem;
   text-decoration: none;
-  font-size: 1rem;
 }
 
-.recommended-item a:hover {
-  text-decoration: underline;
+/* ⭐ hover 효과 — 은은 */
+.recommended-item:hover {
+  border-left-color: var(--accent);
+  background: rgba(255, 255, 255, 0.04);
 }
+
+html.dark .recommended-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 링크 hover */
+.recommended-item a:hover {
+  color: var(--accent);
+}
+
 
