@@ -338,23 +338,46 @@ html.dark .toc-list a:hover {
   margin-bottom: 0.8em;    /* "목차"랑 1번 목차 사이 간격 */
 }
 
-.recommended-section {
-  margin-top: 3rem;
-  padding: 1.8rem;
-  background: var(--panel);
+/* ⭐ 추천글 영역 전체 박스 */
+.recommended-posts {
+  margin-top: 40px;
+  padding: 20px;
+  background: var(--card-bg, #1d1d1d);
   border-radius: 12px;
+  box-shadow: var(--shadow-md);
 }
 
-.recommended-section h2 {
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-}
-
-.recommended-section a {
-  color: var(--accent);
+/* 제목 */
+.recommended-title {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
   font-weight: 600;
+  color: var(--text-strong);
 }
 
-.recommended-section li {
-  margin-bottom: .6rem;
+/* 리스트 레이아웃 */
+.recommended-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
+
+.recommended-item {
+  margin-bottom: 10px;
+}
+
+.recommended-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 링크 스타일 */
+.recommended-item a {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.recommended-item a:hover {
+  text-decoration: underline;
+}
+
