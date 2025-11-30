@@ -337,3 +337,24 @@ html.dark .toc-list a:hover {
   display: block;         /* 인라인 → 블록으로 바꿔야 margin이 적용됨 */
   margin-bottom: 0.8em;    /* "목차"랑 1번 목차 사이 간격 */
 }
+
+.recommended-section {
+  margin-top: 3rem;
+  padding: 1.8rem;
+  background: var(--panel);
+  border-radius: 12px;
+}
+
+.recommended-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.recommended-section a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.recommended-section li {
+  margin-bottom: .6rem;
+}

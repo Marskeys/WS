@@ -76,7 +76,7 @@
     html.dark .img-caption {
       color: #aaa;
     }
-    
+
     body { padding-bottom: 50px; }
 
     .post-content a,
@@ -179,6 +179,30 @@
         <form action="/<%= lang %>/delete/<%= post.id %>" method="POST" style="display: inline;">
           <button type="submit" onclick="return confirm('<%= locale.ui.deleteConfirm %>');">🗑 <%= locale.ui.deleteButton %></button>
         </form>
+      </div>
+    <% } %>
+
+       <% if (recommended && recommended.length > 0) { %>
+      <div class="recommended-section" style="
+        margin-top: 3rem;
+        padding: 1.8rem;
+        background: var(--panel);
+        border-radius: 12px;
+      ">
+        <h2 style="margin-bottom: 1rem; font-size: 1.25rem;">
+          <%= locale.ui.recommendedPosts || "추천 글" %>
+        </h2>
+
+        <ul style="padding-left: 1rem; line-height: 1.8;">
+          <% recommended.forEach(item => { %>
+            <li style="margin-bottom: 0.6rem;">
+              <a href="/<%= lang %>/post/<%= item.id %>" 
+                 style="color: var(--accent); font-weight: 600;">
+                <%= item.title %>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
       </div>
     <% } %>
 
