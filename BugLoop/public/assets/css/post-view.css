@@ -409,22 +409,19 @@ html.dark .toc-list a:hover {
 
 
 @media (max-width: 768px) {
-  /* 모바일에서만 긴 링크 ... 처리 */
   .bl-content a {
-    display: inline-block;
-    max-width: 20px; /* 너가 원하는 길이로 조절 가능 */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: bottom;
+    display: inline-block !important;
+    max-width: 160px !important; /* 조절 가능 */
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
-  /* 모바일에서 터치(hover) 시 전체 URL 표시 */
   .bl-content a:hover,
   .bl-content a:active,
   .bl-content a:focus {
-    white-space: normal;
-    overflow: visible;
-    max-width: none;
+    white-space: normal !important;
+    overflow: visible !important;
+    max-width: none !important;
   }
 }
