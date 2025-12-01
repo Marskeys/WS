@@ -47,6 +47,14 @@
   <!-- 페이지 전용 CSS/스타일 -->
   <style>
 
+
+  .post-content {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
     /* [추가할 코드 시작] 이미지와 동영상 크기 자동 조절 */
     .post-content img,
     .post-content video {
@@ -518,63 +526,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script src="https://unpkg.com/libheif-js/dist/libheif.js"></script>
 
 <script>
-// 브라우저에서 HEIC → JPEG 디코딩
-async function convertHeicForce(img) {
-  const src = img.getAttribute("src") || "";
-  if (!src.toLowerCase().endsWith(".heic")) return;
-  if (img.dataset.heicConverted === "true") return;
+  document.addEventListener("contextmenu", function(e) {
+    e.preventDefault();
+  });
+</script>
 
-  img.setAttribute("data-heic-loading", "true");
-
-  try {
-    // HEIC 파일 fetch
-    const arrayBuffer = await fetch(src).then(r => r.arrayBuffer());
-    const heif = await libheif.readHeif(arrayBuffer);
-    const image = heif.getImage(0);
-
-    const width = image.getWidth();
-    const height = image.getHeight();
-
-    const data = image.getRGBAImage(); // RGBA 픽셀 추출
-
-    // Canvas 생성
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext("2d");
-    const imageData = ctx.createImageData(width, height);
-
-    imageData.data.set(data);
-    ctx.putImageData(imageData, 0, 0);
-
-    // JPEG로 변환
-    const jpegURL = canvas.toDataURL("image/jpeg", 0.92);
-
-    img.src = jpegURL;
-    img.dataset.heicConverted = "true";
-
-  } catch (err) {
-    console.error("🔥 HEIC 디코딩 완전 실패:", src, err);
-  }
-
-  img.removeAttribute("data-heic-loading");
-}
-
-
-// 모든 이미지 스캔
-function scanAllHeic() {
-  document.querySelectorAll("img").forEach(img => convertHeicForce(img));
-}
-
-document.addEventListener("DOMContentLoaded", scanAllHeic);
-
-// DOM 변화감지 → 추가된 이미지 자동 변환
-const observer = new MutationObserver(scanAllHeic);
-observer.observe(document.body, { childList: true, subtree: true });
+<script>
+  document.addEventListener("keydown", function(e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === "c" || e.key === "C")) {
+      e.preventDefault();
+    }
+  });
 </script>
 
 
