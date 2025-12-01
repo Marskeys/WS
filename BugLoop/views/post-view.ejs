@@ -145,6 +145,11 @@
       border-color: #555;
       color: #ddd;
     }
+
+    img[data-heic-loading] {
+  opacity: 0.4;
+  filter: blur(3px);
+}
   </style>
 </head>
 
@@ -509,6 +514,45 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.innerText = "🔊 <%= locale.ui.listen || 'Listen' %>";
       isReading = false;
     };
+  });
+});
+</script>
+
+<script src="https://unpkg.com/heic2any/dist/heic2any.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const imgs = document.querySelectorAll(".bl-content img, img");
+
+  imgs.forEach(async (img) => {
+    const src = img.getAttribute("src") || "";
+
+    if (src.toLowerCase().endsWith(".heic")) {
+      try {
+        // 변환 중 스타일 적용 (희미하게)
+        img.setAttribute("data-heic-loading", "true");
+
+        // HEIC 파일을 blob으로 가져오기
+        const blob = await fetch(src).then(r => r.blob());
+
+        // JPG로 변환
+        const convertedBlob = await heic2any({
+          blob: blob,
+          toType: "image/jpeg",
+          quality: 0.9
+        });
+
+        // 변환된 이미지 표시 ⭐ 여기!!
+        img.src = URL.createObjectURL(convertedBlob);
+
+        // 변환 끝 → 스타일 제거
+        img.removeAttribute("data-heic-loading");
+
+      } catch (e) {
+        console.error("HEIC 변환 실패:", e);
+        img.removeAttribute("data-heic-loading");
+      }
+    }
   });
 });
 </script>
