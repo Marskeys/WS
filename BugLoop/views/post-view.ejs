@@ -523,6 +523,11 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 async function convertHeic(img) {
   const src = img.getAttribute("src") || "";
+
+  // 이미 변환된 이미지면 패스
+  if (img.dataset.heicConverted === "true") return;
+
+  // HEIC만 변환
   if (!src.toLowerCase().endsWith(".heic")) return;
 
   try {
@@ -535,7 +540,12 @@ async function convertHeic(img) {
       quality: 0.9
     });
 
+    // 변환된 이미지로 교체
     img.src = URL.createObjectURL(convertedBlob);
+
+    // 변환 완료 표시
+    img.dataset.heicConverted = "true";
+
     img.removeAttribute("data-heic-loading");
 
   } catch (e) {
@@ -544,23 +554,23 @@ async function convertHeic(img) {
   }
 }
 
+// 페이지 내 모든 이미지 스캔
 function scanAllImages() {
   document.querySelectorAll("img").forEach(img => convertHeic(img));
 }
 
-// 처음 로드 시 전체 이미지 변환
 document.addEventListener("DOMContentLoaded", scanAllImages);
 
-// 이후 동적으로 추가되는 이미지도 잡기
+// MutationObserver: 새 이미지 등장하면 다시 스캔
 const observer = new MutationObserver(() => {
   scanAllImages();
 });
-
 observer.observe(document.body, {
   childList: true,
   subtree: true,
 });
 </script>
+
 
 
 
