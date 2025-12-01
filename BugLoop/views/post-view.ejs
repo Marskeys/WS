@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
-  <!-- CSS는 여기 있어도 OK -->
   <link rel="stylesheet" href="/assets/css/post-view.css" />
 
-  <!-- 공통 head -->
   <%- include('partials/head', {
         metaTitle: `${post.title} | Bug Loop`,
         metaDescription: summary,
@@ -13,7 +11,6 @@
         currentPath: `/${lang}/post/${post.id}`
   }) %>
 
-  <!-- alternateLinks 유지 -->
   <% if (alternateLinks && alternateLinks.length > 0) { %>
     <% alternateLinks.forEach(link => { %>
       <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
@@ -21,13 +18,11 @@
     <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/<%= lang %>/post/<%= post.id %>">
   <% } %>
 
-  <!-- 테스트 카테고리는 noindex -->
   <% const testKeywords = ['테스트', 'test', 'テスト', '测试']; %>
   <% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
     <meta name="robots" content="noindex">
   <% } %>
 
-  <!-- JSON-LD는 유지 (SEO에 필요) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -44,11 +39,26 @@
   }
   </script>
 
-  <!-- 페이지 전용 CSS/스타일 -->
   <style>
+    /* [보안 기능] 드래그 및 선택 방지 CSS */
+    body {
+      -webkit-user-select: none; /* Chrome, Safari, Opera */
+      -moz-user-select: none;    /* Firefox */
+      -ms-user-select: none;     /* IE 10+ */
+      user-select: none;         /* Standard */
+      padding-bottom: 50px;      /* 기존 body 스타일 병합 */
+    }
 
+    /* 이미지 드래그 방지 */
+    img {
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      /* pointer-events: none;  <-- 이미지를 클릭해서 확대하는 기능이 있다면 이 줄은 주석 처리하세요 */
+    }
 
-    /* [추가할 코드 시작] 이미지와 동영상 크기 자동 조절 */
+    /* [기존 스타일 유지] 이미지와 동영상 크기 자동 조절 */
     .post-content img,
     .post-content video {
       max-width: 100%;       /* 부모 영역(화면)을 넘지 않도록 설정 */
@@ -77,8 +87,6 @@
     html.dark .img-caption {
       color: #aaa;
     }
-
-    body { padding-bottom: 50px; }
 
     .post-content a,
     .post-content a:visited {
@@ -148,17 +156,28 @@
     }
 
     img[data-heic-loading] {
-  opacity: 0.4;
-  filter: blur(3px);
-}
+      opacity: 0.4;
+      filter: blur(3px);
+    }
+
+    /* 본문 내 광고 스타일 통합 */
+    .in-article-ad {
+      margin: 24px auto;
+      text-align: center;
+      max-width: 100%;
+    }
+    .in-article-ad ins {
+      display: block;
+      width: 100%;
+    }
   </style>
 </head>
 
-
-<body class="no-fixed-footer">
+<body class="no-fixed-footer" oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
   <amp-auto-ads type="adsense"
         data-ad-client="ca-pub-2585969189290118">
-</amp-auto-ads>
+  </amp-auto-ads>
+  
   <%- include('partials/header') %>
 
   <div class="postview-container">
@@ -172,8 +191,8 @@
     </div>
 
     <div class="tts-wrapper">
-  <button id="ttsBtn" class="tts-btn">🔊 <%= locale.ui.listen || "Listen" %></button>
-</div>
+      <button id="ttsBtn" class="tts-btn">🔊 <%= locale.ui.listen || "Listen" %></button>
+    </div>
 
     <div class="post-content">
       <%- post.content %>
@@ -189,23 +208,22 @@
     <% } %>
 
      <% if (recommended && recommended.length > 0) { %>
-  <div class="recommended-posts">
-    <h2 class="recommended-title">
-      <%= locale.ui.recommendedPosts || "추천 글" %>
-    </h2>
+      <div class="recommended-posts">
+        <h2 class="recommended-title">
+          <%= locale.ui.recommendedPosts || "추천 글" %>
+        </h2>
 
-    <ul class="recommended-list">
-      <% recommended.forEach(item => { %>
-        <li class="recommended-item">
-          <a href="/<%= lang %>/post/<%= item.id %>">
-            <%= item.title %>
-          </a>
-        </li>
-      <% }) %>
-    </ul>
-  </div>
-<% } %>
-
+        <ul class="recommended-list">
+          <% recommended.forEach(item => { %>
+            <li class="recommended-item">
+              <a href="/<%= lang %>/post/<%= item.id %>">
+                <%= item.title %>
+              </a>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
 
     <div class="extra" style="margin-top: 3rem; text-align: center;">
       <a href="/<%= lang %>/" class="back-home-btn">
@@ -215,11 +233,10 @@
   </div>
 
   <div class="floating-toc" id="floatingToc"></div>
-<div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
-<div class="mobile-toc-modal" id="mobileTocModal">
-  <div class="mobile-toc-content" id="mobileTocContent"></div>
-
-</div>
+  <div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
+  <div class="mobile-toc-modal" id="mobileTocModal">
+    <div class="mobile-toc-content" id="mobileTocContent"></div>
+  </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -228,21 +245,21 @@
     const mobileTocBtn = document.getElementById('mobileTocBtn');
     const mobileTocModal = document.getElementById('mobileTocModal');
     const mobileTocContent = document.getElementById('mobileTocContent');
+    
+    // mobileTocCloseBtn이 HTML에 없지만 이벤트 리스너가 있어서 예외 처리
     const mobileTocCloseBtn = document.getElementById('mobileTocCloseBtn');
 
     if (!postContent) return;
 
-    // 1. 목차 생성 및 ID 부여
+    // 목차 생성 함수
     function generateToc() {
       const headings = postContent.querySelectorAll('h1, h2');
       if (headings.length === 0) {
-        // 목차가 없으면 목차 관련 요소 숨기기
         if (floatingToc) floatingToc.style.display = 'none';
         if (mobileTocBtn) mobileTocBtn.style.display = 'none';
         return;
       }
 
-      // 📌 locale에서 목차 버튼 텍스트 가져옴
       let tocHtml = '<strong><%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">';
       let h1Count = 0;
       let h2Count = 0;
@@ -251,19 +268,17 @@
         const tag = heading.tagName.toLowerCase();
         let sectionNumber = '';
         
-        // 기존 ID가 없거나 유효하지 않으면 새로 생성
         if (!heading.id || !heading.id.startsWith('toc-')) {
             heading.id = `toc-${tag}-${index}`;
         }
 
         if (tag === 'h1') {
           h1Count++;
-          h2Count = 0; // Reset h2 count for new h1
+          h2Count = 0; 
           sectionNumber = `${h1Count}.`;
           tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`;
         } else if (tag === 'h2') {
           h2Count++;
-          // H1이 없이 H2가 먼저 나올 경우를 대비 (선택 사항)
           if (h1Count === 0) h1Count = 1; 
           sectionNumber = `${h1Count}.${h2Count}`;
           tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`;
@@ -273,18 +288,18 @@
 
       if (floatingToc) {
         floatingToc.innerHTML = tocHtml;
-        floatingToc.style.display = 'block'; // 목차 내용이 있으면 보이게
+        floatingToc.style.display = 'block'; 
       }
       if (mobileTocContent) {
         mobileTocContent.innerHTML = tocHtml;
-        mobileTocBtn.style.display = 'block'; // 모바일 버튼 보이게
+        mobileTocBtn.style.display = 'block'; 
       }
     }
 
-    // 2. 스크롤 감지 및 플로팅 목차 표시/숨김 (데스크톱용)
+    // 스크롤 감지 (데스크톱)
     function handleScroll() {
-      const scrollThreshold = 300; // 스크롤이 이 값(px) 이상 내려가면 목차 표시
-      if (window.innerWidth > 768) { // 데스크톱에서만 작동하도록 (모바일에서는 버튼이 따로 있으므로)
+      const scrollThreshold = 300; 
+      if (window.innerWidth > 768) { 
         if (window.scrollY > scrollThreshold) {
           if (floatingToc) floatingToc.classList.add('show');
         } else {
@@ -293,7 +308,7 @@
       }
     }
 
-    // 3. 모바일 목차 모달 토글
+    // 모바일 이벤트 리스너
     if (mobileTocBtn) {
       mobileTocBtn.addEventListener('click', function() {
         if (mobileTocModal) mobileTocModal.classList.add('show');
@@ -306,7 +321,6 @@
       });
     }
 
-    // 모바일 목차 링크 클릭 시 모달 닫기
     if (mobileTocContent) {
       mobileTocContent.addEventListener('click', function(event) {
         if (event.target.tagName === 'A' && mobileTocModal) {
@@ -315,90 +329,84 @@
       });
     }
 
-    // 초기 목차 생성
     generateToc();
-    // 스크롤 이벤트 리스너 등록
     window.addEventListener('scroll', handleScroll);
-    // 리사이즈 시에도 스크롤 핸들러 재실행 (데스크톱/모바일 전환 대응)
     window.addEventListener('resize', handleScroll);
   });
 </script>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-  const toc = document.querySelector(".auto-toc");
-  const floatingToc = document.getElementById("floatingToc");
-  const mobileBtn = document.getElementById("mobileTocBtn");
-  const mobileModal = document.getElementById("mobileTocModal");
-  const mobileContent = document.getElementById("mobileTocContent");
+    const toc = document.querySelector(".auto-toc");
+    const floatingToc = document.getElementById("floatingToc");
+    const mobileBtn = document.getElementById("mobileTocBtn");
+    const mobileModal = document.getElementById("mobileTocModal");
+    const mobileContent = document.getElementById("mobileTocContent");
 
-  if (!toc) return;
+    if (!toc) return;
 
-  // 📌 내용 복사 (floating & 모바일 modal)
-  floatingToc.innerHTML = toc.innerHTML;
-  mobileContent.innerHTML = toc.innerHTML;
+    // floatingToc과 mobileContent에 내용 복사
+    if (floatingToc) floatingToc.innerHTML = toc.innerHTML;
+    if (mobileContent) mobileContent.innerHTML = toc.innerHTML;
 
-  // 📱 모바일 팝업 열기
-  mobileBtn.addEventListener("click", () => {
-    mobileModal.style.display = "flex";
-    document.body.classList.add("modal-open");
-  });
-
-  // 📱 모바일 팝업 닫기 (배경 클릭 시)
-  mobileModal.addEventListener("click", (e) => {
-    if (e.target === mobileModal) {
-      mobileModal.style.display = "none";
-      document.body.classList.remove("modal-open");
+    if (mobileBtn) {
+      mobileBtn.addEventListener("click", () => {
+        mobileModal.style.display = "flex";
+        document.body.classList.add("modal-open");
+      });
     }
-  });
 
-  // 📱 모바일 항목 클릭 시 스크롤 & 모달 닫기
-  mobileContent.addEventListener("click", (e) => {
-    if (e.target.tagName === "A") {
-      e.preventDefault();
-      const targetId = e.target.getAttribute("href").replace("#", "");
-      const el = document.getElementById(targetId);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-        mobileModal.style.display = "none";
-        document.body.classList.remove("modal-open");
+    if (mobileModal) {
+      mobileModal.addEventListener("click", (e) => {
+        if (e.target === mobileModal) {
+          mobileModal.style.display = "none";
+          document.body.classList.remove("modal-open");
+        }
+      });
+    }
+
+    if (mobileContent) {
+      mobileContent.addEventListener("click", (e) => {
+        if (e.target.tagName === "A") {
+          e.preventDefault();
+          const targetId = e.target.getAttribute("href").replace("#", "");
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+            mobileModal.style.display = "none";
+            document.body.classList.remove("modal-open");
+          }
+        }
+      });
+    }
+
+    // 센티넬 및 플로팅 제어
+    const topSentinel = document.createElement("div");
+    topSentinel.style.height = "1px";
+    toc.before(topSentinel);
+
+    const bottomSentinel = document.createElement("div");
+    bottomSentinel.style.height = "1px";
+    toc.after(bottomSentinel);
+
+    const checkFloatingToc = () => {
+      const top = topSentinel.getBoundingClientRect().top;
+      const bottom = bottomSentinel.getBoundingClientRect().top;
+      const isTocFullyPassed = top < 0 && bottom < 0;
+
+      if (window.innerWidth <= 768 && isTocFullyPassed) {
+        if (floatingToc) floatingToc.style.display = "none"; 
+        if (mobileBtn) mobileBtn.classList.add("show");
+      } else {
+        if (mobileBtn) mobileBtn.classList.remove("show");
+        if (floatingToc) floatingToc.style.display = isTocFullyPassed ? "block" : "none";
       }
-    }
+    };
+
+    window.addEventListener("scroll", checkFloatingToc);
+    window.addEventListener("resize", checkFloatingToc);
+    checkFloatingToc();
   });
-
-  // 🧷 센티넬 요소 생성 (목차 위/아래 기준점)
-  const topSentinel = document.createElement("div");
-  topSentinel.style.height = "1px";
-  toc.before(topSentinel);
-
-  const bottomSentinel = document.createElement("div");
-  bottomSentinel.style.height = "1px";
-  toc.after(bottomSentinel);
-
-  // 👁️ 스크롤 기준 목차 표시 감지
-  const checkFloatingToc = () => {
-    const top = topSentinel.getBoundingClientRect().top;
-    const bottom = bottomSentinel.getBoundingClientRect().top;
-
-    const isTocFullyPassed = top < 0 && bottom < 0;
-
-      // 모바일 전용
-  if (window.innerWidth <= 768 && isTocFullyPassed) {
-    floatingToc.style.display = "none"; // 모바일에선 floating 숨김
-    mobileBtn.classList.add("show");
-  } else {
-    mobileBtn.classList.remove("show");
-    // 데스크톱에서는 기존 floatingToc 표시/숨김 처리
-    floatingToc.style.display = isTocFullyPassed ? "block" : "none";
-  }
-};
-
-
-  window.addEventListener("scroll", checkFloatingToc);
-  window.addEventListener("resize", checkFloatingToc);
-  checkFloatingToc();
-});
-
 </script>
 
 <script>
@@ -429,30 +437,13 @@
   
       document.addEventListener("mouseup", () => {
         isDragging = false;
-        document.body.style.userSelect = "";
+        // 드래그가 끝나면 본문의 select 차단 스타일이 우선 적용되므로 비워둠
       });
     }
   });
-  </script>
+</script>
   
-  <style>
-    .in-article-ad {
-      margin: 24px auto;
-      text-align: center;
-      max-width: 100%;
-    }
-    .in-article-ad ins {
-      display: block;
-      width: 100%;
-    }
-  </style>
-  
-  <style>
-    .in-article-ad{ margin:24px auto; text-align:center; max-width:100%; }
-    .in-article-ad ins{ display:block; width:100%; }
-  </style>
-  
-  <script>
+<script>
   document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.post-content');
     if (!container) return;
@@ -483,7 +474,7 @@
       try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
     });
   });
-  </script>
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -494,7 +485,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const synth = window.speechSynthesis;
 
   btn.addEventListener("click", () => {
-    // 정지 → 중지
     if (isReading) {
       synth.cancel();
       btn.innerText = "🔊 <%= locale.ui.listen || 'Listen' %>";
@@ -502,10 +492,16 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 읽기 시작
     const text = document.querySelector(".post-content").innerText;
     const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = document.documentElement.lang; // ko, en, fr, zh, ja, es 자동 반영
+    utter.lang = document.documentElement.lang; 
+    
+    // 한국어 목소리 강제 설정 (선택사항)
+    /*
+    const voices = synth.getVoices();
+    const korVoice = voices.find(v => v.lang.includes('ko'));
+    if(korVoice) utter.voice = korVoice;
+    */
 
     synth.speak(utter);
     btn.innerText = "⏹ <%= locale.ui.stop || 'Stop' %>";
@@ -521,22 +517,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script>
-  document.addEventListener("contextmenu", function(e) {
+  // 1. 우클릭 방지 (Context Menu)
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    // alert('우클릭은 사용할 수 없습니다.'); // 필요하면 주석 해제
+  });
+
+  // 2. 드래그 방지 (Drag Start)
+  document.addEventListener('dragstart', function(e) {
     e.preventDefault();
   });
-</script>
 
-<script>
-  document.addEventListener("keydown", function(e) {
-    if ((e.ctrlKey || e.metaKey) && (e.key === "c" || e.key === "C")) {
+  // 3. 선택 방지 (Select Start)
+  document.addEventListener('selectstart', function(e) {
+    e.preventDefault();
+  });
+
+  // 4. 단축키 방지 (Keydown)
+  document.addEventListener('keydown', function(e) {
+    // F12 (개발자 도구)
+    if (e.key === "F12") {
       e.preventDefault();
+      return;
+    }
+
+    // Ctrl (Windows) 또는 Meta (Mac Command) 키와 조합된 경우
+    if (e.ctrlKey || e.metaKey) {
+      const key = e.key.toLowerCase();
+      
+      // 차단할 키 목록
+      // c: 복사, a: 전체선택, s: 저장, u: 소스보기, p: 인쇄, x: 잘라내기
+      if (['c', 'a', 's', 'u', 'p', 'x'].includes(key)) {
+        e.preventDefault();
+        // alert('이 기능은 사용할 수 없습니다.'); // 필요하면 주석 해제
+      }
+
+      // 개발자 도구 (Ctrl+Shift+I 또는 Ctrl+Shift+C 등)
+      if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
+        e.preventDefault();
+      }
     }
   });
 </script>
-
-
-
-
 
 <%- include('partials/scripts') %>
 </body>
