@@ -40,39 +40,41 @@
   </script>
 
   <style>
-    /* [보안 기능] 드래그 및 선택 방지 CSS */
-    body {
-      -webkit-user-select: none; /* Chrome, Safari, Opera */
-      -moz-user-select: none;    /* Firefox */
-      -ms-user-select: none;     /* IE 10+ */
-      user-select: none;         /* Standard */
-      padding-bottom: 50px;      /* 기존 body 스타일 병합 */
+    /* [강력 차단] 모든 요소 드래그 및 선택 방지 (최우선 순위 적용) */
+    *, *:before, *:after {
+      -webkit-user-select: none !important;  /* 크롬, 사파리 */
+      -moz-user-select: none !important;     /* 파이어폭스 */
+      -ms-user-select: none !important;      /* IE */
+      user-select: none !important;          /* 표준 */
+      -webkit-user-drag: none !important;    /* 이미지 드래그 방지 */
     }
 
-    /* 이미지 드래그 방지 */
-    img {
-      -webkit-user-drag: none;
-      -khtml-user-drag: none;
-      -moz-user-drag: none;
-      -o-user-drag: none;
-      /* pointer-events: none;  <-- 이미지를 클릭해서 확대하는 기능이 있다면 이 줄은 주석 처리하세요 */
+    /* 예외: 검색창이나 댓글 입력창, 코드블럭 내부는 글씨를 쓸 수 있어야 할 수도 있음 (필요시 조정) */
+    input, textarea, [contenteditable] {
+      -webkit-user-select: text !important;
+      -moz-user-select: text !important;
+      -ms-user-select: text !important;
+      user-select: text !important;
+      -webkit-user-drag: auto !important; 
+      cursor: auto;
     }
 
-    /* [기존 스타일 유지] 이미지와 동영상 크기 자동 조절 */
+    /* 이미지 스타일 */
     .post-content img,
     .post-content video {
-      max-width: 100%;       /* 부모 영역(화면)을 넘지 않도록 설정 */
-      height: auto;          /* 비율 유지 */
-      display: block;        /* 글자 취급되지 않게 블록 처리 */
-      margin: 0 auto;        /* 가운데 정렬 */
-      border-radius: 8px;    /* 모서리를 살짝 둥글게 (선택사항) */
+      max-width: 100%;       
+      height: auto;          
+      display: block;        
+      margin: 0 auto;        
+      border-radius: 8px;
+      pointer-events: none; /* 이미지 클릭/호버 이벤트 차단 (저장 메뉴 방지) */
     }
 
     /* 이미지/동영상을 감싸는 div(.img-wrap) 스타일 */
     .img-wrap {
       width: 100%;
-      margin: 2rem 0;        /* 위아래 여백 */
-      text-align: center;    /* 내부 요소 가운데 정렬 */
+      margin: 2rem 0;        
+      text-align: center;    
     }
 
     /* 캡션 스타일 */
@@ -83,15 +85,17 @@
       text-align: center;
     }
     
-    /* 다크모드일 때 캡션 색상 변경 */
     html.dark .img-caption {
       color: #aaa;
     }
+
+    body { padding-bottom: 50px; }
 
     .post-content a,
     .post-content a:visited {
       color: #1a73e8 !important;
       text-decoration: underline;
+      cursor: pointer !important; /* 링크 클릭은 가능하게 */
     }
     html.dark .post-content a,
     html.dark .post-content a:visited {
@@ -114,12 +118,10 @@
       border: 1px solid;
       font-size: 1rem;
       letter-spacing: 0.5px;
-    }
-
-    .back-home-btn {
       color: #333;
       background: #f7f7f7;
       border-color: #e0e0e0;
+      cursor: pointer !important;
     }
     .back-home-btn:hover {
       background: #e0e0e0;
@@ -146,7 +148,7 @@
       border-radius: 6px;
       background: var(--panel);
       border: 1px solid var(--accent);
-      cursor: pointer;
+      cursor: pointer !important;
       font-size: 0.9rem;
     }
     html.dark .tts-btn {
@@ -160,7 +162,7 @@
       filter: blur(3px);
     }
 
-    /* 본문 내 광고 스타일 통합 */
+    /* 본문 내 광고 스타일 */
     .in-article-ad {
       margin: 24px auto;
       text-align: center;
@@ -172,6 +174,7 @@
     }
   </style>
 </head>
+
 
 <body class="no-fixed-footer" oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
   <amp-auto-ads type="adsense"
@@ -239,19 +242,87 @@
   </div>
 
 <script>
+  // ==========================================
+  // [보안 기능 강화] 드래그/복사/우클릭 방지 로직
+  // ==========================================
+
+  // 1. 우클릭 완전 차단
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // 2. 드래그 시작 차단 (이미지 등)
+  document.addEventListener('dragstart', function(e) {
+    // 입력창이 아니면 차단
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        return false;
+    }
+  });
+
+  // 3. 텍스트 선택 시작 차단
+  document.addEventListener('selectstart', function(e) {
+    // 입력창이 아니면 차단
+    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        return false;
+    }
+  });
+
+  // 4. (중요) 마우스 버튼을 뗄 때, 혹시라도 잡힌 선택 영역이 있다면 강제로 해제
+  document.addEventListener('mouseup', function() {
+    const selection = window.getSelection();
+    if (selection && selection.toString().length > 0) {
+      // 입력창 내의 선택인지 확인 후 처리해도 되지만, 강력 차단을 위해 일단 해제
+      const active = document.activeElement;
+      if (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA') {
+          selection.removeAllRanges();
+      }
+    }
+  });
+
+  // 5. 키보드 단축키 차단 (복사, 저장, 개발자도구 등)
+  document.addEventListener('keydown', function(e) {
+    // F12 (개발자 도구)
+    if (e.key === "F12") {
+      e.preventDefault();
+      return false;
+    }
+
+    // Ctrl 또는 Meta(Mac Command) 키 조합
+    if (e.ctrlKey || e.metaKey) {
+      const key = e.key.toLowerCase();
+      // c:복사, a:전체선택, s:저장, p:인쇄, u:소스보기, x:잘라내기
+      if (['c', 'a', 's', 'p', 'u', 'x'].includes(key)) {
+        e.preventDefault();
+        return false;
+      }
+      
+      // Ctrl+Shift+I / J / C (개발자 도구)
+      if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
+        e.preventDefault();
+        return false;
+      }
+    }
+  });
+</script>
+
+<script>
+  // ==========================================
+  // 목차(TOC) 생성 및 동작 로직
+  // ==========================================
   document.addEventListener('DOMContentLoaded', function() {
     const postContent = document.querySelector('.post-content');
     const floatingToc = document.getElementById('floatingToc');
     const mobileTocBtn = document.getElementById('mobileTocBtn');
     const mobileTocModal = document.getElementById('mobileTocModal');
     const mobileTocContent = document.getElementById('mobileTocContent');
-    
-    // mobileTocCloseBtn이 HTML에 없지만 이벤트 리스너가 있어서 예외 처리
     const mobileTocCloseBtn = document.getElementById('mobileTocCloseBtn');
 
     if (!postContent) return;
 
-    // 목차 생성 함수
+    // 목차 HTML 생성 함수
     function generateToc() {
       const headings = postContent.querySelectorAll('h1, h2');
       if (headings.length === 0) {
@@ -296,7 +367,7 @@
       }
     }
 
-    // 스크롤 감지 (데스크톱)
+    // 스크롤 시 플로팅 목차 보이기/숨기기 (데스크톱)
     function handleScroll() {
       const scrollThreshold = 300; 
       if (window.innerWidth > 768) { 
@@ -308,7 +379,7 @@
       }
     }
 
-    // 모바일 이벤트 리스너
+    // 모바일 버튼 클릭 이벤트
     if (mobileTocBtn) {
       mobileTocBtn.addEventListener('click', function() {
         if (mobileTocModal) mobileTocModal.classList.add('show');
@@ -321,6 +392,7 @@
       });
     }
 
+    // 모바일 목차 링크 클릭 시 모달 닫기
     if (mobileTocContent) {
       mobileTocContent.addEventListener('click', function(event) {
         if (event.target.tagName === 'A' && mobileTocModal) {
@@ -336,6 +408,9 @@
 </script>
 
 <script>
+  // ==========================================
+  // 모바일 목차 모달 제어 및 센티넬 로직
+  // ==========================================
   document.addEventListener("DOMContentLoaded", () => {
     const toc = document.querySelector(".auto-toc");
     const floatingToc = document.getElementById("floatingToc");
@@ -343,9 +418,9 @@
     const mobileModal = document.getElementById("mobileTocModal");
     const mobileContent = document.getElementById("mobileTocContent");
 
-    if (!toc) return;
+    if (!toc) return; // 본문에 .auto-toc 요소가 없으면 중단
 
-    // floatingToc과 mobileContent에 내용 복사
+    // 내용 복사
     if (floatingToc) floatingToc.innerHTML = toc.innerHTML;
     if (mobileContent) mobileContent.innerHTML = toc.innerHTML;
 
@@ -380,7 +455,7 @@
       });
     }
 
-    // 센티넬 및 플로팅 제어
+    // 센티넬 생성 (목차 위치 감지용)
     const topSentinel = document.createElement("div");
     topSentinel.style.height = "1px";
     toc.before(topSentinel);
@@ -410,6 +485,9 @@
 </script>
 
 <script>
+  // ==========================================
+  // 플로팅 목차 드래그 이동 (데스크톱)
+  // ==========================================
   document.addEventListener("DOMContentLoaded", () => {
     const floatingToc = document.getElementById("floatingToc");
   
@@ -419,13 +497,14 @@
       let offsetY = 0;
   
       floatingToc.style.position = "fixed";
+      // 커서는 move로 설정하되, !important CSS 때문에 드래그가 씹힐 수 있음.
+      // 필요시 JS로 style을 직접 주입
       floatingToc.style.cursor = "move";
   
       floatingToc.addEventListener("mousedown", (e) => {
         isDragging = true;
         offsetX = e.clientX - floatingToc.getBoundingClientRect().left;
         offsetY = e.clientY - floatingToc.getBoundingClientRect().top;
-        document.body.style.userSelect = "none";
       });
   
       document.addEventListener("mousemove", (e) => {
@@ -437,13 +516,15 @@
   
       document.addEventListener("mouseup", () => {
         isDragging = false;
-        // 드래그가 끝나면 본문의 select 차단 스타일이 우선 적용되므로 비워둠
       });
     }
   });
 </script>
   
 <script>
+  // ==========================================
+  // 본문 내 광고 자동 삽입
+  // ==========================================
   document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.post-content');
     if (!container) return;
@@ -477,6 +558,9 @@
 </script>
 
 <script>
+// ==========================================
+// TTS (음성 듣기) 기능
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("ttsBtn");
   if (!btn) return;
@@ -495,13 +579,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = document.querySelector(".post-content").innerText;
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = document.documentElement.lang; 
-    
-    // 한국어 목소리 강제 설정 (선택사항)
-    /*
-    const voices = synth.getVoices();
-    const korVoice = voices.find(v => v.lang.includes('ko'));
-    if(korVoice) utter.voice = korVoice;
-    */
 
     synth.speak(utter);
     btn.innerText = "⏹ <%= locale.ui.stop || 'Stop' %>";
@@ -513,51 +590,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   });
 });
-</script>
-
-
-<script>
-  // 1. 우클릭 방지 (Context Menu)
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    // alert('우클릭은 사용할 수 없습니다.'); // 필요하면 주석 해제
-  });
-
-  // 2. 드래그 방지 (Drag Start)
-  document.addEventListener('dragstart', function(e) {
-    e.preventDefault();
-  });
-
-  // 3. 선택 방지 (Select Start)
-  document.addEventListener('selectstart', function(e) {
-    e.preventDefault();
-  });
-
-  // 4. 단축키 방지 (Keydown)
-  document.addEventListener('keydown', function(e) {
-    // F12 (개발자 도구)
-    if (e.key === "F12") {
-      e.preventDefault();
-      return;
-    }
-
-    // Ctrl (Windows) 또는 Meta (Mac Command) 키와 조합된 경우
-    if (e.ctrlKey || e.metaKey) {
-      const key = e.key.toLowerCase();
-      
-      // 차단할 키 목록
-      // c: 복사, a: 전체선택, s: 저장, u: 소스보기, p: 인쇄, x: 잘라내기
-      if (['c', 'a', 's', 'u', 'p', 'x'].includes(key)) {
-        e.preventDefault();
-        // alert('이 기능은 사용할 수 없습니다.'); // 필요하면 주석 해제
-      }
-
-      // 개발자 도구 (Ctrl+Shift+I 또는 Ctrl+Shift+C 등)
-      if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
-        e.preventDefault();
-      }
-    }
-  });
 </script>
 
 <%- include('partials/scripts') %>
