@@ -41,11 +41,14 @@
 
   <style>
 
-    /* 플로팅 목차를 완전 read-only 전시용으로 전환 */
+
+/* ---- 플로팅 목차만 드래그 가능하도록 예외 처리 ---- */
 #floatingToc, #floatingToc * {
-  pointer-events: none !important;
-  -webkit-user-select: none !important;
-  user-select: none !important;
+  pointer-events: auto !important;
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+  -webkit-user-drag: auto !important;
+  cursor: move !important;
 }
     /* [강력 차단] 모든 요소 드래그 및 선택 방지 (최우선 순위 적용) */
     *, *:before, *:after {
