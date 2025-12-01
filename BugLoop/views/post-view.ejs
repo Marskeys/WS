@@ -40,6 +40,14 @@
   </script>
 
   <style>
+
+    /* 플로팅 목차를 완전 read-only 전시용으로 전환 */
+#floatingToc, #floatingToc * {
+  pointer-events: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
     /* [강력 차단] 모든 요소 드래그 및 선택 방지 (최우선 순위 적용) */
     *, *:before, *:after {
       -webkit-user-select: none !important;  /* 크롬, 사파리 */
@@ -484,42 +492,7 @@
   });
 </script>
 
-<script>
-  // ==========================================
-  // 플로팅 목차 드래그 이동 (데스크톱)
-  // ==========================================
-  document.addEventListener("DOMContentLoaded", () => {
-    const floatingToc = document.getElementById("floatingToc");
-  
-    if (window.innerWidth > 768 && floatingToc) {
-      let isDragging = false;
-      let offsetX = 0;
-      let offsetY = 0;
-  
-      floatingToc.style.position = "fixed";
-      // 커서는 move로 설정하되, !important CSS 때문에 드래그가 씹힐 수 있음.
-      // 필요시 JS로 style을 직접 주입
-      floatingToc.style.cursor = "move";
-  
-      floatingToc.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        offsetX = e.clientX - floatingToc.getBoundingClientRect().left;
-        offsetY = e.clientY - floatingToc.getBoundingClientRect().top;
-      });
-  
-      document.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-          floatingToc.style.left = e.clientX - offsetX + "px";
-          floatingToc.style.top = e.clientY - offsetY + "px";
-        }
-      });
-  
-      document.addEventListener("mouseup", () => {
-        isDragging = false;
-      });
-    }
-  });
-</script>
+
   
 <script>
   // ==========================================
