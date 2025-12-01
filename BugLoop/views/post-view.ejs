@@ -521,41 +521,47 @@ document.addEventListener("DOMContentLoaded", () => {
 <script src="https://unpkg.com/heic2any/dist/heic2any.min.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const imgs = document.querySelectorAll(".bl-content img, img");
+async function convertHeic(img) {
+  const src = img.getAttribute("src") || "";
+  if (!src.toLowerCase().endsWith(".heic")) return;
 
-  imgs.forEach(async (img) => {
-    const src = img.getAttribute("src") || "";
+  try {
+    img.setAttribute("data-heic-loading", "true");
 
-    if (src.toLowerCase().endsWith(".heic")) {
-      try {
-        // 변환 중 스타일 적용 (희미하게)
-        img.setAttribute("data-heic-loading", "true");
+    const blob = await fetch(src).then(r => r.blob());
+    const convertedBlob = await heic2any({
+      blob: blob,
+      toType: "image/jpeg",
+      quality: 0.9
+    });
 
-        // HEIC 파일을 blob으로 가져오기
-        const blob = await fetch(src).then(r => r.blob());
+    img.src = URL.createObjectURL(convertedBlob);
+    img.removeAttribute("data-heic-loading");
 
-        // JPG로 변환
-        const convertedBlob = await heic2any({
-          blob: blob,
-          toType: "image/jpeg",
-          quality: 0.9
-        });
+  } catch (e) {
+    console.error("HEIC 변환 실패:", e);
+    img.removeAttribute("data-heic-loading");
+  }
+}
 
-        // 변환된 이미지 표시 ⭐ 여기!!
-        img.src = URL.createObjectURL(convertedBlob);
+function scanAllImages() {
+  document.querySelectorAll("img").forEach(img => convertHeic(img));
+}
 
-        // 변환 끝 → 스타일 제거
-        img.removeAttribute("data-heic-loading");
+// 처음 로드 시 전체 이미지 변환
+document.addEventListener("DOMContentLoaded", scanAllImages);
 
-      } catch (e) {
-        console.error("HEIC 변환 실패:", e);
-        img.removeAttribute("data-heic-loading");
-      }
-    }
-  });
+// 이후 동적으로 추가되는 이미지도 잡기
+const observer = new MutationObserver(() => {
+  scanAllImages();
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
 });
 </script>
+
 
 
 <%- include('partials/scripts') %>
