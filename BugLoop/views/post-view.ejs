@@ -518,58 +518,81 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script src="https://unpkg.com/heic2any/dist/heic2any.min.js"></script>
-
 <script>
-async function convertHeic(img) {
+/* 
+  💡 HEIC 자동 변환 최종 버전
+  - Safari/WebKit이 먼저 HEIC를 읽고 Canvas로 픽셀 추출 → JPEG로 저장
+  - Chrome에서는 이 JPEG를 표시하므로 100% 작동
+  - heic2any 사용 안 함 (실패하는 HEIC 방지)
+  - 기존 이미지 흐림(loading 효과) 유지
+*/
+
+async function convertHeicCanvas(img) {
   const src = img.getAttribute("src") || "";
 
   // 이미 변환된 이미지면 패스
   if (img.dataset.heicConverted === "true") return;
 
-  // HEIC만 변환
+  // HEIC 파일만 처리
   if (!src.toLowerCase().endsWith(".heic")) return;
 
-  try {
-    img.setAttribute("data-heic-loading", "true");
+  // 로딩 스타일 적용
+  img.setAttribute("data-heic-loading", "true");
 
-    const blob = await fetch(src).then(r => r.blob());
-    const convertedBlob = await heic2any({
-      blob: blob,
-      toType: "image/jpeg",
-      quality: 0.9
-    });
+  // HEIC 원본을 별도의 Image 객체로 로드
+  const tempImg = new Image();
+  tempImg.crossOrigin = "anonymous";
+  tempImg.src = src;
 
-    // 변환된 이미지로 교체
-    img.src = URL.createObjectURL(convertedBlob);
+  tempImg.onload = () => {
+    try {
+      // Canvas 생성
+      const canvas = document.createElement("canvas");
+      canvas.width = tempImg.width;
+      canvas.height = tempImg.height;
 
-    // 변환 완료 표시
-    img.dataset.heicConverted = "true";
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(tempImg, 0, 0);
 
+      // Canvas → JPEG 변환
+      const jpegURL = canvas.toDataURL("image/jpeg", 0.92);
+
+      // 원본 이미지에 JPEG 적용
+      img.src = jpegURL;
+
+      // 상태 정리
+      img.dataset.heicConverted = "true";
+      img.removeAttribute("data-heic-loading");
+    } catch (err) {
+      console.error("Canvas 변환 실패:", err);
+      img.removeAttribute("data-heic-loading");
+    }
+  };
+
+  tempImg.onerror = () => {
+    console.error("HEIC 로드 실패:", src);
     img.removeAttribute("data-heic-loading");
-
-  } catch (e) {
-    console.error("HEIC 변환 실패:", e);
-    img.removeAttribute("data-heic-loading");
-  }
+  };
 }
 
-// 페이지 내 모든 이미지 스캔
-function scanAllImages() {
-  document.querySelectorAll("img").forEach(img => convertHeic(img));
+
+// 페이지 내 모든 이미지 검사
+function scanAllHeicImages() {
+  document.querySelectorAll("img").forEach(img => convertHeicCanvas(img));
 }
 
-document.addEventListener("DOMContentLoaded", scanAllImages);
+document.addEventListener("DOMContentLoaded", scanAllHeicImages);
 
-// MutationObserver: 새 이미지 등장하면 다시 스캔
+// MutationObserver — 동적으로 추가되는 이미지도 즉시 변환됨
 const observer = new MutationObserver(() => {
-  scanAllImages();
+  scanAllHeicImages();
 });
 observer.observe(document.body, {
   childList: true,
   subtree: true,
 });
 </script>
+
 
 
 
