@@ -518,79 +518,63 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script src="https://unpkg.com/libheif-js/dist/libheif.js"></script>
+
 <script>
-/* 
-  💡 HEIC 자동 변환 최종 버전
-  - Safari/WebKit이 먼저 HEIC를 읽고 Canvas로 픽셀 추출 → JPEG로 저장
-  - Chrome에서는 이 JPEG를 표시하므로 100% 작동
-  - heic2any 사용 안 함 (실패하는 HEIC 방지)
-  - 기존 이미지 흐림(loading 효과) 유지
-*/
-
-async function convertHeicCanvas(img) {
+// 브라우저에서 HEIC → JPEG 디코딩
+async function convertHeicForce(img) {
   const src = img.getAttribute("src") || "";
-
-  // 이미 변환된 이미지면 패스
+  if (!src.toLowerCase().endsWith(".heic")) return;
   if (img.dataset.heicConverted === "true") return;
 
-  // HEIC 파일만 처리
-  if (!src.toLowerCase().endsWith(".heic")) return;
-
-  // 로딩 스타일 적용
   img.setAttribute("data-heic-loading", "true");
 
-  // HEIC 원본을 별도의 Image 객체로 로드
-  const tempImg = new Image();
-  tempImg.crossOrigin = "anonymous";
-  tempImg.src = src;
+  try {
+    // HEIC 파일 fetch
+    const arrayBuffer = await fetch(src).then(r => r.arrayBuffer());
+    const heif = await libheif.readHeif(arrayBuffer);
+    const image = heif.getImage(0);
 
-  tempImg.onload = () => {
-    try {
-      // Canvas 생성
-      const canvas = document.createElement("canvas");
-      canvas.width = tempImg.width;
-      canvas.height = tempImg.height;
+    const width = image.getWidth();
+    const height = image.getHeight();
 
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(tempImg, 0, 0);
+    const data = image.getRGBAImage(); // RGBA 픽셀 추출
 
-      // Canvas → JPEG 변환
-      const jpegURL = canvas.toDataURL("image/jpeg", 0.92);
+    // Canvas 생성
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
 
-      // 원본 이미지에 JPEG 적용
-      img.src = jpegURL;
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx.createImageData(width, height);
 
-      // 상태 정리
-      img.dataset.heicConverted = "true";
-      img.removeAttribute("data-heic-loading");
-    } catch (err) {
-      console.error("Canvas 변환 실패:", err);
-      img.removeAttribute("data-heic-loading");
-    }
-  };
+    imageData.data.set(data);
+    ctx.putImageData(imageData, 0, 0);
 
-  tempImg.onerror = () => {
-    console.error("HEIC 로드 실패:", src);
-    img.removeAttribute("data-heic-loading");
-  };
+    // JPEG로 변환
+    const jpegURL = canvas.toDataURL("image/jpeg", 0.92);
+
+    img.src = jpegURL;
+    img.dataset.heicConverted = "true";
+
+  } catch (err) {
+    console.error("🔥 HEIC 디코딩 완전 실패:", src, err);
+  }
+
+  img.removeAttribute("data-heic-loading");
 }
 
 
-// 페이지 내 모든 이미지 검사
-function scanAllHeicImages() {
-  document.querySelectorAll("img").forEach(img => convertHeicCanvas(img));
+// 모든 이미지 스캔
+function scanAllHeic() {
+  document.querySelectorAll("img").forEach(img => convertHeicForce(img));
 }
 
-document.addEventListener("DOMContentLoaded", scanAllHeicImages);
+document.addEventListener("DOMContentLoaded", scanAllHeic);
 
-// MutationObserver — 동적으로 추가되는 이미지도 즉시 변환됨
-const observer = new MutationObserver(() => {
-  scanAllHeicImages();
-});
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-});
+// DOM 변화감지 → 추가된 이미지 자동 변환
+const observer = new MutationObserver(scanAllHeic);
+observer.observe(document.body, { childList: true, subtree: true });
 </script>
 
 
