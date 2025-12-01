@@ -47,13 +47,6 @@
   <!-- 페이지 전용 CSS/스타일 -->
   <style>
 
-.post-content,
-.post-content * {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
-}
 
     /* [추가할 코드 시작] 이미지와 동영상 크기 자동 조절 */
     .post-content img,
@@ -424,6 +417,7 @@
         isDragging = true;
         offsetX = e.clientX - floatingToc.getBoundingClientRect().left;
         offsetY = e.clientY - floatingToc.getBoundingClientRect().top;
+        document.body.style.userSelect = "none";
       });
   
       document.addEventListener("mousemove", (e) => {
@@ -435,6 +429,7 @@
   
       document.addEventListener("mouseup", () => {
         isDragging = false;
+        document.body.style.userSelect = "";
       });
     }
   });
