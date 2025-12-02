@@ -77,8 +77,16 @@
       display: block;        
       margin: 0 auto;        
       border-radius: 8px;
-      pointer-events: none; /* 이미지 클릭/호버 이벤트 차단 (저장 메뉴 방지) */
+  
     }
+
+    .post-content img {
+  pointer-events: none;
+}
+
+.post-content video {
+  pointer-events: auto; /* 영상은 클릭 가능해야 함 */
+}
 
     /* 이미지/동영상을 감싸는 div(.img-wrap) 스타일 */
     .img-wrap {
