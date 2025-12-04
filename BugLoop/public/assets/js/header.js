@@ -961,3 +961,24 @@
     });
   })();
 })();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
+
+  // ✏️ 글쓰기 페이지일 때만 광고 숨기기
+  if (path === '/ko/write') {
+    // 너가 실제로 쓰는 광고 영역 셀렉터로 바꿔줘
+    const adSelectors = [
+      '.adsbygoogle',
+      '.bl-ad-slot',
+      '#top-ad',
+      '#bottom-ad'
+    ];
+
+    adSelectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.style.display = 'none';
+      });
+    });
+  }
+});
