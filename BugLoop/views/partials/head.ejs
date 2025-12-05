@@ -1,3 +1,28 @@
+<!-- ⭐ 다크모드 초기화 -->
+<script>
+  (function () {
+    try {
+      const THEME_KEY = 'bugloop.theme';
+      const htmlEl = document.documentElement;
+      const saved = localStorage.getItem(THEME_KEY);
+      let theme;
+
+      if (saved) {
+        theme = saved;
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        theme = prefersDark ? 'dark' : 'light';
+      }
+      
+      if (theme === 'dark') htmlEl.classList.add('dark');
+      else htmlEl.classList.remove('dark');
+      
+    } catch (e) {
+      console.warn("Theme initialization failed:", e);
+    }
+  })();
+</script>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="naver-site-verification" content="ddddc68fd5651c62d2758ed86b326cc802344e3d" />
@@ -93,30 +118,7 @@
 <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
 <link rel="preload" href="/assets/images/room.webp" as="image" type="image/webp" />
 
-<!-- ⭐ 다크모드 초기화 -->
-<script>
-  (function () {
-    try {
-      const THEME_KEY = 'bugloop.theme';
-      const htmlEl = document.documentElement;
-      const saved = localStorage.getItem(THEME_KEY);
-      let theme;
 
-      if (saved) {
-        theme = saved;
-      } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        theme = prefersDark ? 'dark' : 'light';
-      }
-      
-      if (theme === 'dark') htmlEl.classList.add('dark');
-      else htmlEl.classList.remove('dark');
-      
-    } catch (e) {
-      console.warn("Theme initialization failed:", e);
-    }
-  })();
-</script>
 
 <!-- ⭐ 광고 스크립트 (에디터에서는 제외) -->
 <% if (!isEditorPage) { %>
