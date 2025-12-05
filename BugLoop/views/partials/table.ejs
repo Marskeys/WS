@@ -53,13 +53,11 @@
               const updatedAt = new Date(post.updated_at);
               const oneDay = 1000 * 60 * 60 * 24;
               
-              // ✅ 로직 정의
               const isNewPost = (now - createdAt) < oneDay;
               const wasEdited = updatedAt > createdAt;
               const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
               const showEditedLabel = !isNewPost && isRecentlyEdited;
 
-              // ✅ 다국어 라벨 텍스트 정의 (폴백 포함)
               const newLabelText = locale.ui.newPost || 'NEW';
               const editedLabelText = locale.ui.editedPost || 'UPDATED';
             %>
@@ -71,7 +69,10 @@
             <% } %>
   
             <% if (post.is_pinned) { %><span>📌</span><% } %>
-            <%= post.title %><% if (post.is_private) { %> <i class="fas fa-lock"></i><% } %>
+
+            <% if (post.is_private) { %>🔒 <% } %>
+            <%= post.title %>
+
           </a>
   
           <% if (user && user.id === post.user_id) { %>
@@ -87,6 +88,7 @@
             </div>
           <% } %>
         </div>
+
         <div class="post-info">
           <%= post.author %> |
           <%= post.created_at.toISOString().slice(0, 10) %> |
