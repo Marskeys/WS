@@ -9,22 +9,23 @@
 </title>
 
 <%
-  // ⭐ 1) 페이지에서 metaDescription을 넘기면 그것을 최우선 사용
-  //     (post-view에서 summary 전달하면 이 값이 들어옴)
+  /* ========================
+     ⭐ 페이지 설명 구성
+     ======================== */
   const pageDesc = (typeof metaDescription === 'string' && metaDescription.trim())
       ? metaDescription.trim()
       : '';
 
-  // ⭐ 2) 페이지 desc 없을 때만 locale 기본값 사용
   const fallbackDesc =
       locale?.meta?.description ||
       "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!";
 
-  // ⭐ 3) 최종 DESC 선택
   const rawDesc = pageDesc || fallbackDesc;
   const DESC = rawDesc.length > 160 ? (rawDesc.slice(0,157) + '…') : rawDesc;
 
-  // ===== Canonical / OG helpers =====
+  /* ========================
+     ⭐ Canonical / OG helpers
+     ======================== */
   const SITE_ORIGIN = 'https://bugloop.dev';
   const path = (typeof currentPath === 'string' && currentPath) ? currentPath : '/';
   const canonicalUrl = (typeof canonical === 'string' && canonical.trim()) ? canonical.trim() : (SITE_ORIGIN + path);
@@ -35,9 +36,18 @@
     (typeof metaTitle === 'string' && metaTitle.trim())
       ? metaTitle.trim()
       : (locale?.meta?.title || 'Bug Loop');
+
+  /* ========================
+     ⭐ 에디터 페이지 여부 판단
+     ======================== */
+  const isEditorPage =
+      currentPath?.includes('/write') ||
+      currentPath?.includes('/edit') ||
+      currentPath?.includes('/ko/write') ||
+      currentPath?.includes('/en/write');
 %>
 
-<!-- ⭐ Description (중복 없음, 단 1개!) -->
+<!-- ⭐ Description -->
 <meta name="description" content="<%= DESC %>" />
 
 <!-- ⭐ OG / Twitter -->
@@ -55,35 +65,35 @@
 
 <link rel="canonical" href="<%= canonicalUrl %>" />
 
+<!-- ⭐ Theme color -->
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
 
 <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128" />
 
+<!-- ⭐ Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR&display=swap" rel="stylesheet" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@100..900&display=swap" rel="stylesheet" />
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" as="style" crossorigin
+<link rel="stylesheet" crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 
+<!-- ⭐ Global CSS -->
 <link rel="stylesheet" href="/assets/css/header.css" />
 <link rel="stylesheet" href="/assets/css/style.css" />
 <link rel="stylesheet" href="/assets/css/table.css" />
-<link rel="stylesheet" href="/assets/css/darkmode.css" />
+<link rel="stylesheet" href="/assets/css/darkmode.js.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
 
-<script async custom-element="amp-auto-ads"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
-
+<!-- ⭐ 이미지 프리로드 -->
 <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
 <link rel="preload" href="/assets/images/room.webp" as="image" type="image/webp" />
 
+<!-- ⭐ 다크모드 초기화 -->
 <script>
   (function () {
     try {
@@ -108,5 +118,17 @@
   })();
 </script>
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118" crossorigin="anonymous"></script>
+<!-- ⭐ 광고 스크립트 (에디터에서는 제외) -->
+<% if (!isEditorPage) { %>
+  <!-- AMP 자동 광고 -->
+  <script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+
+  <!-- Google AdSense 자동 광고 -->
+  <script async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
+          crossorigin="anonymous"></script>
+<% } %>
+
+<!-- HTML Beautifier -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
