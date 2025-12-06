@@ -13,17 +13,23 @@ const book = {
 
 let currentContent = [];
 
+// HTML → 내부 구조로 변환
 rawElements.forEach(el => {
   const tagName = el.tagName.toLowerCase();
 
   if (tagName.startsWith('h')) {
+
+    // 이전 body 저장
     if (currentContent.length > 0) {
       book.sections.push({ type: 'body', content: currentContent.join('\n\n') });
       currentContent = [];
     }
 
+    // h1 = chapter 제목
     if (tagName === 'h1' && !book.chapterTitle) {
       book.chapterTitle = el.textContent.trim();
+
+    // h2~h4 = subtitle
     } else if (tagName === 'h2' || tagName === 'h3' || tagName === 'h4') {
       book.sections.push({
         type: 'subtitle',
@@ -31,15 +37,18 @@ rawElements.forEach(el => {
         level: parseInt(tagName.substring(1))
       });
     }
+
   } else if (tagName === 'p' || tagName === 'ul' || tagName === 'ol') {
     currentContent.push(el.textContent.trim());
   }
 });
 
+// 마지막 body 처리
 if (currentContent.length > 0) {
   book.sections.push({ type: 'body', content: currentContent.join('\n\n') });
 }
 
+// 기존 HTML 제거 → JS 렌더링만 사용
 pageTextEl.innerHTML = '';
 
 
@@ -55,10 +64,16 @@ function wrapContentInParagraphs(content) {
 }
 
 book.sections.forEach((section, index) => {
+
   if (section.type === 'subtitle') {
-    const nextBodyIndex = book.sections.findIndex((s, i) => i > index && s.type === 'body');
+
+    const nextBodyIndex = book.sections.findIndex(
+      (s, i) => i > index && s.type === 'body'
+    );
+
     if (nextBodyIndex !== -1) {
       const nextBody = book.sections[nextBodyIndex];
+
       const estimatedTitleLength = 50;
       const firstChunk = nextBody.content.slice(0, charsPerPage - estimatedTitleLength);
 
@@ -70,17 +85,29 @@ book.sections.forEach((section, index) => {
       });
 
       const remainingContent = nextBody.content.slice(firstChunk.length);
+
       for (let i = 0; i < remainingContent.length; i += charsPerPage) {
-        pages.push({ type: 'body', content: remainingContent.slice(i, i + charsPerPage) });
+        pages.push({
+          type: 'body',
+          content: remainingContent.slice(i, i + charsPerPage)
+        });
       }
+
       nextBody.processed = true;
+
     } else {
       pages.push({ type: 'subtitle', content: section.title });
     }
+
   } else if (section.type === 'body' && !section.processed) {
+
     for (let i = 0; i < section.content.length; i += charsPerPage) {
-      pages.push({ type: 'body', content: section.content.slice(i, i + charsPerPage) });
+      pages.push({
+        type: 'body',
+        content: section.content.slice(i, i + charsPerPage)
+      });
     }
+
   }
 });
 
@@ -103,7 +130,7 @@ const darkModeLabel = document.getElementById("darkModeLabel");
 // ===============================
 // Dark Mode
 // ===============================
-const STORAGE_KEY = 'bugloop.theme';
+const STORAGE_KEY = "bugloop.theme";
 
 function setDarkMode(isDark) {
   const darkText = darkModeToggle.dataset.dark;
@@ -113,21 +140,20 @@ function setDarkMode(isDark) {
     root.classList.add("dark");
     darkModeIcon.classList.replace("fa-moon", "fa-sun");
     darkModeLabel.innerText = lightText;
-    localStorage.setItem(STORAGE_KEY, 'dark');
+    localStorage.setItem(STORAGE_KEY, "dark");
   } else {
     root.classList.remove("dark");
     darkModeIcon.classList.replace("fa-sun", "fa-moon");
     darkModeLabel.innerText = darkText;
-    localStorage.setItem(STORAGE_KEY, 'light');
+    localStorage.setItem(STORAGE_KEY, "light");
   }
 }
 
 function loadTheme() {
-  const savedTheme = localStorage.getItem(STORAGE_KEY);
-  if (savedTheme) {
-    setDarkMode(savedTheme === 'dark');
-  } else {
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) setDarkMode(saved === "dark");
+  else {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDarkMode(prefersDark);
   }
 }
@@ -136,20 +162,37 @@ loadTheme();
 
 
 // ===============================
-// 페이지 렌더링
+// ⭐ 페이지 렌더링 (여기 수정됨: 첫 페이지 subtitle 포함)
 // ===============================
 function renderPage() {
   const pageData = pages[currentPage];
-  let content = '';
+  let content = "";
 
   if (currentPage === 0) {
-    content = `<h1>${book.chapterTitle}</h1>${wrapContentInParagraphs(pageData.content)}`;
-  } else if (pageData.type === 'subtitle-with-body') {
+    // 첫 subtitle 가져오기
+    const firstSubtitle = book.sections.find(s => s.type === "subtitle");
+
+    const subtitleHTML = firstSubtitle
+      ? `<h2 class="sub-chapter-title">${firstSubtitle.title}</h2>`
+      : "";
+
+    content =
+      `<h1>${book.chapterTitle}</h1>` +
+      subtitleHTML +
+      wrapContentInParagraphs(pageData.content);
+
+  } else if (pageData.type === "subtitle-with-body") {
+
     const HeadingTag = `h${pageData.level || 2}`;
-    content = `<${HeadingTag} class="sub-chapter-title">${pageData.subtitle}</${HeadingTag}>${wrapContentInParagraphs(pageData.content)}`;
-  } else if (pageData.type === 'subtitle') {
+    content =
+      `<${HeadingTag} class="sub-chapter-title">${pageData.subtitle}</${HeadingTag}>` +
+      wrapContentInParagraphs(pageData.content);
+
+  } else if (pageData.type === "subtitle") {
+
     const HeadingTag = `h${pageData.level || 2}`;
     content = `<${HeadingTag} class="sub-chapter-title">${pageData.content}</${HeadingTag}>`;
+
   } else {
     content = wrapContentInParagraphs(pageData.content);
   }
@@ -164,14 +207,14 @@ function renderPage() {
 // 목차 렌더링
 // ===============================
 function renderLocalTOC() {
-  tocList.innerHTML = '';
+  tocList.innerHTML = "";
 
   tocList.innerHTML += `<li onclick="goTo(0)" class="toc-chapter">${book.chapterTitle} (p.1)</li>`;
 
   book.sections.forEach(section => {
-    if (section.type === 'subtitle') {
+    if (section.type === "subtitle") {
       const idx = pages.findIndex(
-        p => p.type === 'subtitle-with-body' && p.subtitle === section.title
+        p => p.type === "subtitle-with-body" && p.subtitle === section.title
       );
       if (idx !== -1) {
         const levelClass = `toc-level-${section.level || 2}`;
@@ -181,8 +224,12 @@ function renderLocalTOC() {
   });
 }
 
+
+// ===============================
+// 전체 책 기반 TOC 렌더링
+// ===============================
 function renderBookTOC() {
-  tocList.innerHTML = '';
+  tocList.innerHTML = "";
 
   const books = window.BUGLOOP_BOOKS;
   const bookId = window.BUGLOOP_BOOK_ID;
@@ -198,30 +245,25 @@ function renderBookTOC() {
   const basePath = `/${lang}/books/${bookId}/contents/`;
 
   bookData.toc.forEach(section => {
-    // 섹션 제목
-    const sectionLi = document.createElement('li');
+    const sectionLi = document.createElement("li");
     sectionLi.textContent = section.section;
-    sectionLi.className = 'toc-section';
+    sectionLi.className = "toc-section";
     tocList.appendChild(sectionLi);
 
-    // 섹션 내부 챕터 그룹 래퍼
-    const group = document.createElement('ul');
-    group.className = 'toc-chapter-group';
+    const group = document.createElement("ul");
+    group.className = "toc-chapter-group";
     tocList.appendChild(group);
 
     section.chapters.forEach(ch => {
-      const li = document.createElement('li');
-      li.className = 'toc-chapter';
+      const li = document.createElement("li");
+      li.className = "toc-chapter";
       li.textContent = ch.title;
 
-      if (ch.id === currentChapterId) {
-        li.classList.add('current-chapter');
-      }
+      if (ch.id === currentChapterId) li.classList.add("current-chapter");
 
-      li.addEventListener('click', () => {
-        if (ch.id === currentChapterId) {
-          goTo(0);
-        } else if (ch.url && ch.url.trim() !== '') {
+      li.addEventListener("click", () => {
+        if (ch.id === currentChapterId) goTo(0);
+        else if (ch.url && ch.url.trim() !== "") {
           window.location.href = basePath + ch.url.trim();
         }
       });
@@ -232,11 +274,8 @@ function renderBookTOC() {
 }
 
 function renderTOC() {
-  if (window.BUGLOOP_BOOKS && window.BUGLOOP_BOOK_ID) {
-    renderBookTOC();
-  } else {
-    renderLocalTOC();
-  }
+  if (window.BUGLOOP_BOOKS && window.BUGLOOP_BOOK_ID) renderBookTOC();
+  else renderLocalTOC();
 }
 
 function goTo(i) {
@@ -281,31 +320,37 @@ darkModeToggle.onclick = () => setDarkMode(!root.classList.contains("dark"));
 let touchStartX = 0;
 let touchEndX = 0;
 
-document.body.addEventListener("touchstart", (e) => {
-  touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
+document.body.addEventListener(
+  "touchstart",
+  e => {
+    touchStartX = e.changedTouches[0].screenX;
+  },
+  { passive: true }
+);
 
-document.body.addEventListener("touchend", (e) => {
-  touchEndX = e.changedTouches[0].screenX;
-  const deltaX = touchStartX - touchEndX;
+document.body.addEventListener(
+  "touchend",
+  e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const deltaX = touchStartX - touchEndX;
 
-  if (deltaX > 50 && currentPage < pages.length - 1) {
-    currentPage++;
-    renderPage();
-  } else if (deltaX < -50 && currentPage > 0) {
-    currentPage--;
-    renderPage();
-  }
-}, { passive: true });
+    if (deltaX > 50 && currentPage < pages.length - 1) {
+      currentPage++;
+      renderPage();
+    } else if (deltaX < -50 && currentPage > 0) {
+      currentPage--;
+      renderPage();
+    }
+  },
+  { passive: true }
+);
 
 
 // ===============================
 // 헤더 제목
 // ===============================
-const headerTitleEl = document.querySelector('.header-title');
-if (headerTitleEl) {
-  headerTitleEl.innerText = book.chapterTitle;
-}
+const headerTitleEl = document.querySelector(".header-title");
+if (headerTitleEl) headerTitleEl.innerText = book.chapterTitle;
 
 
 // ===============================
@@ -316,7 +361,7 @@ renderPage();
 
 
 // ===============================
-// ⭐⭐⭐ TOC 아코디언 동작 추가 ⭐⭐⭐
+// ⭐⭐⭐ 아코디언 TOC
 // ===============================
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll(".toc-section");
