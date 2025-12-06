@@ -194,54 +194,61 @@
           overflow: hidden; 
       }
 
-
+      /* ---------------------------------------------------- */
+      /* 🎯 [핵심 수정] 이미지 래퍼의 높이 제어 및 사라짐 효과 */
+      /* ---------------------------------------------------- */
       .book-cover-wrapper {
           overflow: hidden;
-          /* 기본 상태: 상단 모서리만 둥글게 (--radius) */
           border-radius: var(--radius) var(--radius) 0 0; 
           background: var(--panel-2); 
-          transition: border-radius 0.4s ease;
-          position: relative; 
+          
+          /* 🎯 높이를 여기서 고정하고 transition을 겁니다 */
+          height: 290px; 
+          opacity: 1;
+          transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
       }
       
-      /* 펼쳐진 상태일 때 이미지 래퍼의 하단 모서리를 0으로 만들어 목차와 깔끔하게 연결 */
+      @media (max-width: 640px){
+        .book-cover-wrapper {
+          height: 220px; 
+        }
+      }
+
+      /* 🎯 카드가 확장되면(expanded) 이미지 영역의 높이를 0으로 만듭니다 (공간 삭제) */
       .book-card.expanded .book-cover-wrapper {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
+        height: 0;
+        opacity: 0;
+        border-radius: 0; /* 둥근 모서리도 제거 */
       }
 
 
       .book-cover {
         width: 100%;
-        height: 290px; 
+        /* 🎯 이미지는 래퍼를 꽉 채우게 변경 (래퍼가 줄어들면 같이 안보임) */
+        height: 100%; 
         object-fit: cover;
         display: block;
-        transition: all 0.3s ease; 
-        /* 🎯 틈새 제거 트릭 유지 */
+        transition: transform 0.3s ease; 
         transform: scale(1.01); 
-        
-        /* 기본 투명도 1 (보임) */
-        opacity: 1;
       }
       
-      /* 🎯 [수정] 확장되면 이미지를 투명하게 만들어 사라지게 함 (배경색만 남음) */
-      .book-card.expanded .book-cover {
-        opacity: 0; 
-        transform: scale(1.05); /* 사라지면서 약간 커지는 느낌 */
-      }
-      
-      @media (max-width: 640px){
-        .book-cover {
-          height: 220px; 
-        }
-      }
-
 
       .book-info {
         padding: 12px 8px; 
         text-align: center;
         border-top: 1px solid var(--border); 
         background: var(--panel-2);
+        
+        /* 🎯 이미지 사라질 때 윗부분과 자연스럽게 붙도록 트랜지션 */
+        transition: background 0.3s;
+        position: relative;
+        z-index: 2;
+      }
+      
+      /* 확장 시 타이틀 바 스타일 */
+      .book-card.expanded .book-info {
+          border-top: none; /* 위쪽 테두리 제거 (맨 위로 올라가므로) */
+          border-radius: var(--radius) var(--radius) 0 0; /* 맨 위가 되므로 둥글게 */
       }
 
       .book-title {
@@ -286,7 +293,7 @@
         /* GPU 가속 유도 */
         will-change: height, opacity, transform; 
         /* height와 opacity에만 트랜지션 적용 */
-        transition: height 0.5s ease-out, opacity 0.5s ease-out; 
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-out; 
         opacity: 0;
       }
       
@@ -1185,8 +1192,7 @@
                 // 다른 카드라면 닫고, 움직임 복구
                 if (c !== card) {
                     c.classList.remove('expanded'); 
-                    // (JS로 GIF 끄고 켜는 로직은 삭제됨 - CSS opacity가 알아서 처리)
-
+                    
                     if (otherToc) {
                         otherToc.style.height = '0px'; 
                         otherToc.style.paddingTop = '0';
