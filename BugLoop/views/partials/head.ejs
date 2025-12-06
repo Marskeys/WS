@@ -120,8 +120,12 @@
 
 
 
-<!-- ⭐ 광고 스크립트 (에디터에서는 제외) -->
-<% if (!isEditorPage) { %>
+<!-- ⭐ 광고 스크립트 (에디터와 책 뷰어에서는 제외) -->
+<%
+  const isBooksPage = currentPath?.includes('/books/');
+%>
+
+<% if (!isEditorPage && !isBooksPage) { %>
   <!-- AMP 자동 광고 -->
   <script async custom-element="amp-auto-ads"
           src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
@@ -131,6 +135,7 @@
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
           crossorigin="anonymous"></script>
 <% } %>
+
 
 <!-- HTML Beautifier -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
