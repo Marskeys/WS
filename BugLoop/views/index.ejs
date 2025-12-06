@@ -1158,103 +1158,94 @@
         }
       };
       
-      // ----------------------------------------------------
-      // 북카드 토글 로직 (잘림/여백/스크롤 해결)
-      // ----------------------------------------------------
-      document.querySelectorAll('.book-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const isCurrentlyExpanded = card.classList.contains('expanded');
-          const tocElement = card.querySelector('.book-toc');
-          const transitionDuration = 500; // CSS transition time in ms
-          const contentPadding = '16px'; // CSS에 정의된 padding-left/right와 JS가 제어할 padding-top/bottom
+// ----------------------------------------------------
+// 북카드 토글 (부드러운 1단계 확장)
+// ----------------------------------------------------
+document.querySelectorAll('.book-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const toc = card.querySelector('.book-toc');
+    const isOpen = card.classList.contains('expanded');
+    const DURATION = 500;
 
-          // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
-          document.querySelectorAll('.book-card').forEach(c => {
-            const otherToc = c.querySelector('.book-toc');
-            if (c !== card) {
-              c.classList.remove('expanded'); 
-              if (otherToc) {
-                  // 닫힐 때 높이를 0으로, 패딩을 0으로 설정
-                  otherToc.style.height = '0px'; 
-                  otherToc.style.paddingTop = '0';
-                  otherToc.style.paddingBottom = '0';
-                  // 닫힌 상태를 명시
-                  otherToc.classList.add('closed');
-              }
-            }
-          });
-          
-          // 2. 현재 클릭된 카드의 expanded 상태 토글
-          card.classList.toggle('expanded', !isCurrentlyExpanded);
+    // 다른 카드 닫기
+    document.querySelectorAll('.book-card').forEach(other => {
+      if (other !== card) {
+        const otherToc = other.querySelector('.book-toc');
+        other.classList.remove('expanded');
+        if (otherToc) {
+          otherToc.style.height = '0px';
+          otherToc.style.paddingTop = '0';
+          otherToc.style.paddingBottom = '0';
+        }
+      }
+    });
 
-          // 3. 목차 높이 조절 (잘림/여백 제거 핵심)
-          if (!isCurrentlyExpanded && tocElement) {
-              // 펼쳐질 때
-              // a. 닫힌 상태 클래스 제거 및 패딩 설정
-              tocElement.classList.remove('closed');
-              tocElement.style.paddingTop = contentPadding;
-              tocElement.style.paddingBottom = contentPadding;
-              
-              // b. 높이를 auto로 설정하여 패딩 포함 실제 콘텐츠 높이를 측정
-              tocElement.style.height = 'auto';
-              
-              // c. 콘텐츠 높이 측정
-              const contentHeight = tocElement.scrollHeight; 
-              
-              // d. 높이를 0으로 설정 후 transition 시작
-              tocElement.style.height = '0px';
-              requestAnimationFrame(() => {
-                  // e. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
-                  tocElement.style.height = `${contentHeight}px`;
-              });
+    // 현재 카드 토글
+    card.classList.toggle('expanded', !isOpen);
 
-          } else if (isCurrentlyExpanded && tocElement) {
-              // 닫힐 때
-              // a. 현재 높이를 명시적으로 설정하여 트랜지션 준비
-              tocElement.style.height = `${tocElement.scrollHeight}px`;
-              tocElement.style.paddingTop = contentPadding;
-              tocElement.style.paddingBottom = contentPadding;
+    // -----------------------
+    // 펼쳐질 때 (open)
+    // -----------------------
+    if (!isOpen && toc) {
 
-              // b. 다음 프레임에서 높이와 패딩을 0으로 트랜지션 시작
-              requestAnimationFrame(() => {
-                  tocElement.style.height = '0px';
-                  tocElement.style.paddingTop = '0';
-                  tocElement.style.paddingBottom = '0';
+      // 1. 패딩 먼저 적용 (auto 높이 측정을 위함)
+      toc.style.paddingTop = '16px';
+      toc.style.paddingBottom = '16px';
 
-                  // c. 트랜지션 끝난 후 닫힌 상태 클래스 추가
-                  setTimeout(() => {
-                      tocElement.classList.add('closed');
-                  }, transitionDuration); 
-              });
-          }
+      // 2. 측정용 auto
+      toc.style.height = 'auto';
 
-          // 4. 캐러셀 스크롤 이동 (중앙 정렬)
-          if (!isCurrentlyExpanded) {
-              const carousel = card.closest('.carousel');
-              if (carousel) {
-                  const cardLeft = card.offsetLeft;
-                  const carouselWidth = carousel.clientWidth;
-                  
-                  let expandedCardWidth;
-                  
-                  if (window.innerWidth <= 640) {
-                      expandedCardWidth = 250; 
-                  } else {
-                      expandedCardWidth = 300; 
-                  }
+      // 3. 실제 높이 측정
+      const fullHeight = toc.scrollHeight;
 
-                  // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
-                  const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
-                  
-                  carousel.scrollTo({
-                      left: scrollTarget,
-                      behavior: 'smooth'
-                  });
-              }
-          }
-        });
+      // 4. 0px로 초기화(애니메이션 시작 지점)
+      toc.style.height = '0px';
+
+      requestAnimationFrame(() => {
+        // 5. 최종 높이로 애니메이션
+        toc.style.height = fullHeight + "px";
+
+        // 6. transition 끝난 뒤 auto로 돌려 예기치 않은 잘림 방지
+        setTimeout(() => {
+          toc.style.height = 'auto';
+        }, DURATION);
       });
-    })();
+    }
+
+    // -----------------------
+    // 닫힐 때 (close)
+    // -----------------------
+    else if (isOpen && toc) {
+
+      // 1. auto였던 높이를 픽셀로 고정
+      toc.style.height = toc.scrollHeight + "px";
+
+      requestAnimationFrame(() => {
+        // 2. 0px로 트랜지션 시작
+        toc.style.height = '0px';
+        toc.style.paddingTop = '0';
+        toc.style.paddingBottom = '0';
+
+        // 닫힘 완료 후 유지
+        setTimeout(() => {}, DURATION);
+      });
+    }
+
+    // -----------------------
+    // 캐러셀 중앙 정렬
+    // -----------------------
+    if (!isOpen) {
+      const carousel = card.closest('.carousel');
+      if (carousel) {
+        const left = card.offsetLeft;
+        const w = window.innerWidth <= 640 ? 250 : 300;
+        const target = left + w / 2 - carousel.clientWidth / 2;
+        carousel.scrollTo({ left: target, behavior: 'smooth' });
+      }
+    }
+  });
+});
+
     </script>
   </body>
   </html>
