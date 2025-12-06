@@ -658,12 +658,12 @@
           return html;
         };
 
-        // 📚 1. 귀여운 음향학 (cute_acoustics)
-        const cuteAcoustics = locale.books.cute_acoustics;
+        // 📚 1. 귀여운 음향학 (cuteAcoustics)
+        const cuteAcoustics = locale.books.cuteAcoustics;
         const caData = getPaginatedToc(cuteAcoustics.toc);
       %>
 
-      <div class="book-card" data-index="0" data-book-key="cute_acoustics">
+      <div class="book-card" data-index="0" data-book-key="cuteAcoustics">
           <div class="book-content-wrapper"> 
             <div class="book-cover-wrapper">
               <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>" loading="lazy">
@@ -677,16 +677,16 @@
             <div class="book-toc"> 
               <h4><%= cuteAcoustics.title %> 목차</h4>
               
-              <div class="pagination" data-book-id="cute_acoustics-pagination">
+              <div class="pagination" data-book-id="cuteAcoustics-pagination">
                 <% for(let i = 1; i <= caData.totalPages; i++) { %>
-                  <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cute_acoustics', <%= i %>)">
+                  <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cuteAcoustics', <%= i %>)">
                     <%= i %>
                   </span>
                   <% if (i < caData.totalPages) { %><span class="pagination-divider">|</span><% } %>
                 <% } %>
               </div>
 
-              <div class="paginated-toc" data-book-id="cute_acoustics-toc">
+              <div class="paginated-toc" data-book-id="cuteAcoustics-toc">
                 <%- renderTocHtml(caData.paginatedToc[0], 'cuteAcoustics') %>
               </div>
               <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
@@ -1054,7 +1054,7 @@
         let html = '<ul>';
         
         // bookKey를 사용하여 URL 경로 생성 (JS 함수이므로 EJS 변수와는 다른 bookKey를 사용해야 함)
-        // 예: cute_acoustics -> cuteAcoustics
+        // 예: cuteAcoustics -> cuteAcoustics
         const snakeToCamel = (s) => s.replace(/(_\w)/g, k => k[1].toUpperCase());
         const camelCaseKey = snakeToCamel(bookKey);
 
