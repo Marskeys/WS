@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html class="dark" lang="<%= lang %>">
   <head>
     <%- include('partials/head') %>
@@ -7,11 +7,14 @@
     <title>Bug Loop</title>
     <style>
 
+      /* ---------------------------------------------------- */
+      /* 🎯 수정된 부분: 흑백 정지화면 효과 스타일 */
+      /* ---------------------------------------------------- */
       .book-cover-wrapper.pause-gif img {
-  filter: blur(2px) brightness(0.8);
-  transform: scale(1.005);
-  transition: filter 0.25s ease;
-}
+        filter: grayscale(100%) brightness(0.95); /* 완전 흑백 + 약간 차분하게 */
+        transform: scale(1.02); /* 강조를 위해 아주 살짝 더 큼 */
+        transition: filter 0.5s ease, transform 0.5s ease;
+      }
 
       /* ---------------------------------------------------- */
       /* 💡 CSS 변수 설정 (기존 유지) */
@@ -1170,102 +1173,100 @@
       // ----------------------------------------------------
       document.querySelectorAll('.book-card').forEach(card => {
         card.addEventListener('click', () => {
-          // 확대 시작 시 GIF 흐리게 → 사실상 pause 효과
-card.querySelector('.book-cover-wrapper').classList.add('pause-gif');
+            const isCurrentlyExpanded = card.classList.contains('expanded');
+            const tocElement = card.querySelector('.book-toc');
+            const transitionDuration = 500; // CSS transition time in ms
+            const contentPadding = '16px'; 
 
-// 확대 애니메이션 끝난 뒤 GIF 다시 정상 표시
-setTimeout(() => {
-  card.querySelector('.book-cover-wrapper').classList.remove('pause-gif');
-}, 350); // 너의 transition 시간 0.3s 기준
-          const isCurrentlyExpanded = card.classList.contains('expanded');
-          const tocElement = card.querySelector('.book-toc');
-          const transitionDuration = 500; // CSS transition time in ms
-          const contentPadding = '16px'; // CSS에 정의된 padding-left/right와 JS가 제어할 padding-top/bottom
+            // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
+            document.querySelectorAll('.book-card').forEach(c => {
+                const otherToc = c.querySelector('.book-toc');
+                // 다른 카드라면 닫고, 흑백 효과도 제거
+                if (c !== card) {
+                    c.classList.remove('expanded'); 
+                    // 🎯 중요: 다른 카드는 무조건 흑백 효과 해제 (컬러 GIF로 복귀)
+                    c.querySelector('.book-cover-wrapper').classList.remove('pause-gif');
 
-          // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
-          document.querySelectorAll('.book-card').forEach(c => {
-            const otherToc = c.querySelector('.book-toc');
-            if (c !== card) {
-              c.classList.remove('expanded'); 
-              if (otherToc) {
-                  // 닫힐 때 높이를 0으로, 패딩을 0으로 설정
-                  otherToc.style.height = '0px'; 
-                  otherToc.style.paddingTop = '0';
-                  otherToc.style.paddingBottom = '0';
-                  // 닫힌 상태를 명시
-                  otherToc.classList.add('closed');
-              }
+                    if (otherToc) {
+                        otherToc.style.height = '0px'; 
+                        otherToc.style.paddingTop = '0';
+                        otherToc.style.paddingBottom = '0';
+                        otherToc.classList.add('closed');
+                    }
+                }
+            });
+            
+            // 2. 현재 클릭된 카드의 expanded 상태 토글
+            card.classList.toggle('expanded', !isCurrentlyExpanded);
+
+            // -------------------------------------------------------------
+            // 🎯 핵심 로직 수정: 확장되면 흑백(pause-gif 추가), 닫히면 컬러(제거)
+            // -------------------------------------------------------------
+            if (!isCurrentlyExpanded) {
+                // 펼쳐지는 순간 -> 흑백 정지화면 효과 켜기 (계속 유지)
+                card.querySelector('.book-cover-wrapper').classList.add('pause-gif');
+            } else {
+                // 닫히는 순간 -> 효과 끄기 (원래대로 돌아감)
+                card.querySelector('.book-cover-wrapper').classList.remove('pause-gif');
             }
-          });
-          
-          // 2. 현재 클릭된 카드의 expanded 상태 토글
-          card.classList.toggle('expanded', !isCurrentlyExpanded);
+            // -------------------------------------------------------------
 
-          // 3. 목차 높이 조절 (잘림/여백 제거 핵심)
-          if (!isCurrentlyExpanded && tocElement) {
-              // 펼쳐질 때
-              // a. 닫힌 상태 클래스 제거 및 패딩 설정
-              tocElement.classList.remove('closed');
-              tocElement.style.paddingTop = contentPadding;
-              tocElement.style.paddingBottom = contentPadding;
-              
-              // b. 높이를 auto로 설정하여 패딩 포함 실제 콘텐츠 높이를 측정
-              tocElement.style.height = 'auto';
-              
-              // c. 콘텐츠 높이 측정
-              const contentHeight = tocElement.scrollHeight; 
-              
-              // d. 높이를 0으로 설정 후 transition 시작
-              tocElement.style.height = '0px';
-              requestAnimationFrame(() => {
-                  // e. 측정된 높이로 설정하여 부드럽게 펼쳐지게 함
-                  tocElement.style.height = `${contentHeight}px`;
-              });
+            // 3. 목차 높이 조절 (잘림/여백 제거 핵심)
+            if (!isCurrentlyExpanded && tocElement) {
+                // 펼쳐질 때
+                tocElement.classList.remove('closed');
+                tocElement.style.paddingTop = contentPadding;
+                tocElement.style.paddingBottom = contentPadding;
+                
+                tocElement.style.height = 'auto';
+                
+                const contentHeight = tocElement.scrollHeight; 
+                
+                tocElement.style.height = '0px';
+                requestAnimationFrame(() => {
+                    tocElement.style.height = `${contentHeight}px`;
+                });
 
-          } else if (isCurrentlyExpanded && tocElement) {
-              // 닫힐 때
-              // a. 현재 높이를 명시적으로 설정하여 트랜지션 준비
-              tocElement.style.height = `${tocElement.scrollHeight}px`;
-              tocElement.style.paddingTop = contentPadding;
-              tocElement.style.paddingBottom = contentPadding;
+            } else if (isCurrentlyExpanded && tocElement) {
+                // 닫힐 때
+                tocElement.style.height = `${tocElement.scrollHeight}px`;
+                tocElement.style.paddingTop = contentPadding;
+                tocElement.style.paddingBottom = contentPadding;
 
-              // b. 다음 프레임에서 높이와 패딩을 0으로 트랜지션 시작
-              requestAnimationFrame(() => {
-                  tocElement.style.height = '0px';
-                  tocElement.style.paddingTop = '0';
-                  tocElement.style.paddingBottom = '0';
+                requestAnimationFrame(() => {
+                    tocElement.style.height = '0px';
+                    tocElement.style.paddingTop = '0';
+                    tocElement.style.paddingBottom = '0';
 
-                  // c. 트랜지션 끝난 후 닫힌 상태 클래스 추가
-                  setTimeout(() => {
-                      tocElement.classList.add('closed');
-                  }, transitionDuration); 
-              });
-          }
+                    setTimeout(() => {
+                        tocElement.classList.add('closed');
+                    }, transitionDuration); 
+                });
+            }
 
-          // 4. 캐러셀 스크롤 이동 (중앙 정렬)
-          if (!isCurrentlyExpanded) {
-              const carousel = card.closest('.carousel');
-              if (carousel) {
-                  const cardLeft = card.offsetLeft;
-                  const carouselWidth = carousel.clientWidth;
-                  
-                  let expandedCardWidth;
-                  
-                  if (window.innerWidth <= 640) {
-                      expandedCardWidth = 250; 
-                  } else {
-                      expandedCardWidth = 300; 
-                  }
+            // 4. 캐러셀 스크롤 이동 (중앙 정렬)
+            if (!isCurrentlyExpanded) {
+                const carousel = card.closest('.carousel');
+                if (carousel) {
+                    const cardLeft = card.offsetLeft;
+                    const carouselWidth = carousel.clientWidth;
+                    
+                    let expandedCardWidth;
+                    
+                    if (window.innerWidth <= 640) {
+                        expandedCardWidth = 250; 
+                    } else {
+                        expandedCardWidth = 300; 
+                    }
 
-                  // 목표 스크롤 위치: 카드의 중앙 - 뷰포트 폭의 절반
-                  const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
-                  
-                  carousel.scrollTo({
-                      left: scrollTarget,
-                      behavior: 'smooth'
-                  });
-              }
-          }
+                    const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
+                    
+                    carousel.scrollTo({
+                        left: scrollTarget,
+                        behavior: 'smooth'
+                    });
+                }
+            }
         });
       });
     })();
