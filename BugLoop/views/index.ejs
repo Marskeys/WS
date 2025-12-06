@@ -663,38 +663,52 @@
         const caData = getPaginatedToc(cuteAcoustics.toc);
       %>
 
-      <div class="book-card" data-index="0" data-book-key="cuteAcoustics">
-          <div class="book-content-wrapper"> 
-            <div class="book-cover-wrapper">
-              <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>" loading="lazy">
-            </div>
-            <div class="book-info">
-              <div class="book-title"><%= cuteAcoustics.title %></div>
-              <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %> : <%= cuteAcoustics.author %>
-              </div>
-            </div>
-            <div class="book-toc"> 
-              <h4><%= cuteAcoustics.title %> 목차</h4>
-              
-              <div class="pagination" data-book-id="cuteAcoustics-pagination">
-                <% for(let i = 1; i <= caData.totalPages; i++) { %>
-                  <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cuteAcoustics', <%= i %>)">
-                    <%= i %>
-                  </span>
-                  <% if (i < caData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-                <% } %>
-              </div>
+     <div class="book-card" data-index="0" data-book-key="cuteAcoustics">
 
-              <div class="paginated-toc" data-book-id="cuteAcoustics-toc">
-                <%- renderTocHtml(caData.paginatedToc[0], 'cuteAcoustics') %>
-              </div>
-              <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-                총 <%= caData.totalSections %>개 섹션
-              </div>
-            </div>
-          </div>
+  <% if (cuteAcoustics.updated) { %>
+    <div class="book-updated-badge">
+      <%= locale.ui.bookUpdatedBadge || '새 챕터!' %>
+    </div>
+  <% } %>
+
+  <div class="book-content-wrapper"> 
+    <div class="book-cover-wrapper">
+      <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>" loading="lazy">
+    </div>
+
+    <div class="book-info">
+      <div class="book-title"><%= cuteAcoustics.title %></div>
+      <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+        <%= locale.ui["book-author"] %> : <%= cuteAcoustics.author %>
       </div>
+    </div>
+
+    <div class="book-toc"> 
+      <h4><%= cuteAcoustics.title %> 목차</h4>
+
+      <div class="pagination" data-book-id="cuteAcoustics-pagination">
+        <% for(let i = 1; i <= caData.totalPages; i++) { %>
+          <span class="pagination-number <%= i === 1 ? 'active' : '' %>" 
+                onclick="changePage(event, 'cuteAcoustics', <%= i %>)">
+            <%= i %>
+          </span>
+          <% if (i < caData.totalPages) { %>
+            <span class="pagination-divider">|</span>
+          <% } %>
+        <% } %>
+      </div>
+
+      <div class="paginated-toc" data-book-id="cuteAcoustics-toc">
+        <%- renderTocHtml(caData.paginatedToc[0], 'cuteAcoustics') %>
+      </div>
+
+      <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
+        총 <%= caData.totalSections %>개 섹션
+      </div>
+    </div>
+  </div>
+</div>
+
       
       <% 
         // 📚 2. 미완성 고통 (unfinished_pain)

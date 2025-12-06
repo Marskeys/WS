@@ -161,3 +161,25 @@ html.dark .recent-post-title:hover {
   opacity: 0.85;
   max-width: 60ch; /* 한줄 길이 제한 → 읽기 쉬움 */
 }
+
+.book-updated-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff5b5b;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  z-index: 10;
+  animation: badgePulse 1.6s infinite ease-in-out;
+}
+
+@keyframes badgePulse {
+  0%   { transform: scale(1); opacity: 1; }
+  50%  { transform: scale(1.08); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
