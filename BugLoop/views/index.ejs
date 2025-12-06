@@ -8,12 +8,30 @@
     <style>
 
       /* ---------------------------------------------------- */
-      /* 🎯 수정된 부분: 흑백 정지화면 효과 스타일 */
+      /* 🎯 [수정] 흑백 정지화면(Canvas) 스타일 */
       /* ---------------------------------------------------- */
-      .book-cover-wrapper.pause-gif img {
-        filter: grayscale(100%) brightness(0.95); /* 완전 흑백 + 약간 차분하게 */
-        transform: scale(1.02); /* 강조를 위해 아주 살짝 더 큼 */
-        transition: filter 0.5s ease, transform 0.5s ease;
+      /* 자바스크립트가 생성할 캔버스(정지화면)의 스타일입니다. */
+      .book-cover-static {
+        width: 100%;
+        height: 290px; 
+        object-fit: cover;
+        display: block;
+        
+        /* 흑백 처리 및 약간 어둡게 */
+        filter: grayscale(100%) brightness(0.95);
+        
+        /* 기존 이미지와 위치를 똑같이 맞춤 */
+        position: absolute; 
+        top: 0;
+        left: 0;
+        z-index: 5;
+        border-radius: var(--radius) var(--radius) 0 0; /* 둥근 모서리 유지 */
+      }
+      
+      @media (max-width: 640px){
+        .book-cover-static {
+          height: 220px; 
+        }
       }
 
       /* ---------------------------------------------------- */
@@ -210,10 +228,17 @@
           border-radius: var(--radius) var(--radius) 0 0; 
           background: var(--panel-2); 
           transition: border-radius 0.4s ease;
+          position: relative; /* Canvas 위치 잡기 위해 추가 */
       }
       
       /* 펼쳐진 상태일 때 이미지 래퍼의 하단 모서리를 0으로 만들어 목차와 깔끔하게 연결 */
       .book-card.expanded .book-cover-wrapper {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      
+      /* 펼쳐지면 Canvas도 아래쪽 둥근 모서리 제거 */
+      .book-card.expanded .book-cover-static {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       }
@@ -1169,7 +1194,50 @@
       };
       
       // ----------------------------------------------------
-      // 북카드 토글 로직 (잘림/여백/스크롤 해결)
+      // 🎯 [수정] GIF 제어 함수: 캔버스로 바꿔치기 (완벽한 정지 구현)
+      // ----------------------------------------------------
+      function freezeGif(card) {
+          const wrapper = card.querySelector('.book-cover-wrapper');
+          const img = wrapper.querySelector('img.book-cover');
+          
+          // 이미 캔버스가 있다면 무시
+          if (wrapper.querySelector('canvas.book-cover-static')) return;
+
+          // 1. 캔버스 생성
+          const canvas = document.createElement('canvas');
+          canvas.className = 'book-cover-static';
+          
+          // 2. 이미지 크기 맞춤
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+
+          // 3. 현재 이미지(보통 첫 프레임)를 캔버스에 그림
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // 4. 원본 GIF 숨기고 캔버스 추가
+          img.style.display = 'none';
+          wrapper.appendChild(canvas);
+      }
+
+      function unfreezeGif(card) {
+          const wrapper = card.querySelector('.book-cover-wrapper');
+          const img = wrapper.querySelector('img.book-cover');
+          const canvas = wrapper.querySelector('canvas.book-cover-static');
+
+          // 1. 캔버스 제거
+          if (canvas) {
+              canvas.remove();
+          }
+
+          // 2. 원본 GIF 다시 표시 (처음부터 재생됨)
+          if (img) {
+              img.style.display = 'block';
+          }
+      }
+
+      // ----------------------------------------------------
+      // 북카드 토글 로직 (잘림/여백/스크롤 해결 + GIF 정지)
       // ----------------------------------------------------
       document.querySelectorAll('.book-card').forEach(card => {
         card.addEventListener('click', () => {
@@ -1181,11 +1249,10 @@
             // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
             document.querySelectorAll('.book-card').forEach(c => {
                 const otherToc = c.querySelector('.book-toc');
-                // 다른 카드라면 닫고, 흑백 효과도 제거
+                // 다른 카드라면 닫고, 움직임 복구
                 if (c !== card) {
                     c.classList.remove('expanded'); 
-                    // 🎯 중요: 다른 카드는 무조건 흑백 효과 해제 (컬러 GIF로 복귀)
-                    c.querySelector('.book-cover-wrapper').classList.remove('pause-gif');
+                    unfreezeGif(c); // 🎯 다른 카드는 GIF 재생 재개
 
                     if (otherToc) {
                         otherToc.style.height = '0px'; 
@@ -1200,18 +1267,18 @@
             card.classList.toggle('expanded', !isCurrentlyExpanded);
 
             // -------------------------------------------------------------
-            // 🎯 핵심 로직 수정: 확장되면 흑백(pause-gif 추가), 닫히면 컬러(제거)
+            // 🎯 핵심 로직: 확장되면 정지(캔버스), 닫히면 재생(이미지)
             // -------------------------------------------------------------
             if (!isCurrentlyExpanded) {
-                // 펼쳐지는 순간 -> 흑백 정지화면 효과 켜기 (계속 유지)
-                card.querySelector('.book-cover-wrapper').classList.add('pause-gif');
+                // 펼쳐지는 순간 -> 캔버스로 교체하여 정지된 것처럼 보이게 함
+                freezeGif(card);
             } else {
-                // 닫히는 순간 -> 효과 끄기 (원래대로 돌아감)
-                card.querySelector('.book-cover-wrapper').classList.remove('pause-gif');
+                // 닫히는 순간 -> 원본 이미지 복구
+                unfreezeGif(card);
             }
             // -------------------------------------------------------------
 
-            // 3. 목차 높이 조절 (잘림/여백 제거 핵심)
+            // 3. 목차 높이 조절
             if (!isCurrentlyExpanded && tocElement) {
                 // 펼쳐질 때
                 tocElement.classList.remove('closed');
@@ -1244,7 +1311,7 @@
                 });
             }
 
-            // 4. 캐러셀 스크롤 이동 (중앙 정렬)
+            // 4. 캐러셀 스크롤 이동
             if (!isCurrentlyExpanded) {
                 const carousel = card.closest('.carousel');
                 if (carousel) {
