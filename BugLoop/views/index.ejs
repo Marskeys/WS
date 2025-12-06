@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bug Loop</title>
     <style>
+
+      .book-cover-wrapper.pause-gif img {
+  filter: blur(2px) brightness(0.8);
+  transform: scale(1.005);
+  transition: filter 0.25s ease;
+}
+
       /* ---------------------------------------------------- */
       /* 💡 CSS 변수 설정 (기존 유지) */
       /* ---------------------------------------------------- */
@@ -1163,6 +1170,13 @@
       // ----------------------------------------------------
       document.querySelectorAll('.book-card').forEach(card => {
         card.addEventListener('click', () => {
+          // 확대 시작 시 GIF 흐리게 → 사실상 pause 효과
+card.querySelector('.book-cover-wrapper').classList.add('pause-gif');
+
+// 확대 애니메이션 끝난 뒤 GIF 다시 정상 표시
+setTimeout(() => {
+  card.querySelector('.book-cover-wrapper').classList.remove('pause-gif');
+}, 350); // 너의 transition 시간 0.3s 기준
           const isCurrentlyExpanded = card.classList.contains('expanded');
           const tocElement = card.querySelector('.book-toc');
           const transitionDuration = 500; // CSS transition time in ms
