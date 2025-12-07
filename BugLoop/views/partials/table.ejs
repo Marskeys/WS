@@ -1,43 +1,52 @@
+<!-- 🔎 검색창은 항상 보이게 -->
+<div class="search-container">
+  <form method="get" action="/<%= lang %>/search" class="search-form" data-panel-search="1">
+    <input type="text" name="q" class="search-box"
+           placeholder="<%= locale.search.placeholder %>"
+           value="<%= searchKeyword || '' %>" />
+    <button type="submit" class="icon-submit-btn"><i class="fas fa-search"></i></button>
+  </form>
+</div>
+
+<!-- 📌 탭도 항상 보이게 -->
+<div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
+  <div class="tabs-wrapper">
+    <div class="tabs <%= isSearch && searchKeyword ? 'searching' : '' %>">
+      <div class="tab-spacer"></div>
+
+      <a href="/<%= lang %>/?category=all"
+         data-panel-link="category" data-category="all"
+         class="tab <%= (!isSearch && (!selectedCategory || selectedCategory === 'all' || selectedCategory === locale.tabs.allPosts)) ? 'active' : '' %>">
+        <%= locale.tabs.allPosts %>
+      </a>
+
+      <% if (isSearch) { %>
+        <div class="tab active" id="search-result-label" aria-live="polite">
+          <%= (locale.search.resultsFor || '').replace('%s', searchKeyword || '') %>
+        </div>
+      <% } %>
+
+      <% categories.forEach(category => { %>
+        <a href="/<%= lang %>/?category=<%= category.original %>"
+           data-panel-link="category" data-category="<%= category.original %>"
+           class="tab <%= (!isSearch && (selectedCategory === category.original || selectedCategory === category.translated)) ? 'active' : '' %>">
+          <%= category.translated %>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<!-- 📌 게시글 영역: 게시글이 없으면 여기만 메시지로 대체 -->
 <% if (!posts || posts.length === 0) { %>
+
   <div class="no-posts-found">
     <%= locale.noPostsFound %>
   </div>
+
 <% } else { %>
-  <div class="search-container">
-    <form method="get" action="/<%= lang %>/search" class="search-form" data-panel-search="1">
-      <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" />
-      <button type="submit" class="icon-submit-btn"><i class="fas fa-search"></i></button>
-    </form>
-  </div>
-  
-  <div class="tabs-container" data-allposts="<%= locale.tabs.allPosts %>"> 
-    <div class="tabs-wrapper">
-      <div class="tabs <%= isSearch && searchKeyword ? 'searching' : '' %>">
-        <div class="tab-spacer"></div>
 
-        <a href="/<%= lang %>/?category=all"
-           data-panel-link="category" data-category="all"
-           class="tab <%= (!isSearch && (!selectedCategory || selectedCategory === 'all' || selectedCategory === locale.tabs.allPosts)) ? 'active' : '' %>">
-          <%= locale.tabs.allPosts %>
-        </a>
-        
-        <% if (isSearch) { %>
-          <div class="tab active" id="search-result-label" aria-live="polite">
-            <%= (locale.search.resultsFor || '').replace('%s', searchKeyword || '') %>
-          </div>
-        <% } %>
-
-        <% categories.forEach(category => { %>
-          <a href="/<%= lang %>/?category=<%= category.original %>"
-             data-panel-link="category" data-category="<%= category.original %>"
-             class="tab <%= (!isSearch && (selectedCategory === category.original || selectedCategory === category.translated)) ? 'active' : '' %>">
-            <%= category.translated %>
-          </a>
-        <% }) %>
-      </div>
-    </div>
-  </div>
-  
+  <!-- 📱 모바일 게시글 리스트 -->
   <div class="mobile-board-list">
     <% posts.forEach(post => { %>
       <div class="mobile-post-item">
@@ -47,12 +56,13 @@
             data-post-id="<%= post.id %>"
             data-is-private="<%= post.is_private ? '1' : '0' %>"
             data-post-user-id="<%= post.user_id %>">
+
             <%
               const now = new Date();
               const createdAt = new Date(post.created_at);
               const updatedAt = new Date(post.updated_at);
               const oneDay = 1000 * 60 * 60 * 24;
-              
+
               const isNewPost = (now - createdAt) < oneDay;
               const wasEdited = updatedAt > createdAt;
               const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
@@ -61,20 +71,20 @@
               const newLabelText = locale.ui.newPost || 'NEW';
               const editedLabelText = locale.ui.editedPost || 'UPDATED';
             %>
-          
+
             <% if (isNewPost) { %>
               <span class="label-icons new-icon"><%= newLabelText %></span>
             <% } else if (showEditedLabel) { %>
               <span class="label-icons edited-icon"><%= editedLabelText %></span>
             <% } %>
-  
-            <% if (post.is_pinned) { %><span>📌</span><% } %>
 
+            <% if (post.is_pinned) { %><span>📌</span><% } %>
             <% if (post.is_private) { %>🔒 <% } %>
+
             <%= post.title %>
 
           </a>
-  
+
           <% if (user && user.id === post.user_id) { %>
             <div class="action-icons">
               <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
@@ -103,7 +113,8 @@
       </div>
     <% }) %>
   </div>
-  
+
+  <!-- 📑 페이지네이션 -->
   <% if (pagination.total > 1) { %>
     <div class="pagination pagination-mobile mobile-only">
       <%
@@ -111,6 +122,7 @@
           ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`
           : `/${lang}/?category=${selectedCategory || 'all'}`;
       %>
+
       <% if (pagination.current > 1) { %>
         <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
         <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
@@ -118,7 +130,7 @@
         <span class="page-link disabled">«</span>
         <span class="page-link disabled">‹</span>
       <% } %>
-  
+
       <% pagination.range.forEach(p => { %>
         <% if (p === '...') { %>
           <span class="page-ellipsis">…</span>
@@ -126,7 +138,7 @@
           <a href="<%= paginationBaseUrlMobile %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
         <% } %>
       <% }) %>
-  
+
       <% if (pagination.current < pagination.total) { %>
         <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
         <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
@@ -136,8 +148,10 @@
       <% } %>
     </div>
   <% } %>
+
 <% } %>
 
+<!-- 🧩 접근권한 / 삭제 확인 / 사이드바 자동 열기 스크립트 -->
 <script>
   function createMessageBox(message, isConfirm = false, onConfirm = null) {
     let modal = document.getElementById('customMessageModal');
@@ -147,11 +161,11 @@
       modal.style = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-        align-items: center; z-index: 1000;
-        display: none;
+        align-items: center; z-index: 1000; display: none;
       `;
       document.body.appendChild(modal);
     }
+
     modal.innerHTML = `
       <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
         <p style="color: black; margin-bottom: 15px;">${message}</p>
@@ -164,83 +178,66 @@
       </div>
     `;
     modal.style.display = 'flex';
-  
+
     if (isConfirm) {
-      document.getElementById('confirmBtn').onclick = () => {
-        modal.style.display = 'none';
-        if (onConfirm) onConfirm();
-      };
-      document.getElementById('cancelBtn').onclick = () => {
-        modal.style.display = 'none';
-      };
+      document.getElementById('confirmBtn').onclick = () => { modal.style.display = 'none'; if (onConfirm) onConfirm(); };
+      document.getElementById('cancelBtn').onclick = () => { modal.style.display = 'none'; };
     } else {
-      document.getElementById('okBtn').onclick = () => {
-        modal.style.display = 'none';
-        if (onConfirm) onConfirm();
-      };
+      document.getElementById('okBtn').onclick = () => { modal.style.display = 'none'; if (onConfirm) onConfirm(); };
     }
   }
-  
+
   function showCustomMessage(message, isConfirm = false, onConfirm = null) {
     createMessageBox(message, isConfirm, onConfirm);
   }
-  
+
   document.addEventListener('DOMContentLoaded', () => {
     const postDetailLinks = document.querySelectorAll('.post-detail-link');
     const currentUser = <%- JSON.stringify(user || null) %>;
     const currentUserId = currentUser ? currentUser.id : null;
     const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
-  
+
     postDetailLinks.forEach(link => {
       link.addEventListener('click', (event) => {
         const isPrivate = event.currentTarget.dataset.isPrivate === '1';
         const postUserId = event.currentTarget.dataset.postUserId;
-  
+
         if (isPrivate && postUserId !== currentUserId && !isAdmin) {
           event.preventDefault();
-          event.stopImmediatePropagation();
           showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
           return;
         }
-  
+
         event.preventDefault();
-        event.stopImmediatePropagation();
         window.location.href = link.href;
       }, true);
     });
-  
-    const currentLanguage = '<%= lang %>'; 
-  });
-</script>
-  
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
+
+    // 삭제 확인
     document.body.addEventListener('submit', (e) => {
       const form = e.target;
       if (form.classList.contains('delete-post-form')) {
-        const confirmed = confirm('정말 삭제하시겠습니까?');
-        if (!confirmed) {
+        if (!confirm('정말 삭제하시겠습니까?')) {
           e.preventDefault();
         }
       }
     });
-  });
-  
-  document.addEventListener('DOMContentLoaded', () => {
+
+    // 사이드바 자동 열림
     const searchForm = document.querySelector('.search-form');
     if (searchForm) {
       searchForm.addEventListener('submit', () => {
         localStorage.setItem('sidebarOpen', 'true');
       });
     }
-  
+
     const categoryTabs = document.querySelectorAll('.tabs a');
     categoryTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         localStorage.setItem('sidebarOpen', 'true');
       });
     });
-  
+
     const sidebar = document.querySelector('.sidebar-extension-panel');
     if (localStorage.getItem('sidebarOpen') === 'true') {
       sidebar.classList.add('open');
