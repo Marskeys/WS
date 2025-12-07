@@ -186,6 +186,13 @@
           box-shadow: 0 5px 15px rgba(33, 126, 232, 0.9), 
                       0 0 0 3px rgba(33, 126, 232, 0.5); 
       }
+      
+      /* 🎯 카드 확장 시 '새 챕터' 라벨 즉시 숨김 */
+      .book-card.expanded .book-updated-badge {
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0s; /* 즉시 사라짐 */
+      }
 
 
       /* 카드 내부 컨텐츠 래퍼: 전체 둥근 모서리를 담당 */
@@ -214,11 +221,15 @@
         }
       }
 
-      /* 🎯 카드가 확장되면(expanded) 이미지 영역의 높이를 0으로 만듭니다 (공간 삭제) */
+      /* 🎯 카드가 확장되면(expanded) 이미지 영역 숨김 */
       .book-card.expanded .book-cover-wrapper {
         height: 0;
         opacity: 0;
-        border-radius: 0; /* 둥근 모서리도 제거 */
+        
+        /* ⚡ [수정] 클릭하자마자 이미지는 즉시(0s) 사라져서 버벅임 방지 */
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0s;
+        
+        border-radius: 0; 
       }
 
 
@@ -283,8 +294,9 @@
         
         height: 0; 
         overflow: hidden; 
-        /* 🎯 패딩을 CSS에 고정하고 height 트랜지션을 분리 */
-        padding: 16px; 
+        
+        /* 🎯 [수정] 위쪽 여백(padding-top)을 24px로 늘려 시원하게 처리 */
+        padding: 24px 16px 16px 16px;
         
         /* 초기에는 패딩을 0으로 시작 */
         padding-top: 0;
@@ -586,6 +598,22 @@
               margin-right: auto;
           }
       }
+      
+      /* 📌 누락되었던 배지 스타일 추가 (라벨 숨김 기능을 위해) */
+      .book-updated-badge {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          background: #ff4757;
+          color: white;
+          font-size: 0.75rem;
+          font-weight: bold;
+          padding: 4px 8px;
+          border-radius: 4px;
+          z-index: 5;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          transition: opacity 0.2s;
+      }
     </style>
   </head>
 
@@ -734,6 +762,9 @@
         const upData = getPaginatedToc(unfinishedPain.toc);
       %>
       <div class="book-card" data-index="1" data-book-key="unfinished_pain">
+        <% if (unfinishedPain.updated) { %>
+            <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } %>
         <div class="book-content-wrapper">
           <div class="book-cover-wrapper">
             <img class="book-cover" src="/assets/images/book2.gif" alt="<%= unfinishedPain.title %>" loading="lazy">
@@ -772,6 +803,9 @@
         const ppData = getPaginatedToc(pianistProducer.toc);
       %>
       <div class="book-card" data-index="2" data-book-key="pianist_producer">
+        <% if (pianistProducer.updated) { %>
+            <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } %>
         <div class="book-content-wrapper">
           <div class="book-cover-wrapper">
             <img class="book-cover" src="/assets/images/book3.gif" alt="<%= pianistProducer.title %>" loading="lazy">
@@ -810,6 +844,9 @@
         const wcData = getPaginatedToc(warmthOfCalc.toc);
       %>
       <div class="book-card" data-index="3" data-book-key="warmth_of_calc">
+         <% if (warmthOfCalc.updated) { %>
+            <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } %>
         <div class="book-content-wrapper">
           <div class="book-cover-wrapper">
             <img class="book-cover" src="/assets/images/book4.gif" alt="<%= warmthOfCalc.title %>" loading="lazy">
@@ -1177,14 +1214,17 @@
       };
       
       // ----------------------------------------------------
-      // 🎯 [수정] 북카드 토글 로직 (심플하게 롤백 + CSS 투명 처리)
+      // 🎯 [수정] 북카드 토글 로직
       // ----------------------------------------------------
       document.querySelectorAll('.book-card').forEach(card => {
         card.addEventListener('click', () => {
             const isCurrentlyExpanded = card.classList.contains('expanded');
             const tocElement = card.querySelector('.book-toc');
             const transitionDuration = 500; // CSS transition time in ms
-            const contentPadding = '16px'; 
+            
+            // 📌 [수정] 위쪽 여백(padding-top)을 26px로 넉넉하게 설정
+            const contentPaddingTop = '26px';
+            const contentPaddingBottom = '16px';
 
             // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
             document.querySelectorAll('.book-card').forEach(c => {
@@ -1209,8 +1249,10 @@
             if (!isCurrentlyExpanded && tocElement) {
                 // 펼쳐질 때
                 tocElement.classList.remove('closed');
-                tocElement.style.paddingTop = contentPadding;
-                tocElement.style.paddingBottom = contentPadding;
+                
+                // 💡 [수정] JS에서도 늘어난 패딩을 적용해야 자연스러움
+                tocElement.style.paddingTop = contentPaddingTop;
+                tocElement.style.paddingBottom = contentPaddingBottom;
                 
                 tocElement.style.height = 'auto';
                 
@@ -1224,8 +1266,8 @@
             } else if (isCurrentlyExpanded && tocElement) {
                 // 닫힐 때
                 tocElement.style.height = `${tocElement.scrollHeight}px`;
-                tocElement.style.paddingTop = contentPadding;
-                tocElement.style.paddingBottom = contentPadding;
+                tocElement.style.paddingTop = contentPaddingTop;
+                tocElement.style.paddingBottom = contentPaddingBottom;
 
                 requestAnimationFrame(() => {
                     tocElement.style.height = '0px';
