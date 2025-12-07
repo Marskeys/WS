@@ -68,6 +68,20 @@ app.use((req, res, next) => {
   next();
 });
 
+// 삭제된 카테고리 URL은 410 Gone 처리
+app.use((req, res, next) => {
+  const langPattern = /(ko|en|fr|zh|ja|es)/;
+  const catPattern = /(frontend|backend|database|security|hardware|network|devops|etc)/;
+
+  const regex = new RegExp(`^/${langPattern.source}/${catPattern.source}(/|$)`);
+
+  if (regex.test(req.path)) {
+    console.log("🚫 410 Gone 처리됨:", req.path);
+    return res.status(410).send("Gone");
+  }
+  next();
+});
+
 // EJS 템플릿 엔진 설정
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
