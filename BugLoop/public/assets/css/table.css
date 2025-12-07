@@ -473,3 +473,20 @@ html.dark .new-icon {
 html.dark .edited-icon {
     background-color: #1e3799;
 }
+
+.no-posts-found {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--ink-2);
+  background: var(--panel);
+  border-radius: var(--radius);
+  margin-top: 20px;
+  border: 1px solid var(--border);
+}
+
+/* 다크 모드 보정 */
+html.dark .no-posts-found {
+  color: var(--ink);
+  background: var(--panel-2);
+}
