@@ -37,11 +37,15 @@
   </div>
 </div>
 
-<!-- 📌 게시글 영역: 게시글이 없으면 여기만 메시지로 대체 -->
+<!-- 📌 게시글 영역 -->
 <% if (!posts || posts.length === 0) { %>
 
   <div class="no-posts-found">
-    <%= locale.noPostsFound %>
+    <% if (isSearch) { %>
+      "<%= searchKeyword %>" <%= locale.search.noResults || '로 검색한 결과가 없습니다.' %>
+    <% } else { %>
+      <%= locale.noPostsFound %>
+    <% } %>
   </div>
 
 <% } else { %>
