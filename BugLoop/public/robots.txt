@@ -1,4 +1,4 @@
-# 모든 크롤러에 대한 기본 규칙 (구글 등)
+# 모든 크롤러에 대한 기본 규칙 
 User-agent: *
 Disallow: /write
 Disallow: /edit
@@ -6,7 +6,7 @@ Disallow: /delete
 Disallow: /signup
 Allow: /
 
-# 네이버 검색 로봇(Yeti) 전용 규칙 (모든 경로 허용)
+# 네이버 검색 로봇(Yeti) 전용 규칙 
 User-agent: Yeti
 Disallow: # 또는 Allow: / 도 가능
 
