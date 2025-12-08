@@ -416,3 +416,17 @@ html.dark .toc-list a:hover {
   font-size: 1.2rem;
   text-align: center;
 }
+
+.post-content {
+      /* 한글 단어 중간에 줄바꿈 방지 (열/람 현상 해결) */
+      word-break: keep-all; 
+      
+      /* 긴 URL이나 영단어가 화면을 넘어갈 때만 강제로 줄바꿈 */
+      overflow-wrap: break-word; 
+      
+      /* (선택사항) 양쪽 정렬 때문에 글자 간격이 벌어지는게 싫다면 왼쪽 정렬 명시 */
+      text-align: left; 
+      
+      /* 가독성을 위한 줄간격 (이미 설정되어 있다면 패스) */
+      line-height: 1.6;
+    }
