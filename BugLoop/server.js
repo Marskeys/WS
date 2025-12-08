@@ -82,6 +82,40 @@ app.use((req, res, next) => {
   next();
 });
 
+// -----------------------------
+// 🧨 삭제된 게시글 ID 목록
+// -----------------------------
+const deletedPostIds = new Set([
+  1,2,3,4,5,6,7,8,9,10,
+  11,12,13,14,15,16,17,18,19,20,
+  21,22,23,24,25,26,
+  28,29,30,
+  33,
+  35,36,
+  38,39,40,
+  54,
+  58,
+  71,
+  77
+]);
+
+// -----------------------------
+// 🧨 삭제된 게시글 410 처리
+// 모든 언어 공통 적용됨
+// -----------------------------
+app.use((req, res, next) => {
+  const match = req.path.match(/^\/(ko|en|fr|zh|ja|es)\/post\/(\d+)/);
+  if (!match) return next();
+
+  const postId = parseInt(match[2], 10);
+  if (deletedPostIds.has(postId)) {
+    console.log("🚫 삭제된 글 410 처리:", req.path);
+    return res.status(410).render('410'); // 410.ejs 있으면 사용
+    // 없으면: return res.status(410).send("Gone");
+  }
+  next();
+});
+
 // EJS 템플릿 엔진 설정
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
