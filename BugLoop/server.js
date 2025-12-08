@@ -91,6 +91,11 @@ app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
+// 🚀 robots.txt를 최우선 정적으로 서빙
+app.use('/robots.txt', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'robots.txt'));
+});
+
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // 미들웨어 설정
