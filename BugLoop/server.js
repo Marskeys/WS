@@ -18,14 +18,7 @@ const sitemapPagesRoutes = require('./routes/sitemap-pages');
 app.use('/', sitemapRoutes);
 app.use('/', sitemapPagesRoutes);
 
-// =======================================================
-// ✅ [수정] 1. 공통 유틸리티: lang 유효성 검사 및 기본값 설정
-// =======================================================
-function getValidLang(lang) {
-  return supportedLangs.includes(lang) ? lang : 'ko';
-}
-
-// === Helper: merge locale with safe defaults (기존 유지) ===
+// === Helper: merge locale with safe defaults ===
 function mergeLocaleWithDefaults(lang) {
   const base = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};
   const cur = (allLocales && allLocales[lang]) ? allLocales[lang] : {};
@@ -62,8 +55,10 @@ function mergeLocaleWithDefaults(lang) {
   return merged;
 }
 
-// [기존 유지] www → non-www 리다이렉트
+
+
 app.use((req, res, next) => {
+  // www → non-www 리다이렉트
   if (req.headers.host.startsWith('www.')) {
     return res.redirect(
       301,
@@ -73,7 +68,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// [기존 유지] 삭제된 카테고리 URL은 410 Gone 처리
+// 삭제된 카테고리 URL은 410 Gone 처리
 app.use((req, res, next) => {
   const langPattern = /(ko|en|fr|zh|ja|es)/;
   const catPattern = /(frontend|backend|database|security|hardware|network|devops|etc)/;
@@ -88,7 +83,7 @@ app.use((req, res, next) => {
 });
 
 // -----------------------------
-// 🧨 삭제된 게시글 ID 목록 (기존 유지)
+// 🧨 삭제된 게시글 ID 목록
 // -----------------------------
 const deletedPostIds = new Set([
   1,2,3,4,5,6,7,8,9,10,
@@ -105,7 +100,8 @@ const deletedPostIds = new Set([
 ]);
 
 // -----------------------------
-// 🧨 삭제된 게시글 410 처리 (기존 유지)
+// 🧨 삭제된 게시글 410 처리
+// 모든 언어 공통 적용됨
 // -----------------------------
 app.use((req, res, next) => {
   const match = req.path.match(/^\/(ko|en|fr|zh|ja|es)\/post\/(\d+)/);
@@ -115,47 +111,45 @@ app.use((req, res, next) => {
   if (deletedPostIds.has(postId)) {
     console.log("🚫 삭제된 글 410 처리:", req.path);
     return res.status(410).render('410'); // 410.ejs 있으면 사용
+    // 없으면: return res.status(410).send("Gone");
   }
   next();
 });
 
-// EJS 템플릿 엔진 설정 (기존 유지)
+// EJS 템플릿 엔진 설정
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// 정적 파일 제공 설정 (기존 유지)
+// 정적 파일 제공 설정
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/ads.txt', express.static(path.join(__dirname, 'public/ads.txt')));
 
-// 🚀 robots.txt를 최우선 정적으로 서빙 (기존 유지)
+// 🚀 robots.txt를 최우선 정적으로 서빙
 app.use('/robots.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'robots.txt'));
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
-// 미들웨어 설정 (기존 유지)
+// 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb' }));
 
-// 세션 설정 (기존 유지)
+// 세션 설정
 app.use(session({
   secret: 'wowthats_amazing',
   resave: false,
   saveUninitialized: true,
 }));
 
-// =======================================================
-// ✅ [수정] 2. 공통 locals 미들웨어 (Lang 보정 로직 개선)
-// =======================================================
+// 공통 locals 미들웨어
 app.use((req, res, next) => {
-  // Lang을 URL에서 추출, 없으면 'ko'로 자동 설정 (미들웨어 레벨에서 보장)
+  // 📌 변경 사항: 정규식에 'es' 추가
   const langMatch = req.path.match(/^\/(ko|en|fr|zh|ja|es)(\/|$)/);
   res.locals.lang = langMatch ? langMatch[1] : 'ko';
   req.lang = res.locals.lang;
 
-  // 나머지 locals 설정 (기존 유지)
   const defaultLocale = {
     meta: { title: 'Bug Loop · Online HTML Editor', description: '' },
     profile: {
@@ -183,7 +177,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Helper functions (기존 유지)
+// Helper functions (moved from inside routes)
 function buildPanel({ lang, section, topic }) {
   const filePath = path.join(__dirname, 'content', String(lang).toLowerCase(),
     String(section).toLowerCase(), `${String(topic).toLowerCase()}.html`);
@@ -208,7 +202,7 @@ function buildPanel({ lang, section, topic }) {
   }
 }
 
-function generatePagination(current, total) { /* ... 기존 유지 ... */
+function generatePagination(current, total) {
   const delta = 2;
   const range = [];
   const rangeWithDots = [];
@@ -234,12 +228,8 @@ function generatePagination(current, total) { /* ... 기존 유지 ... */
   return rangeWithDots;
 }
 
-// ... getSidebarData, getPostCount, generateSummary 함수는 길어서 생략합니다. (기존 유지) ...
-// (위 함수의 코드는 원본과 동일하게 유지됩니다.)
-
 async function getSidebarData(req) {
-  // ... (getSidebarData 함수의 기존 코드 유지) ...
-  const safeLang = getValidLang((req.params && req.params.lang) ? req.params.lang : 'ko');
+  const safeLang = (req.params && req.params.lang) ? req.params.lang : 'ko';
   const categoryQueryParam = req.query.category || 'all';
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
@@ -337,7 +327,6 @@ async function getSidebarData(req) {
 }
 
 async function getPostCount(req) {
-  // ... (getPostCount 함수의 기존 코드 유지) ...
   const categoryQueryParam = req.query.category || 'all';
   let countQuery = `SELECT COUNT(*) as count FROM posts`;
   const countParams = [];
@@ -352,20 +341,21 @@ async function getPostCount(req) {
 }
 
 
-// 라우트 핸들러 (lang 처리 로직만 getValidLang으로 보강, 함수 내용은 기존 유지)
+// 라우트 핸들러
 const handlePanelRoute = async (req, res, next) => {
   try {
-    const safeLang = getValidLang(req.params.lang); // ⭐ lang 보정
-    const { section, topic } = req.params;
-    res.locals.lang = safeLang; // ⭐ locals 업데이트
+    const { lang, section, topic } = req.params;
+    res.locals.lang = lang;
 
-    // 검색 전용 처리 (기존 유지)
-    if (section === 'search') {
+    // 검색 전용 처리
+    if ((!lang && supportedLangs.includes(section) && topic === 'search') ||
+        (lang && section === 'search')) {
       const qs = req._parsedUrl && req._parsedUrl.search ? req._parsedUrl.search : '';
-      return res.redirect(`/${safeLang}/search${qs || ''}`);
+      const targetLang = lang || section;
+      return res.redirect(`/${targetLang}/search${qs || ''}`);
     }
 
-    // write/edit/post/:id는 패널 라우팅 제외 (기존 유지)
+    // write/edit/post/:id는 패널 라우팅 제외
     if (section === 'write' || section === 'edit' || (section === 'post' && /^\d+$/.test(topic))) {
       return next();
     }
@@ -374,7 +364,7 @@ const handlePanelRoute = async (req, res, next) => {
     const filePathForCheck = path.join(
       __dirname,
       'content',
-      String(safeLang).toLowerCase(), // ⭐ safeLang 사용
+      String(lang).toLowerCase(),
       String(section).toLowerCase(),
       `${String(topic).toLowerCase()}.html`
     );
@@ -387,7 +377,7 @@ const handlePanelRoute = async (req, res, next) => {
 
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
 
-    const panelData = buildPanel({ lang: safeLang, section, topic }); // ⭐ safeLang 사용
+    const panelData = buildPanel({ lang, section, topic });
 
     res.locals.panelData = panelData;
     res.locals.posts = postsForSidebar;
@@ -416,13 +406,12 @@ const handlePanelRoute = async (req, res, next) => {
 
 
 const handleWriteRoute = async (req, res) => {
-  const safeLang = getValidLang(req.params.lang); // ⭐ lang 보정
-  res.locals.lang = safeLang;
-  // ... (handleWriteRoute 함수의 나머지 기존 코드 유지) ...
   if (!req.session.user || req.session.user.is_admin !== 1) {
     return res.status(403).send('접근 권한이 없습니다. 관리자만 글을 작성할 수 있습니다.');
   }
 
+  const safeLang = req.params.lang || 'ko';
+  res.locals.lang = safeLang;
   try {
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } = await getSidebarData(req);
 
@@ -452,9 +441,9 @@ const handleWriteRoute = async (req, res) => {
 const handleEditRoute = async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id;
-  const safeLang = getValidLang(req.params.lang); // ⭐ lang 보정
+  const safeLang = req.params.lang || 'ko';
   res.locals.lang = safeLang;
-  // ... (handleEditRoute 함수의 나머지 기존 코드 유지) ...
+
   try {
     const [basePostRows] = await db.query('SELECT * FROM posts WHERE id = ?', [postId]);
     if (basePostRows.length === 0) return res.status(404).send('게시글을 찾을 수 없습니다.');
@@ -510,7 +499,7 @@ const handleEditRoute = async (req, res) => {
   }
 };
 
-function generateSummary(html) { /* ... 기존 유지 ... */
+function generateSummary(html) {
   let text = String(html || '');
 
   // (1) auto-toc 전체 제거
@@ -538,12 +527,13 @@ function generateSummary(html) { /* ... 기존 유지 ... */
 }
 
 
+
+
 const handlePostViewRoute = async (req, res) => {
-  const safeLang = getValidLang(req.params.lang); // ⭐ lang 보정
-  res.locals.lang = safeLang;
-  // ... (handlePostViewRoute 함수의 나머지 기존 코드 유지) ...
   try {
     const postId = req.params.id;
+    const safeLang = req.params.lang;
+    res.locals.lang = safeLang;
 
     // 조회수 처리
     if (!req.session.viewedPosts) {
@@ -726,10 +716,9 @@ const handleMainPage = async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = getValidLang(req.params.lang); // ⭐ lang 보정
+  const safeLang = req.params.lang || 'ko';
   res.locals.lang = safeLang;
 
-  // ... (handleMainPage 함수의 나머지 기존 코드 유지) ...
   try {
     let baseQuery = `
       SELECT
@@ -852,10 +841,9 @@ const handleSearchRoute = async (req, res) => {
 
   const userId = req.session.user?.id;
   const isAdmin = req.session.user?.is_admin === 1;
-  const safeLang = getValidLang(req.params.lang); // ⭐ lang 보정
+  const safeLang = req.params.lang;
   res.locals.lang = safeLang;
 
-  // ... (handleSearchRoute 함수의 나머지 기존 코드 유지) ...
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
@@ -937,15 +925,8 @@ const handleSearchRoute = async (req, res) => {
   }
 };
 
-// =======================================================
-// ✅ [수정] 3. 라우트 정의 (라우트 우선순위 및 패턴 충돌 제거)
-// =======================================================
-
-// -------------------------------------------------------
-// 3-1. 인증 및 API 라우트 (순서 변경 없음, 기존 유지)
-// -------------------------------------------------------
-
-app.post('/login', async (req, res) => { /* ... 기존 유지 ... */
+// 라우트 정의
+app.post('/login', async (req, res) => {
   const { id, password } = req.body;
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
@@ -972,7 +953,7 @@ app.post('/login', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.post('/signup', async (req, res) => { /* ... 기존 유지 ... */
+app.post('/signup', async (req, res) => {
   const { user_id, username, email, password } = req.body;
   if (!user_id || !username || !password) {
     return res.render('signup', { error: '필수 정보를 모두 입력해주세요.' });
@@ -991,8 +972,8 @@ app.post('/signup', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-// ✅ 글 저장 처리 라우트 (트랜잭션 적용) (기존 유지)
-app.post('/savePost', async (req, res) => { /* ... 기존 유지 ... */
+// ✅ 글 저장 처리 라우트 (트랜잭션 적용)
+app.post('/savePost', async (req, res) => {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
@@ -1051,7 +1032,7 @@ app.post('/savePost', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.post('/edit/:id', async (req, res) => { /* ... 기존 유지 ... */
+app.post('/edit/:id', async (req, res) => {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
@@ -1143,7 +1124,7 @@ app.post('/edit/:id', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.post('/delete/:id', async (req, res) => { /* ... 기존 유지 ... */
+app.post('/delete/:id', async (req, res) => {
   const postId = req.params.id;
   const userId = req.session.user?.id;
 
@@ -1186,7 +1167,7 @@ app.post('/delete/:id', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.get('/api/categories', async (req, res) => { /* ... 기존 유지 ... */
+app.get('/api/categories', async (req, res) => {
   const safeLang = res.locals.lang;
   // 📌 변경 사항: DB 쿼리에 name_es 필드를 추가하여 스페인어 카테고리 이름 조회 지원
   const column = (safeLang === 'ko') ? 'name' : (safeLang === 'es' ? `COALESCE(name_es, '')` : `COALESCE(name_${safeLang}, '')`);
@@ -1201,7 +1182,7 @@ app.get('/api/categories', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.post('/api/categories', async (req, res) => { /* ... 기존 유지 ... */
+app.post('/api/categories', async (req, res) => {
   // 📌 변경 사항: name_es 필드 추가
   const { name, name_en, name_fr, name_zh, name_ja, name_es } = req.body;
 
@@ -1226,7 +1207,7 @@ app.post('/api/categories', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.delete('/api/categories/:name', async (req, res) => { /* ... 기존 유지 ... */
+app.delete('/api/categories/:name', async (req, res) => {
   const { name } = req.params;
   try {
     await db.query('DELETE FROM categories WHERE name = ?', [decodeURIComponent(name)]);
@@ -1237,7 +1218,7 @@ app.delete('/api/categories/:name', async (req, res) => { /* ... 기존 유지 .
   }
 });
 
-app.get('/api/check-id', async (req, res) => { /* ... 기존 유지 ... */
+app.get('/api/check-id', async (req, res) => {
   const { id } = req.query;
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id = ?', [id]);
@@ -1248,7 +1229,7 @@ app.get('/api/check-id', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-app.get('/api/check-nickname', async (req, res) => { /* ... 기존 유지 ... */
+app.get('/api/check-nickname', async (req, res) => {
   const { nickname } = req.query;
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE nickname = ?', [nickname]);
@@ -1259,7 +1240,171 @@ app.get('/api/check-nickname', async (req, res) => { /* ... 기존 유지 ... */
   }
 });
 
-// 기타 라우트 (API 라우트 뒤에 배치) (기존 유지)
+// Main 라우트 핸들러
+app.get('/:lang/', handleMainPage);
+app.get('/', (req, res) => {
+  req.params.lang = 'ko';
+  handleMainPage(req, res);
+});
+
+// 글쓰기/수정/상세 라우트
+app.get('/:lang/write', handleWriteRoute);
+app.get('/write', (req, res) => {
+  req.params.lang = 'ko';
+  handleWriteRoute(req, res);
+});
+app.get('/:lang/edit/:id', handleEditRoute);
+app.get('/edit/:id', (req, res) => {
+  req.params.lang = 'ko';
+  handleEditRoute(req, res);
+});
+app.get('/:lang/post/:id', handlePostViewRoute);
+app.get('/post/:id', (req, res) => {
+  req.params.lang = 'ko';
+  handlePostViewRoute(req, res);
+});
+
+// 검색 라우트
+app.get('/:lang/search', handleSearchRoute);
+app.get('/search', (req, res) => {
+  req.params.lang = 'ko';
+  handleSearchRoute(req, res);
+});
+app.get('/api/search', async (req, res) => {
+  const keyword = req.query.q?.trim();
+  if (!keyword) return res.json({ posts: [] });
+
+  const userId = req.session.user?.id;
+  const isAdmin = req.session.user?.is_admin === 1;
+  const safeLang = res.locals.lang;
+
+  try {
+    const [posts] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.is_private, p.is_pinned,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      WHERE
+          COALESCE(pt_req.title, pt_ko.title, p.title) LIKE ?
+          OR COALESCE(pt_req.content, pt_ko.content, p.content) LIKE ?
+          OR p.categories LIKE ?
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+    `, [safeLang, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`]);
+
+    const filteredPosts = posts.map(post => {
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          ...post,
+          content: '이 글은 비공개로 설정되어 있습니다.'
+        };
+      }
+      return post;
+    });
+
+    for (const post of filteredPosts) {
+      const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
+      const translatedCategories = [];
+      if (originalCategories.length > 0) {
+        // 📌 변경 사항: categoryColumnForDisplay에서 'name_es'도 고려하도록 변경
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryNames] = await db.query(
+          `SELECT ${categoryColumn} AS name FROM categories WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryNames.map(row => row.name));
+      }
+      post.categories = translatedCategories;
+    }
+
+    res.json({ posts: filteredPosts });
+  } catch (err) {
+    console.error('AJAX 검색 오류:', err);
+    res.status(500).json({ error: '검색 중 오류 발생' });
+  }
+});
+
+
+// =======================================================
+// ✅ 💡 /api/recent-posts 라우트: 캐싱 및 라우트 우선순위 수정 완료
+// =======================================================
+app.get('/api/recent-posts', async (req, res) => {
+  // 🌟 캐싱 방지 헤더 추가: 브라우저가 304 대신 200 응답을 받도록 합니다.
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); 
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.set('ETag', false); 
+  
+  const safeLang = (req.query.lang || res.locals.lang || 'ko').toLowerCase();
+  const limit = Math.min(parseInt(req.query.limit) || 5, 20); // 기본 5, 최대 20
+  const offset = parseInt(req.query.offset) || 0;
+
+  try {
+    const [rows] = await db.query(`
+      SELECT
+          p.id, p.categories, p.author, p.user_id, p.created_at, p.updated_at,
+          p.is_private, p.is_pinned, IFNULL(p.views, 0) AS views,
+          COALESCE(pt_req.title, pt_ko.title, p.title) AS title,
+          COALESCE(pt_req.content, pt_ko.content, p.content) AS content
+      FROM posts p
+      LEFT JOIN post_translations pt_req
+        ON p.id = pt_req.post_id AND pt_req.lang_code = ?
+      LEFT JOIN post_translations pt_ko
+        ON p.id = pt_ko.post_id AND pt_ko.lang_code = 'ko'
+      ORDER BY p.is_pinned DESC, GREATEST(p.updated_at, p.created_at) DESC
+      LIMIT ? OFFSET ?
+    `, [safeLang, limit, offset]);
+
+    // 비공개 가리기
+    const userId = req.session.user?.id;
+    const isAdmin = req.session.user?.is_admin === 1;
+    const visible = rows.map(post => {
+      const contentText = String(post.content || '')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return (post.is_private && post.user_id !== userId && !isAdmin)
+        ? {
+            id: post.id,
+            title: '(비공개 글)',
+            author: post.author,
+            created_at: post.created_at,
+            created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
+            is_pinned: !!post.is_pinned,
+            preview: '이 글은 비공개로 설정되어 있습니다.'
+          }
+        : {
+            id: post.id,
+            title: post.title,
+            author: post.author,
+            created_at: post.created_at,
+            created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
+            is_pinned: !!post.is_pinned,
+            preview: contentText.slice(0, 120)
+          };
+    });
+
+    // 다음 페이지가 있는지 간단 플래그
+    const [[{ count }]] = await db.query(`SELECT COUNT(*) AS count FROM posts`);
+    const hasMore = offset + limit < count;
+
+    res.json({
+      posts: visible,
+      nextOffset: offset + limit,
+      hasMore
+    });
+  } catch (err) {
+    console.error('최근 글 API 오류:', err);
+    // API 에러 시 JSON으로 응답
+    res.status(500).json({ error: 'failed to load posts' });
+  }
+});
+
+
+// 기타 라우트 (API 라우트 뒤에 배치)
 app.get('/:lang/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect(`/${req.params.lang}/`);
@@ -1302,21 +1447,31 @@ app.get('/session', (req, res) => {
   }
 });
 
-// =======================================================
-// 3-2. Books 라우트 (최상단에 배치하여 충돌 방지)
-// =======================================================
 
-// ✅ Book 챕터 페이지
+
+// EJS에서 slug 변환 함수 쓰게 하기
+app.locals.slug = function(label, lang) {
+  lang = (lang || 'ko').toLowerCase();
+  const hit = slugMap[lang]?.[label];
+  if (hit) return hit;
+  return String(label).toLowerCase().replace(/\s+/g, '-');
+};
+
+app.get('/_slugtest', (req, res) => {
+  const { lang = 'ko', label = '' } = req.query;
+  const out = app.locals.slug(label, lang);
+  res.type('text').send(out);
+});
+
+
+// ✅ 2025년 11월 7일 
 app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
-  const safeLang = getValidLang(req.params.lang);
-  const { book, chapter } = req.params;
-  res.locals.lang = safeLang;
+  const { lang, book, chapter } = req.params;
+  const viewPath = `content/${lang}/books/${book}/contents/${chapter}`;
 
-  const viewPath = `content/${safeLang}/books/${book}/contents/${chapter}`;
+  console.log("📌 View Path Check:", viewPath);
 
-  console.log("📌 Book View Path Check:", viewPath);
-
-  res.render(viewPath, { lang: safeLang, locale: res.locals.locale }, (err, html) => {
+  res.render(viewPath, { lang, locale: res.locals.locale }, (err, html) => {
     if (err) {
       console.error("❌ EJS Render Error:", err);
       return res.status(404).send("해당 챕터 또는 페이지를 찾을 수 없습니다.");
@@ -1325,89 +1480,13 @@ app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
   });
 });
 
-// -------------------------------------------------------
-// 3-3. Post, Write, Edit, Search 라우트
-// -------------------------------------------------------
-
-// ✅ 글쓰기 라우트
-app.get('/:lang/write', handleWriteRoute);
-
-// ✅ 수정 라우트
-app.get('/:lang/edit/:id', handleEditRoute);
-
-// ✅ 상세 라우트
-app.get('/:lang/post/:id', handlePostViewRoute);
-
-// ✅ 검색 라우트
-app.get('/:lang/search', handleSearchRoute);
-
-
-// -------------------------------------------------------
-// 3-4. Lang이 누락된 요청 처리 (Lang이 없는 경로를 강제 보정)
-// -------------------------------------------------------
-
-// 🚨 `/write`, `/edit/123`, `/post/123`, `/search?q=...` 요청 처리 (Lang 누락 방지)
-app.get('/write', (req, res) => res.redirect(302, `/ko/write`));
-app.get('/edit/:id', (req, res) => res.redirect(302, `/ko/edit/${req.params.id}`));
-app.get('/post/:id', (req, res) => res.redirect(302, `/ko/post/${req.params.id}`));
-app.get('/search', (req, res) => {
-  const qs = req._parsedUrl && req._parsedUrl.search ? req._parsedUrl.search : '';
-  res.redirect(302, `/ko/search${qs || ''}`);
-});
-
-
-// -------------------------------------------------------
-// 3-5. Panel 라우트 (Lang 필수)
-// -------------------------------------------------------
-
-// ✅ 패널 라우팅 (와일드카드이지만 Lang을 필수로 잡음)
-app.get('/:lang/:section/:topic', handlePanelRoute);
-
-// 🚨 [제거됨] 기존의 Lang 없는 와일드카드 라우트: app.get('/:section/:topic', handlePanelRoute); 
-// 이 라우트가 충돌의 근본 원인이므로 완전히 제거되었습니다.
-
-// -------------------------------------------------------
-// 3-6. Main Page 및 Lang 보정 라우트 (가장 일반적인 라우트)
-// -------------------------------------------------------
-
-// ✅ 루트 접근 시 /ko/ 로 이동 (SEO 최적화)
-app.get('/', (req, res) => res.redirect(302, '/ko/'));
-
-// ✅ 언어 코드만 있는 요청 (/ko, /en)은 /ko/ 로 슬래시 보정
-app.get('/:lang', (req, res) => {
-  if (supportedLangs.includes(req.params.lang)) {
-    return res.redirect(302, `/${req.params.lang}/`);
-  }
-  return res.status(404).render("404");
-});
-
-// ✅ 메인 페이지 (슬래시 보정 후 도착)
-app.get('/:lang/', handleMainPage);
-
-// -------------------------------------------------------
-// 3-7. 나머지 정적/와일드카드 라우트 (기존 유지)
-// -------------------------------------------------------
-
-// ✅ EJS에서 slug 변환 함수 쓰게 하기 (기존 유지)
-app.locals.slug = function(label, lang) {
-  lang = (lang || 'ko').toLowerCase();
-  const hit = slugMap[lang]?.[label];
-  if (hit) return hit;
-  return String(label).toLowerCase().replace(/\s+/g, '-');
-};
-
-app.get('/_slugtest', (req, res) => { /* ... 기존 유지 ... */
-  const { lang = 'ko', label = '' } = req.query;
-  const out = app.locals.slug(label, lang);
-  res.type('text').send(out);
-});
-
-// ✅ 언어 + 폴더 + 폴더 + 페이지 구조만 잡음 (기존 유지)
+// ✅ 언어 + 폴더 + 폴더 + 페이지 구조만 잡음
 app.get('/:lang/:section/:subsection/:page', (req, res) => {
   const { lang, section, subsection, page } = req.params;
   const filePath = path.join(__dirname, 'content', lang, section, subsection, `${page}.html`);
 
   if (!fs.existsSync(filePath)) {
+    // 404 페이지도 HTML 정적파일로 보여주고 싶으면 sendFile로
     const notFoundPath = path.join(__dirname, 'views', '404.html');
     if (fs.existsSync(notFoundPath)) {
       return res.sendFile(notFoundPath);
@@ -1419,8 +1498,7 @@ app.get('/:lang/:section/:subsection/:page', (req, res) => {
   res.sendFile(filePath);
 });
 
-
-// 업로드 위치 + 파일명 설정 (기존 유지)
+// 업로드 위치 + 파일명 설정
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, 'public', 'uploads'));
@@ -1433,10 +1511,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// public/uploads 정적 경로로 서빙 (기존 유지)
+// public/uploads 정적 경로로 서빙
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// 업로드 라우트 추가 (기존 유지)
+// 업로드 라우트 추가
 app.post('/upload/image', upload.single('image'), (req, res) => {
   if (!req.file) return res.json({ success: false });
   return res.json({
@@ -1453,22 +1531,16 @@ app.post('/upload/video', upload.single('video'), (req, res) => {
   return res.json({ success: true, url: videoUrl });
 });
 
-// =======================================================
-// ✅ [수정] 4. 404 처리 (모든 라우트 실패 시)
-// =======================================================
-app.use((req, res) => {
-  // lang을 미들웨어에서 보장했으므로 안전함
-  const lang = res.locals.lang || 'ko';
-  return res.status(404).render('404', { lang });
-});
+// ✅ 패널 라우팅 (가장 일반적인 라우트이므로 가장 마지막에 배치)
+app.get('/:lang/:section/:topic', handlePanelRoute);
+app.get('/:section/:topic', handlePanelRoute);
 
-
-// DB 연결 확인 (기존 유지)
+// DB 연결 확인
 db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
-// 서버 실행 (기존 유지)
+// 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
 });
