@@ -1,4 +1,3 @@
-app.enable('trust proxy');
 const { format } = require('date-fns');
 const express = require('express');
 const path = require('path');
@@ -9,6 +8,7 @@ const db = require('./config/db'); // DB 연결 설정 파일
 // 📌 변경 사항: 'es' (스페인어) 추가
 const supportedLangs = ['ko', 'en', 'fr', 'zh', 'ja', 'es'];
 const app = express();
+app.enable('trust proxy');
 const PORT = process.env.PORT || 3002;
 app.locals.format = format; // ✅ 2025년 11월 8일 추가
 const allLocales = require('./locales/all.json');
