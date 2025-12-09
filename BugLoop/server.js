@@ -1,3 +1,4 @@
+app.enable('trust proxy');
 const { format } = require('date-fns');
 const express = require('express');
 const path = require('path');
@@ -617,7 +618,8 @@ const handlePostViewRoute = async (req, res) => {
     };
 
     // canonical + alternate
-    const canonicalUrl = `${req.protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+    const canonicalUrl = `${protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
     const alternateLinks = supportedLangs.map(lang => ({
       lang,
       href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
