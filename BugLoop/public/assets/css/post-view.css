@@ -123,7 +123,7 @@ body.modal-open {
   /* 📘 전체 구조 */
 
 .post-content {
-  line-height: 1.7;
+  line-height: 1.8;
   font-size: 1.1rem;
   color: #333;
   max-width: 640px;
@@ -458,8 +458,7 @@ html.dark .toc-list a:hover {
       /* 중요! break-word보다 더 강력하게, 긴 주소가 있으면 
          단어 중간이라도 무조건 끊어서 공간을 확보함 */
       overflow-wrap: anywhere; 
-      
-      line-height: 1.6;
+      line-height: 1.8;
       text-align: left;
     }
 
