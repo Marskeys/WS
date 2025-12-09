@@ -95,10 +95,10 @@
           <div class="dropdown">
             <div class="dropdown-toggle" data-style-toggle="<%= code %>">본문 ▼</div>
             <div class="dropdown-menu" data-style-dropdown="<%= code %>">
-              <div class="h1" data-style-command="h1">제목</div>
-              <div class="h2" data-style-command="h2">부제목</div>
-              <div class="h3" data-style-command="h3">머리말 1</div>
-              <div class="red" data-style-command="h4">빨간 머리말</div>
+              <div class="h2" data-style-command="h2">제목</div>
+              <div class="h3" data-style-command="h3">부제목</div>
+              <div class="h4" data-style-command="h4">머리말 1</div>
+              <div class="red" data-style-command="h5">빨간 머리말</div>
               <div class="p" data-style-command="p">본문</div>
               <div class="desc" data-style-command="small">설명</div>
               <div class="meta" data-style-command="footer">머리말 및 꼬리말</div>
@@ -522,10 +522,11 @@
         detectStyle();
       }
 
-      /* =========[ 블록 스타일 적용 (기존 로직 유지) ]========= */
+      /* =========[ 블록 스타일 적용 (h1 -> h2, h2 -> h3, h3 -> h4, h4 -> h5로 변경) ]========= */
       function applyStyle(tag) {
         if (!currentActiveEditor) return;
-        const blockTags = ['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'];
+        // h1 제거, h2부터 시작하도록 변경
+        const blockTags = ['h2', 'h3', 'h4', 'h5', 'p', 'small', 'footer'];
 
         currentActiveEditor.focus();
         restoreSelection(); 
@@ -813,10 +814,11 @@ function insertVideo() {
       function updateCurrentStyle(tagName) {
           if (!currentActiveToolbar) return;
           const labelMap = {
-              h1: "제목",
-              h2: "부제목",
-              h3: "머리말 1",
-              h4: "빨간 머리말",
+              // h1 제거
+              h2: "제목", // h1 -> h2 (제목)
+              h3: "부제목", // h2 -> h3 (부제목)
+              h4: "머리말 1", // h3 -> h4
+              h5: "빨간 머리말", // h4 -> h5
               p: "본문",
               small: "설명",
               footer: "머리말 및 꼬리말",
@@ -843,7 +845,8 @@ function insertVideo() {
 
         while (node && node !== currentActiveEditor) {
           const tag = node.tagName?.toLowerCase();
-          if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+          // h1 제거, h2, h3, h4, h5로 변경
+          if (['h2', 'h3', 'h4', 'h5', 'p', 'small', 'footer'].includes(tag)) {
             updateCurrentStyle(tag);
             return;
           }
@@ -907,7 +910,8 @@ function insertVideo() {
         while (node && node !== currentActiveEditor) {
           if (node.nodeType === 1) {
             const tag = node.tagName.toLowerCase();
-            if (['h1', 'h2', 'h3', 'h4', 'p', 'small', 'footer'].includes(tag)) {
+            // h1 제거, h2, h3, h4, h5로 변경
+            if (['h2', 'h3', 'h4', 'h5', 'p', 'small', 'footer'].includes(tag)) {
               return tag;
             }
           }
@@ -1185,9 +1189,10 @@ function insertVideo() {
             showCustomMessage("에디터 내용이 올바른 형식이 아닙니다. 다시 시도해주세요.");
             return;
         }
-        const headings = blContentDiv.querySelectorAll("h1, h2");
+        // h1 대신 h2, h3를 목차 기준으로 사용
+        const headings = blContentDiv.querySelectorAll("h2, h3");
         if (!headings.length) {
-            showCustomMessage("제목(h1)이나 부제목(h2)이 없어 목차를 만들 수 없습니다.");
+            showCustomMessage("제목(h2)이나 부제목(h3)이 없어 목차를 만들 수 없습니다.");
             return;
         }
         const oldTOC = blContentDiv.querySelector(".auto-toc");
@@ -1202,18 +1207,18 @@ function insertVideo() {
         tocList.className = "toc-list";
         tocList.style.margin = "0";
         tocList.style.padding = "0";
-        let h1Count = 0;
-        let h2Count = 0;
+        let h2Count = 0; // 최상위 제목은 h2
+        let h3Count = 0;
         headings.forEach(el => {
             const tag = el.tagName.toLowerCase();
             let number = "";
-            if (tag === "h1") {
-                h1Count++;
-                h2Count = 0;
-                number = `${h1Count}.`;
-            } else if (tag === "h2") {
+            if (tag === "h2") {
                 h2Count++;
-                number = `${h1Count}.${h2Count}`;
+                h3Count = 0;
+                number = `${h2Count}.`;
+            } else if (tag === "h3") {
+                h3Count++;
+                number = `${h2Count}.${h3Count}`;
             }
             const id = `toc-${number.replace(/\./g, "-")}`;
             el.id = id;
