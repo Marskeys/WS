@@ -221,7 +221,7 @@ body {
   font-weight: bold;
   color: #333;
   margin: 16px 0 10px 0; /* 상단 마진을 좀 더 크게 */
-  border-bottom: 2px solid #ff9990; /* 구분선 추가 */
+  border-bottom: 2px solid #ddd; /* 구분선을 좀 더 세련된 색상으로 변경 */
   padding-bottom: 4px;
 }
 
@@ -514,7 +514,8 @@ body {
 
 .auto-toc .toc-title {
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  /* 여백 추가: 0.5rem -> 0.8rem */
+  margin-bottom: 0.8rem;
   display: block;
 }
 
@@ -533,6 +534,11 @@ body {
   display: none;
 }
 
+/* 목차 링크 밑줄 제거 */
+.auto-toc a {
+  text-decoration: none;
+}
+
 .auto-toc .toc-h2 a { /* h2: 1단계 제목 */
   color: #0366d6;
   font-weight: 600;
@@ -546,6 +552,11 @@ body {
   color: #0366d6;
   font-weight: 400;
   font-size: 0.94em;
+}
+
+/* 목차 링크 호버 시 밑줄 다시 표시 */
+.auto-toc a:hover {
+  text-decoration: underline;
 }
 /* -------------------------------------------------------- */
 
@@ -612,15 +623,22 @@ html.dark body {
     border: 1px solid #444;
   }
 
+  /* 다크모드: 본문 요소 색상 강제 지정 */
   html.dark body .editor p,
-html.dark body .editor h1,
-html.dark body .editor h2,
-html.dark body .editor h3,
-html.dark body .editor h4,
-html.dark body .editor small,
-html.dark body .editor footer {
-  color: #ddd !important;
-}
+  /* H2 색상 문제 해결 */
+  html.dark body .editor h2, 
+  html.dark body .editor h3,
+  html.dark body .editor h4,
+  html.dark body .editor h5,
+  html.dark body .editor small,
+  html.dark body .editor footer {
+    color: #eee !important; /* 밝은 색으로 강제 지정 */
+  }
+
+  /* 다크모드: H2 구분선 색상 조정 */
+  html.dark body .editor h2 {
+    border-bottom: 2px solid #555; /* 어두운 배경에 맞는 구분선 색상 */
+  }
 
   /* 🏷 카테고리 */
   html.dark body .category-item {

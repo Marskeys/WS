@@ -149,9 +149,9 @@ html.dark body .post-content {
   margin-top: 2rem;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: #222; /* h1의 색상을 h2에 적용 */
+  color: #333; /* 일반 텍스트보다 강조되게 */
   text-align: left; /* 중앙 정렬 제거 */
-  border-bottom: 2px solid #ff9990; /* 구분선 추가 */
+  border-bottom: 2px solid #ddd; /* 구분선 색상 조정 */
   padding-bottom: 4px;
 }
 
@@ -239,7 +239,7 @@ html.dark .post-content footer {
 
 .post-content .auto-toc .toc-title {
   font-weight: bold;
-  margin-bottom: 0;
+  margin-bottom: 0.8rem; /* 여백 조정 */
   display: block;
 }
 
@@ -284,7 +284,7 @@ html.dark .post-content .auto-toc {
   padding: 2px 6px;
   border-radius: 4px;
   color: #0366d6;
-  text-decoration: none;
+  text-decoration: none; /* 밑줄 제거 */
   transition: all 0.2s ease;
 }
 
@@ -449,18 +449,6 @@ html.dark .toc-list a:hover {
   color: var(--accent);
 }
 
-/* 이전 h1, h2 스타일을 h2, h3, h4에 적용했으므로 이 부분은 삭제 */
-/*
-.post-content h1 {
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-.post-content h2 {
-  font-size: 1.2rem;
-  text-align: center;
-}
-*/
 
 .post-content {
       /* 한글 단어 쪼개짐 방지 */
@@ -482,3 +470,15 @@ html.dark .toc-list a:hover {
       /* 링크가 너무 길면 강제로 줄바꿈 허용 */
       white-space: normal; 
     }
+    
+/* 다크모드에서 H2 제목 색상과 구분선 색상 지정 */
+html.dark .post-content h2 {
+    color: #eee !important;
+    border-bottom: 2px solid #555;
+}
+
+/* 다크모드에서 H3, H4 색상 지정 */
+html.dark .post-content h3,
+html.dark .post-content h4 {
+    color: #ddd !important;
+}
