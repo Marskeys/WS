@@ -210,15 +210,14 @@
 
     <h1 class="post-title"><%= post.title %></h1>
 
-    <div class="post-meta">
-      <span><%= locale.ui.category %>: <%= post.categories.join(', ') %></span><br>
-      <span><%= locale.ui.author %>: <%= post.author %></span><br>
-      <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %>
-        <% if (post.updated_at && post.created_at !== post.updated_at) { %>
-          (<%= locale.ui.modified || '수정됨' %>: <%= new Date(post.updated_at).toLocaleString() %>)
-        <% } %>
-      </span>
-    </div>
+<div class="post-meta">
+  <span><%= locale.ui.category %>: <%= post.categories.join(', ') %></span><br>
+  <span><%= locale.ui.author %>: <%= post.author %></span><br>
+  <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
+    <% if (post.updated_at && post.created_at !== post.updated_at) { %>
+      <br> <span><%= locale.ui.modified || 'BugLoop.png' %>: <%= new Date(post.updated_at).toLocaleString() %></span>
+    <% } %>
+</div>
 
     <div class="tts-wrapper">
       <button id="ttsBtn" class="tts-btn">🔊 <%= locale.ui.listen || "Listen" %></button>
