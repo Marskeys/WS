@@ -3,26 +3,41 @@
 <head>
   <link rel="stylesheet" href="/assets/css/post-view.css" />
 
+  <!-- ============================= -->
+  <!-- 📌 Canonical (언어별 고정) -->
+  <!-- ============================= -->
+  <link rel="canonical" href="https://bugloop.dev/<%= lang %>/post/<%= post.id %>" />
+
+  <!-- ============================= -->
+  <!-- 📌 hreflang (모든 페이지 공통 출력) -->
+  <!-- ============================= -->
+  <% const langs = ['ko','en','fr','zh','ja','es']; %>
+  <% langs.forEach(l => { %>
+    <link rel="alternate" hreflang="<%= l %>" href="https://bugloop.dev/<%= l %>/post/<%= post.id %>">
+  <% }) %>
+
+  <!-- x-default는 기본 언어 없음 버전 -->
+  <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/post/<%= post.id %>">
+
+  <!-- ============================= -->
+  <!-- 기존 meta include 그대로 유지 -->
+  <!-- ============================= -->
   <%- include('partials/head', {
         metaTitle: `${post.title} | Bug Loop`,
         metaDescription: summary,
         metaImage: "https://bugloop.dev/assets/images/BugLoop.png",
-        canonical: canonicalUrl,
+        canonical: `https://bugloop.dev/${lang}/post/${post.id}`,
         currentPath: `/${lang}/post/${post.id}`
   }) %>
-
-  <% if (alternateLinks && alternateLinks.length > 0) { %>
-    <% alternateLinks.forEach(link => { %>
-      <link rel="alternate" hreflang="<%= link.lang %>" href="<%= link.href %>">
-    <% }); %>
-    <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/<%= lang %>/post/<%= post.id %>">
-  <% } %>
 
   <% const testKeywords = ['테스트', 'test', 'テスト', '测试']; %>
   <% if (post.categories.some(cat => testKeywords.includes(cat))) { %>
     <meta name="robots" content="noindex">
   <% } %>
 
+  <!-- ============================= -->
+  <!-- JSON-LD 스키마 (canonical 반영) -->
+  <!-- ============================= -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -33,7 +48,7 @@
       "name": "<%= post.author %>"
     },
     "datePublished": "<%= new Date(post.created_at).toISOString() %>",
-    "mainEntityOfPage": "<%= canonicalUrl %>",
+    "mainEntityOfPage": "https://bugloop.dev/<%= lang %>/post/<%= post.id %>",
     "image": "https://bugloop.dev/assets/images/BugLoop.png",
     "articleBody": "<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600) %>"
   }
