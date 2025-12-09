@@ -977,7 +977,12 @@
   <%- include('partials/scripts') %>
 
 <script>
-const lang = "<%= lang %>";
+// ✅ PJAX/partial reload에서도 항상 정확한 lang을 유지
+let lang = document.documentElement.getAttribute('lang');
+
+if (!lang || lang === "undefined" || lang.trim() === "") {
+  lang = "ko"; // 기본 언어
+}
 const booksData = <%- JSON.stringify(locale.books) %>; // 모든 책 데이터를 JS로 가져옴
 
 let offset = 5;   
