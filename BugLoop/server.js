@@ -617,13 +617,14 @@ const handlePostViewRoute = async (req, res) => {
       originalCategories: originalCategories
     };
 
-    // canonical + alternate
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
-    const canonicalUrl = `${protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
-    const alternateLinks = supportedLangs.map(lang => ({
-      lang,
-      href: `${req.protocol}://${req.get('host')}/${lang}/post/${postId}`
-    }));
+const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+
+const canonicalUrl = `${protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
+
+const alternateLinks = supportedLangs.map(lang => ({
+  lang,
+  href: `${protocol}://${req.get('host')}/${lang}/post/${postId}`
+}));
 
     // 사이드바 데이터
     const { postsForSidebar, allCategories, translatedSelectedCategory, paginationRange } =
