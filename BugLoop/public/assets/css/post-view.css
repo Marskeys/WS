@@ -277,7 +277,8 @@ html.dark .post-content .auto-toc {
   font-size: 0; /* 줄바꿈 공백 제거 */
 }
 
-.toc-list a {
+.toc-list a,
+.post-content .auto-toc a { /* ✅ 본문 내 목차 링크 밑줄 제거 명시 */
   display: block;
   font-size: 14px;
   line-height: 1.4;
