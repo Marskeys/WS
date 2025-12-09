@@ -138,15 +138,47 @@ html.dark body .post-content {
 
 /* 📝 제목, 본문 요소 간격 */
 
-.post-content h1,
-.post-content h2 {
+/* h1 스타일 제거 (본문에서 사용하지 않음) */
+.post-content h1 {
+  display: none;
+}
+
+.post-content h2 { /* h2: 최상위 제목 (이전 h1 역할) */
+  font-size: 1.8rem;
+  font-weight: bold;
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   line-height: 1.3;
+  color: #222; /* h1의 색상을 h2에 적용 */
+  text-align: left; /* 중앙 정렬 제거 */
+  border-bottom: 2px solid #ff9990; /* 구분선 추가 */
+  padding-bottom: 4px;
+}
+
+.post-content h3 { /* h3: 2단계 제목 (이전 h2 역할) */
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+  color: #333;
+  text-align: left;
+}
+
+.post-content h4 { /* h4: 3단계 제목 (이전 h3 역할) */
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.3;
+  color: #444;
+  text-align: left;
+  margin-left: 1em; /* 1em 들여쓰기 */
 }
 
 .post-content p {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem; /* 이전 2rem에서 1rem으로 줄여서 간결하게 */
+  margin-top: 0.5rem;
 }
 
 .post-content ul,
@@ -173,8 +205,6 @@ html.dark .post-content footer {
 }
 
 /* 🧭 목차 (.auto-toc 포함) */
-
-
 
 .post-content .auto-toc {
   background: #f7f9fa;
@@ -225,8 +255,9 @@ html.dark .post-content footer {
   padding-right: 0;
 }
 
+/* h1 제거 */
 .post-content .auto-toc li.toc-h1 {
-  margin-top: 0.8rem;
+  display: none;
 }
 
 .post-content .auto-toc + h1,
@@ -270,9 +301,20 @@ html.dark .toc-list a:hover {
   color: #a2d4ff !important;
 }
 
+/* h2: 1단계 제목 (들여쓰기 제거) */
 .toc-item.toc-h2 {
-  padding-left: 1.2rem;
+  padding-left: 0;
+  font-weight: bold;
+  margin-top: 0.6rem;
 }
+
+/* h3: 2단계 제목 (들여쓰기 적용) */
+.toc-item.toc-h3 {
+  padding-left: 1.2rem;
+  font-weight: normal;
+  margin-top: 0.1em;
+}
+
 
 /* ✍️ 타이틀/메타/로고 */
 
@@ -407,6 +449,8 @@ html.dark .toc-list a:hover {
   color: var(--accent);
 }
 
+/* 이전 h1, h2 스타일을 h2, h3, h4에 적용했으므로 이 부분은 삭제 */
+/*
 .post-content h1 {
   font-size: 1.5rem;
   text-align: center;
@@ -416,6 +460,7 @@ html.dark .toc-list a:hover {
   font-size: 1.2rem;
   text-align: center;
 }
+*/
 
 .post-content {
       /* 한글 단어 쪼개짐 방지 */

@@ -173,15 +173,18 @@ body {
   background: #444;
 }
 
-.dropdown-menu .h1 { font-size: 24px; font-weight: bold; background: #555; }
-.dropdown-menu .h2 { font-size: 20px; font-weight: bold; background: #444; }
-.dropdown-menu .h3 { font-size: 18px; font-weight: bold; background: #333; }
+/* --- 수정된 드롭다운 메뉴 스타일 (h1 제거, h2가 가장 크게) --- */
+/* h1 제거 */
+.dropdown-menu .h2 { font-size: 24px; font-weight: bold; background: #555; } /* 제목 (h2) */
+.dropdown-menu .h3 { font-size: 20px; font-weight: bold; background: #444; } /* 부제목 (h3) */
+.dropdown-menu .h4 { font-size: 18px; font-weight: bold; background: #333; } /* 머리말 1 (h4) */
 .dropdown-menu .red { color: red; font-weight: bold; }
 .dropdown-menu .p { font-size: 16px; }
 .dropdown-menu .desc { font-size: 13px; color: #aaa; font-style: italic; }
 .dropdown-menu .meta { font-size: 12px; color: #bbb; font-style: italic; }
 .dropdown-menu .label { font-size: 12px; background: #888; border-radius: 4px; padding: 2px 6px; display: inline-block; }
 .dropdown-menu .label-bold { font-weight: bold; }
+
 
 /* 에디터 본문 영역 */
 #editor { /* #editor 아이디를 가진 요소에만 적용 */
@@ -208,33 +211,41 @@ body {
 
 
 /* 에디터 내부의 HTML 요소 스타일 */
-.editor h1 {
+/* --- 수정된 본문 제목 스타일 (h1 제거, h2가 최상위 제목) --- */
+.editor h1 { /* h1은 사용하지 않으므로 스타일 제거 */
+  display: none;
+}
+
+.editor h2 { /* h2: 최상위 제목 (이전 h1과 유사) */
   font-size: 32px;
   font-weight: bold;
   color: #333;
-  margin: 16px 0;
+  margin: 16px 0 10px 0; /* 상단 마진을 좀 더 크게 */
+  border-bottom: 2px solid #ff9990; /* 구분선 추가 */
+  padding-bottom: 4px;
 }
 
-.editor h2 {
+.editor h3 { /* h3: 2단계 제목 (이전 h2와 유사, 들여쓰기 없음) */
   font-size: 26px;
   font-weight: bold;
   color: #444;
   margin: 14px 0;
 }
 
-.editor h3 {
+.editor h4 { /* h4: 3단계 제목 (이전 h3와 유사, 약간의 들여쓰기) */
   font-size: 22px;
   font-weight: bold;
   color: #555;
-  margin: 12px 0;
+  margin: 12px 0 12px 1em; /* 1em 들여쓰기 */
 }
 
-.editor h4 {
+.editor h5 { /* h5: 빨간 머리말 (이전 h4와 유사) */
   font-size: 20px;
   font-weight: bold;
   color: red;
   margin: 10px 0;
 }
+/* ------------------------------------------------ */
 
 .editor p {
   font-size: 16px;
@@ -517,20 +528,26 @@ body {
   margin-bottom: 0.3rem;
 }
 
-.auto-toc .toc-h1 a {
+/* --- 수정된 목차 스타일 (h1 제거, h2가 1단계, h3가 2단계) --- */
+.auto-toc .toc-h1 { /* h1 제거 */
+  display: none;
+}
+
+.auto-toc .toc-h2 a { /* h2: 1단계 제목 */
   color: #0366d6;
   font-weight: 600;
 }
 
-.auto-toc .toc-h2 {
+.auto-toc .toc-h3 { /* h3: 2단계 제목 (들여쓰기) */
   margin-left: 1em;
 }
 
-.auto-toc .toc-h2 a {
+.auto-toc .toc-h3 a {
   color: #0366d6;
   font-weight: 400;
   font-size: 0.94em;
 }
+/* -------------------------------------------------------- */
 
 .auto-toc .toc-item {
   display: block; /* 무조건 줄바꿈되게 (에디터 인라인 스타일에서 가져옴) */
