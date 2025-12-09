@@ -179,17 +179,6 @@
       opacity: 0.4;
       filter: blur(3px);
     }
-
-    /* 본문 내 광고 스타일 */
-    .in-article-ad {
-      margin: 100px auto;
-      text-align: center;
-      max-width: 100%;
-    }
-    .in-article-ad ins {
-      display: block;
-      width: 100%;
-    }
   </style>
 </head>
 
@@ -536,42 +525,6 @@
         isDragging = false;
       });
     }
-  });
-</script>
-  
-<script>
-  // ==========================================
-  // 본문 내 광고 자동 삽입
-  // ==========================================
-  document.addEventListener('DOMContentLoaded', function () {
-    const container = document.querySelector('.post-content');
-    if (!container) return;
-  
-    const paragraphs = Array.from(container.querySelectorAll('p'));
-    if (!paragraphs.length) return;
-  
-    const isLongEnough = (p) => (p.textContent||'').trim().length > 50;
-    const adPositions = [2,5,8].filter(i => i < paragraphs.length && isLongEnough(paragraphs[i]));
-  
-    adPositions.forEach((pos) => {
-      const p = paragraphs[pos];
-  
-      const wrap = document.createElement('div');
-      wrap.className = 'in-article-ad';
-  
-      const ins = document.createElement('ins');
-      ins.className = 'adsbygoogle';
-      ins.style.display = 'block';
-      ins.setAttribute('data-ad-client', 'ca-pub-2585969189290118');
-      ins.setAttribute('data-ad-slot',   '2419246715');
-      ins.setAttribute('data-ad-format', 'auto');
-      ins.setAttribute('data-full-width-responsive', 'true');
-  
-      wrap.appendChild(ins);
-      p.insertAdjacentElement('afterend', wrap);
-  
-      try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-    });
   });
 </script>
 
