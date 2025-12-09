@@ -2,26 +2,28 @@
 <html lang="<%= lang %>">
 <head>
   <link rel="stylesheet" href="/assets/css/post-view.css" />
-  <!-- ============================= -->
-  <!-- 📌 hreflang (모든 페이지 공통 출력) -->
-  <!-- ============================= -->
+  
   <% const langs = ['ko','en','fr','zh','ja','es']; %>
   <% langs.forEach(l => { %>
     <link rel="alternate" hreflang="<%= l %>" href="https://bugloop.dev/<%= l %>/post/<%= post.id %>">
   <% }) %>
 
-  <!-- x-default는 기본 언어 없음 버전 -->
   <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/post/<%= post.id %>">
 
-  <!-- ============================= -->
-  <!-- 기존 meta include 그대로 유지 -->
-  <!-- ============================= -->
+  <% 
+    const publishedDate = new Date(post.created_at).toISOString();
+    // 수정일(updated_at)이 있다면 사용, 없다면 발행일(created_at) 사용
+    const modifiedDate = post.updated_at ? new Date(post.updated_at).toISOString() : publishedDate;
+  %>
+  
   <%- include('partials/head', {
         metaTitle: `${post.title} | Bug Loop`,
         metaDescription: summary,
         metaImage: "https://bugloop.dev/assets/images/BugLoop.png",
         canonical: `https://bugloop.dev/${lang}/post/${post.id}`,
-        currentPath: `/${lang}/post/${post.id}`
+        currentPath: `/${lang}/post/${post.id}`,
+        // [유지] 수정일 메타 태그 추가
+        articleModifiedTime: modifiedDate 
   }) %>
 
   <% const testKeywords = ['테스트', 'test', 'テスト', '测试']; %>
@@ -29,9 +31,6 @@
     <meta name="robots" content="noindex">
   <% } %>
 
-  <!-- ============================= -->
-  <!-- JSON-LD 스키마 (canonical 반영) -->
-  <!-- ============================= -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -41,7 +40,9 @@
       "@type": "Person",
       "name": "<%= post.author %>"
     },
-    "datePublished": "<%= new Date(post.created_at).toISOString() %>",
+    "datePublished": "<%= publishedDate %>",
+    // [유지] 수정일 JSON-LD 추가
+    "dateModified": "<%= modifiedDate %>", 
     "mainEntityOfPage": "https://bugloop.dev/<%= lang %>/post/<%= post.id %>",
     "image": "https://bugloop.dev/assets/images/BugLoop.png",
     "articleBody": "<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600) %>"
@@ -49,8 +50,6 @@
   </script>
 
   <style>
-
-
 /* ---- 플로팅 목차만 드래그 가능하도록 예외 처리 ---- */
 #floatingToc, #floatingToc * {
   pointer-events: auto !important;
@@ -204,9 +203,6 @@
 
 
 <body class="no-fixed-footer" oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
-  <amp-auto-ads type="adsense"
-        data-ad-client="ca-pub-2585969189290118">
-  </amp-auto-ads>
   
   <%- include('partials/header') %>
 
@@ -217,7 +213,11 @@
     <div class="post-meta">
       <span><%= locale.ui.category %>: <%= post.categories.join(', ') %></span><br>
       <span><%= locale.ui.author %>: <%= post.author %></span><br>
-      <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
+      <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %>
+        <% if (post.updated_at && post.created_at !== post.updated_at) { %>
+          (<%= locale.ui.modified || '수정됨' %>: <%= new Date(post.updated_at).toLocaleString() %>)
+        <% } %>
+      </span>
     </div>
 
     <div class="tts-wrapper">
@@ -270,7 +270,7 @@
 
 <script>
   // ==========================================
-  // [보안 기능 강화] 드래그/복사/우클릭 방지 로직
+  // [보안 기능 강화] 드래그/복사/우클릭 방지 로직 (유지)
   // ==========================================
 
   // 1. 우클릭 완전 차단
@@ -337,7 +337,7 @@
 
 <script>
   // ==========================================
-  // 목차(TOC) 생성 및 동작 로직
+  // 목차(TOC) 생성 및 동작 로직 (유지)
   // ==========================================
   document.addEventListener('DOMContentLoaded', function() {
     const postContent = document.querySelector('.post-content');
@@ -436,7 +436,7 @@
 
 <script>
   // ==========================================
-  // 모바일 목차 모달 제어 및 센티넬 로직
+  // 모바일 목차 모달 제어 및 센티넬 로직 (유지)
   // ==========================================
   document.addEventListener("DOMContentLoaded", () => {
     const toc = document.querySelector(".auto-toc");
@@ -513,7 +513,7 @@
 
 <script>
   // ==========================================
-  // 플로팅 목차 드래그 이동 (데스크톱)
+  // 플로팅 목차 드래그 이동 (데스크톱) (유지)
   // ==========================================
   document.addEventListener("DOMContentLoaded", () => {
     const floatingToc = document.getElementById("floatingToc");
@@ -548,9 +548,15 @@
   });
 </script>
   
+<script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+<script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
+        crossorigin="anonymous"></script>
+
 <script>
   // ==========================================
-  // 본문 내 광고 자동 삽입
+  // 본문 내 광고 자동 삽입 (유지)
   // ==========================================
   document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.post-content');
@@ -586,7 +592,7 @@
 
 <script>
 // ==========================================
-// TTS (음성 듣기) 기능
+// TTS (음성 듣기) 기능 (유지)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("ttsBtn");
