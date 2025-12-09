@@ -608,7 +608,7 @@ const handlePostViewRoute = async (req, res) => {
     // summary 생성
     const summary = generateSummary(translation.content);
 
-    // postView 객체
+    // postView  
     const postForView = {
       ...post,
       title: translation.title,
