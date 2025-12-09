@@ -617,13 +617,15 @@ const handlePostViewRoute = async (req, res) => {
       originalCategories: originalCategories
     };
 
-const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+// ⭐ 프로토콜을 무조건 HTTPS로 지정하여 SEO를 개선
+const CANONICAL_PROTOCOL = 'https'; 
+const HOST = req.get('host'); // 도메인 부분을 가져옵니다.
 
-const canonicalUrl = `${protocol}://${req.get('host')}/${safeLang}/post/${postId}`;
+const canonicalUrl = `${CANONICAL_PROTOCOL}://${HOST}/${safeLang}/post/${postId}`;
 
 const alternateLinks = supportedLangs.map(lang => ({
   lang,
-  href: `${protocol}://${req.get('host')}/${lang}/post/${postId}`
+  href: `${CANONICAL_PROTOCOL}://${HOST}/${lang}/post/${postId}`
 }));
 
     // 사이드바 데이터
