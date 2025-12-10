@@ -103,6 +103,14 @@
   box-sizing: border-box;
 }
 
+.tabs-wrapper {
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+}
+.tabs-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
+
 .tabs-container {
   position: relative;
   width: 100%;
