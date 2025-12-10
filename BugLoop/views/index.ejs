@@ -659,6 +659,7 @@
       };
       
       // 💡 목차 HTML 렌더링 함수 (JS와 EJS에서 모두 사용할 수 있도록 인라인으로 정의)
+      // ⭐ 주의: 이 함수는 서버(EJS)에서 실행되어 초기 HTML을 만듭니다.
       const renderTocHtml = (sections, bookKey) => {
         if (!sections || sections.length === 0) return '';
         let html = '<ul>';
@@ -671,6 +672,8 @@
             const urlPath = `/books/${bookKey}/contents/${ch.id}`; 
 
             if (ch.url) {
+              // EJS 내부에서는 백틱을 써도 서버에서 렌더링되므로 문제 없습니다.
+              // 하지만 일관성을 위해 여기서도 문자열 합치기를 사용할 수 있습니다.
               html += `<a 
                 href="/${lang}${urlPath}" 
                 class="toc-link active"
@@ -938,23 +941,17 @@
       <div class="recent-post-preview">
         <% 
           // 📌 수정된 로직: 목차, 스타일 태그 제거 및 텍스트 정제
-          // 1. 불필요한 HTML 덩어리 제거: 목차 영역 (div.auto-toc)과 스타일 영역 (style)
           let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
           cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
           
-          // 2. 모든 남은 HTML 태그 제거 (태그 사이의 텍스트만 남김)
           let plainText = cleanContent.replace(/<[^>]+>/gi, '');
-          
-          // 3. 텍스트 정리: 연속된 공백(줄바꿈 포함)을 하나의 공백으로 치환하고, 앞뒤 공백 제거
           plainText = plainText.replace(/\s+/g, ' ').trim();
 
-          // 4. HTML 엔티티 코드를 일반 문자로 변환
           const decodedText = plainText
               .replace(/&lt;/g, '<')
               .replace(/&gt;/g, '>')
               .replace(/&amp;/g, '&');
       
-          // 5. 추출된 텍스트에서 120자만 슬라이스
           const previewText = decodedText.slice(0, 120);
         %>
         <%= previewText %>...
@@ -1015,7 +1012,6 @@ async function loadMorePosts() {
       const el = document.createElement("div");
       el.className = "recent-post-item"; 
       
-      // ✅ AJAX 로드 시 날짜 비교 로직 추가
       const now = new Date();
       const createdAt = new Date(post.created_at);
       const updatedAt = new Date(post.updated_at);
@@ -1025,7 +1021,6 @@ async function loadMorePosts() {
       const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
       const showEditedLabel = !isNewPost && isRecentlyEdited;
 
-      // ✅ 다국어 라벨 텍스트 및 HTML 생성
       const newLabelText = "<%= locale.ui.newPost || 'NEW' %>";
       const editedLabelText = "<%= locale.ui.editedPost || 'UPDATED' %>";
       
@@ -1038,38 +1033,31 @@ async function loadMorePosts() {
       
       const formattedDate = post.created_fmt; 
       
-      // 📌 핵심 수정: 미리보기 텍스트 정제 (post.content가 있는 경우 처리)
       let previewText = '';
       if (post.content) {
-        // 1. 불필요한 HTML 덩어리 제거: 목차 영역과 스타일 영역
         let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
         cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
         
-        // 2. 모든 남은 HTML 태그 제거
         let plainText = cleanContent.replace(/<[^>]+>/gi, '');
         
-        // 3. 텍스트 정리: 연속된 공백을 하나의 공백으로 치환하고 앞뒤 공백 제거
         plainText = plainText.replace(/\s+/g, ' ').trim();
 
-        // 4. HTML 엔티티 코드를 일반 문자로 변환
         const decodedText = plainText
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&amp;/g, '&');
     
-        // 5. 추출된 텍스트에서 120자만 슬라이스
         previewText = decodedText.slice(0, 120);
       } else if (post.preview) {
-        // post.content가 없고 post.preview가 있다면 그걸 사용 (서버에서 이미 정제했을 경우 대비)
         let decodedPreview = post.preview
             .replace(/&lt;/g, '<')
             .replace(/&gt;/g, '>')
             .replace(/&amp;/g, '&');
         previewText = decodedPreview.slice(0, 120);
       }
-      // ----------------------------------------
   
-      // ⭐ [수정됨] href 속성을 백틱 밖으로 꺼내서 + 로 연결 (구글봇 오탐지 방지)
+      // ⭐ [중요 수정] 백틱(${...}) 대신 문자열 합치기(+) 사용
+      // 구글봇이 ${lang}, ${post.id} 등을 URL로 인식하지 못하게 함
       el.innerHTML = `
         <a href="/` + lang + `/post/` + post.id + `" class="recent-post-title">
           ${labelHtml}  
@@ -1108,13 +1096,13 @@ window.loadMorePosts = loadMorePosts;
   <script>
   (() => {
     // ----------------------------------------------------
-    // 전역 변수 설정: booksData를 사용하도록 수정
+    // 전역 변수 설정
     // ----------------------------------------------------
-    const booksData = <%- JSON.stringify(locale.books) %>; // 모든 책 데이터를 JS로 가져옴
+    const booksData = <%- JSON.stringify(locale.books) %>; 
     const itemsPerPage = 3;
     
     // ----------------------------------------------------
-    // 목차 렌더링 로직 (범용적으로 수정)
+    // 목차 렌더링 로직 (클라이언트 측)
     // ----------------------------------------------------
     const getPaginatedToc = (tocData) => {
       if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
@@ -1142,11 +1130,11 @@ window.loadMorePosts = loadMorePosts;
         section.chapters.forEach(ch => {
           html += `<li>`;
           
-          // ⭐ [수정됨] URL 생성 부분을 문자열 합치기로 변경
+          // ⭐ [중요 수정] URL 생성 시 문자열 합치기(+) 사용
           const urlPath = '/books/' + camelCaseKey + '/contents/' + ch.id; 
 
           if (ch.url) {
-            // ⭐ [수정됨] href 속성을 백틱 밖으로 꺼내서 + 로 연결
+            // ⭐ [중요 수정] href 속성도 문자열 합치기로 안전하게 생성
             html += `<a 
               href="/` + lang + urlPath + `" 
               class="toc-link active"
@@ -1162,11 +1150,11 @@ window.loadMorePosts = loadMorePosts;
             ch.sub.forEach(sub => {
               html += `<li>`;
               
-              // ⭐ [수정됨] 서브 챕터 URL도 동일하게 처리
+              // ⭐ [중요 수정] 서브 챕터 URL도 동일하게 처리
               const subUrlPath = '/books/' + camelCaseKey + '/contents/' + sub.id;
               
               if (sub.url) {
-                // ⭐ [수정됨] href 속성 연결 방식 변경
+                // ⭐ [중요 수정] href 속성 연결 방식 변경
                 html += `<a 
                   href="/` + lang + subUrlPath + `" 
                   class="toc-link active"
@@ -1214,22 +1202,17 @@ window.loadMorePosts = loadMorePosts;
           if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
         });
 
-        // 💡 페이지 변경 후 목차 높이 재계산 및 적용 (핵심)
+        // 목차 높이 재계산 및 적용
         if (card.classList.contains('expanded') && tocElement) {
-            // 1. 높이를 auto로 설정하여 패딩 포함 실제 콘텐츠 높이를 측정합니다.
             tocElement.style.height = 'auto';
-            
-            // 2. 정확한 scrollHeight를 가져옵니다.
             const contentHeight = tocElement.scrollHeight; 
-            
-            // 3. 측정된 높이로 다시 설정합니다.
             tocElement.style.height = `${contentHeight}px`;
         }
       }
     };
     
     // ----------------------------------------------------
-    // 🎯 [수정] 북카드 토글 로직
+    // 북카드 토글 로직
     // ----------------------------------------------------
     document.querySelectorAll('.book-card').forEach(card => {
       card.addEventListener('click', () => {
@@ -1237,14 +1220,12 @@ window.loadMorePosts = loadMorePosts;
           const tocElement = card.querySelector('.book-toc');
           const transitionDuration = 500; // CSS transition time in ms
           
-          // 📌 [수정] 위쪽 여백(padding-top)을 26px로 넉넉하게 설정
           const contentPaddingTop = '26px';
           const contentPaddingBottom = '16px';
 
           // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
           document.querySelectorAll('.book-card').forEach(c => {
               const otherToc = c.querySelector('.book-toc');
-              // 다른 카드라면 닫고, 움직임 복구
               if (c !== card) {
                   c.classList.remove('expanded'); 
                   
@@ -1265,7 +1246,6 @@ window.loadMorePosts = loadMorePosts;
               // 펼쳐질 때
               tocElement.classList.remove('closed');
               
-              // 💡 [수정] JS에서도 늘어난 패딩을 적용해야 자연스러움
               tocElement.style.paddingTop = contentPaddingTop;
               tocElement.style.paddingBottom = contentPaddingBottom;
               

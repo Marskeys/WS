@@ -1473,13 +1473,21 @@ app.get('/_slugtest', (req, res) => {
 // ✅ 2025년 11월 7일 
 app.get('/:lang/books/:book/contents/:chapter', (req, res) => {
   const { lang, book, chapter } = req.params;
+
+  // 🛡️ [보안 패치] 템플릿 리터럴 문법(${...})이 포함된 잘못된 요청 방어
+  // Googlebot이 JS 소스를 그대로 긁어 요청할 때 서버가 500 에러로 뻗는 것을 방지합니다.
+  if (lang.includes('${') || book.includes('${') || chapter.includes('${') || chapter.includes('}')) {
+    console.warn(`⚠️ [Blocked] Invalid URL pattern detected: ${req.originalUrl}`);
+    return res.status(404).send("Page Not Found");
+  }
+
   const viewPath = `content/${lang}/books/${book}/contents/${chapter}`;
 
   console.log("📌 View Path Check:", viewPath);
 
   res.render(viewPath, { lang, locale: res.locals.locale }, (err, html) => {
     if (err) {
-      console.error("❌ EJS Render Error:", err);
+      console.error("❌ EJS Render Error:", err.message); // 에러 메시지 간소화
       return res.status(404).send("해당 챕터 또는 페이지를 찾을 수 없습니다.");
     }
     res.send(html);
