@@ -1252,3 +1252,8 @@ html:not(.dark) .theme-toggle-btn {
     border: none;
   }
 }
+
+.header-menu, 
+.header-menu * {
+  user-select: none;
+}
