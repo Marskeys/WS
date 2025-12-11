@@ -1,0 +1,15 @@
+<input id="reel" placeholder="릴스 URL 입력">
+<button onclick="go()">찾기</button>
+<div id="out"></div>
+
+<script>
+async function go(){
+  const url = document.getElementById('reel').value;
+  const res = await fetch(url + '?__a=1&__d=dis');
+  const data = await res.json();
+  const username = data?.graphql?.shortcode_media?.owner?.username;
+  document.getElementById('out').innerHTML =
+    username ? `<a href="https://www.instagram.com/${username}/" target="_blank">@${username}</a>` 
+             : "찾기 실패";
+}
+</script>

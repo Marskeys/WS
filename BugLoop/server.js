@@ -84,6 +84,19 @@ app.use((req, res, next) => {
 });
 
 // -----------------------------
+// 🚫 버그로 생성된 /undefined/ 경로 410 처리 추가
+// -----------------------------
+app.use((req, res, next) => {
+  // /undefined/ 로 시작하는 모든 경로를 잡습니다.
+  if (req.path.startsWith('/undefined/')) {
+    console.log("🚫 /undefined/ 경로 410 처리됨:", req.path);
+    // 410 응답과 함께 Gone 메시지를 보냅니다.
+    return res.status(410).send("Gone (Incorrect Link Structure)"); 
+  }
+  next();
+});
+
+// -----------------------------
 // 🧨 삭제된 게시글 ID 목록
 // -----------------------------
 const deletedPostIds = new Set([
