@@ -8,7 +8,7 @@
   --panel-h-default: 150px;
   --panel-h: var(--panel-h-default);
   --ide-w: 50px;
-  --gut: 2.5vw;
+  --gut: 0.5vw;
 }
 
 @media (max-width: 768px) {
@@ -43,7 +43,7 @@
 }
 
 body.panel-open #mini-lecture {
-
+  left: calc(var(--ide-w) + var(--gut));
   right: var(--gut);
 }
 
