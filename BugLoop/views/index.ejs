@@ -659,7 +659,7 @@
       };
       
       // 💡 목차 HTML 렌더링 함수 (JS와 EJS에서 모두 사용할 수 있도록 인라인으로 정의)
-      // ⭐ 주의: 이 함수는 서버(EJS)에서 실행되어 초기 HTML을 만듭니다.
+      // ⭐ [수정됨] 템플릿 변수가 남지 않도록 문자열 합치기를 명시적으로 사용합니다.
       const renderTocHtml = (sections, bookKey) => {
         if (!sections || sections.length === 0) return '';
         let html = '<ul>';
@@ -668,18 +668,12 @@
           section.chapters.forEach(ch => {
             html += `<li>`;
             
-            // 링크 URL은 bookKey를 사용하여 동적으로 생성
-            const urlPath = `/books/${bookKey}/contents/${ch.id}`; 
+            // ⭐️ [수정] URL Path 생성 시 명시적 문자열 합치기
+            const urlPath = '/books/' + bookKey + '/contents/' + ch.id; 
 
             if (ch.url) {
-              // EJS 내부에서는 백틱을 써도 서버에서 렌더링되므로 문제 없습니다.
-              // 하지만 일관성을 위해 여기서도 문자열 합치기를 사용할 수 있습니다.
-              html += `<a 
-                href="/${lang}${urlPath}" 
-                class="toc-link active"
-              >
-                ${ch.title}
-              </a>`;
+              // ⭐️ [수정] href 속성에 템플릿 리터럴 대신 문자열 합치기 사용
+              html += '<a href="/' + lang + urlPath + '" class="toc-link active">' + ch.title + '</a>';
             } else {
               html += `<span class="toc-link disabled">${ch.title}</span>`;
             }
@@ -688,15 +682,11 @@
               html += '<ul>';
               ch.sub.forEach(sub => {
                 html += `<li>`;
-                const subUrlPath = `/books/${bookKey}/contents/${sub.id}`;
+                const subUrlPath = '/books/' + bookKey + '/contents/' + sub.id;
                 
                 if (sub.url) {
-                  html += `<a 
-                    href="/${lang}${subUrlPath}" 
-                    class="toc-link active"
-                  >
-                    ${sub.title}
-                  </a>`;
+                  // ⭐️ [수정] href 속성에 템플릿 리터럴 대신 문자열 합치기 사용
+                  html += '<a href="/' + lang + subUrlPath + '" class="toc-link active">' + sub.title + '</a>';
                 } else {
                   html += `<span class="toc-link disabled">${sub.title}</span>`;
                 }
