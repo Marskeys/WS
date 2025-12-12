@@ -125,7 +125,7 @@ html.dark, [data-theme="dark"] body {
 
 /* ===== 패널 오픈 시 레이아웃 ===== */
 body.panel-open {
-  padding-left: 400px;
+  padding-left: 200px;
   transition: padding 0.3s ease;
   width: 100%;
 }
