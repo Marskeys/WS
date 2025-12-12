@@ -97,6 +97,20 @@ app.use((req, res, next) => {
 });
 
 // -----------------------------
+// 🚫 cuteAcoustics preface 페이지 410 처리
+// -----------------------------
+app.use((req, res, next) => {
+  const regex = /^\/(ko|en|fr|zh|ja|es)\/books\/cuteAcoustics\/contents\/preface\/?$/;
+
+  if (regex.test(req.path)) {
+    console.log("🚫 cuteAcoustics preface 410 처리:", req.path);
+    return res.status(410).send("Gone");
+  }
+  next();
+});
+
+
+// -----------------------------
 // 🧨 삭제된 게시글 ID 목록
 // -----------------------------
 const deletedPostIds = new Set([
