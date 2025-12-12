@@ -125,13 +125,13 @@ html.dark, [data-theme="dark"] body {
 
 /* ===== 패널 오픈 시 레이아웃 ===== */
 body.panel-open {
-  padding-left: 200px;
+  padding-left: 400px;
   transition: padding 0.3s ease;
   width: 100%;
 }
 
 body.panel-open .left-controls {
-  padding-left: 400px;
+  padding-left: 40px;
 }
 
 @media (max-width: 640px) {
