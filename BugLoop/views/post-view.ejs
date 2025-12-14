@@ -50,6 +50,23 @@
   </script>
 
   <style>
+
+    /* ============================= */
+/* MathJax 수식 넘침 방지 & 스크롤 */
+/* ============================= */
+
+.post-content mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.5rem 0;
+}
+
+/* 모바일에서 관성 스크롤 */
+.post-content mjx-container {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ---- 플로팅 목차만 드래그 가능하도록 예외 처리 ---- */
 #floatingToc, #floatingToc * {
   pointer-events: auto !important;
