@@ -1,18 +1,80 @@
 <!DOCTYPE html>
-<html lang="<%= lang %>">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Googlebot Logs</title>
-  <link rel="stylesheet" href="/assets/css/admin-log.css">
+  <style>
+    body { font-family: system-ui; background:#0f1115; color:#e6e6e6; }
+    h1 { margin-bottom: 10px; }
+    table {
+      width:100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #222;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th { color:#9aa4ff; }
+    tr:hover { background:#151a2b; }
+    .status-200 { color:#6ee7b7; }
+    .status-404, .status-410 { color:#fca5a5; }
+  </style>
 </head>
 <body>
 
 <h1>🤖 Googlebot Logs</h1>
+<p id="updated">로딩 중...</p>
 
-<div id="log-container">
-  로딩 중...
-</div>
+<table>
+  <thead>
+    <tr>
+      <th>시간</th>
+      <th>IP</th>
+      <th>요청 경로</th>
+      <th>응답</th>
+      <th>Bot 종류</th>
+    </tr>
+  </thead>
+  <tbody id="log-body">
+    <tr><td colspan="5">로딩 중...</td></tr>
+  </tbody>
+</table>
 
-<script src="/assets/js/admin-log.js"></script>
+<script>
+async function loadLogs() {
+  try {
+    const res = await fetch('/admin/api/googlebot-logs');
+    const data = await res.json();
+
+    const tbody = document.getElementById('log-body');
+    tbody.innerHTML = '';
+
+    data.logs.forEach(log => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${log.time}</td>
+        <td>${log.ip}</td>
+        <td>${log.path}</td>
+        <td class="status-${log.status}">${log.status}</td>
+        <td>${log.bot}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('updated').textContent =
+      '마지막 업데이트: ' + new Date().toLocaleTimeString();
+
+  } catch (e) {
+    document.getElementById('updated').textContent = '불러오기 실패';
+  }
+}
+
+loadLogs();
+setInterval(loadLogs, 60000); // 1분
+</script>
+
 </body>
 </html>
