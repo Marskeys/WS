@@ -92,9 +92,16 @@
           <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </a>
 
-        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" title="BugLoop 홈" aria-label="BugLoop 홈" aria-selected="false">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop">
-        </a>
+       <% if (!isAdmin) { %>
+  <a href="/<%= lang %>/" 
+     class="sidebar-icon logo"
+     data-tab="home"
+     title="BugLoop 홈"
+     aria-label="BugLoop 홈"
+     aria-selected="false">
+    <img src="/assets/images/BugLoop.png" alt="BugLoop">
+  </a>
+<% } %>
         <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" title="홈" aria-selected="false">
           <i class="fas fa-home" aria-hidden="true"></i>
         </a>
