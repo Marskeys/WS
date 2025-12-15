@@ -25,11 +25,11 @@ app.use(session({
   secret: 'wowthats_amazing',
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: true,      // ⚠️ HTTPS 쓰니까 true 권장
-    sameSite: 'lax'
-  }
+cookie: {
+  httpOnly: true,
+  secure: false,
+  sameSite: 'lax'
+}
 }));
 
 app.use('/', sitemapRoutes);
