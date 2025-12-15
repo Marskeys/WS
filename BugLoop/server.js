@@ -17,6 +17,21 @@ const sitemapRoutes = require('./routes/sitemap');
 const sitemapPagesRoutes = require('./routes/sitemap-pages');
 const adminRoutes = require('./routes/admin');
 
+// ===================================
+// ✅ 세션 설정 (모든 라우트보다 위)
+// ===================================
+app.use(session({
+  name: 'bugloop.sid',
+  secret: 'wowthats_amazing',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: true,      // ⚠️ HTTPS 쓰니까 true 권장
+    sameSite: 'lax'
+  }
+}));
+
 app.use('/', sitemapRoutes);
 app.use('/', sitemapPagesRoutes);
 app.use('/admin', adminRoutes);
@@ -150,6 +165,8 @@ app.use((req, res, next) => {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+
+
 // 정적 파일 제공 설정
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -172,12 +189,7 @@ app.get('/__whoami', (req, res) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb' }));
 
-// 세션 설정
-app.use(session({
-  secret: 'wowthats_amazing',
-  resave: false,
-  saveUninitialized: true,
-}));
+
 
 // 공통 locals 미들웨어
 app.use((req, res, next) => {
