@@ -39,39 +39,48 @@ router.get('/api/googlebot-logs', adminOnly, (req, res) => {
     )
     .slice(-300)     // 최근 300줄만
     .reverse()       // 최신이 위로
-    .map(l => {
-      /**
-       * 네 로그 포맷 예시:
-       * bugloop.dev 66.249.66.1 - - [15/Dec/2025:02:31:12 +0000]
-       * "GET /path HTTP/1.1" 200 8421
-       * "-" "Mozilla/... Googlebot/2.1 ..."
-       */
+.map(l => {
+  const m = l.match(
+    /^(\S+)\s+(\S+)\s+-\s+-\s+\[(.*?)\]\s+"(?:GET|POST|HEAD)\s+(\S+)[^"]*"\s+(\d+)\s+\S+\s+"[^"]*"\s+"([^"]+)"/
+  );
 
-      const m = l.match(
-        /^(\S+)\s+(\S+)\s+-\s+-\s+\[(.*?)\]\s+"(?:GET|POST|HEAD)\s+(\S+)[^"]*"\s+(\d+)\s+\S+\s+"[^"]*"\s+"([^"]+)"/
-      );
+  if (!m) return null;
 
-      if (!m) return null;
+  const ip = m[2];
+  const rawTime = m[3]; // 15/Dec/2025:02:31:12 +0000
+  const path = m[4];
+  const status = m[5];
+  const ua = m[6];
 
-      const domain = m[1];
-      const ip = m[2];
-      const time = m[3];
-      const path = m[4];
-      const status = m[5];
-      const ua = m[6];
+  // ✅ 시간 파싱 → KST 변환
+  const date = new Date(
+    rawTime.replace(
+      /^(\d{2})\/(\w{3})\/(\d{4}):/,
+      '$3-$2-$1T'
+    ).replace(' ', '')
+  );
 
-      let bot = 'Googlebot';
-      if (/Googlebot-Image/.test(ua)) bot = 'Googlebot Image';
-      else if (/Mobile/.test(ua)) bot = 'Googlebot Mobile';
+  // UTC → KST (+9시간)
+  date.setHours(date.getHours() + 9);
 
-      return {
-        time,
-        ip,
-        path,
-        status,
-        bot
-      };
-    })
+  const timeKST = date.toISOString()
+    .replace('T', ' ')
+    .replace('Z', ' (KST)')
+    .slice(0, 22);
+
+  let bot = 'Googlebot';
+  if (/Googlebot-Image/.test(ua)) bot = 'Googlebot Image';
+  else if (/Mobile/.test(ua)) bot = 'Googlebot Mobile';
+
+  return {
+    time: timeKST,
+    ip,
+    path,
+    status,
+    bot
+  };
+})
+
     .filter(Boolean);
 
   res.json({ logs });
