@@ -15,10 +15,11 @@ const allLocales = require('./locales/all.json');
 const multer = require('multer');
 const sitemapRoutes = require('./routes/sitemap');
 const sitemapPagesRoutes = require('./routes/sitemap-pages');
+const adminRoutes = require('./routes/admin');
 
 app.use('/', sitemapRoutes);
 app.use('/', sitemapPagesRoutes);
-
+app.use('/admin', adminRoutes);
 // === Helper: merge locale with safe defaults ===
 function mergeLocaleWithDefaults(lang) {
   const base = (allLocales && allLocales['ko']) ? allLocales['ko'] : {};

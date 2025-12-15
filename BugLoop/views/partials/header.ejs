@@ -106,13 +106,28 @@
           <i class="fas fa-search" aria-hidden="true"></i>
         </a>
 
-        <% if (user) { %>
-          <% if (Number(user.is_admin) === 1) { %>
-            <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
-              <i class="fas fa-pen" aria-hidden="true"></i>
-            </a>
-          <% } %>
-        <% } %>
+      <% if (user) { %>
+  <% if (Number(user.is_admin) === 1) { %>
+
+    <!-- 글쓰기 -->
+    <a href="/<%= lang %>/write"
+       class="sidebar-icon"
+       data-tab="write"
+       title="글쓰기"
+       aria-selected="false">
+      <i class="fas fa-pen" aria-hidden="true"></i>
+    </a>
+
+    <!-- 🔍 Googlebot 로그 -->
+    <a href="/admin/logs/googlebot"
+       class="sidebar-icon admin-log-icon"
+       title="Googlebot 로그"
+       aria-label="Googlebot 로그">
+      <i class="fas fa-robot" aria-hidden="true"></i>
+    </a>
+
+  <% } %>
+<% } %>
 
         <div class="sidebar-lang-theme">
           <div class="language-dropdown">
