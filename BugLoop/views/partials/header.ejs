@@ -91,10 +91,11 @@
         <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
           <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </a>
-
-        <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home" title="BugLoop 홈" aria-label="BugLoop 홈" aria-selected="false">
-          <img src="/assets/images/BugLoop.png" alt="BugLoop">
-        </a>
+   <% if (!user || Number(user.is_admin) !== 1) { %>
+  <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home">
+    <img src="/assets/images/BugLoop.png" alt="BugLoop">
+  </a>
+<% } %>
         <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" title="홈" aria-selected="false">
           <i class="fas fa-home" aria-hidden="true"></i>
         </a>
