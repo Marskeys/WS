@@ -162,6 +162,12 @@ app.use('/robots.txt', (req, res) => {
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
+app.get('/__whoami', (req, res) => {
+  res.json({
+    sessionUser: req.session.user || null
+  });
+});
+
 // 미들웨어 설정
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '50mb' }));
