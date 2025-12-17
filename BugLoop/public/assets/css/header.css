@@ -790,14 +790,24 @@ html.dark .lang-option:hover { background-color: #333; }
     z-index: var(--z-header);
     isolation: isolate; /* 자식 스택 분리 */
   }
-
-  /* 🔒 헤더 텍스트 드래그 방지 */
+/* 🔒 헤더 드래그·텍스트 선택 완전 차단 (Chrome / Safari / iOS) */
 .full-header-container,
 .full-header-container * {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  cursor: default;
+}
+
+/* 🔒 Safari 링크 드래그 보강 */
+.full-header-container a {
+  -webkit-user-drag: none !important;
+}
+
+/* 🔒 iOS / Safari 탭 하이라이트 제거 */
+.full-header-container {
+  -webkit-tap-highlight-color: transparent;
 }
 
   /* 헤더 상단바 (메뉴 줄) */
