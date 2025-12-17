@@ -132,6 +132,10 @@ body.modal-open {
   position: relative;
 }
 
+.post-content strong {
+  font-size: 17 !important; 
+}
+
 html.dark body .post-content {
   color: #ddd;
 }
