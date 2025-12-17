@@ -822,21 +822,12 @@
     };
 
     // 💡 [수정됨]: localStorage 저장값을 최우선으로 적용하여 새로고침 시 상태가 유지되도록 보장합니다.
-    const initTheme = () => {
-      const saved = localStorage.getItem(THEME_KEY);
-      let initialTheme;
+ const initTheme = () => {
+  const saved = localStorage.getItem(THEME_KEY);
+  const initialTheme = saved ? saved : 'dark'; // ⭐ 기본값 다크
 
-      if (saved) {
-        // 저장된 값이 있다면, 무조건 그 값('dark' 또는 'light')을 사용합니다.
-        initialTheme = saved;
-      } else {
-        // 저장된 값이 없다면, 시스템 설정을 확인합니다.
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        initialTheme = prefersDark ? 'dark' : 'light';
-      }
-
-      updateTheme(initialTheme);
-    };
+  updateTheme(initialTheme);
+};
 
     const toggleTheme = () => {
       const currentIsDark = htmlEl.classList.contains('dark');
