@@ -139,3 +139,10 @@
 
 <!-- HTML Beautifier -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
+
+<% if (isIndex) { %>
+  <% ['ko','en','fr','zh','ja','es'].forEach(l => { %>
+    <link rel="alternate" hreflang="<%= l %>" href="https://bugloop.dev/<%= l %>/" />
+  <% }) %>
+  <link rel="alternate" hreflang="x-default" href="https://bugloop.dev/" />
+<% } %>
