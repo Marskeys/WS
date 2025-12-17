@@ -791,6 +791,15 @@ html.dark .lang-option:hover { background-color: #333; }
     isolation: isolate; /* 자식 스택 분리 */
   }
 
+  /* 🔒 헤더 텍스트 드래그 방지 */
+.full-header-container,
+.full-header-container * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
   /* 헤더 상단바 (메뉴 줄) */
   .header-top {
     order: 1;
