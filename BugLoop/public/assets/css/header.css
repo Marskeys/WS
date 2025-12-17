@@ -823,6 +823,12 @@ html.dark .lang-option:hover { background-color: #333; }
     overflow: visible !important;
   }
 
+  /* 🚨 Safari 전용: 링크 길게누르기/드래그 차단 */
+.full-header-container,
+.full-header-container * {
+  -webkit-touch-callout: none !important; /* 🔥 이게 핵심 */
+}
+
   /* 사이드바 줄 */
   .side-panel.main-panel-only {
     order: 2;
