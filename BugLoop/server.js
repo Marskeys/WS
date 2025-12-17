@@ -880,7 +880,10 @@ const handleMainPage = async (req, res) => {
     if (wantsPanelOnly) {
       return res.render('partials/table', viewData);
     }
-    return res.render('index', viewData);
+    return res.render('index', {
+  ...viewData,
+  isIndex: true
+});
   } catch (err) {
     console.error('메인 페이지 로드 오류:', err);
     res.status(500).send('메인 페이지 로드 중 오류 발생');
