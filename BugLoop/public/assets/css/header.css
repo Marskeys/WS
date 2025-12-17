@@ -1282,3 +1282,8 @@ html:not(.dark) .theme-toggle-btn {
 .header-menu * {
   user-select: none;
 }
+
+/* 🔥 Safari 텍스트 선택 근원 차단 */
+.header-menu .menu-label {
+  pointer-events: none;
+}
