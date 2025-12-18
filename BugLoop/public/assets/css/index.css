@@ -257,8 +257,6 @@ html.dark .book-card.expanded {
   overflow: hidden;
   border-radius: var(--radius) var(--radius) 0 0;
   background: var(--panel-2);
-  background-size: cover;
-  background-position: center;
   opacity: 1;
   transform: translateZ(0);
   transition: aspect-ratio 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
@@ -277,7 +275,7 @@ html.dark .book-card.expanded {
 .book-cover {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   transition: transform 0.3s ease;
   transform: scale(1.01) translateZ(0);

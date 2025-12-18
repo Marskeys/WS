@@ -57,7 +57,7 @@
       <div class="book-card" data-index="<%= idx %>" data-book-key="<%= key %>">
         <% if (book.updated) { -%><div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div><% } -%>
         <div class="book-content-wrapper">
-          <div class="book-cover-wrapper" style="background-image: url('/assets/images/book<%= idx + 1 %>.jpg');">
+          <div class="book-cover-wrapper">
             <video 
               class="book-cover" 
               src="/assets/images/book<%= idx + 1 %>.webm" 
