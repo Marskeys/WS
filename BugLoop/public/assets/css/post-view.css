@@ -1,327 +1,40 @@
+*,
+*:before,
+*:after {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+}
+
+input,
+textarea,
+[contenteditable] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  -webkit-user-drag: auto !important;
+  cursor: auto;
+}
+
+body {
+  padding-bottom: 50px;
+}
+
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+  height: 100%;
+}
+
 .postview-container {
   margin-top: 100px;
   margin-left: 15px;
   margin-right: 15px;
 }
-
-/* 떠다니는 목차 (데스크탑) */
-.floating-toc {
-    position: fixed;
-    top: 80px;
-    left: calc(50% - 640px / 2 - 280px);
-    background: #f7f9fa;
-    border: 1px solid #ccc;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    max-width: 250px;
-    max-height: 50vh; /* 화면 높이의 80%까지만 */
-    overflow-y: auto;  /* 세로 스크롤 허용 */
-    z-index: 999;
-    display: none;
-  }
-  
-  .floating-toc .toc-title {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-
-  html.dark .floating-toc {
-    background: #1f1f2b;
-    border-color: #444;
-    color: #ddd;
-  }
-  
-  @media (max-width: 768px) {
-    .floating-toc {
-      display: none !important; /* 모바일에서는 아예 숨김 */
-    }
-  }
-
-  /* 모바일 전용 목차 버튼 */
-  .mobile-toc-button {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    padding: 7px 16px;
-
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #0077cc;
-    color: white;
-    border-radius: 24px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 99999;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  
-  
-  @media (max-width: 768px) {
-    .mobile-toc-button {
-      display: flex;
-    }
-  }
-  
-  /* 모바일 토글 목차 */
-  .mobile-toc-modal {
-    position: fixed;
-    top: 0;
-    left: 10px;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    box-sizing: border-box;
-    overflow: hidden;
-    padding: 2rem;   
-  }
-  
-  .mobile-toc-content {
-    background: white;
-    border-radius: 8px;
-    max-width: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-    padding: 1rem;         /* 내부 여백 */
-    margin: 0 1rem;  
-  }
-  
-  html.dark .mobile-toc-content {
-    background: #1f1f2b;
-    color: white;
-  }
-
-  .mobile-toc-button {
-    transition: opacity 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  .mobile-toc-button.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  html.modal-open,
-body.modal-open {
-    overflow: hidden;
-    touch-action: none; /* 터치 스크롤도 차단 */
-    height: 100%; /* 모바일 크롬 대응 */
-  }
-
- 
-  /* 📘 전체 구조 */
-
-.post-content {
-  line-height: 1.9;
-  font-size: 1.1rem;
-  color: #333;
-  max-width: 640px;
-  margin: 0 auto;
-  padding-left: 0.5rem;
-  position: relative;
-}
-
-.post-content strong {
-  font-size: 17px !important; 
-}
-
-html.dark body .post-content {
-  color: #ddd;
-}
-
-/* 📝 제목, 본문 요소 간격 */
-
-/* h1 스타일 제거 (본문에서 사용하지 않음) */
-.post-content h1 {
-  display: none;
-}
-
-.post-content h2 { /* h2: 최상위 제목 (이전 h1 역할) */
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
-  line-height: 1.3;
-  color: #333; /* 일반 텍스트보다 강조되게 */
-  text-align: left; /* 중앙 정렬 제거 */
-  border-bottom: 2px solid #ddd; /* 구분선 색상 조정 */
-  padding-bottom: 4px;
-}
-
-.post-content h3 { /* h3: 2단계 제목 (이전 h2 역할) */
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 3.5rem;
-  margin-bottom: 1.5rem;
-  line-height: 1.3;
-  color: #333;
-  text-align: left;
-}
-
-.post-content h4 { /* h4: 3단계 제목 (이전 h3 역할) */
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  margin-bottom: 0.6rem;
-  line-height: 1.3;
-  color: #444;
-  text-align: left;
-  margin-left: 1em; /* 1em 들여쓰기 */
-}
-
-.post-content p {
-  margin-bottom: 1rem; /* 이전 2rem에서 1rem으로 줄여서 간결하게 */
-  margin-top: 0.5rem;
-}
-
-.post-content ul,
-.post-content ol {
-  padding-left: 1em;
-  margin: 0.3rem 0;
-}
-
-.post-content li {
-  margin: 0;
-  padding: 0;
-}
-
-.post-content footer {
-  display: block;
-  font-size: 0.85rem;
-  color: #666;
-  margin: 0.3em 0;
-  line-height: 1.5;
-}
-
-html.dark .post-content footer {
-  color: #aaa;
-}
-
-/* 🧭 목차 (.auto-toc 포함) */
-
-.post-content .auto-toc {
-  background: #f7f9fa;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  padding: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  width: 100%;
-  max-width: 280px;
-  margin-bottom: 1rem;
-  margin-left: 0;
-  margin-right: auto;
-}
-
-@media (max-width: 768px) {
-  .post-content .auto-toc {
-    max-width: 100%;      /* 뷰포트에 맞게 줄어듦 */
-    box-sizing: border-box;
-    padding: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
-
-  .toc-list a {
-    word-break: break-word;  /* 긴 링크 줄바꿈 */
-    white-space: normal;     /* 텍스트 줄바꿈 허용 */
-  }
-}
-
-.post-content .auto-toc .toc-title {
-  font-weight: bold;
-  margin-bottom: 0.8rem; /* 여백 조정 */
-  display: block;
-}
-
-.post-content .auto-toc ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.post-content .auto-toc li {
-  margin: 0.1em 0;
-  line-height: 1.2;
-  padding-right: 0;
-}
-
-/* h1 제거 */
-.post-content .auto-toc li.toc-h1 {
-  display: none;
-}
-
-.post-content .auto-toc + h1,
-.post-content .auto-toc + h2 {
-  margin-top: 0.5rem !important;
-}
-
-html.dark .post-content .auto-toc {
-  background: #1f1f2b;
-  border: 1px solid #444;
-  color: #ddd;
-}
-
-/* 🧾 TOC 링크 리스트 */
-
-.toc-list {
-  font-size: 0; /* 줄바꿈 공백 제거 */
-}
-
-.toc-list a,
-.post-content .auto-toc a { /* ✅ 본문 내 목차 링크 밑줄 제거 명시 */
-  display: block;
-  font-size: 14px;
-  line-height: 1.4;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #0366d6;
-  text-decoration: none; /* 밑줄 제거 */
-  transition: all 0.2s ease;
-}
-
-.toc-list a:hover {
-  color: #999ff9 !important;
-  text-decoration: underline !important;
-}
-
-html.dark .toc-list a {
-  color: #6fb7ff !important;
-}
-
-html.dark .toc-list a:hover {
-  color: #a2d4ff !important;
-}
-
-/* h2: 1단계 제목 (들여쓰기 제거) */
-.toc-item.toc-h2 {
-  padding-left: 0;
-  font-weight: bold;
-  margin-top: 0.6rem;
-}
-
-/* h3: 2단계 제목 (들여쓰기 적용) */
-.toc-item.toc-h3 {
-  padding-left: 1.2rem;
-  font-weight: normal;
-  margin-top: 0.1em;
-}
-
-
-/* ✍️ 타이틀/메타/로고 */
 
 .postview-container .post-title {
   font-size: 1.5rem;
@@ -337,7 +50,380 @@ html.dark .toc-list a:hover {
   margin-bottom: 2rem;
 }
 
-/* ✏️ 수정/삭제 버튼 */
+.post-content {
+  line-height: 1.9;
+  font-size: 1.1rem;
+  color: #333;
+  max-width: 640px;
+  margin: 0 auto;
+  padding-left: 0.5rem;
+  position: relative;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+html.dark body .post-content {
+  color: #ddd;
+}
+
+.post-content strong {
+  font-size: 17px !important;
+}
+
+.post-content h1 {
+  display: none;
+}
+
+.post-content h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  line-height: 1.3;
+  color: #333;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 4px;
+}
+
+html.dark .post-content h2 {
+  color: #eee !important;
+  border-bottom: 2px solid #555;
+}
+
+.post-content h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 3.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+  color: #333;
+  text-align: left;
+}
+
+.post-content h4 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 1.2rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.3;
+  color: #444;
+  text-align: left;
+  margin-left: 1em;
+}
+
+html.dark .post-content h3,
+html.dark .post-content h4 {
+  color: #ddd !important;
+}
+
+.post-content p {
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: 1em;
+  margin: 0.3rem 0;
+}
+
+.post-content li {
+  margin: 0;
+  padding: 0;
+}
+
+.post-content a,
+.post-content a:visited {
+  color: #1a73e8 !important;
+  text-decoration: underline;
+  cursor: pointer !important;
+  word-break: break-all;
+  white-space: normal;
+}
+
+html.dark .post-content a,
+html.dark .post-content a:visited {
+  color: #8ab4ff !important;
+}
+
+.post-content a:hover {
+  opacity: 0.85;
+}
+
+.post-content img,
+.post-content video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.post-content img {
+  pointer-events: none;
+}
+
+.post-content video {
+  pointer-events: auto;
+}
+
+.img-wrap {
+  width: 100%;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.img-caption {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+}
+
+html.dark .img-caption {
+  color: #aaa;
+}
+
+.floating-toc {
+  position: fixed;
+  top: 80px;
+  left: calc(50% - 640px / 2 - 280px);
+  background: #f7f9fa;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 250px;
+  max-height: 50vh;
+  overflow-y: auto;
+  z-index: 999;
+  display: none;
+}
+
+#floatingToc,
+#floatingToc * {
+  pointer-events: auto !important;
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+  -webkit-user-drag: auto !important;
+  cursor: move !important;
+}
+
+.floating-toc .toc-title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+html.dark .floating-toc {
+  background: #1f1f2b;
+  border-color: #444;
+  color: #ddd;
+}
+
+.post-content .auto-toc {
+  background: #f7f9fa;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 1rem;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+html.dark .post-content .auto-toc {
+  background: #1f1f2b;
+  border: 1px solid #444;
+  color: #ddd;
+}
+
+.post-content .auto-toc .toc-title {
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.post-content .auto-toc li.toc-h1 {
+  display: none;
+}
+
+.post-content .auto-toc + h1,
+.post-content .auto-toc + h2 {
+  margin-top: 0.5rem !important;
+}
+
+.toc-list {
+  font-size: 0;
+}
+
+.toc-list a,
+.post-content .auto-toc a {
+  display: block;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #0366d6;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.toc-list a:hover {
+  color: #999ff9 !important;
+  text-decoration: underline !important;
+}
+
+html.dark .toc-list a {
+  color: #6fb7ff !important;
+}
+
+.toc-item.toc-h2 {
+  padding-left: 0;
+  font-weight: bold;
+  margin-top: 0.6rem;
+}
+
+.toc-item.toc-h3 {
+  padding-left: 1.2rem;
+  font-weight: normal;
+  margin-top: 0.1em;
+}
+
+.mobile-toc-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  padding: 7px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #0077cc;
+  color: white;
+  border-radius: 24px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 99999;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.mobile-toc-button.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-toc-modal {
+  position: fixed;
+  top: 0;
+  left: 10px;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.mobile-toc-content {
+  background: white;
+  border-radius: 8px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  margin: 0 1rem;
+}
+
+.mobile-toc-content strong {
+  display: block;
+  margin-bottom: 0.8em;
+}
+
+html.dark .mobile-toc-content {
+  background: #1f1f2b;
+  color: white;
+}
+
+.recommended-posts {
+  margin-top: 50px;
+  padding: 24px 26px;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  background: var(--panel);
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  box-sizing: border-box;
+}
+
+.recommended-title {
+  margin: 0 0 16px;
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.recommended-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recommended-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 8px 4px;
+  transition: all 0.18s ease;
+}
+
+.recommended-item::before {
+  content: "→";
+  margin-right: 10px;
+  font-size: 1rem;
+  color: var(--accent);
+  transition: color 0.18s;
+}
+
+.recommended-item a {
+  color: var(--text-normal);
+  text-decoration: none;
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.recommended-item:hover::before {
+  color: var(--accent-strong, var(--accent));
+}
+
+.recommended-item:hover a {
+  color: var(--accent);
+}
+
+.post-content footer {
+  display: block;
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0.3em 0;
+  line-height: 1.5;
+}
+
+html.dark .post-content footer {
+  color: #aaa;
+}
 
 .postview-container .post-actions {
   text-align: center;
@@ -363,126 +449,119 @@ html.dark .toc-list a:hover {
   text-decoration: none;
 }
 
-.postview-container .post-actions a.edit-btn:hover {
-  background-color: #d8edff;
-  color: #005fa3;
-}
-
 .postview-container .post-actions form button {
   background-color: #fff0f0;
   color: #cc0000;
   border: 1px solid #cc0000;
 }
 
-.postview-container .post-actions form button:hover {
-  background-color: #ffe5e5;
-  color: #a30000;
-}
-
-
-.mobile-toc-content strong {
-  display: block;         /* 인라인 → 블록으로 바꿔야 margin이 적용됨 */
-  margin-bottom: 0.8em;    /* "목차"랑 1번 목차 사이 간격 */
-}
-/* ⭐ 추천글 전체 박스 */
-.recommended-posts {
-  margin-top: 50px;
-  padding: 24px 26px;
-
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
-
-  background: var(--panel);
-  border-radius: 12px;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-  box-sizing: border-box;
-}
-
-/* 제목 */
-.recommended-title {
-  margin: 0 0 16px;
-  font-size: 1.18rem;
-  font-weight: 600;
-  color: var(--text-strong);
-}
-
-/* 리스트 */
-.recommended-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.recommended-item {
-  display: flex;
+.back-home-btn {
+  display: inline-flex;
   align-items: center;
-
-  margin-bottom: 14px;
-  padding: 8px 4px;
-
-  transition: all 0.18s ease;
-}
-
-.recommended-item:last-child {
-  margin-bottom: 0;
-}
-
-/* ⭐ 화살표 아이콘 */
-.recommended-item::before {
-  content: "→";   /* 화살표 */
-  margin-right: 10px;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 20px;
+  margin-top: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: 1px solid;
   font-size: 1rem;
-  color: var(--accent);
-  transition: color 0.18s;
+  letter-spacing: 0.5px;
+  color: #333;
+  background: #f7f7f7;
+  border-color: #e0e0e0;
+  cursor: pointer !important;
 }
 
-/* 링크 */
-.recommended-item a {
-  color: var(--text-normal);
-  text-decoration: none;
-  font-size: 0.98rem;
-  line-height: 1.4;
+html.dark .back-home-btn {
+  color: #e0e0e0;
+  background: #2c2c2c;
+  border-color: #444;
 }
 
-/* hover 효과 */
-.recommended-item:hover::before {
-  color: var(--accent-strong, var(--accent));
+.tts-wrapper {
+  text-align: right;
+  margin: 20px 0 10px;
 }
 
-.recommended-item:hover a {
-  color: var(--accent);
+.tts-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  cursor: pointer !important;
+  font-size: 0.9rem;
 }
 
-
-.post-content {
-      /* 한글 단어 쪼개짐 방지 */
-      word-break: keep-all;
-      
-      /* 중요! break-word보다 더 강력하게, 긴 주소가 있으면 
-         단어 중간이라도 무조건 끊어서 공간을 확보함 */
-      overflow-wrap: anywhere; 
-      line-height: 1.9;
-      text-align: left;
-    }
-
-    /* ▼▼▼ 링크 전용 스타일 추가 (핵심) ▼▼▼ */
-    .post-content a {
-      /* 링크는 한글 문법 신경 쓰지 말고 공간 없으면 무조건 줄바꿈 */
-      word-break: break-all;
-      
-      /* 링크가 너무 길면 강제로 줄바꿈 허용 */
-      white-space: normal; 
-    }
-    
-/* 다크모드에서 H2 제목 색상과 구분선 색상 지정 */
-html.dark .post-content h2 {
-    color: #eee !important;
-    border-bottom: 2px solid #555;
+html.dark .tts-btn {
+  background: #2c2c2c;
+  border-color: #555;
+  color: #ddd;
 }
 
-/* 다크모드에서 H3, H4 색상 지정 */
-html.dark .post-content h3,
-html.dark .post-content h4 {
-    color: #ddd !important;
+.post-content mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.in-article-ad {
+  margin: 100px auto;
+  text-align: center;
+  max-width: 100%;
+}
+
+.in-article-ad ins {
+  display: block;
+  width: 100%;
+}
+
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .18s ease, visibility .18s ease;
+  z-index: 1500;
+}
+
+body.panel-open .panel-backdrop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .floating-toc {
+    display: none !important;
+  }
+
+  .mobile-toc-button {
+    display: flex;
+  }
+
+  .post-content .auto-toc {
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .toc-list a {
+    word-break: break-word;
+    white-space: normal;
+  }
+}
+
+img[data-heic-loading] {
+  opacity: 0.4;
+  filter: blur(3px);
 }
