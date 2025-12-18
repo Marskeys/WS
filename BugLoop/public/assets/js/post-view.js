@@ -119,25 +119,39 @@ document.addEventListener("DOMContentLoaded", () => {
     subtree: true
   });
 
-  /* =====================================================
-     TOC 표시 로직
-  ===================================================== */
-  const updateTocVisibility = () => {
-    if (!tocReady) return;
+/* =====================================================
+   TOC 표시 로직 (수정본)
+===================================================== */
+const updateTocVisibility = () => {
+  if (!tocReady) return;
 
-    const passed = sentinel.getBoundingClientRect().top < 0;
+  const rect = sentinel.getBoundingClientRect();
+  // passed 조건: sentinel의 하단이 화면 상단(0)보다 위로 올라갔을 때
+  const passed = rect.bottom < 0;
 
-    if (window.innerWidth > 768) {
-      floatingToc.classList.toggle('show', passed);
-      mobileBtn.classList.remove('show');
+  console.log("Sentinel top:", rect.top, "Passed:", passed); // 브라우저 콘솔에서 확인용
+
+  if (window.innerWidth > 768) {
+    if (passed) {
+      floatingToc.classList.add('show');
     } else {
       floatingToc.classList.remove('show');
-      mobileBtn.classList.toggle('show', passed);
     }
-  };
+    mobileBtn.classList.remove('show');
+  } else {
+    floatingToc.classList.remove('show');
+    if (passed) {
+      mobileBtn.classList.add('show');
+    } else {
+      mobileBtn.classList.remove('show');
+    }
+  }
+};
 
-  window.addEventListener('scroll', updateTocVisibility);
-  window.addEventListener('resize', updateTocVisibility);
+// 페이지 로드 직후 상태 반영을 위해 한 번 실행
+updateTocVisibility(); 
+window.addEventListener('scroll', updateTocVisibility);
+window.addEventListener('resize', updateTocVisibility);
 
   /* =====================================================
      모바일 TOC
