@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
-
 <head>
-  <%- include('partials/head') %>
+  <%- include('partials/head') -%>
   <link rel="stylesheet" href="/assets/css/index.css" />
 </head>
-
 <body>
-  <div id="preloader">
-    <div class="spinner"></div>
-  </div>
-  <%- include('partials/header') %>
-
-  <div id="panel-root" data-pjax-scope>
-    <%- include('partials/panel') %>
-  </div>
+  <div id="preloader"><div class="spinner"></div></div>
+  <%- include('partials/header') -%>
+  <div id="panel-root" data-pjax-scope><%- include('partials/panel') -%></div>
 
   <div class="app-shell">
-
     <div class="section-title-wrapper">
       <h1 class="section-title"><%= locale.index.ongoing %></h1>
     </div>
@@ -25,47 +17,28 @@
     <div class="carousel">
       <% 
         const ITEMS_PER_PAGE = 3;
-        
         const getPaginatedToc = (tocData) => {
-          if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
-          const totalSections = tocData.length;
-          const totalPages = Math.ceil(totalSections / ITEMS_PER_PAGE);
-          const paginatedToc = [];
-
-          for (let i = 0; i < totalPages; i++) {
-            const start = i * ITEMS_PER_PAGE;
-            const end = start + ITEMS_PER_PAGE;
-            paginatedToc.push(tocData.slice(start, end));
-          }
-          return { paginatedToc, totalPages, totalSections };
+          if (!tocData) return { paginatedToc: [], totalPages: 0 };
+          const totalPages = Math.ceil(tocData.length / ITEMS_PER_PAGE);
+          const paginatedToc = Array.from({ length: totalPages }, (_, i) => 
+            tocData.slice(i * ITEMS_PER_PAGE, (i + 1) * ITEMS_PER_PAGE)
+          );
+          return { paginatedToc, totalPages };
         };
         
         const renderTocHtmlSSR = (sections, bookKey) => {
-          if (!sections || sections.length === 0) return '';
+          if (!sections) return '';
           let html = '<ul>';
-          sections.forEach(section => {
-            html += '<li><h5>' + section.section + '</h5><ul>'; 
-            section.chapters.forEach(ch => {
-              html += '<li>'; 
-              const urlPath = '/books/' + bookKey + '/contents/' + ch.id; 
-
-              if (ch.url) {
-                html += '<a href="/' + lang + urlPath + '" class="toc-link active">' + ch.title + '</a>';
-              } else {
-                html += '<span class="toc-link disabled">' + ch.title + '</span>';
-              }
-
+          sections.forEach(s => {
+            html += `<li><h5>${s.section}</h5><ul>`;
+            s.chapters.forEach(ch => {
+              const url = `/${lang}/books/${bookKey}/contents/${ch.id}`;
+              html += `<li>${ch.url ? `<a href="${url}" class="toc-link active">${ch.title}</a>` : `<span class="toc-link disabled">${ch.title}</span>`}`;
               if (ch.sub) {
                 html += '<ul>';
                 ch.sub.forEach(sub => {
-                  html += '<li>';
-                  const subUrlPath = '/books/' + bookKey + '/contents/' + sub.id;
-                  if (sub.url) {
-                    html += '<a href="/' + lang + subUrlPath + '" class="toc-link active">' + sub.title + '</a>';
-                  } else {
-                    html += '<span class="toc-link disabled">' + sub.title + '</span>';
-                  }
-                  html += '</li>';
+                  const subUrl = `/${lang}/books/${bookKey}/contents/${sub.id}`;
+                  html += `<li>${sub.url ? `<a href="${subUrl}" class="toc-link active">${sub.title}</a>` : `<span class="toc-link disabled">${sub.title}</span>`}</li>`;
                 });
                 html += '</ul>';
               }
@@ -73,246 +46,74 @@
             });
             html += '</ul></li>';
           });
-          html += '</ul>';
-          return html;
+          return html + '</ul>';
         };
 
-        const cuteAcoustics = locale.books.cuteAcoustics;
-        const caData = getPaginatedToc(cuteAcoustics.toc);
-      %>
-
-      <div class="book-card" data-index="0" data-book-key="cuteAcoustics">
-        <% if (cuteAcoustics.updated) { %>
-        <div class="book-updated-badge">
-          <%= locale.ui.bookUpdatedBadge || '새 챕터!' %>
-        </div>
-        <% } %>
-
+        const bookKeys = ['cuteAcoustics', 'unfinishedPain', 'pianistProducer', 'warmthOfCalc'];
+        bookKeys.forEach((key, idx) => {
+          const book = locale.books[key];
+          const { paginatedToc, totalPages } = getPaginatedToc(book.toc);
+      -%>
+      <div class="book-card" data-index="<%= idx %>" data-book-key="<%= key %>">
+        <% if (book.updated) { -%><div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div><% } -%>
         <div class="book-content-wrapper">
           <div class="book-cover-wrapper">
-            <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>" loading="lazy">
-          </div>
-
-          <div class="book-info">
-            <div class="book-title"><%= cuteAcoustics.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %> : <%= cuteAcoustics.author %>
-            </div>
-          </div>
-
-          <div class="book-toc">
-            <h4><%= locale.ui["tocButton"] %></h4>
-            <div class="pagination" data-book-id="cuteAcoustics-pagination">
-              <% for(let i = 1; i <= caData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cuteAcoustics', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < caData.totalPages) { %>
-              <span class="pagination-divider">|</span>
-              <% } %>
-              <% } %>
-            </div>
-
-            <div class="paginated-toc" data-book-id="cuteAcoustics-toc">
-              <%- renderTocHtmlSSR(caData.paginatedToc[0], 'cuteAcoustics') %>
-            </div>
-            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
-          </div>
-        </div>
-      </div>
-
-      <% 
-        const unfinishedPain = locale.books.unfinishedPain;
-        const upData = getPaginatedToc(unfinishedPain.toc);
-      %>
-      <div class="book-card" data-index="1" data-book-key="unfinishedPain">
-        <% if (unfinishedPain.updated) { %>
-        <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-        <% } %>
-        <div class="book-content-wrapper">
-          <div class="book-cover-wrapper">
-            <img class="book-cover" src="/assets/images/book2.gif" alt="<%= unfinishedPain.title %>" loading="lazy">
+            <img class="book-cover" src="/assets/images/book<%= idx + 1 %>.gif" alt="<%= book.title %>" loading="lazy">
           </div>
           <div class="book-info">
-            <div class="book-title"><%= unfinishedPain.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %>: <%= unfinishedPain.author %>
-            </div>
+            <div class="book-title"><%= book.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;"><%= locale.ui["book-author"] %> : <%= book.author %></div>
           </div>
           <div class="book-toc">
             <h4><%= locale.ui["tocButton"] %></h4>
-            <div class="pagination" data-book-id="unfinishedPain-pagination">
-              <% for(let i = 1; i <= upData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'unfinishedPain', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < upData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-              <% } %>
+            <div class="pagination" data-book-id="<%= key %>-pagination">
+              <% for(let i = 1; i <= totalPages; i++) { -%>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, '<%= key %>', <%= i %>)"><%= i %></span>
+              <% if (i < totalPages) { -%><span class="pagination-divider">|</span><% } -%>
+              <% } -%>
             </div>
-            <div class="paginated-toc" data-book-id="unfinishedPain-toc">
-              <%- renderTocHtmlSSR(upData.paginatedToc[0], 'unfinishedPain') %>
-            </div>
-            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
+            <div class="paginated-toc" data-book-id="<%= key %>-toc"><%- renderTocHtmlSSR(paginatedToc[0], key) %></div>
           </div>
         </div>
       </div>
-
-      <% 
-        const pianistProducer = locale.books.pianistProducer;
-        const ppData = getPaginatedToc(pianistProducer.toc);
-      %>
-      <div class="book-card" data-index="2" data-book-key="pianistProducer">
-        <% if (pianistProducer.updated) { %>
-        <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-        <% } %>
-        <div class="book-content-wrapper">
-          <div class="book-cover-wrapper">
-            <img class="book-cover" src="/assets/images/book3.gif" alt="<%= pianistProducer.title %>" loading="lazy">
-          </div>
-          <div class="book-info">
-            <div class="book-title"><%= pianistProducer.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %>: <%= pianistProducer.author %>
-            </div>
-          </div>
-          <div class="book-toc">
-            <h4><%= locale.ui["tocButton"] %></h4>
-            <div class="pagination" data-book-id="pianistProducer-pagination">
-              <% for(let i = 1; i <= ppData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'pianistProducer', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < ppData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-              <% } %>
-            </div>
-            <div class="paginated-toc" data-book-id="pianistProducer-toc">
-              <%- renderTocHtmlSSR(ppData.paginatedToc[0], 'pianistProducer') %>
-            </div>
-            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
-          </div>
-        </div>
-      </div>
-
-      <% 
-        const warmthOfCalc = locale.books.warmthOfCalc;
-        const wcData = getPaginatedToc(warmthOfCalc.toc);
-      %>
-      <div class="book-card" data-index="3" data-book-key="warmthOfCalc">
-        <% if (warmthOfCalc.updated) { %>
-        <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-        <% } %>
-        <div class="book-content-wrapper">
-          <div class="book-cover-wrapper">
-            <img class="book-cover" src="/assets/images/book4.gif" alt="<%= warmthOfCalc.title %>" loading="lazy">
-          </div>
-          <div class="book-info">
-            <div class="book-title"><%= warmthOfCalc.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %>: <%= warmthOfCalc.author %>
-            </div>
-          </div>
-          <div class="book-toc">
-            <h4><%= locale.ui["tocButton"] %></h4>
-            <div class="pagination" data-book-id="warmthOfCalc-pagination">
-              <% for(let i = 1; i <= wcData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'warmthOfCalc', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < wcData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-              <% } %>
-            </div>
-            <div class="paginated-toc" data-book-id="warmthOfCalc-toc">
-              <%- renderTocHtmlSSR(wcData.paginatedToc[0], 'warmthOfCalc') %>
-            </div>
-            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
-          </div>
-        </div>
-      </div>
+      <% }) -%>
     </div>
 
-    <div class="recent-posts-wrapper section-title-wrapper" style="margin-bottom: 0; margin-top: 30px;">
+    <div class="recent-posts-wrapper section-title-wrapper" style="margin-top:30px; margin-bottom:0;">
       <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
     </div>
 
     <div class="recent-posts" id="posts-container">
-      <% posts.slice(0, 5).forEach(post => { %>
+      <% posts.slice(0, 5).forEach(post => { 
+        const now = new Date(), cAt = new Date(post.created_at), uAt = new Date(post.updated_at), oneDay = 86400000;
+        const isNew = (now - cAt) < oneDay, isEdit = uAt > cAt && (now - uAt < oneDay) && !isNew;
+      -%>
       <div class="recent-post-item">
-        <%
-          const now = new Date();
-          const createdAt = new Date(post.created_at);
-          const updatedAt = new Date(post.updated_at);
-          const oneDay = 1000 * 60 * 60 * 24;
-          const isNewPost = (now - createdAt) < oneDay;
-          const wasEdited = updatedAt > createdAt;
-          const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-          const showEditedLabel = !isNewPost && isRecentlyEdited;
-
-          const newLabelText = locale.ui.newPost || 'NEW';
-          const editedLabelText = locale.ui.editedPost || 'UPDATED';
-        %>
-
         <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-          <% if (isNewPost) { %>
-          <span class="label-icon new-icon"><%= newLabelText %></span>
-          <% } else if (showEditedLabel) { %>
-          <span class="label-icon edited-icon"><%= editedLabelText %></span>
-          <% } %>
-
-          <% if (post.is_pinned) { %>
-          <span class="badge-pinned">📌</span>
-          <% } %>
-
-          <% if (post.is_private) { %>
-          <span class="badge-private">🔒</span>
-          <% } %>
-
+          <% if (isNew) { -%><span class="label-icon new-icon"><%= locale.ui.newPost || 'NEW' %></span>
+          <% } else if (isEdit) { -%><span class="label-icon edited-icon"><%= locale.ui.editedPost || 'UPDATED' %></span><% } -%>
+          <% if (post.is_pinned) { -%><span class="badge-pinned">📌</span><% } -%>
+          <% if (post.is_private) { -%><span class="badge-private">🔒</span><% } -%>
           <%= post.title %>
         </a>
-
-        <div class="recent-post-meta">
-          <span><%= post.author %></span>
-          <span>·</span>
-          <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
-        </div>
-
+        <div class="recent-post-meta"><span><%= post.author %></span><span>·</span><span><%= format(cAt, 'yyyy.MM.dd') %></span></div>
         <div class="recent-post-preview">
           <% 
-            let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
-            cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
-            let plainText = cleanContent.replace(/<[^>]+>/gi, '');
-            plainText = plainText.replace(/\s+/g, ' ').trim();
-            const decodedText = plainText
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .replace(/&amp;/g, '&');
-            const previewText = decodedText.slice(0, 120);
-          %>
-          <%= previewText %>...
+            const preview = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
+              .replace(/\s+/g, ' ').trim().slice(0, 120);
+          -%><%= preview %>...
         </div>
       </div>
-      <% }) %>
+      <% }) -%>
     </div>
-
-    <button id="load-more-btn" onclick="loadMorePosts()">
-      <%= locale.index.loadMore || "더보기" %>
-    </button>
+    <button id="load-more-btn" onclick="loadMorePosts()"><%= locale.index.loadMore || "더보기" %></button>
   </div>
 
-  <footer class="app-footer">
-    © 2025 Bug Loop
-  </footer>
-  <%- include('partials/scripts') %>
-
-<script>
-  window.__APP__ = {
-    lang: "<%= lang %>",
-    locale: <%- JSON.stringify(locale.ui || {}) %>,
-    books: <%- JSON.stringify(locale.books || {}) %>
-  };
-</script>
-
-<script src="/assets/js/index.js" defer></script>
-
+  <footer class="app-footer">© 2025 Bug Loop</footer>
+  <%- include('partials/scripts') -%>
+  <script>
+    window.__APP__ = { lang: "<%= lang %>", locale: <%- JSON.stringify(locale.ui || {}) %>, books: <%- JSON.stringify(locale.books || {}) %> };
+  </script>
+  <script src="/assets/js/index.js" defer></script>
 </body>
-
 </html>
