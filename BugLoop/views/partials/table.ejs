@@ -1,8 +1,6 @@
 <div class="search-container">
   <form method="get" action="/<%= lang %>/search" class="search-form" data-panel-search="1">
-    <input type="text" name="q" class="search-box"
-           placeholder="<%= locale.search.placeholder %>"
-           value="<%= searchKeyword || '' %>" />
+    <input type="text" name="q" class="search-box" placeholder="<%= locale.search.placeholder %>" value="<%= searchKeyword || '' %>" />
     <button type="submit" class="icon-submit-btn"><i class="fas fa-search"></i></button>
   </form>
 </div>
@@ -11,139 +9,95 @@
   <div class="tabs-wrapper">
     <div class="tabs <%= isSearch && searchKeyword ? 'searching' : '' %>">
       <div class="tab-spacer"></div>
-
-      <a href="/<%= lang %>/?category=all"
-         data-panel-link="category" data-category="all"
-         class="tab <%= (!isSearch && (!selectedCategory || selectedCategory === 'all' || selectedCategory === locale.tabs.allPosts)) ? 'active' : '' %>">
-        <%= locale.tabs.allPosts %>
-      </a>
-
-      <% if (isSearch) { %>
-        <div class="tab active" id="search-result-label" aria-live="polite">
-          <%= (locale.search.resultsFor || '').replace('%s', searchKeyword || '') %>
-        </div>
-      <% } %>
-
-      <% categories.forEach(category => { %>
-        <a href="/<%= lang %>/?category=<%= category.original %>"
-           data-panel-link="category" data-category="<%= category.original %>"
-           class="tab <%= (!isSearch && (selectedCategory === category.original || selectedCategory === category.translated)) ? 'active' : '' %>">
-          <%= category.translated %>
-        </a>
-      <% }) %>
+      <a href="/<%= lang %>/?category=all" data-panel-link="category" data-category="all" class="tab <%= (!isSearch && (!selectedCategory || selectedCategory === 'all' || selectedCategory === locale.tabs.allPosts)) ? 'active' : '' %>"><%= locale.tabs.allPosts %></a>
+      <% if (isSearch) { -%>
+      <div class="tab active" id="search-result-label" aria-live="polite"><%= (locale.search.resultsFor || '').replace('%s', searchKeyword || '') %></div>
+      <% } -%>
+      <% categories.forEach(category => { -%>
+      <a href="/<%= lang %>/?category=<%= category.original %>" data-panel-link="category" data-category="<%= category.original %>" class="tab <%= (!isSearch && (selectedCategory === category.original || selectedCategory === category.translated)) ? 'active' : '' %>"><%= category.translated %></a>
+      <% }) -%>
     </div>
   </div>
 </div>
 
-<% if (!posts || posts.length === 0) { %>
-  <div class="no-posts-found">
-    <% if (isSearch) { %>
-      "<%= searchKeyword %>" <%= locale.search.noResults || '로 검색한 결과가 없습니다.' %>
-    <% } else { %>
-      <%= locale.noPostsFound %>
-    <% } %>
-  </div>
-<% } else { %>
-  <div class="mobile-board-list">
-    <% posts.forEach(post => { %>
-      <div class="mobile-post-item">
-        <div class="post-title-and-actions">
-          <a href="/<%= lang %>/post/<%= post.id %>" data-panel="off"
-             class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>"
-             data-post-id="<%= post.id %>"
-             data-is-private="<%= post.is_private ? '1' : '0' %>"
-             data-post-user-id="<%= post.user_id %>">
-
-            <%
-              const now = new Date();
-              const createdAt = new Date(post.created_at);
-              const updatedAt = new Date(post.updated_at);
-              const oneDay = 1000 * 60 * 60 * 24;
-
-              const isNewPost = (now - createdAt) < oneDay;
-              const wasEdited = updatedAt > createdAt;
-              const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-              const showEditedLabel = !isNewPost && isRecentlyEdited;
-
-              const newLabelText = locale.ui.newPost || 'NEW';
-              const editedLabelText = locale.ui.editedPost || 'UPDATED';
-            %>
-
-            <% if (isNewPost) { %>
-              <span class="label-icons new-icon"><%= newLabelText %></span>
-            <% } else if (showEditedLabel) { %>
-              <span class="label-icons edited-icon"><%= editedLabelText %></span>
-            <% } %>
-
-            <% if (post.is_pinned) { %><span>📌</span><% } %>
-            <% if (post.is_private) { %>🔒 <% } %>
-
-            <%= post.title %>
-          </a>
-
-          <% if (user && user.id === post.user_id) { %>
-            <div class="action-icons">
-              <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정">
-                <i class="fas fa-pen"></i>
-              </a>
-              <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
-                <button type="submit" class="icon-btn delete-btn" title="삭제">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </form>
-            </div>
-          <% } %>
-        </div>
-
-        <div class="post-info">
-          <%= post.author %> |
-          <%= post.created_at.toISOString().slice(0, 10) %> |
-          <%= locale.tableHeaders.views %> <%= post.views %> |
-          <%
-            const displayCatsMobile = Array.isArray(post.translated_categories_display)
-              ? post.translated_categories_display
-              : (post.categories ? post.categories.split(',').map(c => c.trim()).filter(Boolean) : []);
-          %>
-          <%= displayCatsMobile.join(', ') %>
-        </div>
+<% if (!posts || posts.length === 0) { -%>
+<div class="no-posts-found">
+  <% if (isSearch) { -%>
+  "<%= searchKeyword %>" <%= locale.search.noResults || '로 검색한 결과가 없습니다.' %>
+  <% } else { -%>
+  <%= locale.noPostsFound %>
+  <% } -%>
+</div>
+<% } else { -%>
+<div class="mobile-board-list">
+  <% posts.forEach(post => { -%>
+  <div class="mobile-post-item">
+    <div class="post-title-and-actions">
+      <a href="/<%= lang %>/post/<%= post.id %>" data-panel="off" class="post-title post-detail-link <%= post.is_pinned == 1 ? 'pinned-title' : '' %>" data-post-id="<%= post.id %>" data-is-private="<%= post.is_private ? '1' : '0' %>" data-post-user-id="<%= post.user_id %>">
+        <%
+          const now = new Date();
+          const createdAt = new Date(post.created_at);
+          const updatedAt = new Date(post.updated_at);
+          const oneDay = 1000 * 60 * 60 * 24;
+          const isNewPost = (now - createdAt) < oneDay;
+          const wasEdited = updatedAt > createdAt;
+          const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+          const showEditedLabel = !isNewPost && isRecentlyEdited;
+        -%>
+        <% if (isNewPost) { -%><span class="label-icons new-icon"><%= locale.ui.newPost || 'NEW' %></span><% } else if (showEditedLabel) { -%><span class="label-icons edited-icon"><%= locale.ui.editedPost || 'UPDATED' %></span><% } -%>
+        <% if (post.is_pinned) { -%><span>📌</span><% } -%>
+        <% if (post.is_private) { -%>🔒 <% } -%>
+        <%= post.title %>
+      </a>
+      <% if (user && user.id === post.user_id) { -%>
+      <div class="action-icons">
+        <a href="/edit/<%= post.id %>" class="icon-btn edit-btn" title="수정"><i class="fas fa-pen"></i></a>
+        <form action="/delete/<%= post.id %>" method="POST" class="delete-post-form">
+          <button type="submit" class="icon-btn delete-btn" title="삭제"><i class="fas fa-trash"></i></button>
+        </form>
       </div>
-    <% }) %>
-  </div>
-
-  <% if (pagination.total > 1) { %>
-    <div class="pagination pagination-mobile mobile-only">
-      <%
-        const paginationBaseUrlMobile = isSearch
-          ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`
-          : `/${lang}/?category=${selectedCategory || 'all'}`;
-      %>
-
-      <% if (pagination.current > 1) { %>
-        <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
-        <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
-      <% } else { %>
-        <span class="page-link disabled">«</span>
-        <span class="page-link disabled">‹</span>
-      <% } %>
-
-      <% pagination.range.forEach(p => { %>
-        <% if (p === '...') { %>
-          <span class="page-ellipsis">…</span>
-        <% } else { %>
-          <a href="<%= paginationBaseUrlMobile %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
-        <% } %>
-      <% }) %>
-
-      <% if (pagination.current < pagination.total) { %>
-        <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
-        <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
-      <% } else { %>
-        <span class="page-link disabled">›</span>
-        <span class="page-link disabled">»</span>
-      <% } %>
+      <% } -%>
     </div>
-  <% } %>
-<% } %>
+    <div class="post-info">
+      <%= post.author %> | <%= post.created_at.toISOString().slice(0, 10) %> | <%= locale.tableHeaders.views %> <%= post.views %> |
+      <%
+        const displayCatsMobile = Array.isArray(post.translated_categories_display)
+          ? post.translated_categories_display
+          : (post.categories ? post.categories.split(',').map(c => c.trim()).filter(Boolean) : []);
+      -%>
+      <%= displayCatsMobile.join(', ') %>
+    </div>
+  </div>
+  <% }) -%>
+</div>
+
+<% if (pagination.total > 1) { -%>
+<div class="pagination pagination-mobile mobile-only">
+  <%
+    const paginationBaseUrlMobile = isSearch
+      ? `/${lang}/search?q=${encodeURIComponent(searchKeyword)}`
+      : `/${lang}/?category=${selectedCategory || 'all'}`;
+  -%>
+  <% if (pagination.current > 1) { -%>
+  <a href="<%= paginationBaseUrlMobile %>&page=1" class="page-link" aria-label="First">«</a>
+  <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current - 1 %>" class="page-link" aria-label="Previous">‹</a>
+  <% } else { -%>
+  <span class="page-link disabled">«</span><span class="page-link disabled">‹</span>
+  <% } -%>
+  <% pagination.range.forEach(p => { -%>
+  <% if (p === '...') { -%><span class="page-ellipsis">…</span><% } else { -%>
+  <a href="<%= paginationBaseUrlMobile %>&page=<%= p %>" class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+  <% } -%>
+  <% }) -%>
+  <% if (pagination.current < pagination.total) { -%>
+  <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.current + 1 %>" class="page-link" aria-label="Next">›</a>
+  <a href="<%= paginationBaseUrlMobile %>&page=<%= pagination.total %>" class="page-link" aria-label="Last">»</a>
+  <% } else { -%>
+  <span class="page-link disabled">›</span><span class="page-link disabled">»</span>
+  <% } -%>
+</div>
+<% } -%>
+<% } -%>
 
 <script>
   function createMessageBox(message, isConfirm = false, onConfirm = null) {
@@ -151,27 +105,18 @@
     if (!modal) {
       modal = document.createElement('div');
       modal.id = 'customMessageModal';
-      modal.style = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-        align-items: center; z-index: 1000; display: none;
-      `;
+      modal.style = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; display: none;`;
       document.body.appendChild(modal);
     }
-
     modal.innerHTML = `
       <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; width: 90%; text-align: center;">
         <p style="color: black; margin-bottom: 15px;">${message}</p>
         ${isConfirm ? `
           <button id="confirmBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
           <button id="cancelBtn" style="padding: 8px 15px; margin: 5px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">취소</button>
-        ` : `
-          <button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>
-        `}
-      </div>
-    `;
+        ` : `<button id="okBtn" style="padding: 8px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">확인</button>`}
+      </div>`;
     modal.style.display = 'flex';
-
     if (isConfirm) {
       document.getElementById('confirmBtn').onclick = () => { modal.style.display = 'none'; if (onConfirm) onConfirm(); };
       document.getElementById('cancelBtn').onclick = () => { modal.style.display = 'none'; };
@@ -179,56 +124,41 @@
       document.getElementById('okBtn').onclick = () => { modal.style.display = 'none'; if (onConfirm) onConfirm(); };
     }
   }
-
   function showCustomMessage(message, isConfirm = false, onConfirm = null) {
     createMessageBox(message, isConfirm, onConfirm);
   }
-
   document.addEventListener('DOMContentLoaded', () => {
     const postDetailLinks = document.querySelectorAll('.post-detail-link');
     const currentUser = <%- JSON.stringify(user || null) %>;
     const currentUserId = currentUser ? currentUser.id : null;
     const isAdmin = currentUser ? currentUser.is_admin === 1 : false;
-
     postDetailLinks.forEach(link => {
       link.addEventListener('click', (event) => {
         const isPrivate = event.currentTarget.dataset.isPrivate === '1';
         const postUserId = event.currentTarget.dataset.postUserId;
-
         if (isPrivate && postUserId !== currentUserId && !isAdmin) {
           event.preventDefault();
           showCustomMessage("이 글은 비공개로 설정되어 접근할 수 없습니다.");
           return;
         }
-
         event.preventDefault();
         window.location.href = link.href;
       }, true);
     });
-
     document.body.addEventListener('submit', (e) => {
       const form = e.target;
       if (form.classList.contains('delete-post-form')) {
-        if (!confirm('정말 삭제하시겠습니까?')) {
-          e.preventDefault();
-        }
+        if (!confirm('정말 삭제하시겠습니까?')) e.preventDefault();
       }
     });
-
     const searchForm = document.querySelector('.search-form');
     if (searchForm) {
-      searchForm.addEventListener('submit', () => {
-        localStorage.setItem('sidebarOpen', 'true');
-      });
+      searchForm.addEventListener('submit', () => localStorage.setItem('sidebarOpen', 'true'));
     }
-
     const categoryTabs = document.querySelectorAll('.tabs a');
     categoryTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        localStorage.setItem('sidebarOpen', 'true');
-      });
+      tab.addEventListener('click', () => localStorage.setItem('sidebarOpen', 'true'));
     });
-
     const sidebar = document.querySelector('.sidebar-extension-panel');
     if (localStorage.getItem('sidebarOpen') === 'true') {
       sidebar.classList.add('open');
