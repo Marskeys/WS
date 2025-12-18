@@ -183,3 +183,619 @@ html.dark .recent-post-title:hover {
   100% { transform: scale(1); opacity: 1; }
 }
 
+
+
+    /* ---------------------------------------------------- */
+    /* 💡 CSS 변수 설정 (기존 유지) */
+    /* ---------------------------------------------------- */
+    :root{
+      --chrome-gap:50px;
+      --panel-gap:16px;
+      --radius:12px;
+      /* Light Mode Colors */
+      --border:#d9d9d9;
+      --bg:#f5f4d2;
+      --panel:#ffffff;
+      --panel-2:#f0f0ff;
+      --ink:#1f1f1f;
+      --ink-2:#5a5a5a;
+      --accent:#cfcfd0;
+      --primary:#217ee8;
+      --primary-ink:#ffffff;
+      --primary-rgb: 33, 126, 232; 
+
+      --section-title-bg-light: #ffffff; 
+      --section-title-bg-dark: #1b1b1b;  
+      --section-title-border-light: #e0e0e0; 
+      --section-title-border-dark: #2b2b2b;  
+    }
+
+    html.dark{
+      --border:#2b2b2b;
+      --bg:#121212;
+      --panel:#1b1b1b;
+      --panel-2:#0e0e0e;
+      --ink:#eaeaea;
+      --ink-2:#b7b7b7;
+      --accent:#faffca;
+      --primary:#217ee8;
+      --primary-ink:#608b42; 
+      --primary-rgb: 33, 126, 232; 
+    }
+
+    html { height: 100%; } 
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh; 
+      height: 100%; 
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .app-shell{
+      padding: 16px 16px 16px calc(var(--chrome-gap) + 16px);
+      padding-top: calc(50px + 16px);
+      margin-top: 180px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      margin-bottom: 20px; 
+    }
+
+    @media (max-width: 640px){
+      .app-shell{
+        padding-left: 16px;
+        padding-bottom: 70px; 
+        margin-top: 250px;
+        margin-bottom: 0;
+      }
+    }
+
+    .spacer {
+      height: 50vh;
+      min-height: 300px;
+      width: 100%;
+      background: transparent;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 📌 섹션 제목, 캐러셀 스타일 (기존 유지) */
+    /* ---------------------------------------------------- */
+
+    .section-title-wrapper {
+        width: 100vw;
+        margin-left: calc(-1 * (var(--chrome-gap) + 16px)); 
+        background: var(--section-title-bg-light); 
+        border-top: 1px solid var(--section-title-border-light);
+        border-bottom: 1px solid var(--section-title-border-light);
+        margin-bottom: 16px; 
+        padding: 8px 0; 
+    }
+
+    html.dark .section-title-wrapper {
+        background: var(--section-title-bg-dark); 
+        border-top: 1px solid var(--section-title-border-dark);
+        border-bottom: 1px solid var(--section-title-border-dark);
+    }
+    
+    @media (max-width: 640px){
+        .section-title-wrapper {
+            margin-left: -16px; 
+        }
+    }
+
+    .section-title {
+      margin-left: calc(var(--chrome-gap) + 16px); 
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0; 
+      margin-top: 0;
+      letter-spacing: 0.5px;
+    }
+    
+    @media (max-width: 640px){
+        .section-title {
+            margin-left: 16px; 
+        }
+    }
+
+
+    html.dark .section-title {
+        color: var(--accent);
+        text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
+    }
+
+    .carousel {
+      display: flex;
+      margin-top:12px;
+      gap: 16px; 
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 10px 0 8px 0; 
+    }
+
+    .carousel::-webkit-scrollbar { display: none; }
+
+    /* ---------------------------------------------------- */
+    /* ✅ 북카드: 기본 크기 축소 및 확장 스타일 재정의 */
+    /* ---------------------------------------------------- */
+    .book-card {
+      flex-shrink: 0;
+      width: 180px; 
+      background: var(--panel);
+      border-radius: var(--radius);
+      color: var(--ink);
+      transition: all 0.3s ease, width 0.4s ease, height 0.4s ease; 
+      scroll-snap-align: start;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+      z-index: 1; 
+      border: 2px solid transparent; 
+      padding: 0; 
+    }
+
+    .book-card:hover {
+      background: var(--panel-2); 
+    }
+
+    /* ⭐ 클릭 시 카드 전체가 커지고 활성화 효과 적용 */
+    .book-card.expanded {
+        width: 300px; 
+        transform: translateY(-8px); 
+        background: var(--panel);
+        
+        /* 🎯 활성화 테두리 및 그림자 (라이트 모드) - 깔끔하고 밝게 */
+        border-color: var(--primary); 
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3), 
+                    0 0 0 3px rgba(var(--primary-rgb), 0.1); 
+        
+        z-index: 10; 
+    }
+
+    html.dark .book-card.expanded {
+        /* 🎯 활성화 테두리 및 그림자 (다크 모드) - 밝고 깔끔하게 */
+        border-color: #55aaff; 
+        box-shadow: 0 5px 15px rgba(33, 126, 232, 0.9), 
+                    0 0 0 3px rgba(33, 126, 232, 0.5); 
+    }
+    
+    /* 🎯 카드 확장 시 '새 챕터' 라벨 즉시 숨김 */
+    .book-card.expanded .book-updated-badge {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0s; /* 즉시 사라짐 */
+    }
+
+
+    /* 카드 내부 컨텐츠 래퍼: 전체 둥근 모서리를 담당 */
+    .book-content-wrapper {
+        border-radius: var(--radius);
+        overflow: hidden; 
+    }
+
+    /* ---------------------------------------------------- */
+    /* 🎯 [핵심 수정] 이미지 래퍼의 높이 제어 및 사라짐 효과 */
+    /* ---------------------------------------------------- */
+    .book-cover-wrapper {
+        overflow: hidden;
+        border-radius: var(--radius) var(--radius) 0 0; 
+        background: var(--panel-2); 
+        
+        /* 🎯 높이를 여기서 고정하고 transition을 겁니다 */
+        height: 290px; 
+        opacity: 1;
+        transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+    
+    @media (max-width: 640px){
+      .book-cover-wrapper {
+        height: 220px; 
+      }
+    }
+
+    /* 🎯 카드가 확장되면(expanded) 이미지 영역 숨김 */
+    .book-card.expanded .book-cover-wrapper {
+      height: 0;
+      opacity: 0;
+      
+      /* ⚡ 클릭하자마자 이미지는 즉시(0s) 사라져서 버벅임 방지 */
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0s;
+      
+      border-radius: 0; 
+    }
+
+
+    .book-cover {
+      width: 100%;
+      /* 🎯 이미지는 래퍼를 꽉 채우게 변경 (래퍼가 줄어들면 같이 안보임) */
+      height: 100%; 
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease; 
+      transform: scale(1.01); 
+    }
+    
+
+    .book-info {
+      padding: 12px 8px; 
+      text-align: center;
+      border-top: 1px solid var(--border); 
+      background: var(--panel-2);
+      
+      /* 🎯 이미지 사라질 때 윗부분과 자연스럽게 붙도록 트랜지션 */
+      /* ⚡ [수정] padding에도 트랜지션을 주어 열릴 때 부드럽게 공간이 생기게 함 */
+      transition: background 0.3s, padding 0.3s ease;
+      
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* 확장 시 타이틀 바 스타일 */
+    .book-card.expanded .book-info {
+        border-top: none; /* 위쪽 테두리 제거 (맨 위로 올라가므로) */
+        border-radius: var(--radius) var(--radius) 0 0; /* 맨 위가 되므로 둥글게 */
+        
+        /* ⚡ [수정] 열렸을 때 타이틀 위쪽 여백을 24px로 넉넉하게 확장 */
+        padding-top: 24px; 
+    }
+
+    .book-title {
+      font-weight: 600;
+      font-size: 1rem; 
+      color: var(--ink);
+      line-height: 1.4;
+      white-space: normal;
+      word-break: keep-all;
+      letter-spacing: 0.3px;
+    }
+
+    .book-title::after {
+      content: "";
+      display: block;
+      width: 40%;
+      height: 2px;
+      background: var(--primary);
+      margin: 6px auto 0; 
+      border-radius: 1px;
+      opacity: 0.7;
+    }
+
+    /* ---------------------------------------------------- */
+    /* ✅ 목차 스타일: JS로 height 제어 및 CSS padding 고정 */
+    /* ---------------------------------------------------- */
+    .book-toc {
+      background: var(--panel-2);
+      color: var(--ink-2);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      
+      height: 0; 
+      overflow: hidden; 
+      
+      /* 🎯 위쪽 여백(padding-top)을 24px로 늘려 시원하게 처리 */
+      padding: 24px 16px 16px 16px;
+      
+      /* 초기에는 패딩을 0으로 시작 */
+      padding-top: 0;
+      padding-bottom: 0;
+      
+      /* GPU 가속 유도 */
+      will-change: height, opacity, transform; 
+      /* height와 opacity에만 트랜지션 적용 */
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-out; 
+      opacity: 0;
+    }
+    
+    /* 닫힌 상태를 위한 클래스 (JS에서 적용) */
+    .book-toc.closed {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        opacity: 0;
+        height: 0px !important;
+    }
+    
+    /* 열린 상태 (JS가 height를 콘텐츠 높이로 설정) */
+    .book-card.expanded .book-toc {
+      opacity: 1;
+      /* height는 JS에서 설정됨 */
+    }
+    /* ---------------------------------------------------- */
+
+    .book-toc h4 {
+      margin: 0 0 13px 0;
+  
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .book-toc h5 {
+      margin: 12px 0 6px 0;
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .book-toc ul {
+      margin: 0 0 12px 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    .book-toc > .paginated-toc > ul > li > ul {
+      margin: 0;
+      padding-left: 14px;
+      list-style: none;
+    }
+
+    .book-toc > .paginated-toc > ul > li > ul > li {
+      color: var(--ink-2);
+      font-weight: 500;
+    }
+
+    .book-toc > .paginated-toc > ul > li > ul > li > ul {
+      margin: 4px 0 0 0;
+      padding-left: 18px;
+      list-style: disc;
+    }
+    
+    .book-toc li {
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .pagination-number {
+      padding: 0 8px;
+      cursor: pointer;
+      color: var(--ink-2);
+      transition: color 0.2s;
+    }
+
+    .pagination-number:hover { color: var(--primary); }
+    .pagination-number.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .pagination-divider {
+      color: var(--border);
+      margin: 0 2px;
+    }
+
+    /* ✅ 링크 활성/비활성 스타일 */
+    .toc-link {
+      text-decoration: none;
+      transition: color 0.2s, opacity 0.2s;
+    }
+    .toc-link.active {
+      color: var(--primary);
+      cursor: pointer;
+      pointer-events: auto; /* 명시적으로 클릭 가능하도록 설정 */
+    }
+    .toc-link.active:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    .toc-link.disabled {
+      color: var(--ink-2);
+      opacity: 0.6;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* ---------------------------------------------------- */
+    /* 📱 모바일 최적화 (640px 이하) - 북카드 크기 */
+    /* ---------------------------------------------------- */
+    @media (max-width: 640px){
+      .carousel {
+        gap: 12px; 
+      }
+      .book-card {
+        width: 140px; 
+      }
+      .book-card.expanded {
+        width: 250px; 
+      }
+      .book-info {
+        padding: 10px 6px; 
+      }
+      .book-title {
+        font-size: 0.9rem; 
+      }
+    }
+    
+    /* ---------------------------------------------------- */
+    /* ⬇️ 이하 기존 CSS는 유지 ⬇️ */
+    /* ---------------------------------------------------- */
+
+    .recent-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 12px; 
+        margin-top: 12px; 
+        padding: 0; 
+    }
+
+    .recent-post-item {
+        background: var(--panel);
+        border-radius: 8px;
+        padding: 15px 20px;
+        transition: background 0.2s, border-color 0.2s; 
+        cursor: pointer;
+        border: 1px solid transparent; 
+    }
+
+    .recent-post-item:hover {
+        background: var(--panel-2);
+        border-color: var(--primary); 
+    }
+    html.dark .recent-post-item {
+        border: 1px solid transparent;
+    }
+    html.dark .recent-post-item:hover {
+        background: var(--panel-2);
+        border-color: var(--primary);
+    }
+
+    .recent-post-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+    
+    @keyframes wiggle-float {
+      0% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-2deg); }
+      60% { transform: translateY(0) rotate(1deg); }
+      80% { transform: translateY(1px) rotate(-1deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .label-icon {
+      display: inline-block;
+      padding: 3px 6px; 
+      margin-right: 8px; 
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: white !important; 
+      line-height: 1.2;
+      vertical-align: middle;
+      text-transform: uppercase;
+      background-image: none;
+      width: auto;
+      height: auto;
+      flex-shrink: 0;
+      animation: wiggle-float 0.9s ease-in-out infinite; 
+    }
+
+    .new-icon { background-color: #ff4757; }
+    .edited-icon { background-color: #2e86de; }
+
+    html.dark .new-icon { background-color: #e84118; }
+    html.dark .edited-icon { background-color: #1e3799; }
+
+    .badge-pinned {
+        margin-right: 5px; 
+        font-size: 0.9em; 
+    }
+
+    .recent-post-meta {
+        font-size: 0.85rem;
+        color: var(--ink-2);
+    }
+
+    .recent-post-preview {
+        font-size: 0.9rem;
+        color: var(--ink-2);
+        margin-top: 8px;
+        line-height: 1.5;
+    }
+
+    #load-more-btn {
+        display: block; 
+        width: 200px; 
+        margin: 0 auto 16px; 
+        padding: 12px 20px;
+        border-radius: 25px; 
+        
+        background: linear-gradient(135deg, #A8E063, #56AB2F); 
+        
+        border: none; 
+        color: #ffffff; 
+        
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s, background 0.3s, color 0.3s; 
+        letter-spacing: 0.5px;
+    }
+
+    #load-more-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    html.dark #load-more-btn {
+        background: transparent; 
+        color: #ffffff; 
+        border: 2px solid #ffffff; 
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.15); 
+    }
+    
+    html.dark #load-more-btn:hover {
+        background: #ffffff; 
+        color: var(--bg); 
+        border-color: var(--bg);
+        box-shadow: 0 6px 12px rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px); 
+    }
+
+    .app-footer {
+        width: 100%;
+        margin-top: auto; 
+        padding: 20px 16px;
+        text-align: center;
+        color: var(--ink-2);
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border);
+        background: var(--panel-2);
+        z-index: 10; 
+        flex-shrink: 0; 
+    }
+    
+    @media (min-width: 641px) {
+        .recent-posts {
+            max-width: 800px; 
+            margin-left: 0; 
+            margin-right: auto;
+            padding-left: 0; 
+        }
+        
+        .recent-posts-wrapper .section-title {
+            margin-left: calc(var(--chrome-gap) + 16px); 
+            margin-right: auto;
+        }
+
+        #load-more-btn {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    
+    /* 📌 누락되었던 배지 스타일 추가 (라벨 숨김 기능을 위해) */
+    .book-updated-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ff4757;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 4px;
+        z-index: 5;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: opacity 0.2s;
+    }
+    
