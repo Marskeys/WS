@@ -171,21 +171,30 @@ window.loadMorePosts = async function () {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      let previewText = '';
-      if (post.content) {
-        let clean = post.content
-          .replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '')
-          .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/gi, '')
-          .replace(/\s+/g, ' ')
-          .trim();
+     let previewText = '';
 
-        previewText = clean
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .slice(0, 120);
-      }
+if (post.content) {
+  let clean = post.content
+    .replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  previewText = clean
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .slice(0, 120);
+
+} else if (post.preview) {
+  previewText = post.preview
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .slice(0, 120);
+}
+
 
       el.innerHTML = `
         <a href="/${lang}/post/${post.id}" class="recent-post-title">
