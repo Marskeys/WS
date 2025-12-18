@@ -1,150 +1,251 @@
-  document.addEventListener("DOMContentLoaded", () => {
-      // HTML 위젯 처리
-      document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
-        const encoded = el.getAttribute("data-code");
-        if (!encoded) return;
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
+    const encoded = el.getAttribute("data-code");
+    if (!encoded) return;
 
-        try {
-          const decoded = new TextDecoder('utf-8').decode(
-            new Uint8Array([...atob(encoded)].map(c => c.charCodeAt(0)))
-          );
-          const iframe = document.createElement('iframe');
-          iframe.setAttribute('sandbox', 'allow-scripts');
-          iframe.setAttribute('referrerpolicy', 'no-referrer');
-          iframe.setAttribute('title', '삽입된 HTML');
-          iframe.setAttribute('name', `snippet-iframe-${index}`);
-          iframe.style.cssText = 'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
-          iframe.srcdoc = decoded;
-
-          el.innerHTML = '';
-          el.appendChild(iframe);
-        } catch (e) {
-          el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
-          console.error('디코딩 오류:', e);
-        }
-      });
-
-      // post-body 내부 스크립트 실행
-      document.querySelectorAll('.post-body script').forEach(script => {
-        const newScript = document.createElement('script');
-        if (script.src) {
-          newScript.src = script.src;
-        } else {
-          newScript.textContent = script.textContent;
-        }
-        document.body.appendChild(newScript);
-      });
-    });
-
-    function sendHeightToParent() {
-      const height = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight
+    try {
+      const decoded = new TextDecoder('utf-8').decode(
+        new Uint8Array([...atob(encoded)].map(c => c.charCodeAt(0)))
       );
-      if (window.parent) {
-        window.parent.postMessage({
-          type: 'setIframeHeight',
-          height: height,
-          iframeName: window.name
-        }, '*');
-      }
+
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('sandbox', 'allow-scripts');
+      iframe.setAttribute('referrerpolicy', 'no-referrer');
+      iframe.setAttribute('title', '삽입된 HTML');
+      iframe.setAttribute('name', `snippet-iframe-${index}`);
+      iframe.style.cssText = 'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
+      iframe.srcdoc = decoded;
+
+      el.innerHTML = '';
+      el.appendChild(iframe);
+    } catch (e) {
+      el.innerHTML = '<p style="color:red;">[HTML 코드 디코딩 실패]</p>';
+      console.error('디코딩 오류:', e);
     }
+  });
 
-    window.addEventListener('message', (event) => {
-      if (event.data?.type === 'setIframeHeight') {
-        const iframe = document.querySelector(`iframe[name="${event.data.iframeName}"]`);
-        if (iframe) iframe.style.height = `${event.data.height}px`;
+  document.querySelectorAll('.post-body script').forEach(script => {
+    const s = document.createElement('script');
+    if (script.src) s.src = script.src;
+    else s.textContent = script.textContent;
+    document.body.appendChild(s);
+  });
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  document.addEventListener('dragstart', e => {
+    if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+  });
+
+  document.addEventListener('selectstart', e => {
+    if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+  });
+
+  document.addEventListener('mouseup', () => {
+    const sel = window.getSelection();
+    if (sel && sel.toString().length) {
+      const a = document.activeElement;
+      if (!['INPUT', 'TEXTAREA'].includes(a.tagName)) sel.removeAllRanges();
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12') return e.preventDefault();
+
+    if (e.ctrlKey || e.metaKey) {
+      const k = e.key.toLowerCase();
+      if (['c', 'a', 's', 'p', 'u', 'x'].includes(k)) e.preventDefault();
+      if (e.shiftKey && ['i', 'j', 'c'].includes(k)) e.preventDefault();
+    }
+  });
+
+  const postContent = document.querySelector('.post-content');
+  const floatingToc = document.getElementById('floatingToc');
+  const mobileBtn = document.getElementById('mobileTocBtn');
+  const mobileModal = document.getElementById('mobileTocModal');
+  const mobileContent = document.getElementById('mobileTocContent');
+  const tocTitle = document.body.dataset.tocTitle || 'TOC';
+
+  if (postContent) {
+    const headings = postContent.querySelectorAll('h1, h2');
+    if (headings.length) {
+      let html = `<strong>${tocTitle}</strong><ul style="padding-left:1.2em;">`;
+      let h1 = 0,
+        h2 = 0;
+
+      headings.forEach((el, i) => {
+        const tag = el.tagName.toLowerCase();
+        if (!el.id) el.id = `toc-${tag}-${i}`;
+
+        if (tag === 'h1') {
+          h1++;
+          h2 = 0;
+          html += `<li class="toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
+        } else {
+          h2++;
+          if (!h1) h1 = 1;
+          html += `<li class="toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
+        }
+      });
+
+      html += '</ul>';
+      floatingToc.innerHTML = html;
+      mobileContent.innerHTML = html;
+      mobileBtn.style.display = 'block';
+    }
+  }
+
+  const toc = document.querySelector('.auto-toc');
+  if (toc) {
+    const top = document.createElement('div');
+    const bottom = document.createElement('div');
+    top.style.height = bottom.style.height = '1px';
+    toc.before(top);
+    toc.after(bottom);
+
+    const check = () => {
+      const passed = top.getBoundingClientRect().top < 0 && bottom.getBoundingClientRect().top < 0;
+
+      if (window.innerWidth <= 768) {
+        floatingToc.style.display = 'none';
+        mobileBtn.classList.toggle('show', passed);
+      } else {
+        floatingToc.style.display = passed ? 'block' : 'none';
       }
+    };
+
+    window.addEventListener('scroll', check);
+    window.addEventListener('resize', check);
+    check();
+  }
+
+  mobileBtn?.addEventListener('click', () => {
+    mobileModal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+  });
+
+  mobileModal?.addEventListener('click', e => {
+    if (e.target === mobileModal) {
+      mobileModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+  });
+
+  mobileContent?.addEventListener('click', e => {
+    if (e.target.tagName === 'A') {
+      e.preventDefault();
+      document.getElementById(e.target.getAttribute('href').slice(1))?.scrollIntoView({
+        behavior: 'smooth'
+      });
+      mobileModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+  });
+
+  if (floatingToc && window.innerWidth > 768) {
+    let drag = false,
+      sx, sy, sl, st;
+
+    floatingToc.style.position = 'fixed';
+    floatingToc.style.cursor = 'move';
+
+    floatingToc.addEventListener('mousedown', e => {
+      drag = true;
+      sx = e.clientX;
+      sy = e.clientY;
+      sl = floatingToc.offsetLeft;
+      st = floatingToc.offsetTop;
+      e.preventDefault();
     });
 
-    window.addEventListener('load', sendHeightToParent);
-    window.addEventListener('resize', sendHeightToParent);
+    document.addEventListener('mousemove', e => {
+      if (!drag) return;
+      floatingToc.style.left = `${sl + e.clientX - sx}px`;
+      floatingToc.style.top = `${st + e.clientY - sy}px`;
+    });
 
+    document.addEventListener('mouseup', () => drag = false);
+  }
 
+  const container = document.querySelector('.post-content');
+  if (container) {
+    const ps = [...container.querySelectorAll('p')];
+    const targets = [2, 5, 8].filter(i => ps[i] && ps[i].innerText.length > 50);
 
+    targets.forEach(i => {
+      const wrap = document.createElement('div');
+      wrap.className = 'in-article-ad';
 
+      const ins = document.createElement('ins');
+      ins.className = 'adsbygoogle';
+      ins.style.display = 'block';
+      ins.dataset.adClient = 'ca-pub-2585969189290118';
+      ins.dataset.adSlot = '2419246715';
+      ins.dataset.adFormat = 'auto';
+      ins.dataset.fullWidthResponsive = 'true';
 
+      wrap.appendChild(ins);
+      ps[i].after(wrap);
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const toc = document.querySelector(".auto-toc");
-      if (!toc) return;
+      try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      } catch {}
+    });
+  }
 
-      const floatingToc = document.getElementById("floatingToc");
-      const mobileBtn = document.getElementById("mobileTocBtn");
-      const mobileModal = document.getElementById("mobileTocModal");
-      const mobileContent = document.getElementById("mobileTocContent");
+  const btn = document.getElementById('ttsBtn');
+  if (btn) {
+    const listen = btn.dataset.listen || 'Listen';
+    const stop = btn.dataset.stop || 'Stop';
+    const synth = speechSynthesis;
+    let reading = false;
 
-      floatingToc.innerHTML = toc.innerHTML;
-      mobileContent.innerHTML = toc.innerHTML;
+    btn.addEventListener('click', () => {
+      if (reading) {
+        synth.cancel();
+        btn.innerText = `🔊 ${listen}`;
+        reading = false;
+        return;
+      }
 
-      mobileBtn.addEventListener("click", () => {
-        mobileModal.style.display = "flex";
-        document.body.classList.add("modal-open");
-      });
+      const text = document.querySelector('.post-content')?.innerText;
+      if (!text) return;
 
-      mobileModal.addEventListener("click", (e) => {
-        if (e.target === mobileModal) {
-          mobileModal.style.display = "none";
-          document.body.classList.remove("modal-open");
-        }
-      });
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = document.documentElement.lang;
+      synth.speak(u);
 
-      mobileContent.addEventListener("click", (e) => {
-        if (e.target.tagName === "A") {
-          e.preventDefault();
-          const el = document.getElementById(e.target.getAttribute("href").slice(1));
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-            mobileModal.style.display = "none";
-          }
-        }
-      });
+      btn.innerText = `⏹ ${stop}`;
+      reading = true;
 
-      const topSentinel = document.createElement("div");
-      topSentinel.style.height = "1px";
-      toc.before(topSentinel);
-
-      const bottomSentinel = document.createElement("div");
-      bottomSentinel.style.height = "1px";
-      toc.after(bottomSentinel);
-
-      const checkFloatingToc = () => {
-        const top = topSentinel.getBoundingClientRect().top;
-        const bottom = bottomSentinel.getBoundingClientRect().top;
-        const passed = top < 0 && bottom < 0;
-
-        floatingToc.style.display = passed ? "block" : "none";
-        mobileBtn.classList.toggle("show", passed);
+      u.onend = () => {
+        btn.innerText = `🔊 ${listen}`;
+        reading = false;
       };
-
-      window.addEventListener("scroll", checkFloatingToc);
-      window.addEventListener("resize", checkFloatingToc);
-      checkFloatingToc();
     });
+  }
+});
 
-    (function enableFloatingTocDrag() {
-      const toc = document.getElementById('floatingToc');
-      if (!toc) return;
+function sendHeightToParent() {
+  const h = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight
+  );
+  if (window.parent) {
+    window.parent.postMessage({
+      type: 'setIframeHeight',
+      height: h,
+      iframeName: window.name
+    }, '*');
+  }
+}
 
-      let isDragging = false, startX, startY, startLeft, startTop;
+window.addEventListener('message', e => {
+  if (e.data?.type === 'setIframeHeight') {
+    const iframe = document.querySelector(`iframe[name="${e.data.iframeName}"]`);
+    if (iframe) iframe.style.height = `${e.data.height}px`;
+  }
+});
 
-      toc.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        startLeft = parseInt(window.getComputedStyle(toc).left, 10);
-        startTop = parseInt(window.getComputedStyle(toc).top, 10);
-        toc.style.transition = 'none';
-        e.preventDefault();
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        toc.style.left = `${startLeft + e.clientX - startX}px`;
-        toc.style.top = `${startTop + e.clientY - startY}px`;
-      });
-
-      document.addEventListener('mouseup', () => {
-        isDragging = false;
-      });
-    })();
+window.addEventListener('load', sendHeightToParent);
+window.addEventListener('resize', sendHeightToParent);

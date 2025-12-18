@@ -12,7 +12,6 @@
 
   <% 
     const publishedDate = new Date(post.created_at).toISOString();
-    // 수정일(updated_at)이 있다면 사용, 없다면 발행일(created_at) 사용
     const modifiedDate = post.updated_at ? new Date(post.updated_at).toISOString() : publishedDate;
   %>
   
@@ -22,7 +21,6 @@
         metaImage: "https://bugloop.dev/assets/images/BugLoop.png",
         canonical: `https://bugloop.dev/${lang}/post/${post.id}`,
         currentPath: `/${lang}/post/${post.id}`,
-        // [유지] 수정일 메타 태그 추가
         articleModifiedTime: modifiedDate 
   }) %>
 
@@ -41,456 +39,91 @@
       "name": "<%= post.author %>"
     },
     "datePublished": "<%= publishedDate %>",
-    "dateModified": "<%= modifiedDate %>", 
+    "dateModified": "<%= modifiedDate %>",
     "mainEntityOfPage": "https://bugloop.dev/<%= lang %>/post/<%= post.id %>",
     "image": "https://bugloop.dev/assets/images/BugLoop.png",
     "articleBody": "<%= (post.content || '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,600) %>"
   }
   </script>
-
 </head>
 
+<body
+  class="no-fixed-footer"
+  data-toc-title="<%= locale.ui.tocButton %>"
+  oncontextmenu="return false"
+  ondragstart="return false"
+  onselectstart="return false"
+>
 
-<body class="no-fixed-footer" oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
-  
-  <%- include('partials/header') %>
+<%- include('partials/header') %>
 
-  <div class="postview-container">
+<div class="postview-container">
 
-    <h1 class="post-title"><%= post.title %></h1>
+  <h1 class="post-title"><%= post.title %></h1>
 
-<div class="post-meta">
-  <span><%= locale.ui.category %>: <%= post.categories.join(', ') %></span><br>
-  <span><%= locale.ui.author %>: <%= post.author %></span><br>
-  <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
+  <div class="post-meta">
+    <span><%= locale.ui.category %>: <%= post.categories.join(', ') %></span><br>
+    <span><%= locale.ui.author %>: <%= post.author %></span><br>
+    <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
     <% if (post.updated_at && post.created_at !== post.updated_at) { %>
-      <br> <span><%= locale.ui.modified || 'BugLoop.png' %>: <%= new Date(post.updated_at).toLocaleString() %></span>
+      <br>
+      <span><%= locale.ui.modified || 'Modified' %>: <%= new Date(post.updated_at).toLocaleString() %></span>
     <% } %>
+  </div>
+
+  <div class="tts-wrapper">
+    <button
+      id="ttsBtn"
+      class="tts-btn"
+      data-listen="<%= locale.ui.listen || 'Listen' %>"
+      data-stop="<%= locale.ui.stop || 'Stop' %>"
+    >
+      🔊 <%= locale.ui.listen || "Listen" %>
+    </button>
+  </div>
+
+  <div class="post-content">
+    <%- post.content %>
+  </div>
+
+  <% if (user && post.user_id == user.id) { %>
+    <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
+      <a href="/<%= lang %>/edit/<%= post.id %>" class="edit-btn">✏️ <%= locale.ui.editButton %></a>
+      <form action="/<%= lang %>/delete/<%= post.id %>" method="POST" style="display: inline;">
+        <button type="submit" onclick="return confirm('<%= locale.ui.deleteConfirm %>');">
+          🗑 <%= locale.ui.deleteButton %>
+        </button>
+      </form>
+    </div>
+  <% } %>
+
+  <% if (recommended && recommended.length > 0) { %>
+    <div class="recommended-posts">
+      <h2 class="recommended-title">
+        <%= locale.ui.recommendedPosts || "추천 글" %>
+      </h2>
+      <ul class="recommended-list">
+        <% recommended.forEach(item => { %>
+          <li class="recommended-item">
+            <a href="/<%= lang %>/post/<%= item.id %>"><%= item.title %></a>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <div class="extra" style="margin-top: 3rem; text-align: center;">
+    <a href="/<%= lang %>/" class="back-home-btn">
+      ← <span><%- locale.ui.backToHome || '홈으로 돌아가기' %></span>
+    </a>
+  </div>
 </div>
 
-    <div class="tts-wrapper">
-      <button id="ttsBtn" class="tts-btn">🔊 <%= locale.ui.listen || "Listen" %></button>
-    </div>
-
-    <div class="post-content">
-      <%- post.content %>
-    </div>
-
-    <% if (user && post.user_id == user.id) { %>
-      <div class="post-actions" style="text-align: center; margin-top: 1.5rem;">
-        <a href="/<%= lang %>/edit/<%= post.id %>" class="edit-btn">✏️ <%= locale.ui.editButton %></a>
-        <form action="/<%= lang %>/delete/<%= post.id %>" method="POST" style="display: inline;">
-          <button type="submit" onclick="return confirm('<%= locale.ui.deleteConfirm %>');">🗑 <%= locale.ui.deleteButton %></button>
-        </form>
-      </div>
-    <% } %>
-
-     <% if (recommended && recommended.length > 0) { %>
-      <div class="recommended-posts">
-        <h2 class="recommended-title">
-          <%= locale.ui.recommendedPosts || "추천 글" %>
-        </h2>
-
-        <ul class="recommended-list">
-          <% recommended.forEach(item => { %>
-            <li class="recommended-item">
-              <a href="/<%= lang %>/post/<%= item.id %>">
-                <%= item.title %>
-              </a>
-            </li>
-          <% }) %>
-        </ul>
-      </div>
-    <% } %>
-
-    <div class="extra" style="margin-top: 3rem; text-align: center;">
-      <a href="/<%= lang %>/" class="back-home-btn">
-        ←<span><%- locale.ui.backToHome || '홈으로 돌아가기' %></span>
-      </a>
-    </div>
-  </div>
-
-  <div class="floating-toc" id="floatingToc"></div>
-  <div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
-  <div class="mobile-toc-modal" id="mobileTocModal">
-    <div class="mobile-toc-content" id="mobileTocContent"></div>
-  </div>
-
-<script>
-  // ==========================================
-  // [보안 기능 강화] 드래그/복사/우클릭 방지 로직 (유지)
-  // ==========================================
-
-  // 1. 우클릭 완전 차단
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    return false;
-  });
-
-  // 2. 드래그 시작 차단 (이미지 등)
-  document.addEventListener('dragstart', function(e) {
-    // 입력창이 아니면 차단
-    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        return false;
-    }
-  });
-
-  // 3. 텍스트 선택 시작 차단
-  document.addEventListener('selectstart', function(e) {
-    // 입력창이 아니면 차단
-    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        return false;
-    }
-  });
-
-  // 4. (중요) 마우스 버튼을 뗄 때, 혹시라도 잡힌 선택 영역이 있다면 강제로 해제
-  document.addEventListener('mouseup', function() {
-    const selection = window.getSelection();
-    if (selection && selection.toString().length > 0) {
-      // 입력창 내의 선택인지 확인 후 처리해도 되지만, 강력 차단을 위해 일단 해제
-      const active = document.activeElement;
-      if (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA') {
-          selection.removeAllRanges();
-      }
-    }
-  });
-
-  // 5. 키보드 단축키 차단 (복사, 저장, 개발자도구 등)
-  document.addEventListener('keydown', function(e) {
-    // F12 (개발자 도구)
-    if (e.key === "F12") {
-      e.preventDefault();
-      return false;
-    }
-
-    // Ctrl 또는 Meta(Mac Command) 키 조합
-    if (e.ctrlKey || e.metaKey) {
-      const key = e.key.toLowerCase();
-      // c:복사, a:전체선택, s:저장, p:인쇄, u:소스보기, x:잘라내기
-      if (['c', 'a', 's', 'p', 'u', 'x'].includes(key)) {
-        e.preventDefault();
-        return false;
-      }
-      
-      // Ctrl+Shift+I / J / C (개발자 도구)
-      if (e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) {
-        e.preventDefault();
-        return false;
-      }
-    }
-  });
-</script>
-
-<script>
-  // ==========================================
-  // 목차(TOC) 생성 및 동작 로직 (유지)
-  // ==========================================
-  document.addEventListener('DOMContentLoaded', function() {
-    const postContent = document.querySelector('.post-content');
-    const floatingToc = document.getElementById('floatingToc');
-    const mobileTocBtn = document.getElementById('mobileTocBtn');
-    const mobileTocModal = document.getElementById('mobileTocModal');
-    const mobileTocContent = document.getElementById('mobileTocContent');
-    const mobileTocCloseBtn = document.getElementById('mobileTocCloseBtn');
-
-    if (!postContent) return;
-
-    // 목차 HTML 생성 함수
-    function generateToc() {
-      const headings = postContent.querySelectorAll('h1, h2');
-      if (headings.length === 0) {
-        if (floatingToc) floatingToc.style.display = 'none';
-        if (mobileTocBtn) mobileTocBtn.style.display = 'none';
-        return;
-      }
-
-      let tocHtml = '<strong><%= locale.ui.tocButton %></strong><ul style="padding-left: 1.2em;">';
-      let h1Count = 0;
-      let h2Count = 0;
-
-      headings.forEach((heading, index) => {
-        const tag = heading.tagName.toLowerCase();
-        let sectionNumber = '';
-        
-        if (!heading.id || !heading.id.startsWith('toc-')) {
-            heading.id = `toc-${tag}-${index}`;
-        }
-
-        if (tag === 'h1') {
-          h1Count++;
-          h2Count = 0; 
-          sectionNumber = `${h1Count}.`;
-          tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`;
-        } else if (tag === 'h2') {
-          h2Count++;
-          if (h1Count === 0) h1Count = 1; 
-          sectionNumber = `${h1Count}.${h2Count}`;
-          tocHtml += `<li class="toc-${tag}"><a href="#${heading.id}">${sectionNumber} ${heading.textContent}</a></li>`;
-        }
-      });
-      tocHtml += '</ul>';
-
-      if (floatingToc) {
-        floatingToc.innerHTML = tocHtml;
-        floatingToc.style.display = 'block'; 
-      }
-      if (mobileTocContent) {
-        mobileTocContent.innerHTML = tocHtml;
-        mobileTocBtn.style.display = 'block'; 
-      }
-    }
-
-    // 스크롤 시 플로팅 목차 보이기/숨기기 (데스크톱)
-    function handleScroll() {
-      const scrollThreshold = 300; 
-      if (window.innerWidth > 768) { 
-        if (window.scrollY > scrollThreshold) {
-          if (floatingToc) floatingToc.classList.add('show');
-        } else {
-          if (floatingToc) floatingToc.classList.remove('show');
-        }
-      }
-    }
-
-    // 모바일 버튼 클릭 이벤트
-    if (mobileTocBtn) {
-      mobileTocBtn.addEventListener('click', function() {
-        if (mobileTocModal) mobileTocModal.classList.add('show');
-      });
-    }
-
-    if (mobileTocCloseBtn) {
-      mobileTocCloseBtn.addEventListener('click', function() {
-        if (mobileTocModal) mobileTocModal.classList.remove('show');
-      });
-    }
-
-    // 모바일 목차 링크 클릭 시 모달 닫기
-    if (mobileTocContent) {
-      mobileTocContent.addEventListener('click', function(event) {
-        if (event.target.tagName === 'A' && mobileTocModal) {
-          mobileTocModal.classList.remove('show');
-        }
-      });
-    }
-
-    generateToc();
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleScroll);
-  });
-</script>
-
-<script>
-  // ==========================================
-  // 모바일 목차 모달 제어 및 센티넬 로직 (유지)
-  // ==========================================
-  document.addEventListener("DOMContentLoaded", () => {
-    const toc = document.querySelector(".auto-toc");
-    const floatingToc = document.getElementById("floatingToc");
-    const mobileBtn = document.getElementById("mobileTocBtn");
-    const mobileModal = document.getElementById("mobileTocModal");
-    const mobileContent = document.getElementById("mobileTocContent");
-
-    if (!toc) return; // 본문에 .auto-toc 요소가 없으면 중단
-
-    // 내용 복사
-    if (floatingToc) floatingToc.innerHTML = toc.innerHTML;
-    if (mobileContent) mobileContent.innerHTML = toc.innerHTML;
-
-    if (mobileBtn) {
-      mobileBtn.addEventListener("click", () => {
-        mobileModal.style.display = "flex";
-        document.body.classList.add("modal-open");
-      });
-    }
-
-    if (mobileModal) {
-      mobileModal.addEventListener("click", (e) => {
-        if (e.target === mobileModal) {
-          mobileModal.style.display = "none";
-          document.body.classList.remove("modal-open");
-        }
-      });
-    }
-
-    if (mobileContent) {
-      mobileContent.addEventListener("click", (e) => {
-        if (e.target.tagName === "A") {
-          e.preventDefault();
-          const targetId = e.target.getAttribute("href").replace("#", "");
-          const el = document.getElementById(targetId);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-            mobileModal.style.display = "none";
-            document.body.classList.remove("modal-open");
-          }
-        }
-      });
-    }
-
-    // 센티넬 생성 (목차 위치 감지용)
-    const topSentinel = document.createElement("div");
-    topSentinel.style.height = "1px";
-    toc.before(topSentinel);
-
-    const bottomSentinel = document.createElement("div");
-    bottomSentinel.style.height = "1px";
-    toc.after(bottomSentinel);
-
-    const checkFloatingToc = () => {
-      const top = topSentinel.getBoundingClientRect().top;
-      const bottom = bottomSentinel.getBoundingClientRect().top;
-      const isTocFullyPassed = top < 0 && bottom < 0;
-
-      if (window.innerWidth <= 768 && isTocFullyPassed) {
-        if (floatingToc) floatingToc.style.display = "none"; 
-        if (mobileBtn) mobileBtn.classList.add("show");
-      } else {
-        if (mobileBtn) mobileBtn.classList.remove("show");
-        if (floatingToc) floatingToc.style.display = isTocFullyPassed ? "block" : "none";
-      }
-    };
-
-    window.addEventListener("scroll", checkFloatingToc);
-    window.addEventListener("resize", checkFloatingToc);
-    checkFloatingToc();
-  });
-</script>
-
-<script>
-  // ==========================================
-  // 플로팅 목차 드래그 이동 (데스크톱) (유지)
-  // ==========================================
-  document.addEventListener("DOMContentLoaded", () => {
-    const floatingToc = document.getElementById("floatingToc");
-  
-    if (window.innerWidth > 768 && floatingToc) {
-      let isDragging = false;
-      let offsetX = 0;
-      let offsetY = 0;
-  
-      floatingToc.style.position = "fixed";
-      // 커서는 move로 설정하되, !important CSS 때문에 드래그가 씹힐 수 있음.
-      // 필요시 JS로 style을 직접 주입
-      floatingToc.style.cursor = "move";
-  
-      floatingToc.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        offsetX = e.clientX - floatingToc.getBoundingClientRect().left;
-        offsetY = e.clientY - floatingToc.getBoundingClientRect().top;
-      });
-  
-      document.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-          floatingToc.style.left = e.clientX - offsetX + "px";
-          floatingToc.style.top = e.clientY - offsetY + "px";
-        }
-      });
-  
-      document.addEventListener("mouseup", () => {
-        isDragging = false;
-      });
-    }
-  });
-</script>
-  
-<script async custom-element="amp-auto-ads"
-        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
-<script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-        crossorigin="anonymous"></script>
-
-<script>
-  // ==========================================
-  // 본문 내 광고 자동 삽입 (유지)
-  // ==========================================
-  document.addEventListener('DOMContentLoaded', function () {
-    const container = document.querySelector('.post-content');
-    if (!container) return;
-  
-    const paragraphs = Array.from(container.querySelectorAll('p'));
-    if (!paragraphs.length) return;
-  
-    const isLongEnough = (p) => (p.textContent||'').trim().length > 50;
-    const adPositions = [2,5,8].filter(i => i < paragraphs.length && isLongEnough(paragraphs[i]));
-  
-    adPositions.forEach((pos) => {
-      const p = paragraphs[pos];
-  
-      const wrap = document.createElement('div');
-      wrap.className = 'in-article-ad';
-  
-      const ins = document.createElement('ins');
-      ins.className = 'adsbygoogle';
-      ins.style.display = 'block';
-      ins.setAttribute('data-ad-client', 'ca-pub-2585969189290118');
-      ins.setAttribute('data-ad-slot',   '2419246715');
-      ins.setAttribute('data-ad-format', 'auto');
-      ins.setAttribute('data-full-width-responsive', 'true');
-  
-      wrap.appendChild(ins);
-      p.insertAdjacentElement('afterend', wrap);
-  
-      try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
-    });
-  });
-</script>
-
-<script>
-// ==========================================
-// TTS (음성 듣기) 기능 (유지)
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("ttsBtn");
-  if (!btn) return;
-
-  let isReading = false;
-  const synth = window.speechSynthesis;
-
-  btn.addEventListener("click", () => {
-    if (isReading) {
-      synth.cancel();
-      btn.innerText = "🔊 <%= locale.ui.listen || 'Listen' %>";
-      isReading = false;
-      return;
-    }
-
-    const text = document.querySelector(".post-content").innerText;
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = document.documentElement.lang; 
-
-    synth.speak(utter);
-    btn.innerText = "⏹ <%= locale.ui.stop || 'Stop' %>";
-    isReading = true;
-
-    utter.onend = () => {
-      btn.innerText = "🔊 <%= locale.ui.listen || 'Listen' %>";
-      isReading = false;
-    };
-  });
-});
-</script>
-
-<!-- MathJax v3 -->
-<script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']],
-    },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    linebreaks: { automatic: true }
-  };
-</script>
-
-<script
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-  defer>
-</script>
+<div class="floating-toc" id="floatingToc"></div>
+<div class="mobile-toc-button" id="mobileTocBtn"><%= locale.ui.tocButton %></div>
+<div class="mobile-toc-modal" id="mobileTocModal">
+  <div class="mobile-toc-content" id="mobileTocContent"></div>
+</div>
 
 
 <%- include('partials/scripts') %>
