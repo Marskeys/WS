@@ -5,15 +5,10 @@
     <div class="top-controls">
       <div class="left-controls">
         <%
-          // 1. 현재 경로에서 언어 코드를 제거하고, 뒤에 붙는 슬래시도 함께 제거합니다.
           const pathWithoutLang = currentPath.replace(/^\/(ko|en|fr|zh|ja|es)\/?/, '');
-
-          // 2. 로고 표시 조건 (변경 없음)
           const showLogo = ['/signup', '/editor', '/login', '/write'].includes(pathWithoutLang) ||
                            pathWithoutLang.startsWith('/post') ||
                            pathWithoutLang.startsWith('/edit');
-          
-          // 3. ✨ 메뉴 표시 조건: 'post'가 포함되어 있지 않을 때만 메뉴를 표시합니다.
           const shouldShowMenu = !pathWithoutLang.includes('post');
         %>
         <% if (showLogo || shouldShowMenu) { %>
@@ -21,67 +16,63 @@
         <% } %>
       </div>
 
-    <% if (shouldShowMenu) { %>
-    <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
-      <ul class="main-menu-container">
-        <a href="https://www.youtube.com/@eBook.bugloop"
-           target="_blank"
-           aria-label="<%= h.youtubeLink || 'YouTube' %>">
-          <img src="/assets/images/youtube.png"
-               alt="YouTube"
-               style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
-        </a>
+      <% if (shouldShowMenu) { %>
+      <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
+        <ul class="main-menu-container">
+          <a href="https://www.youtube.com/@eBook.bugloop" target="_blank" aria-label="<%= h.youtubeLink || 'YouTube' %>">
+            <img src="/assets/images/youtube.png" alt="YouTube" style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
+          </a>
 
-        <li class="menu-item-wrapper">
-          <span class="menu-label"><%= h.recentVideos %></span>
-          <ul class="submenu">
-            <li><a href="/<%= lang %>/review/choroideremia" data-panel-link><%= h.choroideremia %></a></li>
-            <li><a href="/<%= lang %>/review/book" data-panel-link><%= h.palma2pro %></a></li>
-      
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-          </ul>
-        </li>
+          <li class="menu-item-wrapper">
+            <span class="menu-label"><%= h.recentVideos %></span>
+            <ul class="submenu">
+              <li><a href="/<%= lang %>/review/choroideremia" data-panel-link><%= h.choroideremia %></a></li>
+              <li><a href="/<%= lang %>/review/book" data-panel-link><%= h.palma2pro %></a></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+            </ul>
+          </li>
 
-        <li class="menu-item-wrapper">
-          <span class="menu-label"><%= h.audiobook %></span>
-          <ul class="submenu">
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.cuteacoustics %></span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.producer %></span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.unfinished %></span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.warmth %></span></li>
-          </ul>
-        </li>
+          <li class="menu-item-wrapper">
+            <span class="menu-label"><%= h.audiobook %></span>
+            <ul class="submenu">
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.cuteacoustics %></span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.producer %></span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.unfinished %></span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.warmth %></span></li>
+            </ul>
+          </li>
 
-        <li class="menu-item-wrapper">
-          <span class="menu-label"><%= h.music %></span>
-          <ul class="submenu">
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (4)</span></li>
-          </ul>
-        </li>
+          <li class="menu-item-wrapper">
+            <span class="menu-label"><%= h.music %></span>
+            <ul class="submenu">
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (4)</span></li>
+            </ul>
+          </li>
 
-        <li class="menu-item-wrapper">
-          <span class="menu-label"><%= h.game %></span>
-          <ul class="submenu">
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
-            <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
-          </ul>
-        </li>
+          <li class="menu-item-wrapper">
+            <span class="menu-label"><%= h.game %></span>
+            <ul class="submenu">
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (1)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (2)</span></li>
+              <li><span class="disabled-menu" style="color:#aaa; cursor:not-allowed;"><%= h.coming %> (3)</span></li>
+            </ul>
+          </li>
 
-        <li class="menu-item-wrapper special-label">
-          <span class="menu-label">
-            <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
-            <%= h.futureService %>
-          </span>
-        </li>
-      </ul>
-    </nav>
-    <% } %> <div class="right-controls" id="right-controls" hidden></div>
+          <li class="menu-item-wrapper special-label">
+            <span class="menu-label">
+              <i class="fas fa-rocket" style="color:#00c6ff; margin-right:6px;"></i>
+              <%= h.futureService %>
+            </span>
+          </li>
+        </ul>
+      </nav>
+      <% } %>
+      <div class="right-controls" id="right-controls" hidden></div>
     </div>
   </div>
 
@@ -91,15 +82,14 @@
         <a href="#" class="sidebar-icon toggle-extension blink-highlight" title="패널 열기/닫기" aria-label="패널 열기/닫기">
           <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </a>
-   <% if (!user || Number(user.is_admin) !== 1) { %>
-  <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home">
-    <img src="/assets/images/BugLoop.png" alt="BugLoop">
-  </a>
-<% } %>
+        <% if (!user || Number(user.is_admin) !== 1) { %>
+          <a href="/<%= lang %>/" class="sidebar-icon logo" data-tab="home">
+            <img src="/assets/images/BugLoop.png" alt="BugLoop">
+          </a>
+        <% } %>
         <a href="/<%= lang %>/" class="sidebar-icon" data-tab="home" title="홈" aria-selected="false">
           <i class="fas fa-home" aria-hidden="true"></i>
         </a>
-
         <a href="#" class="sidebar-icon" data-tab="profile" title="프로필" aria-selected="false" role="tab">
           <i class="fas fa-user" aria-hidden="true"></i>
         </a>
@@ -107,28 +97,14 @@
           <i class="fas fa-search" aria-hidden="true"></i>
         </a>
 
-      <% if (user) { %>
-  <% if (Number(user.is_admin) === 1) { %>
-
-    <!-- 글쓰기 -->
-    <a href="/<%= lang %>/write"
-       class="sidebar-icon"
-       data-tab="write"
-       title="글쓰기"
-       aria-selected="false">
-      <i class="fas fa-pen" aria-hidden="true"></i>
-    </a>
-
-    <!-- 🔍 Googlebot 로그 -->
-    <a href="/admin/logs/googlebot"
-       class="sidebar-icon admin-log-icon"
-       title="Googlebot 로그"
-       aria-label="Googlebot 로그">
-      <i class="fas fa-robot" aria-hidden="true"></i>
-    </a>
-
-  <% } %>
-<% } %>
+        <% if (user && Number(user.is_admin) === 1) { %>
+          <a href="/<%= lang %>/write" class="sidebar-icon" data-tab="write" title="글쓰기" aria-selected="false">
+            <i class="fas fa-pen" aria-hidden="true"></i>
+          </a>
+          <a href="/admin/logs/googlebot" class="sidebar-icon admin-log-icon" title="Googlebot 로그" aria-label="Googlebot 로그">
+            <i class="fas fa-robot" aria-hidden="true"></i>
+          </a>
+        <% } %>
 
         <div class="sidebar-lang-theme">
           <div class="language-dropdown">
@@ -155,9 +131,7 @@
               %>
               <% (supportedLangs || ['ko','en','fr','zh','ja','es']).forEach(function(langCode){ %>
                 <li role="none">
-                  <a href="/<%= langCode %><%= currentPathWithoutLang %>"
-                     class="lang-option <%= langCode === lang ? 'active-lang' : '' %>"
-                     role="menuitem" tabindex="-1">
+                  <a href="/<%= langCode %><%= currentPathWithoutLang %>" class="lang-option <%= langCode === lang ? 'active-lang' : '' %>" role="menuitem" tabindex="-1">
                     <span class="fi fi-<%= (langCode==='ko'?'kr':(langCode==='en'?'gb':(langCode==='zh'?'cn':(langCode==='ja'?'jp':langCode)))) %>"></span>
                     <%= langNames[langCode] || langCode %>
                   </a>
@@ -170,7 +144,7 @@
             <i class="fas fa-moon" aria-hidden="true"></i>
           </button>
         </div>
-        </nav>
+      </nav>
 
       <div class="sidebar-extension-panel">
         <div class="panel-logo">
