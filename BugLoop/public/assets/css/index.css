@@ -456,6 +456,12 @@ html.dark .book-card.expanded {
   color: var(--accent);
 }
 
+/* ✅ 핀 아이콘 여백 수정 */
+.badge-pinned {
+  margin-right: 8px;
+  font-size: 0.9em;
+}
+
 .label-icon {
   display: inline-block;
   padding: 3px 6px;
@@ -481,8 +487,10 @@ html.dark .book-card.expanded {
 .new-icon { background-color: #ff4757; }
 .edited-icon { background-color: #2e86de; }
 
-html.dark .new-icon { background-color: #e84118; }
-html.dark .edited-icon { background-color: #1e3799; }
+html.dark {
+  .new-icon { background-color: #e84118; }
+  .edited-icon { background-color: #1e3799; }
+}
 
 .recent-post-meta {
   font-size: 0.85rem;
@@ -499,14 +507,11 @@ html.dark .edited-icon { background-color: #1e3799; }
   line-height: 1.5;
 }
 
-/* ---------------------------------------------------- */
-/* ✅ 로드 버튼 스타일 수정 완료 */
-/* ---------------------------------------------------- */
+/* ✅ 로드 버튼 스타일: 리스트 중앙 정렬 */
 #load-more-btn {
   display: block;
   width: 200px;
-  /* 상단 여백 30px 추가, 기본 중앙 정렬 상태 */
-  margin: 30px auto 16px; 
+  margin: 30px 0 16px; /* 데스크톱 기본값 */
   padding: 12px 20px;
   border-radius: 25px;
   background: linear-gradient(135deg, #A8E063, #56AB2F);
@@ -531,17 +536,27 @@ html.dark #load-more-btn {
   transform: translateY(-1px);
 }
 
-/* 데스크탑에서 게시글 리스트와 정렬 맞추기 */
 @media (min-width: 641px) {
+  /* 최신글 리스트 영역 (최대 800px) */
   .recent-posts {
     max-width: 800px;
     margin-left: 0;
     margin-right: auto;
   }
   
+  /* ✅ 리스트(800px)의 정중앙에 버튼 배치 */
   #load-more-btn {
-    /* 데스크탑 환경에서 왼쪽 정렬(리스트와 일치) */
-    margin-left: 0; 
+    margin-left: 0;
+    margin-right: auto;
+    /* 폭 800px 안에서 중앙에 오도록 함 */
+    transform: translateX(calc(400px - 100px)); 
+  }
+}
+
+/* 모바일 대응 (전체 너비 기준 중앙) */
+@media (max-width: 640px) {
+  #load-more-btn {
+    margin-left: auto;
     margin-right: auto;
   }
 }
