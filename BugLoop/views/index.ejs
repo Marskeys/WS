@@ -1,85 +1,458 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
+
 <head>
   <%- include('partials/head') %>
   <link rel="stylesheet" href="/assets/css/index.css" />
 </head>
 
 <body>
-  <div id="preloader"><div class="spinner"></div></div>
+  <div id="preloader">
+    <div class="spinner"></div>
+  </div>
   <%- include('partials/header') %>
 
   <div id="panel-root" data-pjax-scope>
     <%- include('partials/panel') %>
   </div>
 
-
   <div class="app-shell">
-  
+
     <div class="section-title-wrapper">
-        <h1 class="section-title"><%= locale.index.ongoing %></h1>
+      <h1 class="section-title"><%= locale.index.ongoing %></h1>
     </div>
 
     <div class="carousel">
+      <% 
+        const ITEMS_PER_PAGE = 3;
+        
+        const getPaginatedToc = (tocData) => {
+          if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
+          const totalSections = tocData.length;
+          const totalPages = Math.ceil(totalSections / ITEMS_PER_PAGE);
+          const paginatedToc = [];
 
-    <% 
-      // 💡 목차 페이지네이션 설정을 위한 범용 함수
-      const ITEMS_PER_PAGE = 3;
-      
+          for (let i = 0; i < totalPages; i++) {
+            const start = i * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            paginatedToc.push(tocData.slice(start, end));
+          }
+          return { paginatedToc, totalPages, totalSections };
+        };
+        
+        const renderTocHtmlSSR = (sections, bookKey) => {
+          if (!sections || sections.length === 0) return '';
+          let html = '<ul>';
+          sections.forEach(section => {
+            html += '<li><h5>' + section.section + '</h5><ul>'; 
+            section.chapters.forEach(ch => {
+              html += '<li>'; 
+              const urlPath = '/books/' + bookKey + '/contents/' + ch.id; 
+
+              if (ch.url) {
+                html += '<a href="/' + lang + urlPath + '" class="toc-link active">' + ch.title + '</a>';
+              } else {
+                html += '<span class="toc-link disabled">' + ch.title + '</span>';
+              }
+
+              if (ch.sub) {
+                html += '<ul>';
+                ch.sub.forEach(sub => {
+                  html += '<li>';
+                  const subUrlPath = '/books/' + bookKey + '/contents/' + sub.id;
+                  if (sub.url) {
+                    html += '<a href="/' + lang + subUrlPath + '" class="toc-link active">' + sub.title + '</a>';
+                  } else {
+                    html += '<span class="toc-link disabled">' + sub.title + '</span>';
+                  }
+                  html += '</li>';
+                });
+                html += '</ul>';
+              }
+              html += '</li>';
+            });
+            html += '</ul></li>';
+          });
+          html += '</ul>';
+          return html;
+        };
+
+        const cuteAcoustics = locale.books.cuteAcoustics;
+        const caData = getPaginatedToc(cuteAcoustics.toc);
+      %>
+
+      <div class="book-card" data-index="0" data-book-key="cuteAcoustics">
+        <% if (cuteAcoustics.updated) { %>
+        <div class="book-updated-badge">
+          <%= locale.ui.bookUpdatedBadge || '새 챕터!' %>
+        </div>
+        <% } %>
+
+        <div class="book-content-wrapper">
+          <div class="book-cover-wrapper">
+            <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>" loading="lazy">
+          </div>
+
+          <div class="book-info">
+            <div class="book-title"><%= cuteAcoustics.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              <%= locale.ui["book-author"] %> : <%= cuteAcoustics.author %>
+            </div>
+          </div>
+
+          <div class="book-toc">
+            <h4><%= locale.ui["tocButton"] %></h4>
+            <div class="pagination" data-book-id="cuteAcoustics-pagination">
+              <% for(let i = 1; i <= caData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'cuteAcoustics', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < caData.totalPages) { %>
+              <span class="pagination-divider">|</span>
+              <% } %>
+              <% } %>
+            </div>
+
+            <div class="paginated-toc" data-book-id="cuteAcoustics-toc">
+              <%- renderTocHtmlSSR(caData.paginatedToc[0], 'cuteAcoustics') %>
+            </div>
+            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <% 
+        const unfinishedPain = locale.books.unfinishedPain;
+        const upData = getPaginatedToc(unfinishedPain.toc);
+      %>
+      <div class="book-card" data-index="1" data-book-key="unfinishedPain">
+        <% if (unfinishedPain.updated) { %>
+        <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } %>
+        <div class="book-content-wrapper">
+          <div class="book-cover-wrapper">
+            <img class="book-cover" src="/assets/images/book2.gif" alt="<%= unfinishedPain.title %>" loading="lazy">
+          </div>
+          <div class="book-info">
+            <div class="book-title"><%= unfinishedPain.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              <%= locale.ui["book-author"] %>: <%= unfinishedPain.author %>
+            </div>
+          </div>
+          <div class="book-toc">
+            <h4><%= locale.ui["tocButton"] %></h4>
+            <div class="pagination" data-book-id="unfinishedPain-pagination">
+              <% for(let i = 1; i <= upData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'unfinishedPain', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < upData.totalPages) { %><span class="pagination-divider">|</span><% } %>
+              <% } %>
+            </div>
+            <div class="paginated-toc" data-book-id="unfinishedPain-toc">
+              <%- renderTocHtmlSSR(upData.paginatedToc[0], 'unfinishedPain') %>
+            </div>
+            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <% 
+        const pianistProducer = locale.books.pianistProducer;
+        const ppData = getPaginatedToc(pianistProducer.toc);
+      %>
+      <div class="book-card" data-index="2" data-book-key="pianistProducer">
+        <% if (pianistProducer.updated) { %>
+        <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } %>
+        <div class="book-content-wrapper">
+          <div class="book-cover-wrapper">
+            <img class="book-cover" src="/assets/images/book3.gif" alt="<%= pianistProducer.title %>" loading="lazy">
+          </div>
+          <div class="book-info">
+            <div class="book-title"><%= pianistProducer.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              <%= locale.ui["book-author"] %>: <%= pianistProducer.author %>
+            </div>
+          </div>
+          <div class="book-toc">
+            <h4><%= locale.ui["tocButton"] %></h4>
+            <div class="pagination" data-book-id="pianistProducer-pagination">
+              <% for(let i = 1; i <= ppData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'pianistProducer', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < ppData.totalPages) { %><span class="pagination-divider">|</span><% } %>
+              <% } %>
+            </div>
+            <div class="paginated-toc" data-book-id="pianistProducer-toc">
+              <%- renderTocHtmlSSR(ppData.paginatedToc[0], 'pianistProducer') %>
+            </div>
+            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <% 
+        const warmthOfCalc = locale.books.warmthOfCalc;
+        const wcData = getPaginatedToc(warmthOfCalc.toc);
+      %>
+      <div class="book-card" data-index="3" data-book-key="warmthOfCalc">
+        <% if (warmthOfCalc.updated) { %>
+        <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } %>
+        <div class="book-content-wrapper">
+          <div class="book-cover-wrapper">
+            <img class="book-cover" src="/assets/images/book4.gif" alt="<%= warmthOfCalc.title %>" loading="lazy">
+          </div>
+          <div class="book-info">
+            <div class="book-title"><%= warmthOfCalc.title %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              <%= locale.ui["book-author"] %>: <%= warmthOfCalc.author %>
+            </div>
+          </div>
+          <div class="book-toc">
+            <h4><%= locale.ui["tocButton"] %></h4>
+            <div class="pagination" data-book-id="warmthOfCalc-pagination">
+              <% for(let i = 1; i <= wcData.totalPages; i++) { %>
+              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'warmthOfCalc', <%= i %>)">
+                <%= i %>
+              </span>
+              <% if (i < wcData.totalPages) { %><span class="pagination-divider">|</span><% } %>
+              <% } %>
+            </div>
+            <div class="paginated-toc" data-book-id="warmthOfCalc-toc">
+              <%- renderTocHtmlSSR(wcData.paginatedToc[0], 'warmthOfCalc') %>
+            </div>
+            <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="recent-posts-wrapper section-title-wrapper" style="margin-bottom: 0; margin-top: 30px;">
+      <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
+    </div>
+
+    <div class="recent-posts" id="posts-container">
+      <% posts.slice(0, 5).forEach(post => { %>
+      <div class="recent-post-item">
+        <%
+          const now = new Date();
+          const createdAt = new Date(post.created_at);
+          const updatedAt = new Date(post.updated_at);
+          const oneDay = 1000 * 60 * 60 * 24;
+          const isNewPost = (now - createdAt) < oneDay;
+          const wasEdited = updatedAt > createdAt;
+          const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+          const showEditedLabel = !isNewPost && isRecentlyEdited;
+
+          const newLabelText = locale.ui.newPost || 'NEW';
+          const editedLabelText = locale.ui.editedPost || 'UPDATED';
+        %>
+
+        <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
+          <% if (isNewPost) { %>
+          <span class="label-icon new-icon"><%= newLabelText %></span>
+          <% } else if (showEditedLabel) { %>
+          <span class="label-icon edited-icon"><%= editedLabelText %></span>
+          <% } %>
+
+          <% if (post.is_pinned) { %>
+          <span class="badge-pinned">📌</span>
+          <% } %>
+
+          <% if (post.is_private) { %>
+          <span class="badge-private">🔒</span>
+          <% } %>
+
+          <%= post.title %>
+        </a>
+
+        <div class="recent-post-meta">
+          <span><%= post.author %></span>
+          <span>·</span>
+          <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
+        </div>
+
+        <div class="recent-post-preview">
+          <% 
+            let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
+            cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+            let plainText = cleanContent.replace(/<[^>]+>/gi, '');
+            plainText = plainText.replace(/\s+/g, ' ').trim();
+            const decodedText = plainText
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&');
+            const previewText = decodedText.slice(0, 120);
+          %>
+          <%= previewText %>...
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <button id="load-more-btn" onclick="loadMorePosts()">
+      <%= locale.index.loadMore || "더보기" %>
+    </button>
+  </div>
+
+  <footer class="app-footer">
+    © 2025 Bug Loop
+  </footer>
+  <%- include('partials/scripts') %>
+
+  <script>
+    const getLang = () => document.documentElement.getAttribute('lang') || 'ko';
+    window.booksData = <%- JSON.stringify(locale.books) %>;
+
+    let offset = 5;
+    let loading = false;
+
+    async function loadMorePosts() {
+      if (loading) return;
+      loading = true;
+
+      try {
+        const res = await fetch('/api/recent-posts?offset=' + offset + '&limit=5&lang=' + lang);
+        const data = await res.json();
+
+        if (!data.posts || data.posts.length === 0) {
+          document.getElementById("load-more-btn").style.display = "none";
+          loading = false;
+          return;
+        }
+
+        offset += data.posts.length;
+
+        const container = document.getElementById("posts-container");
+        if (!container) {
+          loading = false;
+          return;
+        }
+
+        data.posts.forEach(post => {
+          const el = document.createElement("div");
+          el.className = "recent-post-item";
+
+          const now = new Date();
+          const createdAt = new Date(post.created_at);
+          const updatedAt = new Date(post.updated_at);
+          const oneDay = 1000 * 60 * 60 * 24;
+          const isNewPost = (now - createdAt) < oneDay;
+          const wasEdited = updatedAt > createdAt;
+          const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+          const showEditedLabel = !isNewPost && isRecentlyEdited;
+
+          const newLabelText = "<%= locale.ui.newPost || 'NEW' %>";
+          const editedLabelText = "<%= locale.ui.editedPost || 'UPDATED' %>";
+
+          let labelHtml = '';
+          if (isNewPost) {
+            labelHtml = '<span class="label-icon new-icon">' + newLabelText + '</span>';
+          } else if (showEditedLabel) {
+            labelHtml = '<span class="label-icon edited-icon">' + editedLabelText + '</span>';
+          }
+
+          const formattedDate = post.created_fmt;
+
+          let previewText = '';
+          if (post.content) {
+            let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
+            cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
+            let plainText = cleanContent.replace(/<[^>]+>/gi, '');
+            plainText = plainText.replace(/\s+/g, ' ').trim();
+            const decodedText = plainText
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&amp;/g, '&');
+            previewText = decodedText.slice(0, 120);
+          } else if (post.preview) {
+            let decodedPreview = post.preview
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&amp;/g, '&');
+            previewText = decodedPreview.slice(0, 120);
+          }
+
+          let innerHtml = '<a href="/' + lang + '/post/' + post.id + '" class="recent-post-title">';
+          innerHtml += labelHtml;
+          innerHtml += (post.is_pinned ? '<span class="badge-pinned">📌</span>' : '');
+          innerHtml += post.title;
+          innerHtml += '</a>';
+          innerHtml += '<div class="recent-post-meta">';
+          innerHtml += '<span>' + post.author + '</span>';
+          innerHtml += '<span>·</span>';
+          innerHtml += '<span>' + formattedDate + '</span>';
+          innerHtml += '</div>';
+          innerHtml += '<div class="recent-post-preview">';
+          innerHtml += previewText + '...';
+          innerHtml += '</div>';
+
+          el.innerHTML = innerHtml;
+          container.appendChild(el);
+        });
+
+        loading = false;
+      } catch (error) {
+        loading = false;
+      }
+    }
+    window.loadMorePosts = loadMorePosts;
+  </script>
+
+  <script>
+    (() => {
+      const booksData = window.booksData;
+      const itemsPerPage = 3;
+
       const getPaginatedToc = (tocData) => {
         if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
         const totalSections = tocData.length;
-        const totalPages = Math.ceil(totalSections / ITEMS_PER_PAGE);
+        const totalPages = Math.ceil(totalSections / itemsPerPage);
         const paginatedToc = [];
-
         for (let i = 0; i < totalPages; i++) {
-          const start = i * ITEMS_PER_PAGE;
-          const end = start + ITEMS_PER_PAGE;
+          const start = i * itemsPerPage;
+          const end = start + itemsPerPage;
           paginatedToc.push(tocData.slice(start, end));
         }
         return { paginatedToc, totalPages, totalSections };
       };
-      
-      // 💡 목차 HTML 렌더링 함수 (EJS 서버 측)
-      // ⭐ [수정됨] 템플릿 변수가 남지 않도록 문자열 합치기를 명시적으로 사용합니다.
-      const renderTocHtmlSSR = (sections, bookKey) => {
+
+      const renderTocHtmlCSR = (sections, bookKey) => {
         if (!sections || sections.length === 0) return '';
         let html = '<ul>';
+        const snakeToCamel = (s) => s.replace(/(_\w)/g, k => k[1].toUpperCase());
+        const camelCaseKey = snakeToCamel(bookKey);
         sections.forEach(section => {
-          // ⚠️ EJS 서버 측: 문자열 합치기로 변경 완료.
-          html += '<li><h5>' + section.section + '</h5><ul>'; 
+          html += '<li><h5>' + section.section + '</h5><ul>';
           section.chapters.forEach(ch => {
-            html += '<li>'; 
-            
-            // ⭐️ [수정] URL Path 생성 시 명시적 문자열 합치기
-            const urlPath = '/books/' + bookKey + '/contents/' + ch.id; 
-
+            html += '<li>';
+            const urlPath = '/books/' + camelCaseKey + '/contents/' + ch.id;
             if (ch.url) {
-              // ⭐️ [수정] href 속성에 템플릿 리터럴 대신 문자열 합치기 사용
-              html += '<a href="/' + lang + urlPath + '" class="toc-link active">' + ch.title + '</a>';
+              html += '<a href="/' + lang + urlPath + '" class="toc-link active">';
+              html += ch.title;
+              html += '</a>';
             } else {
-              // ⚠️ EJS 서버 측: 문자열 합치기로 변경 완료.
               html += '<span class="toc-link disabled">' + ch.title + '</span>';
             }
-
             if (ch.sub) {
               html += '<ul>';
               ch.sub.forEach(sub => {
                 html += '<li>';
-                const subUrlPath = '/books/' + bookKey + '/contents/' + sub.id;
-                
+                const subUrlPath = '/books/' + camelCaseKey + '/contents/' + sub.id;
                 if (sub.url) {
-                  // ⭐️ [수정] href 속성에 템플릿 리터럴 대신 문자열 합치기 사용
-                  html += '<a href="/' + lang + subUrlPath + '" class="toc-link active">' + sub.title + '</a>';
+                  html += '<a href="/' + lang + subUrlPath + '" class="toc-link active">';
+                  html += sub.title;
+                  html += '</a>';
                 } else {
-                  // ⚠️ EJS 서버 측: 문자열 합치기로 변경 완료.
                   html += '<span class="toc-link disabled">' + sub.title + '</span>';
                 }
                 html += '</li>';
               });
               html += '</ul>';
             }
-
             html += '</li>';
           });
           html += '</ul></li>';
@@ -88,596 +461,94 @@
         return html;
       };
 
-      // 📚 1. 귀여운 음향학 (cuteAcoustics)
-      const cuteAcoustics = locale.books.cuteAcoustics;
-      const caData = getPaginatedToc(cuteAcoustics.toc);
-    %>
-
-   <div class="book-card" data-index="0" data-book-key="cuteAcoustics">
-
-<% if (cuteAcoustics.updated) { %>
-  <div class="book-updated-badge">
-    <%= locale.ui.bookUpdatedBadge || '새 챕터!' %>
-  </div>
-<% } %>
-
-<div class="book-content-wrapper"> 
-  <div class="book-cover-wrapper">
-    <img class="book-cover" src="/assets/images/book1.gif" alt="<%= cuteAcoustics.title %>" loading="lazy">
-  </div>
-
-  <div class="book-info">
-    <div class="book-title"><%= cuteAcoustics.title %></div>
-    <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-      <%= locale.ui["book-author"] %> : <%= cuteAcoustics.author %>
-    </div>
-  </div>
-
-  <div class="book-toc"> 
-    <h4> <%= locale.ui["tocButton"] %></h4>
-
-    <div class="pagination" data-book-id="cuteAcoustics-pagination">
-      <% for(let i = 1; i <= caData.totalPages; i++) { %>
-        <span class="pagination-number <%= i === 1 ? 'active' : '' %>" 
-              onclick="changePage(event, 'cuteAcoustics', <%= i %>)">
-          <%= i %>
-        </span>
-        <% if (i < caData.totalPages) { %>
-          <span class="pagination-divider">|</span>
-        <% } %>
-      <% } %>
-    </div>
-
-    <div class="paginated-toc" data-book-id="cuteAcoustics-toc">
-      <%- renderTocHtmlSSR(caData.paginatedToc[0], 'cuteAcoustics') %>
-    </div>
-
-    <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-     
-    </div>
-  </div>
-</div>
-</div>
-
-    
-    <% 
-      // 📚 2. 미완성 고통 (unfinishedPain)
-      const unfinishedPain = locale.books.unfinishedPain;
-      const upData = getPaginatedToc(unfinishedPain.toc);
-    %>
-    <div class="book-card" data-index="1" data-book-key="unfinishedPain">
-      <% if (unfinishedPain.updated) { %>
-          <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-      <% } %>
-      <div class="book-content-wrapper">
-        <div class="book-cover-wrapper">
-          <img class="book-cover" src="/assets/images/book2.gif" alt="<%= unfinishedPain.title %>" loading="lazy">
-        </div>
-        <div class="book-info">
-            <div class="book-title"><%= unfinishedPain.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %>: <%= unfinishedPain.author %>
-            </div>
-        </div>
-        <div class="book-toc">
-          <h4><%= locale.ui["tocButton"] %></h4>
-          
-          <div class="pagination" data-book-id="unfinishedPain-pagination">
-            <% for(let i = 1; i <= upData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'unfinishedPain', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < upData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-            <% } %>
-          </div>
-
-          <div class="paginated-toc" data-book-id="unfinishedPain-toc">
-            <%- renderTocHtmlSSR(upData.paginatedToc[0], 'unfinishedPain') %>
-          </div>
-          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-           
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <% 
-      // 📚 3. 피아노 치는 프로듀서: 신비한 반주법 (pianistProducer)
-      const pianistProducer = locale.books.pianistProducer;
-      const ppData = getPaginatedToc(pianistProducer.toc);
-    %>
-    <div class="book-card" data-index="2" data-book-key="pianistProducer">
-      <% if (pianistProducer.updated) { %>
-          <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-      <% } %>
-      <div class="book-content-wrapper">
-        <div class="book-cover-wrapper">
-          <img class="book-cover" src="/assets/images/book3.gif" alt="<%= pianistProducer.title %>" loading="lazy">
-        </div>
-        <div class="book-info">
-            <div class="book-title"><%= pianistProducer.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-              <%= locale.ui["book-author"] %>: <%= pianistProducer.author %>
-            </div>
-        </div>
-        <div class="book-toc">
-          <h4><%= locale.ui["tocButton"] %></h4>
-          
-          <div class="pagination" data-book-id="pianistProducer-pagination">
-            <% for(let i = 1; i <= ppData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'pianistProducer', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < ppData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-            <% } %>
-          </div>
-
-          <div class="paginated-toc" data-book-id="pianistProducer-toc">
-            <%- renderTocHtmlSSR(ppData.paginatedToc[0], 'pianistProducer') %>
-          </div>
-          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-           
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <% 
-      // 📚 4. 계산의 온기 (warmthOfCalc)
-      const warmthOfCalc = locale.books.warmthOfCalc;
-      const wcData = getPaginatedToc(warmthOfCalc.toc);
-    %>
-    <div class="book-card" data-index="3" data-book-key="warmthOfCalc">
-       <% if (warmthOfCalc.updated) { %>
-          <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-      <% } %>
-      <div class="book-content-wrapper">
-        <div class="book-cover-wrapper">
-          <img class="book-cover" src="/assets/images/book4.gif" alt="<%= warmthOfCalc.title %>" loading="lazy">
-        </div>
-        <div class="book-info">
-            <div class="book-title"><%= warmthOfCalc.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
-            <%= locale.ui["book-author"] %>: <%= warmthOfCalc.author %>
-            </div>
-        </div>
-        <div class="book-toc">
-          <h4><%= locale.ui["tocButton"] %></h4>
-          
-          <div class="pagination" data-book-id="warmthOfCalc-pagination">
-            <% for(let i = 1; i <= wcData.totalPages; i++) { %>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, 'warmthOfCalc', <%= i %>)">
-                <%= i %>
-              </span>
-              <% if (i < wcData.totalPages) { %><span class="pagination-divider">|</span><% } %>
-            <% } %>
-          </div>
-
-          <div class="paginated-toc" data-book-id="warmthOfCalc-toc">
-            <%- renderTocHtmlSSR(wcData.paginatedToc[0], 'warmthOfCalc') %>
-          </div>
-          <div style="text-align:center; margin-top: 10px; color: var(--ink-2); font-size: 0.8rem;">
-           
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    </div>
-    
-
-    <div class="recent-posts-wrapper section-title-wrapper" style="margin-bottom: 0; margin-top: 30px;">
-        <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
-    </div>
-
-    <div class="recent-posts" id="posts-container">
-  <% posts.slice(0, 5).forEach(post => { %>
-    <div class="recent-post-item">
-
-      <%
-        const now = new Date();
-        const createdAt = new Date(post.created_at);
-        const updatedAt = new Date(post.updated_at);
-        const oneDay = 1000 * 60 * 60 * 24;
-        const isNewPost = (now - createdAt) < oneDay;
-        const wasEdited = updatedAt > createdAt;
-        const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-        const showEditedLabel = !isNewPost && isRecentlyEdited;
-
-        // 다국어 라벨 텍스트 정의 (locale.ui에 키가 있다고 가정)
-        const newLabelText = locale.ui.newPost || 'NEW';
-        const editedLabelText = locale.ui.editedPost || 'UPDATED';
-      %>
-
-<a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-<% if (isNewPost) { %>
-  <span class="label-icon new-icon"><%= newLabelText %></span>
-<% } else if (showEditedLabel) { %>
-  <span class="label-icon edited-icon"><%= editedLabelText %></span>
-<% } %>
-
-<% if (post.is_pinned) { %>
-  <span class="badge-pinned">📌</span>
-<% } %>
-
-<% if (post.is_private) { %>
-  <span class="badge-private">🔒</span>
-<% } %>
-
-<%= post.title %>
-</a>
-
-      <div class="recent-post-meta">
-        <span><%= post.author %></span>
-        <span>·</span>
-        <span><%= format(new Date(post.created_at), 'yyyy.MM.dd') %></span>
-      </div>
-
-      <div class="recent-post-preview">
-        <% 
-          // 📌 수정된 로직: 목차, 스타일 태그 제거 및 텍스트 정제
-          let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
-          cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
-          
-          let plainText = cleanContent.replace(/<[^>]+>/gi, '');
-          plainText = plainText.replace(/\s+/g, ' ').trim();
-
-          const decodedText = plainText
-              .replace(/&lt;/g, '<')
-              .replace(/&gt;/g, '>')
-              .replace(/&amp;/g, '&');
-      
-          const previewText = decodedText.slice(0, 120);
-        %>
-        <%= previewText %>...
-      </div>
-
-    </div>
-  <% }) %>
-</div>
-
-<button id="load-more-btn" onclick="loadMorePosts()">
-  <%= locale.index.loadMore || "더보기" %>
-</button>
-
-
-  </div>
-  
-  <footer class="app-footer">
-    © 2025 Bug Loop
-  </footer>
-  <%- include('partials/scripts') %>
-
-<script>
-const getLang = () =>
-  document.documentElement.getAttribute('lang') || 'ko';
-
-window.booksData = <%- JSON.stringify(locale.books) %>;// 모든 책 데이터를 JS로 가져옴
-
-let offset = 5;   
-let loading = false;
-
-async function loadMorePosts() {
-  if (loading) return;
-  loading = true;
-
-  try {
-    const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
-    const data = await res.json();
-    
-    if (!data.posts || data.posts.length === 0) {
-      document.getElementById("load-more-btn").style.display = "none";
-      loading = false; 
-      return;
-    }
-  
-    offset += data.posts.length;
-  
-    const container = document.getElementById("posts-container");
-    if (!container) {
-      console.error("Posts container not found! (EJS ID 확인 요망)");
-      loading = false;
-      return;
-    }
-  
-    data.posts.forEach(post => {
-      const el = document.createElement("div");
-      el.className = "recent-post-item"; 
-      
-      const now = new Date();
-      const createdAt = new Date(post.created_at);
-      const updatedAt = new Date(post.updated_at);
-      const oneDay = 1000 * 60 * 60 * 24;
-      const isNewPost = (now - createdAt) < oneDay;
-      const wasEdited = updatedAt > createdAt;
-      const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-      const showEditedLabel = !isNewPost && isRecentlyEdited;
-
-      const newLabelText = "<%= locale.ui.newPost || 'NEW' %>";
-      const editedLabelText = "<%= locale.ui.editedPost || 'UPDATED' %>";
-      
-      let labelHtml = '';
-      if (isNewPost) {
-          // ⭐ [수정] loadMorePosts 내부: 백틱 제거 및 문자열 합치기로 변경
-          labelHtml = '<span class="label-icon new-icon">' + newLabelText + '</span>';
-      } else if (showEditedLabel) {
-          // ⭐ [수정] loadMorePosts 내부: 백틱 제거 및 문자열 합치기로 변경
-          labelHtml = '<span class="label-icon edited-icon">' + editedLabelText + '</span>';
-      }
-      
-      const formattedDate = post.created_fmt; 
-      
-      let previewText = '';
-      if (post.content) {
-        let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
-        cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
-        
-        let plainText = cleanContent.replace(/<[^>]+>/gi, '');
-        
-        plainText = plainText.replace(/\s+/g, ' ').trim();
-
-        const decodedText = plainText
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&amp;/g, '&');
-    
-        previewText = decodedText.slice(0, 120);
-      } else if (post.preview) {
-        let decodedPreview = post.preview
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&amp;/g, '&');
-        previewText = decodedPreview.slice(0, 120);
-      }
-  
-      // ⭐ [중요 수정] el.innerHTML 부분: 백틱(템플릿 리터럴)을 문자열 합치기(+)로 완전히 변경
-      let innerHtml = '<a href="/' + lang + '/post/' + post.id + '" class="recent-post-title">';
-      innerHtml += labelHtml;
-      innerHtml += (post.is_pinned ? '<span class="badge-pinned">📌</span>' : '');
-      innerHtml += post.title;
-      innerHtml += '</a>';
-
-      innerHtml += '<div class="recent-post-meta">';
-      innerHtml += '<span>' + post.author + '</span>';
-      innerHtml += '<span>·</span>';
-      innerHtml += '<span>' + formattedDate + '</span>';
-      innerHtml += '</div>';
-
-      innerHtml += '<div class="recent-post-preview">';
-      innerHtml += previewText + '...';
-      innerHtml += '</div>';
-
-      el.innerHTML = innerHtml;
-      
-      container.appendChild(el);
-    });
-  
-    loading = false;
-  } catch (error) {
-      console.error("Error loading more posts or processing JSON (DOM/Parsing Error):", error);
-      loading = false;
-  }
-}
-
-
-window.loadMorePosts = loadMorePosts;
-
-</script>
-
-
-
-  <script>
-  (() => {
-    // ----------------------------------------------------
-    // 전역 변수 설정
-    // ----------------------------------------------------
-    const booksData = window.booksData;
-    const itemsPerPage = 3;
-    
-    // ----------------------------------------------------
-    // 목차 렌더링 로직 (클라이언트 측)
-    // ----------------------------------------------------
-    // ⭐ [수정] 클라이언트 측 renderTocHtml 함수: 백틱 템플릿 리터럴을 문자열 합치기로 변경하여 안전성 확보
-    const getPaginatedToc = (tocData) => {
-      if (!tocData) return { paginatedToc: [], totalPages: 0, totalSections: 0 };
-      const totalSections = tocData.length;
-      const totalPages = Math.ceil(totalSections / itemsPerPage);
-      const paginatedToc = [];
-
-      for (let i = 0; i < totalPages; i++) {
-        const start = i * itemsPerPage;
-        const end = start + itemsPerPage;
-        paginatedToc.push(tocData.slice(start, end));
-      }
-      return { paginatedToc, totalPages, totalSections };
-    };
-
-    const renderTocHtmlCSR = (sections, bookKey) => {
-      if (!sections || sections.length === 0) return '';
-      let html = '<ul>';
-      
-      const snakeToCamel = (s) => s.replace(/(_\w)/g, k => k[1].toUpperCase());
-      const camelCaseKey = snakeToCamel(bookKey);
-
-      sections.forEach(section => {
-        // ⭐ [수정] 백틱(`) 제거
-        html += '<li><h5>' + section.section + '</h5><ul>'; 
-        section.chapters.forEach(ch => {
-          // ⭐ [수정] 백틱(`) 제거
-          html += '<li>';
-          
-          // ⭐ [중요 수정] URL 생성 시 문자열 합치기(+) 사용
-          const urlPath = '/books/' + camelCaseKey + '/contents/' + ch.id; 
-
-          if (ch.url) {
-            // ⭐ [수정] 앵커 태그 전체를 문자열 합치기로 변경
-            html += '<a href="/' + lang + urlPath + '" class="toc-link active">';
-            html += ch.title;
-            html += '</a>';
-          } else {
-            // ⭐ [수정] <span> 태그를 문자열 합치기로 변경
-            html += '<span class="toc-link disabled">' + ch.title + '</span>';
-          }
-
-          if (ch.sub) {
-            html += '<ul>';
-            ch.sub.forEach(sub => {
-              // ⭐ [수정] 백틱(`) 제거
-              html += '<li>';
-              
-              // ⭐ [중요 수정] 서브 챕터 URL도 동일하게 처리
-              const subUrlPath = '/books/' + camelCaseKey + '/contents/' + sub.id;
-              
-              if (sub.url) {
-                // ⭐ [수정] 앵커 태그 전체를 문자열 합치기로 변경
-                html += '<a href="/' + lang + subUrlPath + '" class="toc-link active">';
-                html += sub.title;
-                html += '</a>';
-              } else {
-                // ⭐ [수정] <span> 태그를 문자열 합치기로 변경
-                html += '<span class="toc-link disabled">' + sub.title + '</span>'; 
-              }
-              html += '</li>';
-            });
-            html += '</ul>';
-          }
-
-          html += '</li>';
-        });
-        html += '</ul></li>';
-      });
-      html += '</ul>';
-      return html;
-    };
-
-
-    window.changePage = (event, bookKey, pageNumber) => {
-      event.stopPropagation();
-      
-      const bookData = booksData[bookKey];
-      if (!bookData) return;
-      
-      const card = document.querySelector(`[data-book-key="${bookKey}"]`);
-      const tocContainer = card.querySelector(`[data-book-id="${bookKey}-toc"]`);
-      const paginationContainer = card.querySelector(`[data-book-id="${bookKey}-pagination"]`);
-      const tocElement = card.querySelector('.book-toc');
-      
-      if (tocContainer && paginationContainer) {
-        const { paginatedToc } = getPaginatedToc(bookData.toc);
-        const sections = paginatedToc[pageNumber - 1];
-
-        // 렌더링
-        tocContainer.innerHTML = renderTocHtmlCSR(sections, bookKey);
-        
-        // 페이지네이션 버튼 활성화 상태 업데이트
-        paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
-          btn.classList.remove('active');
-          // ⭐ [수정] 백틱(`) 제거
-          if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
-        });
-
-        // 목차 높이 재계산 및 적용
-        if (card.classList.contains('expanded') && tocElement) {
+      window.changePage = (event, bookKey, pageNumber) => {
+        event.stopPropagation();
+        const bookData = booksData[bookKey];
+        if (!bookData) return;
+        const card = document.querySelector('[data-book-key="' + bookKey + '"]');
+        const tocContainer = card.querySelector('[data-book-id="' + bookKey + '-toc"]');
+        const paginationContainer = card.querySelector('[data-book-id="' + bookKey + '-pagination"]');
+        const tocElement = card.querySelector('.book-toc');
+        if (tocContainer && paginationContainer) {
+          const { paginatedToc } = getPaginatedToc(bookData.toc);
+          const sections = paginatedToc[pageNumber - 1];
+          tocContainer.innerHTML = renderTocHtmlCSR(sections, bookKey);
+          paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
+            btn.classList.remove('active');
+            if (parseInt(btn.textContent.trim()) === pageNumber) btn.classList.add('active');
+          });
+          if (card.classList.contains('expanded') && tocElement) {
             tocElement.style.height = 'auto';
-            const contentHeight = tocElement.scrollHeight; 
-            // ⭐ [수정] 백틱(`) 제거
-            tocElement.style.height = contentHeight + 'px'; 
+            const contentHeight = tocElement.scrollHeight;
+            tocElement.style.height = contentHeight + 'px';
+          }
         }
-      }
-    };
-    
-    // ----------------------------------------------------
-    // 북카드 토글 로직
-    // ----------------------------------------------------
-    document.querySelectorAll('.book-card').forEach(card => {
-      card.addEventListener('click', () => {
+      };
+
+      document.querySelectorAll('.book-card').forEach(card => {
+        card.addEventListener('click', () => {
           const isCurrentlyExpanded = card.classList.contains('expanded');
           const tocElement = card.querySelector('.book-toc');
-          const transitionDuration = 500; // CSS transition time in ms
-          
+          const transitionDuration = 500;
           const contentPaddingTop = '26px';
           const contentPaddingBottom = '16px';
 
-          // 1. 모든 카드의 expanded 클래스 제거 (다른 카드 닫기)
           document.querySelectorAll('.book-card').forEach(c => {
-              const otherToc = c.querySelector('.book-toc');
-              if (c !== card) {
-                  c.classList.remove('expanded'); 
-                  
-                  if (otherToc) {
-                      otherToc.style.height = '0px'; 
-                      otherToc.style.paddingTop = '0';
-                      otherToc.style.paddingBottom = '0';
-                      otherToc.classList.add('closed');
-                  }
+            const otherToc = c.querySelector('.book-toc');
+            if (c !== card) {
+              c.classList.remove('expanded');
+              if (otherToc) {
+                otherToc.style.height = '0px';
+                otherToc.style.paddingTop = '0';
+                otherToc.style.paddingBottom = '0';
+                otherToc.classList.add('closed');
               }
+            }
           });
-          
-          // 2. 현재 클릭된 카드의 expanded 상태 토글
+
           card.classList.toggle('expanded', !isCurrentlyExpanded);
 
-          // 3. 목차 높이 조절
           if (!isCurrentlyExpanded && tocElement) {
-              // 펼쳐질 때
-              tocElement.classList.remove('closed');
-              
-              tocElement.style.paddingTop = contentPaddingTop;
-              tocElement.style.paddingBottom = contentPaddingBottom;
-              
-              tocElement.style.height = 'auto';
-              
-              const contentHeight = tocElement.scrollHeight; 
-              
-              tocElement.style.height = '0px';
-              requestAnimationFrame(() => {
-                  // ⭐ [수정] 백틱(`) 제거
-                  tocElement.style.height = contentHeight + 'px';
-              });
-
+            tocElement.classList.remove('closed');
+            tocElement.style.paddingTop = contentPaddingTop;
+            tocElement.style.paddingBottom = contentPaddingBottom;
+            tocElement.style.height = 'auto';
+            const contentHeight = tocElement.scrollHeight;
+            tocElement.style.height = '0px';
+            requestAnimationFrame(() => {
+              tocElement.style.height = contentHeight + 'px';
+            });
           } else if (isCurrentlyExpanded && tocElement) {
-              // 닫힐 때
-              // ⭐ [수정] 백틱(`) 제거
-              tocElement.style.height = tocElement.scrollHeight + 'px';
-              tocElement.style.paddingTop = contentPaddingTop;
-              tocElement.style.paddingBottom = contentPaddingBottom;
-
-              requestAnimationFrame(() => {
-                  tocElement.style.height = '0px';
-                  tocElement.style.paddingTop = '0';
-                  tocElement.style.paddingBottom = '0';
-
-                  setTimeout(() => {
-                      tocElement.classList.add('closed');
-                  }, transitionDuration); 
-              });
+            tocElement.style.height = tocElement.scrollHeight + 'px';
+            tocElement.style.paddingTop = contentPaddingTop;
+            tocElement.style.paddingBottom = contentPaddingBottom;
+            requestAnimationFrame(() => {
+              tocElement.style.height = '0px';
+              tocElement.style.paddingTop = '0';
+              tocElement.style.paddingBottom = '0';
+              setTimeout(() => {
+                tocElement.classList.add('closed');
+              }, transitionDuration);
+            });
           }
 
-          // 4. 캐러셀 스크롤 이동
           if (!isCurrentlyExpanded) {
-              const carousel = card.closest('.carousel');
-              if (carousel) {
-                  const cardLeft = card.offsetLeft;
-                  const carouselWidth = carousel.clientWidth;
-                  
-                  let expandedCardWidth;
-                  
-                  if (window.innerWidth <= 640) {
-                      expandedCardWidth = 250; 
-                  } else {
-                      expandedCardWidth = 300; 
-                  }
-
-                  const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
-                  
-                  carousel.scrollTo({
-                      left: scrollTarget,
-                      behavior: 'smooth'
-                  });
-              }
+            const carousel = card.closest('.carousel');
+            if (carousel) {
+              const cardLeft = card.offsetLeft;
+              const carouselWidth = carousel.clientWidth;
+              let expandedCardWidth = window.innerWidth <= 640 ? 250 : 300;
+              const scrollTarget = cardLeft + (expandedCardWidth / 2) - (carouselWidth / 2);
+              carousel.scrollTo({
+                left: scrollTarget,
+                behavior: 'smooth'
+              });
+            }
           }
+        });
       });
-    });
-  })();
+    })();
   </script>
 </body>
+
 </html>
