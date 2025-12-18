@@ -1,5 +1,6 @@
-const booksData = window.booksData || {};
-const lang = document.documentElement.getAttribute('lang') || 'ko';
+const { lang, books } = window.__APP__ || {};
+window.booksData = books || {};
+
 const itemsPerPage = 3;
 
 const getPaginatedToc = (tocData) => {
@@ -55,10 +56,10 @@ const renderTocHtmlCSR = (sections, bookKey) => {
   return html;
 };
 
-window.changePage = (event, bookKey, pageNumber) => {
+window.changePage = function (event, bookKey, pageNumber) {
   event.stopPropagation();
 
-  const bookData = booksData[bookKey];
+  const bookData = window.booksData[bookKey];
   if (!bookData) return;
 
   const card = document.querySelector(`[data-book-key="${bookKey}"]`);
@@ -122,3 +123,89 @@ document.querySelectorAll('.book-card').forEach(card => {
     }
   });
 });
+
+let offset = 5;
+let loading = false;
+
+window.loadMorePosts = async function () {
+  if (loading) return;
+  loading = true;
+
+  try {
+    const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
+    const data = await res.json();
+
+    if (!data.posts || data.posts.length === 0) {
+      const btn = document.getElementById('load-more-btn');
+      if (btn) btn.style.display = 'none';
+      loading = false;
+      return;
+    }
+
+    offset += data.posts.length;
+
+    const container = document.getElementById('posts-container');
+    if (!container) {
+      loading = false;
+      return;
+    }
+
+    data.posts.forEach(post => {
+      const el = document.createElement('div');
+      el.className = 'recent-post-item';
+
+      const now = new Date();
+      const createdAt = new Date(post.created_at);
+      const updatedAt = new Date(post.updated_at);
+      const oneDay = 1000 * 60 * 60 * 24;
+
+      const isNewPost = (now - createdAt) < oneDay;
+      const wasEdited = updatedAt > createdAt;
+      const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+      const showEditedLabel = !isNewPost && isRecentlyEdited;
+
+      let labelHtml = '';
+      if (isNewPost) {
+        labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
+      } else if (showEditedLabel) {
+        labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
+      }
+
+      let previewText = '';
+      if (post.content) {
+        let clean = post.content
+          .replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '')
+          .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        previewText = clean
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .slice(0, 120);
+      }
+
+      el.innerHTML = `
+        <a href="/${lang}/post/${post.id}" class="recent-post-title">
+          ${labelHtml}
+          ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
+          ${post.title}
+        </a>
+        <div class="recent-post-meta">
+          <span>${post.author}</span>
+          <span>·</span>
+          <span>${post.created_fmt}</span>
+        </div>
+        <div class="recent-post-preview">${previewText}...</div>
+      `;
+
+      container.appendChild(el);
+    });
+
+    loading = false;
+  } catch (e) {
+    loading = false;
+  }
+};

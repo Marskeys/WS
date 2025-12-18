@@ -303,106 +303,16 @@
   </footer>
   <%- include('partials/scripts') %>
 
-  <script>
-    const getLang = () => document.documentElement.getAttribute('lang') || 'ko';
-    window.booksData = <%- JSON.stringify(locale.books) %>;
+<script>
+  window.__APP__ = {
+    lang: "<%= lang %>",
+    locale: <%- JSON.stringify(locale.ui || {}) %>,
+    books: <%- JSON.stringify(locale.books || {}) %>
+  };
+</script>
 
-    let offset = 5;
-    let loading = false;
+<script src="/assets/js/index.js" defer></script>
 
-    async function loadMorePosts() {
-      if (loading) return;
-      loading = true;
-
-      try {
-        const res = await fetch('/api/recent-posts?offset=' + offset + '&limit=5&lang=' + lang);
-        const data = await res.json();
-
-        if (!data.posts || data.posts.length === 0) {
-          document.getElementById("load-more-btn").style.display = "none";
-          loading = false;
-          return;
-        }
-
-        offset += data.posts.length;
-
-        const container = document.getElementById("posts-container");
-        if (!container) {
-          loading = false;
-          return;
-        }
-
-        data.posts.forEach(post => {
-          const el = document.createElement("div");
-          el.className = "recent-post-item";
-
-          const now = new Date();
-          const createdAt = new Date(post.created_at);
-          const updatedAt = new Date(post.updated_at);
-          const oneDay = 1000 * 60 * 60 * 24;
-          const isNewPost = (now - createdAt) < oneDay;
-          const wasEdited = updatedAt > createdAt;
-          const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-          const showEditedLabel = !isNewPost && isRecentlyEdited;
-
-          const newLabelText = "<%= locale.ui.newPost || 'NEW' %>";
-          const editedLabelText = "<%= locale.ui.editedPost || 'UPDATED' %>";
-
-          let labelHtml = '';
-          if (isNewPost) {
-            labelHtml = '<span class="label-icon new-icon">' + newLabelText + '</span>';
-          } else if (showEditedLabel) {
-            labelHtml = '<span class="label-icon edited-icon">' + editedLabelText + '</span>';
-          }
-
-          const formattedDate = post.created_fmt;
-
-          let previewText = '';
-          if (post.content) {
-            let cleanContent = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '');
-            cleanContent = cleanContent.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
-            let plainText = cleanContent.replace(/<[^>]+>/gi, '');
-            plainText = plainText.replace(/\s+/g, ' ').trim();
-            const decodedText = plainText
-              .replace(/&lt;/g, '<')
-              .replace(/&gt;/g, '>')
-              .replace(/&amp;/g, '&');
-            previewText = decodedText.slice(0, 120);
-          } else if (post.preview) {
-            let decodedPreview = post.preview
-              .replace(/&lt;/g, '<')
-              .replace(/&gt;/g, '>')
-              .replace(/&amp;/g, '&');
-            previewText = decodedPreview.slice(0, 120);
-          }
-
-          let innerHtml = '<a href="/' + lang + '/post/' + post.id + '" class="recent-post-title">';
-          innerHtml += labelHtml;
-          innerHtml += (post.is_pinned ? '<span class="badge-pinned">📌</span>' : '');
-          innerHtml += post.title;
-          innerHtml += '</a>';
-          innerHtml += '<div class="recent-post-meta">';
-          innerHtml += '<span>' + post.author + '</span>';
-          innerHtml += '<span>·</span>';
-          innerHtml += '<span>' + formattedDate + '</span>';
-          innerHtml += '</div>';
-          innerHtml += '<div class="recent-post-preview">';
-          innerHtml += previewText + '...';
-          innerHtml += '</div>';
-
-          el.innerHTML = innerHtml;
-          container.appendChild(el);
-        });
-
-        loading = false;
-      } catch (error) {
-        loading = false;
-      }
-    }
-    window.loadMorePosts = loadMorePosts;
-  </script>
-
- <script src="/assets/js/index.js"></script>
 </body>
 
 </html>
