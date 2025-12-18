@@ -1,14 +1,12 @@
-/* =====================================================
-   post-view.js (FINAL / STABLE)
-   - EJS sentinel (#toc-sentinel) 기준
-   - DOMContentLoaded 즉시 TOC 생성
-===================================================== */
-
 document.addEventListener("DOMContentLoaded", () => {
+  const postContent = document.querySelector('.post-content');
+  const sentinel = document.getElementById('toc-sentinel');
+  const floatingToc = document.getElementById('floatingToc');
+  const mobileBtn = document.getElementById('mobileTocBtn');
+  const mobileModal = document.getElementById('mobileTocModal');
+  const mobileContent = document.getElementById('mobileTocContent');
+  const tocTitle = document.body.dataset.tocTitle || 'TOC';
 
-  /* =====================================================
-     HTML 위젯 iframe 처리
-  ===================================================== */
   document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
     const encoded = el.getAttribute("data-code");
     if (!encoded) return;
@@ -23,8 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       iframe.setAttribute('referrerpolicy', 'no-referrer');
       iframe.setAttribute('title', '삽입된 HTML');
       iframe.setAttribute('name', `snippet-iframe-${index}`);
-      iframe.style.cssText =
-        'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
+      iframe.style.cssText = 'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
       iframe.srcdoc = decoded;
 
       el.innerHTML = '';
@@ -35,42 +32,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* =====================================================
-     사용자 행동 차단
-  ===================================================== */
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('dragstart', e => {
-    if (!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+    if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
   });
   document.addEventListener('selectstart', e => {
-    if (!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
+    if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
   });
   document.addEventListener('mouseup', () => {
     const sel = window.getSelection();
     if (sel && sel.toString()) {
       const a = document.activeElement;
-      if (!['INPUT','TEXTAREA'].includes(a.tagName)) sel.removeAllRanges();
+      if (!['INPUT', 'TEXTAREA'].includes(a.tagName)) sel.removeAllRanges();
     }
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'F12') e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
       const k = e.key.toLowerCase();
-      if (['c','a','s','p','u','x'].includes(k)) e.preventDefault();
-      if (e.shiftKey && ['i','j','c'].includes(k)) e.preventDefault();
+      if (['c', 'a', 's', 'p', 'u', 'x'].includes(k)) e.preventDefault();
+      if (e.shiftKey && ['i', 'j', 'c'].includes(k)) e.preventDefault();
     }
   });
-
-  /* =====================================================
-     TOC 생성
-  ===================================================== */
-  const postContent = document.querySelector('.post-content');
-  const sentinel = document.getElementById('toc-sentinel');
-  const floatingToc = document.getElementById('floatingToc');
-  const mobileBtn = document.getElementById('mobileTocBtn');
-  const mobileModal = document.getElementById('mobileTocModal');
-  const mobileContent = document.getElementById('mobileTocContent');
-  const tocTitle = document.body.dataset.tocTitle || 'TOC';
 
   if (!postContent || !sentinel || !floatingToc || !mobileBtn || !mobileContent) {
     console.warn('[TOC] required elements missing');
@@ -86,23 +69,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!headings.length) return;
 
     let html = `<strong>${tocTitle}</strong><ul>`;
-    let h1 = 0, h2 = 0;
+    let h1 = 0,
+      h2 = 0;
 
     headings.forEach((el, i) => {
       const tag = el.tagName.toLowerCase();
       if (!el.id) el.id = `toc-${tag}-${i}`;
 
       if (tag === 'h1') {
-        h1++; h2 = 0;
+        h1++;
+        h2 = 0;
         html += `<li class="toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
       } else {
-        h2++; if (!h1) h1 = 1;
+        h2++;
+        if (!h1) h1 = 1;
         html += `<li class="toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
       }
     });
 
     html += '</ul>';
-
     floatingToc.innerHTML = html;
     mobileContent.innerHTML = html;
     tocReady = true;
@@ -110,52 +95,39 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTocVisibility();
   };
 
-  /* ✅ 핵심: 즉시 1회 실행 */
+  const updateTocVisibility = () => {
+    if (!tocReady) return;
+
+    const rect = sentinel.getBoundingClientRect();
+    const passed = rect.top < 0;
+
+    if (window.innerWidth > 768) {
+      if (passed) {
+        floatingToc.classList.add('show');
+      } else {
+        floatingToc.classList.remove('show');
+      }
+      mobileBtn.classList.remove('show');
+    } else {
+      floatingToc.classList.remove('show');
+      if (passed) {
+        mobileBtn.classList.add('show');
+      } else {
+        mobileBtn.classList.remove('show');
+      }
+    }
+  };
+
   buildToc();
 
-  /* 보조용 (동적 위젯 대응) */
   new MutationObserver(buildToc).observe(postContent, {
     childList: true,
     subtree: true
   });
 
-/* =====================================================
-   TOC 표시 로직 (수정본)
-===================================================== */
-const updateTocVisibility = () => {
-  if (!tocReady) return;
+  window.addEventListener('scroll', updateTocVisibility);
+  window.addEventListener('resize', updateTocVisibility);
 
-  const rect = sentinel.getBoundingClientRect();
-  // passed 조건: sentinel의 하단이 화면 상단(0)보다 위로 올라갔을 때
-  const passed = rect.bottom < 0;
-
-  console.log("Sentinel top:", rect.top, "Passed:", passed); // 브라우저 콘솔에서 확인용
-
-  if (window.innerWidth > 768) {
-    if (passed) {
-      floatingToc.classList.add('show');
-    } else {
-      floatingToc.classList.remove('show');
-    }
-    mobileBtn.classList.remove('show');
-  } else {
-    floatingToc.classList.remove('show');
-    if (passed) {
-      mobileBtn.classList.add('show');
-    } else {
-      mobileBtn.classList.remove('show');
-    }
-  }
-};
-
-// 페이지 로드 직후 상태 반영을 위해 한 번 실행
-updateTocVisibility(); 
-window.addEventListener('scroll', updateTocVisibility);
-window.addEventListener('resize', updateTocVisibility);
-
-  /* =====================================================
-     모바일 TOC
-  ===================================================== */
   mobileBtn.addEventListener('click', () => {
     mobileModal.style.display = 'flex';
     document.body.classList.add('modal-open');
@@ -171,25 +143,25 @@ window.addEventListener('resize', updateTocVisibility);
   mobileContent.addEventListener('click', e => {
     if (e.target.tagName === 'A') {
       e.preventDefault();
-      document.getElementById(e.target.getAttribute('href').slice(1))
-        ?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(e.target.getAttribute('href').slice(1))?.scrollIntoView({
+        behavior: 'smooth'
+      });
       mobileModal.style.display = 'none';
       document.body.classList.remove('modal-open');
     }
   });
 
-  /* =====================================================
-     플로팅 TOC 드래그 (데스크탑)
-  ===================================================== */
   if (window.innerWidth > 768) {
-    let drag = false, sx, sy, sl, st;
+    let drag = false,
+      sx, sy, sl, st;
 
     floatingToc.style.position = 'fixed';
     floatingToc.style.cursor = 'move';
 
     floatingToc.addEventListener('mousedown', e => {
       drag = true;
-      sx = e.clientX; sy = e.clientY;
+      sx = e.clientX;
+      sy = e.clientY;
       sl = floatingToc.offsetLeft;
       st = floatingToc.offsetTop;
       e.preventDefault();
@@ -198,19 +170,24 @@ window.addEventListener('resize', updateTocVisibility);
     document.addEventListener('mousemove', e => {
       if (!drag) return;
       floatingToc.style.left = `${sl + e.clientX - sx}px`;
-      floatingToc.style.top  = `${st + e.clientY - sy}px`;
+      floatingToc.style.top = `${st + e.clientY - sy}px`;
     });
 
     document.addEventListener('mouseup', () => drag = false);
   }
 
-  /* =====================================================
-     본문 광고
-  ===================================================== */
   [...postContent.querySelectorAll('p')]
-    .map((p,i)=>({p,i}))
-    .filter(({p,i}) => [2,5,8].includes(i) && p.innerText.length > 50)
-    .forEach(({p}) => {
+  .map((p, i) => ({
+      p,
+      i
+    }))
+    .filter(({
+      p,
+      i
+    }) => [2, 5, 8].includes(i) && p.innerText.length > 50)
+    .forEach(({
+      p
+    }) => {
       const wrap = document.createElement('div');
       wrap.className = 'in-article-ad';
 
@@ -224,12 +201,11 @@ window.addEventListener('resize', updateTocVisibility);
 
       wrap.appendChild(ins);
       p.after(wrap);
-      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
+      try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      } catch {}
     });
 
-  /* =====================================================
-     TTS
-  ===================================================== */
   const btn = document.getElementById('ttsBtn');
   if (btn) {
     const listen = btn.dataset.listen || 'Listen';
@@ -259,9 +235,6 @@ window.addEventListener('resize', updateTocVisibility);
   }
 });
 
-/* =====================================================
-   iframe height sync
-===================================================== */
 function sendHeightToParent() {
   const h = Math.max(
     document.body.scrollHeight,
