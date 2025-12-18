@@ -23,20 +23,23 @@
     </div>
 
     <div class="carousel">
-      <!-- 📚 book-card 들 (네 기존 코드 그대로) -->
-      <!-- ⚠️ JS 없음 / onclick="changePage()"만 남아 있음 -->
+      <!-- 📚 book-card 들 -->
+      <!-- ⚠️ 기존 book-card SSR 코드 그대로 들어가면 됨 -->
+      <!-- ⚠️ onclick="changePage(...)" 는 유지 -->
     </div>
 
     <!-- ===============================
          최근 게시물 (SSR)
     =============================== -->
     <div class="recent-posts-wrapper section-title-wrapper">
-      <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
+      <h2 class="section-title">
+        <%= locale.index.recentPosts || "최근 게시물" %>
+      </h2>
     </div>
 
     <div class="recent-posts" id="posts-container">
       <% posts.slice(0, 5).forEach(post => { %>
-        <!-- 기존 SSR 게시물 코드 그대로 -->
+        <!-- 🔹 기존 SSR 게시물 마크업 그대로 -->
       <% }) %>
     </div>
 
@@ -51,19 +54,25 @@
   </footer>
 
   <!-- ===============================
-       JS 데이터 주입 (딱 이것만)
+       JS 데이터 주입 (🔥 핵심)
   =============================== -->
   <script>
     window.booksData = <%- JSON.stringify(locale.books) %>;
+    window.lang = "<%= lang %>";
   </script>
 
   <!-- ===============================
-       JS 파일 로딩
+       페이지 전용 JS
+       (데이터 → 기능 → 공통)
   =============================== -->
-  <%- include('partials/scripts') %>
-  <script src="/assets/js/index.js" defer></script>
   <script src="/assets/js/books.js" defer></script>
   <script src="/assets/js/posts.js" defer></script>
+  <script src="/assets/js/index.js" defer></script>
+
+  <!-- ===============================
+       공통 스크립트
+  =============================== -->
+  <%- include('partials/scripts') %>
 
 </body>
 </html>
