@@ -1,91 +1,105 @@
-/* =========================================================
-   Fonts: Pretendard (KR 기본) + JP/SC 폴백 — Nexon-ish tone
-   ========================================================= */
-/* ✅ Pretendard Variable: 모든 굵기 포함 + font-display: swap */
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
-
-/* ✅ 일본어/중국어(Simple) 폴백 유지 */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
 
-/* ===== Global font family ===== */
-:root{
-  /* 메인: Pretendard → 실패 시 KR 폴백 순서 */
-  --font-sans: "Pretendard Variable", "Pretendard",
-               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-               "Noto Sans KR", "Noto Sans", sans-serif;
-
-  /* 넥슨 톤 + 초미세 자간 */
-  --tracking-body: -0.003em;  /* 본문: 아주 미세하게 조임 */
-  --tracking-ui:    0.012em;  /* UI/라벨: 살짝만 펼침 */
-  --lh-body:        1.55;     /* 본문 줄간 */
-  --lh-heading:     1.25;     /* 헤딩 줄간 */
+:root {
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", "Noto Sans", sans-serif;
+  --tracking-body: -0.003em;
+  --tracking-ui: 0.012em;
+  --lh-body: 1.55;
+  --lh-heading: 1.25;
 }
 
-/* 기본 적용 + 베이스 레이아웃 (중복 통합) */
-html, body {
+html,
+body {
   font-family: var(--font-sans);
   letter-spacing: var(--tracking-body);
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-variant-numeric: tabular-nums; /* 숫자 정렬 안정감 */
+  font-variant-numeric: tabular-nums;
   scroll-behavior: smooth;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  overflow-x: hidden;           /* 가로 스크롤 방지 */
-  overscroll-behavior: none;    /* 크롬, 파이어폭스 튕김 방지 */
+  overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
-/* iOS 튕김 방지 */
-body { -webkit-overflow-scrolling: auto; }
+body {
+  -webkit-overflow-scrolling: auto;
+}
 
-/* 헤딩: 굵고 또렷(넥슨 톤) */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-sans);
   line-height: var(--lh-heading);
   letter-spacing: -0.01em;
   margin: 0 0 0.5em;
-  font-weight: 600; /* 기본 두툼 */
+  font-weight: 600;
 }
-h1 { font-size: clamp(24px, 2.4rem, 40px); }
-h2 { font-size: clamp(20px, 2rem, 32px);  font-weight: 600; }
-h3 { font-size: clamp(18px, 1.4rem, 24px); font-weight: 500; }
 
-/* 본문 기본 */
-p, li, input, textarea, button { font-weight: 400; }
+h1 {
+  font-size: clamp(24px, 2.4rem, 40px);
+}
 
-/* UI 라벨/탭/네비: 살짝 펼친 자간 + 묵직한 두께 */
-nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
+h2 {
+  font-size: clamp(20px, 2rem, 32px);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: clamp(18px, 1.4rem, 24px);
+  font-weight: 500;
+}
+
+p,
+li,
+input,
+textarea,
+button {
+  font-weight: 400;
+}
+
+nav a,
+.menu-label,
+.tab,
+.badge,
+.btn,
+.chip,
+.sidebar-icon {
   letter-spacing: var(--tracking-ui);
   font-weight: 600;
 }
 
-/* (선택) 제목 계열은 좀 더 두껍게 */
-h1, h2, h3 { font-weight: 500; }
-
-/* 다국어 폴백 (Asta Sans 제거) */
-:lang(zh), .lang-zh {
-  font-family: "Noto Sans SC",
-               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-               "Noto Sans", sans-serif;
-}
-:lang(ja), .lang-ja {
-  font-family: "Noto Sans JP",
-               -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-               "Noto Sans", sans-serif;
+h1,
+h2,
+h3 {
+  font-weight: 500;
 }
 
-/* 🇰🇷 한국어 페이지에서 '초미세' 자간: html lang="ko" 기준 */
-:lang(ko), .lang-ko {
-  letter-spacing: -0.0020em; /* 글로벌(-0.003em)보다 한 단계 더 미세 */
+:lang(zh),
+.lang-zh {
+  font-family: "Noto Sans SC", -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
 
-/* 소제목/오버라인 스타일(넥슨식 카테고리 라벨 톤) */
+:lang(ja),
+.lang-ja {
+  font-family: "Noto Sans JP", -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+:lang(ko),
+.lang-ko {
+  letter-spacing: -0.0020em;
+}
+
 .overline {
   font-size: 12px;
   font-weight: 600;
@@ -94,35 +108,34 @@ h1, h2, h3 { font-weight: 500; }
   opacity: .8;
 }
 
-/* 작은 캡션/보조텍스트 */
 .caption {
   font-size: 12.5px;
   letter-spacing: 0;
   opacity: .85;
 }
 
-/* 폼/버튼 텍스트 톤 정리 */
-button, .btn {
+button,
+.btn {
   font-weight: 600;
   letter-spacing: var(--tracking-ui);
 }
 
-/* 옵션: 숫자 중심 UI에서 더 촘촘한 숫자 */
-.tnum { font-variant-numeric: tabular-nums; }
-
-/* 유틸리티(원할 때 골라 쓰기) */
-.tracking-xxs { letter-spacing: -0.0020em; } /* 거의 무감 */
-.tracking-xs  { letter-spacing: -0.0025em; }
-.tracking-s   { letter-spacing: -0.0035em; } /* 기본권장값과 동일 */
-
-/* ------- 필요 시 다크모드 대비(선택) -------
-html.dark, [data-theme="dark"] body {
-  background-color: #0b0b0d;
-  color: #e9e9ee;
+.tnum {
+  font-variant-numeric: tabular-nums;
 }
-*/
 
-/* ===== 패널 오픈 시 레이아웃 ===== */
+.tracking-xxs {
+  letter-spacing: -0.0020em;
+}
+
+.tracking-xs {
+  letter-spacing: -0.0025em;
+}
+
+.tracking-s {
+  letter-spacing: -0.0035em;
+}
+
 body.panel-open {
   padding-left: 400px;
   transition: padding 0.3s ease;
@@ -134,8 +147,32 @@ body.panel-open .left-controls {
 }
 
 @media (max-width: 640px) {
-  .left-controls { padding-left: 13px; }
-  .header-top { padding-left: 10px; }
+  .left-controls {
+    padding-left: 13px;
+  }
+  .header-top {
+    padding-left: 10px;
+  }
+  .desktop-menu {
+    display: none;
+  }
+  .auth-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+  }
+  .welcome-text {
+    order: 1;
+    flex-basis: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
+    white-space: nowrap;
+    color: #666;
+  }
 }
 
 @media (max-width: 768px) {
@@ -148,16 +185,6 @@ body.panel-open .left-controls {
   }
 }
 
-/* ======================
-   🔹 반응형 (모바일)
-====================== */
-@media (max-width: 640px) {
-  .desktop-menu { display: none; }
-}
-
-/* ======================
-   🔹 로고 스타일
-====================== */
 .floating-home-logo {
   position: relative;
   height: auto;
@@ -172,9 +199,10 @@ body.panel-open .left-controls {
   transform: translateY(-2px);
 }
 
-/* ✅ 데스크탑에서 크기 줄이기 */
 @media (min-width: 640px) {
-  .floating-home-logo { width: 120px; }
+  .floating-home-logo {
+    width: 120px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -208,20 +236,18 @@ body.panel-open .left-controls {
   }
 }
 
-/* ======================
-   ✅ 프리로더
-====================== */
 #preloader {
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: #fff; /* 필요하면 배경색 지정 */
+  background: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 15000;
-  transition: opacity 0.2s ease; /* 부드럽게 사라짐 */
+  transition: opacity 0.2s ease;
 }
 
 #preloader.fade-out {
@@ -229,7 +255,6 @@ body.panel-open .left-controls {
   pointer-events: none;
 }
 
-/* 스피너 애니메이션 */
 .spinner {
   width: 50px;
   height: 50px;
@@ -240,56 +265,28 @@ body.panel-open .left-controls {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* ======================
-   🔹 모바일 전용 스타일 (삭제될 햄버거 메뉴 관련)
-====================== */
-@media (max-width: 640px) {
-  .auth-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;   /* 오른쪽 정렬 */
-    align-items: center;         /* 세로 가운데 정렬 */
-    width: 100%;
-    gap: 0.5rem;
-  }
-
-  .welcome-text {
-    order: 1;                    /* 다음 줄로 내리기 */
-    flex-basis: 100%;            /* 한 줄 전체 차지 */
-    text-align: center;
-    font-size: 0.75rem;
-    margin-top: 0.2rem;
-    white-space: nowrap;
-    color: #666;
-  }
-
-  /* .header-top { padding-left: 3rem; }  햄버거 버튼 삭제로 제거 */
+.spacer {
+  height: 0.5rem;
 }
 
-/* ======================
-   🔹 기타 유틸리티
-====================== */
-.spacer { height: 0.5rem; }
-
-/* 메인 화면을 어둡게 만드는 백드롭 */
-.panel-backdrop{
+.panel-backdrop {
   position: fixed;
-  inset: 0;                   /* 화면 전체 */
-  background: rgba(0,0,0,.45);/* 진하기는 여기서 조절 */
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   transition: opacity .18s ease, visibility .18s ease;
-  z-index: 1500;              /* 패널/헤더보다 낮게, 본문보다 높게 */
+  z-index: 1500;
 }
 
-/* 패널 열렸을 때만 보이기 */
-body.panel-open .panel-backdrop{
+body.panel-open .panel-backdrop {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;       /* 클릭 닫기용 */
+  pointer-events: auto;
 }
-
