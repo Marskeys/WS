@@ -7,15 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const mobileContent = document.getElementById('mobileTocContent');
   const tocTitle = document.body.dataset.tocTitle || 'TOC';
 
+  /* =====================================================
+     HTML 위젯 iframe 처리
+  ===================================================== */
   document.querySelectorAll('.custom-widget[data-type="html-snippet"]').forEach((el, index) => {
     const encoded = el.getAttribute("data-code");
     if (!encoded) return;
-
     try {
       const decoded = new TextDecoder('utf-8').decode(
         new Uint8Array([...atob(encoded)].map(c => c.charCodeAt(0)))
       );
-
       const iframe = document.createElement('iframe');
       iframe.setAttribute('sandbox', 'allow-scripts');
       iframe.setAttribute('referrerpolicy', 'no-referrer');
@@ -23,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
       iframe.setAttribute('name', `snippet-iframe-${index}`);
       iframe.style.cssText = 'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
       iframe.srcdoc = decoded;
-
       el.innerHTML = '';
       el.appendChild(iframe);
     } catch (e) {
@@ -32,6 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /* =====================================================
+     사용자 행동 차단
+  ===================================================== */
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('dragstart', e => {
     if (!['INPUT', 'TEXTAREA'].includes(e.target.tagName)) e.preventDefault();
@@ -56,52 +59,54 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   if (!postContent || !sentinel || !floatingToc || !mobileBtn || !mobileContent) {
-    console.warn('[TOC] required elements missing');
+    console.warn('[TOC] 필수 요소가 누락되었습니다.');
     return;
   }
 
   let tocReady = false;
 
+  /* =====================================================
+     TOC 빌드 함수
+  ===================================================== */
   const buildToc = () => {
     if (tocReady) return;
-
     const headings = postContent.querySelectorAll('h1, h2');
     if (!headings.length) return;
 
-    let html = `<strong>${tocTitle}</strong><ul>`;
-    let h1 = 0,
-      h2 = 0;
+    let html = `<strong class="toc-title">${tocTitle}</strong><ul class="toc-list">`;
+    let h1 = 0, h2 = 0;
 
     headings.forEach((el, i) => {
       const tag = el.tagName.toLowerCase();
       if (!el.id) el.id = `toc-${tag}-${i}`;
-
       if (tag === 'h1') {
-        h1++;
-        h2 = 0;
-        html += `<li class="toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
+        h1++; h2 = 0;
+        html += `<li class="toc-item toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
       } else {
-        h2++;
-        if (!h1) h1 = 1;
-        html += `<li class="toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
+        h2++; if (!h1) h1 = 1;
+        html += `<li class="toc-item toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
       }
     });
-
     html += '</ul>';
     floatingToc.innerHTML = html;
     mobileContent.innerHTML = html;
     tocReady = true;
-
     updateTocVisibility();
   };
 
+  /* =====================================================
+     ✅ 핵심: TOC 표시/숨김 로직
+  ===================================================== */
   const updateTocVisibility = () => {
     if (!tocReady) return;
 
+    // sentinel의 위치 확인 (뷰포트 상단 기준)
     const rect = sentinel.getBoundingClientRect();
-    const passed = rect.top < 0;
+    // 상단에서 10px 이상 위로 사라지면 'passed'
+    const passed = rect.top < 10;
 
     if (window.innerWidth > 768) {
+      // 데스크탑 모드
       if (passed) {
         floatingToc.classList.add('show');
       } else {
@@ -109,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       mobileBtn.classList.remove('show');
     } else {
+      // 모바일 모드
       floatingToc.classList.remove('show');
       if (passed) {
         mobileBtn.classList.add('show');
@@ -118,16 +124,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // 1. 즉시 실행 및 스크롤 이벤트 등록
   buildToc();
+  window.addEventListener('scroll', updateTocVisibility);
+  window.addEventListener('resize', updateTocVisibility);
 
+  // 2. 혹시 모를 로딩 지연 대응 (0.5초 뒤 강제 체크)
+  setTimeout(updateTocVisibility, 500);
+
+  // 본문 변화 감지
   new MutationObserver(buildToc).observe(postContent, {
     childList: true,
     subtree: true
   });
 
-  window.addEventListener('scroll', updateTocVisibility);
-  window.addEventListener('resize', updateTocVisibility);
-
+  /* =====================================================
+     모바일 TOC 제어
+  ===================================================== */
   mobileBtn.addEventListener('click', () => {
     mobileModal.style.display = 'flex';
     document.body.classList.add('modal-open');
@@ -143,54 +156,44 @@ document.addEventListener("DOMContentLoaded", () => {
   mobileContent.addEventListener('click', e => {
     if (e.target.tagName === 'A') {
       e.preventDefault();
-      document.getElementById(e.target.getAttribute('href').slice(1))?.scrollIntoView({
-        behavior: 'smooth'
-      });
+      const targetId = e.target.getAttribute('href').slice(1);
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
       mobileModal.style.display = 'none';
       document.body.classList.remove('modal-open');
     }
   });
 
+  /* =====================================================
+     데스크탑 드래그 기능
+  ===================================================== */
   if (window.innerWidth > 768) {
-    let drag = false,
-      sx, sy, sl, st;
-
-    floatingToc.style.position = 'fixed';
+    let drag = false, sx, sy, sl, st;
     floatingToc.style.cursor = 'move';
-
     floatingToc.addEventListener('mousedown', e => {
+      // 링크 클릭 시에는 드래그 안 되게 방지
+      if (e.target.tagName === 'A') return;
       drag = true;
-      sx = e.clientX;
-      sy = e.clientY;
-      sl = floatingToc.offsetLeft;
-      st = floatingToc.offsetTop;
+      sx = e.clientX; sy = e.clientY;
+      sl = floatingToc.offsetLeft; st = floatingToc.offsetTop;
       e.preventDefault();
     });
-
     document.addEventListener('mousemove', e => {
       if (!drag) return;
       floatingToc.style.left = `${sl + e.clientX - sx}px`;
       floatingToc.style.top = `${st + e.clientY - sy}px`;
     });
-
     document.addEventListener('mouseup', () => drag = false);
   }
 
+  /* =====================================================
+     광고 및 TTS (기존 유지)
+  ===================================================== */
   [...postContent.querySelectorAll('p')]
-  .map((p, i) => ({
-      p,
-      i
-    }))
-    .filter(({
-      p,
-      i
-    }) => [2, 5, 8].includes(i) && p.innerText.length > 50)
-    .forEach(({
-      p
-    }) => {
+    .map((p, i) => ({ p, i }))
+    .filter(({ p, i }) => [2, 5, 8].includes(i) && p.innerText.length > 50)
+    .forEach(({ p }) => {
       const wrap = document.createElement('div');
       wrap.className = 'in-article-ad';
-
       const ins = document.createElement('ins');
       ins.className = 'adsbygoogle';
       ins.style.display = 'block';
@@ -198,12 +201,9 @@ document.addEventListener("DOMContentLoaded", () => {
       ins.dataset.adSlot = '2419246715';
       ins.dataset.adFormat = 'auto';
       ins.dataset.fullWidthResponsive = 'true';
-
       wrap.appendChild(ins);
       p.after(wrap);
-      try {
-        (adsbygoogle = window.adsbygoogle || []).push({});
-      } catch {}
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
     });
 
   const btn = document.getElementById('ttsBtn');
@@ -212,40 +212,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const stop = btn.dataset.stop || 'Stop';
     const synth = speechSynthesis;
     let reading = false;
-
     btn.addEventListener('click', () => {
       if (reading) {
-        synth.cancel();
-        btn.innerText = `🔊 ${listen}`;
-        reading = false;
-        return;
+        synth.cancel(); btn.innerText = `🔊 ${listen}`; reading = false; return;
       }
-
       const u = new SpeechSynthesisUtterance(postContent.innerText);
       u.lang = document.documentElement.lang;
       synth.speak(u);
-
       btn.innerText = `⏹ ${stop}`;
       reading = true;
-      u.onend = () => {
-        btn.innerText = `🔊 ${listen}`;
-        reading = false;
-      };
+      u.onend = () => { btn.innerText = `🔊 ${listen}`; reading = false; };
     });
   }
 });
-
-function sendHeightToParent() {
-  const h = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight
-  );
-  window.parent?.postMessage({
-    type: 'setIframeHeight',
-    height: h,
-    iframeName: window.name
-  }, '*');
-}
-
-window.addEventListener('load', sendHeightToParent);
-window.addEventListener('resize', sendHeightToParent);
