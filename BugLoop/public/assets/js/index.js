@@ -100,17 +100,25 @@ document.querySelectorAll('.book-card').forEach(card => {
       }
     });
 
-    card.classList.toggle('expanded', !isExpanded);
-
-    if (!isExpanded && toc) {
-      toc.classList.remove('closed');
-      toc.style.padding = '26px 0 16px';
-      toc.style.height = 'auto';
-      const h = toc.scrollHeight;
-      toc.style.height = '0px';
-      requestAnimationFrame(() => {
-        toc.style.height = h + 'px';
-      });
+    if (isExpanded) {
+      card.classList.remove('expanded');
+      if (toc) {
+        toc.style.height = '0px';
+        toc.style.padding = '0';
+        toc.classList.add('closed');
+      }
+    } else {
+      card.classList.add('expanded');
+      if (toc) {
+        toc.classList.remove('closed');
+        toc.style.padding = '26px 0 16px';
+        toc.style.height = 'auto';
+        const h = toc.scrollHeight;
+        toc.style.height = '0px';
+        requestAnimationFrame(() => {
+          toc.style.height = h + 'px';
+        });
+      }
     }
   });
 });
