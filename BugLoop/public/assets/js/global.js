@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. 200ms 후 완전히 숨김 (CSS 트랜지션 시간 고려)
     setTimeout(() => {
       preloader.style.display = 'none';
-    }, 200); 
+    }, 500); 
   }
 });
 
