@@ -55,11 +55,9 @@
   ondragstart="return false"
   onselectstart="return false"
 >
-
   <%- include('partials/header') %>
 
   <div class="postview-container">
-
     <h1 class="post-title"><%= post.title %></h1>
 
     <div class="post-meta">
@@ -68,9 +66,7 @@
       <span><%= locale.ui.date %>: <%= new Date(post.created_at).toLocaleString() %></span>
       <% if (post.updated_at && post.created_at !== post.updated_at) { %>
         <br>
-        <span><%= locale.ui.modified || 'Modified' %>:
-          <%= new Date(post.updated_at).toLocaleString() %>
-        </span>
+        <span><%= locale.ui.modified || 'Modified' %>: <%= new Date(post.updated_at).toLocaleString() %></span>
       <% } %>
     </div>
 
@@ -85,7 +81,6 @@
       </button>
     </div>
 
-    <!-- ✅ TOC 기준 센티넬 (post-view.js가 참조) -->
     <div id="toc-sentinel" style="height:1px;"></div>
 
     <div class="post-content">
@@ -93,15 +88,12 @@
     </div>
 
     <% if (user && post.user_id == user.id) { %>
-      <div class="post-actions" style="text-align:center;margin-top:1.5rem;">
+      <div class="post-actions" style="text-align:center; margin-top:1.5rem;">
         <a href="/<%= lang %>/edit/<%= post.id %>" class="edit-btn">
           ✏️ <%= locale.ui.editButton %>
         </a>
         <form action="/<%= lang %>/delete/<%= post.id %>" method="POST" style="display:inline;">
-          <button
-            type="submit"
-            onclick="return confirm('<%= locale.ui.deleteConfirm %>');"
-          >
+          <button type="submit" onclick="return confirm('<%= locale.ui.deleteConfirm %>');">
             🗑 <%= locale.ui.deleteButton %>
           </button>
         </form>
@@ -110,30 +102,24 @@
 
     <% if (recommended && recommended.length > 0) { %>
       <div class="recommended-posts">
-        <h2 class="recommended-title">
-          <%= locale.ui.recommendedPosts || "추천 글" %>
-        </h2>
+        <h2 class="recommended-title"><%= locale.ui.recommendedPosts || "추천 글" %></h2>
         <ul class="recommended-list">
           <% recommended.forEach(item => { %>
             <li class="recommended-item">
-              <a href="/<%= lang %>/post/<%= item.id %>">
-                <%= item.title %>
-              </a>
+              <a href="/<%= lang %>/post/<%= item.id %>"><%= item.title %></a>
             </li>
           <% }) %>
         </ul>
       </div>
     <% } %>
 
-    <div class="extra" style="margin-top:3rem;text-align:center;">
+    <div class="extra" style="margin-top:3rem; text-align:center;">
       <a href="/<%= lang %>/" class="back-home-btn">
         ← <span><%- locale.ui.backToHome || '홈으로 돌아가기' %></span>
       </a>
     </div>
-
   </div>
 
-  <!-- ✅ TOC UI 컨테이너 (post-view.js가 채움) -->
   <div class="floating-toc" id="floatingToc"></div>
 
   <div class="mobile-toc-button" id="mobileTocBtn">
