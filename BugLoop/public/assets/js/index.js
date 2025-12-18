@@ -20,10 +20,10 @@ const renderTocHtmlCSR = (sections, bookKey) => {
 
   let html = '<ul>';
 
-  sections.forEach(section => {
+  sections.forEach((section) => {
     html += `<li><h5>${section.section}</h5><ul>`;
 
-    section.chapters.forEach(ch => {
+    section.chapters.forEach((ch) => {
       html += '<li>';
 
       if (ch.url) {
@@ -34,7 +34,7 @@ const renderTocHtmlCSR = (sections, bookKey) => {
 
       if (ch.sub) {
         html += '<ul>';
-        ch.sub.forEach(sub => {
+        ch.sub.forEach((sub) => {
           html += '<li>';
           if (sub.url) {
             html += `<a href="/${lang}/books/${bookKey}/contents/${sub.id}" class="toc-link active">${sub.title}</a>`;
@@ -72,7 +72,7 @@ window.changePage = function (event, bookKey, pageNumber) {
   const { paginatedToc } = getPaginatedToc(bookData.toc);
   tocContainer.innerHTML = renderTocHtmlCSR(paginatedToc[pageNumber - 1], bookKey);
 
-  paginationContainer.querySelectorAll('.pagination-number').forEach(btn => {
+  paginationContainer.querySelectorAll('.pagination-number').forEach((btn) => {
     btn.classList.toggle(
       'active',
       parseInt(btn.textContent, 10) === pageNumber
@@ -84,12 +84,12 @@ window.changePage = function (event, bookKey, pageNumber) {
   }
 };
 
-document.querySelectorAll('.book-card').forEach(card => {
+document.querySelectorAll('.book-card').forEach((card) => {
   card.addEventListener('click', () => {
     const isExpanded = card.classList.contains('expanded');
     const toc = card.querySelector('.book-toc');
 
-    document.querySelectorAll('.book-card').forEach(other => {
+    document.querySelectorAll('.book-card').forEach((other) => {
       if (other !== card) {
         other.classList.remove('expanded');
         const t = other.querySelector('.book-toc');
@@ -150,7 +150,7 @@ window.loadMorePosts = async function () {
       return;
     }
 
-    data.posts.forEach(post => {
+    data.posts.forEach((post) => {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
 
@@ -171,30 +171,27 @@ window.loadMorePosts = async function () {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-     let previewText = '';
+      let previewText = '';
+      if (post.content) {
+        let clean = post.content
+          .replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '')
+          .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]+>/gi, '')
+          .replace(/\s+/g, ' ')
+          .trim();
 
-if (post.content) {
-  let clean = post.content
-    .replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '')
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
-    .replace(/<[^>]+>/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  previewText = clean
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .slice(0, 120);
-
-} else if (post.preview) {
-  previewText = post.preview
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .slice(0, 120);
-}
-
+        previewText = clean
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .slice(0, 120);
+      } else if (post.preview) {
+        previewText = post.preview
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .slice(0, 120);
+      }
 
       el.innerHTML = `
         <a href="/${lang}/post/${post.id}" class="recent-post-title">
