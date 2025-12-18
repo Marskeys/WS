@@ -88,9 +88,11 @@ document.querySelectorAll('.book-card').forEach((card) => {
   card.addEventListener('click', () => {
     const isExpanded = card.classList.contains('expanded');
     const toc = card.querySelector('.book-toc');
+    const video = card.querySelector('video');
 
     document.querySelectorAll('.book-card').forEach((other) => {
       if (other !== card) {
+        const wasOtherExpanded = other.classList.contains('expanded');
         other.classList.remove('expanded');
         const t = other.querySelector('.book-toc');
         if (t) {
@@ -98,9 +100,11 @@ document.querySelectorAll('.book-card').forEach((card) => {
           t.style.padding = '0';
           t.classList.add('closed');
         }
-        // [수정] 닫히는 다른 카드들의 비디오 재생 상태 보장
-        const otherVideo = other.querySelector('video');
-        if (otherVideo) otherVideo.play().catch(() => {});
+        
+        if (wasOtherExpanded) {
+          const otherVideo = other.querySelector('video');
+          if (otherVideo) otherVideo.play().catch(() => {});
+        }
       }
     });
 
@@ -111,11 +115,7 @@ document.querySelectorAll('.book-card').forEach((card) => {
         toc.style.padding = '0';
         toc.classList.add('closed');
       }
-      // [수정] 현재 카드가 접힐 때 비디오를 즉시 재생시켜 하얀 잔상 방지
-      const video = card.querySelector('video');
-      if (video) {
-        video.play().catch(() => {});
-      }
+      if (video) video.play().catch(() => {});
     } else {
       card.classList.add('expanded');
       if (toc) {
@@ -128,6 +128,11 @@ document.querySelectorAll('.book-card').forEach((card) => {
           toc.style.height = h + 'px';
         });
       }
+      setTimeout(() => {
+        if (card.classList.contains('expanded') && video) {
+          video.pause();
+        }
+      }, 500);
     }
   });
 });
