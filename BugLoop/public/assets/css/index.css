@@ -249,19 +249,25 @@ html.dark .book-card.expanded {
   overflow: hidden;
 }
 
+
 .book-cover-wrapper {
   overflow: hidden;
   border-radius: var(--radius) var(--radius) 0 0;
   background: var(--panel-2);
+  background-size: cover;
+  background-position: center;
   height: 290px;
   opacity: 1;
+  /* 펼쳐질 때 height는 0.5s로 유지하고, opacity는 0.3s로 살짝 빠르게 조절 */
   transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  position: relative;
 }
 
 .book-card.expanded .book-cover-wrapper {
   height: 0;
   opacity: 0;
-  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0s;
+  /* 닫힐 때 하얀 화면이 튀어나올 틈이 없도록 0.3s 유지 */
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   border-radius: 0;
 }
 
@@ -273,12 +279,21 @@ html.dark .book-card.expanded {
 
 .book-cover {
   width: 100%;
-  height: 100%;
+  /* 부모가 축소될 때 비디오가 리사이징 부하를 겪지 않게 고정 높이 지정 */
+  height: 290px; 
   object-fit: cover;
   display: block;
   transition: transform 0.3s ease;
   transform: scale(1.01);
+  background-color: transparent;
 }
+
+@media (max-width: 640px) {
+  .book-cover {
+    height: 220px;
+  }
+}
+
 
 .book-info {
   padding: 12px 8px;

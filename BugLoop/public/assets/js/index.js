@@ -98,6 +98,9 @@ document.querySelectorAll('.book-card').forEach((card) => {
           t.style.padding = '0';
           t.classList.add('closed');
         }
+        // [수정] 닫히는 다른 카드들의 비디오 재생 상태 보장
+        const otherVideo = other.querySelector('video');
+        if (otherVideo) otherVideo.play().catch(() => {});
       }
     });
 
@@ -107,6 +110,11 @@ document.querySelectorAll('.book-card').forEach((card) => {
         toc.style.height = '0px';
         toc.style.padding = '0';
         toc.classList.add('closed');
+      }
+      // [수정] 현재 카드가 접힐 때 비디오를 즉시 재생시켜 하얀 잔상 방지
+      const video = card.querySelector('video');
+      if (video) {
+        video.play().catch(() => {});
       }
     } else {
       card.classList.add('expanded');
