@@ -1,4 +1,11 @@
+/* =====================================================
+   post-view.js (FINAL, STABLE)
+   - EJS 기준점(toc-sentinel) 사용
+   - 본문 렌더 완료 후 TOC 생성
+===================================================== */
+
 document.addEventListener("DOMContentLoaded", () => {
+
   /* =====================================================
      HTML 위젯 iframe 처리
   ===================================================== */
@@ -29,16 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     post-body 내부 script 실행
-  ===================================================== */
-  document.querySelectorAll('.post-body script').forEach(script => {
-    const s = document.createElement('script');
-    if (script.src) s.src = script.src;
-    else s.textContent = script.textContent;
-    document.body.appendChild(s);
-  });
-
-  /* =====================================================
      사용자 행동 차단
   ===================================================== */
   document.addEventListener('contextmenu', e => e.preventDefault());
@@ -65,48 +62,69 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     TOC 생성
+     TOC 생성 (본문 완성 후)
   ===================================================== */
   const postContent = document.querySelector('.post-content');
+  const sentinel = document.getElementById('toc-sentinel');
   const floatingToc = document.getElementById('floatingToc');
-  const mobileBtn   = document.getElementById('mobileTocBtn');
+  const mobileBtn = document.getElementById('mobileTocBtn');
   const mobileModal = document.getElementById('mobileTocModal');
   const mobileContent = document.getElementById('mobileTocContent');
   const tocTitle = document.body.dataset.tocTitle || 'TOC';
 
-  if (!postContent || !floatingToc || !mobileBtn || !mobileContent) return;
+  if (!postContent || !sentinel || !floatingToc || !mobileBtn || !mobileContent) {
+    console.warn('[TOC] required elements missing');
+    return;
+  }
 
-  const headings = postContent.querySelectorAll('h1, h2');
-  if (!headings.length) return;
+  let tocInitialized = false;
 
-  let html = `<strong>${tocTitle}</strong><ul style="padding-left:1.2em;">`;
-  let h1 = 0, h2 = 0;
+  const buildToc = () => {
+    if (tocInitialized) return;
 
-  headings.forEach((el, i) => {
-    const tag = el.tagName.toLowerCase();
-    if (!el.id) el.id = `toc-${tag}-${i}`;
+    const headings = postContent.querySelectorAll('h1, h2');
+    if (!headings.length) return;
 
-    if (tag === 'h1') {
-      h1++; h2 = 0;
-      html += `<li class="toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
-    } else {
-      h2++; if (!h1) h1 = 1;
-      html += `<li class="toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
-    }
-  });
+    let html = `<strong>${tocTitle}</strong><ul style="padding-left:1.2em;">`;
+    let h1 = 0, h2 = 0;
 
-  html += '</ul>';
-  floatingToc.innerHTML = html;
-  mobileContent.innerHTML = html;
+    headings.forEach((el, i) => {
+      const tag = el.tagName.toLowerCase();
+      if (!el.id) el.id = `toc-${tag}-${i}`;
+
+      if (tag === 'h1') {
+        h1++; h2 = 0;
+        html += `<li class="toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
+      } else {
+        h2++; if (!h1) h1 = 1;
+        html += `<li class="toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
+      }
+    });
+
+    html += '</ul>';
+
+    floatingToc.innerHTML = html;
+    mobileContent.innerHTML = html;
+    tocInitialized = true;
+
+    updateTocVisibility();
+  };
 
   /* =====================================================
-     TOC 센티넬 (post-content 기준)
+     MutationObserver로 본문 변화 감지
   ===================================================== */
-  const sentinel = document.createElement('div');
-  sentinel.style.height = '1px';
-  postContent.prepend(sentinel);
+  const observer = new MutationObserver(buildToc);
+  observer.observe(postContent, {
+    childList: true,
+    subtree: true
+  });
 
-  const handleTocVisibility = () => {
+  /* =====================================================
+     TOC 표시 로직
+  ===================================================== */
+  const updateTocVisibility = () => {
+    if (!tocInitialized) return;
+
     const passed = sentinel.getBoundingClientRect().top < 0;
 
     if (window.innerWidth > 768) {
@@ -118,9 +136,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  window.addEventListener('scroll', handleTocVisibility);
-  window.addEventListener('resize', handleTocVisibility);
-  handleTocVisibility();
+  window.addEventListener('scroll', updateTocVisibility);
+  window.addEventListener('resize', updateTocVisibility);
 
   /* =====================================================
      모바일 TOC
@@ -200,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById('ttsBtn');
   if (btn) {
     const listen = btn.dataset.listen || 'Listen';
-    const stop   = btn.dataset.stop || 'Stop';
+    const stop = btn.dataset.stop || 'Stop';
     const synth = speechSynthesis;
     let reading = false;
 
