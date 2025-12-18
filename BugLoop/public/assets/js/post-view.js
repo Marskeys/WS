@@ -1,7 +1,7 @@
 /* =====================================================
-   post-view.js (FINAL, STABLE)
-   - EJS 기준점(toc-sentinel) 사용
-   - 본문 렌더 완료 후 TOC 생성
+   post-view.js (FINAL / STABLE)
+   - EJS sentinel (#toc-sentinel) 기준
+   - DOMContentLoaded 즉시 TOC 생성
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'F12') return e.preventDefault();
+    if (e.key === 'F12') e.preventDefault();
     if (e.ctrlKey || e.metaKey) {
       const k = e.key.toLowerCase();
       if (['c','a','s','p','u','x'].includes(k)) e.preventDefault();
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     TOC 생성 (본문 완성 후)
+     TOC 생성
   ===================================================== */
   const postContent = document.querySelector('.post-content');
   const sentinel = document.getElementById('toc-sentinel');
@@ -77,15 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  let tocInitialized = false;
+  let tocReady = false;
 
   const buildToc = () => {
-    if (tocInitialized) return;
+    if (tocReady) return;
 
     const headings = postContent.querySelectorAll('h1, h2');
     if (!headings.length) return;
 
-    let html = `<strong>${tocTitle}</strong><ul style="padding-left:1.2em;">`;
+    let html = `<strong>${tocTitle}</strong><ul>`;
     let h1 = 0, h2 = 0;
 
     headings.forEach((el, i) => {
@@ -105,16 +105,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     floatingToc.innerHTML = html;
     mobileContent.innerHTML = html;
-    tocInitialized = true;
+    tocReady = true;
 
     updateTocVisibility();
   };
 
-  /* =====================================================
-     MutationObserver로 본문 변화 감지
-  ===================================================== */
-  const observer = new MutationObserver(buildToc);
-  observer.observe(postContent, {
+  /* ✅ 핵심: 즉시 1회 실행 */
+  buildToc();
+
+  /* 보조용 (동적 위젯 대응) */
+  new MutationObserver(buildToc).observe(postContent, {
     childList: true,
     subtree: true
   });
@@ -123,15 +123,15 @@ document.addEventListener("DOMContentLoaded", () => {
      TOC 표시 로직
   ===================================================== */
   const updateTocVisibility = () => {
-    if (!tocInitialized) return;
+    if (!tocReady) return;
 
     const passed = sentinel.getBoundingClientRect().top < 0;
 
     if (window.innerWidth > 768) {
-      floatingToc.style.display = passed ? 'block' : 'none';
+      floatingToc.classList.toggle('show', passed);
       mobileBtn.classList.remove('show');
     } else {
-      floatingToc.style.display = 'none';
+      floatingToc.classList.remove('show');
       mobileBtn.classList.toggle('show', passed);
     }
   };
@@ -193,23 +193,25 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =====================================================
      본문 광고
   ===================================================== */
-  const ps = [...postContent.querySelectorAll('p')];
-  [2,5,8].filter(i => ps[i] && ps[i].innerText.length > 50).forEach(i => {
-    const wrap = document.createElement('div');
-    wrap.className = 'in-article-ad';
+  [...postContent.querySelectorAll('p')]
+    .map((p,i)=>({p,i}))
+    .filter(({p,i}) => [2,5,8].includes(i) && p.innerText.length > 50)
+    .forEach(({p}) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'in-article-ad';
 
-    const ins = document.createElement('ins');
-    ins.className = 'adsbygoogle';
-    ins.style.display = 'block';
-    ins.dataset.adClient = 'ca-pub-2585969189290118';
-    ins.dataset.adSlot = '2419246715';
-    ins.dataset.adFormat = 'auto';
-    ins.dataset.fullWidthResponsive = 'true';
+      const ins = document.createElement('ins');
+      ins.className = 'adsbygoogle';
+      ins.style.display = 'block';
+      ins.dataset.adClient = 'ca-pub-2585969189290118';
+      ins.dataset.adSlot = '2419246715';
+      ins.dataset.adFormat = 'auto';
+      ins.dataset.fullWidthResponsive = 'true';
 
-    wrap.appendChild(ins);
-    ps[i].after(wrap);
-    try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
-  });
+      wrap.appendChild(ins);
+      p.after(wrap);
+      try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
+    });
 
   /* =====================================================
      TTS
@@ -229,8 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const text = postContent.innerText;
-      const u = new SpeechSynthesisUtterance(text);
+      const u = new SpeechSynthesisUtterance(postContent.innerText);
       u.lang = document.documentElement.lang;
       synth.speak(u);
 
@@ -258,13 +259,6 @@ function sendHeightToParent() {
     iframeName: window.name
   }, '*');
 }
-
-window.addEventListener('message', e => {
-  if (e.data?.type === 'setIframeHeight') {
-    const iframe = document.querySelector(`iframe[name="${e.data.iframeName}"]`);
-    if (iframe) iframe.style.height = `${e.data.height}px`;
-  }
-});
 
 window.addEventListener('load', sendHeightToParent);
 window.addEventListener('resize', sendHeightToParent);
