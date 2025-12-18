@@ -208,7 +208,7 @@ html.dark .section-title {
   background: var(--panel);
   border-radius: var(--radius);
   color: var(--ink);
-  transition: all 0.3s ease, width 0.4s ease, height 0.4s ease;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1), width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   scroll-snap-align: start;
   cursor: pointer;
   position: relative;
@@ -216,6 +216,7 @@ html.dark .section-title {
   z-index: 1;
   border: 2px solid transparent;
   padding: 0;
+  will-change: transform, width;
 }
 
 .book-card:hover {
@@ -224,7 +225,7 @@ html.dark .section-title {
 
 .book-card.expanded {
   width: 300px;
-  transform: translateY(-8px);
+  transform: translateY(-8px) translateZ(0);
   background: var(--panel);
   border-color: var(--primary);
   box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3), 
@@ -247,6 +248,7 @@ html.dark .book-card.expanded {
 .book-content-wrapper {
   border-radius: var(--radius);
   overflow: hidden;
+  transform: translateZ(0);
 }
 
 .book-cover-wrapper {
@@ -258,12 +260,14 @@ html.dark .book-card.expanded {
   background-size: cover;
   background-position: center;
   opacity: 1;
+  transform: translateZ(0);
   transition: aspect-ratio 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   position: relative;
+  will-change: aspect-ratio, opacity;
 }
 
 .book-card.expanded .book-cover-wrapper {
-  aspect-ratio: 2 / 0;
+  aspect-ratio: 2 / 0.001;
   height: 0;
   opacity: 0;
   transition: aspect-ratio 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
@@ -276,8 +280,9 @@ html.dark .book-card.expanded {
   object-fit: contain;
   display: block;
   transition: transform 0.3s ease;
-  transform: scale(1.01);
+  transform: scale(1.01) translateZ(0);
   background-color: transparent;
+  backface-visibility: hidden;
 }
 
 .book-info {
@@ -327,9 +332,10 @@ html.dark .book-card.expanded {
   padding: 24px 16px 16px 16px;
   padding-top: 0;
   padding-bottom: 0;
-  will-change: height, opacity, transform;
+  will-change: height, opacity;
   transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease-out;
   opacity: 0;
+  transform: translateZ(0);
 }
 
 .book-toc.closed {
