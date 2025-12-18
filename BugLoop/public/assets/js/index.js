@@ -1,12 +1,7 @@
-// /assets/js/index.js
-
 const booksData = window.booksData || {};
 const lang = document.documentElement.getAttribute('lang') || 'ko';
 const itemsPerPage = 3;
 
-/* -----------------------------
-   pagination helper
------------------------------ */
 const getPaginatedToc = (tocData) => {
   if (!tocData) return { paginatedToc: [], totalPages: 0 };
   const totalPages = Math.ceil(tocData.length / itemsPerPage);
@@ -19,9 +14,6 @@ const getPaginatedToc = (tocData) => {
   return { paginatedToc, totalPages };
 };
 
-/* -----------------------------
-   TOC renderer (CSR)
------------------------------ */
 const renderTocHtmlCSR = (sections, bookKey) => {
   if (!sections || sections.length === 0) return '';
 
@@ -63,9 +55,6 @@ const renderTocHtmlCSR = (sections, bookKey) => {
   return html;
 };
 
-/* -----------------------------
-   pagination click (global)
------------------------------ */
 window.changePage = (event, bookKey, pageNumber) => {
   event.stopPropagation();
 
@@ -94,9 +83,6 @@ window.changePage = (event, bookKey, pageNumber) => {
   }
 };
 
-/* -----------------------------
-   book card click
------------------------------ */
 document.querySelectorAll('.book-card').forEach(card => {
   card.addEventListener('click', () => {
     const isExpanded = card.classList.contains('expanded');
