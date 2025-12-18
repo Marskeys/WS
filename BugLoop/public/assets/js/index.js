@@ -1,7 +1,7 @@
 const { lang, books } = window.__APP__ || {};
 window.booksData = books || {};
 
-const itemsPerPage = 3;
+const itemsPerPage = 4;
 
 const getPaginatedToc = (tocData) => {
   if (!tocData) return { paginatedToc: [], totalPages: 0 };
