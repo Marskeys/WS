@@ -499,10 +499,14 @@ html.dark .edited-icon { background-color: #1e3799; }
   line-height: 1.5;
 }
 
+/* ---------------------------------------------------- */
+/* ✅ 로드 버튼 스타일 수정 완료 */
+/* ---------------------------------------------------- */
 #load-more-btn {
   display: block;
   width: 200px;
-  margin: 0 auto 16px;
+  /* 상단 여백 30px 추가, 기본 중앙 정렬 상태 */
+  margin: 30px auto 16px; 
   padding: 12px 20px;
   border-radius: 25px;
   background: linear-gradient(135deg, #A8E063, #56AB2F);
@@ -525,6 +529,21 @@ html.dark #load-more-btn {
 #load-more-btn:hover {
   opacity: 0.9;
   transform: translateY(-1px);
+}
+
+/* 데스크탑에서 게시글 리스트와 정렬 맞추기 */
+@media (min-width: 641px) {
+  .recent-posts {
+    max-width: 800px;
+    margin-left: 0;
+    margin-right: auto;
+  }
+  
+  #load-more-btn {
+    /* 데스크탑 환경에서 왼쪽 정렬(리스트와 일치) */
+    margin-left: 0; 
+    margin-right: auto;
+  }
 }
 
 .book-updated-badge {
@@ -559,12 +578,4 @@ html.dark #load-more-btn {
   background: var(--panel-2);
   z-index: 10;
   flex-shrink: 0;
-}
-
-@media (min-width: 641px) {
-  .recent-posts {
-    max-width: 800px;
-    margin-left: 0;
-    margin-right: auto;
-  }
 }
