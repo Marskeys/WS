@@ -1,21 +1,12 @@
 <script>
-  (function () {
+  (function() {
     try {
       const THEME_KEY = 'bugloop.theme';
       const htmlEl = document.documentElement;
       const saved = localStorage.getItem(THEME_KEY);
-      let theme;
-
-      if (saved) {
-        theme = saved;
-      } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        theme = 'dark';
-      }
-      
+      const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark');
       if (theme === 'dark') htmlEl.classList.add('dark');
       else htmlEl.classList.remove('dark');
-      
     } catch (e) {
       console.warn("Theme initialization failed:", e);
     }
@@ -26,55 +17,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="naver-site-verification" content="ddddc68fd5651c62d2758ed86b326cc802344e3d" />
 
-<title>
-  <%= (typeof metaTitle === 'string' && metaTitle.trim())
-        ? metaTitle.trim()
-        : (locale?.meta?.title || 'Bug Loop') %>
-</title>
-
 <%
-  /* ========================
-     ⭐ 페이지 설명 구성
-     ======================== */
-  const pageDesc = (typeof metaDescription === 'string' && metaDescription.trim())
-      ? metaDescription.trim()
-      : '';
-
-  const fallbackDesc =
-      locale?.meta?.description ||
-      "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!";
-
+  const PAGE_TITLE = (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'Bug Loop');
+  const pageDesc = (typeof metaDescription === 'string' && metaDescription.trim()) ? metaDescription.trim() : '';
+  const fallbackDesc = locale?.meta?.description || "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!";
   const rawDesc = pageDesc || fallbackDesc;
-  const DESC = rawDesc.length > 160 ? (rawDesc.slice(0,157) + '…') : rawDesc;
+  const DESC = rawDesc.length > 160 ? (rawDesc.slice(0, 157) + '…') : rawDesc;
 
-  /* ========================
-     ⭐ Canonical / OG helpers
-     ======================== */
   const SITE_ORIGIN = 'https://bugloop.dev';
   const path = (typeof currentPath === 'string' && currentPath) ? currentPath : '/';
   const canonicalUrl = (typeof canonical === 'string' && canonical.trim()) ? canonical.trim() : (SITE_ORIGIN + path);
   const ogImage = (typeof metaImage === 'string' && metaImage.trim()) ? metaImage.trim() : '/assets/images/BugLoop.png';
   const OG_IMAGE_ABS = /^https?:\/\//.test(ogImage) ? ogImage : (SITE_ORIGIN + ogImage);
 
-  const PAGE_TITLE =
-    (typeof metaTitle === 'string' && metaTitle.trim())
-      ? metaTitle.trim()
-      : (locale?.meta?.title || 'Bug Loop');
-
-  /* ========================
-     ⭐ 에디터 페이지 여부 판단
-     ======================== */
-  const isEditorPage =
-      currentPath?.includes('/write') ||
-      currentPath?.includes('/edit') ||
-      currentPath?.includes('/ko/write') ||
-      currentPath?.includes('/en/write');
+  const isEditorPage = ['/write', '/edit', '/ko/write', '/en/write'].some(p => currentPath?.includes(p));
+  const isBooksPage = currentPath?.includes('/books/');
 %>
 
-<!-- ⭐ Description -->
+<title><%= PAGE_TITLE %></title>
 <meta name="description" content="<%= DESC %>" />
+<link rel="canonical" href="<%= canonicalUrl %>" />
 
-<!-- ⭐ OG / Twitter -->
 <meta property="og:title" content="<%= PAGE_TITLE %>" />
 <meta property="og:description" content="<%= DESC %>" />
 <meta property="og:type" content="website" />
@@ -87,25 +50,17 @@
 <meta name="twitter:description" content="<%= DESC %>" />
 <meta name="twitter:image" content="<%= OG_IMAGE_ABS %>" />
 
-<link rel="canonical" href="<%= canonicalUrl %>" />
-
-<!-- ⭐ Theme color -->
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-
 <link rel="icon" href="/assets/images/favicon.png" type="image/png" sizes="128x128" />
 
-<!-- ⭐ Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@100..900&display=swap" rel="stylesheet" />
-
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-<link rel="stylesheet" crossorigin
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" />
 
-<!-- ⭐ Global CSS -->
 <link rel="stylesheet" href="/assets/css/header.css" />
 <link rel="stylesheet" href="/assets/css/style.css" />
 <link rel="stylesheet" href="/assets/css/table.css" />
@@ -113,29 +68,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
 
-<!-- ⭐ 이미지 프리로드 -->
 <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
 
-
-
-<!-- ⭐ 광고 스크립트 (에디터와 책 뷰어에서는 제외) -->
-<%
-  const isBooksPage = currentPath?.includes('/books/');
-%>
-
 <% if (!isEditorPage && !isBooksPage) { %>
-  <!-- AMP 자동 광고 -->
-  <script async custom-element="amp-auto-ads"
-          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
-
-  <!-- Google AdSense 자동 광고 -->
-  <script async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118"
-          crossorigin="anonymous"></script>
+  <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2585969189290118" crossorigin="anonymous"></script>
 <% } %>
 
-
-<!-- HTML Beautifier -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
 
 <% if (typeof isIndex !== 'undefined' && isIndex) { %>

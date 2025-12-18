@@ -1,17 +1,14 @@
 <style>
-  /* 정보 영역 */
   .info-col {
     flex-grow: 1;
   }
 
-  /* 직책(작은 글씨) */
   .profile-job {
     font-size: 0.7em;
     color: #ffffff;
     margin-bottom: 2px;
   }
-  
-  /* 이름 */
+
   .profile-name {
     font-size: 1.25rem;
     font-weight: 600;
@@ -28,95 +25,96 @@
 </style>
 
 <div class="profile-container">
-    <h2 class="profile-title"><%= locale.profile["profile-title"] %></h2>
+  <h2 class="profile-title"><%= locale.profile["profile-title"] %></h2>
 
-    <section class="profile-tab">
-        <div class="profile-card" role="region" aria-label="프로필">
-            <div class="avatar-col">
-                <figure class="avatar-frame" aria-hidden="true">
-                    <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
-                </figure>
-            </div>
-            <div class="info-col">
-                <p class="profile-job"><%= locale.profile["profile-job1"] %></p>
-                <h3 class="profile-name"><%= locale.profile["profile-name1"] %></h3>
-                <p class="profile-bio"><%= locale.profile["profile-bio1"] %></p>
-                <ul class="profile-tags" aria-label="태그">
-                    <% (locale.profile["profile-tags1"] || []).forEach(tag => { %>
-                        <li><span class="tag-pill"><%= tag %></span></li>
-                    <% }) %>
-                </ul>
-                <nav class="profile-social" aria-label="소셜 링크">
-                    <% const social = (locale.profile && locale.profile.social) || {}; %>
-                    <% if (social.instagram) { %>
-                        <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <% } %>
-                    <% if (social.github) { %>
-                        <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    <% } %>
-                    <% if (social.email) { %>
-                        <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    <% } %>
-                </nav>
-            </div>
-        </div>
+  <section class="profile-tab">
+    <% const social = (locale.profile && locale.profile.social) || {}; %>
 
-        <div class="profile-card" role="region" aria-label="프로필">
-            <div class="avatar-col">
-                <figure class="avatar-frame" aria-hidden="true">
-                    <img src="/assets/images/profile2.gif" alt="프로필 이미지" class="profile-avatar" />
-                </figure>
-            </div>
-            <div class="info-col">
-                <p class="profile-job"><%= locale.profile["profile-job2"] %></p>
-                <h3 class="profile-name"><%= locale.profile["profile-name2"] %></h3>
-                <p class="profile-bio"><%= locale.profile["profile-bio2"] %></p>
-                <ul class="profile-tags" aria-label="태그">
-                    <% (locale.profile["profile-tags2"] || []).forEach(tag => { %>
-                        <li><span class="tag-pill"><%= tag %></span></li>
-                    <% }) %>
-                </ul>
-                <nav class="profile-social" aria-label="소셜 링크">
-                    <% if (social.instagram) { %>
-                        <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <% } %>
-                    <% if (social.github) { %>
-                        <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    <% } %>
-                    <% if (social.email) { %>
-                        <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    <% } %>
-                </nav>
-            </div>
-        </div>
+    <div class="profile-card" role="region" aria-label="프로필">
+      <div class="avatar-col">
+        <figure class="avatar-frame" aria-hidden="true">
+          <img src="/assets/images/profile.gif" alt="프로필 이미지" class="profile-avatar" />
+        </figure>
+      </div>
+      <div class="info-col">
+        <p class="profile-job"><%= locale.profile["profile-job1"] %></p>
+        <h3 class="profile-name"><%= locale.profile["profile-name1"] %></h3>
+        <p class="profile-bio"><%= locale.profile["profile-bio1"] %></p>
+        <ul class="profile-tags" aria-label="태그">
+          <% (locale.profile["profile-tags1"] || []).forEach(tag => { %>
+            <li><span class="tag-pill"><%= tag %></span></li>
+          <% }) %>
+        </ul>
+        <nav class="profile-social" aria-label="소셜 링크">
+          <% if (social.instagram) { %>
+            <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <% } %>
+          <% if (social.github) { %>
+            <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <% } %>
+          <% if (social.email) { %>
+            <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          <% } %>
+        </nav>
+      </div>
+    </div>
 
-        <div class="profile-card" role="region" aria-label="프로필">
-            <div class="avatar-col">
-                <figure class="avatar-frame" aria-hidden="true">
-                    <img src="/assets/images/profile3.gif" alt="프로필 이미지" class="profile-avatar" />
-                </figure>
-            </div>
-            <div class="info-col">
-                <p class="profile-job"><%= locale.profile["profile-job3"] %></p>
-                <h3 class="profile-name"><%= locale.profile["profile-name3"] %></h3>
-                <p class="profile-bio"><%= locale.profile["profile-bio3"] %></p>
-                <ul class="profile-tags" aria-label="태그">
-                    <% (locale.profile["profile-tags3"] || []).forEach(tag => { %>
-                        <li><span class="tag-pill"><%= tag %></span></li>
-                    <% }) %>
-                </ul>
-                <nav class="profile-social" aria-label="소셜 링크">
-                    <% if (social.instagram) { %>
-                        <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <% } %>
-                    <% if (social.github) { %>
-                        <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    <% } %>
-                    <% if (social.email) { %>
-                        <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    <% } %>
-                </nav>
-            </div>
-        </div>
-    </section>
+    <div class="profile-card" role="region" aria-label="프로필">
+      <div class="avatar-col">
+        <figure class="avatar-frame" aria-hidden="true">
+          <img src="/assets/images/profile2.gif" alt="프로필 이미지" class="profile-avatar" />
+        </figure>
+      </div>
+      <div class="info-col">
+        <p class="profile-job"><%= locale.profile["profile-job2"] %></p>
+        <h3 class="profile-name"><%= locale.profile["profile-name2"] %></h3>
+        <p class="profile-bio"><%= locale.profile["profile-bio2"] %></p>
+        <ul class="profile-tags" aria-label="태그">
+          <% (locale.profile["profile-tags2"] || []).forEach(tag => { %>
+            <li><span class="tag-pill"><%= tag %></span></li>
+          <% }) %>
+        </ul>
+        <nav class="profile-social" aria-label="소셜 링크">
+          <% if (social.instagram) { %>
+            <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <% } %>
+          <% if (social.github) { %>
+            <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <% } %>
+          <% if (social.email) { %>
+            <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          <% } %>
+        </nav>
+      </div>
+    </div>
+
+    <div class="profile-card" role="region" aria-label="프로필">
+      <div class="avatar-col">
+        <figure class="avatar-frame" aria-hidden="true">
+          <img src="/assets/images/profile3.gif" alt="프로필 이미지" class="profile-avatar" />
+        </figure>
+      </div>
+      <div class="info-col">
+        <p class="profile-job"><%= locale.profile["profile-job3"] %></p>
+        <h3 class="profile-name"><%= locale.profile["profile-name3"] %></h3>
+        <p class="profile-bio"><%= locale.profile["profile-bio3"] %></p>
+        <ul class="profile-tags" aria-label="태그">
+          <% (locale.profile["profile-tags3"] || []).forEach(tag => { %>
+            <li><span class="tag-pill"><%= tag %></span></li>
+          <% }) %>
+        </ul>
+        <nav class="profile-social" aria-label="소셜 링크">
+          <% if (social.instagram) { %>
+            <a href="<%= social.instagram %>" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <% } %>
+          <% if (social.github) { %>
+            <a href="<%= social.github %>" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <% } %>
+          <% if (social.email) { %>
+            <a href="mailto:<%= social.email %>" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          <% } %>
+        </nav>
+      </div>
+    </div>
+  </section>
 </div>
