@@ -67,6 +67,11 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css" />
 
 <link rel="preload" href="/assets/images/profile.gif" as="image" type="image/gif" />
+<% if (typeof isIndex !== 'undefined' && isIndex) { %>
+  <% ['1', '2', '3', '4'].forEach(num => { %>
+    <link rel="preload" href="/assets/images/book<%= num %>.jpg" as="image" type="image/jpeg" />
+  <% }) %>
+<% } %>
 
 <% if (!isEditorPage && !isBooksPage) { -%>
 <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>

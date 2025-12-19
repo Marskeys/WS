@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>">
 <head>
-  <%- include('partials/head') -%>
+  <%- include('partials/head', { isIndex: true }) -%>
   <link rel="stylesheet" href="/assets/css/index.css" />
 </head>
 <body>
@@ -66,6 +66,7 @@
               loop 
               muted 
               playsinline
+              fetchpriority="<%= idx < 2 ? 'high' : 'auto' %>"
               preload="<%= idx < 2 ? 'auto' : 'metadata' %>">
               <source src="/assets/images/book<%= idx + 1 %>.webm" type="video/webm">
               이미지(동영상)를 불러올 수 없습니다.
@@ -123,7 +124,11 @@
   <footer class="app-footer">© 2025 Bug Loop</footer>
   <%- include('partials/scripts') -%>
   <script>
-    window.__APP__ = { lang: "<%= lang %>", locale: <%- JSON.stringify(locale.ui || {}) %>, books: <%- JSON.stringify(locale.books || {}) %> };
+    window.__APP__ = { 
+      lang: "<%= lang %>", 
+      locale: <%- JSON.stringify(locale.ui || {}) %>, 
+      books: <%- JSON.stringify(locale.books || {}) %> 
+    };
   </script>
   <script src="/assets/js/index.js" defer></script>
 </body>
