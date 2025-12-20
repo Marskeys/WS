@@ -1320,6 +1320,8 @@ html {
   color: #fff;
 }
 
-#font-toggle-sidebar {
-  margin-right: -6px;
+@media (max-width: 768px) {
+  #font-toggle-sidebar {
+    margin-left: -6px;
+  }
 }
