@@ -1003,11 +1003,11 @@ html.dark .lang-option:hover { background-color: #333; }
 /* ====== 사이드바 언어/테마 영역: "동작 우선" 기본 스타일 (다크 모드 기준) ====== */
 .sidebar-lang-theme {
   margin-top: 12px;
-  padding: 10px 8px;
+  padding: 10px 5px;
   display: flex;
   flex-direction: column; /* 데스크톱 기본: 세로 배열 */
   align-items: center;
-  gap: 5px; /* 다크모드/언어버튼 사이의 여백 */
+  gap: 3px; /* 다크모드/언어버튼 사이의 여백 */
 }
 
 .sidebar-lang-theme .lang-btn {
