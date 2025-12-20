@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>사보(寫譜) – SMuFL Final MVP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+@font-face{
+  font-family:"Bravura";
+  src:url("./Bravura.otf") format("opentype");
+}
+
+body{
+  margin:0;
+  background:#f4f5f7;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color:#111;
+}
+
+header{
+  padding:14px 20px;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header h1{
+  font-size:15px;
+  margin:0;
+  font-weight:700;
+}
+
+.controls{
+  display:flex;
+  gap:8px;
+}
+
+button{
+  border:1px solid #ccc;
+  background:#fff;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+button.active{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+main{
+  max-width:1100px;
+  margin:30px auto;
+  padding:0 20px;
+}
+
+svg{
+  width:100%;
+  height:320px;
+  background:#fff;
+  border:1px solid #ccc;
+  border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>사보(寫譜) – SMuFL 기반 악보 에디터</h1>
+  <div class="controls">
+    <button data-dur="1/4" class="active">4분음표</button>
+    <button data-dur="1/8">8분음표</button>
+    <button data-dur="1/16">16분음표</button>
+    <button id="modeBtn">입력 모드</button>
+    <button id="clearBtn">초기화</button>
+  </div>
+</header>
+
+<main>
+  <svg id="score" viewBox="0 0 1000 300"></svg>
+</main>
+
+<script>
+/* ===============================
+   SMuFL glyphs (Bravura)
+================================ */
+const GLYPH = {
+  noteheadBlack: "\uE0A4"
+};
+
+/* ===============================
+   Score Model (논리 레이어)
+================================ */
+const score = {
+  totalSlots: 16,
+  slots: Array(16).fill(null),
+  notes: new Map()
+};
+
+let nextId = 1;
+let currentDur = "1/4";
+let mode = "add";
+
+const DUR_SLOTS = { "1/4":4, "1/8":2, "1/16":1 };
+
+/* ===============================
+   Layout constants
+================================ */
+const svg = document.getElementById("score");
+
+const staff = {
+  x: 80,
+  width: 840,
+  yTop: 100,
+  gap: 14
+};
+
+const measure = {
+  x: staff.x,
+  width: staff.width
+};
+
+const slotW = measure.width / score.totalSlots;
+const STEP_PX = staff.gap / 2;
+
+/* ===============================
+   SVG helpers
+================================ */
+function el(name, attrs){
+  const n = document.createElementNS("http://www.w3.org/2000/svg", name);
+  for(const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+
+/* ===============================
+   Coordinate helpers
+================================ */
+function slotToX(slot){
+  return measure.x + slot * slotW + slotW/2;
+}
+
+function stepToY(step){
+  const middle = staff.yTop + staff.gap*2;
+  return middle - step*STEP_PX;
+}
+
+function xToSlot(x){
+  return Math.max(0, Math.min(15, Math.floor((x - measure.x)/slotW)));
+}
+
+function yToStep(y){
+  const middle = staff.yTop + staff.gap*2;
+  return Math.round((middle - y)/STEP_PX);
+}
+
+/* ===============================
+   Rendering
+================================ */
+function render(){
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // staff lines
+  for(let i=0;i<5;i++){
+    svg.appendChild(el("line",{
+      x1:staff.x,
+      x2:staff.x+staff.width,
+      y1:staff.yTop+i*staff.gap,
+      y2:staff.yTop+i*staff.gap,
+      stroke:"#000",
+      "stroke-width":"1.2"
+    }));
+  }
+
+  // bar lines
+  svg.appendChild(el("line",{
+    x1:staff.x,
+    x2:staff.x,
+    y1:staff.yTop-20,
+    y2:staff.yTop+staff.gap*4+20,
+    stroke:"#000",
+    "stroke-width":"2"
+  }));
+  svg.appendChild(el("line",{
+    x1:staff.x+staff.width,
+    x2:staff.x+staff.width,
+    y1:staff.yTop-20,
+    y2:staff.yTop+staff.gap*4+20,
+    stroke:"#000",
+    "stroke-width":"2"
+  }));
+
+  // notes
+  for(const note of score.notes.values()){
+    drawNote(note);
+  }
+}
+
+function drawNote(note){
+  const x = slotToX(note.start);
+  const y = stepToY(note.step);
+
+  const g = el("g",{cursor:"pointer"});
+
+  // notehead (SMuFL)
+  const head = el("text",{
+    x:x,
+    y:y,
+    "font-family":"Bravura",
+    "font-size":"38",
+    "text-anchor":"middle",
+    "dominant-baseline":"middle",
+    fill:"#000"
+  });
+  head.textContent = GLYPH.noteheadBlack;
+  g.appendChild(head);
+
+  // stem
+  const stemUp = note.step < 0;
+  const stemLen = 40;
+
+  g.appendChild(el("line",{
+    x1: x + (stemUp ? 10 : -10),
+    y1: y,
+    x2: x + (stemUp ? 10 : -10),
+    y2: y + (stemUp ? -stemLen : stemLen),
+    stroke:"#000",
+    "stroke-width":"1.4"
+  }));
+
+  // click remove
+  g.addEventListener("click", e=>{
+    e.stopPropagation();
+    if(mode === "delete"){
+      removeNote(note.id);
+    }
+  });
+
+  svg.appendChild(g);
+}
+
+/* ===============================
+   Model ops
+================================ */
+function canPlace(start, slots){
+  if(start+slots > 16) return false;
+  for(let i=0;i<slots;i++){
+    if(score.slots[start+i]) return false;
+  }
+  return true;
+}
+
+function placeNote(start, step){
+  const slots = DUR_SLOTS[currentDur];
+  if(!canPlace(start, slots)) return;
+
+  const id = nextId++;
+  score.notes.set(id,{id,start,step,slots});
+
+  for(let i=0;i<slots;i++) score.slots[start+i] = id;
+  render();
+}
+
+function removeNote(id){
+  const n = score.notes.get(id);
+  if(!n) return;
+  for(let i=0;i<n.slots;i++){
+    score.slots[n.start+i] = null;
+  }
+  score.notes.delete(id);
+  render();
+}
+
+/* ===============================
+   Interaction
+================================ */
+svg.addEventListener("click",e=>{
+  if(mode!=="add") return;
+  const pt = svg.createSVGPoint();
+  pt.x = e.clientX; pt.y = e.clientY;
+  const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+  if(p.x < measure.x || p.x > measure.x+measure.width) return;
+  placeNote(xToSlot(p.x), yToStep(p.y));
+});
+
+document.querySelectorAll("[data-dur]").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll("[data-dur]").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    currentDur = b.dataset.dur;
+  };
+});
+
+document.getElementById("modeBtn").onclick = ()=>{
+  mode = mode==="add" ? "delete" : "add";
+  event.target.textContent = mode==="add" ? "입력 모드" : "삭제 모드";
+};
+
+document.getElementById("clearBtn").onclick = ()=>{
+  score.slots.fill(null);
+  score.notes.clear();
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
