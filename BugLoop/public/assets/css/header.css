@@ -1207,7 +1207,8 @@ html:not(.dark) .theme-toggle-btn {
   
   /* 3. ✅ 모든 탭 버튼에 고정 너비 적용 (스크롤을 유도) */
   .vscode-sidebar .toggle-extension,
-  .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo) {
+  .vscode-sidebar > a.sidebar-icon:not(.toggle-extension):not(.logo):not(.home-tab) {
+
     /* 화면 크기에 맞춰 커지지 않도록 합니다. */
     flex-grow: 0; 
     flex-shrink: 0; 
