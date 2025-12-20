@@ -1287,3 +1287,26 @@ html:not(.dark) .theme-toggle-btn {
 .header-menu .menu-label {
   pointer-events: none;
 }
+
+.font-toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+}
+
+.font-toggle-btn:hover {
+  background: var(--panel-2);
+}
+
+:root {
+  --font-scale: 1;
+}
+
+html {
+  font-size: calc(16px * var(--font-scale));
+}

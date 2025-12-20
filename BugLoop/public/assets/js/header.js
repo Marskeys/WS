@@ -910,3 +910,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+const fontSteps = [1, 1.15, 1.3];
+let fontIndex = Number(localStorage.getItem("fontIndex")) || 0;
+
+function applyFontScale() {
+  document.documentElement.style.setProperty(
+    "--font-scale",
+    fontSteps[fontIndex]
+  );
+  localStorage.setItem("fontIndex", fontIndex);
+}
+
+applyFontScale();
+
+const fontBtn = document.getElementById("font-toggle-sidebar");
+if (fontBtn) {
+  fontBtn.addEventListener("click", () => {
+    fontIndex = (fontIndex + 1) % fontSteps.length;
+    applyFontScale();
+  });
+}
