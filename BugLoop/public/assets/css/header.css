@@ -1222,22 +1222,23 @@ html:not(.dark) .theme-toggle-btn {
   }
 
   /* 4. ✅ 언어/테마 영역 스타일 통합 및 조정 */
-  .sidebar-lang-theme {
+   .sidebar-lang-theme {
     flex-direction: row;
-    flex-grow: 0; 
-    flex-shrink: 0; 
-    /* 언어/테마 영역의 고정 너비 설정 (60px + 38px + 5px + 8px = 111px, 110px으로 유지) */
-    width: 110px; 
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    width: 150px;              /* ⬅️ 넉넉하게 */
     height: 100%;
-    margin: 0 0 0 auto; /* 오른쪽으로 밀기 */
-    padding: 0;
-    display: flex; 
-    border-top: none;
-    align-items: center; 
-    justify-content: center; 
-    gap: 5px; 
-    /* ❗ 오른쪽 정렬을 위해 border-left를 추가합니다. */
-    border-left: 1px solid var(--vscode-sideBar-border, #444); 
+
+    margin-left: auto;         /* 오른쪽 밀기 유지 */
+    padding: 0 10px;           /* ⬅️ 좌우 여백 핵심 */
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly; /* ⬅️ 균등 분배 */
+
+    gap: 10px;                 /* ⬅️ 숨 쉴 공간 */
+    border-left: 1px solid var(--vscode-sideBar-border, #444);
   }
 
   /* 언어 드롭다운의 너비 조정 */
