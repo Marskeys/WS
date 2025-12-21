@@ -26,7 +26,7 @@
   const SITE_ORIGIN = 'https://bugloop.dev';
   const path = (typeof currentPath === 'string' && currentPath) ? currentPath : '/';
   const canonicalUrl = (typeof canonical === 'string' && canonical.trim()) ? canonical.trim() : (SITE_ORIGIN + path);
-  const ogImage = (typeof metaImage === 'string' && metaImage.trim()) ? metaImage.trim() : '/assets/images/BugLoop.png';
+  const ogImage = (typeof metaImage === 'string' && metaImage.trim()) ? metaImage.trim() : '/assets/images/BugLoop2.png';
   const OG_IMAGE_ABS = /^https?:\/\//.test(ogImage) ? ogImage : (SITE_ORIGIN + ogImage);
   const isEditorPage = ['/write', '/edit', '/ko/write', '/en/write'].some(p => currentPath?.includes(p));
   const isBooksPage = currentPath?.includes('/books/');
