@@ -199,9 +199,9 @@ app.use((req, res, next) => {
   req.lang = res.locals.lang;
 
   const defaultLocale = {
-    meta: { title: 'Bug Loop · Online HTML Editor', description: '' },
+    meta: { title: 'BugLoop · Online HTML Editor', description: '' },
     profile: {
-      'profile-name': 'Bug Loop',
+      'profile-name': 'BugLoop',
       'profile-bio': '',
       'profile-tags': []
     },

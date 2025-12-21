@@ -18,7 +18,7 @@
 <meta name="naver-site-verification" content="ddddc68fd5651c62d2758ed86b326cc802344e3d" />
 
 <%
-  const PAGE_TITLE = (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'Bug Loop');
+  const PAGE_TITLE = (typeof metaTitle === 'string' && metaTitle.trim()) ? metaTitle.trim() : (locale?.meta?.title || 'BugLoop');
   const pageDesc = (typeof metaDescription === 'string' && metaDescription.trim()) ? metaDescription.trim() : '';
   const fallbackDesc = locale?.meta?.description || "웹 개발자 블로그 | 웹 개발 튜토리얼 & 온라인 코드 편집기, 그리고 초학제적 관점의 인사이트까지 한 곳에!";
   const rawDesc = pageDesc || fallbackDesc;
@@ -41,7 +41,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="<%= canonicalUrl %>" />
 <meta property="og:image" content="<%= OG_IMAGE_ABS %>" />
-<meta property="og:image:alt" content="Bug Loop logo" />
+<meta property="og:image:alt" content="BugLoop logo" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="<%= PAGE_TITLE %>" />
