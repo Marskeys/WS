@@ -365,3 +365,24 @@ html.dark .nav-btn{ background: rgba(85,85,85,.82); }
 }
 
 #tocToggle { margin-right: 30px; }
+
+/* ===============================
+   Font scale (필수)
+=============================== */
+
+.page-text {
+  font-size: calc(1rem * var(--font-scale, 1));
+}
+
+.page-text h1 {
+  font-size: calc(2rem * var(--font-scale, 1));
+}
+
+.page-text h2 {
+  font-size: calc(1.4rem * var(--font-scale, 1));
+}
+
+.page-text p,
+.page-text li {
+  font-size: inherit;
+}
