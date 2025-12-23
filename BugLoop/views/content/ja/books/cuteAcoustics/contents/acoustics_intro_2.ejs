@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>" data-lang="<%= lang %>">
+<head>
+  <%- include('../../../../../partials/head.ejs') %>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>序文 – Cute Acoustics</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/e-reader.css" />
+</head>
+
+<body>
+
+  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+
+  <div class="viewer">
+    <button id="prevBtn" class="nav-btn">〈</button>
+    <button id="nextBtn" class="nav-btn">〉</button>
+
+    <div class="page" id="page">
+      <div class="page-text" id="pageText">
+
+<h1>序文</h1>
+<h2>音響学にも想像力は必要なのか？</h2>
+
+<p>
+この本の冒頭で孤独について語るのには、理由があります。想像する人は、常にある意味で孤独です。想像力とは、結局のところ一人だけの世界だからです。どれほど鮮明に何かを思い描いたとしても、それを他人がそのまま見ることはできません。内面と外界の境界に芽生えるものが孤独であり、想像力はその境界をさらに厚くします。そして音響学は、まさにそのような想像力を必要とする分野なのです。
+</p>
+
+<p>
+物理学者リチャード・ファインマンは、あるインタビューで次のようなことを語っています。それは、花の美しさをただ感じ取ることもできず、分析しようとばかりする退屈な科学者たちを批判する、ある芸術家の友人に向けた言葉でした。科学者たちは、その芸術家の友人のように高度に洗練された美的感覚を必ずしも持ってはいないかもしれない。しかし、その人が感じている美しさは、科学者を含む他の人々も十分に感じ取ることができる。さらに科学者は、目に見えない微視的な世界を想像することができるのだ、と。花の細胞はどのように働いているのか。なぜ花はそのように進化したのか。昆虫も色を見ることができるのだろうか。そうした科学的な問いを想像力によって投げかけることは、美しさを損なうどころか、むしろ美しさ、そして驚嘆をいっそう深めるのだと彼は語りました。
+</p>
+
+<p>
+音響学は音楽ではありません。音楽を表現するために用いられる感覚と、音響学を理解するために用いられる感覚は、必ずしも同じではないのです。もちろん、私がフランスのある大学で音響学を専攻していたとき、学生や教授の多くが楽器演奏を好む「傾向」を持っていたのは事実です。しかし、音響学は芸術ではなく、科学、より正確には物理学の一分野です。もし音楽の延長として音響学を学ぼうとするならば、それは少し馴染みのないものに感じられるかもしれません。
+</p>
+
+<p>
+実はそれが、音響学という専攻が大学の学部課程であまり設けられていない理由でもあります。音響学を探究するには、物理学的な想像力が必要であり、その想像力は、ある程度の基礎的な物理学の知識があってはじめて機能します。そのため、音響学は学部高学年や大学院での専門分野として置かれることが一般的です。それでもなお、決して多いとは言えません。ほとんどの大学で見つけることができる情報工学や英文学といった専攻とは、対照的です。
+</p>
+
+<p>
+だからこそ、この本では物理学の基礎概念から扱っていきます。音響学の本だからといって、いきなりマイクやデシベルが登場するわけではありません。お話ししたとおり、大学院で学ぶことの多い音響学という学問を、一冊の本で扱おうとしているのですから、準備の過程は必要です。ただし、できるだけ難しくなりすぎないように進めていきます。そのために、この本には <em>Cute Acoustics</em> というタイトルを付けました。
+</p>
+
+<p>
+それでは、孤独と美が交差する音響学の世界へ、出発してみましょうか。
+</p>
+
+      </div>
+
+      <div class="page-index" id="pageIndex"></div>
+    </div>
+
+    <div class="toc" id="toc">
+      <h3>目次</h3>
+      <ul id="tocList"></ul>
+    </div>
+  </div>
+
+  <!-- e-reader settings -->
+  <script>
+    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
+  </script>
+
+  <script src="/assets/js/e-reader.js"></script>
+
+</body>
+</html>

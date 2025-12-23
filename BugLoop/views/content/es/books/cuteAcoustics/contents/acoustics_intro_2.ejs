@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>" data-lang="<%= lang %>">
+<head>
+  <%- include('../../../../../partials/head.ejs') %>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prólogo – Cute Acoustics</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/e-reader.css" />
+</head>
+
+<body>
+
+  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+
+  <div class="viewer">
+    <button id="prevBtn" class="nav-btn">〈</button>
+    <button id="nextBtn" class="nav-btn">〉</button>
+
+    <div class="page" id="page">
+      <div class="page-text" id="pageText">
+
+<h1>Prólogo</h1>
+<h2>¿La acústica también necesita imaginación?</h2>
+
+<p>
+Hay una razón por la que comienzo este libro hablando de la soledad. Quienes imaginan están siempre, en cierto sentido, solos. La imaginación es, al final, un mundo propio. Por más vívida que sea una imagen en mi mente, nadie más puede verla. La soledad surge en la frontera entre el mundo interior y el mundo exterior, y la imaginación hace que esa frontera se vuelva más espesa. Y la acústica es, precisamente, un campo en el que esa imaginación resulta indispensable.
+</p>
+
+<p>
+El físico Richard Feynman expresó una idea similar en una entrevista. Respondía a un amigo artista que criticaba a los científicos por ser aburridos, incapaces de apreciar simplemente la belleza de una flor y siempre empeñados en analizarla. Feynman decía que, aunque los científicos no posean necesariamente una sensibilidad estética tan finamente refinada como la de su amigo artista, la belleza que este percibe es algo que otros —incluidos los científicos— también pueden sentir plenamente. Además, los científicos pueden imaginar el mundo microscópico invisible a simple vista. ¿Cómo funcionan las células de una flor? ¿Por qué la flor evolucionó de esa manera? ¿Los insectos también perciben los colores? Al plantear estas preguntas científicas a través de la imaginación, no se reduce la belleza; por el contrario, se añade belleza y, con ella, asombro.
+</p>
+
+<p>
+La acústica no es música. La sensibilidad que se utiliza para expresar la música y la que se emplea para comprender la acústica pueden ser muy distintas. Por supuesto, cuando estudié acústica en una universidad de Francia, muchos estudiantes y profesores mostraban cierta “tendencia” a disfrutar de la interpretación de instrumentos musicales. Sin embargo, la acústica no es un arte, sino una ciencia; más precisamente, una rama de la física. Si uno se acerca a la acústica como una extensión de la música, es posible que le resulte bastante extraña.
+</p>
+
+<p>
+Esta es también una de las razones por las que la acústica no suele ofrecerse como una especialidad independiente en los estudios de grado. Para explorar la acústica se necesita una imaginación de tipo físico, y esa imaginación solo funciona cuando está sustentada por un cierto nivel de conocimientos básicos de física. Por ello, la acústica suele aparecer como una especialización en los últimos años de la carrera o a nivel de posgrado. Incluso así, no es algo común. Contrasta con disciplinas como la informática o la literatura inglesa, que pueden encontrarse en casi cualquier universidad.
+</p>
+
+<p>
+Por esta razón, este libro comienza con los conceptos fundamentales de la física. No porque sea un libro de acústica aparecerán de inmediato micrófonos o decibelios. Ya lo he mencionado: estamos intentando abordar, en un solo volumen, una disciplina que suele enseñarse principalmente en el posgrado, por lo que un proceso de preparación es necesario. Aun así, procuraré que el recorrido no resulte excesivamente difícil. Por eso también elegí el título <em>Cute Acoustics</em>.
+</p>
+
+<p>
+Entonces, ¿qué tal si partimos hacia el mundo de la acústica, donde la soledad y la belleza se cruzan?
+</p>
+
+      </div>
+
+      <div class="page-index" id="pageIndex"></div>
+    </div>
+
+    <div class="toc" id="toc">
+      <h3>Índice</h3>
+      <ul id="tocList"></ul>
+    </div>
+  </div>
+
+  <!-- e-reader settings -->
+  <script>
+    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
+  </script>
+
+  <script src="/assets/js/e-reader.js"></script>
+
+</body>
+</html>

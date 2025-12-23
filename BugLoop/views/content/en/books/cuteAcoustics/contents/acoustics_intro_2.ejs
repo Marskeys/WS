@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>" data-lang="<%= lang %>">
+<head>
+  <%- include('../../../../../partials/head.ejs') %>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preface – Cute Acoustics</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/e-reader.css" />
+</head>
+
+<body>
+
+  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+
+  <div class="viewer">
+    <button id="prevBtn" class="nav-btn">〈</button>
+    <button id="nextBtn" class="nav-btn">〉</button>
+
+    <div class="page" id="page">
+      <div class="page-text" id="pageText">
+
+<h1>Preface</h1>
+<h2>Do We Need Imagination in Acoustics?</h2>
+
+<p>
+There is a reason I begin this book by talking about solitude. Those who imagine are always, in some sense, alone. Imagination is ultimately a private world. No matter how vividly I imagine something, no one else can see it. Solitude is something that blooms at the boundary between the inner and the outer world, and imagination makes that boundary thicker. And acoustics is a field in which such imagination is essential.
+</p>
+
+<p>
+In an interview, the physicist Richard Feynman once said something along these lines. He was responding to an artist friend who criticized scientists as dull people who could not simply appreciate the beauty of a flower, insisting on analyzing it instead. Feynman said that even if scientists may not possess the same highly refined aesthetic sensibility as that artist, the beauty the artist feels is something others—including scientists—can also feel. Moreover, scientists are able to imagine the invisible microscopic world. How do the cells of a flower work? Why did the flower evolve that way? Can insects perceive color as well? By imagining such questions, scientists do not diminish beauty. Rather, those questions add to beauty—and to wonder.
+</p>
+
+<p>
+Acoustics is not music. The sensibility used to express music and the sensibility used to understand acoustics can be quite different. Of course, when I studied acoustics at a university in France, many students and professors did show a tendency to enjoy playing musical instruments. Still, acoustics is not an art; it is a science—more precisely, a branch of physics. If you approach acoustics as an extension of music, you may find it rather unfamiliar.
+</p>
+
+<p>
+This is also one of the reasons why acoustics is not commonly offered as a standalone major at the undergraduate level. To study acoustics, one needs physical imagination, and that imagination only functions when it is supported by a certain level of foundational knowledge in physics. As a result, acoustics is usually offered as a specialization in the later years of undergraduate study or at the graduate level. Even then, it is not very common. It stands in contrast to majors such as computer science or English literature, which can be found at almost any university.
+</p>
+
+<p>
+That is why this book begins with the basic concepts of physics. You will not encounter microphones or decibels right away simply because this is a book about acoustics. As I mentioned earlier, we are dealing with a discipline that is usually taught at the graduate level, all within a single book—some preparation is necessary. Still, I will try to keep it from becoming overly difficult. That is also why I chose the title <em>Cute Acoustics</em>.
+</p>
+
+<p>
+So, shall we set off into the world of acoustics, where solitude and beauty intersect?
+</p>
+
+      </div>
+
+      <div class="page-index" id="pageIndex"></div>
+    </div>
+
+    <div class="toc" id="toc">
+      <h3>Table of Contents</h3>
+      <ul id="tocList"></ul>
+    </div>
+  </div>
+
+  <!-- e-reader settings -->
+  <script>
+    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
+  </script>
+
+  <script src="/assets/js/e-reader.js"></script>
+
+</body>
+</html>

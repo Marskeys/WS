@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>" data-lang="<%= lang %>">
+<head>
+  <%- include('../../../../../partials/head.ejs') %>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>前言 – Cute Acoustics</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/assets/css/e-reader.css" />
+</head>
+
+<body>
+
+  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+
+  <div class="viewer">
+    <button id="prevBtn" class="nav-btn">〈</button>
+    <button id="nextBtn" class="nav-btn">〉</button>
+
+    <div class="page" id="page">
+      <div class="page-text" id="pageText">
+
+<h1>前言</h1>
+<h2>声学也需要想象力吗？</h2>
+
+<p>
+我之所以在书的一开始谈论孤独，是有原因的。善于想象的人，总是在某种意义上是孤独的。想象力终究属于一个人的世界。无论我把某个画面在脑海中描绘得多么生动，其他人都无法真正看到它。孤独诞生于内在世界与外在世界的边界，而想象力会让这条边界变得更加厚实。而声学，正是一个离不开这种想象力的领域。
+</p>
+
+<p>
+物理学家理查德·费曼曾在一次采访中表达过类似的观点。当时，他回应的是一位艺术家朋友的批评——那位朋友认为科学家过于乏味，总是试图分析事物，甚至无法单纯地欣赏一朵花的美。费曼说，即使科学家未必像那位艺术家朋友一样拥有高度精炼的审美感受力，但艺术家所感受到的美，其他人——包括科学家——同样能够感受到。不仅如此，科学家还能想象肉眼无法看见的微观世界。花的细胞是如何运作的？花为什么会以这样的方式进化？昆虫是否也能感知颜色？通过想象提出这些科学问题，并不会削弱美，反而会为美——以及敬畏之感——增添新的层次。
+</p>
+
+<p>
+声学并不是音乐。用于表达音乐的感受方式，与用于理解声学的感受方式，可能并不相同。当然，当我在法国的一所大学学习声学时，确实发现许多学生和教授都“倾向于”演奏乐器。但声学并非艺术，而是科学，更准确地说，是物理学的一个分支。如果你是从音乐的延伸来理解声学，那么它可能会让你感到相当陌生。
+</p>
+
+<p>
+这也正是声学在大学本科阶段并不常作为独立专业开设的原因之一。要深入研究声学，需要具备物理学层面的想象力，而这种想象力只有在具备一定物理基础知识的前提下才能真正发挥作用。因此，声学通常作为高年级本科或研究生阶段的细分方向出现。即便如此，它依然并不常见。这与计算机科学或英语文学等几乎在任何大学都能找到的专业形成了鲜明对比。
+</p>
+
+<p>
+正因如此，本书将从物理学的基础概念讲起。并不是因为这是一本声学书籍，就会一上来便出现麦克风或分贝之类的内容。我已经提到过了：我们试图在一本书中讲述一门通常在研究生阶段才系统学习的学科，因此，必要的准备是不可或缺的。不过，我会尽量让这一过程不至于过于艰深。这也是我将书名定为 <em>Cute Acoustics</em> 的原因。
+</p>
+
+<p>
+那么，就让我们一起踏上这段旅程，走进那个孤独与美相互交汇的声学世界吧。
+</p>
+
+      </div>
+
+      <div class="page-index" id="pageIndex"></div>
+    </div>
+
+    <div class="toc" id="toc">
+      <h3>目录</h3>
+      <ul id="tocList"></ul>
+    </div>
+  </div>
+
+  <!-- e-reader settings -->
+  <script>
+    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
+  </script>
+
+  <script src="/assets/js/e-reader.js"></script>
+
+</body>
+</html>
