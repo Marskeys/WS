@@ -377,3 +377,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// ===============================
+// 🔠 Font Size Toggle
+// ===============================
+const fontSteps = [1, 1.15, 1.3];
+let fontIndex = Number(localStorage.getItem("fontIndex"));
+if (Number.isNaN(fontIndex)) fontIndex = 0;
+
+function applyFontScale() {
+  document.documentElement.style.setProperty(
+    "--font-scale",
+    fontSteps[fontIndex]
+  );
+  localStorage.setItem("fontIndex", fontIndex);
+}
+
+// 최초 적용
+applyFontScale();
+
+function bindFontButton(id) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    fontIndex = (fontIndex + 1) % fontSteps.length;
+    applyFontScale();
+  });
+}
+
+// e-reader 헤더
+bindFontButton("fontToggleHeader");
+
+// (있다면) 사이드바 버튼
+bindFontButton("font-toggle-sidebar");
