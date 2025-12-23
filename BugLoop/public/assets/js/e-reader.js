@@ -245,32 +245,48 @@ function renderBookTOC() {
   const basePath = `/${lang}/books/${bookId}/contents/`;
 
   bookData.toc.forEach(section => {
-    const sectionLi = document.createElement("li");
-    sectionLi.textContent = section.section;
-    sectionLi.className = "toc-section";
-    tocList.appendChild(sectionLi);
+  // 섹션 제목 (서랍 헤더)
+  const sectionLi = document.createElement("li");
+  sectionLi.textContent = section.section;
+  sectionLi.className = "toc-section collapsed";
+  tocList.appendChild(sectionLi);
 
-    const group = document.createElement("ul");
-    group.className = "toc-chapter-group";
-    tocList.appendChild(group);
+  // 챕터 그룹 (서랍 내용)
+  const group = document.createElement("ul");
+  group.className = "toc-chapter-group";
+  tocList.appendChild(group);
 
-    section.chapters.forEach(ch => {
-      const li = document.createElement("li");
-      li.className = "toc-chapter";
-      li.textContent = ch.title;
+  // ⭐ 현재 챕터가 이 섹션에 있는지 표시
+  let hasCurrentChapter = false;
 
-      if (ch.id === currentChapterId) li.classList.add("current-chapter");
+  section.chapters.forEach(ch => {
+    const li = document.createElement("li");
+    li.className = "toc-chapter";
+    li.textContent = ch.title;
 
-      li.addEventListener("click", () => {
-        if (ch.id === currentChapterId) goTo(0);
-        else if (ch.url && ch.url.trim() !== "") {
-          window.location.href = basePath + ch.url.trim();
-        }
-      });
+    if (ch.id === currentChapterId) {
+      li.classList.add("current-chapter");
+      hasCurrentChapter = true;   // ⭐ 여기
+    }
 
-      group.appendChild(li);
+    li.addEventListener("click", () => {
+      if (ch.id === currentChapterId) {
+        goTo(0);
+      } else if (ch.url && ch.url.trim() !== "") {
+        window.location.href = basePath + ch.url.trim();
+      }
     });
+
+    group.appendChild(li);
   });
+
+  // ⭐⭐⭐ 현재 챕터가 포함된 섹션이면 자동으로 펼침
+  if (hasCurrentChapter) {
+    group.classList.add("open");
+    sectionLi.classList.remove("collapsed");
+  }
+});
+
 }
 
 function renderTOC() {
@@ -411,3 +427,16 @@ bindFontButton("fontToggleHeader");
 
 // (있다면) 사이드바 버튼
 bindFontButton("font-toggle-sidebar");
+
+document.addEventListener("click", (e) => {
+  // 목차 열려있지 않으면 무시
+  if (!tocEl.classList.contains("open")) return;
+
+  const isClickInsideTOC = tocEl.contains(e.target);
+  const isClickOnToggle = e.target.closest("#tocToggle");
+
+  // 목차 바깥 + 토글 버튼도 아닐 때만 닫기
+  if (!isClickInsideTOC && !isClickOnToggle) {
+    tocEl.classList.remove("open");
+  }
+});
