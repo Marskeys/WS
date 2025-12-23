@@ -911,9 +911,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-const fontSteps = [1, 1.15, 1.3];
-let fontIndex = Number(localStorage.getItem("fontIndex")) || 0;
+// ================================
+// Font size toggle (FINAL)
+// ================================
 
+// 단계별 폰트 배율
+const fontSteps = [1, 1.15, 1.3];
+
+// 저장된 인덱스 불러오기
+let fontIndex = Number(localStorage.getItem("fontIndex"));
+if (Number.isNaN(fontIndex)) fontIndex = 0;
+
+// 폰트 스케일 적용
 function applyFontScale() {
   document.documentElement.style.setProperty(
     "--font-scale",
@@ -922,12 +931,22 @@ function applyFontScale() {
   localStorage.setItem("fontIndex", fontIndex);
 }
 
+// 초기 적용
 applyFontScale();
 
-const fontBtn = document.getElementById("font-toggle-sidebar");
-if (fontBtn) {
-  fontBtn.addEventListener("click", () => {
+// 버튼 바인딩 함수
+function bindFontButton(id) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
     fontIndex = (fontIndex + 1) % fontSteps.length;
     applyFontScale();
   });
 }
+
+// 사이드바 글씨 확대 버튼
+bindFontButton("font-toggle-sidebar");
+
+// e-reader 헤더 글씨 확대 버튼
+bindFontButton("fontToggleHeader");
