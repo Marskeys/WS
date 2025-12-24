@@ -1097,20 +1097,20 @@ html:not(.dark) .lang-menu a.lang-option:focus {
 
 /* ✅ 수정: 새 라이트/다크모드 토글 버튼 스타일 복원 */
 .theme-toggle-btn {
-  /* 배경색 및 둥근 모양 복원 */
-  background: var(--vscode-sideBar-background, #333); /* 사이드바 배경색과 동일 */
-  border: 1px solid var(--vscode-sideBar-border, #444); /* 경계선 추가 */
-  color: var(--ink-1, #fff); /* Dark Mode 기본 색상: 흰색 */
-  cursor: pointer;
   width: 38px;
   height: 38px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%; /* 둥근 모양 복원 */
-  transition: all 0.2s ease;
-  font-size: 18px;
-  line-height: 1;
+  min-width: 38px;
+  min-height: 38px;
+  max-width: 38px;
+  max-height: 38px;
+
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex: 0 0 auto; /* ⭐ 핵심 */
+}
+
+.sidebar-lang-theme {
+  align-items: center; /* stretch 방지 */
 }
 
 /* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
