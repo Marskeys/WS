@@ -578,7 +578,7 @@ img[data-heic-loading] {
   z-index: 1;
 }
 
-html[data-theme="dark"] .postview-container::before {
+html.dark .postview-container::before {
   content: "";
   position: absolute;
   inset: -40px;
