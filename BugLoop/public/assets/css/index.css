@@ -584,3 +584,28 @@ html.dark #load-more-btn {
   flex-shrink: 0;
 }
 
+/* 추가된 카테고리 스타일 */
+.recent-post-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px; /* 제목 아래 간격 */
+  margin-bottom: 4px;
+}
+
+.post-category {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary); /* 메인 블루 색상 */
+  background: rgba(var(--primary-rgb), 0.1); /* 배경 투명하게 */
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
+  letter-spacing: -0.2px;
+}
+
+html.dark .post-category {
+  color: #55aaff; /* 다크모드에서 더 잘 보이는 하늘색 */
+  background: rgba(33, 126, 232, 0.2);
+  border-color: rgba(33, 126, 232, 0.4);
+}
