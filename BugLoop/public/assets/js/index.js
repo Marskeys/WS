@@ -66,18 +66,25 @@ window.changePage = function (event, bookKey, pageNumber) {
   if (!card) return;
 
   const tocContainer = card.querySelector(`[data-book-id="${bookKey}-toc"]`);
-  const paginationContainer = card.querySelector(`[data-book-id="${bookKey}-pagination"]`);
+  const paginationContainer = card.querySelector(
+    `[data-book-id="${bookKey}-pagination"]`
+  );
   const tocElement = card.querySelector('.book-toc');
 
   const { paginatedToc } = getPaginatedToc(bookData.toc);
-  tocContainer.innerHTML = renderTocHtmlCSR(paginatedToc[pageNumber - 1], bookKey);
+  tocContainer.innerHTML = renderTocHtmlCSR(
+    paginatedToc[pageNumber - 1],
+    bookKey
+  );
 
-  paginationContainer.querySelectorAll('.pagination-number').forEach((btn) => {
-    btn.classList.toggle(
-      'active',
-      parseInt(btn.textContent, 10) === pageNumber
-    );
-  });
+  paginationContainer
+    .querySelectorAll('.pagination-number')
+    .forEach((btn) => {
+      btn.classList.toggle(
+        'active',
+        parseInt(btn.textContent, 10) === pageNumber
+      );
+    });
 
   if (card.classList.contains('expanded') && tocElement) {
     tocElement.style.height = tocElement.scrollHeight + 'px';
@@ -100,7 +107,7 @@ document.querySelectorAll('.book-card').forEach((card) => {
           t.style.padding = '0';
           t.classList.add('closed');
         }
-        
+
         if (wasOtherExpanded) {
           const otherVideo = other.querySelector('video');
           if (otherVideo) otherVideo.play().catch(() => {});
@@ -145,7 +152,9 @@ window.loadMorePosts = async function () {
   loading = true;
 
   try {
-    const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
+    const res = await fetch(
+      `/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`
+    );
     const data = await res.json();
 
     if (!data.posts || data.posts.length === 0) {
@@ -172,16 +181,20 @@ window.loadMorePosts = async function () {
       const updatedAt = new Date(post.updated_at);
       const oneDay = 1000 * 60 * 60 * 24;
 
-      const isNewPost = (now - createdAt) < oneDay;
+      const isNewPost = now - createdAt < oneDay;
       const wasEdited = updatedAt > createdAt;
-      const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
+      const isRecentlyEdited = wasEdited && now - updatedAt < oneDay;
       const showEditedLabel = !isNewPost && isRecentlyEdited;
 
       let labelHtml = '';
       if (isNewPost) {
-        labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
+        labelHtml = `<span class="label-icon new-icon">${
+          window.__APP__.locale.newPost || 'NEW'
+        }</span>`;
       } else if (showEditedLabel) {
-        labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
+        labelHtml = `<span class="label-icon edited-icon">${
+          window.__APP__.locale.editedPost || 'UPDATED'
+        }</span>`;
       }
 
       let previewText = '';
@@ -206,12 +219,33 @@ window.loadMorePosts = async function () {
           .slice(0, 120);
       }
 
+      /* ✅ 추가된 부분: 카테고리 렌더링 */
+      let categoryHtml = '';
+      if (
+        post.translated_categories_display &&
+        post.translated_categories_display.length
+      ) {
+        categoryHtml = `
+          <div class="recent-post-categories">
+            ${post.translated_categories_display
+              .map(
+                (cat) =>
+                  `<span class="post-category">#${cat}</span>`
+              )
+              .join('')}
+          </div>
+        `;
+      }
+
       el.innerHTML = `
         <a href="/${lang}/post/${post.id}" class="recent-post-title">
           ${labelHtml}
           ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
           ${post.title}
         </a>
+
+        ${categoryHtml}
+
         <div class="recent-post-meta">
           <span>${post.author}</span>
           <span>·</span>
