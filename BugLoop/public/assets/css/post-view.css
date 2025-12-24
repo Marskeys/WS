@@ -566,3 +566,42 @@ img[data-heic-loading] {
   opacity: 0.4;
   filter: blur(3px);
 }
+
+.postview-container {
+  position: relative;
+  max-width: 720px; /* 이미 있다면 유지 */
+  margin: 4rem auto;
+  padding: 3rem 2.5rem;
+
+  background: var(--bg-panel, #111);
+  border-radius: 14px;
+
+  /* 기본 떠 있는 그림자 */
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 rgba(255, 215, 120, 0);
+
+  z-index: 1;
+}
+
+.postview-container::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  border-radius: 24px;
+
+  background:
+    radial-gradient(
+      ellipse at top,
+      rgba(255, 210, 120, 0.18),
+      rgba(255, 210, 120, 0.08) 35%,
+      transparent 65%
+    );
+
+  filter: blur(30px);
+  opacity: 0.85;
+
+  z-index: -1;
+  pointer-events: none;
+}
+
