@@ -1637,7 +1637,7 @@ db.query('SELECT NOW()')
 app.post('/webhook', (req, res) => {
   const { exec } = require('child_process');
 
-  exec('bash ~/WS/deploy.sh', (err, stdout, stderr) => {
+  exec('bash /home/ubuntu/WS/deploy.sh', (err, stdout, stderr) => {
     if (err) {
       console.error('❌ Deploy error:', err);
       return res.status(500).send('deploy failed');
