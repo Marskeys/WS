@@ -584,3 +584,36 @@ html.dark #load-more-btn {
   flex-shrink: 0;
 }
 
+
+
+
+/* =========================================
+   최근 게시물 카테고리 뱃지 디자인
+   ========================================= */
+
+/* 카테고리들을 감싸는 박스 */
+.recent-post-categories {
+  display: flex;
+  flex-wrap: wrap;       /* 공간 부족하면 다음 줄로 넘김 */
+  gap: 6px;              /* 뱃지 사이의 간격 */
+  margin-bottom: 8px;    /* 제목과의 간격 (제목 위로 띄우기) */
+}
+
+/* 개별 카테고리 뱃지 (파란색 박스) */
+.post-category {
+  display: inline-block;
+  background-color: #007bff; /* 파란색 배경 (원하는 색으로 변경 가능) */
+  color: #ffffff;            /* 글자색: 하양 */
+  font-size: 12px;           /* 글자 크기: 작게 */
+  font-weight: 600;          /* 글자 두께: 약간 두껍게 */
+  padding: 3px 8px;          /* 안쪽 여백: 위아래 3px, 좌우 8px */
+  border-radius: 4px;        /* 모서리 둥글게 */
+  line-height: 1.2;          /* 줄 간격 */
+  letter-spacing: 0.3px;     /* 자간 살짝 넓힘 */
+  vertical-align: middle;    /* 수직 정렬 */
+}
+
+/* (선택사항) 마우스 올렸을 때 살짝 진해지게 하려면 추가 */
+.recent-post-item:hover .post-category {
+  opacity: 0.9;
+}

@@ -3,6 +3,26 @@
 <head>
   <%- include('partials/head', { isIndex: true }) -%>
   <link rel="stylesheet" href="/assets/css/index.css" />
+  
+  <style>
+    .recent-post-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px; /* 제목과의 간격 */
+    }
+    .post-category {
+      display: inline-block;
+      background-color: #007bff; /* 파란색 배경 */
+      color: #ffffff;            /* 하얀색 글씨 */
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+  </style>
 </head>
 <body>
   <div id="preloader"><div class="spinner"></div></div>
@@ -111,14 +131,21 @@
         const isNew = (now - cAt) < oneDay;
         const isEdit = uAt > cAt && (now - uAt < oneDay) && !isNew;
 
-        // ✅ FIX: table.ejs와 동일한 카테고리 fallback 로직
+        // ✅ 카테고리 데이터 준비
         const displayCats = Array.isArray(post.translated_categories_display)
           ? post.translated_categories_display
           : (post.categories ? post.categories.split(',').map(c => c.trim()).filter(Boolean) : []);
       -%>
       <div class="recent-post-item">
 
-        <!-- 제목 -->
+        <% if (displayCats.length) { %>
+          <div class="recent-post-categories">
+            <% displayCats.forEach(cat => { %>
+              <span class="post-category"><%= cat %></span>
+            <% }) %>
+          </div>
+        <% } %>
+
         <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
           <% if (isNew) { -%>
             <span class="label-icon new-icon"><%= locale.ui.newPost || 'NEW' %></span>
@@ -130,23 +157,12 @@
           <%= post.title %>
         </a>
 
-        <!-- ✅ FIX: 카테고리 표시 (SSR / CSR / API 모두 대응) -->
-        <% if (displayCats.length) { %>
-          <div class="recent-post-categories">
-            <% displayCats.forEach(cat => { %>
-              <span class="post-category">#<%= cat %></span>
-            <% }) %>
-          </div>
-        <% } %>
-
-        <!-- 메타 -->
         <div class="recent-post-meta">
           <span><%= post.author %></span>
           <span>·</span>
           <span><%= format(cAt, 'yyyy.MM.dd') %></span>
         </div>
 
-        <!-- 미리보기 -->
         <div class="recent-post-preview">
           <% 
             const preview = post.content
