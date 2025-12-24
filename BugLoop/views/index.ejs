@@ -110,6 +110,11 @@
               oneDay = 86400000;
         const isNew = (now - cAt) < oneDay;
         const isEdit = uAt > cAt && (now - uAt < oneDay) && !isNew;
+
+        // ✅ FIX: table.ejs와 동일한 카테고리 fallback 로직
+        const displayCats = Array.isArray(post.translated_categories_display)
+          ? post.translated_categories_display
+          : (post.categories ? post.categories.split(',').map(c => c.trim()).filter(Boolean) : []);
       -%>
       <div class="recent-post-item">
 
@@ -125,10 +130,10 @@
           <%= post.title %>
         </a>
 
-        <!-- ✅ 카테고리 표시 -->
-        <% if (post.translated_categories_display && post.translated_categories_display.length) { %>
+        <!-- ✅ FIX: 카테고리 표시 (SSR / CSR / API 모두 대응) -->
+        <% if (displayCats.length) { %>
           <div class="recent-post-categories">
-            <% post.translated_categories_display.forEach(cat => { %>
+            <% displayCats.forEach(cat => { %>
               <span class="post-category">#<%= cat %></span>
             <% }) %>
           </div>
