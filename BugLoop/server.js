@@ -1629,6 +1629,25 @@ db.query('SELECT NOW()')
   .then(([rows]) => console.log('✅ DB 응답:', rows[0]))
   .catch(err => console.error('❌ 쿼리 에러:', err));
 
+  const { exec } = require('child_process');
+
+app.post('/webhook', (req, res) => {
+  console.log('🚀 GitHub Webhook 수신');
+
+  exec('bash /home/ubuntu/WS/deploy.sh', (err, stdout, stderr) => {
+    if (err) {
+      console.error('❌ 배포 실패:', err);
+      console.error(stderr);
+      return res.status(500).send('deploy failed');
+    }
+
+    console.log('✅ 배포 성공');
+    console.log(stdout);
+    res.status(200).send('ok');
+  });
+});
+
+
 // 서버 실행
 app.listen(PORT, () => {
   console.log(`🚀 서버 실행 중: http://localhost:${PORT}`);
