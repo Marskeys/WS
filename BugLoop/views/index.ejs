@@ -55,7 +55,9 @@
           const { paginatedToc, totalPages } = getPaginatedToc(book.toc);
       -%>
       <div class="book-card" data-index="<%= idx %>" data-book-key="<%= key %>">
-        <% if (book.updated) { -%><div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div><% } -%>
+        <% if (book.updated) { -%>
+          <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
+        <% } -%>
         <div class="book-content-wrapper">
           <div class="book-cover-wrapper">
             <video 
@@ -74,17 +76,22 @@
           </div>
           <div class="book-info">
             <div class="book-title"><%= book.title %></div>
-            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;"><%= locale.ui["book-author"] %> : <%= book.author %></div>
+            <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
+              <%= locale.ui["book-author"] %> : <%= book.author %>
+            </div>
           </div>
           <div class="book-toc">
             <h4><%= locale.ui["tocButton"] %></h4>
             <div class="pagination" data-book-id="<%= key %>-pagination">
               <% for(let i = 1; i <= totalPages; i++) { -%>
-              <span class="pagination-number <%= i === 1 ? 'active' : '' %>" onclick="changePage(event, '<%= key %>', <%= i %>)"><%= i %></span>
-              <% if (i < totalPages) { -%><span class="pagination-divider">|</span><% } -%>
+                <span class="pagination-number <%= i === 1 ? 'active' : '' %>"
+                      onclick="changePage(event, '<%= key %>', <%= i %>)"><%= i %></span>
+                <% if (i < totalPages) { -%><span class="pagination-divider">|</span><% } -%>
               <% } -%>
             </div>
-            <div class="paginated-toc" data-book-id="<%= key %>-toc"><%- renderTocHtmlSSR(paginatedToc[0], key) %></div>
+            <div class="paginated-toc" data-book-id="<%= key %>-toc">
+              <%- renderTocHtmlSSR(paginatedToc[0], key) %>
+            </div>
           </div>
         </div>
       </div>
@@ -97,32 +104,67 @@
 
     <div class="recent-posts" id="posts-container">
       <% posts.slice(0, 5).forEach(post => { 
-        const now = new Date(), cAt = new Date(post.created_at), uAt = new Date(post.updated_at), oneDay = 86400000;
-        const isNew = (now - cAt) < oneDay, isEdit = uAt > cAt && (now - uAt < oneDay) && !isNew;
+        const now = new Date(),
+              cAt = new Date(post.created_at),
+              uAt = new Date(post.updated_at),
+              oneDay = 86400000;
+        const isNew = (now - cAt) < oneDay;
+        const isEdit = uAt > cAt && (now - uAt < oneDay) && !isNew;
       -%>
       <div class="recent-post-item">
+
+        <!-- 제목 -->
         <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-          <% if (isNew) { -%><span class="label-icon new-icon"><%= locale.ui.newPost || 'NEW' %></span>
-          <% } else if (isEdit) { -%><span class="label-icon edited-icon"><%= locale.ui.editedPost || 'UPDATED' %></span><% } -%>
+          <% if (isNew) { -%>
+            <span class="label-icon new-icon"><%= locale.ui.newPost || 'NEW' %></span>
+          <% } else if (isEdit) { -%>
+            <span class="label-icon edited-icon"><%= locale.ui.editedPost || 'UPDATED' %></span>
+          <% } -%>
           <% if (post.is_pinned) { -%><span class="badge-pinned">📌</span><% } -%>
           <% if (post.is_private) { -%><span class="badge-private">🔒</span><% } -%>
           <%= post.title %>
         </a>
-        <div class="recent-post-meta"><span><%= post.author %></span><span>·</span><span><%= format(cAt, 'yyyy.MM.dd') %></span></div>
+
+        <!-- ✅ 카테고리 표시 -->
+        <% if (post.translated_categories_display && post.translated_categories_display.length) { %>
+          <div class="recent-post-categories">
+            <% post.translated_categories_display.forEach(cat => { %>
+              <span class="post-category">#<%= cat %></span>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <!-- 메타 -->
+        <div class="recent-post-meta">
+          <span><%= post.author %></span>
+          <span>·</span>
+          <span><%= format(cAt, 'yyyy.MM.dd') %></span>
+        </div>
+
+        <!-- 미리보기 -->
         <div class="recent-post-preview">
           <% 
-            const preview = post.content.replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
-              .replace(/\s+/g, ' ').trim().slice(0, 120);
-          -%><%= preview %>...
+            const preview = post.content
+              .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .slice(0, 120);
+          -%>
+          <%= preview %>...
         </div>
       </div>
       <% }) -%>
     </div>
-    <button id="load-more-btn" onclick="loadMorePosts()"><%= locale.index.loadMore || "더보기" %></button>
+
+    <button id="load-more-btn" onclick="loadMorePosts()">
+      <%= locale.index.loadMore || "더보기" %>
+    </button>
   </div>
 
   <footer class="app-footer">© 2025 BugLoop</footer>
+
   <%- include('partials/scripts') -%>
+
   <script>
     window.__APP__ = { 
       lang: "<%= lang %>", 
