@@ -176,7 +176,6 @@ window.loadMorePosts = async function () {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
       
-      // 게시물 클릭 시 상세 이동 (선택사항)
       el.onclick = () => { window.location.href = `/${lang}/post/${post.id}`; };
 
       const now = new Date();
@@ -210,26 +209,25 @@ window.loadMorePosts = async function () {
         .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
         .slice(0, 120);
 
-      /* ✅ 핵심: 카테고리 렌더링 로직 */
+      /* ✅ [수정됨] 카테고리 렌더링 로직 (# 제거) */
       let categoryHtml = '';
       if (post.translated_categories_display && post.translated_categories_display.length > 0) {
         categoryHtml = `
           <div class="recent-post-categories">
             ${post.translated_categories_display
-              .map(cat => `<span class="post-category">#${cat}</span>`)
+              .map(cat => `<span class="post-category">${cat}</span>`) // 샵(#) 제거됨
               .join('')}
           </div>
         `;
       }
 
+      /* ✅ [수정됨] HTML 구조 변경 (카테고리를 제목 위로 이동) */
       el.innerHTML = `
-        <a href="/${lang}/post/${post.id}" class="recent-post-title" onclick="event.stopPropagation()">
+        ${categoryHtml} <a href="/${lang}/post/${post.id}" class="recent-post-title" onclick="event.stopPropagation()">
           ${labelHtml}
           ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
-          ${post.title}
+          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''} ${post.title}
         </a>
-
-        ${categoryHtml}
 
         <div class="recent-post-meta">
           <span>${post.author}</span>
