@@ -1386,17 +1386,17 @@ app.get('/api/search', async (req, res) => {
 
 
 // =======================================================
-// ✅ 💡 /api/recent-posts 라우트: 캐싱 및 라우트 우선순위 수정 완료
+// ✅ 💡 /api/recent-posts 라우트: 카테고리 누락 수정 완료
 // =======================================================
 app.get('/api/recent-posts', async (req, res) => {
-  // 🌟 캐싱 방지 헤더 추가: 브라우저가 304 대신 200 응답을 받도록 합니다.
+  // 🌟 캐싱 방지 헤더
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); 
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   res.set('ETag', false); 
   
   const safeLang = (req.query.lang || res.locals.lang || 'ko').toLowerCase();
-  const limit = Math.min(parseInt(req.query.limit) || 5, 20); // 기본 5, 최대 20
+  const limit = Math.min(parseInt(req.query.limit) || 5, 20);
   const offset = parseInt(req.query.offset) || 0;
 
   try {
@@ -1415,62 +1415,67 @@ app.get('/api/recent-posts', async (req, res) => {
       LIMIT ? OFFSET ?
     `, [safeLang, limit, offset]);
 
+    // 카테고리 번역 처리
     for (const post of rows) {
-  const originalCategories = post.categories
-    ? post.categories.split(',').map(c => c.trim())
-    : [];
+      const originalCategories = post.categories
+        ? post.categories.split(',').map(c => c.trim())
+        : [];
 
-  const translatedCategories = [];
+      const translatedCategories = [];
 
-  if (originalCategories.length > 0) {
-    const categoryColumn =
-      (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+      if (originalCategories.length > 0) {
+        const categoryColumn = (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+        const placeholders = originalCategories.map(() => '?').join(',');
 
-    const placeholders = originalCategories.map(() => '?').join(',');
+        const [categoryRows] = await db.query(
+          `SELECT COALESCE(${categoryColumn}, name) AS name
+           FROM categories
+           WHERE name IN (${placeholders})`,
+          originalCategories
+        );
+        translatedCategories.push(...categoryRows.map(r => r.name));
+      }
+      post.translated_categories_display = translatedCategories;
+    }
 
-    const [categoryRows] = await db.query(
-      `SELECT COALESCE(${categoryColumn}, name) AS name
-       FROM categories
-       WHERE name IN (${placeholders})`,
-      originalCategories
-    );
-
-    translatedCategories.push(...categoryRows.map(r => r.name));
-  }
-
-  post.translated_categories_display = translatedCategories;
-}
-    // 비공개 가리기
+    // 결과 매핑
     const userId = req.session.user?.id;
     const isAdmin = req.session.user?.is_admin === 1;
+
     const visible = rows.map(post => {
       const contentText = String(post.content || '')
         .replace(/<[^>]+>/g, '')
         .replace(/\s+/g, ' ')
         .trim();
-      return (post.is_private && post.user_id !== userId && !isAdmin)
-        ? {
-            id: post.id,
-            title: '(비공개 글)',
-            author: post.author,
-            created_at: post.created_at,
-            created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
-            is_pinned: !!post.is_pinned,
-            preview: '이 글은 비공개로 설정되어 있습니다.',
-            translated_categories_display: post.translated_categories_display || []
-          }
-        : {
-            id: post.id,
-            title: post.title,
-            author: post.author,
-            created_at: post.created_at,
-            created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
-            is_pinned: !!post.is_pinned,
-            preview: contentText.slice(0, 120),
-          };
+
+      // 비공개 글 처리
+      if (post.is_private && post.user_id !== userId && !isAdmin) {
+        return {
+          id: post.id,
+          title: '(비공개 글)',
+          author: post.author,
+          created_at: post.created_at,
+          created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
+          is_pinned: !!post.is_pinned,
+          preview: '이 글은 비공개로 설정되어 있습니다.',
+          translated_categories_display: post.translated_categories_display || []
+        };
+      }
+
+      // ✅ 공개 글 처리 (여기에 카테고리가 빠져있었습니다!)
+      return {
+        id: post.id,
+        title: post.title,
+        author: post.author,
+        created_at: post.created_at,
+        created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
+        is_pinned: !!post.is_pinned,
+        preview: contentText.slice(0, 120),
+        // 👇 이 줄이 핵심입니다! 이걸 넣어줘야 index.js가 받아서 그립니다.
+        translated_categories_display: post.translated_categories_display || [] 
+      };
     });
 
-    // 다음 페이지가 있는지 간단 플래그
     const [[{ count }]] = await db.query(`SELECT COUNT(*) AS count FROM posts`);
     const hasMore = offset + limit < count;
 
@@ -1481,7 +1486,6 @@ app.get('/api/recent-posts', async (req, res) => {
     });
   } catch (err) {
     console.error('최근 글 API 오류:', err);
-    // API 에러 시 JSON으로 응답
     res.status(500).json({ error: 'failed to load posts' });
   }
 });
