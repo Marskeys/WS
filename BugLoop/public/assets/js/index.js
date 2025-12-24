@@ -175,15 +175,18 @@ window.loadMorePosts = async function () {
     data.posts.forEach((post) => {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
+      
+      // 게시물 클릭 시 상세 이동 (선택사항)
+      el.onclick = () => { window.location.href = `/${lang}/post/${post.id}`; };
 
       const now = new Date();
       const createdAt = new Date(post.created_at);
-      const updatedAt = new Date(post.updated_at);
+      const updatedAt = post.updated_at ? new Date(post.updated_at) : createdAt;
       const oneDay = 1000 * 60 * 60 * 24;
 
       const isNewPost = now - createdAt < oneDay;
       const wasEdited = updatedAt > createdAt;
-      const isRecentlyEdited = wasEdited && now - updatedAt < oneDay;
+      const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
       const showEditedLabel = !isNewPost && isRecentlyEdited;
 
       let labelHtml = '';
@@ -197,48 +200,30 @@ window.loadMorePosts = async function () {
         }</span>`;
       }
 
+      // 텍스트 미리보기 처리
       let previewText = '';
-      if (post.content) {
-        let clean = post.content
-          .replace(/<div class="auto-toc"[\s\S]*?<\/div>/gi, '')
-          .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
-          .replace(/<[^>]+>/gi, '')
-          .replace(/\s+/g, ' ')
-          .trim();
+      const rawContent = post.content || post.preview || '';
+      previewText = rawContent
+        .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+        .slice(0, 120);
 
-        previewText = clean
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .slice(0, 120);
-      } else if (post.preview) {
-        previewText = post.preview
-          .replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .slice(0, 120);
-      }
-
-      /* ✅ 추가된 부분: 카테고리 렌더링 */
+      /* ✅ 핵심: 카테고리 렌더링 로직 */
       let categoryHtml = '';
-      if (
-        post.translated_categories_display &&
-        post.translated_categories_display.length
-      ) {
+      if (post.translated_categories_display && post.translated_categories_display.length > 0) {
         categoryHtml = `
           <div class="recent-post-categories">
             ${post.translated_categories_display
-              .map(
-                (cat) =>
-                  `<span class="post-category">#${cat}</span>`
-              )
+              .map(cat => `<span class="post-category">#${cat}</span>`)
               .join('')}
           </div>
         `;
       }
 
       el.innerHTML = `
-        <a href="/${lang}/post/${post.id}" class="recent-post-title">
+        <a href="/${lang}/post/${post.id}" class="recent-post-title" onclick="event.stopPropagation()">
           ${labelHtml}
           ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
           ${post.title}
@@ -257,8 +242,14 @@ window.loadMorePosts = async function () {
       container.appendChild(el);
     });
 
+    if (!data.hasMore) {
+      const btn = document.getElementById('load-more-btn');
+      if (btn) btn.style.display = 'none';
+    }
+
     loading = false;
   } catch (e) {
+    console.error("Load more posts error:", e);
     loading = false;
   }
 };
