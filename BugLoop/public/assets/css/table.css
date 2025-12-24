@@ -259,19 +259,25 @@
 }
 
 .page-link {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.15em 0.35em;   /* 🔥 핵심: 숫자 기준 em */
   border: 1px solid #555;
   background: #1a1a1a;
   color: #ddd;
   text-decoration: none;
+
   border-radius: 4px;
-  transition: all 0.2s ease;
-  min-width: 24px;
-  text-align: center;
+  font-size: 0.75rem;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1;           /* 🔥 높이 과잉 제거 */
+
+  min-width: unset;         /* ❗ 중요 */
+  width: auto;              /* ❗ 숫자만 감싸게 */
 }
+
 
 .page-link:hover {
   background: #333;
