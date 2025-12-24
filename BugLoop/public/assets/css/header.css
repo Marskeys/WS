@@ -1109,15 +1109,21 @@ html:not(.dark) .lang-menu a.lang-option:focus {
   flex: 0 0 auto; /* ⭐ 핵심 */
 }
 
+.theme-toggle-btn i {
+  font-size: 20px;   /* ← 18 → 20이 안정적 */
+  line-height: 1;
+}
+
 .sidebar-lang-theme {
   align-items: center; /* stretch 방지 */
 }
+
 
 /* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
 html:not(.dark) .theme-toggle-btn {
   background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
   border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
-  color: var(--ink-1, #333); /* 라이트 모드 아이콘 색상: 검은색 */
+  color: var(--ink-1, #ffffff); /* 라이트 모드 아이콘 색상: 검은색 */
 }
 
 
