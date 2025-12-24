@@ -1631,21 +1631,22 @@ db.query('SELECT NOW()')
 
   const { exec } = require('child_process');
 
+// ===============================
+// 🚀 GitHub Webhook (자동 배포)
+// ===============================
 app.post('/webhook', (req, res) => {
-  console.log('🚀 GitHub Webhook 수신');
+  const { exec } = require('child_process');
 
-  exec('bash /home/ubuntu/WS/deploy.sh', (err, stdout, stderr) => {
+  exec('bash ~/WS/deploy.sh', (err, stdout, stderr) => {
     if (err) {
-      console.error('❌ 배포 실패:', err);
-      console.error(stderr);
+      console.error('❌ Deploy error:', err);
       return res.status(500).send('deploy failed');
     }
-
-    console.log('✅ 배포 성공');
-    console.log(stdout);
-    res.status(200).send('ok');
+    console.log('✅ Deploy success:', stdout);
+    res.send('ok');
   });
 });
+
 
 
 // 서버 실행
