@@ -581,20 +581,19 @@ img[data-heic-loading] {
 html.dark .postview-container::before {
   content: "";
   position: absolute;
-  inset: -40px;
-  border-radius: 24px;
+  inset: -60px;               /* 퍼지는 범위 확대 */
+  border-radius: 28px;
+
   background: radial-gradient(
     ellipse at top,
-    rgba(255, 210, 120, 0.18),
-    rgba(255, 210, 120, 0.08) 35%,
-    transparent 65%
+    rgba(255, 215, 140, 0.35), /* 🔥 핵심: 밝기 대폭 증가 */
+    rgba(255, 215, 140, 0.18) 35%,
+    rgba(255, 215, 140, 0.08) 55%,
+    transparent 70%
   );
-  filter: blur(30px);
-  opacity: 0.85;
+
+  filter: blur(36px);         /* 더 부드럽게 */
+  opacity: 1;                 /* ❗ 숨김 없이 100% */
   z-index: -1;
   pointer-events: none;
-}
-
-html[data-theme="light"] .postview-container::before {
-  display: none;
 }
