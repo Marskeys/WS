@@ -1413,6 +1413,31 @@ app.get('/api/recent-posts', async (req, res) => {
       LIMIT ? OFFSET ?
     `, [safeLang, limit, offset]);
 
+    for (const post of rows) {
+  const originalCategories = post.categories
+    ? post.categories.split(',').map(c => c.trim())
+    : [];
+
+  const translatedCategories = [];
+
+  if (originalCategories.length > 0) {
+    const categoryColumn =
+      (safeLang === 'ko') ? 'name' : `name_${safeLang}`;
+
+    const placeholders = originalCategories.map(() => '?').join(',');
+
+    const [categoryRows] = await db.query(
+      `SELECT COALESCE(${categoryColumn}, name) AS name
+       FROM categories
+       WHERE name IN (${placeholders})`,
+      originalCategories
+    );
+
+    translatedCategories.push(...categoryRows.map(r => r.name));
+  }
+
+  post.translated_categories_display = translatedCategories;
+}
     // 비공개 가리기
     const userId = req.session.user?.id;
     const isAdmin = req.session.user?.is_admin === 1;
@@ -1429,7 +1454,7 @@ app.get('/api/recent-posts', async (req, res) => {
             created_at: post.created_at,
             created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
             is_pinned: !!post.is_pinned,
-            preview: '이 글은 비공개로 설정되어 있습니다.'
+            preview: '이 글은 비공개로 설정되어 있습니다.',
           }
         : {
             id: post.id,
@@ -1438,7 +1463,8 @@ app.get('/api/recent-posts', async (req, res) => {
             created_at: post.created_at,
             created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
             is_pinned: !!post.is_pinned,
-            preview: contentText.slice(0, 120)
+            preview: contentText.slice(0, 120),
+            translated_categories_display: post.translated_categories_display
           };
     });
 
