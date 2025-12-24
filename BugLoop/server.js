@@ -32,6 +32,10 @@ cookie: {
 }
 }));
 
+// 미들웨어 설정
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+
 app.use('/', sitemapRoutes);
 app.use('/', sitemapPagesRoutes);
 app.use('/admin', adminRoutes);
@@ -185,9 +189,7 @@ app.get('/__whoami', (req, res) => {
   });
 });
 
-// 미들웨어 설정
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json({ limit: '50mb' }));
+
 
 
 
