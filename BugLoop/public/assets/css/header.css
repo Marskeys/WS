@@ -1119,11 +1119,17 @@ html:not(.dark) .lang-menu a.lang-option:focus {
 }
 
 
+html.dark .theme-toggle-btn {
+  background: var(--vscode-sideBar-background, #333); /* 다크 모드 사이드바 배경색 */
+  border: 1px solid var(--vscode-sideBar-border, #444); /* 다크 모드 경계선 */
+  color: var(--ink-1, #ffffff); /* 다크 모드 아이콘 색상: 흰색 */
+}
+
 /* 💡 라이트 모드일 때 토글 버튼 스타일 조정 */
 html:not(.dark) .theme-toggle-btn {
   background: var(--vscode-sideBar-background, #f3f3f3); /* 라이트 모드 사이드바 배경색 */
   border: 1px solid var(--vscode-sideBar-border, #ccc); /* 라이트 모드 경계선 */
-  color: var(--ink-1, #ffffff); /* 라이트 모드 아이콘 색상: 검은색 */
+  color: var(--ink-1, #000000); /* 라이트 모드 아이콘 색상: 검은색 */
 }
 
 
