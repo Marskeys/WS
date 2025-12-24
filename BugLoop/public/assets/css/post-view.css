@@ -50,11 +50,11 @@ body.modal-open {
   color: #333;
   max-width: 640px;
   margin: 0 auto;
-  padding-left: 0.3rem;
+  padding-left: 0rem;
   position: relative;
   word-break: keep-all;
   overflow-wrap: anywhere;
-  text-align: center;
+  text-align: left;
 }
 
 html.dark body .post-content {
