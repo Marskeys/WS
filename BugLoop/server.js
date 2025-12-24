@@ -1455,6 +1455,7 @@ app.get('/api/recent-posts', async (req, res) => {
             created_fmt: format(new Date(post.created_at), 'yyyy.MM.dd'),
             is_pinned: !!post.is_pinned,
             preview: '이 글은 비공개로 설정되어 있습니다.',
+            translated_categories_display: [] 
           }
         : {
             id: post.id,
