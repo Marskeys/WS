@@ -638,7 +638,6 @@ html.dark{
   left: 0;
   top: 0;
   z-index: 10;
-  background: linear-gradient(90deg, #4fd1c5 0%, #3182ce 100%) !important;
   font-size: 0.95rem;
   font-weight: 500;
   color: #fff;
@@ -1351,7 +1350,7 @@ html {
   display: inline-flex;
   align-items: center;
 
-  background: black;          /* ✅ 배경 투명 */
+  background: transparent;          /* ✅ 배경 투명 */
   color: #ffffff;                   /* 글자 흰색 */
 
   border: 2.5px solid #ffffff;      /* ✅ 굵은 흰 테두리 */
