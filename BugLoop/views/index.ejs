@@ -3,18 +3,18 @@
 <head>
   <%- include('partials/head', { isIndex: true }) -%>
   <link rel="stylesheet" href="/assets/css/index.css" />
-  
+
   <style>
     .recent-post-categories {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 8px; /* 제목과의 간격 */
+      margin-bottom: 8px;
     }
     .post-category {
       display: inline-block;
-      background-color: #007bff; /* 파란색 배경 */
-      color: #ffffff;            /* 하얀색 글씨 */
+      background-color: #007bff;
+      color: #ffffff;
       font-size: 12px;
       font-weight: 600;
       padding: 3px 8px;
@@ -26,26 +26,33 @@
 </head>
 <body>
   <div id="preloader"><div class="spinner"></div></div>
+
   <%- include('partials/header') -%>
-  <div id="panel-root" data-pjax-scope><%- include('partials/panel') -%></div>
+  <div id="panel-root" data-pjax-scope>
+    <%- include('partials/panel') -%>
+  </div>
 
   <div class="app-shell">
+
+    <!-- 📚 진행 중인 책 -->
     <div class="section-title-wrapper">
       <h1 class="section-title"><%= locale.index.ongoing %></h1>
     </div>
 
     <div class="carousel">
-      <% 
+      <%
         const ITEMS_PER_PAGE = 3;
+
         const getPaginatedToc = (tocData) => {
           if (!tocData) return { paginatedToc: [], totalPages: 0 };
           const totalPages = Math.ceil(tocData.length / ITEMS_PER_PAGE);
-          const paginatedToc = Array.from({ length: totalPages }, (_, i) => 
-            tocData.slice(i * ITEMS_PER_PAGE, (i + 1) * ITEMS_PER_PAGE)
+          const paginatedToc = Array.from(
+            { length: totalPages },
+            (_, i) => tocData.slice(i * ITEMS_PER_PAGE, (i + 1) * ITEMS_PER_PAGE)
           );
           return { paginatedToc, totalPages };
         };
-        
+
         const renderTocHtmlSSR = (sections, bookKey) => {
           if (!sections) return '';
           let html = '<ul>';
@@ -53,15 +60,25 @@
             html += `<li><h5>${s.section}</h5><ul>`;
             s.chapters.forEach(ch => {
               const url = `/${lang}/books/${bookKey}/contents/${ch.id}`;
-              html += `<li>${ch.url ? `<a href="${url}" class="toc-link active">${ch.title}</a>` : `<span class="toc-link disabled">${ch.title}</span>`}`;
+              html += `<li>${
+                ch.url
+                  ? `<a href="${url}" class="toc-link active">${ch.title}</a>`
+                  : `<span class="toc-link disabled">${ch.title}</span>`
+              }`;
+
               if (ch.sub) {
                 html += '<ul>';
                 ch.sub.forEach(sub => {
                   const subUrl = `/${lang}/books/${bookKey}/contents/${sub.id}`;
-                  html += `<li>${sub.url ? `<a href="${subUrl}" class="toc-link active">${sub.title}</a>` : `<span class="toc-link disabled">${sub.title}</span>`}</li>`;
+                  html += `<li>${
+                    sub.url
+                      ? `<a href="${subUrl}" class="toc-link active">${sub.title}</a>`
+                      : `<span class="toc-link disabled">${sub.title}</span>`
+                  }</li>`;
                 });
                 html += '</ul>';
               }
+
               html += '</li>';
             });
             html += '</ul></li>';
@@ -69,73 +86,91 @@
           return html + '</ul>';
         };
 
-        const bookKeys = ['cuteAcoustics', 'unfinishedPain', 'pianistProducer', 'warmthOfCalc'];
+        const bookKeys = [
+          'cuteAcoustics',
+          'unfinishedPain',
+          'pianistProducer',
+          'warmthOfCalc'
+        ];
+
         bookKeys.forEach((key, idx) => {
           const book = locale.books[key];
           const { paginatedToc, totalPages } = getPaginatedToc(book.toc);
-      -%>
+      %>
+
       <div class="book-card" data-index="<%= idx %>" data-book-key="<%= key %>">
-        <% if (book.updated) { -%>
-          <div class="book-updated-badge"><%= locale.ui.bookUpdatedBadge || '새 챕터!' %></div>
-        <% } -%>
+        <% if (book.updated) { %>
+          <div class="book-updated-badge">
+            <%= locale.ui.bookUpdatedBadge || '새 챕터!' %>
+          </div>
+        <% } %>
+
         <div class="book-content-wrapper">
           <div class="book-cover-wrapper">
-            <video 
-              class="book-cover" 
-              src="/assets/images/book<%= idx + 1 %>.webm" 
+            <video
+              class="book-cover"
+              src="/assets/images/book<%= idx + 1 %>.webm"
               poster="/assets/images/book<%= idx + 1 %>.jpg"
-              autoplay 
-              loop 
-              muted 
-              playsinline
+              autoplay loop muted playsinline
               fetchpriority="<%= idx < 2 ? 'high' : 'auto' %>"
               preload="<%= idx < 2 ? 'auto' : 'metadata' %>">
-              <source src="/assets/images/book<%= idx + 1 %>.webm" type="video/webm">
-              이미지(동영상)를 불러올 수 없습니다.
             </video>
           </div>
+
           <div class="book-info">
             <div class="book-title"><%= book.title %></div>
             <div style="font-size:0.85rem; color:var(--ink-2); margin-top:4px;">
               <%= locale.ui["book-author"] %> : <%= book.author %>
             </div>
           </div>
+
           <div class="book-toc">
             <h4><%= locale.ui["tocButton"] %></h4>
+
             <div class="pagination" data-book-id="<%= key %>-pagination">
-              <% for(let i = 1; i <= totalPages; i++) { -%>
-                <span class="pagination-number <%= i === 1 ? 'active' : '' %>"
-                      onclick="changePage(event, '<%= key %>', <%= i %>)"><%= i %></span>
-                <% if (i < totalPages) { -%><span class="pagination-divider">|</span><% } -%>
-              <% } -%>
+              <% for (let i = 1; i <= totalPages; i++) { %>
+                <span
+                  class="pagination-number <%= i === 1 ? 'active' : '' %>"
+                  onclick="changePage(event, '<%= key %>', <%= i %>)">
+                  <%= i %>
+                </span>
+                <% if (i < totalPages) { %>
+                  <span class="pagination-divider">|</span>
+                <% } %>
+              <% } %>
             </div>
+
             <div class="paginated-toc" data-book-id="<%= key %>-toc">
               <%- renderTocHtmlSSR(paginatedToc[0], key) %>
             </div>
           </div>
         </div>
       </div>
-      <% }) -%>
+      <% }) %>
     </div>
 
-    <div class="recent-posts-wrapper section-title-wrapper" style="margin-top:30px; margin-bottom:0;">
-      <h2 class="section-title"><%= locale.index.recentPosts || "최근 게시물" %></h2>
+    <!-- 📝 최근 게시물 -->
+    <div class="recent-posts-wrapper section-title-wrapper" style="margin-top:30px;">
+      <h2 class="section-title">
+        <%= locale.index.recentPosts || "최근 게시물" %>
+      </h2>
     </div>
 
     <div class="recent-posts" id="posts-container">
       <% posts.slice(0, 5).forEach(post => { 
-        const now = new Date(),
-              cAt = new Date(post.created_at),
-              uAt = new Date(post.updated_at),
-              oneDay = 86400000;
-        const isNew = (now - cAt) < oneDay;
+        const now = new Date();
+        const cAt = new Date(post.created_at);
+        const uAt = new Date(post.updated_at);
+        const oneDay = 86400000;
+
+        const isNew  = (now - cAt) < oneDay;
         const isEdit = uAt > cAt && (now - uAt < oneDay) && !isNew;
 
-        // ✅ 카테고리 데이터 준비
         const displayCats = Array.isArray(post.translated_categories_display)
           ? post.translated_categories_display
-          : (post.categories ? post.categories.split(',').map(c => c.trim()).filter(Boolean) : []);
-      -%>
+          : [];
+      %>
+
       <div class="recent-post-item">
 
         <% if (displayCats.length) { %>
@@ -147,13 +182,19 @@
         <% } %>
 
         <a href="/<%= lang %>/post/<%= post.id %>" class="recent-post-title">
-          <% if (isNew) { -%>
-            <span class="label-icon new-icon"><%= locale.ui.newPost || 'NEW' %></span>
-          <% } else if (isEdit) { -%>
-            <span class="label-icon edited-icon"><%= locale.ui.editedPost || 'UPDATED' %></span>
-          <% } -%>
-          <% if (post.is_pinned) { -%><span class="badge-pinned">📌</span><% } -%>
-          <% if (post.is_private) { -%><span class="badge-private">🔒</span><% } -%>
+          <% if (isNew) { %>
+            <span class="label-icon new-icon">
+              <%= locale.ui.newPost || 'NEW' %>
+            </span>
+          <% } else if (isEdit) { %>
+            <span class="label-icon edited-icon">
+              <%= locale.ui.editedPost || 'UPDATED' %>
+            </span>
+          <% } %>
+
+          <% if (post.is_pinned) { %><span class="badge-pinned">📌</span><% } %>
+          <% if (post.is_private) { %><span class="badge-private">🔒</span><% } %>
+
           <%= post.title %>
         </a>
 
@@ -163,24 +204,19 @@
           <span><%= format(cAt, 'yyyy.MM.dd') %></span>
         </div>
 
+        <!-- ✅ 서버에서 만든 요약 그대로 출력 -->
         <div class="recent-post-preview">
-          <% 
-            const preview = post.content
-              .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
-              .replace(/&nbsp;/gi, ' ') 
-              .replace(/\s+/g, ' ')
-              .trim()
-              .slice(0, 120);
-          -%>
-          <%= preview %>...
+          <%= post.preview %>...
         </div>
+
       </div>
-      <% }) -%>
+      <% }) %>
     </div>
 
     <button id="load-more-btn" onclick="loadMorePosts()">
       <%= locale.index.loadMore || "더보기" %>
     </button>
+
   </div>
 
   <footer class="app-footer">© 2027 BugLoop</footer>
@@ -188,12 +224,13 @@
   <%- include('partials/scripts') -%>
 
   <script>
-    window.__APP__ = { 
-      lang: "<%= lang %>", 
-      locale: <%- JSON.stringify(locale.ui || {}) %>, 
-      books: <%- JSON.stringify(locale.books || {}) %> 
+    window.__APP__ = {
+      lang: "<%= lang %>",
+      locale: <%- JSON.stringify(locale.ui || {}) %>,
+      books: <%- JSON.stringify(locale.books || {}) %>
     };
   </script>
+
   <script src="/assets/js/index.js" defer></script>
 </body>
 </html>
