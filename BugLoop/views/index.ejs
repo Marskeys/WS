@@ -163,33 +163,38 @@
           <span><%= format(cAt, 'yyyy.MM.dd') %></span>
         </div>
 
-        <div class="recent-post-preview">
-          <% 
-           const preview = post.content
-  // ✅ 자동 목차 블록 제거 (auto-toc / toc / floating-toc 계열)
-  .replace(/<div[^>]*(auto-toc|toc|floating-toc)[^>]*>[\s\S]*?<\/div>/gi, '')
+    <div class="recent-post-preview">
+  <%
+    let content = post.content || '';
 
-  // ✅ TOC 관련 ul 자체도 혹시 남아있으면 제거
-  .replace(/<ul[^>]*class="[^"]*(toc)[^"]*"[^>]*>[\s\S]*?<\/ul>/gi, '')
+    // 1️⃣ auto-toc 시작 위치부터 잘라냄 (중첩 구조 대응)
+    const tocIndex = content.search(/<div\s+class=["']auto-toc["'][^>]*>/i);
+    if (tocIndex !== -1) {
+      content = content.slice(tocIndex);
+      content = content.replace(
+        /<div\s+class=["']auto-toc["'][^>]*>[\s\S]*?<\/div>/i,
+        ''
+      );
+    }
 
-  // 스타일 제거
-  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+    // 2️⃣ style 태그 제거
+    content = content.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
 
-  // 모든 HTML 태그 제거
-  .replace(/<[^>]+>/g, '')
+    // 3️⃣ HTML 태그 제거
+    content = content.replace(/<[^>]+>/g, '');
 
-  // 엔티티 정리
-  .replace(/&nbsp;/gi, ' ')
-  .replace(/&[a-z]+;/gi, ' ')
+    // 4️⃣ 엔티티 / 공백 정리
+    content = content
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/&[a-z]+;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-  // 공백 정리
-  .replace(/\s+/g, ' ')
-  .trim()
-  .slice(0, 120);
+    const preview = content.slice(0, 120);
+  %>
+  <%= preview %>...
+</div>
 
-          -%>
-          <%= preview %>...
-        </div>
       </div>
       <% }) -%>
     </div>
