@@ -165,13 +165,28 @@
 
         <div class="recent-post-preview">
           <% 
-            const preview = post.content
-              .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
-              .replace(/&nbsp;/gi, ' ') 
-              .replace(/&[a-z]+;/gi, ' ')
-              .replace(/\s+/g, ' ')
-              .trim()
-              .slice(0, 120);
+           const preview = post.content
+  // ✅ 자동 목차 블록 제거 (auto-toc / toc / floating-toc 계열)
+  .replace(/<div[^>]*(auto-toc|toc|floating-toc)[^>]*>[\s\S]*?<\/div>/gi, '')
+
+  // ✅ TOC 관련 ul 자체도 혹시 남아있으면 제거
+  .replace(/<ul[^>]*class="[^"]*(toc)[^"]*"[^>]*>[\s\S]*?<\/ul>/gi, '')
+
+  // 스타일 제거
+  .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+
+  // 모든 HTML 태그 제거
+  .replace(/<[^>]+>/g, '')
+
+  // 엔티티 정리
+  .replace(/&nbsp;/gi, ' ')
+  .replace(/&[a-z]+;/gi, ' ')
+
+  // 공백 정리
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 120);
+
           -%>
           <%= preview %>...
         </div>
