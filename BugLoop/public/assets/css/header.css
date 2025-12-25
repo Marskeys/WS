@@ -1319,7 +1319,7 @@ html:not(.dark) .theme-toggle-btn {
 }
 
 html {
-  font-size: calc(16px * var(--font-scale));
+  font-size: calc(15px * var(--font-scale));
 }
 
 @media (max-width: 768px) {
