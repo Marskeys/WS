@@ -688,3 +688,22 @@ html.dark .recent-post-title:hover {
 .recent-post-title:hover {
   font-weight: 600; /* SCDream6 */
 }
+
+
+.badge-pinned {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 2px;
+  color: #217ee8;          /* BugLoop 메인 블루 */
+  font-size: 0.95rem;
+}
+
+.badge-pinned i {
+  transform: rotate(-20deg); /* 살짝 박힌 느낌 */
+}
+
+.recent-post-title:hover .badge-pinned i {
+  transform: rotate(-20deg) scale(1.1);
+  transition: transform 0.2s ease;
+}
+
