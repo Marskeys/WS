@@ -176,8 +176,6 @@ window.loadMorePosts = async function () {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
       
-      el.onclick = () => { window.location.href = `/${lang}/post/${post.id}`; };
-
       const now = new Date();
       const createdAt = new Date(post.created_at);
       const updatedAt = post.updated_at ? new Date(post.updated_at) : createdAt;
@@ -190,51 +188,51 @@ window.loadMorePosts = async function () {
 
       let labelHtml = '';
       if (isNewPost) {
-        labelHtml = `<span class="label-icon new-icon">${
-          window.__APP__.locale.newPost || 'NEW'
-        }</span>`;
+        labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
       } else if (showEditedLabel) {
-        labelHtml = `<span class="label-icon edited-icon">${
-          window.__APP__.locale.editedPost || 'UPDATED'
-        }</span>`;
+        labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      // 텍스트 미리보기 처리
-      let previewText = '';
-      const rawContent = post.content || post.preview || '';
-      previewText = rawContent
+      // ✅ [해결] EJS와 동일한 정규식을 사용하여 목차(auto-toc) 및 스타일 태그 완벽 제거
+      const rawContent = post.content || '';
+      const previewText = rawContent
         .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
+        .replace(/&nbsp;/gi, ' ')
         .replace(/\s+/g, ' ')
         .trim()
-        .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
         .slice(0, 120);
 
-      /* ✅ [수정됨] 카테고리 렌더링 로직 (# 제거) */
+      // ✅ [해결] 카테고리 데이터가 있을 경우 렌더링 (EJS 구조와 일치)
       let categoryHtml = '';
       if (post.translated_categories_display && post.translated_categories_display.length > 0) {
         categoryHtml = `
           <div class="recent-post-categories">
             ${post.translated_categories_display
-              .map(cat => `<span class="post-category">${cat}</span>`) // 샵(#) 제거됨
+              .map(cat => `<span class="post-category">${cat}</span>`)
               .join('')}
           </div>
         `;
       }
 
-      /* ✅ [수정됨] HTML 구조 변경 (카테고리를 제목 위로 이동) */
+      // ✅ [해결] HTML 구조를 index.ejs와 1:1로 맞춤
       el.innerHTML = `
-        ${categoryHtml} <a href="/${lang}/post/${post.id}" class="recent-post-title" onclick="event.stopPropagation()">
+        ${categoryHtml}
+        <a href="/${lang}/post/${post.id}" class="recent-post-title">
           ${labelHtml}
           ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
-          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''} ${post.title}
+          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''}
+          ${post.title}
         </a>
 
         <div class="recent-post-meta">
           <span>${post.author}</span>
           <span>·</span>
-          <span>${post.created_fmt}</span>
+          <span>${post.created_fmt || new Date(post.created_at).toLocaleDateString()}</span>
         </div>
-        <div class="recent-post-preview">${previewText}...</div>
+
+        <div class="recent-post-preview">
+          ${previewText}...
+        </div>
       `;
 
       container.appendChild(el);
