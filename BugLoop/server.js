@@ -1396,53 +1396,55 @@ function generateMeaningfulPreview(html, maxLength = 120) {
 
   let cleaned = String(html);
 
-  // auto-toc 제거
+  // 1️⃣ auto-toc 제거
   cleaned = cleaned.replace(
     /<div class="auto-toc"[\s\S]*?<\/div>/gi,
     ''
   );
 
-  // style / script 제거
+  // 2️⃣ style / script 제거
   cleaned = cleaned.replace(
     /<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi,
     ''
   );
 
-  // 모든 p 추출
-  const pMatches = [...cleaned.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
+  // 3️⃣ h2 기준으로 분리 (본문 시작점 찾기)
+  const h2Split = cleaned.split(/<h2[^>]*>/i);
+  const afterH2 = h2Split.length > 1 ? h2Split.slice(1).join('') : cleaned;
 
-  let candidate = '';
+  // 4️⃣ 모든 p 추출
+  const pMatches = [...afterH2.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
 
-  // 1순위: 두 번째 p
-  if (pMatches.length >= 2) {
-    candidate = pMatches[1][1];
-  }
-  // 2순위: 첫 번째 p
-  else if (pMatches.length === 1) {
-    candidate = pMatches[0][1];
-  }
-  // 3순위: 전체 텍스트 fallback
-  else {
-    candidate = cleaned;
-  }
-
-  // 태그 제거
-  candidate = candidate
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  // 진짜로 비었으면 최종 fallback
-  if (!candidate) {
-    candidate = cleaned
+  const normalize = (text) =>
+    text
       .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/gi, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+
+  // 5️⃣ 의미 있는 p 찾기
+  let candidate = '';
+
+  for (const match of pMatches) {
+    const text = normalize(match[1]);
+
+    // 너무 짧거나 의미 없는 문단 제외
+    if (!text) continue;
+    if (text.length < 20) continue; // 링크 안내, 공백 컷
+    if (/^여기|지난 글은/.test(text)) continue;
+
+    candidate = text;
+    break;
+  }
+
+  // 6️⃣ fallback: 그래도 없으면 전체 텍스트
+  if (!candidate) {
+    candidate = normalize(cleaned);
   }
 
   return candidate.slice(0, maxLength);
 }
+
 
 
 
