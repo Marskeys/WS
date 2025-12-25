@@ -5,19 +5,25 @@
 
 :root {
   --font-sans:
-    "S-CoreDream",
+    "SUIT",
     "Pretendard Variable",
     "Pretendard",
-    -apple-system, system-ui,
-    "Segoe UI", Roboto,
-    "Helvetica Neue", Arial,
-    "Noto Sans KR", "Noto Sans", sans-serif;
+    -apple-system,
+    system-ui,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans KR",
+    "Noto Sans",
+    sans-serif;
 
   --tracking-body: -0.003em;
   --tracking-ui: 0.012em;
   --lh-body: 1.55;
   --lh-heading: 1.25;
 }
+
 
 
 html,
