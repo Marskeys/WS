@@ -1402,10 +1402,15 @@ function generateMeaningfulPreview(html, maxLength = 120) {
     ''
   );
 
-  // 3️⃣ 첫 <p> 내용 우선 추출
-  const pMatch = cleaned.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
-  if (pMatch && pMatch[1]) {
-    cleaned = pMatch[1];
+  // 3️⃣ 모든 <p> 추출
+  const pMatches = [...cleaned.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
+
+  if (pMatches.length >= 2) {
+    // ✅ 두 번째 p
+    cleaned = pMatches[1][1];
+  } else if (pMatches.length === 1) {
+    // fallback: 첫 번째 p
+    cleaned = pMatches[0][1];
   }
 
   // 4️⃣ 모든 태그 제거
@@ -1512,7 +1517,6 @@ app.get('/api/recent-posts', async (req, res) => {
     res.status(500).json({ error: 'failed to load posts' });
   }
 });
-
 
 
 // 기타 라우트 (API 라우트 뒤에 배치)
