@@ -192,7 +192,11 @@
             </span>
           <% } %>
 
-          <% if (post.is_pinned) { %><span class="badge-pinned">📌</span><% } %>
+          <% if (post.is_pinned) { %>
+  <span class="badge-pinned">
+    <i class="fa-solid fa-thumbtack"></i>
+  </span>
+<% } %>
           <% if (post.is_private) { %><span class="badge-private">🔒</span><% } %>
 
           <%= post.title %>
