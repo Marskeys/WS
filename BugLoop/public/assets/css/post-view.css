@@ -569,8 +569,7 @@ img[data-heic-loading] {
   position: relative;
   max-width: 720px;
   margin: 4rem auto;
-  padding: 3rem 2rem;
-  padding-right: 1rem;
+  padding: 3rem 1.5rem;
   background: var(--bg-panel);
   color: var(--text-main);
   border-radius: 14px;
@@ -599,10 +598,3 @@ html.dark .postview-container::before {
   pointer-events: none;
 }
 
-body.no-fixed-footer.panel-open {
-  padding-left: 0 !important;
-}
-
-body.no-fixed-footer .left-controls {
-  padding-left: 0 !important;
-}
