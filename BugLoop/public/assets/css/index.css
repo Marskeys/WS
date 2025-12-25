@@ -645,7 +645,7 @@ html.dark .recent-post-meta {
   text-decoration: none;
   display: inline-block;
   padding: 2px 4px;
-
+text-decoration: none;
   background-color: transparent;
 
   transition:
@@ -657,7 +657,7 @@ html.dark .recent-post-meta {
 .recent-post-title:hover {
   color: #ffffff;
   background-color: #e951b2;
-
+text-decoration: none;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
