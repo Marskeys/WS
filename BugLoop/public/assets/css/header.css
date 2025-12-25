@@ -1350,7 +1350,7 @@ html {
   display: inline-flex;
   align-items: center;
 
-  background: transparent;          /* ✅ 배경 투명 */
+  background: rgba(0, 0, 0, 0.6);         /* ✅ 배경 투명 */
   color: #ffffff;                   /* 글자 흰색 */
 
   border: 2.5px solid #ffffff;      /* ✅ 굵은 흰 테두리 */
