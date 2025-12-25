@@ -617,3 +617,14 @@ html.dark #load-more-btn {
 .recent-post-item:hover .post-category {
   opacity: 0.9;
 }
+
+.recent-post-title {
+  color: #9FBFF6;           /* 아까 말한 그 하늘색 */
+  text-decoration: none;   /* 밑줄 제거 */
+  font-weight: 600;        /* 살짝 또렷하게 */
+}
+
+.recent-post-title:hover {
+  color: #B3CCFF;           /* 호버 시 살짝 밝게 */
+  text-decoration: underline;
+}
