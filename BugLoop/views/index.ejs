@@ -167,6 +167,7 @@
           <% 
             const preview = post.content
               .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
+              .replace(/&nbsp;/gi, ' ') 
               .replace(/\s+/g, ' ')
               .trim()
               .slice(0, 120);
