@@ -628,3 +628,13 @@ html.dark #load-more-btn {
   color: #B3CCFF;           /* 호버 시 살짝 밝게 */
   text-decoration: underline;
 }
+
+/* 기본 (라이트 모드) */
+.recent-post-meta {
+  color: #111; /* 거의 검정 */
+}
+
+/* 다크 모드 */
+html.dark .recent-post-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
