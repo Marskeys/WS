@@ -549,32 +549,46 @@ const handleEditRoute = async (req, res) => {
   }
 };
 
-function generateSummary(html) {
-  let text = String(html || '');
+function generateSummary(html, maxLen = 150) {
+  if (!html) return '';
 
-  // (1) auto-toc 전체 제거
-  text = text.replace(/<div[^>]*class="auto-toc"[^>]*>[\s\S]*?<\/div>/gi, '');
+  let text = String(html);
 
-  // (2) toc / 목차 텍스트 블록 제거
-  text = text.replace(/📑\s*목차[\s\S]*?(?=<h1|<p|$)/gi, '');
-  text = text.replace(/목차[\s\S]*?(?=<h1|<p|$)/gi, '');
+  // 1️⃣ auto-toc / style / script 제거
+  text = text
+    .replace(/<div[^>]*class="auto-toc"[^>]*>[\s\S]*?<\/div>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '');
 
-  // (3) 번호만 있는 목차 패턴 제거 (예: "1.", "2.")
-  text = text.replace(/^\s*\d+\.\s*$/gm, '');
+  // 2️⃣ 첫 번째 <h2> 찾기
+  const h2Match = text.match(/<h2[^>]*>[\s\S]*?<\/h2>/i);
+  if (!h2Match) {
+    // fallback: 태그 다 제거 후 앞부분
+    return text
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, maxLen);
+  }
 
-  // (4) style/script 제거
-  text = text.replace(/<style[\s\S]*?<\/style>/gi, '');
-  text = text.replace(/<script[\s\S]*?<\/script>/gi, '');
+  // 3️⃣ h2 이후 부분만 자르기
+  const afterH2 = text.slice(
+    text.indexOf(h2Match[0]) + h2Match[0].length
+  );
 
-  // (5) 모든 HTML 태그 제거
-  text = text.replace(/<[^>]+>/g, ' ');
+  // 4️⃣ 첫 문단 <p> 추출
+  const pMatch = afterH2.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+  if (!pMatch) return '';
 
-  // (6) 공백 정리
-  text = text.replace(/\s+/g, ' ').trim();
-
-  // (7) 길이 제한
-  return text.slice(0, 150);
+  // 5️⃣ HTML 제거 + 정리
+  return pMatch[1]
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLen);
 }
+
 
 
 
