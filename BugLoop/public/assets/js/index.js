@@ -4,17 +4,20 @@ window.booksData = books || {};
 const itemsPerPage = 4;
 
 /* =========================
-   📘 BOOK TOC (기존 그대로)
+   📘 BOOK TOC
 ========================= */
 const getPaginatedToc = (tocData) => {
   if (!tocData) return { paginatedToc: [], totalPages: 0 };
+
   const totalPages = Math.ceil(tocData.length / itemsPerPage);
   const paginatedToc = [];
+
   for (let i = 0; i < totalPages; i++) {
     paginatedToc.push(
       tocData.slice(i * itemsPerPage, i * itemsPerPage + itemsPerPage)
     );
   }
+
   return { paginatedToc, totalPages };
 };
 
@@ -75,6 +78,7 @@ window.changePage = function (event, bookKey, pageNumber) {
   const tocElement = card.querySelector('.book-toc');
 
   const { paginatedToc } = getPaginatedToc(bookData.toc);
+
   tocContainer.innerHTML = renderTocHtmlCSR(
     paginatedToc[pageNumber - 1],
     bookKey
@@ -95,9 +99,65 @@ window.changePage = function (event, bookKey, pageNumber) {
 };
 
 /* =========================
+   📕 BOOK CARD CLICK (복구됨)
+========================= */
+document.querySelectorAll('.book-card').forEach((card) => {
+  card.addEventListener('click', () => {
+    const isExpanded = card.classList.contains('expanded');
+    const toc = card.querySelector('.book-toc');
+    const video = card.querySelector('video');
+
+    document.querySelectorAll('.book-card').forEach((other) => {
+      if (other !== card) {
+        const wasOtherExpanded = other.classList.contains('expanded');
+        other.classList.remove('expanded');
+
+        const t = other.querySelector('.book-toc');
+        if (t) {
+          t.style.height = '0px';
+          t.style.padding = '0';
+          t.classList.add('closed');
+        }
+
+        if (wasOtherExpanded) {
+          const otherVideo = other.querySelector('video');
+          if (otherVideo) otherVideo.play().catch(() => {});
+        }
+      }
+    });
+
+    if (isExpanded) {
+      card.classList.remove('expanded');
+      if (toc) {
+        toc.style.height = '0px';
+        toc.style.padding = '0';
+        toc.classList.add('closed');
+      }
+      if (video) video.play().catch(() => {});
+    } else {
+      card.classList.add('expanded');
+      if (toc) {
+        toc.classList.remove('closed');
+        toc.style.padding = '26px 0 16px';
+        toc.style.height = 'auto';
+        const h = toc.scrollHeight;
+        toc.style.height = '0px';
+        requestAnimationFrame(() => {
+          toc.style.height = h + 'px';
+        });
+      }
+      setTimeout(() => {
+        if (card.classList.contains('expanded') && video) {
+          video.pause();
+        }
+      }, 500);
+    }
+  });
+});
+
+/* =========================
    📄 LOAD MORE POSTS
 ========================= */
-
 let offset = 5;
 let loading = false;
 
@@ -136,24 +196,23 @@ window.loadMorePosts = async function () {
 
       const now = new Date();
       const createdAt = new Date(post.created_at);
-      const updatedAt = post.updated_at ? new Date(post.updated_at) : createdAt;
+      const updatedAt = post.updated_at
+        ? new Date(post.updated_at)
+        : createdAt;
       const oneDay = 1000 * 60 * 60 * 24;
 
       const isNewPost = now - createdAt < oneDay;
-      const isRecentlyEdited =
-        updatedAt > createdAt && now - updatedAt < oneDay;
+      const wasEdited = updatedAt > createdAt;
+      const isRecentlyEdited = wasEdited && now - updatedAt < oneDay;
+      const showEditedLabel = !isNewPost && isRecentlyEdited;
 
       let labelHtml = '';
       if (isNewPost) {
         labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
-      } else if (isRecentlyEdited) {
+      } else if (showEditedLabel) {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      /* ✅ 핵심 수정 포인트
-         - content 절대 건드리지 않음
-         - 서버에서 내려준 preview 그대로 사용
-      */
       const previewText = post.preview || '';
 
       let categoryHtml = '';
@@ -176,7 +235,7 @@ window.loadMorePosts = async function () {
         <a href="/${lang}/post/${post.id}" class="recent-post-title" onclick="event.stopPropagation()">
           ${labelHtml}
           ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
-          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''} 
+          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''}
           ${post.title}
         </a>
 
