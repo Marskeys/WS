@@ -598,3 +598,11 @@ html.dark .postview-container::before {
   z-index: -1;
   pointer-events: none;
 }
+
+body.no-fixed-footer.panel-open {
+  padding-left: 0 !important;
+}
+
+body.no-fixed-footer .left-controls {
+  padding-left: 0 !important;
+}
