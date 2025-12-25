@@ -589,7 +589,7 @@ html.dark .postview-container::before {
     rgba(255, 215, 140, 0.35), /* 🔥 핵심: 밝기 대폭 증가 */
     rgba(255, 215, 140, 0.18) 35%,
     rgba(255, 215, 140, 0.08) 55%,
-    transparent 70%
+    transparent 50%
   );
 
   filter: blur(36px);         /* 더 부드럽게 */
