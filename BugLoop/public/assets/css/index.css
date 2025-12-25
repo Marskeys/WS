@@ -668,3 +668,18 @@ html.dark .recent-post-title:hover {
   color: #ffffff;
   background-color: #0c72e6;
 }
+
+
+.recent-post-title {
+  font-family: 'SCDream', 'SUIT', system-ui, sans-serif;
+  font-weight: 500; /* ← SCDream5 */
+}
+
+
+.recent-post-title .label-icon {
+  font-family: 'SUIT', system-ui, sans-serif;
+}
+
+.recent-post-title:hover {
+  font-weight: 600; /* SCDream6 */
+}
