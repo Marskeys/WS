@@ -443,7 +443,7 @@ html.dark .book-card.expanded {
 
 .recent-post-item:hover {
   background: var(--panel-2);
-  border-color: var(--primary);
+  border-color: transparent;
 }
 
 .recent-post-title {
