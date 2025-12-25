@@ -641,7 +641,6 @@ html.dark .recent-post-meta {
 
 /* 기본 상태 (hover에서 빠져나올 때 적용됨) */
 .recent-post-title {
-  color: var(--ink-1);
   text-decoration: none;
   display: inline-block;
   padding: 2px 4px;
