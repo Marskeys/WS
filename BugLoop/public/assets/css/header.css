@@ -1339,3 +1339,10 @@ html {
     margin-right: 10px;
   }
 }
+
+@media (max-width: 768px) {
+  .lang-menu a.lang-option:focus-visible {
+    outline: none;
+    background: var(--panel-2, #333);
+  }
+}
