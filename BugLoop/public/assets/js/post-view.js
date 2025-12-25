@@ -95,51 +95,34 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* =====================================================
-     ✅ 핵심: TOC 표시/숨김 로직
+     TOC 표시/숨김 로직
   ===================================================== */
   const updateTocVisibility = () => {
     if (!tocReady) return;
-
-    // sentinel의 위치 확인 (뷰포트 상단 기준)
     const rect = sentinel.getBoundingClientRect();
-    // 상단에서 10px 이상 위로 사라지면 'passed'
     const passed = rect.top < 10;
 
     if (window.innerWidth > 768) {
-      // 데스크탑 모드
-      if (passed) {
-        floatingToc.classList.add('show');
-      } else {
-        floatingToc.classList.remove('show');
-      }
+      passed ? floatingToc.classList.add('show') : floatingToc.classList.remove('show');
       mobileBtn.classList.remove('show');
     } else {
-      // 모바일 모드
       floatingToc.classList.remove('show');
-      if (passed) {
-        mobileBtn.classList.add('show');
-      } else {
-        mobileBtn.classList.remove('show');
-      }
+      passed ? mobileBtn.classList.add('show') : mobileBtn.classList.remove('show');
     }
   };
 
-  // 1. 즉시 실행 및 스크롤 이벤트 등록
   buildToc();
   window.addEventListener('scroll', updateTocVisibility);
   window.addEventListener('resize', updateTocVisibility);
-
-  // 2. 혹시 모를 로딩 지연 대응 (0.5초 뒤 강제 체크)
   setTimeout(updateTocVisibility, 500);
 
-  // 본문 변화 감지
   new MutationObserver(buildToc).observe(postContent, {
     childList: true,
     subtree: true
   });
 
   /* =====================================================
-     모바일 TOC 제어
+     모바일 TOC
   ===================================================== */
   mobileBtn.addEventListener('click', () => {
     mobileModal.style.display = 'flex';
@@ -164,13 +147,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
-     데스크탑 드래그 기능
+     데스크탑 드래그
   ===================================================== */
   if (window.innerWidth > 768) {
     let drag = false, sx, sy, sl, st;
     floatingToc.style.cursor = 'move';
     floatingToc.addEventListener('mousedown', e => {
-      // 링크 클릭 시에는 드래그 안 되게 방지
       if (e.target.tagName === 'A') return;
       drag = true;
       sx = e.clientX; sy = e.clientY;
@@ -186,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-     광고 및 TTS (기존 유지)
+     광고 + TTS
   ===================================================== */
   [...postContent.querySelectorAll('p')]
     .map((p, i) => ({ p, i }))
