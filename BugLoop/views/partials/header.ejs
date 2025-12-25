@@ -19,9 +19,24 @@
       <% if (shouldShowMenu) { %>
       <nav class="header-menu" aria-label="<%= h.mainMenu || 'Main Menu' %>">
         <ul class="main-menu-container">
-          <a href="https://www.youtube.com/@eBook.bugloop" target="_blank" aria-label="<%= h.youtubeLink || 'YouTube' %>">
-            <img src="/assets/images/youtube.png" alt="YouTube" style="height:28px; width:auto; vertical-align:middle; margin-left:3px; margin-right:3px;">
-          </a>
+         <!-- SNS 아이콘 묶음 -->
+<div class="header-sns-icons">
+  <!-- Instagram -->
+  <a href="https://instagram.com/dongsun.gpt" target="_blank" aria-label="Instagram">
+    <i class="fa-brands fa-instagram"></i>
+  </a>
+
+  <!-- Mail -->
+  <a href="mailto:dongsun.blogs@gmail.com" aria-label="Email">
+    <i class="fa-solid fa-envelope"></i>
+  </a>
+</div>
+
+<!-- YouTube -->
+<a href="https://www.youtube.com/@eBook.bugloop" target="_blank" aria-label="<%= h.youtubeLink || 'YouTube' %>">
+  <img src="/assets/images/youtube.png" alt="YouTube" class="youtube-icon">
+</a>
+
 
           <li class="menu-item-wrapper">
             <span class="menu-label"><%= h.recentVideos %></span>

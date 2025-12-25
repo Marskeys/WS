@@ -1363,3 +1363,39 @@ html {
 
   box-sizing: border-box;
 }
+
+
+.header-sns-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;              /* 아이콘 사이 간격 */
+  margin-right: 10px;     /* 유튜브와의 간격 */
+}
+
+.header-sns-icons a {
+  color: var(--ink-2);
+  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.header-sns-icons a:hover {
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* 네이버 SVG 크기 */
+.naver-icon {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+
+/* 유튜브 아이콘 클래스 (기존 inline style 제거 추천) */
+.youtube-icon {
+  height: 28px;
+  width: auto;
+  vertical-align: middle;
+}
+
