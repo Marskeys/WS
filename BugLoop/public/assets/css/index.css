@@ -649,14 +649,14 @@ text-decoration: none;
   background-color: transparent;
 
   transition:
-    background-color 1s ease,
-    color 1s ease;
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 
 /* hover 들어갈 때 (빠르게) */
 .recent-post-title:hover {
   color: #ffffff;
-  background-color: #e951b2;
+  background-color: #0c72e6;
 text-decoration: none;
   transition:
     background-color 0.3s ease,
