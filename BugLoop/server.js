@@ -799,15 +799,21 @@ const handleMainPage = async (req, res) => {
 
     const [posts] = await db.query(baseQuery, params);
 
-    const filteredPosts = posts.map(post => {
-      if (post.is_private && post.user_id !== userId && !isAdmin) {
-        return {
-          ...post,
-          content: '이 글은 비공개로 설정되어 있습니다.'
-        };
-      }
-      return post;
-    });
+const filteredPosts = posts.map(post => {
+  if (post.is_private && post.user_id !== userId && !isAdmin) {
+    return {
+      ...post,
+      content: '이 글은 비공개로 설정되어 있습니다.',
+      preview: '이 글은 비공개로 설정되어 있습니다.'
+    };
+  }
+
+  return {
+    ...post,
+    preview: generateMeaningfulPreview(post.content, 120)
+  };
+});
+
 
     for (const post of filteredPosts) {
       const originalCategories = post.categories ? post.categories.split(',').map(c => c.trim()) : [];
