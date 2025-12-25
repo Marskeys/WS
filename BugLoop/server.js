@@ -1456,11 +1456,7 @@ app.get('/api/recent-posts', async (req, res) => {
     const userId = req.session.user?.id;
     const isAdmin = req.session.user?.is_admin === 1;
 
-    const visible = rows.map(post => {
-      const contentText = String(post.content || '')
-        .replace(/<[^>]+>/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+   const contentText = generateSummary(post.content, 120);
 
       // 비공개 글 처리
       if (post.is_private && post.user_id !== userId && !isAdmin) {
