@@ -3,6 +3,9 @@ window.booksData = books || {};
 
 const itemsPerPage = 4;
 
+/* =========================
+   📘 BOOK TOC (기존 그대로)
+========================= */
 const getPaginatedToc = (tocData) => {
   if (!tocData) return { paginatedToc: [], totalPages: 0 };
   const totalPages = Math.ceil(tocData.length / itemsPerPage);
@@ -91,58 +94,9 @@ window.changePage = function (event, bookKey, pageNumber) {
   }
 };
 
-document.querySelectorAll('.book-card').forEach((card) => {
-  card.addEventListener('click', () => {
-    const isExpanded = card.classList.contains('expanded');
-    const toc = card.querySelector('.book-toc');
-    const video = card.querySelector('video');
-
-    document.querySelectorAll('.book-card').forEach((other) => {
-      if (other !== card) {
-        const wasOtherExpanded = other.classList.contains('expanded');
-        other.classList.remove('expanded');
-        const t = other.querySelector('.book-toc');
-        if (t) {
-          t.style.height = '0px';
-          t.style.padding = '0';
-          t.classList.add('closed');
-        }
-
-        if (wasOtherExpanded) {
-          const otherVideo = other.querySelector('video');
-          if (otherVideo) otherVideo.play().catch(() => {});
-        }
-      }
-    });
-
-    if (isExpanded) {
-      card.classList.remove('expanded');
-      if (toc) {
-        toc.style.height = '0px';
-        toc.style.padding = '0';
-        toc.classList.add('closed');
-      }
-      if (video) video.play().catch(() => {});
-    } else {
-      card.classList.add('expanded');
-      if (toc) {
-        toc.classList.remove('closed');
-        toc.style.padding = '26px 0 16px';
-        toc.style.height = 'auto';
-        const h = toc.scrollHeight;
-        toc.style.height = '0px';
-        requestAnimationFrame(() => {
-          toc.style.height = h + 'px';
-        });
-      }
-      setTimeout(() => {
-        if (card.classList.contains('expanded') && video) {
-          video.pause();
-        }
-      }, 500);
-    }
-  });
-});
+/* =========================
+   📄 LOAD MORE POSTS
+========================= */
 
 let offset = 5;
 let loading = false;
@@ -175,8 +129,10 @@ window.loadMorePosts = async function () {
     data.posts.forEach((post) => {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
-      
-      el.onclick = () => { window.location.href = `/${lang}/post/${post.id}`; };
+
+      el.onclick = () => {
+        window.location.href = `/${lang}/post/${post.id}`;
+      };
 
       const now = new Date();
       const createdAt = new Date(post.created_at);
@@ -184,29 +140,24 @@ window.loadMorePosts = async function () {
       const oneDay = 1000 * 60 * 60 * 24;
 
       const isNewPost = now - createdAt < oneDay;
-      const wasEdited = updatedAt > createdAt;
-      const isRecentlyEdited = wasEdited && (now - updatedAt < oneDay);
-      const showEditedLabel = !isNewPost && isRecentlyEdited;
+      const isRecentlyEdited =
+        updatedAt > createdAt && now - updatedAt < oneDay;
 
       let labelHtml = '';
       if (isNewPost) {
         labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
-      } else if (showEditedLabel) {
+      } else if (isRecentlyEdited) {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      // ✅ [수정됨] 미리보기에서 목차(auto-toc) 및 스타일 태그 제거
-      const rawContent = post.content || post.preview || '';
-      const previewText = rawContent
-        .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '') // 목차+스타일+태그 제거
-        .replace(/&nbsp;/gi, ' ') 
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 120);
+      /* ✅ 핵심 수정 포인트
+         - content 절대 건드리지 않음
+         - 서버에서 내려준 preview 그대로 사용
+      */
+      const previewText = post.preview || '';
 
-      // ✅ [수정됨] 카테고리 로직
       let categoryHtml = '';
-      if (post.translated_categories_display && post.translated_categories_display.length > 0) {
+      if (post.translated_categories_display?.length) {
         categoryHtml = `
           <div class="recent-post-categories">
             ${post.translated_categories_display
@@ -216,8 +167,9 @@ window.loadMorePosts = async function () {
         `;
       }
 
-      // ✅ [수정됨] 날짜 포맷팅 안전장치 (created_fmt가 없을 경우 대비)
-      const dateText = post.created_fmt || createdAt.toLocaleDateString().replace(/\.$/, '');
+      const dateText =
+        post.created_fmt ||
+        createdAt.toLocaleDateString().replace(/\.$/, '');
 
       el.innerHTML = `
         ${categoryHtml}
@@ -233,7 +185,10 @@ window.loadMorePosts = async function () {
           <span>·</span>
           <span>${dateText}</span>
         </div>
-        <div class="recent-post-preview">${previewText}...</div>
+
+        <div class="recent-post-preview">
+          ${previewText}${previewText ? '...' : ''}
+        </div>
       `;
 
       container.appendChild(el);
@@ -246,7 +201,7 @@ window.loadMorePosts = async function () {
 
     loading = false;
   } catch (e) {
-    console.error("Load more posts error:", e);
+    console.error('Load more posts error:', e);
     loading = false;
   }
 };

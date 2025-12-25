@@ -1396,39 +1396,55 @@ function generateMeaningfulPreview(html, maxLength = 120) {
 
   let cleaned = String(html);
 
-  // 1️⃣ auto-toc 제거
+  // auto-toc 제거
   cleaned = cleaned.replace(
     /<div class="auto-toc"[\s\S]*?<\/div>/gi,
     ''
   );
 
-  // 2️⃣ style / script 제거
+  // style / script 제거
   cleaned = cleaned.replace(
     /<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi,
     ''
   );
 
-  // 3️⃣ 모든 <p> 추출
+  // 모든 p 추출
   const pMatches = [...cleaned.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
 
+  let candidate = '';
+
+  // 1순위: 두 번째 p
   if (pMatches.length >= 2) {
-    // ✅ 두 번째 p
-    cleaned = pMatches[1][1];
-  } else if (pMatches.length === 1) {
-    // fallback: 첫 번째 p
-    cleaned = pMatches[0][1];
+    candidate = pMatches[1][1];
+  }
+  // 2순위: 첫 번째 p
+  else if (pMatches.length === 1) {
+    candidate = pMatches[0][1];
+  }
+  // 3순위: 전체 텍스트 fallback
+  else {
+    candidate = cleaned;
   }
 
-  // 4️⃣ 모든 태그 제거
-  cleaned = cleaned
+  // 태그 제거
+  candidate = candidate
     .replace(/<[^>]+>/g, '')
     .replace(/&nbsp;/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 
-  // 5️⃣ 길이 제한
-  return cleaned.slice(0, maxLength);
+  // 진짜로 비었으면 최종 fallback
+  if (!candidate) {
+    candidate = cleaned
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  return candidate.slice(0, maxLength);
 }
+
+
 
 app.get('/api/recent-posts', async (req, res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
