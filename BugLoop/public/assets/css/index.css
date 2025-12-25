@@ -639,24 +639,32 @@ html.dark .recent-post-meta {
   color: rgba(255, 255, 255, 0.98);
 }
 
-/* 최근 글 제목 – 링크 느낌 제거 + 하이라이트 hover */
+/* 기본 상태 (hover에서 빠져나올 때 적용됨) */
 .recent-post-title {
   color: var(--ink-1);
   text-decoration: none;
   display: inline-block;
   padding: 2px 4px;
-  transition: background-color 0.2s ease, color 0.6s ease;
+
+  background-color: transparent;
+
+  transition:
+    background-color 1s ease,
+    color 1s ease;
 }
 
-/* 라이트 모드 hover */
+/* hover 들어갈 때 (빠르게) */
 .recent-post-title:hover {
   color: #ffffff;
-  background-color: #0c72e6; /* 은은한 하늘색 */
-  text-decoration: none;
+  background-color: #e951b2;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* 다크 모드 hover */
 html.dark .recent-post-title:hover {
   color: #ffffff;
-  background-color: #9cc7ff; /* 다크에서 더 밝은 하이라이트 */
+  background-color: #0c72e6;
 }
