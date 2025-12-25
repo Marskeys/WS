@@ -1351,11 +1351,11 @@ html {
   display: inline-flex;
   align-items: center;
 
-  background: transparent;          /* ✅ 배경 투명 */
+  background: black;          /* ✅ 배경 투명 */
   color: #ffffff;                   /* 글자 흰색 */
 
   border: 2.5px solid #ffffff;      /* ✅ 굵은 흰 테두리 */
-  border-radius: 999px;             /* 알약 형태 */
+         /* 알약 형태 */
 
   padding: 6px 14px;
   font-weight: 700;
