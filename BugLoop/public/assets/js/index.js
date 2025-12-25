@@ -176,6 +176,8 @@ window.loadMorePosts = async function () {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
       
+      el.onclick = () => { window.location.href = `/${lang}/post/${post.id}`; };
+
       const now = new Date();
       const createdAt = new Date(post.created_at);
       const updatedAt = post.updated_at ? new Date(post.updated_at) : createdAt;
@@ -193,16 +195,16 @@ window.loadMorePosts = async function () {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      // ✅ [해결] EJS와 동일한 정규식을 사용하여 목차(auto-toc) 및 스타일 태그 완벽 제거
-      const rawContent = post.content || '';
+      // ✅ [수정됨] 미리보기에서 목차(auto-toc) 및 스타일 태그 제거
+      const rawContent = post.content || post.preview || '';
       const previewText = rawContent
-        .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '')
-        .replace(/&nbsp;/gi, ' ')
+        .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '') // 목차+스타일+태그 제거
+        .replace(/&nbsp;/gi, ' ') 
         .replace(/\s+/g, ' ')
         .trim()
         .slice(0, 120);
 
-      // ✅ [해결] 카테고리 데이터가 있을 경우 렌더링 (EJS 구조와 일치)
+      // ✅ [수정됨] 카테고리 로직
       let categoryHtml = '';
       if (post.translated_categories_display && post.translated_categories_display.length > 0) {
         categoryHtml = `
@@ -214,25 +216,24 @@ window.loadMorePosts = async function () {
         `;
       }
 
-      // ✅ [해결] HTML 구조를 index.ejs와 1:1로 맞춤
+      // ✅ [수정됨] 날짜 포맷팅 안전장치 (created_fmt가 없을 경우 대비)
+      const dateText = post.created_fmt || createdAt.toLocaleDateString().replace(/\.$/, '');
+
       el.innerHTML = `
         ${categoryHtml}
-        <a href="/${lang}/post/${post.id}" class="recent-post-title">
+        <a href="/${lang}/post/${post.id}" class="recent-post-title" onclick="event.stopPropagation()">
           ${labelHtml}
           ${post.is_pinned ? '<span class="badge-pinned">📌</span>' : ''}
-          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''}
+          ${post.is_private ? '<span class="badge-private">🔒</span>' : ''} 
           ${post.title}
         </a>
 
         <div class="recent-post-meta">
           <span>${post.author}</span>
           <span>·</span>
-          <span>${post.created_fmt || new Date(post.created_at).toLocaleDateString()}</span>
+          <span>${dateText}</span>
         </div>
-
-        <div class="recent-post-preview">
-          ${previewText}...
-        </div>
+        <div class="recent-post-preview">${previewText}...</div>
       `;
 
       container.appendChild(el);
