@@ -619,6 +619,12 @@ html.dark #load-more-btn {
 }
 
 .recent-post-title {
+  color: #03358c;           /* 아까 말한 그 하늘색 */
+  text-decoration: none;   /* 밑줄 제거 */
+  font-weight: 600;        /* 살짝 또렷하게 */
+}
+
+html.dark .recent-post-title {
   color: #9FBFF6;           /* 아까 말한 그 하늘색 */
   text-decoration: none;   /* 밑줄 제거 */
   font-weight: 600;        /* 살짝 또렷하게 */
@@ -647,7 +653,6 @@ html.dark .recent-post-meta {
 text-decoration: none;
   background-color: transparent;
   font-weight: 600 !important;
-
   transition:
     background-color 0.5s ease,
     color 0.5s ease;
