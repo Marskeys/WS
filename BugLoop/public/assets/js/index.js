@@ -17,21 +17,16 @@ const getPaginatedToc = (tocData) => {
 
 const renderTocHtmlCSR = (sections, bookKey) => {
   if (!sections || sections.length === 0) return '';
-
   let html = '<ul>';
-
   sections.forEach((section) => {
     html += `<li><h5>${section.section}</h5><ul>`;
-
     section.chapters.forEach((ch) => {
       html += '<li>';
-
       if (ch.url) {
         html += `<a href="/${lang}/books/${bookKey}/contents/${ch.id}" class="toc-link active">${ch.title}</a>`;
       } else {
         html += `<span class="toc-link disabled">${ch.title}</span>`;
       }
-
       if (ch.sub) {
         html += '<ul>';
         ch.sub.forEach((sub) => {
@@ -45,47 +40,28 @@ const renderTocHtmlCSR = (sections, bookKey) => {
         });
         html += '</ul>';
       }
-
       html += '</li>';
     });
-
     html += '</ul></li>';
   });
-
   html += '</ul>';
   return html;
 };
 
 window.changePage = function (event, bookKey, pageNumber) {
   event.stopPropagation();
-
   const bookData = window.booksData[bookKey];
   if (!bookData) return;
-
   const card = document.querySelector(`[data-book-key="${bookKey}"]`);
   if (!card) return;
-
   const tocContainer = card.querySelector(`[data-book-id="${bookKey}-toc"]`);
-  const paginationContainer = card.querySelector(
-    `[data-book-id="${bookKey}-pagination"]`
-  );
+  const paginationContainer = card.querySelector(`[data-book-id="${bookKey}-pagination"]`);
   const tocElement = card.querySelector('.book-toc');
-
   const { paginatedToc } = getPaginatedToc(bookData.toc);
-  tocContainer.innerHTML = renderTocHtmlCSR(
-    paginatedToc[pageNumber - 1],
-    bookKey
-  );
-
-  paginationContainer
-    .querySelectorAll('.pagination-number')
-    .forEach((btn) => {
-      btn.classList.toggle(
-        'active',
-        parseInt(btn.textContent, 10) === pageNumber
-      );
-    });
-
+  tocContainer.innerHTML = renderTocHtmlCSR(paginatedToc[pageNumber - 1], bookKey);
+  paginationContainer.querySelectorAll('.pagination-number').forEach((btn) => {
+    btn.classList.toggle('active', parseInt(btn.textContent, 10) === pageNumber);
+  });
   if (card.classList.contains('expanded') && tocElement) {
     tocElement.style.height = tocElement.scrollHeight + 'px';
   }
@@ -96,7 +72,6 @@ document.querySelectorAll('.book-card').forEach((card) => {
     const isExpanded = card.classList.contains('expanded');
     const toc = card.querySelector('.book-toc');
     const video = card.querySelector('video');
-
     document.querySelectorAll('.book-card').forEach((other) => {
       if (other !== card) {
         const wasOtherExpanded = other.classList.contains('expanded');
@@ -107,14 +82,12 @@ document.querySelectorAll('.book-card').forEach((card) => {
           t.style.padding = '0';
           t.classList.add('closed');
         }
-
         if (wasOtherExpanded) {
           const otherVideo = other.querySelector('video');
           if (otherVideo) otherVideo.play().catch(() => {});
         }
       }
     });
-
     if (isExpanded) {
       card.classList.remove('expanded');
       if (toc) {
@@ -152,9 +125,7 @@ window.loadMorePosts = async function () {
   loading = true;
 
   try {
-    const res = await fetch(
-      `/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`
-    );
+    const res = await fetch(`/api/recent-posts?offset=${offset}&limit=5&lang=${lang}`);
     const data = await res.json();
 
     if (!data.posts || data.posts.length === 0) {
@@ -165,17 +136,12 @@ window.loadMorePosts = async function () {
     }
 
     offset += data.posts.length;
-
     const container = document.getElementById('posts-container');
-    if (!container) {
-      loading = false;
-      return;
-    }
+    if (!container) return;
 
     data.posts.forEach((post) => {
       const el = document.createElement('div');
       el.className = 'recent-post-item';
-      
       el.onclick = () => { window.location.href = `/${lang}/post/${post.id}`; };
 
       const now = new Date();
@@ -195,28 +161,31 @@ window.loadMorePosts = async function () {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      // ✅ [수정됨] 미리보기에서 목차(auto-toc) 및 스타일 태그 제거
+      // ✅ [강력 수정] 임시 div를 사용하여 HTML 태그를 더 완벽하게 제거
       const rawContent = post.content || post.preview || '';
-      const previewText = rawContent
-        .replace(/<div class="auto-toc"[\s\S]*?<\/div>|<style\b[^>]*>[\s\S]*?<\/style>|<[^>]+>/gi, '') // 목차+스타일+태그 제거
-        .replace(/&nbsp;/gi, ' ') 
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = rawContent;
+
+      // 1. 목차(TOC) 관련 요소들 모두 제거 (클래스명 auto-toc, toc 등 예상되는 모든 것)
+      const tocs = tempDiv.querySelectorAll('.auto-toc, .toc, #toc, [class*="toc"]');
+      tocs.forEach(t => t.remove());
+
+      // 2. 스타일 태그 제거
+      const styles = tempDiv.querySelectorAll('style');
+      styles.forEach(s => s.remove());
+
+      // 3. 순수 텍스트만 추출 및 가공
+      let previewText = tempDiv.textContent || tempDiv.innerText || '';
+      previewText = previewText
         .replace(/\s+/g, ' ')
         .trim()
         .slice(0, 120);
 
-      // ✅ [수정됨] 카테고리 로직
       let categoryHtml = '';
       if (post.translated_categories_display && post.translated_categories_display.length > 0) {
-        categoryHtml = `
-          <div class="recent-post-categories">
-            ${post.translated_categories_display
-              .map(cat => `<span class="post-category">${cat}</span>`)
-              .join('')}
-          </div>
-        `;
+        categoryHtml = `<div class="recent-post-categories">${post.translated_categories_display.map(cat => `<span class="post-category">${cat}</span>`).join('')}</div>`;
       }
 
-      // ✅ [수정됨] 날짜 포맷팅 안전장치 (created_fmt가 없을 경우 대비)
       const dateText = post.created_fmt || createdAt.toLocaleDateString().replace(/\.$/, '');
 
       el.innerHTML = `
@@ -227,7 +196,6 @@ window.loadMorePosts = async function () {
           ${post.is_private ? '<span class="badge-private">🔒</span>' : ''} 
           ${post.title}
         </a>
-
         <div class="recent-post-meta">
           <span>${post.author}</span>
           <span>·</span>
@@ -235,7 +203,6 @@ window.loadMorePosts = async function () {
         </div>
         <div class="recent-post-preview">${previewText}...</div>
       `;
-
       container.appendChild(el);
     });
 
@@ -243,7 +210,6 @@ window.loadMorePosts = async function () {
       const btn = document.getElementById('load-more-btn');
       if (btn) btn.style.display = 'none';
     }
-
     loading = false;
   } catch (e) {
     console.error("Load more posts error:", e);
