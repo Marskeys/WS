@@ -169,10 +169,11 @@ html.dark .section-title-wrapper {
 }
 
 .section-title {
-  margin-left: calc(var(--chrome-gap) + 16px);
+  margin: 0; /* 위아래 0 */
+  margin-left: calc(var(--chrome-gap) + 16px); /* ← 다시 살림 */
+  display: block; /* 레이아웃 안정 */
   font-size: 1.2rem;
   font-weight: 900;
-  margin: 0;
   letter-spacing: 0.5px;
   white-space: nowrap;
 }
@@ -191,7 +192,6 @@ html.dark .section-title {
     0 1px 0 rgba(0, 0, 0, 0.6),
     0 2px 0 rgba(0, 0, 0, 0.85);
 }
-
 
 
 
