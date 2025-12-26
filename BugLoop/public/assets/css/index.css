@@ -172,23 +172,28 @@ html.dark .section-title-wrapper {
   margin-left: calc(var(--chrome-gap) + 16px);
   font-size: 1.2rem;
   font-weight: 900;
-  margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
   letter-spacing: 0.5px;
 }
 
+/* 라이트 모드 — 눌려 파인 인쇄 느낌 */
 html:not(.dark) .section-title {
   color: var(--ink);
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.8),   /* 위쪽 하이라이트 */
-    0 -1px 0 rgba(0, 0, 0, 0.15);       /* 아래쪽 음영 */
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 -2px 0 rgba(0, 0, 0, 0.25);
 }
 
+/* 다크 모드 — 패널에 파인 음각 */
 html.dark .section-title {
   color: var(--accent);
   text-shadow:
-    0 -1px 0 rgba(255, 255, 255, 0.08), /* 위쪽 미세 반사 */
-    0 1px 0 rgba(0, 0, 0, 0.6);         /* 아래쪽 깊이 */
+    0 -1px 0 rgba(255, 255, 255, 0.15),
+    0 1px 0 rgba(0, 0, 0, 0.6),
+    0 2px 0 rgba(0, 0, 0, 0.85);
 }
+
 
 
 @media (max-width: 640px) {
