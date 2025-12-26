@@ -253,7 +253,7 @@ window.loadMorePosts = async function () {
 };
 
 /* =========================
-   ✍️ SECTION TITLE TYPE LOOP
+   ✍️ SECTION TITLE TYPE LOOP (FIXED)
 ========================= */
 function loopTypeSectionTitle(el, options = {}) {
   if (!el) return;
@@ -262,49 +262,62 @@ function loopTypeSectionTitle(el, options = {}) {
     typeSpeed = 70,
     deleteSpeed = 40,
     holdAfterType = 1200,
-    holdAfterDelete = 400
+    holdAfterDelete = 500
   } = options;
 
   const text = el.dataset.text || el.textContent;
   el.dataset.text = text;
+  el.textContent = '';
 
   let i = 0;
   let isDeleting = false;
+  let lastSwitchTime = 0;
 
-  el.textContent = '';
-
-  const tick = () => {
+  function tick(now) {
     if (!isDeleting) {
-      // 타이핑 중
+      // 타이핑
       el.textContent = text.slice(0, i + 1);
       i++;
 
       if (i === text.length) {
-        setTimeout(() => {
-          isDeleting = true;
-        }, holdAfterType);
+        lastSwitchTime = now;
+        isDeleting = 'hold';
+      }
+    } else if (isDeleting === 'hold') {
+      // 다 쓴 뒤 대기
+      if (now - lastSwitchTime >= holdAfterType) {
+        isDeleting = true;
       }
     } else {
-      // 지우는 중
+      // 삭제
       el.textContent = text.slice(0, i - 1);
       i--;
 
       if (i === 0) {
-        setTimeout(() => {
-          isDeleting = false;
-        }, holdAfterDelete);
+        lastSwitchTime = now;
+        isDeleting = 'reset';
       }
     }
 
-    const delay = isDeleting ? deleteSpeed : typeSpeed;
-    setTimeout(tick, delay);
-  };
+    if (isDeleting === 'reset') {
+      if (now - lastSwitchTime >= holdAfterDelete) {
+        isDeleting = false;
+      }
+    }
 
-  tick();
+    const delay =
+      isDeleting === true ? deleteSpeed :
+      isDeleting === false ? typeSpeed :
+      60;
+
+    setTimeout(() => tick(Date.now()), delay);
+  }
+
+  tick(Date.now());
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.section-title').forEach((el) => {
+  document.querySelectorAll('.section-title').forEach(el => {
     loopTypeSectionTitle(el, {
       typeSpeed: 70,
       deleteSpeed: 35,
