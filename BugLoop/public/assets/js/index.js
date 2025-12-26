@@ -264,3 +264,20 @@ window.loadMorePosts = async function () {
     loading = false;
   }
 };
+
+document.querySelectorAll('.section-title').forEach(el => {
+  const text = el.textContent;
+  el.textContent = '';
+  let i = 0;
+
+  const typing = () => {
+    if (i < text.length) {
+      el.textContent += text[i];
+      i++;
+      setTimeout(typing, 60); // 속도 조절 (ms)
+    }
+  };
+
+  typing();
+});
+

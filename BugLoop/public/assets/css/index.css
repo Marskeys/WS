@@ -172,12 +172,11 @@ html.dark .section-title-wrapper {
   margin-left: calc(var(--chrome-gap) + 16px);
   font-size: 1.2rem;
   font-weight: 900;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
-/* 라이트 모드 — 눌려 파인 인쇄 느낌 */
 html:not(.dark) .section-title {
   color: var(--ink);
   text-shadow:
@@ -185,7 +184,6 @@ html:not(.dark) .section-title {
     0 -2px 0 rgba(0, 0, 0, 0.25);
 }
 
-/* 다크 모드 — 패널에 파인 음각 */
 html.dark .section-title {
   color: var(--accent);
   text-shadow:
@@ -193,6 +191,7 @@ html.dark .section-title {
     0 1px 0 rgba(0, 0, 0, 0.6),
     0 2px 0 rgba(0, 0, 0, 0.85);
 }
+
 
 
 
