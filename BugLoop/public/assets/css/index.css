@@ -707,3 +707,23 @@ html.dark .recent-post-title:hover {
   transition: transform 0.2s ease;
 }
 
+
+.section-title-wrapper {
+  margin: 18px 0 14px;
+  padding: 10px 14px;
+
+  background: var(--paper-1, #f5f6f8);
+  border-radius: 10px;
+
+  /* 👇 움푹 들어간 느낌 핵심 */
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.9);
+}
+
+.section-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink-1, #222);
+}
+
