@@ -170,6 +170,15 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
+app.use((req, res, next) => {
+  const regex = /^\/(ko|en|fr|zh|ja|es)\/(tutorials?|resources|faq|signup|articles)(\/|$)/i;
+
+  if (regex.test(req.path)) {
+    console.log("🚫 옛 루트 410 처리:", req.path);
+    return res.status(410).send("Gone");
+  }
+  next();
+});
 
 // 정적 파일 제공 설정
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
