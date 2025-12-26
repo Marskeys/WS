@@ -170,18 +170,26 @@ html.dark .section-title-wrapper {
 
 .section-title {
   margin-left: calc(var(--chrome-gap) + 16px);
-  color: var(--ink);
   font-size: 1.2rem;
   font-weight: 900;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin: 0;
   letter-spacing: 0.5px;
+}
+
+html:not(.dark) .section-title {
+  color: var(--ink);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8),   /* 위쪽 하이라이트 */
+    0 -1px 0 rgba(0, 0, 0, 0.15);       /* 아래쪽 음영 */
 }
 
 html.dark .section-title {
   color: var(--accent);
-  text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0, 245, 212, 0.2);
+  text-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.08), /* 위쪽 미세 반사 */
+    0 1px 0 rgba(0, 0, 0, 0.6);         /* 아래쪽 깊이 */
 }
+
 
 @media (max-width: 640px) {
   .section-title {
@@ -705,37 +713,5 @@ html.dark .recent-post-title:hover {
 .recent-post-title:hover .badge-pinned i {
   transform: rotate(-20deg) scale(1.1);
   transition: transform 0.2s ease;
-}
-
-
-.section-title {
-  color: #666; /* 살짝 연한 잉크 */
-  font-weight: 700;
-
-  text-shadow:
-    1px 1px 1px rgba(255, 255, 255, 0.9),
-   -1px -1px 1px rgba(0, 0, 0, 0.15);
-}
-
-/* ===============================
-   섹션 제목 – 글씨가 파인 효과
-   =============================== */
-
-.section-title {
-  color: #6a6a6a;
-  font-weight: 800;
-
-  text-shadow:
-    1px 1px 1px rgba(255, 255, 255, 0.85),
-   -1px -1px 1px rgba(0, 0, 0, 0.18);
-}
-
-/* 다크 모드도 "파인 글씨" 유지 */
-html.dark .section-title {
-  color: #9a9a9a;
-
-  text-shadow:
-   -1px -1px 1px rgba(255,255,255,0.08),
-    1px 1px 1px rgba(0,0,0,0.65);
 }
 
