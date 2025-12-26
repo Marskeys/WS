@@ -99,7 +99,7 @@ window.changePage = function (event, bookKey, pageNumber) {
 };
 
 /* =========================
-   📕 BOOK CARD CLICK (복구됨)
+   📕 BOOK CARD CLICK
 ========================= */
 document.querySelectorAll('.book-card').forEach((card) => {
   card.addEventListener('click', () => {
@@ -109,7 +109,7 @@ document.querySelectorAll('.book-card').forEach((card) => {
 
     document.querySelectorAll('.book-card').forEach((other) => {
       if (other !== card) {
-        const wasOtherExpanded = other.classList.contains('expanded');
+        const wasExpanded = other.classList.contains('expanded');
         other.classList.remove('expanded');
 
         const t = other.querySelector('.book-toc');
@@ -119,9 +119,9 @@ document.querySelectorAll('.book-card').forEach((card) => {
           t.classList.add('closed');
         }
 
-        if (wasOtherExpanded) {
-          const otherVideo = other.querySelector('video');
-          if (otherVideo) otherVideo.play().catch(() => {});
+        if (wasExpanded) {
+          const v = other.querySelector('video');
+          if (v) v.play().catch(() => {});
         }
       }
     });
@@ -199,36 +199,25 @@ window.loadMorePosts = async function () {
       const updatedAt = post.updated_at
         ? new Date(post.updated_at)
         : createdAt;
-      const oneDay = 1000 * 60 * 60 * 24;
 
-      const isNewPost = now - createdAt < oneDay;
-      const wasEdited = updatedAt > createdAt;
-      const isRecentlyEdited = wasEdited && now - updatedAt < oneDay;
-      const showEditedLabel = !isNewPost && isRecentlyEdited;
+      const oneDay = 86400000;
+      const isNew = now - createdAt < oneDay;
+      const edited = updatedAt > createdAt && now - updatedAt < oneDay;
 
       let labelHtml = '';
-      if (isNewPost) {
+      if (isNew) {
         labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
-      } else if (showEditedLabel) {
+      } else if (edited) {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      const previewText = post.preview || '';
-
-      let categoryHtml = '';
-      if (post.translated_categories_display?.length) {
-        categoryHtml = `
-          <div class="recent-post-categories">
+      const categoryHtml = post.translated_categories_display?.length
+        ? `<div class="recent-post-categories">
             ${post.translated_categories_display
               .map(cat => `<span class="post-category">${cat}</span>`)
               .join('')}
-          </div>
-        `;
-      }
-
-      const dateText =
-        post.created_fmt ||
-        createdAt.toLocaleDateString().replace(/\.$/, '');
+          </div>`
+        : '';
 
       el.innerHTML = `
         ${categoryHtml}
@@ -238,15 +227,13 @@ window.loadMorePosts = async function () {
           ${post.is_private ? '<span class="badge-private">🔒</span>' : ''}
           ${post.title}
         </a>
-
         <div class="recent-post-meta">
           <span>${post.author}</span>
           <span>·</span>
-          <span>${dateText}</span>
+          <span>${post.created_fmt}</span>
         </div>
-
         <div class="recent-post-preview">
-          ${previewText}${previewText ? '...' : ''}
+          ${post.preview ? post.preview + '...' : ''}
         </div>
       `;
 
@@ -260,24 +247,34 @@ window.loadMorePosts = async function () {
 
     loading = false;
   } catch (e) {
-    console.error('Load more posts error:', e);
+    console.error(e);
     loading = false;
   }
 };
 
-document.querySelectorAll('.section-title').forEach(el => {
-  const text = el.textContent;
-  el.textContent = '';
-  let i = 0;
+/* =========================
+   ✍️ SECTION TITLE TYPING
+========================= */
+function typeSectionTitle(el, speed = 60) {
+  if (!el || el.dataset.typed) return;
 
+  const text = el.dataset.text || el.textContent;
+  el.dataset.text = text;
+  el.dataset.typed = '1';
+  el.textContent = '';
+
+  let i = 0;
   const typing = () => {
     if (i < text.length) {
-      el.textContent += text[i];
-      i++;
-      setTimeout(typing, 60); // 속도 조절 (ms)
+      el.textContent += text[i++];
+      setTimeout(typing, speed);
     }
   };
-
   typing();
-});
+}
 
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.section-title').forEach((el) => {
+    typeSectionTitle(el, 60);
+  });
+});
