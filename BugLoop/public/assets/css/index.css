@@ -169,13 +169,12 @@ html.dark .section-title-wrapper {
 }
 
 .section-title {
-  display: block; /* ← 이거 필수 */
   margin-left: calc(var(--chrome-gap) + 16px);
   font-size: 1.2rem;
   font-weight: 900;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 html:not(.dark) .section-title {

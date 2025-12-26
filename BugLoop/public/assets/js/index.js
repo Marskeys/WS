@@ -99,7 +99,7 @@ window.changePage = function (event, bookKey, pageNumber) {
 };
 
 /* =========================
-   📕 BOOK CARD CLICK
+   📕 BOOK CARD CLICK (복구됨)
 ========================= */
 document.querySelectorAll('.book-card').forEach((card) => {
   card.addEventListener('click', () => {
@@ -109,7 +109,7 @@ document.querySelectorAll('.book-card').forEach((card) => {
 
     document.querySelectorAll('.book-card').forEach((other) => {
       if (other !== card) {
-        const wasExpanded = other.classList.contains('expanded');
+        const wasOtherExpanded = other.classList.contains('expanded');
         other.classList.remove('expanded');
 
         const t = other.querySelector('.book-toc');
@@ -119,9 +119,9 @@ document.querySelectorAll('.book-card').forEach((card) => {
           t.classList.add('closed');
         }
 
-        if (wasExpanded) {
-          const v = other.querySelector('video');
-          if (v) v.play().catch(() => {});
+        if (wasOtherExpanded) {
+          const otherVideo = other.querySelector('video');
+          if (otherVideo) otherVideo.play().catch(() => {});
         }
       }
     });
@@ -199,25 +199,36 @@ window.loadMorePosts = async function () {
       const updatedAt = post.updated_at
         ? new Date(post.updated_at)
         : createdAt;
+      const oneDay = 1000 * 60 * 60 * 24;
 
-      const oneDay = 86400000;
-      const isNew = now - createdAt < oneDay;
-      const edited = updatedAt > createdAt && now - updatedAt < oneDay;
+      const isNewPost = now - createdAt < oneDay;
+      const wasEdited = updatedAt > createdAt;
+      const isRecentlyEdited = wasEdited && now - updatedAt < oneDay;
+      const showEditedLabel = !isNewPost && isRecentlyEdited;
 
       let labelHtml = '';
-      if (isNew) {
+      if (isNewPost) {
         labelHtml = `<span class="label-icon new-icon">${window.__APP__.locale.newPost || 'NEW'}</span>`;
-      } else if (edited) {
+      } else if (showEditedLabel) {
         labelHtml = `<span class="label-icon edited-icon">${window.__APP__.locale.editedPost || 'UPDATED'}</span>`;
       }
 
-      const categoryHtml = post.translated_categories_display?.length
-        ? `<div class="recent-post-categories">
+      const previewText = post.preview || '';
+
+      let categoryHtml = '';
+      if (post.translated_categories_display?.length) {
+        categoryHtml = `
+          <div class="recent-post-categories">
             ${post.translated_categories_display
               .map(cat => `<span class="post-category">${cat}</span>`)
               .join('')}
-          </div>`
-        : '';
+          </div>
+        `;
+      }
+
+      const dateText =
+        post.created_fmt ||
+        createdAt.toLocaleDateString().replace(/\.$/, '');
 
       el.innerHTML = `
         ${categoryHtml}
@@ -227,13 +238,15 @@ window.loadMorePosts = async function () {
           ${post.is_private ? '<span class="badge-private">🔒</span>' : ''}
           ${post.title}
         </a>
+
         <div class="recent-post-meta">
           <span>${post.author}</span>
           <span>·</span>
-          <span>${post.created_fmt}</span>
+          <span>${dateText}</span>
         </div>
+
         <div class="recent-post-preview">
-          ${post.preview ? post.preview + '...' : ''}
+          ${previewText}${previewText ? '...' : ''}
         </div>
       `;
 
@@ -247,82 +260,8 @@ window.loadMorePosts = async function () {
 
     loading = false;
   } catch (e) {
-    console.error(e);
+    console.error('Load more posts error:', e);
     loading = false;
   }
 };
 
-/* =========================
-   ✍️ SECTION TITLE TYPE LOOP (FIXED)
-========================= */
-function loopTypeSectionTitle(el, options = {}) {
-  if (!el) return;
-
-  const {
-    typeSpeed = 70,
-    deleteSpeed = 40,
-    holdAfterType = 1200,
-    holdAfterDelete = 500
-  } = options;
-
-  const text = el.dataset.text || el.textContent;
-  el.dataset.text = text;
-  el.textContent = '';
-
-  let i = 0;
-  let isDeleting = false;
-  let lastSwitchTime = 0;
-
-  function tick(now) {
-    if (!isDeleting) {
-      // 타이핑
-      el.textContent = text.slice(0, i + 1);
-      i++;
-
-      if (i === text.length) {
-        lastSwitchTime = now;
-        isDeleting = 'hold';
-      }
-    } else if (isDeleting === 'hold') {
-      // 다 쓴 뒤 대기
-      if (now - lastSwitchTime >= holdAfterType) {
-        isDeleting = true;
-      }
-    } else {
-      // 삭제
-      el.textContent = text.slice(0, i - 1);
-      i--;
-
-      if (i === 0) {
-        lastSwitchTime = now;
-        isDeleting = 'reset';
-      }
-    }
-
-    if (isDeleting === 'reset') {
-      if (now - lastSwitchTime >= holdAfterDelete) {
-        isDeleting = false;
-      }
-    }
-
-    const delay =
-      isDeleting === true ? deleteSpeed :
-      isDeleting === false ? typeSpeed :
-      60;
-
-    setTimeout(() => tick(Date.now()), delay);
-  }
-
-  tick(Date.now());
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.section-title').forEach(el => {
-    loopTypeSectionTitle(el, {
-      typeSpeed: 70,
-      deleteSpeed: 35,
-      holdAfterType: 1200,
-      holdAfterDelete: 500
-    });
-  });
-});
