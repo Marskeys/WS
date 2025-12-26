@@ -253,28 +253,63 @@ window.loadMorePosts = async function () {
 };
 
 /* =========================
-   ✍️ SECTION TITLE TYPING
+   ✍️ SECTION TITLE TYPE LOOP
 ========================= */
-function typeSectionTitle(el, speed = 60) {
-  if (!el || el.dataset.typed) return;
+function loopTypeSectionTitle(el, options = {}) {
+  if (!el) return;
+
+  const {
+    typeSpeed = 70,
+    deleteSpeed = 40,
+    holdAfterType = 1200,
+    holdAfterDelete = 400
+  } = options;
 
   const text = el.dataset.text || el.textContent;
   el.dataset.text = text;
-  el.dataset.typed = '1';
-  el.textContent = '';
 
   let i = 0;
-  const typing = () => {
-    if (i < text.length) {
-      el.textContent += text[i++];
-      setTimeout(typing, speed);
+  let isDeleting = false;
+
+  el.textContent = '';
+
+  const tick = () => {
+    if (!isDeleting) {
+      // 타이핑 중
+      el.textContent = text.slice(0, i + 1);
+      i++;
+
+      if (i === text.length) {
+        setTimeout(() => {
+          isDeleting = true;
+        }, holdAfterType);
+      }
+    } else {
+      // 지우는 중
+      el.textContent = text.slice(0, i - 1);
+      i--;
+
+      if (i === 0) {
+        setTimeout(() => {
+          isDeleting = false;
+        }, holdAfterDelete);
+      }
     }
+
+    const delay = isDeleting ? deleteSpeed : typeSpeed;
+    setTimeout(tick, delay);
   };
-  typing();
+
+  tick();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.section-title').forEach((el) => {
-    typeSectionTitle(el, 60);
+    loopTypeSectionTitle(el, {
+      typeSpeed: 70,
+      deleteSpeed: 35,
+      holdAfterType: 1200,
+      holdAfterDelete: 500
+    });
   });
 });
