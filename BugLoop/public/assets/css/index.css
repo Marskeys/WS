@@ -716,3 +716,26 @@ html.dark .recent-post-title:hover {
     1px 1px 1px rgba(255, 255, 255, 0.9),
    -1px -1px 1px rgba(0, 0, 0, 0.15);
 }
+
+/* ===============================
+   섹션 제목 – 글씨가 파인 효과
+   =============================== */
+
+.section-title {
+  color: #6a6a6a;
+  font-weight: 800;
+
+  text-shadow:
+    1px 1px 1px rgba(255, 255, 255, 0.85),
+   -1px -1px 1px rgba(0, 0, 0, 0.18);
+}
+
+/* 다크 모드도 "파인 글씨" 유지 */
+html.dark .section-title {
+  color: #9a9a9a;
+
+  text-shadow:
+   -1px -1px 1px rgba(255,255,255,0.08),
+    1px 1px 1px rgba(0,0,0,0.65);
+}
+
