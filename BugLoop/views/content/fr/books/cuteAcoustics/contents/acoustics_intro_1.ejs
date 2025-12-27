@@ -1,18 +1,49 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>" data-lang="<%= lang %>">
-<head>
-  <%- include('../../../../../partials/head.ejs') %>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acoustique Mignonne — Préface</title>
+<%
+  // ✅ e-reader 공통 설정
+  const supportedLangs = ['ko','en','fr','zh','ja','es'];
+  const bookId = 'cuteAcoustics';
+  const chapterId = 'acoustics_intro_1';
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/assets/css/e-reader.css" />
-</head>
+  // ✅ locale.books에서 책 / 챕터 자동 탐색
+  const book = locale?.books?.[bookId] || null;
+
+  let chapter = null;
+  if (book && Array.isArray(book.toc)) {
+    for (const section of book.toc) {
+      if (Array.isArray(section.chapters)) {
+        const found = section.chapters.find(c => c.id === chapterId);
+        if (found) {
+          chapter = found;
+          break;
+        }
+      }
+    }
+  }
+
+  // ✅ 안전 장치 (JSON 누락 시 대비)
+  if (!chapter) {
+    chapter = {
+      id: chapterId,
+      title: 'Vous voulez devenir expert du son ?',
+      description: 'Acoustique mignonne — Préface sur le son, la solitude et la sensibilité'
+    };
+  }
+%>
+
+<!-- ✅ 전자책 전용 head (blog head.ejs 절대 사용 금지) -->
+<%- include('../../../../../partials/e-reader-head.ejs', {
+  lang,
+  supportedLangs,
+  bookId,
+  book,
+  chapter
+}) %>
 
 <body>
 
-  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+  <%- include('../../../../../partials/e-reader-header', { lang, locale }) %>
 
   <div class="viewer">
     <button id="prevBtn" class="nav-btn">〈</button>
@@ -25,23 +56,91 @@
 <h2>Vous voulez devenir expert du son&nbsp;?</h2>
 
 <p>
-Lorsque l’on commence à s’immerger profondément dans un domaine, on finit inévitablement par rencontrer la solitude. J’ai peut-être consacré énormément de temps à comprendre ce sujet, mais chacun, ailleurs, aura utilisé son temps de manière toute différente. Au fil de notre exploration du son, vous pourriez ressentir que plus vous étudiez, plus vous vous rapprochez du monde lui-même… tout en vous éloignant un peu des «&nbsp;gens&nbsp;» qui y vivent. Cette distance subtile que l’on ressent parfois en écoutant des professeurs d’université parler&nbsp;? Bientôt, ce sont les autres qui pourraient commencer à la ressentir lorsqu’ils discutent avec vous. Terrifiant, n’est-ce pas&nbsp;?
+Lorsque l’on commence à s’immerger profondément dans un domaine,
+on finit inévitablement par rencontrer la solitude.
 </p>
 
 <p>
-Mais il y a un avantage merveilleux à développer la capacité de ressentir quelque chose en profondeur.
+J’ai peut-être consacré énormément de temps à comprendre ce sujet,
+mais chacun, ailleurs, aura utilisé son temps de manière toute différente.
 </p>
 
 <p>
-Ce n’est peut-être pas la comparaison la plus parfaite, mais… vous êtes-vous déjà demandé si vous aviez vraiment faim&nbsp;? La plupart des gens ne remettent jamais en question la sensation de faim&nbsp;: lorsqu’ils ont faim, ils ont faim, tout simplement. La faim est une sensation «&nbsp;évidente&nbsp;». Elle vous pousse à agir, à chercher de quoi la satisfaire. Vous savez qu’une fois que vous mangerez, vous serez bientôt rassasié&nbsp;; et c’est cette confiance—cet optimisme envers l’avenir—qui vous permet d’agir.
+Au fil de notre exploration du son, vous pourriez ressentir que plus vous étudiez,
+plus vous vous rapprochez du monde lui-même…
+tout en vous éloignant un peu des «&nbsp;gens&nbsp;» qui y vivent.
 </p>
 
 <p>
-La solitude est simplement la solitude&nbsp;; elle n’a rien à voir avec le pessimisme. Une solitude de qualité se situe même à l’opposé du pessimisme. Le son est un sujet étonnamment fondamental. Et dans ce voyage, nous allons vivre une sorte de rendez-vous avec lui—nous en rapprocher plus que quiconque. Alors, face aux nombreuses activités et expressions qui découlent du son, vous percevrez leurs joies plus intensément que n’importe qui. Et vous les savourerez. Les autres ne comprendront peut-être pas précisément le plaisir que vous ressentez. C’est une forme de solitude. Mais j’espère qu’au fil de ce long chemin pour apprivoiser le son, vous apprendrez à goûter vous aussi à cette douce solitude.
+Cette distance subtile que l’on ressent parfois en écoutant
+des professeurs d’université parler&nbsp;?
+Bientôt, ce sont les autres qui pourraient commencer à la ressentir
+lorsqu’ils discutent avec vous.
+Terrifiant, n’est-ce pas&nbsp;?
 </p>
 
 <p>
-Et absolument pas parce que je me sentirais seul et chercherais des compagnons pour partager ma solitude&nbsp;! Absolument pas&nbsp;!
+Mais il y a un avantage merveilleux à développer la capacité
+de ressentir quelque chose en profondeur.
+</p>
+
+<p>
+Ce n’est peut-être pas la comparaison la plus parfaite, mais…
+vous êtes-vous déjà demandé si vous aviez vraiment faim&nbsp;?
+</p>
+
+<p>
+La plupart des gens ne remettent jamais en question la sensation de faim&nbsp;:
+lorsqu’ils ont faim, ils ont faim, tout simplement.
+</p>
+
+<p>
+La faim est une sensation «&nbsp;évidente&nbsp;».
+Elle vous pousse à agir, à chercher de quoi la satisfaire.
+</p>
+
+<p>
+Vous savez qu’une fois que vous mangerez, vous serez bientôt rassasié&nbsp;;
+et c’est cette confiance — cet optimisme envers l’avenir —
+qui vous permet d’agir.
+</p>
+
+<p>
+La solitude est simplement la solitude&nbsp;;
+elle n’a rien à voir avec le pessimisme.
+</p>
+
+<p>
+Une solitude de qualité se situe même à l’opposé du pessimisme.
+</p>
+
+<p>
+Le son est un sujet étonnamment fondamental.
+Et dans ce voyage, nous allons vivre une sorte de rendez-vous avec lui —
+nous en rapprocher plus que quiconque.
+</p>
+
+<p>
+Alors, face aux nombreuses activités et expressions qui découlent du son,
+vous percevrez leurs joies plus intensément que n’importe qui.
+Et vous les savourerez.
+</p>
+
+<p>
+Les autres ne comprendront peut-être pas précisément
+le plaisir que vous ressentez.
+C’est une forme de solitude.
+</p>
+
+<p>
+Mais j’espère qu’au fil de ce long chemin pour apprivoiser le son,
+vous apprendrez à goûter vous aussi à cette douce solitude.
+</p>
+
+<p>
+Et absolument pas parce que je me sentirais seul
+et chercherais des compagnons pour partager ma solitude&nbsp;!
+Absolument pas&nbsp;!
 </p>
 
       </div>
@@ -57,8 +156,8 @@ Et absolument pas parce que je me sentirais seul et chercherais des compagnons p
 
   <!-- e-reader settings -->
   <script>
-    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
-    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOK_ID = '<%= bookId %>';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = '<%= chapterId %>';
     window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
   </script>
 

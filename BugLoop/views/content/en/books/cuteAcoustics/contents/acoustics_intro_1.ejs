@@ -1,18 +1,49 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>" data-lang="<%= lang %>">
-<head>
-  <%- include('../../../../../partials/head.ejs') %>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cute Acoustics — Introduction</title>
+<%
+  // ✅ e-reader 공통 설정
+  const supportedLangs = ['ko','en','fr','zh','ja','es'];
+  const bookId = 'cuteAcoustics';
+  const chapterId = 'acoustics_intro_1';
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/assets/css/e-reader.css" />
-</head>
+  // ✅ locale.books에서 책 / 챕터 자동 탐색
+  const book = locale?.books?.[bookId] || null;
+
+  let chapter = null;
+  if (book && Array.isArray(book.toc)) {
+    for (const section of book.toc) {
+      if (Array.isArray(section.chapters)) {
+        const found = section.chapters.find(c => c.id === chapterId);
+        if (found) {
+          chapter = found;
+          break;
+        }
+      }
+    }
+  }
+
+  // ✅ 안전 장치 (혹시 JSON 누락 시)
+  if (!chapter) {
+    chapter = {
+      id: chapterId,
+      title: 'So, You Want to Become an Expert on Sound?',
+      description: 'Cute Acoustics — An introduction to becoming intimate with sound'
+    };
+  }
+%>
+
+<!-- ✅ 전자책 전용 head (블로그 head 절대 사용 금지) -->
+<%- include('../../../../../partials/e-reader-head.ejs', {
+  lang,
+  supportedLangs,
+  bookId,
+  book,
+  chapter
+}) %>
 
 <body>
 
-  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+  <%- include('../../../../../partials/e-reader-header', { lang, locale }) %>
 
   <div class="viewer">
     <button id="prevBtn" class="nav-btn">〈</button>
@@ -25,23 +56,73 @@
 <h2>So, You Want to Become an Expert on Sound?</h2>
 
 <p>
-When you begin to delve deeply into any field, you inevitably come face-to-face with a sense of solitude. I may have poured countless hours into understanding a subject, but everyone else has spent their time in entirely different ways. As we embark on this exploration of sound, you may find that the more you study, the closer you grow to the world itself—and the farther you drift from the “people” in that world. The sense of distance you sometimes feel when listening to university professors speak? Before long, others may begin to feel that same distance when talking to you. Terrifying, isn’t it?
+When you begin to delve deeply into any field, you inevitably come face-to-face
+with a sense of solitude. I may have poured countless hours into understanding
+a subject, but everyone else has spent their time in entirely different ways.
 </p>
 
 <p>
-But there is a wonderful advantage to developing the ability to perceive something deeply.
+As we embark on this exploration of sound, you may find that the more you study,
+the closer you grow to the world itself—and the farther you drift from the
+“people” in that world.
 </p>
 
 <p>
-This may sound like an odd comparison, but—have you ever doubted the fact that you were hungry? Most people simply accept hunger as it is; they don’t question the feeling itself. Hunger feels “certain.” It makes you move, seeking food to satisfy it. You know that eating will soon make you full, and because you believe in that outcome—because you look toward the future with a bit of optimism—you’re able to act on it.
+That sense of distance you sometimes feel when listening to university professors
+speak? Before long, others may begin to feel that same distance when talking to you.
+Terrifying, isn’t it?
 </p>
 
 <p>
-Solitude is just solitude; it is not the same as pessimism. In fact, good solitude lies on the very opposite side of pessimism. Sound is a surprisingly fundamental subject. And in this journey, we are going to go on a kind of date with sound—getting closer to it than anyone else. Then, when you encounter the many activities and expressions that arise from sound, you will sense the joys within them more vividly than anyone else. And you will savor them. Others may not fully understand the specific delight you are experiencing. That is one form of solitude. But I hope that, through this long journey of becoming familiar with sound, you will come to enjoy that delightful solitude as well.
+But there is a wonderful advantage to developing the ability to perceive something
+deeply.
 </p>
 
 <p>
-And absolutely—not because I am lonely or trying to recruit companions for my loneliness! Absolutely not!
+This may sound like an odd comparison, but—have you ever doubted the fact that
+you were hungry?
+</p>
+
+<p>
+Most people simply accept hunger as it is; they don’t question the feeling itself.
+Hunger feels certain. It makes you move, seeking food to satisfy it.
+</p>
+
+<p>
+You know that eating will soon make you full, and because you believe in that
+outcome—because you look toward the future with a bit of optimism—you’re able
+to act on it.
+</p>
+
+<p>
+Solitude is just solitude; it is not the same as pessimism. In fact, good solitude
+lies on the very opposite side of pessimism.
+</p>
+
+<p>
+Sound is a surprisingly fundamental subject. And in this journey, we are going
+to go on a kind of date with sound—getting closer to it than anyone else.
+</p>
+
+<p>
+Then, when you encounter the many activities and expressions that arise from sound,
+you will sense the joys within them more vividly than anyone else. And you will
+savor them.
+</p>
+
+<p>
+Others may not fully understand the specific delight you are experiencing.
+That is one form of solitude.
+</p>
+
+<p>
+But I hope that, through this long journey of becoming familiar with sound,
+you will come to enjoy that delightful solitude as well.
+</p>
+
+<p>
+And absolutely—not because I am lonely or trying to recruit companions for my
+loneliness! Absolutely not!
 </p>
 
       </div>
@@ -57,8 +138,8 @@ And absolutely—not because I am lonely or trying to recruit companions for my 
 
   <!-- e-reader settings -->
   <script>
-    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
-    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOK_ID = '<%= bookId %>';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = '<%= chapterId %>';
     window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
   </script>
 

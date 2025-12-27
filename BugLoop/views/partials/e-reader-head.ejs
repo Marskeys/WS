@@ -8,23 +8,43 @@
       `${book.title} — ${chapter.title} (전자책 챕터)`;
   %>
 
+  <!-- 📘 Title / Description -->
   <title><%= chapter.title %> – <%= book.title %></title>
   <meta name="description" content="<%= desc %>" />
 
-  <link rel="canonical"
-        href="https://bugloop.dev/<%= lang %>/books/<%= bookId %>/contents/<%= chapter.id %>" />
+  <!-- 🔗 Canonical -->
+  <link
+    rel="canonical"
+    href="https://bugloop.dev/<%= lang %>/books/<%= bookId %>/contents/<%= chapter.id %>"
+  />
 
+  <!-- 🌍 hreflang -->
   <% supportedLangs.forEach(l => { %>
-    <link rel="alternate" hreflang="<%= l %>"
-      href="https://bugloop.dev/<%= l %>/books/<%= bookId %>/contents/<%= chapter.id %>" />
+    <link
+      rel="alternate"
+      hreflang="<%= l %>"
+      href="https://bugloop.dev/<%= l %>/books/<%= bookId %>/contents/<%= chapter.id %>"
+    />
   <% }) %>
 
-  <link rel="alternate" hreflang="x-default"
-        href="https://bugloop.dev/books/<%= bookId %>/contents/<%= chapter.id %>" />
+  <link
+    rel="alternate"
+    hreflang="x-default"
+    href="https://bugloop.dev/books/<%= bookId %>/contents/<%= chapter.id %>"
+  />
 
+  <!-- 🤖 Robots (전자책 챕터: 색인 허용) -->
+  <meta name="robots" content="index,follow" />
+
+  <!-- 🔎 Open Graph -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content="<%= chapter.title %> – <%= book.title %>" />
   <meta property="og:description" content="<%= desc %>" />
+  <meta
+    property="og:url"
+    content="https://bugloop.dev/<%= lang %>/books/<%= bookId %>/contents/<%= chapter.id %>"
+  />
 
+  <!-- 🎨 Styles -->
   <link rel="stylesheet" href="/assets/css/e-reader.css" />
 </head>

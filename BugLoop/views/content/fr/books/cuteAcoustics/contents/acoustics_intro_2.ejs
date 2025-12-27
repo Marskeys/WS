@@ -1,18 +1,50 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>" data-lang="<%= lang %>">
-<head>
-  <%- include('../../../../../partials/head.ejs') %>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Préface – Cute Acoustics</title>
+<%
+  // ✅ e-reader 공통 설정
+  const supportedLangs = ['ko','en','fr','zh','ja','es'];
+  const bookId = 'cuteAcoustics';
+  const chapterId = 'acoustics_intro_2';
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/assets/css/e-reader.css" />
-</head>
+  // ✅ locale.books에서 책 / 챕터 자동 탐색
+  const book = locale?.books?.[bookId] || null;
+
+  let chapter = null;
+  if (book && Array.isArray(book.toc)) {
+    for (const section of book.toc) {
+      if (Array.isArray(section.chapters)) {
+        const found = section.chapters.find(c => c.id === chapterId);
+        if (found) {
+          chapter = found;
+          break;
+        }
+      }
+    }
+  }
+
+  // ✅ 안전 장치 (JSON 누락 시 대비)
+  if (!chapter) {
+    chapter = {
+      id: chapterId,
+      title: 'L’acoustique a-t-elle aussi besoin d’imagination ?',
+      description:
+        'Cute Acoustics — Préface sur l’imagination, la solitude et l’acoustique'
+    };
+  }
+%>
+
+<!-- ✅ 전자책 전용 head (blog head.ejs 절대 사용 금지) -->
+<%- include('../../../../../partials/e-reader-head.ejs', {
+  lang,
+  supportedLangs,
+  bookId,
+  book,
+  chapter
+}) %>
 
 <body>
 
-  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+  <%- include('../../../../../partials/e-reader-header', { lang, locale }) %>
 
   <div class="viewer">
     <button id="prevBtn" class="nav-btn">〈</button>
@@ -25,27 +57,165 @@
 <h2>L’acoustique a-t-elle aussi besoin d’imagination&nbsp;?</h2>
 
 <p>
-Il y a une raison pour laquelle je commence ce livre en parlant de solitude. Ceux qui imaginent sont toujours, d’une certaine manière, seuls. L’imagination est, au fond, un monde intime. Aussi vivante que soit une image dans mon esprit, personne d’autre ne peut la voir. La solitude naît à la frontière entre le monde intérieur et le monde extérieur, et l’imagination épaissit cette frontière. Or, l’acoustique est précisément un domaine où une telle imagination est indispensable.
+Il y a une raison pour laquelle je commence ce livre en parlant de solitude.
+Ceux qui imaginent sont toujours, d’une certaine manière, seuls.
 </p>
 
 <p>
-Le physicien Richard Feynman a un jour exprimé une idée semblable lors d’une interview. Il répondait alors à un ami artiste qui reprochait aux scientifiques d’être ennuyeux, incapables d’apprécier simplement la beauté d’une fleur et toujours enclins à l’analyser. Feynman expliquait que, même si les scientifiques ne possèdent pas nécessairement une sensibilité esthétique aussi finement raffinée que celle de son ami, la beauté que celui-ci ressent peut être pleinement partagée par d’autres — y compris par les scientifiques. De plus, ces derniers sont capables d’imaginer le monde microscopique invisible à l’œil nu. Comment fonctionnent les cellules d’une fleur ? Pourquoi la fleur a-t-elle évolué de cette manière ? Les insectes perçoivent-ils eux aussi les couleurs ? En imaginant de telles questions, les scientifiques ne réduisent pas la beauté ; au contraire, ils y ajoutent de la beauté — et de l’émerveillement.
+L’imagination est, au fond, un monde intime.
+Aussi vivante que soit une image dans mon esprit,
+personne d’autre ne peut la voir.
 </p>
 
 <p>
-L’acoustique n’est pas la musique. La sensibilité mobilisée pour exprimer la musique et celle requise pour comprendre l’acoustique peuvent être très différentes. Bien sûr, lorsque j’étudiais l’acoustique dans une université en France, bon nombre d’étudiants et de professeurs avaient tendance à pratiquer un instrument de musique. Mais l’acoustique n’est pas un art : c’est une science, plus précisément une branche de la physique. Si vous abordez l’acoustique comme une simple extension de la musique, elle pourra vous sembler assez étrangère.
+La solitude naît à la frontière entre le monde intérieur
+et le monde extérieur,
+et l’imagination épaissit cette frontière.
 </p>
 
 <p>
-C’est d’ailleurs l’une des raisons pour lesquelles l’acoustique est rarement proposée comme spécialité autonome au niveau de la licence. Pour explorer l’acoustique, il faut une imagination de type physique, et cette imagination ne fonctionne qu’à partir d’un certain socle de connaissances fondamentales en physique. Ainsi, l’acoustique apparaît le plus souvent comme une spécialisation en fin de cursus universitaire ou au niveau du master. Même dans ce cas, elle reste peu répandue. Elle contraste fortement avec des disciplines comme l’informatique ou les lettres modernes, que l’on retrouve dans presque toutes les universités.
+Or, l’acoustique est précisément un domaine
+où une telle imagination est indispensable.
 </p>
 
 <p>
-C’est pourquoi ce livre commence par les concepts fondamentaux de la physique. Vous ne rencontrerez pas immédiatement des microphones ou des décibels simplement parce qu’il s’agit d’un ouvrage sur l’acoustique. Je l’ai déjà dit : nous tentons ici d’aborder, en un seul livre, une discipline généralement enseignée à un niveau avancé. Une phase de préparation est donc nécessaire. Cela dit, je ferai en sorte que le parcours ne soit pas trop difficile. C’est aussi pour cette raison que j’ai choisi le titre <em>Cute Acoustics</em>.
+Le physicien Richard Feynman a un jour exprimé une idée semblable
+lors d’une interview.
 </p>
 
 <p>
-Alors, partons ensemble à la découverte du monde de l’acoustique, là où la solitude et la beauté se croisent.
+Il répondait alors à un ami artiste
+qui reprochait aux scientifiques d’être ennuyeux,
+incapables d’apprécier simplement la beauté d’une fleur
+et toujours enclins à l’analyser.
+</p>
+
+<p>
+Feynman expliquait que,
+même si les scientifiques ne possèdent pas nécessairement
+une sensibilité esthétique aussi finement raffinée que celle de son ami,
+la beauté que celui-ci ressent peut être pleinement partagée
+par d’autres — y compris par les scientifiques.
+</p>
+
+<p>
+De plus, ces derniers sont capables d’imaginer
+le monde microscopique invisible à l’œil nu.
+</p>
+
+<p>
+Comment fonctionnent les cellules d’une fleur&nbsp;?
+Pourquoi la fleur a-t-elle évolué de cette manière&nbsp;?
+Les insectes perçoivent-ils eux aussi les couleurs&nbsp;?
+</p>
+
+<p>
+En imaginant de telles questions,
+les scientifiques ne réduisent pas la beauté&nbsp;;
+au contraire, ils y ajoutent de la beauté —
+et de l’émerveillement.
+</p>
+
+<p>
+L’acoustique n’est pas la musique.
+</p>
+
+<p>
+La sensibilité mobilisée pour exprimer la musique
+et celle requise pour comprendre l’acoustique
+peuvent être très différentes.
+</p>
+
+<p>
+Bien sûr, lorsque j’étudiais l’acoustique
+dans une université en France,
+bon nombre d’étudiants et de professeurs
+avaient tendance à pratiquer un instrument de musique.
+</p>
+
+<p>
+Mais l’acoustique n’est pas un art&nbsp;:
+c’est une science,
+plus précisément une branche de la physique.
+</p>
+
+<p>
+Si vous abordez l’acoustique
+comme une simple extension de la musique,
+elle pourra vous sembler assez étrangère.
+</p>
+
+<p>
+C’est d’ailleurs l’une des raisons
+pour lesquelles l’acoustique est rarement proposée
+comme spécialité autonome au niveau de la licence.
+</p>
+
+<p>
+Pour explorer l’acoustique,
+il faut une imagination de type physique,
+et cette imagination ne fonctionne
+qu’à partir d’un certain socle
+de connaissances fondamentales en physique.
+</p>
+
+<p>
+Ainsi, l’acoustique apparaît le plus souvent
+comme une spécialisation en fin de cursus universitaire
+ou au niveau du master.
+</p>
+
+<p>
+Même dans ce cas,
+elle reste peu répandue.
+</p>
+
+<p>
+Elle contraste fortement avec des disciplines
+comme l’informatique ou les lettres modernes,
+que l’on retrouve dans presque toutes les universités.
+</p>
+
+<p>
+C’est pourquoi ce livre commence
+par les concepts fondamentaux de la physique.
+</p>
+
+<p>
+Vous ne rencontrerez pas immédiatement
+des microphones ou des décibels
+simplement parce qu’il s’agit
+d’un ouvrage sur l’acoustique.
+</p>
+
+<p>
+Nous tentons ici d’aborder,
+en un seul livre,
+une discipline généralement enseignée
+à un niveau avancé.
+</p>
+
+<p>
+Une phase de préparation est donc nécessaire.
+</p>
+
+<p>
+Cela dit,
+je ferai en sorte que le parcours
+ne soit pas trop difficile.
+</p>
+
+<p>
+C’est aussi pour cette raison
+que j’ai choisi le titre
+<em>Cute Acoustics</em>.
+</p>
+
+<p>
+Alors,
+partons ensemble à la découverte
+du monde de l’acoustique,
+là où la solitude et la beauté se croisent.
 </p>
 
       </div>
@@ -61,8 +231,8 @@ Alors, partons ensemble à la découverte du monde de l’acoustique, là où la
 
   <!-- e-reader settings -->
   <script>
-    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
-    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_2';
+    window.BUGLOOP_BOOK_ID = '<%= bookId %>';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = '<%= chapterId %>';
     window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
   </script>
 

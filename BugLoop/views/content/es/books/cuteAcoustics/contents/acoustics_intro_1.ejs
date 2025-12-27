@@ -1,18 +1,50 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>" data-lang="<%= lang %>">
-<head>
-  <%- include('../../../../../partials/head.ejs') %>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prólogo de Acústica Linda</title>
+<%
+  // ✅ e-reader 공통 설정
+  const supportedLangs = ['ko','en','fr','zh','ja','es'];
+  const bookId = 'cuteAcoustics';
+  const chapterId = 'acoustics_intro_1';
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/assets/css/e-reader.css" />
-</head>
+  // ✅ locale.books에서 책 / 챕터 자동 탐색
+  const book = locale?.books?.[bookId] || null;
+
+  let chapter = null;
+  if (book && Array.isArray(book.toc)) {
+    for (const section of book.toc) {
+      if (Array.isArray(section.chapters)) {
+        const found = section.chapters.find(c => c.id === chapterId);
+        if (found) {
+          chapter = found;
+          break;
+        }
+      }
+    }
+  }
+
+  // ✅ 안전 장치 (JSON 누락 시 대비)
+  if (!chapter) {
+    chapter = {
+      id: chapterId,
+      title: '¿Quieres convertirte en un experto del sonido?',
+      description:
+        'Acústica Linda — Prólogo sobre la soledad, la sensibilidad y el sonido'
+    };
+  }
+%>
+
+<!-- ✅ 전자책 전용 head (blog head.ejs 절대 사용 금지) -->
+<%- include('../../../../../partials/e-reader-head.ejs', {
+  lang,
+  supportedLangs,
+  bookId,
+  book,
+  chapter
+}) %>
 
 <body>
 
-  <%- include('../../../../../partials/e-reader-header', { lang: lang, locale: locale }) %>
+  <%- include('../../../../../partials/e-reader-header', { lang, locale }) %>
 
   <div class="viewer">
     <button id="prevBtn" class="nav-btn">〈</button>
@@ -25,23 +57,151 @@
 <h2>¿Quieres convertirte en un experto del sonido?</h2>
 
 <p>
-Cuando uno empieza a profundizar realmente en cualquier campo, tarde o temprano termina encontrándose con la soledad. Yo dediqué mucho tiempo a comprender este mundo, pero la mayoría de las personas probablemente han invertido su tiempo de maneras muy distintas. A partir de ahora exploraremos el sonido, y quizá, cuanto más estudies, más sientas algo extraño: que te acercas al “mundo”, pero que al mismo tiempo te alejas un poco de la “gente” del mundo. Es como esa ligera distancia que se percibe cuando escuchas a un profesor universitario hablar. Y, con el tiempo, puede que otras personas también empiecen a sentir esa distancia cuando hablen contigo. ¿No da un poco de miedo?
+Cuando uno empieza a profundizar realmente en cualquier campo,
+tarde o temprano termina encontrándose con la soledad.
 </p>
 
 <p>
-Pero desarrollar la sensibilidad para percibir profundamente una sola cosa también tiene un lado muy positivo.
+Yo dediqué mucho tiempo a comprender este mundo,
+pero la mayoría de las personas probablemente
+han invertido su tiempo de maneras muy distintas.
 </p>
 
 <p>
-No sé si esta será la mejor analogía… pero, ¿alguna vez has dudado de si realmente tenías hambre? La mayoría de las personas, cuando sienten hambre, simplemente la aceptan; no dudan del hambre misma. La sienten de forma tan “clara”. Así que dejan de quedarse quietas y se ponen en movimiento para buscar algo que sacie esa necesidad. Pueden hacerlo porque saben que, al comer algo, pronto se sentirán satisfechas; es decir, porque miran el futuro con cierto optimismo.
+A partir de ahora exploraremos el sonido,
+y quizá, cuanto más estudies,
+más sientas algo extraño:
+que te acercas al “mundo”,
+pero que al mismo tiempo
+te alejas un poco de la “gente” del mundo.
 </p>
 
 <p>
-La soledad es soledad, pero no es lo mismo que el pesimismo. De hecho, una soledad de buena calidad existe justo en el extremo opuesto del pesimismo. El sonido es un tema profundamente fundamental. Y a partir de ahora, tú y el sonido tendrán algo así como una cita. Te acercarás más a él que nadie. Y cuando te encuentres con las muchas actividades que nacen del sonido, podrás percibir su alegría con una sensibilidad especial, más que cualquier otra persona. Y podrás disfrutarla. Puede que otros no entiendan exactamente cuál es la alegría que tú estás sintiendo. Eso también es un tipo de soledad. Pero yo espero que, a lo largo de este largo viaje en el que te harás amigo del sonido, puedas experimentar esa soledad tan agradable.
+Es como esa ligera distancia
+que se percibe cuando escuchas
+a un profesor universitario hablar.
 </p>
 
 <p>
-¡Y por supuesto, no estoy diciendo todo esto porque yo esté solo y quiera encontrar compañeros que compartan mi soledad! ¡Por supuesto que no!
+Y, con el tiempo,
+puede que otras personas
+también empiecen a sentir esa distancia
+cuando hablen contigo.
+</p>
+
+<p>
+¿No da un poco de miedo?
+</p>
+
+<p>
+Pero desarrollar la sensibilidad
+para percibir profundamente una sola cosa
+también tiene un lado muy positivo.
+</p>
+
+<p>
+No sé si esta será la mejor analogía…
+pero, ¿alguna vez has dudado
+de si realmente tenías hambre?
+</p>
+
+<p>
+La mayoría de las personas,
+cuando sienten hambre,
+simplemente la aceptan;
+no dudan del hambre misma.
+</p>
+
+<p>
+La sienten de forma tan “clara”.
+</p>
+
+<p>
+Así que dejan de quedarse quietas
+y se ponen en movimiento
+para buscar algo que sacie esa necesidad.
+</p>
+
+<p>
+Pueden hacerlo porque saben que,
+al comer algo,
+pronto se sentirán satisfechas;
+es decir,
+porque miran el futuro
+con cierto optimismo.
+</p>
+
+<p>
+La soledad es soledad,
+pero no es lo mismo que el pesimismo.
+</p>
+
+<p>
+De hecho,
+una soledad de buena calidad
+existe justo en el extremo opuesto
+del pesimismo.
+</p>
+
+<p>
+El sonido es un tema
+profundamente fundamental.
+</p>
+
+<p>
+Y a partir de ahora,
+tú y el sonido
+tendrán algo así como una cita.
+</p>
+
+<p>
+Te acercarás más a él
+que nadie.
+</p>
+
+<p>
+Y cuando te encuentres
+con las muchas actividades
+que nacen del sonido,
+podrás percibir su alegría
+con una sensibilidad especial,
+más que cualquier otra persona.
+</p>
+
+<p>
+Y podrás disfrutarla.
+</p>
+
+<p>
+Puede que otros
+no entiendan exactamente
+cuál es la alegría
+que tú estás sintiendo.
+</p>
+
+<p>
+Eso también es
+un tipo de soledad.
+</p>
+
+<p>
+Pero yo espero que,
+a lo largo de este largo viaje
+en el que te harás amigo del sonido,
+puedas experimentar
+esa soledad tan agradable.
+</p>
+
+<p>
+¡Y por supuesto,
+no estoy diciendo todo esto
+porque yo esté solo
+y quiera encontrar compañeros
+que compartan mi soledad!
+</p>
+
+<p>
+¡Por supuesto que no!
 </p>
 
       </div>
@@ -57,8 +217,8 @@ La soledad es soledad, pero no es lo mismo que el pesimismo. De hecho, una soled
 
   <!-- e-reader settings -->
   <script>
-    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
-    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_1';
+    window.BUGLOOP_BOOK_ID = '<%= bookId %>';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = '<%= chapterId %>';
     window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
   </script>
 
