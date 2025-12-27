@@ -534,7 +534,7 @@ html.dark .tts-btn {
 
 body.panel-open .panel-backdrop {
   opacity: 1;
-  visibility: hidden !important;
+  visibility: visible;
   pointer-events: auto;
 }
 
