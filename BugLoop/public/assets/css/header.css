@@ -1400,3 +1400,8 @@ html {
   vertical-align: middle;
 }
 
+
+/* ✅ post-view에서는 사이드 패널 클릭 항상 허용 */
+body.post-view .side-panel.main-panel-only {
+  pointer-events: auto !important;
+}
