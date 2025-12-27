@@ -194,7 +194,7 @@ html.dark .img-caption {
 .floating-toc {
   position: fixed;
   top: 80px;
-  left: calc(50% - 720px / 2 - 280px);
+  right: calc(50% - 720px / 2 - 280px);
   background: #f7f9fa;
   border: 1px solid #ccc;
   padding: 1rem;
