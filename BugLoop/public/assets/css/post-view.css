@@ -23,18 +23,16 @@ body {
   padding-bottom: 50px;
 }
 
-/* [수정] 패널/모달 오픈 시 스크롤 방지 통합 */
+/* [최종 수정] 맨 위로 튕기는 현상 방지를 위해 height: 100% 제거 */
 html.panel-open,
 body.panel-open,
 html.modal-open,
 body.modal-open {
-  overflow: hidden !important;
-  touch-action: none;
-  height: 100% !important;
-  position: relative !important;
+  overflow: hidden !important; /* 스크롤바만 숨기고 넘치는 동작 차단 */
+  /* height: 100% 를 제거했습니다. 이게 있으면 화면이 위로 튕깁니다. */
 }
 
-/* [추가] 스크롤바 사라질 때 꿀렁임 방지 */
+/* 스크롤바 사라질 때 화면 꿀렁임 방지 */
 html {
   scrollbar-gutter: stable;
 }
@@ -226,22 +224,19 @@ html.dark .img-caption {
   }
 }
 
-/* [수정] Floating TOC 커서 로직 분리 */
+/* Floating TOC 커서 설정 */
 #floatingToc {
   pointer-events: auto !important;
   -webkit-user-select: auto !important;
   user-select: auto !important;
   -webkit-user-drag: auto !important;
-  /* 박스 자체와 빈 공간은 십자(이동) 커서 */
   cursor: move !important;
 }
 
 #floatingToc * {
-  /* 내부 요소들은 일단 기본 커서로 초기화 */
   cursor: default;
 }
 
-/* 제목 부분도 드래그용 핸들로 쓰기 위해 십자 유지 */
 .floating-toc .toc-title {
   display: block;
   font-weight: bold;
@@ -249,7 +244,6 @@ html.dark .img-caption {
   cursor: move !important;
 }
 
-/* 실제 목차 링크들은 클릭용 손가락 커서로 강제 설정 */
 .toc-list a,
 .post-content .auto-toc a {
   display: block;
@@ -604,19 +598,17 @@ img[data-heic-loading] {
 html.dark .postview-container::before {
   content: "";
   position: absolute;
-  inset: -60px;               /* 퍼지는 범위 확대 */
+  inset: -60px;
   border-radius: 28px;
-
   background: radial-gradient(
     ellipse at top,
-    rgba(255, 215, 140, 0.35), /* 🔥 핵심: 밝기 대폭 증가 */
+    rgba(255, 215, 140, 0.35),
     rgba(255, 215, 140, 0.18) 35%,
     rgba(255, 215, 140, 0.08) 55%,
     transparent 50%
   );
-
-  filter: blur(36px);         /* 더 부드럽게 */
-  opacity: 1;                 /* ❗ 숨김 없이 100% */
+  filter: blur(36px);
+  opacity: 1;
   z-index: -1;
   pointer-events: none;
 }
