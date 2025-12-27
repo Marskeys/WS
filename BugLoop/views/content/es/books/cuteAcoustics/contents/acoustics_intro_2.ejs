@@ -22,7 +22,7 @@
     }
   }
 
-  // ✅ 안전 장치 (JSON 누락 시 대비)
+  // ✅ 안전 장치
   if (!chapter) {
     chapter = {
       id: chapterId,
@@ -33,7 +33,7 @@
   }
 %>
 
-<!-- ✅ 전자책 전용 head (blog head.ejs 절대 사용 금지) -->
+<!-- ✅ 전자책 전용 head -->
 <%- include('../../../../../partials/e-reader-head.ejs', {
   lang,
   supportedLangs,
@@ -53,203 +53,173 @@
     <div class="page" id="page">
       <div class="page-text" id="pageText">
 
-<h1>Prólogo</h1>
-<h2>¿La acústica también necesita imaginación?</h2>
+        <h1>Prólogo</h1>
+        <h2>¿La acústica también necesita imaginación?</h2>
 
-<p>
-Hay una razón por la que comienzo este libro hablando de la soledad.
-Quienes imaginan están siempre, en cierto sentido, solos.
-</p>
+        <p>
+        Hay una razón por la que comienzo este libro hablando de la soledad.
+        Quienes imaginan están siempre, en cierto sentido, solos.
+        La imaginación es, al final, un mundo propio.
+        Por más vívida que sea una imagen en mi mente,
+        nadie más puede verla.
+        </p>
 
-<p>
-La imaginación es, al final, un mundo propio.
-Por más vívida que sea una imagen en mi mente,
-nadie más puede verla.
-</p>
+        <p>
+        La soledad surge en la frontera
+        entre el mundo interior y el mundo exterior,
+        y la imaginación hace que esa frontera
+        se vuelva más espesa.
+        Y la acústica es, precisamente,
+        un campo en el que esa imaginación
+        resulta indispensable.
+        </p>
 
-<p>
-La soledad surge en la frontera
-entre el mundo interior y el mundo exterior,
-y la imaginación hace que esa frontera
-se vuelva más espesa.
-</p>
+        <p>
+        El físico Richard Feynman expresó
+        una idea similar en una entrevista.
+        Respondía a un amigo artista
+        que criticaba a los científicos
+        por ser aburridos,
+        incapaces de apreciar simplemente
+        la belleza de una flor
+        y siempre empeñados en analizarla.
+        </p>
 
-<p>
-Y la acústica es, precisamente,
-un campo en el que esa imaginación
-resulta indispensable.
-</p>
+        <p>
+        Feynman decía que,
+        aunque los científicos no posean necesariamente
+        una sensibilidad estética
+        tan finamente refinada
+        como la de su amigo artista,
+        la belleza que este percibe
+        es algo que otros —incluidos los científicos—
+        también pueden sentir plenamente.
+        </p>
 
-<p>
-El físico Richard Feynman expresó
-una idea similar en una entrevista.
-</p>
+        <p>
+        Además, los científicos pueden imaginar
+        el mundo microscópico
+        invisible a simple vista.
+        ¿Cómo funcionan las células de una flor?
+        ¿Por qué la flor evolucionó de esa manera?
+        ¿Los insectos también perciben los colores?
+        </p>
 
-<p>
-Respondía a un amigo artista
-que criticaba a los científicos
-por ser aburridos,
-incapaces de apreciar simplemente
-la belleza de una flor
-y siempre empeñados en analizarla.
-</p>
+        <p>
+        Al plantear estas preguntas
+        a través de la imaginación,
+        no se reduce la belleza;
+        por el contrario,
+        se añade belleza
+        y, con ella, asombro.
+        </p>
 
-<p>
-Feynman decía que,
-aunque los científicos no posean necesariamente
-una sensibilidad estética
-tan finamente refinada
-como la de su amigo artista,
-la belleza que este percibe
-es algo que otros —incluidos los científicos—
-también pueden sentir plenamente.
-</p>
+        <p>
+        La acústica no es música.
+        La sensibilidad que se utiliza
+        para expresar la música
+        y la que se emplea
+        para comprender la acústica
+        pueden ser muy distintas.
+        </p>
 
-<p>
-Además, los científicos pueden imaginar
-el mundo microscópico
-invisible a simple vista.
-</p>
+        <p>
+        Por supuesto, cuando estudié acústica
+        en una universidad de Francia,
+        muchos estudiantes y profesores
+        mostraban cierta tendencia
+        a disfrutar de la interpretación
+        de instrumentos musicales.
+        </p>
 
-<p>
-¿Cómo funcionan las células de una flor?
-¿Por qué la flor evolucionó de esa manera?
-¿Los insectos también perciben los colores?
-</p>
+        <p>
+        Sin embargo,
+        la acústica no es un arte,
+        sino una ciencia;
+        más precisamente,
+        una rama de la física.
+        Si uno se acerca a la acústica
+        como una extensión de la música,
+        es posible que le resulte
+        bastante extraña.
+        </p>
 
-<p>
-Al plantear estas preguntas
-a través de la imaginación,
-no se reduce la belleza;
-por el contrario,
-se añade belleza
-y, con ella, asombro.
-</p>
+        <p>
+        Esta es también una de las razones
+        por las que la acústica
+        no suele ofrecerse
+        como una especialidad independiente
+        en los estudios de grado.
+        </p>
 
-<p>
-La acústica no es música.
-</p>
+        <p>
+        Para explorar la acústica
+        se necesita una imaginación
+        de tipo físico,
+        y esa imaginación
+        solo funciona
+        cuando está sustentada
+        por un cierto nivel
+        de conocimientos básicos
+        de física.
+        </p>
 
-<p>
-La sensibilidad que se utiliza
-para expresar la música
-y la que se emplea
-para comprender la acústica
-pueden ser muy distintas.
-</p>
+        <p>
+        Por ello,
+        la acústica suele aparecer
+        como una especialización
+        en los últimos años
+        de la carrera
+        o a nivel de posgrado.
+        Incluso así,
+        no es algo común.
+        </p>
 
-<p>
-Por supuesto, cuando estudié acústica
-en una universidad de Francia,
-muchos estudiantes y profesores
-mostraban cierta tendencia
-a disfrutar de la interpretación
-de instrumentos musicales.
-</p>
+        <p>
+        Contrasta con disciplinas
+        como la informática
+        o la literatura inglesa,
+        que pueden encontrarse
+        en casi cualquier universidad.
+        </p>
 
-<p>
-Sin embargo,
-la acústica no es un arte,
-sino una ciencia;
-más precisamente,
-una rama de la física.
-</p>
+        <p>
+        Por esta razón,
+        este libro comienza
+        con los conceptos fundamentales
+        de la física.
+        No porque sea un libro de acústica
+        aparecerán de inmediato
+        micrófonos o decibelios.
+        </p>
 
-<p>
-Si uno se acerca a la acústica
-como una extensión de la música,
-es posible que le resulte
-bastante extraña.
-</p>
+        <p>
+        Ya lo he mencionado:
+        estamos intentando abordar,
+        en un solo volumen,
+        una disciplina
+        que suele enseñarse
+        principalmente en el posgrado.
+        Por lo tanto,
+        un proceso de preparación
+        es necesario.
+        </p>
 
-<p>
-Esta es también una de las razones
-por las que la acústica
-no suele ofrecerse
-como una especialidad independiente
-en los estudios de grado.
-</p>
+        <p>
+        Aun así,
+        procuraré que el recorrido
+        no resulte excesivamente difícil.
+        Por eso también elegí el título
+        <em>Cute Acoustics</em>.
+        </p>
 
-<p>
-Para explorar la acústica
-se necesita una imaginación
-de tipo físico,
-y esa imaginación
-solo funciona
-cuando está sustentada
-por un cierto nivel
-de conocimientos básicos
-de física.
-</p>
-
-<p>
-Por ello,
-la acústica suele aparecer
-como una especialización
-en los últimos años
-de la carrera
-o a nivel de posgrado.
-</p>
-
-<p>
-Incluso así,
-no es algo común.
-</p>
-
-<p>
-Contrasta con disciplinas
-como la informática
-o la literatura inglesa,
-que pueden encontrarse
-en casi cualquier universidad.
-</p>
-
-<p>
-Por esta razón,
-este libro comienza
-con los conceptos fundamentales
-de la física.
-</p>
-
-<p>
-No porque sea un libro de acústica
-aparecerán de inmediato
-micrófonos o decibelios.
-</p>
-
-<p>
-Ya lo he mencionado:
-estamos intentando abordar,
-en un solo volumen,
-una disciplina
-que suele enseñarse
-principalmente en el posgrado.
-</p>
-
-<p>
-Por lo tanto,
-un proceso de preparación
-es necesario.
-</p>
-
-<p>
-Aun así,
-procuraré que el recorrido
-no resulte excesivamente difícil.
-</p>
-
-<p>
-Por eso también elegí el título
-<em>Cute Acoustics</em>.
-</p>
-
-<p>
-Entonces,
-¿qué tal si partimos
-hacia el mundo de la acústica,
-donde la soledad
-y la belleza se cruzan?
-</p>
+        <p>
+        Entonces,
+        ¿qué tal si partimos
+        hacia el mundo de la acústica,
+        donde la soledad
+        y la belleza se cruzan?
+        </p>
 
       </div>
 

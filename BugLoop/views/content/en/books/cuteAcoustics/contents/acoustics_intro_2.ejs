@@ -22,17 +22,18 @@
     }
   }
 
-  // ✅ 안전 장치 (혹시 JSON 누락 시)
+  // ✅ 안전 장치
   if (!chapter) {
     chapter = {
       id: chapterId,
       title: 'Do We Need Imagination in Acoustics?',
-      description: 'Cute Acoustics — A preface on imagination, solitude, and beauty in acoustics'
+      description:
+        'Cute Acoustics — A preface on imagination, solitude, and beauty in acoustics'
     };
   }
 %>
 
-<!-- ✅ 전자책 전용 head (블로그 head 절대 사용 금지) -->
+<!-- ✅ 전자책 전용 head -->
 <%- include('../../../../../partials/e-reader-head.ejs', {
   lang,
   supportedLangs,
@@ -52,106 +53,121 @@
     <div class="page" id="page">
       <div class="page-text" id="pageText">
 
-<h1>Preface</h1>
-<h2>Do We Need Imagination in Acoustics?</h2>
+        <h1>Preface</h1>
+        <h2>Do We Need Imagination in Acoustics?</h2>
 
-<p>
-There is a reason I begin this book by talking about solitude.
-Those who imagine are always, in some sense, alone.
-Imagination is ultimately a private world.
-</p>
+        <p>
+        There is a reason I begin this book by talking about solitude.
+        Those who imagine are always solitary, in some sense.
+        Imagination is ultimately a world that belongs to oneself.
+        No matter how vividly I imagine something,
+        no one else can see it.
+        </p>
 
-<p>
-No matter how vividly I imagine something, no one else can see it.
-Solitude is something that blooms at the boundary between the inner
-and the outer world, and imagination makes that boundary thicker.
-And acoustics is a field in which such imagination is essential.
-</p>
+        <p>
+        Solitude blooms at the boundary between the inner and the outer world,
+        and imagination makes that boundary thicker.
+        And acoustics is a field where such imagination is indispensable.
+        </p>
 
-<p>
-In an interview, the physicist Richard Feynman once said something
-along these lines. He was responding to an artist friend who criticized
-scientists as dull people who could not simply appreciate the beauty
-of a flower, insisting on analyzing it instead.
-</p>
+        <p>
+        In an interview, the physicist Richard Feynman once said something
+        along these lines. He was responding to an artist friend who criticized
+        scientists as dull people who could not simply appreciate the beauty
+        of a flower, insisting on analyzing it instead.
+        </p>
 
-<p>
-Feynman said that even if scientists may not possess the same highly
-refined aesthetic sensibility as that artist, the beauty the artist
-feels is something others—including scientists—can also feel.
-</p>
+        <p>
+        Feynman explained that even if scientists may not possess the same
+        refined aesthetic sensibility as that artist,
+        the beauty the artist feels is something others—
+        including scientists—can also feel.
+        </p>
 
-<p>
-Moreover, scientists are able to imagine the invisible microscopic
-world. How do the cells of a flower work? Why did the flower evolve
-that way? Can insects perceive color as well?
-</p>
+        <p>
+        Moreover, scientists are able to imagine the invisible microscopic world.
+        How do the cells of a flower work?
+        Why did the flower evolve that way?
+        Can insects perceive color as well?
+        </p>
 
-<p>
-By imagining such questions, scientists do not diminish beauty.
-Rather, those questions add to beauty—and to wonder.
-</p>
+        <p>
+        By posing such questions through imagination,
+        scientists do not diminish beauty.
+        On the contrary, those questions add to beauty—
+        and to a sense of wonder.
+        </p>
 
-<p>
-Acoustics is not music. The sensibility used to express music and
-the sensibility used to understand acoustics can be quite different.
-</p>
+        <p>
+        Acoustics is not music.
+        The sensibility used to express music
+        and the sensibility used to understand acoustics
+        are not necessarily the same.
+        </p>
 
-<p>
-Of course, when I studied acoustics at a university in France,
-many students and professors did show a tendency to enjoy playing
-musical instruments.
-</p>
+        <p>
+        Of course, when I studied acoustics at a university in France,
+        many students and professors did show a tendency
+        to enjoy playing musical instruments.
+        </p>
 
-<p>
-Still, acoustics is not an art; it is a science—more precisely,
-a branch of physics. If you approach acoustics as an extension of
-music, you may find it rather unfamiliar.
-</p>
+        <p>
+        Still, acoustics is not an art.
+        It is a science—more precisely, a branch of physics.
+        If you approach acoustics as an extension of music,
+        you may find it rather unfamiliar.
+        </p>
 
-<p>
-This is also one of the reasons why acoustics is not commonly offered
-as a standalone major at the undergraduate level.
-</p>
+        <p>
+        This is also one of the reasons why acoustics
+        is rarely offered as a major at the undergraduate level.
+        </p>
 
-<p>
-To study acoustics, one needs physical imagination, and that imagination
-only functions when it is supported by a certain level of foundational
-knowledge in physics.
-</p>
+        <p>
+        To explore acoustics, one needs physical imagination,
+        and that imagination only functions
+        when supported by a certain foundation in physics.
+        </p>
 
-<p>
-As a result, acoustics is usually offered as a specialization in the
-later years of undergraduate study or at the graduate level.
-Even then, it is not very common.
-</p>
+        <p>
+        That is why acoustics is usually offered
+        as a specialization in the later years of undergraduate study
+        or at the graduate level.
+        Even then, it is not very common.
+        </p>
 
-<p>
-It stands in contrast to majors such as computer science or English
-literature, which can be found at almost any university.
-</p>
+        <p>
+        This stands in contrast to majors such as computer science
+        or English literature,
+        which can be found at almost any university.
+        </p>
 
-<p>
-That is why this book begins with the basic concepts of physics.
-You will not encounter microphones or decibels right away simply
-because this is a book about acoustics.
-</p>
+        <p>
+        For that reason, this book begins
+        with the basic concepts of physics.
+        You will not suddenly encounter microphones or decibels
+        simply because this is a book about acoustics.
+        </p>
 
-<p>
-As I mentioned earlier, we are dealing with a discipline that is
-usually taught at the graduate level, all within a single book—
-some preparation is necessary.
-</p>
+        <p>
+        As I mentioned earlier,
+        we are dealing with a discipline
+        that is usually taught at the graduate level,
+        all within a single book.
+        Some preparation is necessary.
+        </p>
 
-<p>
-Still, I will try to keep it from becoming overly difficult.
-That is also why I chose the title <em>Cute Acoustics</em>.
-</p>
+        <p>
+        Still, I will try to keep it from becoming too difficult.
+        That is also why I chose the title
+        <em>Cute Acoustics</em>.
+        </p>
 
-<p>
-So, shall we set off into the world of acoustics,
-where solitude and beauty intersect?
-</p>
+        <p>
+        So, shall we set off
+        into the world of acoustics,
+        where solitude and beauty intersect?
+        </p>
 
       </div>
 
