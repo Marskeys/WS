@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
       iframe.setAttribute('referrerpolicy', 'no-referrer');
       iframe.setAttribute('title', '삽입된 HTML');
       iframe.setAttribute('name', `snippet-iframe-${index}`);
-      iframe.style.cssText = 'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
+      iframe.style.cssText =
+        'width:100%;min-height:100px;border:1px solid #ccc;border-radius:8px;margin:1rem 0;';
       iframe.srcdoc = decoded;
       el.innerHTML = '';
       el.appendChild(iframe);
@@ -66,27 +67,41 @@ document.addEventListener("DOMContentLoaded", () => {
   let tocReady = false;
 
   /* =====================================================
-     TOC 빌드 함수
+     TOC 빌드 (h2 = 제목, h3 = 부제목)
   ===================================================== */
   const buildToc = () => {
     if (tocReady) return;
-    const headings = postContent.querySelectorAll('h1, h2');
+
+    const headings = postContent.querySelectorAll('h2, h3');
     if (!headings.length) return;
 
     let html = `<strong class="toc-title">${tocTitle}</strong><ul class="toc-list">`;
-    let h1 = 0, h2 = 0;
+    let h2Count = 0;
+    let h3Count = 0;
 
     headings.forEach((el, i) => {
       const tag = el.tagName.toLowerCase();
       if (!el.id) el.id = `toc-${tag}-${i}`;
-      if (tag === 'h1') {
-        h1++; h2 = 0;
-        html += `<li class="toc-item toc-h1"><a href="#${el.id}">${h1}. ${el.textContent}</a></li>`;
-      } else {
-        h2++; if (!h1) h1 = 1;
-        html += `<li class="toc-item toc-h2"><a href="#${el.id}">${h1}.${h2} ${el.textContent}</a></li>`;
+
+      if (tag === 'h2') {
+        h2Count++;
+        h3Count = 0;
+        html += `
+          <li class="toc-item toc-h2">
+            <a href="#${el.id}">${h2Count}. ${el.textContent}</a>
+          </li>`;
+      }
+
+      if (tag === 'h3') {
+        if (!h2Count) h2Count = 1;
+        h3Count++;
+        html += `
+          <li class="toc-item toc-h3">
+            <a href="#${el.id}">${h2Count}.${h3Count} ${el.textContent}</a>
+          </li>`;
       }
     });
+
     html += '</ul>';
     floatingToc.innerHTML = html;
     mobileContent.innerHTML = html;
@@ -95,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* =====================================================
-     TOC 표시/숨김 로직
+     TOC 표시 / 숨김
   ===================================================== */
   const updateTocVisibility = () => {
     if (!tocReady) return;
@@ -122,18 +137,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =====================================================
+     모바일 TOC 스크롤 차단 (핵심)
+  ===================================================== */
+  const preventScroll = e => e.preventDefault();
+
+  const lockScroll = () => {
+    document.addEventListener('touchmove', preventScroll, { passive: false });
+  };
+
+  const unlockScroll = () => {
+    document.removeEventListener('touchmove', preventScroll);
+  };
+
+  /* =====================================================
      모바일 TOC
   ===================================================== */
+  const closeMobileToc = () => {
+    mobileModal.style.display = 'none';
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+    unlockScroll();
+  };
+
   mobileBtn.addEventListener('click', () => {
     mobileModal.style.display = 'flex';
     document.body.classList.add('modal-open');
+    document.documentElement.classList.add('modal-open');
+    lockScroll();
   });
 
   mobileModal.addEventListener('click', e => {
-    if (e.target === mobileModal) {
-      mobileModal.style.display = 'none';
-      document.body.classList.remove('modal-open');
-    }
+    if (e.target === mobileModal) closeMobileToc();
   });
 
   mobileContent.addEventListener('click', e => {
@@ -141,29 +175,33 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const targetId = e.target.getAttribute('href').slice(1);
       document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
-      mobileModal.style.display = 'none';
-      document.body.classList.remove('modal-open');
+      closeMobileToc();
     }
   });
 
   /* =====================================================
-     데스크탑 드래그
+     데스크탑 플로팅 TOC 드래그
   ===================================================== */
   if (window.innerWidth > 768) {
     let drag = false, sx, sy, sl, st;
     floatingToc.style.cursor = 'move';
+
     floatingToc.addEventListener('mousedown', e => {
       if (e.target.tagName === 'A') return;
       drag = true;
-      sx = e.clientX; sy = e.clientY;
-      sl = floatingToc.offsetLeft; st = floatingToc.offsetTop;
+      sx = e.clientX;
+      sy = e.clientY;
+      sl = floatingToc.offsetLeft;
+      st = floatingToc.offsetTop;
       e.preventDefault();
     });
+
     document.addEventListener('mousemove', e => {
       if (!drag) return;
       floatingToc.style.left = `${sl + e.clientX - sx}px`;
       floatingToc.style.top = `${st + e.clientY - sy}px`;
     });
+
     document.addEventListener('mouseup', () => drag = false);
   }
 
@@ -194,16 +232,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const stop = btn.dataset.stop || 'Stop';
     const synth = speechSynthesis;
     let reading = false;
+
     btn.addEventListener('click', () => {
       if (reading) {
-        synth.cancel(); btn.innerText = `🔊 ${listen}`; reading = false; return;
+        synth.cancel();
+        btn.innerText = `🔊 ${listen}`;
+        reading = false;
+        return;
       }
       const u = new SpeechSynthesisUtterance(postContent.innerText);
       u.lang = document.documentElement.lang;
       synth.speak(u);
       btn.innerText = `⏹ ${stop}`;
       reading = true;
-      u.onend = () => { btn.innerText = `🔊 ${listen}`; reading = false; };
+      u.onend = () => {
+        btn.innerText = `🔊 ${listen}`;
+        reading = false;
+      };
     });
   }
 });
