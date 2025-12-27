@@ -238,6 +238,7 @@ html.dark{
   transform: translateX(0);
   opacity: 1;
   pointer-events: auto;
+  overscroll-behavior: contain;
 }
 
 /* ======================
