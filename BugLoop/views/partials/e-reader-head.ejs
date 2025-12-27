@@ -1,11 +1,35 @@
 <head>
+  <!-- 🌙 다크모드 초기화 (필수) -->
+  <script>
+    (function() {
+      try {
+        const THEME_KEY = 'bugloop.theme';
+        const htmlEl = document.documentElement;
+        const saved = localStorage.getItem(THEME_KEY);
+        const theme =
+          saved ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light');
+        if (theme === 'dark') htmlEl.classList.add('dark');
+        else htmlEl.classList.remove('dark');
+      } catch (e) {
+        console.warn('Theme initialization failed:', e);
+      }
+    })();
+  </script>
+
+  <!-- 🔤 Basic -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <%
     const desc =
-      (chapter && chapter.description) ||
-      `${book.title} — ${chapter.title} (전자책 챕터)`;
+      (chapter && chapter.description)
+        ? chapter.description
+        : `${book.title} — ${chapter.title} (전자책 챕터)`;
+    const pageUrl =
+      `https://bugloop.dev/${lang}/books/${bookId}/contents/${chapter.id}`;
   %>
 
   <!-- 📘 Title / Description -->
@@ -13,12 +37,9 @@
   <meta name="description" content="<%= desc %>" />
 
   <!-- 🔗 Canonical -->
-  <link
-    rel="canonical"
-    href="https://bugloop.dev/<%= lang %>/books/<%= bookId %>/contents/<%= chapter.id %>"
-  />
+  <link rel="canonical" href="<%= pageUrl %>" />
 
-  <!-- 🌍 hreflang -->
+  <!-- 🌍 hreflang (전자책 챕터 전용) -->
   <% supportedLangs.forEach(l => { %>
     <link
       rel="alternate"
@@ -26,25 +47,56 @@
       href="https://bugloop.dev/<%= l %>/books/<%= bookId %>/contents/<%= chapter.id %>"
     />
   <% }) %>
-
   <link
     rel="alternate"
     hreflang="x-default"
     href="https://bugloop.dev/books/<%= bookId %>/contents/<%= chapter.id %>"
   />
 
-  <!-- 🤖 Robots (전자책 챕터: 색인 허용) -->
+  <!-- 🤖 Robots -->
   <meta name="robots" content="index,follow" />
 
   <!-- 🔎 Open Graph -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content="<%= chapter.title %> – <%= book.title %>" />
   <meta property="og:description" content="<%= desc %>" />
-  <meta
-    property="og:url"
-    content="https://bugloop.dev/<%= lang %>/books/<%= bookId %>/contents/<%= chapter.id %>"
+  <meta property="og:url" content="<%= pageUrl %>" />
+
+  <!-- 🎨 Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700&family=Noto+Serif+KR&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Asta+Sans:wght@100..900&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css"
   />
 
-  <!-- 🎨 Styles -->
+  <!-- 🎨 Global UI CSS (절대 제거 ❌) -->
+  <link rel="stylesheet" href="/assets/css/header.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/table.css" />
+  <link rel="stylesheet" href="/assets/css/darkmode.css" />
+
+  <!-- 🎨 E-Reader CSS -->
   <link rel="stylesheet" href="/assets/css/e-reader.css" />
+
+  <!-- 🔔 Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flag-icons@6.6.6/css/flag-icons.min.css"
+  />
+
+  <!-- 🧩 Utility -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.0/beautify-html.min.js"></script>
 </head>
