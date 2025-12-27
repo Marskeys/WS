@@ -529,7 +529,7 @@ html.dark .tts-btn {
   visibility: hidden;
   pointer-events: none;
   transition: opacity .18s ease, visibility .18s ease;
-  z-index: 1500;
+  z-index: 0;
 }
 
 @media (max-width: 768px) {
