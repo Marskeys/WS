@@ -22,18 +22,17 @@
     }
   }
 
-  // ✅ 안전 장치 (JSON 누락 시 대비)
+  // ✅ 안전 장치 (혹시 JSON 누락 시)
   if (!chapter) {
     chapter = {
       id: chapterId,
       title: '¿Quieres convertirte en un experto del sonido?',
-      description:
-        'Acústica Linda — Prólogo sobre la soledad, la sensibilidad y el sonido'
+      description: 'Acústica Linda — Una introducción para acercarte al sonido'
     };
   }
 %>
 
-<!-- ✅ 전자책 전용 head (blog head.ejs 절대 사용 금지) -->
+<!-- ✅ 전자책 전용 head (블로그 head 절대 사용 금지) -->
 <%- include('../../../../../partials/e-reader-head.ejs', {
   lang,
   supportedLangs,
@@ -53,156 +52,87 @@
     <div class="page" id="page">
       <div class="page-text" id="pageText">
 
-<h1>Prólogo</h1>
-<h2>¿Quieres convertirte en un experto del sonido?</h2>
+        <h1>Prólogo</h1>
+        <h2>¿Quieres convertirte en un experto del sonido?</h2>
 
-<p>
-Cuando uno empieza a profundizar realmente en cualquier campo,
-tarde o temprano termina encontrándose con la soledad.
-</p>
+        <p>
+        Cuando uno empieza a profundizar realmente en cualquier campo,
+        tarde o temprano termina encontrándose con la soledad.
+        Yo dediqué mucho tiempo a comprender este mundo,
+        pero la mayoría de las personas probablemente
+        han invertido su tiempo de maneras muy distintas.
+        A partir de ahora exploraremos el sonido,
+        y quizá, cuanto más estudies,
+        más sientas algo extraño:
+        que te acercas al “mundo”,
+        pero que al mismo tiempo te alejas un poco
+        de la “gente” del mundo.
+        </p>
 
-<p>
-Yo dediqué mucho tiempo a comprender este mundo,
-pero la mayoría de las personas probablemente
-han invertido su tiempo de maneras muy distintas.
-</p>
+        <p>
+        Esa sutil distancia que a veces se percibe
+        cuando escuchas a un profesor universitario hablar,
+        puede que algún día otras personas
+        también la sientan cuando hablen contigo.
+        ¿No da un poco de miedo?
+        </p>
 
-<p>
-A partir de ahora exploraremos el sonido,
-y quizá, cuanto más estudies,
-más sientas algo extraño:
-que te acercas al “mundo”,
-pero que al mismo tiempo
-te alejas un poco de la “gente” del mundo.
-</p>
+        <p>
+        Pero hay algo realmente hermoso
+        en cultivar la capacidad
+        de sentir profundamente una sola cosa.
+        Puede que esta comparación suene extraña,
+        pero ¿alguna vez has dudado
+        de si realmente tenías hambre?
+        </p>
 
-<p>
-Es como esa ligera distancia
-que se percibe cuando escuchas
-a un profesor universitario hablar.
-</p>
+        <p>
+        La mayoría de las personas no cuestionan el hambre.
+        El hambre se siente clara.
+        Te impulsa a actuar,
+        a buscar comida que pueda saciarla.
+        Confías en que comer
+        te hará sentir satisfecho pronto,
+        y porque crees en ese resultado futuro,
+        eres capaz de avanzar.
+        </p>
 
-<p>
-Y, con el tiempo,
-puede que otras personas
-también empiecen a sentir esa distancia
-cuando hablen contigo.
-</p>
+        <p>
+        La soledad es simplemente soledad;
+        no es lo mismo que el pesimismo.
+        De hecho, una soledad de buena calidad
+        existe en el lado opuesto del pesimismo.
+        </p>
 
-<p>
-¿No da un poco de miedo?
-</p>
+        <p>
+        El sonido es, en sí mismo,
+        un tema sorprendentemente fundamental.
+        En este viaje,
+        vamos a tener algo así como una cita con el sonido,
+        acercándonos a él más que nadie.
+        Cuando te encuentres con las muchas actividades
+        y expresiones que nacen del sonido,
+        percibirás su placer
+        con más sensibilidad que cualquier otra persona.
+        </p>
 
-<p>
-Pero desarrollar la sensibilidad
-para percibir profundamente una sola cosa
-también tiene un lado muy positivo.
-</p>
+        <p>
+        Puede que otros nunca comprendan del todo
+        la alegría que tú estás sintiendo.
+        Eso también es una forma de soledad.
+        Pero espero que,
+        a lo largo de este largo viaje
+        en el que te vuelvas íntimo con el sonido,
+        llegues a disfrutar
+        de esa soledad tan agradable.
+        </p>
 
-<p>
-No sé si esta será la mejor analogía…
-pero, ¿alguna vez has dudado
-de si realmente tenías hambre?
-</p>
-
-<p>
-La mayoría de las personas,
-cuando sienten hambre,
-simplemente la aceptan;
-no dudan del hambre misma.
-</p>
-
-<p>
-La sienten de forma tan “clara”.
-</p>
-
-<p>
-Así que dejan de quedarse quietas
-y se ponen en movimiento
-para buscar algo que sacie esa necesidad.
-</p>
-
-<p>
-Pueden hacerlo porque saben que,
-al comer algo,
-pronto se sentirán satisfechas;
-es decir,
-porque miran el futuro
-con cierto optimismo.
-</p>
-
-<p>
-La soledad es soledad,
-pero no es lo mismo que el pesimismo.
-</p>
-
-<p>
-De hecho,
-una soledad de buena calidad
-existe justo en el extremo opuesto
-del pesimismo.
-</p>
-
-<p>
-El sonido es un tema
-profundamente fundamental.
-</p>
-
-<p>
-Y a partir de ahora,
-tú y el sonido
-tendrán algo así como una cita.
-</p>
-
-<p>
-Te acercarás más a él
-que nadie.
-</p>
-
-<p>
-Y cuando te encuentres
-con las muchas actividades
-que nacen del sonido,
-podrás percibir su alegría
-con una sensibilidad especial,
-más que cualquier otra persona.
-</p>
-
-<p>
-Y podrás disfrutarla.
-</p>
-
-<p>
-Puede que otros
-no entiendan exactamente
-cuál es la alegría
-que tú estás sintiendo.
-</p>
-
-<p>
-Eso también es
-un tipo de soledad.
-</p>
-
-<p>
-Pero yo espero que,
-a lo largo de este largo viaje
-en el que te harás amigo del sonido,
-puedas experimentar
-esa soledad tan agradable.
-</p>
-
-<p>
-¡Y por supuesto,
-no estoy diciendo todo esto
-porque yo esté solo
-y quiera encontrar compañeros
-que compartan mi soledad!
-</p>
-
-<p>
-¡Por supuesto que no!
-</p>
+        <p>
+        Y no—absolutamente no porque yo esté solo,
+        ni porque esté buscando compañeros
+        para compartir mi soledad.
+        Absolutamente no.
+        </p>
 
       </div>
 
