@@ -600,9 +600,14 @@ html.dark .postview-container::before {
 
 
 
-/* 사이드패널 열릴 때 post-view 본문 스크롤 차단 */
+/* post-view에서 패널 열릴 때 */
 body.panel-open.post-view .postview-container {
-  overflow: hidden !important;
-  max-height: calc(100vh - 120px); /* 헤더 여백 고려 */
+  pointer-events: none;
+}
+
+/* 패널 자체는 살아 있어야 함 */
+body.panel-open .sidebar-extension-panel,
+body.panel-open .panel-backdrop {
+  pointer-events: auto;
 }
 
