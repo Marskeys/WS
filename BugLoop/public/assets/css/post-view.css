@@ -600,7 +600,9 @@ html.dark .postview-container::before {
 
 
 
-html.panel-open,
-body.panel-open {
+/* 사이드패널 열릴 때 post-view 본문 스크롤 차단 */
+body.panel-open.post-view .postview-container {
   overflow: hidden !important;
+  max-height: calc(100vh - 120px); /* 헤더 여백 고려 */
 }
+
