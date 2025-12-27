@@ -150,7 +150,7 @@ html.dark h2.sub-chapter-title{ color:#eee; }
 .page-text {
   flex: 1;
   overflow-y: auto;
-  white-space: pre-wrap;
+  white-space: normal;
   padding-bottom: 16px;
 }
 
