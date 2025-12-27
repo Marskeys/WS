@@ -532,6 +532,12 @@ html.dark .tts-btn {
   z-index: 1500;
 }
 
+body.panel-open .panel-backdrop {
+  opacity: 1;
+  visibility: hidden !important;
+  pointer-events: auto;
+}
+
 @media (max-width: 768px) {
   .post-content .auto-toc {
     max-width: 100%;
