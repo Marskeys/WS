@@ -598,3 +598,9 @@ html.dark .postview-container::before {
   pointer-events: none;
 }
 
+
+
+html.panel-open,
+body.panel-open {
+  overflow: hidden !important;
+}
