@@ -1,0 +1,30 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <%
+    const desc =
+      (chapter && chapter.description) ||
+      `${book.title} — ${chapter.title} (전자책 챕터)`;
+  %>
+
+  <title><%= chapter.title %> – <%= book.title %></title>
+  <meta name="description" content="<%= desc %>" />
+
+  <link rel="canonical"
+        href="https://bugloop.dev/<%= lang %>/books/<%= bookId %>/contents/<%= chapter.id %>" />
+
+  <% supportedLangs.forEach(l => { %>
+    <link rel="alternate" hreflang="<%= l %>"
+      href="https://bugloop.dev/<%= l %>/books/<%= bookId %>/contents/<%= chapter.id %>" />
+  <% }) %>
+
+  <link rel="alternate" hreflang="x-default"
+        href="https://bugloop.dev/books/<%= bookId %>/contents/<%= chapter.id %>" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="<%= chapter.title %> – <%= book.title %>" />
+  <meta property="og:description" content="<%= desc %>" />
+
+  <link rel="stylesheet" href="/assets/css/e-reader.css" />
+</head>

@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html lang="<%= lang %>" data-lang="<%= lang %>">
-<head>
-  <%- include('../../../../../partials/head.ejs') %>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>귀여운 음향학 서문</title>
+<%
+  // ✅ e-reader 공통 설정
+  const supportedLangs = ['ko','en','fr','zh','ja','es'];
+  const bookId = 'cuteAcoustics';
+  const chapterId = 'acoustics_intro_2';
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-  <link rel="stylesheet" href="/assets/css/e-reader.css" />
-</head>
+  // ✅ locale.books 구조에서 자동으로 책/챕터 찾기 (6개국어 공통)
+  const book = (locale && locale.books && locale.books[bookId]) ? locale.books[bookId] : null;
+
+  let chapter = null;
+  if (book && Array.isArray(book.toc)) {
+    for (const sec of book.toc) {
+      if (sec && Array.isArray(sec.chapters)) {
+        const found = sec.chapters.find(c => c && c.id === chapterId);
+        if (found) { chapter = found; break; }
+      }
+    }
+  }
+
+  // ✅ 혹시 못 찾았을 때 최소 안전장치
+  if (!chapter) {
+    chapter = { id: chapterId, title: 'Chapter', url: chapterId };
+  }
+  if (!book) {
+    // book이 없으면 title이 깨지니까 최소값
+    // (실제로는 locale.books에 있으니 여기로 안 올 확률이 큼)
+  }
+%>
+
+<!-- ✅ 블로그 head.ejs 절대 금지. e-reader 전용 head 사용 -->
+<%- include('../../../../../partials/e-reader-head.ejs', {
+  lang,
+  supportedLangs,
+  bookId,
+  book: book || { title: 'Book' },
+  chapter
+}) %>
 
 <body>
 
@@ -61,8 +89,8 @@
 
   <!-- e-reader settings -->
   <script>
-    window.BUGLOOP_BOOK_ID = 'cuteAcoustics';
-    window.BUGLOOP_CURRENT_CHAPTER_ID = 'acoustics_intro_2';
+    window.BUGLOOP_BOOK_ID = '<%= bookId %>';
+    window.BUGLOOP_CURRENT_CHAPTER_ID = '<%= chapterId %>';
     window.BUGLOOP_BOOKS = <%- JSON.stringify(locale.books) %>;
   </script>
 
