@@ -931,3 +931,59 @@ if (fontBtn) {
     applyFontScale();
   });
 }
+
+
+
+(function () {
+  let locked = false;
+
+  function shouldBlockScroll(e) {
+    // 패널 내부는 스크롤 허용
+    const panel = document.querySelector('.sidebar-extension-panel');
+    if (panel && panel.contains(e.target)) return false;
+
+    // 모바일 TOC / 패널 등 허용할 영역 있으면 여기 추가
+    return document.body.classList.contains('panel-open');
+  }
+
+  function onWheel(e) {
+    if (shouldBlockScroll(e)) {
+      e.preventDefault();
+    }
+  }
+
+  function onTouchMove(e) {
+    if (shouldBlockScroll(e)) {
+      e.preventDefault();
+    }
+  }
+
+  function onKeydown(e) {
+    if (!document.body.classList.contains('panel-open')) return;
+
+    const keys = [
+      'ArrowUp','ArrowDown',
+      'PageUp','PageDown',
+      'Home','End',' '
+    ];
+    if (keys.includes(e.key)) {
+      e.preventDefault();
+    }
+  }
+
+  window.lockPostViewScroll = function () {
+    if (locked) return;
+    locked = true;
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('keydown', onKeydown);
+  };
+
+  window.unlockPostViewScroll = function () {
+    if (!locked) return;
+    locked = false;
+    window.removeEventListener('wheel', onWheel, { passive: false });
+    window.removeEventListener('touchmove', onTouchMove, { passive: false });
+    window.removeEventListener('keydown', onKeydown);
+  };
+})();

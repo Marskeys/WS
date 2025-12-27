@@ -599,15 +599,3 @@ html.dark .postview-container::before {
 }
 
 
-
-/* post-view에서 패널 열릴 때 */
-body.panel-open.post-view .postview-container {
-  pointer-events: none;
-}
-
-/* 패널 자체는 살아 있어야 함 */
-body.panel-open .sidebar-extension-panel,
-body.panel-open .panel-backdrop {
-  pointer-events: auto;
-}
-
