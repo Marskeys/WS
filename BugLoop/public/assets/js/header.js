@@ -934,3 +934,22 @@ if (fontBtn) {
 
 
 
+
+toggleExtensionBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  const isNowOpen = extensionPanel?.classList.toggle('open');
+
+  // html과 body 모두에 클래스를 토글 (한 줄로 끝!)
+  document.documentElement.classList.toggle('panel-open', isNowOpen);
+  document.body.classList.toggle('panel-open', isNowOpen);
+
+  if (isNowOpen) {
+    sidePanel?.classList.add('open');
+    sidePanel?.style.setProperty('pointer-events', 'auto');
+    restoreActive();
+  } else {
+    sidePanel?.classList.remove('open');
+    sidePanel?.style.setProperty('pointer-events', 'none');
+    clearNonHomeTabActives();
+  }
+});
