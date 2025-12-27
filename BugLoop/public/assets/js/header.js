@@ -14,25 +14,8 @@
     let blinkRemoved = false;
     const ACTIVE_KEY = 'sidebar.activeTab';
 
-    // --- [추가] 스크롤 위치 제어 로직 ---
-    let scrollPos = 0;
-
-    function lockScroll() {
-      scrollPos = window.pageYOffset;
-      document.body.classList.add('panel-open');
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollPos}px`;
-      document.body.style.width = '100%';
-    }
-
-    function unlockScroll() {
-      document.body.classList.remove('panel-open');
-      document.body.style.removeProperty('position');
-      document.body.style.removeProperty('top');
-      document.body.style.removeProperty('width');
-      window.scrollTo(0, scrollPos);
-    }
-    // --------------------------------
+    // [핵심] 스크롤 위치 기억 변수
+    let lastScrollY = 0;
 
     const isNonHomeTabIcon = (el) =>
       el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
@@ -131,8 +114,14 @@
 
     function openTab(selectedTab) {
       if (!extensionPanel?.classList.contains('open')) {
+        // [수정] 스크롤 잠금 로직 직접 삽입
+        lastScrollY = window.pageYOffset;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${lastScrollY}px`;
+        document.body.style.width = '100%';
+        
         extensionPanel?.classList.add('open');
-        lockScroll(); // 수정됨: document.body.classList.add('panel-open') 대신 호출
+        document.body.classList.add('panel-open');
         toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
         sidePanel?.classList.add('open');
         sidePanel?.style.setProperty('pointer-events', 'auto');
@@ -173,8 +162,14 @@
         const url = state.page && state.page > 1 ? `${base}&page=${state.page}` : base;
 
         if (!extensionPanel?.classList.contains('open')) {
+          // [수정] 스크롤 잠금 로직 직접 삽입
+          lastScrollY = window.pageYOffset;
+          document.body.style.position = 'fixed';
+          document.body.style.top = `-${lastScrollY}px`;
+          document.body.style.width = '100%';
+
           extensionPanel?.classList.add('open');
-          lockScroll(); // 수정됨
+          document.body.classList.add('panel-open');
           sidePanel?.classList.add('open');
           sidePanel?.style.setProperty('pointer-events', 'auto');
         }
@@ -326,12 +321,24 @@
       }
 
       if (isNowOpen) {
-        lockScroll(); // 수정됨
+        // [수정] 스크롤 위치 고정
+        lastScrollY = window.pageYOffset;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${lastScrollY}px`;
+        document.body.style.width = '100%';
+
+        document.body.classList.add('panel-open');
         sidePanel?.classList.add('open');
         sidePanel?.style.setProperty('pointer-events', 'auto');
         restoreActive();
       } else {
-        unlockScroll(); // 수정됨
+        // [수정] 스크롤 복원
+        document.body.classList.remove('panel-open');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('top');
+        document.body.style.removeProperty('width');
+        window.scrollTo(0, lastScrollY);
+
         sidePanel?.classList.remove('open');
         sidePanel?.style.setProperty('pointer-events', 'none');
         clearNonHomeTabActives();
@@ -417,6 +424,7 @@
     });
   });
 
+  // 하단 보조 IIFE들은 수정 없이 그대로 유지 (안정성 확보)
   (function() {
     if (window.__langPortalInit) return;
     window.__langPortalInit = true;
@@ -913,23 +921,6 @@
     });
   })();
 })();
-
-document.addEventListener('DOMContentLoaded', () => {
-  const path = window.location.pathname;
-  if (path === '/ko/write') {
-    const adSelectors = [
-      '.adsbygoogle',
-      '.bl-ad-slot',
-      '#top-ad',
-      '#bottom-ad'
-    ];
-    adSelectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => {
-        el.style.display = 'none';
-      });
-    });
-  }
-});
 
 const fontSteps = [1, 1.15, 1.3];
 let fontIndex = Number(localStorage.getItem("fontIndex")) || 0;
