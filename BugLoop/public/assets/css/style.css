@@ -300,3 +300,9 @@ body.panel-open .left-controls {
   transition: opacity .18s ease, visibility .18s ease;
   z-index: 1500;
 }
+
+body.panel-open .panel-backdrop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
