@@ -14,12 +14,6 @@
 }
 
 /* 3. 기본 레이아웃 및 초기화 */
-html {
-  /* 핵심: 스크롤바가 사라져도 화면이 덜컹거리지 않게 항상 공간 확보 */
-  overflow-y: scroll; 
-  overflow-x: hidden;
-}
-
 html, body {
   font-family: var(--font-sans);
   letter-spacing: var(--tracking-body);
@@ -33,6 +27,7 @@ html, body {
   padding: 0;
   display: block;
   box-sizing: border-box;
+  overflow-x: hidden;
   overscroll-behavior: none;
 }
 
@@ -40,7 +35,7 @@ body {
   -webkit-overflow-scrolling: auto;
 }
 
-/* 4. 타이포그래피 */
+/* 4. 타이포그래피 (Heading & Text) */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   line-height: var(--lh-heading);
@@ -60,7 +55,7 @@ nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
   font-weight: 600;
 }
 
-/* 5. 다국어 및 유틸리티 */
+/* 5. 다국어 및 유틸리티 클래스 */
 :lang(zh), .lang-zh { font-family: "Noto Sans SC", sans-serif; }
 :lang(ja), .lang-ja { font-family: "Noto Sans JP", sans-serif; }
 :lang(ko), .lang-ko { letter-spacing: -0.0020em; }
@@ -69,7 +64,11 @@ nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
 .caption { font-size: 12.5px; letter-spacing: 0; opacity: .85; }
 .tnum { font-variant-numeric: tabular-nums; }
 
-/* 6. 헤더 및 로고 */
+.tracking-xxs { letter-spacing: -0.0020em; }
+.tracking-xs  { letter-spacing: -0.0025em; }
+.tracking-s   { letter-spacing: -0.0035em; }
+
+/* 6. 헤더 및 로고 요소 */
 .full-header-container {
   position: relative;
   z-index: 20000;
@@ -98,6 +97,11 @@ nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+.floating-home-logo:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
 /* 7. 로딩 애니메이션 (Preloader) */
 #preloader {
   position: fixed;
@@ -113,7 +117,8 @@ nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
 #preloader.fade-out { opacity: 0; pointer-events: none; }
 
 .spinner {
-  width: 50px; height: 50px;
+  width: 50px;
+  height: 50px;
   border: 6px solid #ccc;
   border-top: 6px solid #555;
   border-radius: 50%;
@@ -122,7 +127,7 @@ nav a, .menu-label, .tab, .badge, .btn, .chip, .sidebar-icon {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* 8. 패널 및 사이드바 제어 (핵심 수정) */
+/* 8. 패널 및 사이드바 제어 (핵심 로직) */
 .panel-backdrop {
   position: fixed;
   inset: 0;
@@ -140,7 +145,7 @@ body.panel-open {
   transition: padding 0.3s ease;
   width: 100%;
   overflow: hidden !important; /* 스크롤 차단 */
-  /* height: 100vh; 제거: 위치 튀는 현상 방지 */
+  height: 100vh;
 }
 
 body.panel-open .panel-backdrop {
@@ -149,27 +154,28 @@ body.panel-open .panel-backdrop {
   pointer-events: auto;
 }
 
-/* 포스트 뷰 컨테이너가 중앙 정렬일 경우 튀는 현상 방지 */
-body.panel-open .postview-container {
-  margin-left: 0 !important;
-  margin-right: auto !important;
+body.panel-open .left-controls {
+  padding-left: 400px;
 }
 
 .side-panel.main-panel-only.open {
-  z-index: 20001 !important;
+  z-index: 20001 !important; /* 백드랍보다 위로 */
 }
 
-/* 9. 반응형 디자인 */
+/* 9. 반응형 디자인 (Media Queries) */
+
+/* 태블릿 및 모바일 공통 (768px 이하) */
 @media (max-width: 768px) {
   body.panel-open {
     transition: none !important;
     padding-left: 0 !important;
     width: 100% !important;
     overflow: hidden;
-    position: fixed; /* 모바일은 fixed가 가장 확실 */
+    position: fixed; /* 모바일 스크롤 완벽 차단 */
   }
 }
 
+/* 데스크탑 특화 (769px 이상) */
 @media (min-width: 769px) {
   .floating-home-logo { width: 120px; }
   
@@ -182,6 +188,7 @@ body.panel-open .postview-container {
   }
 }
 
+/* 모바일 특화 (640px 이하) */
 @media (max-width: 640px) {
   .left-controls { padding-left: 13px; }
   .header-top { padding-left: 10px; }
@@ -216,4 +223,5 @@ body.panel-open .postview-container {
   }
 }
 
+/* 유틸리티 */
 .spacer { height: 0.5rem; }
