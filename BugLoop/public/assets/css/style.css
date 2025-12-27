@@ -145,7 +145,6 @@ body.panel-open {
   transition: padding 0.3s ease;
   width: 100%;
   overflow: hidden !important; /* 스크롤 차단 */
-  height: 100vh;
 }
 
 body.panel-open .panel-backdrop {
