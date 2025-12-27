@@ -14,6 +14,26 @@
     let blinkRemoved = false;
     const ACTIVE_KEY = 'sidebar.activeTab';
 
+    // --- [추가] 스크롤 위치 제어 로직 ---
+    let scrollPos = 0;
+
+    function lockScroll() {
+      scrollPos = window.pageYOffset;
+      document.body.classList.add('panel-open');
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollPos}px`;
+      document.body.style.width = '100%';
+    }
+
+    function unlockScroll() {
+      document.body.classList.remove('panel-open');
+      document.body.style.removeProperty('position');
+      document.body.style.removeProperty('top');
+      document.body.style.removeProperty('width');
+      window.scrollTo(0, scrollPos);
+    }
+    // --------------------------------
+
     const isNonHomeTabIcon = (el) =>
       el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
 
@@ -112,7 +132,7 @@
     function openTab(selectedTab) {
       if (!extensionPanel?.classList.contains('open')) {
         extensionPanel?.classList.add('open');
-        document.body.classList.add('panel-open');
+        lockScroll(); // 수정됨: document.body.classList.add('panel-open') 대신 호출
         toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
         sidePanel?.classList.add('open');
         sidePanel?.style.setProperty('pointer-events', 'auto');
@@ -154,7 +174,7 @@
 
         if (!extensionPanel?.classList.contains('open')) {
           extensionPanel?.classList.add('open');
-          document.body.classList.add('panel-open');
+          lockScroll(); // 수정됨
           sidePanel?.classList.add('open');
           sidePanel?.style.setProperty('pointer-events', 'auto');
         }
@@ -306,12 +326,12 @@
       }
 
       if (isNowOpen) {
-        document.body.classList.add('panel-open');
+        lockScroll(); // 수정됨
         sidePanel?.classList.add('open');
         sidePanel?.style.setProperty('pointer-events', 'auto');
         restoreActive();
       } else {
-        document.body.classList.remove('panel-open');
+        unlockScroll(); // 수정됨
         sidePanel?.classList.remove('open');
         sidePanel?.style.setProperty('pointer-events', 'none');
         clearNonHomeTabActives();
@@ -799,7 +819,7 @@
 
       const r = langBtn.getBoundingClientRect();
       const top = Math.round(r.bottom + 6);
-      const left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 200)));
+      const left = Math.round(Math.max(8, Math.min(r.left), window.innerWidth - 200)));
       const minW = Math.max(r.width, 160);
 
       langMenu.classList.add('lang-menu--portal');
