@@ -23,11 +23,24 @@ body {
   padding-bottom: 50px;
 }
 
+/* [수정] 패널/모달 오픈 시 스크롤 방지 통합 */
+html.panel-open,
+body.panel-open,
 html.modal-open,
 body.modal-open {
-  overflow: hidden;
+  overflow: hidden !important;
   touch-action: none;
-  height: 100%;
+  height: 100% !important;
+  position: relative !important;
+}
+
+/* [추가] 스크롤바 사라질 때 꿀렁임 방지 */
+html {
+  scrollbar-gutter: stable;
+}
+
+body.panel-open {
+  overscroll-behavior: none; 
 }
 
 .postview-container .post-title {
@@ -213,19 +226,41 @@ html.dark .img-caption {
   }
 }
 
-#floatingToc,
-#floatingToc * {
+/* [수정] Floating TOC 커서 로직 분리 */
+#floatingToc {
   pointer-events: auto !important;
   -webkit-user-select: auto !important;
   user-select: auto !important;
   -webkit-user-drag: auto !important;
+  /* 박스 자체와 빈 공간은 십자(이동) 커서 */
   cursor: move !important;
 }
 
+#floatingToc * {
+  /* 내부 요소들은 일단 기본 커서로 초기화 */
+  cursor: default;
+}
+
+/* 제목 부분도 드래그용 핸들로 쓰기 위해 십자 유지 */
 .floating-toc .toc-title {
   display: block;
   font-weight: bold;
   margin-bottom: 1rem;
+  cursor: move !important;
+}
+
+/* 실제 목차 링크들은 클릭용 손가락 커서로 강제 설정 */
+.toc-list a,
+.post-content .auto-toc a {
+  display: block;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #0366d6;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer !important;
 }
 
 html.dark .floating-toc {
@@ -271,18 +306,6 @@ html.dark .post-content .auto-toc {
 
 .toc-list {
   font-size: 0;
-}
-
-.toc-list a,
-.post-content .auto-toc a {
-  display: block;
-  font-size: 14px;
-  line-height: 1.4;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #0366d6;
-  text-decoration: none;
-  transition: all 0.2s ease;
 }
 
 .toc-list a:hover {
@@ -596,27 +619,4 @@ html.dark .postview-container::before {
   opacity: 1;                 /* ❗ 숨김 없이 100% */
   z-index: -1;
   pointer-events: none;
-}
-
-
-
-
-
-
-/* style.css 상단 또는 post-view.css */
-
-/* 1. 패널이 열렸을 때 html 자체를 잠급니다. */
-html.panel-open {
-  /* 현재 스크롤 위치를 유지하면서 스크롤만 막음 */
-  overflow: hidden; 
-}
-
-body.panel-open {
-  /* 모바일에서 튕기는 현상과 스크롤 전파를 방지 */
-  overscroll-behavior: none; 
-}
-
-/* 2. (선택사항) 스크롤바가 사라지면서 화면이 옆으로 툭 밀리는 게 싫다면? */
-html {
-  scrollbar-gutter: stable;
 }
