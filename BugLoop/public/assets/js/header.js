@@ -14,6 +14,12 @@
     let blinkRemoved = false;
     const ACTIVE_KEY = 'sidebar.activeTab';
 
+    // [핵심] 스크롤 방지를 위해 html과 body 클래스를 동시에 제어하는 함수
+    function togglePanelLock(isOpen) {
+      document.documentElement.classList.toggle('panel-open', isOpen);
+      document.body.classList.toggle('panel-open', isOpen);
+    }
+
     const isNonHomeTabIcon = (el) =>
       el?.dataset?.tab && el.dataset.tab !== 'home' && el.dataset.tab !== 'write' && !el.classList.contains('toggle-extension');
 
@@ -50,13 +56,16 @@
       if (name) setActiveIcon(name);
     }
 
+    // 초기 로드 시 상태 확인
     if (extensionPanel?.classList.contains('open')) {
       sidePanel?.classList.add('open');
       sidePanel?.style.setProperty('pointer-events', 'auto');
+      togglePanelLock(true); 
       restoreActive();
     } else {
       sidePanel?.classList.remove('open');
       sidePanel?.style.setProperty('pointer-events', 'none');
+      togglePanelLock(false);
     }
 
     function bindLangDropdown(context = document) {
@@ -112,7 +121,7 @@
     function openTab(selectedTab) {
       if (!extensionPanel?.classList.contains('open')) {
         extensionPanel?.classList.add('open');
-        document.body.classList.add('panel-open');
+        togglePanelLock(true); // 수정된 함수 사용
         toggleIcon?.classList.replace('fa-chevron-right', 'fa-chevron-left');
         sidePanel?.classList.add('open');
         sidePanel?.style.setProperty('pointer-events', 'auto');
@@ -154,7 +163,7 @@
 
         if (!extensionPanel?.classList.contains('open')) {
           extensionPanel?.classList.add('open');
-          document.body.classList.add('panel-open');
+          togglePanelLock(true); // 수정된 함수 사용
           sidePanel?.classList.add('open');
           sidePanel?.style.setProperty('pointer-events', 'auto');
         }
@@ -305,13 +314,13 @@
         blinkRemoved = true;
       }
 
+      togglePanelLock(isNowOpen); // 수정된 부분
+
       if (isNowOpen) {
-        document.body.classList.add('panel-open');
         sidePanel?.classList.add('open');
         sidePanel?.style.setProperty('pointer-events', 'auto');
         restoreActive();
       } else {
-        document.body.classList.remove('panel-open');
         sidePanel?.classList.remove('open');
         sidePanel?.style.setProperty('pointer-events', 'none');
         clearNonHomeTabActives();
@@ -397,6 +406,7 @@
     });
   });
 
+  // 언어 탭 관련 로직 (Portal 형식)
   (function() {
     if (window.__langPortalInit) return;
     window.__langPortalInit = true;
@@ -514,6 +524,7 @@
     });
   })();
 
+  // 백드랍 생성 및 클릭 이벤트
   (function() {
     let backdrop = document.querySelector('.panel-backdrop');
     if (!backdrop) {
@@ -531,6 +542,7 @@
     }
   })();
 
+  // 히스토리 네비게이션 감시
   (function() {
     ['pushState', 'replaceState'].forEach(fn => {
       const orig = history[fn];
@@ -542,6 +554,7 @@
     });
   })();
 
+  // 메뉴 활성화 동기화
   (function() {
     const stripPath = (p) => (p || location.pathname).replace(/[#?].*$/, '').replace(/\/$/, '');
 
@@ -582,6 +595,7 @@
     });
   })();
 
+  // 홈 아이콘 활성화
   (function() {
     const homeEls = document.querySelectorAll('.vscode-sidebar a.sidebar-icon[data-tab="home"]:not(.toggle-extension)');
     const stripLang = (p) => {
@@ -617,6 +631,7 @@
     window.addEventListener('panel:navigated', sync);
   })();
 
+  // 하드웨어 힌트 (말풍선)
   (function() {
     const bubble = document.getElementById('hardware-hint');
     const label = document.getElementById('hardware-label');
@@ -677,10 +692,7 @@
     } else {
       placeBubble();
     }
-    window.addEventListener('scroll', placeBubble, {
-      capture: true,
-      passive: true
-    });
+    window.addEventListener('scroll', placeBubble, { capture: true, passive: true });
     window.addEventListener('resize', placeBubble);
     document.querySelector('.toggle-extension')?.addEventListener('click', () => {
       placeBubble();
@@ -712,30 +724,23 @@
     if (localStorage.getItem(KEY) !== '1') show();
   })();
 
+  // 미니 렉쳐 패널 로드
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-panel-link]').forEach(link => {
       link.addEventListener('click', async (e) => {
         e.preventDefault();
         const url = link.getAttribute('href');
-        const clickedLabel = link.getAttribute('data-panel-title') ||
-          link.textContent.trim() ||
-          'Info';
+        const clickedLabel = link.getAttribute('data-panel-title') || link.textContent.trim() || 'Info';
 
         try {
-          const res = await fetch(url + '?partial=1', {
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          });
+          const res = await fetch(url + '?partial=1', { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
           const html = await res.text();
           const panel = document.querySelector('#mini-lecture');
           if (!panel) return;
 
           panel.innerHTML = html;
           const titleEl = document.getElementById('panel-title-connector');
-          if (titleEl) {
-            titleEl.textContent = clickedLabel;
-          }
+          if (titleEl) titleEl.textContent = clickedLabel;
 
           panel.scrollTo(0, 0);
 
@@ -748,6 +753,7 @@
     });
   });
 
+  // 테마 및 사이드바 언어 메뉴
   (function() {
     const langBtn = document.getElementById('langToggleSidebar');
     const langMenu = document.getElementById('langMenuSidebar');
@@ -759,8 +765,10 @@
       const isDark = theme === 'dark';
       htmlEl.classList.toggle('dark', isDark);
       localStorage.setItem(THEME_KEY, theme);
-      themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-      themeToggleBtn.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
+      if(themeToggleBtn?.querySelector('i')) {
+        themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      }
+      themeToggleBtn?.setAttribute('aria-label', `테마 전환: 현재 ${isDark ? '다크' : '라이트'} 모드입니다.`);
     };
 
     const initTheme = () => {
@@ -771,18 +779,10 @@
 
     const toggleTheme = () => {
       const currentIsDark = htmlEl.classList.contains('dark');
-      const nextTheme = currentIsDark ? 'light' : 'dark';
-      updateTheme(nextTheme);
+      updateTheme(currentIsDark ? 'light' : 'dark');
     };
 
     themeToggleBtn?.addEventListener('click', toggleTheme);
-    themeToggleBtn?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleTheme();
-      }
-    });
-
     initTheme();
 
     if (!langBtn || !langMenu) return;
@@ -800,14 +800,13 @@
       const r = langBtn.getBoundingClientRect();
       const top = Math.round(r.bottom + 6);
       const left = Math.round(Math.max(8, Math.min(r.left, window.innerWidth - 200)));
-      const minW = Math.max(r.width, 160);
-
+      
       langMenu.classList.add('lang-menu--portal');
       document.body.appendChild(langMenu);
       Object.assign(langMenu.style, {
         top: top + 'px',
         left: left + 'px',
-        minWidth: minW + 'px'
+        minWidth: Math.max(r.width, 160) + 'px'
       });
 
       const current = langMenu.querySelector('.lang-option.active-lang') || langMenu.querySelector('.lang-option');
@@ -815,14 +814,9 @@
       current?.focus();
 
       setTimeout(() => {
-        document.addEventListener('mousedown', onDocDown, {
-          capture: true
-        });
-        window.addEventListener('scroll', closeMenu, {
-          passive: true
-        });
+        document.addEventListener('mousedown', onDocDown, { capture: true });
+        window.addEventListener('scroll', closeMenu, { passive: true });
         window.addEventListener('resize', closeMenu);
-        document.addEventListener('keydown', onKey);
       }, 0);
     };
 
@@ -831,18 +825,11 @@
       isOpen = false;
       langBtn.setAttribute('aria-expanded', 'false');
       langMenu.setAttribute('aria-hidden', 'true');
-      langMenu.querySelectorAll('.lang-option').forEach(a => a.setAttribute('tabindex', '-1'));
-
       const holder = langBtn.parentElement;
       holder && holder.appendChild(langMenu);
       langMenu.classList.remove('lang-menu--portal');
       langMenu.removeAttribute('style');
-
-      document.removeEventListener('mousedown', onDocDown, {
-        capture: true
-      });
-      window.removeEventListener('scroll', closeMenu);
-      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('mousedown', onDocDown, { capture: true });
       lastFocus?.focus?.();
     };
 
@@ -852,76 +839,21 @@
       closeMenu();
     };
 
-    const onKey = (e) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        closeMenu();
-        return;
-      }
-      const items = Array.from(langMenu.querySelectorAll('.lang-option'));
-      const idx = items.indexOf(document.activeElement);
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const next = items[(idx + 1 + items.length) % items.length];
-        next?.focus();
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        const prev = items[(idx - 1 + items.length) % items.length];
-        prev?.focus();
-      }
-      if (e.key === 'Home') {
-        e.preventDefault();
-        items[0]?.focus();
-      }
-      if (e.key === 'End') {
-        e.preventDefault();
-        items[items.length - 1]?.focus();
-      }
-    };
-
     langBtn.addEventListener('click', (e) => {
       e.preventDefault();
       isOpen ? closeMenu() : openMenu();
     });
-
-    langBtn.addEventListener('keydown', (e) => {
-      if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        openMenu();
-      }
-    });
   })();
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
-  const path = window.location.pathname;
-  if (path === '/ko/write') {
-    const adSelectors = [
-      '.adsbygoogle',
-      '.bl-ad-slot',
-      '#top-ad',
-      '#bottom-ad'
-    ];
-    adSelectors.forEach(sel => {
-      document.querySelectorAll(sel).forEach(el => {
-        el.style.display = 'none';
-      });
-    });
-  }
-});
-
+// 폰트 크기 조절 로직
 const fontSteps = [1, 1.15, 1.3];
 let fontIndex = Number(localStorage.getItem("fontIndex")) || 0;
 
 function applyFontScale() {
-  document.documentElement.style.setProperty(
-    "--font-scale",
-    fontSteps[fontIndex]
-  );
+  document.documentElement.style.setProperty("--font-scale", fontSteps[fontIndex]);
   localStorage.setItem("fontIndex", fontIndex);
 }
-
 applyFontScale();
 
 const fontBtn = document.getElementById("font-toggle-sidebar");
@@ -931,25 +863,3 @@ if (fontBtn) {
     applyFontScale();
   });
 }
-
-
-
-
-toggleExtensionBtn?.addEventListener('click', (e) => {
-  e.preventDefault();
-  const isNowOpen = extensionPanel?.classList.toggle('open');
-
-  // html과 body 모두에 클래스를 토글 (한 줄로 끝!)
-  document.documentElement.classList.toggle('panel-open', isNowOpen);
-  document.body.classList.toggle('panel-open', isNowOpen);
-
-  if (isNowOpen) {
-    sidePanel?.classList.add('open');
-    sidePanel?.style.setProperty('pointer-events', 'auto');
-    restoreActive();
-  } else {
-    sidePanel?.classList.remove('open');
-    sidePanel?.style.setProperty('pointer-events', 'none');
-    clearNonHomeTabActives();
-  }
-});
